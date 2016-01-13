@@ -1474,7 +1474,7 @@ class TestAssignmentGroupQuerySet(TestCase):
         self.assertEqual('userx', groups[0].fullname_of_first_candidate)
         self.assertEqual('usera', groups[1].fullname_of_first_candidate)
 
-    def test_extra_order_by_fullname_of_first_candidate_asscending_fullnames(self):
+    def test_extra_order_by_fullname_of_first_candidate_ascending_fullnames(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
         mommy.make('core.Candidate',
                    relatedstudent__user__shortname='user1',
@@ -1515,6 +1515,142 @@ class TestAssignmentGroupQuerySet(TestCase):
         groups = list(AssignmentGroup.objects.extra_order_by_fullname_of_first_candidate(descending=True))
         self.assertEqual('buser1user1', groups[0].fullname_of_first_candidate)
         self.assertEqual('auser4user4', groups[1].fullname_of_first_candidate)
+
+    def test_extra_annotate_with_relatedstudent_anonymous_id_of_first_candidate_anonymousid(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousb',
+                   assignment_group=testgroup)
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousa',
+                   assignment_group=testgroup)
+        annotatedgroup = AssignmentGroup.objects\
+            .extra_annotate_with_relatedstudent_anonymous_id_of_first_candidate().first()
+        self.assertEqual('anonymousa',
+                         annotatedgroup.relatedstudents_anonymous_id_of_first_candidate)
+
+    def test_extra_annotate_with_relatedstudent_anonymous_id_of_first_candidate_candidateid(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousb',
+                   relatedstudent__candidate_id='candidatex',
+                   assignment_group=testgroup)
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousa',
+                   relatedstudent__candidate_id='candidatey',
+                   assignment_group=testgroup)
+        annotatedgroup = AssignmentGroup.objects\
+            .extra_annotate_with_relatedstudent_anonymous_id_of_first_candidate().first()
+        self.assertEqual('candidatexanonymousb',
+                         annotatedgroup.relatedstudents_anonymous_id_of_first_candidate)
+
+    def test_extra_annotate_with_relatedstudent_anonymous_id_of_first_candidate_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousa',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousy',
+                   assignment_group=testgroup2)
+        queryset = AssignmentGroup.objects\
+            .extra_annotate_with_relatedstudent_anonymous_id_of_first_candidate()
+        self.assertEqual('anonymousa',
+                         queryset.get(id=testgroup1.id).relatedstudents_anonymous_id_of_first_candidate)
+        self.assertEqual('anonymousx',
+                         queryset.get(id=testgroup2.id).relatedstudents_anonymous_id_of_first_candidate)
+
+    def test_extra_order_by_relatedstudents_anonymous_id_of_first_candidate_ascending_anonymousids(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousa',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousy',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_relatedstudents_anonymous_id_of_first_candidate())
+        self.assertEqual(testgroup1, groups[0])
+        self.assertEqual(testgroup2, groups[1])
+
+    def test_extra_order_by_relatedstudents_anonymous_id_of_first_candidate_descending_anonymousids(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousa',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousy',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_relatedstudents_anonymous_id_of_first_candidate(
+            descending=True))
+        self.assertEqual(testgroup2, groups[0])
+        self.assertEqual(testgroup1, groups[1])
+
+    def test_extra_order_by_relatedstudents_anonymous_id_of_first_candidate_ascending_candidateids(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__candidate_id='a',
+                   relatedstudent__automatic_anonymous_id='anonymousb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__candidate_id='b',
+                   relatedstudent__automatic_anonymous_id='anonymousa',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__candidate_id='c',
+                   relatedstudent__automatic_anonymous_id='anonymousx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__candidate_id='d',
+                   relatedstudent__automatic_anonymous_id='anonymousy',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_relatedstudents_anonymous_id_of_first_candidate())
+        self.assertEqual(testgroup1, groups[0])
+        self.assertEqual(testgroup2, groups[1])
+
+    def test_extra_order_by_relatedstudents_anonymous_id_of_first_candidate_descending_candidateids(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__candidate_id='a',
+                   relatedstudent__automatic_anonymous_id='anonymousb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__candidate_id='b',
+                   relatedstudent__automatic_anonymous_id='anonymousa',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__candidate_id='c',
+                   relatedstudent__automatic_anonymous_id='anonymousx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__candidate_id='d',
+                   relatedstudent__automatic_anonymous_id='anonymousy',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_relatedstudents_anonymous_id_of_first_candidate(
+            descending=True))
+        self.assertEqual(testgroup2, groups[0])
+        self.assertEqual(testgroup1, groups[1])
 
 
 class TestAssignmentGroupQuerySetPermission(TestCase):

@@ -341,7 +341,7 @@ class AssignmentGroupQuerySet(models.QuerySet):
 
     def extra_annotate_with_fullname_of_first_candidate(self):
         # Not ment to be used directly - this is used by the
-        # order_by_fullname_of_first_candidate() method.
+        # extra_order_by_fullname_of_first_candidate() method.
         return self.extra(
             select={
                 "fullname_of_first_candidate": """
@@ -378,6 +378,55 @@ class AssignmentGroupQuerySet(models.QuerySet):
         else:
             order_by = ['fullname_of_first_candidate']
         return self.extra_annotate_with_fullname_of_first_candidate().extra(
+            order_by=order_by
+        )
+
+    def extra_annotate_with_relatedstudent_anonymous_id_of_first_candidate(self):
+        # Not ment to be used directly - this is used by the
+        # extra_order_by_relatedstudents_anonymous_id_of_first_candidate() method.
+        return self.extra(
+            select={
+                "relatedstudents_anonymous_id_of_first_candidate": """
+                    SELECT
+                        LOWER(CONCAT(core_relatedstudent.candidate_id, core_relatedstudent.automatic_anonymous_id))
+                    FROM core_candidate
+                    INNER JOIN core_relatedstudent
+                        ON (core_relatedstudent.id = core_candidate.relatedstudent_id)
+                    WHERE
+                        core_candidate.assignment_group_id = core_assignmentgroup.id
+                    ORDER BY
+                        LOWER(CONCAT(core_relatedstudent.candidate_id, core_relatedstudent.automatic_anonymous_id))
+                        ASC
+                    LIMIT 1
+                """
+            },
+        )
+
+    def extra_order_by_relatedstudents_anonymous_id_of_first_candidate(self, descending=False):
+        """
+        Order by the anonymous ID of the RelatedStudent of the first candidate
+        (ordered by the anonymous ID of the RelatedStudent of each candidate) in each group.
+
+        Concatenates :obj:`devilry.apps.core.models.RelatedStudent.candidate_id` and
+        :obj:`devilry.apps.core.models.RelatedUserBase.automatic_anonymous_id` (in that order)
+        to generate the value to order on.
+
+        This is intended to be used for ordering AssignmentGroups when
+        the assignment is anonymous, and with :obj:`~devilry.apps.core.models.Assignment.uses_custom_candidate_ids`
+        set to ``False``. If :obj:`~devilry.apps.core.models.Assignment.uses_custom_candidate_ids`
+        is ``True``, use :meth:`.extra_order_by_candidates_candidate_id_of_first_candidate`.
+
+        As the ``extra_`` prefix implies, this uses a fairly expensive custom SQL query
+        added using the ``extra()``-method of the QuerySet.
+
+        Args:
+            descending: Set this to ``True`` to order descending.
+        """
+        if descending:
+            order_by = ['-relatedstudents_anonymous_id_of_first_candidate']
+        else:
+            order_by = ['relatedstudents_anonymous_id_of_first_candidate']
+        return self.extra_annotate_with_relatedstudent_anonymous_id_of_first_candidate().extra(
             order_by=order_by
         )
 
