@@ -93,6 +93,13 @@ class TestSubjectQuerySetPermission(TestCase):
         mommy.make('core.Subject')
         self.assertFalse(Subject.objects.filter_user_is_admin(user=testuser).exists())
 
+    def test_filter_user_is_admin_superuser(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        testsubject = mommy.make('core.Subject')
+        self.assertEqual(
+            {testsubject},
+            set(Subject.objects.filter_user_is_admin(user=testuser)))
+
     def test_filter_user_is_admin_ignore_subjects_where_not_in_group(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testsubject = mommy.make('core.Subject')

@@ -185,10 +185,13 @@ class AssignmentGroupQuerySet(models.QuerySet):
         Args:
             user: A User object.
         """
-        periodids_where_is_admin_queryset = Period.objects\
-            .filter_user_is_admin(user=user)\
-            .values_list('id', flat=True)
-        return self.filter(parentnode__parentnode_id__in=periodids_where_is_admin_queryset)
+        if user.is_superuser:
+            return self.all()
+        else:
+            periodids_where_is_admin_queryset = Period.objects\
+                .filter_user_is_admin(user=user)\
+                .values_list('id', flat=True)
+            return self.filter(parentnode__parentnode_id__in=periodids_where_is_admin_queryset)
 
     def filter_user_is_examiner(self, user):
         """

@@ -115,6 +115,13 @@ class TestPeriodQuerySetPermission(TestCase):
         mommy.make('core.Period')
         self.assertFalse(Period.objects.filter_user_is_admin(user=testuser).exists())
 
+    def test_filter_user_is_admin_superuser(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        testperiod = mommy.make('core.Period')
+        self.assertEqual(
+            {testperiod},
+            set(Period.objects.filter_user_is_admin(user=testuser)))
+
     def test_filter_user_is_admin_ignore_periods_where_not_in_group(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testperiod = mommy.make('core.Period')
