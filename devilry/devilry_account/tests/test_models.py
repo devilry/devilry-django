@@ -6,7 +6,8 @@ from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.devilry_account.exceptions import IllegalOperationError
-from devilry.devilry_account.models import User, UserEmail, UserName, PermissionGroup, SubjectPermissionGroup
+from devilry.devilry_account.models import User, UserEmail, UserName, PermissionGroup, SubjectPermissionGroup, \
+    PeriodPermissionGroup
 
 
 class TestUser(TestCase):
@@ -561,6 +562,75 @@ class TestPermissionGroup(TestCase):
         with self.assertRaisesMessage(ValidationError, 'Permission group type can not'
                                                        ' be changed.'):
             permissiongroup.clean()
+
+
+class TestPeriodPermissionGroupQuerySet(TestCase):
+    def test_user_is_periodadmin_for_period_false_not_in_any_periodpermissiongroup(self):
+        testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        self.assertFalse(PeriodPermissionGroup.objects.user_is_periodadmin_for_period(
+            period=testperiod, user=testuser))
+
+    def test_user_is_periodadmin_for_period_true_for_periodadmin(self):
+        testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=mommy.make('devilry_account.PeriodPermissionGroup',
+                                              period=testperiod).permissiongroup)
+        self.assertTrue(PeriodPermissionGroup.objects.user_is_periodadmin_for_period(
+            period=testperiod, user=testuser))
+
+    def test_get_devilryrole_for_user_on_period_not_in_any_permissiongroup(self):
+        testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        self.assertEqual(
+            None,
+            PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
+                period=testperiod, user=testuser))
+
+    def test_get_devilryrole_for_user_on_period_superuser(self):
+        testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        self.assertEqual(
+            'departmentadmin',
+            PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
+                period=testperiod, user=testuser))
+
+    def test_get_devilryrole_for_user_on_period_departmentadmin(self):
+        testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=mommy.make('devilry_account.SubjectPermissionGroup',
+                                              permissiongroup__grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN,
+                                              subject=testperiod.subject).permissiongroup)
+        self.assertEqual(
+            'departmentadmin',
+            PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
+                period=testperiod, user=testuser))
+
+    def test_get_devilryrole_for_user_on_period_subjectadmin(self):
+        testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=mommy.make('devilry_account.SubjectPermissionGroup',
+                                              permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                                              subject=testperiod.subject).permissiongroup)
+        self.assertEqual(
+            'subjectadmin',
+            PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
+                period=testperiod, user=testuser))
+
+    def test_get_devilryrole_for_user_on_period_periodadmin(self):
+        testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=mommy.make('devilry_account.PeriodPermissionGroup',
+                                              permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                                              period=testperiod).permissiongroup)
+        self.assertEqual(
+            'periodadmin',
+            PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
+                period=testperiod, user=testuser))
 
 
 class TestPeriodPermissionGroup(TestCase):
