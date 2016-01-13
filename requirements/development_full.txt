@@ -1,7 +1,7 @@
 # Extra development dependencies that is not needed for normal development
 -r development.txt
 
-# For building Dash docs (used by the dashdocs fabric task in not_for_deploy/docs/fabfile.py)
+# For building Dash docs with ``ievv docs -b --dash``.
 doc2dash==2.0.2
 
 django-storages==1.1.5

@@ -166,3 +166,5 @@ IEVVTASKS_DEVRUN_RUNNABLES = {
         ievvdevrun.runnables.ievv_buildstatic.RunnableThread(),
     ),
 }
+
+IEVVTASKS_DOCS_DASH_NAME = 'Devilry'
