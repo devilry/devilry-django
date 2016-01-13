@@ -7,11 +7,20 @@ from devilry.devilry_admin.views.period import crinstance_period
 
 class TestCrAdminInstance(TestCase):
     def test_get_rolequeryset_not_admin(self):
-        request = RequestFactory().get('/test')
+        mommy.make('core.Period')
         testuser = mommy.make(settings.AUTH_USER_MODEL)
+        request = RequestFactory().get('/test')
         request.user = testuser
         instance = crinstance_period.CrAdminInstance(request=request)
-        self.assertEqual(0, instance.get_rolequeryset().count())
+        self.assertEqual([], list(instance.get_rolequeryset()))
+
+    def test_get_rolequeryset_superuser(self):
+        testperiod = mommy.make('core.Period')
+        request = RequestFactory().get('/test')
+        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        request.user = testuser
+        instance = crinstance_period.CrAdminInstance(request=request)
+        self.assertEqual([testperiod], list(instance.get_rolequeryset()))
 
     def test_get_rolequeryset_admin_on_period(self):
         testperiod = mommy.make('core.Period')
