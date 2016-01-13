@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 
+from devilry.apps.core.models import Period
 from .node import Node
 from .abstract_is_admin import AbstractIsAdmin
 from .abstract_is_examiner import AbstractIsExaminer
@@ -109,7 +110,6 @@ class AssignmentGroupQuerySet(models.QuerySet):
             .annotate(deliverycount_for_no_deliveries_exclude=models.Count('deadlines__deliveries'))\
             .filter(deliverycount_for_no_deliveries_exclude=0)
 
-
     def filter_by_status(self, status):
         warnings.warn("deprecated", DeprecationWarning)
         return self.filter(delivery_status=status)
@@ -175,6 +175,20 @@ class AssignmentGroupQuerySet(models.QuerySet):
             delivery.set_number()
             delivery.full_clean()
             delivery.save()
+
+    def filter_user_is_admin(self, user):
+        """
+        Filter the queryset to only include :class:`.Assignment` objects where the
+        given ``user`` is in a :class:`.devilry.devilry_account.models.SubjectPermissionGroup`
+        or in a :class:`.devilry.devilry_account.models.PeriodPermissionGroup`.
+
+        Args:
+            user: A User object.
+        """
+        periodids_where_is_admin_queryset = Period.objects\
+            .filter_user_is_admin(user=user)\
+            .values_list('id', flat=True)
+        return self.filter(parentnode__parentnode_id__in=periodids_where_is_admin_queryset)
 
     def filter_user_is_examiner(self, user):
         """
