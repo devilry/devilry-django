@@ -111,14 +111,13 @@ class FeedbackFeedBaseView(create.CreateView):
         obj.user = self.request.user
         obj.comment_type = 'groupcomment'
         obj.feedback_set = self.request.cradmin_role.feedbackset_set.latest('created_datetime')
-        print obj.feedback_set
 
     def save_object(self, form, commit=False):
         if commit:
             raise NotImplementedError('Must be implemented by subclass!')
 
         obj = super(FeedbackFeedBaseView, self,).save_object(form, True)
-        self._convert_temporary_files_to_comment_files(form, obj)
+        # self._convert_temporary_files_to_comment_files(form, obj)
         return obj
 
     def get_collectionqueryset(self):
