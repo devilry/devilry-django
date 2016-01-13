@@ -60,7 +60,7 @@ def devilry_single_candidate_long_displayname(assignment, candidate, devilryrole
     Args:
         assignment: A :class:`devilry.apps.core.models.Assignment` object.
             The ``assignment`` should be the assignment where the candidate belongs.
-        candidate: A :class:`devilry.apps.core.models.candidate.Candidate` object.
+        candidate: A :class:`devilry.apps.core.models.Candidate` object.
         devilryrole: See
             :meth:`devilry.apps.core.models.Assignment.students_must_be_anonymized_for_devilryrole`.
     """
@@ -82,7 +82,7 @@ def devilry_single_candidate_short_displayname(assignment, candidate, devilryrol
     Args:
         assignment: A :class:`devilry.apps.core.models.Assignment` object.
             The ``assignment`` should be the assignment where the candidate belongs.
-        candidate: A :class:`devilry.apps.core.models.candidate.Candidate` object.
+        candidate: A :class:`devilry.apps.core.models.Candidate` object.
         devilryrole: See
             :meth:`devilry.apps.core.models.Assignment.students_must_be_anonymized_for_devilryrole`.
     """
@@ -104,7 +104,7 @@ def devilry_single_examiner_long_displayname(assignment, examiner, devilryrole):
     Args:
         assignment: A :class:`devilry.apps.core.models.Assignment` object.
             The ``assignment`` should be the assignment where the examiner belongs.
-        examiner: A :class:`devilry.apps.core.models.examiner.Examiner` object.
+        examiner: A :class:`devilry.apps.core.models.Examiner` object.
         devilryrole: See
             :meth:`devilry.apps.core.models.Assignment.examiners_must_be_anonymized_for_devilryrole`.
     """
@@ -126,7 +126,7 @@ def devilry_single_examiner_short_displayname(assignment, examiner, devilryrole)
     Args:
         assignment: A :class:`devilry.apps.core.models.Assignment` object.
             The ``assignment`` should be the assignment where the examiner belongs.
-        examiner: A :class:`devilry.apps.core.models.examiner.Examiner` object.
+        examiner: A :class:`devilry.apps.core.models.Examiner` object.
         devilryrole: See
             :meth:`devilry.apps.core.models.Assignment.examiners_must_be_anonymized_for_devilryrole`.
     """
@@ -151,7 +151,7 @@ def devilry_multiple_candidates_long_displayname(assignment, candidates, devilry
     Args:
         assignment: A :class:`devilry.apps.core.models.Assignment` object.
             The ``assignment`` should be the assignment where the candidates belongs.
-        candidates: An iterable of :class:`devilry.apps.core.models.candidates.Candidate` objects.
+        candidates: An iterable of :class:`devilry.apps.core.models.Candidate` objects.
         devilryrole: See
             :meth:`devilry.apps.core.models.Assignment.students_must_be_anonymized_for_devilryrole`.
     """
@@ -176,7 +176,7 @@ def devilry_multiple_candidates_short_displayname(assignment, candidates, devilr
     Args:
         assignment: A :class:`devilry.apps.core.models.Assignment` object.
             The ``assignment`` should be the assignment where the candidates belongs.
-        candidates: An iterable of :class:`devilry.apps.core.models.candidates.Candidate` objects.
+        candidates: An iterable of :class:`devilry.apps.core.models.Candidate` objects.
         devilryrole: See
             :meth:`devilry.apps.core.models.Assignment.students_must_be_anonymized_for_devilryrole`.
     """
@@ -201,7 +201,7 @@ def devilry_multiple_examiners_long_displayname(assignment, examiners, devilryro
     Args:
         assignment: A :class:`devilry.apps.core.models.Assignment` object.
             The ``assignment`` should be the assignment where the examiners belongs.
-        examiners: An iterable of :class:`devilry.apps.core.models.examiners.Examiner` objects.
+        examiners: An iterable of :class:`devilry.apps.core.models.Examiner` objects.
         devilryrole: See
             :meth:`devilry.apps.core.models.Assignment.examiners_must_be_anonymized_for_devilryrole`.
     """
@@ -226,7 +226,7 @@ def devilry_multiple_examiners_short_displayname(assignment, examiners, devilryr
     Args:
         assignment: A :class:`devilry.apps.core.models.Assignment` object.
             The ``assignment`` should be the assignment where the examiners belongs.
-        examiners: An iterable of :class:`devilry.apps.core.models.examiners.Examiner` objects.
+        examiners: An iterable of :class:`devilry.apps.core.models.Examiner` objects.
         devilryrole: See
             :meth:`devilry.apps.core.models.Assignment.examiners_must_be_anonymized_for_devilryrole`.
     """
