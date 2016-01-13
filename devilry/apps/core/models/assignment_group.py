@@ -430,6 +430,51 @@ class AssignmentGroupQuerySet(models.QuerySet):
             order_by=order_by
         )
 
+    def extra_annotate_with_candidates_candidate_id_of_first_candidate(self):
+        # Not ment to be used directly - this is used by the
+        # extra_order_by_candidates_candidate_id_of_first_candidate() method.
+        return self.extra(
+            select={
+                "candidates_candidate_id_of_first_candidate": """
+                    SELECT
+                        core_candidate.candidate_id
+                    FROM core_candidate
+                    WHERE
+                        core_candidate.assignment_group_id = core_assignmentgroup.id
+                    ORDER BY core_candidate.candidate_id ASC
+                    LIMIT 1
+                """
+            },
+        )
+
+    def extra_order_by_candidates_candidate_id_of_first_candidate(self, descending=False):
+        """
+        Order by the anonymous ID of the RelatedStudent of the first candidate
+        (ordered by the anonymous ID of the RelatedStudent of each candidate) in each group.
+
+        Concatenates :obj:`devilry.apps.core.models.RelatedStudent.candidate_id` and
+        :obj:`devilry.apps.core.models.RelatedUserBase.automatic_anonymous_id` (in that order)
+        to generate the value to order on.
+
+        This is intended to be used for ordering AssignmentGroups when
+        the assignment is anonymous, and with :obj:`~devilry.apps.core.models.Assignment.uses_custom_candidate_ids`
+        set to ``True``. If :obj:`~devilry.apps.core.models.Assignment.uses_custom_candidate_ids`
+        is ``False``, use :meth:`.extra_order_by_relatedstudents_anonymous_id_of_first_candidate`.
+
+        As the ``extra_`` prefix implies, this uses a fairly expensive custom SQL query
+        added using the ``extra()``-method of the QuerySet.
+
+        Args:
+            descending: Set this to ``True`` to order descending.
+        """
+        if descending:
+            order_by = ['-candidates_candidate_id_of_first_candidate']
+        else:
+            order_by = ['candidates_candidate_id_of_first_candidate']
+        return self.extra_annotate_with_candidates_candidate_id_of_first_candidate().extra(
+            order_by=order_by
+        )
+
 
 class AssignmentGroupManager(models.Manager):
     """
