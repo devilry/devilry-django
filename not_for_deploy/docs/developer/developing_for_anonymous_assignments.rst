@@ -25,7 +25,11 @@ The most important thing is to have tests that:
 - Adds users with shortname and fullname (examiners and candidates) to an
   anonymous assignment.
 - Use ``assertNotIn`` to ensure names that should not be visible anywhere in
- the HTML is not present. E.g.: ``self.assertNotIn('shortnameofuser', mockresponse.response.content)``.
+  the HTML is not present in the HTML. E.g.::
+
+      self.assertNotIn('shortnameofuser', mockresponse.response.content)
+      self.assertNotIn('Full Name Of User', mockresponse.response.content)
+
 
 Write tests like these for all of the 3 legal values for
 :obj:`devilry.apps.core.models.Assignment.anonymizationmode`.
