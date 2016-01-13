@@ -58,11 +58,11 @@ def devilry_single_candidate_long_displayname(assignment, candidate, devilryrole
     Handles anonymization based on ``assignment.anonymizationmode`` and ``devilryrole``.
 
     Args:
-        assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
+        assignment: A :class:`devilry.apps.core.models.Assignment` object.
             The ``assignment`` should be the assignment where the candidate belongs.
         candidate: A :class:`devilry.apps.core.models.candidate.Candidate` object.
         devilryrole: See
-            :meth:`devilry.apps.core.models.assignment.Assignment.students_must_be_anonymized_for_devilryrole`.
+            :meth:`devilry.apps.core.models.Assignment.students_must_be_anonymized_for_devilryrole`.
     """
     return {
         'candidate': candidate,
@@ -80,11 +80,11 @@ def devilry_single_candidate_short_displayname(assignment, candidate, devilryrol
     Handles anonymization based on ``assignment.anonymizationmode`` and ``devilryrole``.
 
     Args:
-        assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
+        assignment: A :class:`devilry.apps.core.models.Assignment` object.
             The ``assignment`` should be the assignment where the candidate belongs.
         candidate: A :class:`devilry.apps.core.models.candidate.Candidate` object.
         devilryrole: See
-            :meth:`devilry.apps.core.models.assignment.Assignment.students_must_be_anonymized_for_devilryrole`.
+            :meth:`devilry.apps.core.models.Assignment.students_must_be_anonymized_for_devilryrole`.
     """
     return {
         'candidate': candidate,
@@ -102,11 +102,11 @@ def devilry_single_examiner_long_displayname(assignment, examiner, devilryrole):
     Handles anonymization based on ``assignment.anonymizationmode`` and ``devilryrole``.
 
     Args:
-        assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
+        assignment: A :class:`devilry.apps.core.models.Assignment` object.
             The ``assignment`` should be the assignment where the examiner belongs.
         examiner: A :class:`devilry.apps.core.models.examiner.Examiner` object.
         devilryrole: See
-            :meth:`devilry.apps.core.models.assignment.Assignment.examiners_must_be_anonymized_for_devilryrole`.
+            :meth:`devilry.apps.core.models.Assignment.examiners_must_be_anonymized_for_devilryrole`.
     """
     return {
         'examiner': examiner,
@@ -124,11 +124,11 @@ def devilry_single_examiner_short_displayname(assignment, examiner, devilryrole)
     Handles anonymization based on ``assignment.anonymizationmode`` and ``devilryrole``.
 
     Args:
-        assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
+        assignment: A :class:`devilry.apps.core.models.Assignment` object.
             The ``assignment`` should be the assignment where the examiner belongs.
         examiner: A :class:`devilry.apps.core.models.examiner.Examiner` object.
         devilryrole: See
-            :meth:`devilry.apps.core.models.assignment.Assignment.examiners_must_be_anonymized_for_devilryrole`.
+            :meth:`devilry.apps.core.models.Assignment.examiners_must_be_anonymized_for_devilryrole`.
     """
     return {
         'examiner': examiner,
@@ -144,16 +144,16 @@ def devilry_multiple_candidates_long_displayname(assignment, candidates, devilry
     the candidates inline in a verbose manner.
 
     Typically used for showing all the candidates in an
-    :class:`devilry.apps.core.models.assignment_group.AssignmentGroup`.
+    :class:`devilry.apps.core.models_group.AssignmentGroup`.
 
     Handles anonymization based on ``assignment.anonymizationmode`` and ``devilryrole``.
 
     Args:
-        assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
+        assignment: A :class:`devilry.apps.core.models.Assignment` object.
             The ``assignment`` should be the assignment where the candidates belongs.
         candidates: An iterable of :class:`devilry.apps.core.models.candidates.Candidate` objects.
         devilryrole: See
-            :meth:`devilry.apps.core.models.assignment.Assignment.students_must_be_anonymized_for_devilryrole`.
+            :meth:`devilry.apps.core.models.Assignment.students_must_be_anonymized_for_devilryrole`.
     """
     return {
         'assignment': assignment,
@@ -169,16 +169,16 @@ def devilry_multiple_candidates_short_displayname(assignment, candidates, devilr
     the candidates inline in a non-verbose manner.
 
     Typically used for showing all the candidates in an
-    :class:`devilry.apps.core.models.assignment_group.AssignmentGroup`.
+    :class:`devilry.apps.core.models_group.AssignmentGroup`.
 
     Handles anonymization based on ``assignment.anonymizationmode`` and ``devilryrole``.
 
     Args:
-        assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
+        assignment: A :class:`devilry.apps.core.models.Assignment` object.
             The ``assignment`` should be the assignment where the candidates belongs.
         candidates: An iterable of :class:`devilry.apps.core.models.candidates.Candidate` objects.
         devilryrole: See
-            :meth:`devilry.apps.core.models.assignment.Assignment.students_must_be_anonymized_for_devilryrole`.
+            :meth:`devilry.apps.core.models.Assignment.students_must_be_anonymized_for_devilryrole`.
     """
     return {
         'assignment': assignment,
@@ -194,16 +194,16 @@ def devilry_multiple_examiners_long_displayname(assignment, examiners, devilryro
     the examiners inline in a verbose manner.
 
     Typically used for showing all the examiners in an
-    :class:`devilry.apps.core.models.assignment_group.AssignmentGroup`.
+    :class:`devilry.apps.core.models_group.AssignmentGroup`.
 
     Handles anonymization based on ``assignment.anonymizationmode`` and ``devilryrole``.
 
     Args:
-        assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
+        assignment: A :class:`devilry.apps.core.models.Assignment` object.
             The ``assignment`` should be the assignment where the examiners belongs.
         examiners: An iterable of :class:`devilry.apps.core.models.examiners.Examiner` objects.
         devilryrole: See
-            :meth:`devilry.apps.core.models.assignment.Assignment.examiners_must_be_anonymized_for_devilryrole`.
+            :meth:`devilry.apps.core.models.Assignment.examiners_must_be_anonymized_for_devilryrole`.
     """
     return {
         'assignment': assignment,
@@ -219,16 +219,16 @@ def devilry_multiple_examiners_short_displayname(assignment, examiners, devilryr
     the examiners inline in a non-verbose manner.
 
     Typically used for showing all the examiners in an
-    :class:`devilry.apps.core.models.assignment_group.AssignmentGroup`.
+    :class:`devilry.apps.core.models_group.AssignmentGroup`.
 
     Handles anonymization based on ``assignment.anonymizationmode`` and ``devilryrole``.
 
     Args:
-        assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
+        assignment: A :class:`devilry.apps.core.models.Assignment` object.
             The ``assignment`` should be the assignment where the examiners belongs.
         examiners: An iterable of :class:`devilry.apps.core.models.examiners.Examiner` objects.
         devilryrole: See
-            :meth:`devilry.apps.core.models.assignment.Assignment.examiners_must_be_anonymized_for_devilryrole`.
+            :meth:`devilry.apps.core.models.Assignment.examiners_must_be_anonymized_for_devilryrole`.
     """
     return {
         'assignment': assignment,
