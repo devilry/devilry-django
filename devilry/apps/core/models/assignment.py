@@ -19,7 +19,7 @@ from period import Period
 from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
 from custom_db_fields import ShortNameField, LongNameField
-from . import deliverytypes
+from . import deliverytypes, Subject
 
 
 class AssignmentHasGroupsError(Exception):
@@ -31,6 +31,19 @@ class AssignmentHasGroupsError(Exception):
 
 
 class AssignmentQuerySet(models.query.QuerySet):
+    def filter_is_admin(self, user):
+        """
+        Filter the queryset to only include :class:`.Assignment` objects where the
+        given ``user`` is in a :class:`.devilry.devilry_account.models.SubjectPermissionGroup`
+        or in a :class:`.devilry.devilry_account.models.PeriodPermissionGroup`.
+
+        Args:
+            user: A User object.
+        """
+        periodids_where_is_admin_queryset = Period.objects\
+            .filter_is_admin(user=user)\
+            .values_list('id', flat=True)
+        return self.filter(parentnode_id__in=periodids_where_is_admin_queryset)
 
     def filter_user_is_examiner(self, user):
         """
@@ -114,51 +127,6 @@ class AssignmentQuerySet(models.query.QuerySet):
                 )
             )
         )
-
-
-class AssignmentManager(models.Manager):
-    """
-    Reflect custom QuerySet methods for custom QuerySet
-    more info: https://github.com/devilry/devilry-django/issues/491
-    """
-
-    def get_queryset(self):
-        return AssignmentQuerySet(self.model, using=self._db)
-
-    def filter_user_is_examiner(self, user):
-        return self.get_queryset().filter_user_is_examiner(user)
-
-    def filter_is_published(self):
-        return self.get_queryset().filter_is_published()
-
-    def filter_is_active(self):
-        return self.get_queryset().filter_is_active()
-
-    def filter_examiner_has_access(self, user):
-        """
-        Returns a queryset with all active assignments where the given ``user`` is examiner.
-
-        NOTE: This returns all assignments that the given ``user`` has examiner-rights for.
-        """
-        return self.get_queryset().filter_examiner_has_access(user)
-
-    def filter_student_has_access(self, user):
-        """
-        Returns a queryset with all active assignments where the given ``user`` is student.
-
-        NOTE: This returns all assignments that the given ``user`` has student-rights for.
-        """
-        return self.get_queryset().filter_student_has_access(user)
-
-    def filter_admin_has_access(self, user):
-        """
-        Returns a queryset with all active assignments where the given
-        ``user`` is admin, including assignment where the user is admin higher
-        up in the hierarchy.
-
-        NOTE: This returns all assignments that the given ``user`` has admin-rights for.
-        """
-        return self.get_queryset().filter_admin_has_access(user)
 
 
 class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
@@ -289,7 +257,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         Introduced in :devilryissue:`765`.
 
     """
-    objects = AssignmentManager()
+    objects = AssignmentQuerySet.as_manager()
 
     DEADLINEHANDLING_SOFT = 0
     DEADLINEHANDLING_HARD = 1
@@ -352,6 +320,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             ANONYMIZATIONMODE_SEMI_ANONYMOUS,
             pgettext_lazy('assignment anonymizationmode',
                           'SEMI ANONYMOUS. Students and examiners can not see information about each other. '
+                          'Comments added by course admins are not anonymized. '
                           'Semester admins do not have access to the assignment in the admin UI. Course admins '
                           'have the same permissions as for "OFF".')
         ),
