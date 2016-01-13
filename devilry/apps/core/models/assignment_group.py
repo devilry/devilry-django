@@ -381,7 +381,7 @@ class AssignmentGroupQuerySet(models.QuerySet):
             order_by=order_by
         )
 
-    def extra_annotate_with_relatedstudent_anonymous_id_of_first_candidate(self):
+    def extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate(self):
         # Not ment to be used directly - this is used by the
         # extra_order_by_relatedstudents_anonymous_id_of_first_candidate() method.
         return self.extra(
@@ -426,7 +426,7 @@ class AssignmentGroupQuerySet(models.QuerySet):
             order_by = ['-relatedstudents_anonymous_id_of_first_candidate']
         else:
             order_by = ['relatedstudents_anonymous_id_of_first_candidate']
-        return self.extra_annotate_with_relatedstudent_anonymous_id_of_first_candidate().extra(
+        return self.extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate().extra(
             order_by=order_by
         )
 

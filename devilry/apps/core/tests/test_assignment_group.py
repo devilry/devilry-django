@@ -1516,7 +1516,7 @@ class TestAssignmentGroupQuerySet(TestCase):
         self.assertEqual('buser1user1', groups[0].fullname_of_first_candidate)
         self.assertEqual('auser4user4', groups[1].fullname_of_first_candidate)
 
-    def test_extra_annotate_with_relatedstudent_anonymous_id_of_first_candidate_anonymousid(self):
+    def test_extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate_anonymousid(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('core.Candidate',
                    relatedstudent__automatic_anonymous_id='anonymousb',
@@ -1525,11 +1525,11 @@ class TestAssignmentGroupQuerySet(TestCase):
                    relatedstudent__automatic_anonymous_id='anonymousa',
                    assignment_group=testgroup)
         annotatedgroup = AssignmentGroup.objects\
-            .extra_annotate_with_relatedstudent_anonymous_id_of_first_candidate().first()
+            .extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate().first()
         self.assertEqual('anonymousa',
                          annotatedgroup.relatedstudents_anonymous_id_of_first_candidate)
 
-    def test_extra_annotate_with_relatedstudent_anonymous_id_of_first_candidate_candidateid(self):
+    def test_extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate_candidateid(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('core.Candidate',
                    relatedstudent__automatic_anonymous_id='anonymousb',
@@ -1540,11 +1540,11 @@ class TestAssignmentGroupQuerySet(TestCase):
                    relatedstudent__candidate_id='candidatey',
                    assignment_group=testgroup)
         annotatedgroup = AssignmentGroup.objects\
-            .extra_annotate_with_relatedstudent_anonymous_id_of_first_candidate().first()
+            .extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate().first()
         self.assertEqual('candidatexanonymousb',
                          annotatedgroup.relatedstudents_anonymous_id_of_first_candidate)
 
-    def test_extra_annotate_with_relatedstudent_anonymous_id_of_first_candidate_multiple_groups(self):
+    def test_extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
         mommy.make('core.Candidate',
                    relatedstudent__automatic_anonymous_id='anonymousb',
@@ -1560,7 +1560,7 @@ class TestAssignmentGroupQuerySet(TestCase):
                    relatedstudent__automatic_anonymous_id='anonymousy',
                    assignment_group=testgroup2)
         queryset = AssignmentGroup.objects\
-            .extra_annotate_with_relatedstudent_anonymous_id_of_first_candidate()
+            .extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate()
         self.assertEqual('anonymousa',
                          queryset.get(id=testgroup1.id).relatedstudents_anonymous_id_of_first_candidate)
         self.assertEqual('anonymousx',
