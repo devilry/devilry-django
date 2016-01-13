@@ -776,10 +776,20 @@ class PermissionGroup(models.Model):
     Each group has a :obj:`~.PermissionGroup.grouptype` which determines
     the type of objects it can be added to.
     """
+
+    #: The value for :obj:`~.PermissionGroup.grouptype` that identifies the group as
+    #: a subjectadmin permission group.
     GROUPTYPE_SUBJECTADMIN = 'subjectadmin'
+
+    #: The value for :obj:`~.PermissionGroup.grouptype` that identifies the group as
+    #: a periodadmin permission group.
     GROUPTYPE_PERIODADMIN = 'periodadmin'
+
+    #: The value for :obj:`~.PermissionGroup.grouptype` that identifies the group as
+    #: a departmentadmin permission group.
     GROUPTYPE_DEPARTMENTADMIN = 'departmentadmin'
 
+    #: Choices for :obj:`~.PermissionGroup.grouptype`.
     GROUPTYPE_CHOICES = (
         (GROUPTYPE_SUBJECTADMIN, _('Course administrator group')),
         (GROUPTYPE_PERIODADMIN, _('Semester administrator group')),
@@ -907,11 +917,16 @@ class PeriodPermissionGroupQuerySet(models.QuerySet):
             user: A User object.
 
         Returns:
-            str: If the users highest permission for the given period is superuser
-            or departmentadmin, return ``"departmentadmin"``. If the next highest permission
-            is subjectadmin, return ``"subjectadmin"``.
-            If the next highest permission is periodadmin, return ``"periodadmin"``.
-            Otherwise return ``None``.
+            str: One of the following looked up in the listed order:
+
+            - ``"departmentadmin"``: If the user is superuser or in a
+              :class:`.SubjectPermissionGroup` with :obj:`.PermissionGroup.GROUPTYPE_DEPARTMENTADMIN`
+              for the subject owning the period.
+            - ``"subjectadmin"``: If the user is in a
+              :class:`.SubjectPermissionGroup` with :obj:`.PermissionGroup.GROUPTYPE_SUBJECTADMIN`
+              for the subject owning the period.
+            - ``"periodadmin"``: If the user is in a :class:`.PeriodPermissionGroup` for the period.
+            - ``None``: If no of the conditions listed above is met.
         """
         devilryrole = SubjectPermissionGroup.objects.get_devilryrole_for_user_on_subject(
             user=user, subject=period.subject)
@@ -1031,10 +1046,15 @@ class SubjectPermissionGroupQuerySet(models.QuerySet):
             user: A User object.
 
         Returns:
-            str: If the users highest permission for the given subject is superuser
-            or departmentadmin, return ``"departmentadmin"``. Otherwise, if the user
-            is subjectadmin for the given subject, return ``"subjectadmin"``. Otherwise
-            return ``None``.
+            str: One of the following looked up in the listed order:
+
+            - ``"departmentadmin"``: If the user is superuser or in a
+              :class:`.SubjectPermissionGroup` with :obj:`.PermissionGroup.GROUPTYPE_DEPARTMENTADMIN`
+              for the subject owning the period.
+            - ``"subjectadmin"``: If the user is in a
+              :class:`.SubjectPermissionGroup` with :obj:`.PermissionGroup.GROUPTYPE_SUBJECTADMIN`
+              for the subject owning the period.
+            - ``None``: If no of the conditions listed above is met.
         """
         if user.is_superuser or self.user_is_departmentadmin_for_subject(user=user, subject=subject):
             return 'departmentadmin'
