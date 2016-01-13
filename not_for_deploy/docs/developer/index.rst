@@ -65,7 +65,6 @@ Apps
     devilry_qualifiesforexam
     devilry_gradingsystem
     devilry_search
-    devilry_theme
     devilry_account
     devilry_group
 
