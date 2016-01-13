@@ -776,14 +776,24 @@ class PermissionGroup(models.Model):
     Each group has a :obj:`~.PermissionGroup.grouptype` which determines
     the type of objects it can be added to.
     """
-    GROUPTYPE_SUBJECTADMIN = 'subjectadmin'
-    GROUPTYPE_PERIODADMIN = 'periodadmin'
+
+    #: The value for :obj:`~.PermissionGroup.grouptype` that identifies the group as
+    #: a departmentadmin permission group.
     GROUPTYPE_DEPARTMENTADMIN = 'departmentadmin'
 
+    #: The value for :obj:`~.PermissionGroup.grouptype` that identifies the group as
+    #: a subjectadmin permission group.
+    GROUPTYPE_SUBJECTADMIN = 'subjectadmin'
+
+    #: The value for :obj:`~.PermissionGroup.grouptype` that identifies the group as
+    #: a periodadmin permission group.
+    GROUPTYPE_PERIODADMIN = 'periodadmin'
+
+    #: Choices for :obj:`~.PermissionGroup.grouptype`.
     GROUPTYPE_CHOICES = (
+        (GROUPTYPE_DEPARTMENTADMIN, _('Department administrator group')),
         (GROUPTYPE_SUBJECTADMIN, _('Course administrator group')),
         (GROUPTYPE_PERIODADMIN, _('Semester administrator group')),
-        (GROUPTYPE_DEPARTMENTADMIN, _('Department administrator group')),
     )
 
     class Meta:
@@ -873,14 +883,56 @@ class PermissionGroup(models.Model):
 
 
 class PeriodPermissionGroupQuerySet(models.QuerySet):
+    """
+    QuerySet for :class:`.PeriodPermission`.
+    """
     def user_is_periodadmin_for_period(self, user, period):
+        """
+        Find out if the given ``user`` is ``"periodadmin"`` on the given ``period``.
+
+        You normally do not use this directly, but use :meth:`.get_devilryrole_for_user_on_period`.
+
+        Args:
+            period: A :class:`devilry.apps.core.models.Subject` object.
+            user: A User object.
+
+        Returns:
+            bool: ``True`` if the given user is periodadmin on the given period,
+            otherwise it returns ``False``.
+        """
         return PeriodPermissionGroup.objects \
             .filter(permissiongroup__users=user,
                     period=period)\
             .exists()
 
     def get_devilryrole_for_user_on_period(self, user, period):
-        if self.user_is_periodadmin_for_period(user=user, period=period):
+        """
+        Get the devilryrole for the given ``user`` on the given ``period``.
+
+        .. seealso:: If you need to find the same information for a subject,
+            use :meth:`.SubjectPermissionGroupQuerySet.get_devilryrole_for_user_on_subject`.
+
+        Args:
+            period: A :class:`devilry.apps.core.models.Subject` object.
+            user: A User object.
+
+        Returns:
+            str: One of the following looked up in the listed order:
+
+            - ``"departmentadmin"``: If the user is superuser or in a
+              :class:`.SubjectPermissionGroup` with :obj:`.PermissionGroup.GROUPTYPE_DEPARTMENTADMIN`
+              for the subject owning the period.
+            - ``"subjectadmin"``: If the user is in a
+              :class:`.SubjectPermissionGroup` with :obj:`.PermissionGroup.GROUPTYPE_SUBJECTADMIN`
+              for the subject owning the period.
+            - ``"periodadmin"``: If the user is in a :class:`.PeriodPermissionGroup` for the period.
+            - ``None``: If no of the conditions listed above is met.
+        """
+        devilryrole = SubjectPermissionGroup.objects.get_devilryrole_for_user_on_subject(
+            user=user, subject=period.subject)
+        if devilryrole:
+            return devilryrole
+        elif self.user_is_periodadmin_for_period(user=user, period=period):
             return 'periodadmin'
         else:
             return None
@@ -891,6 +943,7 @@ class PeriodPermissionGroup(models.Model):
     Defines the many-to-many relationship between
     :class:`devilry.apps.core.Period` and :class:`.PermissionGroup`.
     """
+    objects = PeriodPermissionGroupQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('Period permission group')
@@ -926,6 +979,10 @@ class PeriodPermissionGroup(models.Model):
 
 
 class SubjectPermissionGroupQuerySet(models.QuerySet):
+    """
+    QuerySet for :class:`.SubjectPermission`.
+    """
+
     def __user_is_admin_on_subjectpermissiongroup(self, user, subject, grouptype):
         return SubjectPermissionGroup.objects \
             .filter(permissiongroup__users=user,
@@ -934,6 +991,19 @@ class SubjectPermissionGroupQuerySet(models.QuerySet):
             .exists()
 
     def user_is_departmentadmin_for_subject(self, user, subject):
+        """
+        Find out if the given ``user`` is ``"departmentadmin"`` on the given ``subject``.
+
+        You normally do not use this directly, but use :meth:`.get_devilryrole_for_user_on_subject`.
+
+        Args:
+            subject: A :class:`devilry.apps.core.models.Subject` object.
+            user: A User object.
+
+        Returns:
+            bool: ``True`` if the given user is departmentadmin on the given subject,
+            otherwise it returns ``False``.
+        """
         return self.__user_is_admin_on_subjectpermissiongroup(
             user=user,
             subject=subject,
@@ -941,6 +1011,23 @@ class SubjectPermissionGroupQuerySet(models.QuerySet):
         )
 
     def user_is_subjectadmin_for_subject(self, user, subject):
+        """
+        Find out if the given ``user`` is ``"subjectadmin"`` on the given ``subject``.
+
+        This does not take higher permissions into consideration, so you
+        should check if the user is departmentadmin with :meth:`.user_is_departmentadmin_for_subject`
+        if you want to find the highest permission for the user.
+
+        You normally do not use this directly, but use :meth:`.get_devilryrole_for_user_on_subject`.
+
+        Args:
+            subject: A :class:`devilry.apps.core.models.Subject` object.
+            user: A User object.
+
+        Returns:
+            bool: ``True`` if the given user is subjectadmin on the given subject,
+            otherwise it returns ``False``.
+        """
         return self.__user_is_admin_on_subjectpermissiongroup(
             user=user,
             subject=subject,
@@ -948,6 +1035,27 @@ class SubjectPermissionGroupQuerySet(models.QuerySet):
         )
 
     def get_devilryrole_for_user_on_subject(self, user, subject):
+        """
+        Get the devilryrole for the given ``user`` on the given ``subject``.
+
+        .. seealso:: If you need to find the same information for a period,
+            use :meth:`.PeriodPermissionGroupQuerySet.get_devilryrole_for_user_on_period`.
+
+        Args:
+            subject: A :class:`devilry.apps.core.models.Subject` object.
+            user: A User object.
+
+        Returns:
+            str: One of the following looked up in the listed order:
+
+            - ``"departmentadmin"``: If the user is superuser or in a
+              :class:`.SubjectPermissionGroup` with :obj:`.PermissionGroup.GROUPTYPE_DEPARTMENTADMIN`
+              for the subject owning the period.
+            - ``"subjectadmin"``: If the user is in a
+              :class:`.SubjectPermissionGroup` with :obj:`.PermissionGroup.GROUPTYPE_SUBJECTADMIN`
+              for the subject owning the period.
+            - ``None``: If no of the conditions listed above is met.
+        """
         if user.is_superuser or self.user_is_departmentadmin_for_subject(user=user, subject=subject):
             return 'departmentadmin'
         elif self.user_is_subjectadmin_for_subject(user=user, subject=subject):

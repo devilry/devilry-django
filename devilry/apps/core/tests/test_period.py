@@ -115,6 +115,13 @@ class TestPeriodQuerySetPermission(TestCase):
         mommy.make('core.Period')
         self.assertFalse(Period.objects.filter_user_is_admin(user=testuser).exists())
 
+    def test_filter_user_is_admin_superuser(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        testperiod = mommy.make('core.Period')
+        self.assertEqual(
+            {testperiod},
+            set(Period.objects.filter_user_is_admin(user=testuser)))
+
     def test_filter_user_is_admin_ignore_periods_where_not_in_group(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testperiod = mommy.make('core.Period')
@@ -212,9 +219,6 @@ class TestPeriodOld(TestCase, TestHelper):
             obj.etag_update(e.etag)
         obj2 = Period.objects.get(id=obj.id)
         self.assertEquals(obj2.long_name, 'Updated')
-
-    def test_where_is_admin(self):
-        self.assertEquals(Period.where_is_admin(self.uioadmin).count(), 2)
 
     def test_clean(self):
         self.inf1100_looong.start_time = datetime(2010, 1, 1)

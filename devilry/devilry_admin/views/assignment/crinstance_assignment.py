@@ -33,7 +33,7 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
     rolefrontpage_appname = 'overview'
 
     def get_rolequeryset(self):
-        return Assignment.where_is_admin_or_superadmin(self.request.user)\
+        return Assignment.objects.filter_user_is_admin(user=self.request.user)\
             .select_related('parentnode', 'parentnode__parentnode')\
             .order_by('-publishing_time')
 
@@ -49,25 +49,27 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
     def matches_urlpath(cls, urlpath):
         return urlpath.startswith('/devilry_admin/assignment')
 
-    # def _get_devilryrole_for_requestuser(self):
-    #     assignment = self.request.cradmin_role
-    #     devilryrole = SubjectPermissionGroup.objects.get_devilryrole_for_user_on_subject(
-    #         user=self.request.user,
-    #         subject=assignment.subject
-    #     )
-    #     if devilryrole is None:
-    #         devilryrole = PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
-    #             user=self.request.user,
-    #             period=assignment.period
-    #         )
-    #
-    #     if devilryrole is None:
-    #         raise ValueError('Could not find a devilryrole for request.user. This must be a bug in '
-    #                          'get_rolequeryset().')
-    #
-    #     return devilryrole
-    #
-    # def get_devilryrole_for_requestuser(self):
-    #     if not hasattr(self, '_devilryrole_for_requestuser'):
-    #         self._devilryrole_for_requestuser = self._get_devilryrole_for_requestuser()
-    #     return self._devilryrole_for_requestuser
+    def __get_devilryrole_for_requestuser(self):
+        assignment = self.request.cradmin_role
+        devilryrole = PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
+            user=self.request.user,
+            period=assignment.period
+        )
+        if devilryrole is None:
+            raise ValueError('Could not find a devilryrole for request.user. This must be a bug in '
+                             'get_rolequeryset().')
+
+        return devilryrole
+
+    def get_devilryrole_for_requestuser(self):
+        """
+        Get the devilryrole for the requesting user on the current
+        assignment (request.cradmin_instance).
+
+        The return values is the same as for
+        :meth:`devilry.devilry_account.models.PeriodPermissionGroupQuerySet.get_devilryrole_for_user_on_period`,
+        exept that this method raises ValueError if it does not find a role.
+        """
+        if not hasattr(self, '_devilryrole_for_requestuser'):
+            self._devilryrole_for_requestuser = self.__get_devilryrole_for_requestuser()
+        return self._devilryrole_for_requestuser

@@ -42,12 +42,6 @@ class TestSubject(TestCase, TestHelper):
         obj2 = Subject.objects.get(id=obj.id)
         self.assertEquals(obj2.long_name, "Test")
 
-    def test_where_is_admin(self):
-        uioadmin = get_user_model().objects.get(shortname='uioadmin')
-        teacher1 = get_user_model().objects.get(shortname='teacher1')
-        self.assertEquals(Subject.where_is_admin(teacher1).count(), 1)
-        self.assertEquals(Subject.where_is_admin(uioadmin).count(), 2)
-
     def test_get_path(self):
         self.assertEquals(self.inf1100.get_path(), 'inf1100')
 
@@ -98,6 +92,13 @@ class TestSubjectQuerySetPermission(TestCase):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Subject')
         self.assertFalse(Subject.objects.filter_user_is_admin(user=testuser).exists())
+
+    def test_filter_user_is_admin_superuser(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        testsubject = mommy.make('core.Subject')
+        self.assertEqual(
+            {testsubject},
+            set(Subject.objects.filter_user_is_admin(user=testuser)))
 
     def test_filter_user_is_admin_ignore_subjects_where_not_in_group(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

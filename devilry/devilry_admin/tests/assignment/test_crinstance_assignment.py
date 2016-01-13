@@ -1,57 +1,108 @@
+from django.conf import settings
 from django.test import TestCase, RequestFactory
+from model_mommy import mommy
 
-from devilry.apps.core.models import Assignment
+from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_admin.views.assignment import crinstance_assignment
-from devilry.project.develop.testhelpers.corebuilder import UserBuilder, NodeBuilder
 
 
 class TestCrAdminInstance(TestCase):
-    def setUp(self):
-        self.testuser = UserBuilder('testuser').user
-        self.nodebuilder = NodeBuilder.quickadd_ducku()
-        self.subjectbuilder = self.nodebuilder.add_subject('duck1010')
-        self.periodbuilder = self.subjectbuilder.add_6month_active_period()
-        self.assignmentbuilder = self.periodbuilder.add_assignment('week1')
-
-    def test_error_if_not_admin(self):
+    def test_get_rolequeryset_not_admin(self):
+        mommy.make('core.Assignment')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
         request = RequestFactory().get('/test')
-        request.user = self.testuser
+        request.user = testuser
         instance = crinstance_assignment.CrAdminInstance(request=request)
-        with self.assertRaises(Assignment.DoesNotExist):
-            instance.get_role_from_rolequeryset(role=self.testuser)
+        self.assertEqual([], list(instance.get_rolequeryset()))
 
-    def test_admin_on_assignment(self):
-        self.assignmentbuilder.add_admins(self.testuser)
+    def test_get_rolequeryset_superuser(self):
+        testassignment = mommy.make('core.Assignment')
+        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
         request = RequestFactory().get('/test')
-        request.user = self.testuser
+        request.user = testuser
         instance = crinstance_assignment.CrAdminInstance(request=request)
-        self.assertEqual(
-            instance.get_role_from_rolequeryset(role=self.assignmentbuilder.assignment),
-            self.assignmentbuilder.assignment)
+        self.assertEqual([testassignment], list(instance.get_rolequeryset()))
 
-    def test_admin_on_period(self):
-        self.periodbuilder.add_admins(self.testuser)
+    def test_get_rolequeryset_admin_on_period(self):
+        testassignment = mommy.make('core.Assignment')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testassignment.period)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
         request = RequestFactory().get('/test')
-        request.user = self.testuser
+        request.user = testuser
         instance = crinstance_assignment.CrAdminInstance(request=request)
-        self.assertEqual(
-            instance.get_role_from_rolequeryset(role=self.assignmentbuilder.assignment),
-            self.assignmentbuilder.assignment)
+        self.assertEqual([testassignment], list(instance.get_rolequeryset()))
 
-    def test_admin_on_subject(self):
-        self.subjectbuilder.add_admins(self.testuser)
+    def test_get_rolequeryset_admin_on_subject(self):
+        testassignment = mommy.make('core.Assignment')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testassignment.subject)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
         request = RequestFactory().get('/test')
-        request.user = self.testuser
+        request.user = testuser
         instance = crinstance_assignment.CrAdminInstance(request=request)
-        self.assertEqual(
-            instance.get_role_from_rolequeryset(role=self.assignmentbuilder.assignment),
-            self.assignmentbuilder.assignment)
+        self.assertEqual([testassignment], list(instance.get_rolequeryset()))
 
-    def test_admin_on_node(self):
-        self.nodebuilder.add_admins(self.testuser)
+    def test_get_devilryrole_for_requestuser_not_admin(self):
+        testassignment = mommy.make('core.Assignment')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
         request = RequestFactory().get('/test')
-        request.user = self.testuser
+        request.user = testuser
+        request.cradmin_role = testassignment
         instance = crinstance_assignment.CrAdminInstance(request=request)
-        self.assertEqual(
-            instance.get_role_from_rolequeryset(role=self.assignmentbuilder.assignment),
-            self.assignmentbuilder.assignment)
+        with self.assertRaises(ValueError):
+            instance.get_devilryrole_for_requestuser()
+
+    def test_get_devilryrole_for_requestuser_superuser(self):
+        testassignment = mommy.make('core.Assignment')
+        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        request = RequestFactory().get('/test')
+        request.user = testuser
+        request.cradmin_role = testassignment
+        instance = crinstance_assignment.CrAdminInstance(request=request)
+        self.assertEqual('departmentadmin', instance.get_devilryrole_for_requestuser())
+
+    def test_get_devilryrole_for_requestuser_departmentadmin(self):
+        testassignment = mommy.make('core.Assignment')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            permissiongroup__grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN,
+                                            subject=testassignment.subject)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
+        request = RequestFactory().get('/test')
+        request.user = testuser
+        request.cradmin_role = testassignment
+        instance = crinstance_assignment.CrAdminInstance(request=request)
+        self.assertEqual('departmentadmin', instance.get_devilryrole_for_requestuser())
+
+    def test_get_devilryrole_for_requestuser_subjectadmin(self):
+        testassignment = mommy.make('core.Assignment')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                                            subject=testassignment.subject)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
+        request = RequestFactory().get('/test')
+        request.user = testuser
+        request.cradmin_role = testassignment
+        instance = crinstance_assignment.CrAdminInstance(request=request)
+        self.assertEqual('subjectadmin', instance.get_devilryrole_for_requestuser())
+
+    def test_get_devilryrole_for_requestuser_admin_periodadmin(self):
+        testassignment = mommy.make('core.Assignment')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testassignment.period)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
+        request = RequestFactory().get('/test')
+        request.user = testuser
+        request.cradmin_role = testassignment
+        instance = crinstance_assignment.CrAdminInstance(request=request)
+        self.assertEqual('periodadmin', instance.get_devilryrole_for_requestuser())

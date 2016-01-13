@@ -24,7 +24,8 @@ class AdminCrInstance(crinstance.BaseCrAdminInstance):
     rolefrontpage_appname = 'feedbackfeed'
 
     def get_rolequeryset(self):
-        return AssignmentGroup.where_is_admin_or_superadmin(self.request.user).select_related('parentnode')
+        return AssignmentGroup.objects.filter_user_is_admin(user=self.request.user)\
+            .select_related('parentnode')
 
     def get_titletext_for_role(self, role):
         """

@@ -753,6 +753,13 @@ class TestAssignmentQuerySetPermission(TestCase):
         mommy.make('core.Assignment')
         self.assertFalse(Assignment.objects.filter_user_is_admin(user=testuser).exists())
 
+    def test_filter_user_is_admin_superuser(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        testassignment = mommy.make('core.Assignment')
+        self.assertEqual(
+            {testassignment},
+            set(Assignment.objects.filter_user_is_admin(user=testuser)))
+
     def test_filter_user_is_admin_ignore_assignments_where_not_in_group(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make('core.Assignment')
