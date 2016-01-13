@@ -3,12 +3,14 @@
 <div class="col-sm-8">
     <div id="devilry_admin_assignment_published">
         {% if assignment.publishing_time > now %}
-            <h2>{% trans "Will be published in: " %} {{ assignment.publishing_time|naturaltime }}</h2>
+            <h2>{% trans "Will be published:" %} <span
+                    class="text-warning">{{ assignment.publishing_time|date:"SHORT_DATETIME_FORMAT" }}</span></h2>
             <p>
                 {% trans "Students and examiners will not see the assignment before it is published." %}
             </p>
         {% else %}
-            <h2>{% trans "Was published: " %} {{ assignment.publishing_time|naturaltime }}</h2>
+            <h2>{% trans "Was published: " %} <span
+                    class="text-success">{{ assignment.publishing_time|date:"SHORT_DATETIME_FORMAT" }}</span></h2>
             <p>
                 {% trans "This assignment is now avaibable for both students and examiners" %}
             </p>
