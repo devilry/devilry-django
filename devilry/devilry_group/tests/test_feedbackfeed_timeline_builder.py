@@ -6,6 +6,7 @@ from devilry.devilry_group.timeline_builder.feedbackfeed_timeline_builder import
 from devilry.devilry_group.views.feedbackfeed_admin import AdminFeedbackFeedView
 from devilry.devilry_group.views.feedbackfeed_examiner import ExaminerFeedbackFeedView
 from devilry.devilry_group.views.feedbackfeed_student import StudentFeedbackFeedView
+from devilry.devilry_group import models as group_models
 
 
 class TestFeedbackFeedTimelineBuilder(TestCase, object):
@@ -57,7 +58,6 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
 
     def test_admin_timelinebuilder_two_feedbacksets_last_deadline(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        print(assignment.first_deadline)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   is_last_in_group=None,
                                   group__parentnode=assignment)
@@ -68,15 +68,116 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         timeline = timeline_builder.build_timeline(feedbackset1.group, [feedbackset1, feedbackset2])
         self.assertEquals(timeline[0], feedbackset2.deadline_datetime)
 
-
-
     def test_get_feedbacksets_for_group(self):
         timelinebuilder = FeedbackFeedTimelineBuilder(None)
-        assignment_group = mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.FeedbackSet', group=assignment_group, is_last_in_group=None,)
-        mommy.make('devilry_group.FeedbackSet', group=assignment_group, is_last_in_group=None,)
-        mommy.make('devilry_group.FeedbackSet', group=assignment_group, is_last_in_group=None,)
-        mommy.make('devilry_group.FeedbackSet', group=assignment_group, is_last_in_group=None,)
-        mommy.make('devilry_group.FeedbackSet', group=assignment_group)
+        group = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet', group=group, is_last_in_group=None,)
+        mommy.make('devilry_group.FeedbackSet', group=group, is_last_in_group=None,)
+        mommy.make('devilry_group.FeedbackSet', group=group, is_last_in_group=None,)
+        mommy.make('devilry_group.FeedbackSet', group=group, is_last_in_group=None,)
+        mommy.make('devilry_group.FeedbackSet', group=group)
 
-        self.assertEquals(5, len(timelinebuilder.get_feedbacksets_for_group(assignment_group)))
+        self.assertEquals(5, len(timelinebuilder.get_feedbacksets_for_group(group)))
+
+    def test_student_add_comments_to_timeline_all_visible_to_everyone(self):
+        timeline_builder = FeedbackFeedTimelineBuilder(StudentFeedbackFeedView())
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group=group)
+        student = mommy.make('core.Candidate',
+                             assignment_group=group,
+                             relatedstudent=mommy.make('core.RelatedStudent'),)
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'),)
+        mommy.make('devilry_group.GroupComment',
+                   user=student.relatedstudent.user,
+                   user_role='student',
+                   feedback_set=feedbackset,
+                   published_datetime=timezone.now())
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=feedbackset,
+                   published_datetime=timezone.now())
+        mommy.make('devilry_group.GroupComment',
+                   user=student.relatedstudent.user,
+                   user_role='student',
+                   feedback_set=feedbackset,
+                   published_datetime=timezone.now())
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=feedbackset,
+                   published_datetime=timezone.now())
+        timeline = timeline_builder.add_comments_to_timeline(group, {})
+        self.assertEquals(4, len(timeline))
+
+    def test_student_add_comments_to_timeline_examiner_comments_not_visible(self):
+        timeline_builder = FeedbackFeedTimelineBuilder(StudentFeedbackFeedView())
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group=group)
+        student = mommy.make('core.Candidate',
+                             assignment_group=group,
+                             relatedstudent=mommy.make('core.RelatedStudent'),)
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        mommy.make('devilry_group.GroupComment',
+                   user=student.relatedstudent.user,
+                   user_role='student',
+                   feedback_set=feedbackset,
+                   published_datetime=timezone.now())
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                   feedback_set=feedbackset,
+                   published_datetime=timezone.now())
+        mommy.make('devilry_group.GroupComment',
+                   user=student.relatedstudent.user,
+                   user_role='student',
+                   feedback_set=feedbackset,
+                   published_datetime=timezone.now())
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=feedbackset,
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                   published_datetime=timezone.now())
+        timeline = timeline_builder.add_comments_to_timeline(group, {})
+        self.assertEquals(2, len(timeline))
+
+    def test_examiner_add_comments_to_timeline(self):
+        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerFeedbackFeedView())
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group=group)
+        student = mommy.make('core.Candidate',
+                             assignment_group=group,
+                             relatedstudent=mommy.make('core.RelatedStudent'),)
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        mommy.make('devilry_group.GroupComment',
+                   user=student.relatedstudent.user,
+                   user_role='student',
+                   feedback_set=feedbackset,
+                   published_datetime=timezone.now())
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                   feedback_set=feedbackset,
+                   published_datetime=timezone.now())
+        mommy.make('devilry_group.GroupComment',
+                   user=student.relatedstudent.user,
+                   user_role='student',
+                   feedback_set=feedbackset,
+                   published_datetime=timezone.now())
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=feedbackset,
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                   published_datetime=timezone.now())
+        timeline = timeline_builder.add_comments_to_timeline(group, {})
+        self.assertEquals(4, len(timeline))
