@@ -835,7 +835,7 @@ class PermissionGroup(models.Model):
 
     #: Is this group manageable by normal admins?
     #:
-    #:  Only superusers can edit the group
+    #: Only superusers can edit the group
     #: if this is ``False``. Use cases for setting this to ``False``:
     #:
     #: - Superusers want to create groups that they have full control over.

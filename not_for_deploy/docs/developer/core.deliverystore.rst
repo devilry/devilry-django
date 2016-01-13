@@ -4,6 +4,11 @@
 :mod:`devilry.apps.core.deliverystore` --- DeliveryStore
 ========================================================
 
+
+.. deprecated:: 3.0
+   This module is deprecated in 3.0 and will be removed
+   in a future release.
+
 .. currentmodule:: devilry.apps.core.deliverystore
 
 
@@ -38,17 +43,6 @@ To create your own DeliveryStore you have to implement
     .. literalinclude:: /../../devilry/apps/core/deliverystore.py
         :pyobject: FsDeliveryStore
 
-
-Testing your own DeliveryStore
-==============================
-
-We provide a mixing-class,
-:class:`devilry.apps.core.testhelpers.DeliveryStoreTestMixin`, for you to extend
-when writing unit-tests for your DeliveryStore. Here is how we test
-:class:`FsDeliveryStore`:
-
-    .. literalinclude:: /../../devilry/apps/core/tests/test_fsdeliverystore.py
-        :pyobject: TestFsDeliveryStore
 
 .. currentmodule:: devilry.apps.core.testhelpers
 

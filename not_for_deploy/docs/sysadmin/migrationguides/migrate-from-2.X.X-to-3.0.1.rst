@@ -15,7 +15,7 @@ BACKUP. YOUR. DATABASE. AND. FILES.
 Update devilry to 3.0.0
 #######################
 
-Update the devilry version to ``3.0.0`` as described in :doc:`update`, but **do not restart supervisord**.
+Update the devilry version to ``3.0.0`` as described in :doc:`../update`, but **do not restart supervisord**.
 
 
 Migrate the database for 3.0.0
@@ -30,7 +30,7 @@ Migrate the database for 3.0.0
 Update devilry to 3.0.1
 #######################
 
-Update the devilry version to ``3.0.1`` as described in :doc:`update`, but **do not restart supervisord**.
+Update the devilry version to ``3.0.1`` as described in :doc:`../update`, but **do not restart supervisord**.
 
 
 Migrate the database for 3.0.1
