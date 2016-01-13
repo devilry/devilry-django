@@ -31,6 +31,9 @@ class AssignmentHasGroupsError(Exception):
 
 
 class AssignmentQuerySet(models.query.QuerySet):
+    """
+    QuerySet for :class:`.Assignment`.
+    """
     def filter_user_is_admin(self, user):
         """
         Filter the queryset to only include :class:`.Assignment` objects where the
@@ -131,6 +134,7 @@ class AssignmentQuerySet(models.query.QuerySet):
 
 class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
     """
+    Data model for an assignment.
 
     .. attribute:: gradeform_setup_json
 
