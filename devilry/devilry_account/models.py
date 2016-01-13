@@ -778,6 +778,10 @@ class PermissionGroup(models.Model):
     """
 
     #: The value for :obj:`~.PermissionGroup.grouptype` that identifies the group as
+    #: a departmentadmin permission group.
+    GROUPTYPE_DEPARTMENTADMIN = 'departmentadmin'
+
+    #: The value for :obj:`~.PermissionGroup.grouptype` that identifies the group as
     #: a subjectadmin permission group.
     GROUPTYPE_SUBJECTADMIN = 'subjectadmin'
 
@@ -785,15 +789,11 @@ class PermissionGroup(models.Model):
     #: a periodadmin permission group.
     GROUPTYPE_PERIODADMIN = 'periodadmin'
 
-    #: The value for :obj:`~.PermissionGroup.grouptype` that identifies the group as
-    #: a departmentadmin permission group.
-    GROUPTYPE_DEPARTMENTADMIN = 'departmentadmin'
-
     #: Choices for :obj:`~.PermissionGroup.grouptype`.
     GROUPTYPE_CHOICES = (
+        (GROUPTYPE_DEPARTMENTADMIN, _('Department administrator group')),
         (GROUPTYPE_SUBJECTADMIN, _('Course administrator group')),
         (GROUPTYPE_PERIODADMIN, _('Semester administrator group')),
-        (GROUPTYPE_DEPARTMENTADMIN, _('Department administrator group')),
     )
 
     class Meta:
