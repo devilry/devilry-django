@@ -872,6 +872,20 @@ class PermissionGroup(models.Model):
                 raise ValidationError(_('Permission group type can not be changed.'))
 
 
+class PeriodPermissionGroupQuerySet(models.QuerySet):
+    def user_is_periodadmin_for_period(self, user, period):
+        return PeriodPermissionGroup.objects \
+            .filter(permissiongroup__users=user,
+                    period=period)\
+            .exists()
+
+    def get_devilryrole_for_user_on_period(self, user, period):
+        if self.user_is_periodadmin_for_period(user=user, period=period):
+            return 'periodadmin'
+        else:
+            return None
+
+
 class PeriodPermissionGroup(models.Model):
     """
     Defines the many-to-many relationship between
@@ -911,11 +925,43 @@ class PeriodPermissionGroup(models.Model):
                                         'is allowed for a semester.'))
 
 
+class SubjectPermissionGroupQuerySet(models.QuerySet):
+    def __user_is_admin_on_subjectpermissiongroup(self, user, subject, grouptype):
+        return SubjectPermissionGroup.objects \
+            .filter(permissiongroup__users=user,
+                    permissiongroup__grouptype=grouptype,
+                    subject=subject)\
+            .exists()
+
+    def user_is_departmentadmin_for_subject(self, user, subject):
+        return self.__user_is_admin_on_subjectpermissiongroup(
+            user=user,
+            subject=subject,
+            grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN
+        )
+
+    def user_is_subjectadmin_for_subject(self, user, subject):
+        return self.__user_is_admin_on_subjectpermissiongroup(
+            user=user,
+            subject=subject,
+            grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN
+        )
+
+    def get_devilryrole_for_user_on_subject(self, user, subject):
+        if user.is_superuser or self.user_is_departmentadmin_for_subject(user=user, subject=subject):
+            return 'departmentadmin'
+        elif self.user_is_subjectadmin_for_subject(user=user, subject=subject):
+            return 'subjectadmin'
+        else:
+            return None
+
+
 class SubjectPermissionGroup(models.Model):
     """
     Defines the many-to-many relationship between
     :class:`devilry.apps.core.Subject` and :class:`.PermissionGroup`.
     """
+    objects = SubjectPermissionGroupQuerySet.as_manager()
 
     class Meta:
         verbose_name = _('Subject permission group')

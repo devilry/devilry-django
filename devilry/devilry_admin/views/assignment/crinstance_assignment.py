@@ -1,6 +1,7 @@
 from django_cradmin import crinstance
 
 from devilry.apps.core.models import Assignment
+from devilry.devilry_account.models import SubjectPermissionGroup, PermissionGroup, PeriodPermissionGroup
 from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
 from devilry.devilry_admin.views.assignment import overview
 from devilry.devilry_admin.views.assignment.students import create_groups
@@ -47,3 +48,26 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
     @classmethod
     def matches_urlpath(cls, urlpath):
         return urlpath.startswith('/devilry_admin/assignment')
+
+    # def _get_devilryrole_for_requestuser(self):
+    #     assignment = self.request.cradmin_role
+    #     devilryrole = SubjectPermissionGroup.objects.get_devilryrole_for_user_on_subject(
+    #         user=self.request.user,
+    #         subject=assignment.subject
+    #     )
+    #     if devilryrole is None:
+    #         devilryrole = PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
+    #             user=self.request.user,
+    #             period=assignment.period
+    #         )
+    #
+    #     if devilryrole is None:
+    #         raise ValueError('Could not find a devilryrole for request.user. This must be a bug in '
+    #                          'get_rolequeryset().')
+    #
+    #     return devilryrole
+    #
+    # def get_devilryrole_for_requestuser(self):
+    #     if not hasattr(self, '_devilryrole_for_requestuser'):
+    #         self._devilryrole_for_requestuser = self._get_devilryrole_for_requestuser()
+    #     return self._devilryrole_for_requestuser
