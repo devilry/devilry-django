@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 
 from devilry.apps.core.models import Period
+from devilry.devilry_comment.models import Comment
 from devilry.utils import devilry_djangoaggregate_functions
 from .node import Node
 from .abstract_is_admin import AbstractIsAdmin
@@ -684,6 +685,72 @@ class AssignmentGroupQuerySet(models.QuerySet):
                     default=models.Value(None)
                 )
             )
+        )
+
+    def annotate_with_datetime_of_last_student_comment(self):
+        """
+        Annotate the queryset with ``datetime_of_last_student_comment``.
+        """
+        return self.annotate(
+            datetime_of_last_student_comment=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(
+                    models.When(
+                        feedbackset__is_last_in_group=True,
+                        feedbackset__grading_published_datetime__isnull=False,
+                        feedbackset__grading_points__gte=models.F('parentnode__passing_grade_min_points'),
+                        then=1
+                    ),
+                    default=models.Value(None)
+                )
+            )
+        )
+
+    def extra_annotate_datetime_of_last_student_comment(self):
+        """
+        Annotate with the datetiem of the last comment added by a student.
+
+        .. warning:: As the ``extra_`` prefix implies, this uses a
+            custom SQL query added using the ``extra()``-method of the QuerySet.
+            This query is fairly expensive.
+        """
+        return self.extra(
+            select={
+                "datetime_of_last_student_comment": """
+                    SELECT
+                        devilry_comment_comment.published_datetime
+                    FROM devilry_group_feedbackset
+                    LEFT OUTER JOIN devilry_group_groupcomment
+                        ON (devilry_group_groupcomment.feedback_set_id = devilry_group_feedbackset.id)
+                    INNER JOIN devilry_comment_comment
+                        ON (devilry_comment_comment.id = devilry_group_groupcomment.comment_ptr_id)
+                    WHERE
+                        devilry_group_feedbackset.group_id = core_assignmentgroup.id
+                        AND
+                        devilry_comment_comment.user_role = %s
+                    ORDER BY devilry_comment_comment.published_datetime DESC
+                    LIMIT 1
+                """
+            },
+            select_params=[Comment.USER_ROLE_STUDENT]
+        )
+
+    def extra_order_by_datetime_of_last_student_comment(self, descending=False):
+        """
+        Order by datetime of the last comment by a student in each group.
+
+        .. warning:: As the ``extra_`` prefix implies, this uses a
+            custom SQL query added using the ``extra()``-method of the QuerySet.
+            This query is fairly expensive.
+
+        Args:
+            descending: Set this to ``True`` to order descending.
+        """
+        if descending:
+            order_by = ['-datetime_of_last_student_comment']
+        else:
+            order_by = ['datetime_of_last_student_comment']
+        return self.extra_annotate_datetime_of_last_student_comment().extra(
+            order_by=order_by
         )
 
 
