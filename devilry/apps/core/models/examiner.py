@@ -26,7 +26,7 @@ class Examiner(models.Model, AbstractIsAdmin):
         db_table = 'core_assignmentgroup_examiners'
 
     #: Will be removed in 3.0 - see https://github.com/devilry/devilry-django/issues/812
-    user = models.ForeignKey(User)
+    old_reference_not_in_use_user = models.ForeignKey(User)
 
     #: The :class:`devilry.apps.core.models.assignment_group.AssignmentGroup`
     #: where this examiner belongs.
