@@ -21,7 +21,7 @@ class OrderByFullPath(listfilter.django.single.select.AbstractOrderBy):
                                           'long_name'))],
             }),
             ('name_descending', {
-                'label': ugettext_lazy('Name (reverse order)'),
+                'label': ugettext_lazy('Name (descending)'),
                 'order_by': [Lower(Concat('parentnode__parentnode__short_name',
                                           'parentnode__short_name',
                                           'long_name')).desc()],

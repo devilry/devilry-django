@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 
 from devilry.apps.core.models import Period
+from devilry.utils import devilry_djangoaggregate_functions
 from .node import Node
 from .abstract_is_admin import AbstractIsAdmin
 from .abstract_is_examiner import AbstractIsExaminer
@@ -338,6 +339,307 @@ class AssignmentGroupQuerySet(models.QuerySet):
                 models.Q(number_of_imageannotationcomments__gt=0) |
                 models.Q(number_of_groupcomments__gt=0)
             )
+
+    def extra_annotate_with_fullname_of_first_candidate(self):
+        # Not ment to be used directly - this is used by the
+        # extra_order_by_fullname_of_first_candidate() method.
+        return self.extra(
+            select={
+                "fullname_of_first_candidate": """
+                    SELECT
+                        LOWER(CONCAT(devilry_account_user.fullname, devilry_account_user.shortname))
+                    FROM core_candidate
+                    INNER JOIN core_relatedstudent
+                        ON (core_relatedstudent.id = core_candidate.relatedstudent_id)
+                    INNER JOIN devilry_account_user
+                        ON (devilry_account_user.id = core_relatedstudent.user_id)
+                    WHERE
+                        core_candidate.assignment_group_id = core_assignmentgroup.id
+                    ORDER BY LOWER(CONCAT(devilry_account_user.fullname, devilry_account_user.shortname)) ASC
+                    LIMIT 1
+                """
+            },
+        )
+
+    def extra_order_by_fullname_of_first_candidate(self, descending=False):
+        """
+        Order by fullname of the first candidate (ordered by fullname) in each group.
+
+        If the user does not have a fullname, we order by their shortname.
+        All ordering is performed in lowercase.
+
+        As the ``extra_`` prefix implies, this uses a fairly expensive custom SQL query
+        added using the ``extra()``-method of the QuerySet.
+
+        Args:
+            descending: Set this to ``True`` to order descending.
+        """
+        if descending:
+            order_by = ['-fullname_of_first_candidate']
+        else:
+            order_by = ['fullname_of_first_candidate']
+        return self.extra_annotate_with_fullname_of_first_candidate().extra(
+            order_by=order_by
+        )
+
+    def extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate(self):
+        # Not ment to be used directly - this is used by the
+        # extra_order_by_relatedstudents_anonymous_id_of_first_candidate() method.
+        return self.extra(
+            select={
+                "relatedstudents_anonymous_id_of_first_candidate": """
+                    SELECT
+                        LOWER(CONCAT(core_relatedstudent.candidate_id, core_relatedstudent.automatic_anonymous_id))
+                    FROM core_candidate
+                    INNER JOIN core_relatedstudent
+                        ON (core_relatedstudent.id = core_candidate.relatedstudent_id)
+                    WHERE
+                        core_candidate.assignment_group_id = core_assignmentgroup.id
+                    ORDER BY
+                        LOWER(CONCAT(core_relatedstudent.candidate_id, core_relatedstudent.automatic_anonymous_id))
+                        ASC
+                    LIMIT 1
+                """
+            },
+        )
+
+    def extra_order_by_relatedstudents_anonymous_id_of_first_candidate(self, descending=False):
+        """
+        Order by the anonymous ID of the RelatedStudent of the first candidate
+        (ordered by the anonymous ID of the RelatedStudent of each candidate) in each group.
+
+        Concatenates :obj:`devilry.apps.core.models.RelatedStudent.candidate_id` and
+        :obj:`devilry.apps.core.models.RelatedUserBase.automatic_anonymous_id` (in that order)
+        to generate the value to order on.
+
+        This is intended to be used for ordering AssignmentGroups when
+        the assignment is anonymous, and with :obj:`~devilry.apps.core.models.Assignment.uses_custom_candidate_ids`
+        set to ``False``. If :obj:`~devilry.apps.core.models.Assignment.uses_custom_candidate_ids`
+        is ``True``, use :meth:`.extra_order_by_candidates_candidate_id_of_first_candidate`.
+
+        As the ``extra_`` prefix implies, this uses a fairly expensive custom SQL query
+        added using the ``extra()``-method of the QuerySet.
+
+        Args:
+            descending: Set this to ``True`` to order descending.
+        """
+        if descending:
+            order_by = ['-relatedstudents_anonymous_id_of_first_candidate']
+        else:
+            order_by = ['relatedstudents_anonymous_id_of_first_candidate']
+        return self.extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate().extra(
+            order_by=order_by
+        )
+
+    def extra_annotate_with_candidates_candidate_id_of_first_candidate(self):
+        # Not ment to be used directly - this is used by the
+        # extra_order_by_candidates_candidate_id_of_first_candidate() method.
+        return self.extra(
+            select={
+                "candidates_candidate_id_of_first_candidate": """
+                    SELECT
+                        core_candidate.candidate_id
+                    FROM core_candidate
+                    WHERE
+                        core_candidate.assignment_group_id = core_assignmentgroup.id
+                    ORDER BY core_candidate.candidate_id ASC
+                    LIMIT 1
+                """
+            },
+        )
+
+    def extra_order_by_candidates_candidate_id_of_first_candidate(self, descending=False):
+        """
+        Order by the anonymous ID of the RelatedStudent of the first candidate
+        (ordered by the anonymous ID of the RelatedStudent of each candidate) in each group.
+
+        Concatenates :obj:`devilry.apps.core.models.RelatedStudent.candidate_id` and
+        :obj:`devilry.apps.core.models.RelatedUserBase.automatic_anonymous_id` (in that order)
+        to generate the value to order on.
+
+        This is intended to be used for ordering AssignmentGroups when
+        the assignment is anonymous, and with :obj:`~devilry.apps.core.models.Assignment.uses_custom_candidate_ids`
+        set to ``True``. If :obj:`~devilry.apps.core.models.Assignment.uses_custom_candidate_ids`
+        is ``False``, use :meth:`.extra_order_by_relatedstudents_anonymous_id_of_first_candidate`.
+
+        As the ``extra_`` prefix implies, this uses a fairly expensive custom SQL query
+        added using the ``extra()``-method of the QuerySet.
+
+        Args:
+            descending: Set this to ``True`` to order descending.
+        """
+        if descending:
+            order_by = ['-candidates_candidate_id_of_first_candidate']
+        else:
+            order_by = ['candidates_candidate_id_of_first_candidate']
+        return self.extra_annotate_with_candidates_candidate_id_of_first_candidate().extra(
+            order_by=order_by
+        )
+
+    def extra_annotate_with_shortname_of_first_candidate(self):
+        # Not ment to be used directly - this is used by the
+        # extra_order_by_shortname_of_first_candidate() method.
+        return self.extra(
+            select={
+                "shortname_of_first_candidate": """
+                    SELECT
+                        devilry_account_user.shortname
+                    FROM core_candidate
+                    INNER JOIN core_relatedstudent
+                        ON (core_relatedstudent.id = core_candidate.relatedstudent_id)
+                    INNER JOIN devilry_account_user
+                        ON (devilry_account_user.id = core_relatedstudent.user_id)
+                    WHERE
+                        core_candidate.assignment_group_id = core_assignmentgroup.id
+                    ORDER BY devilry_account_user.shortname ASC
+                    LIMIT 1
+                """
+            },
+        )
+
+    def extra_order_by_shortname_of_first_candidate(self, descending=False):
+        """
+        Order by shortname of the first candidate (ordered by shortname) in each group.
+
+        As the ``extra_`` prefix implies, this uses a fairly expensive custom SQL query
+        added using the ``extra()``-method of the QuerySet.
+
+        Args:
+            descending: Set this to ``True`` to order descending.
+        """
+        if descending:
+            order_by = ['-shortname_of_first_candidate']
+        else:
+            order_by = ['shortname_of_first_candidate']
+        return self.extra_annotate_with_shortname_of_first_candidate().extra(
+            order_by=order_by
+        )
+
+    def extra_annotate_with_lastname_of_first_candidate(self):
+        # Not ment to be used directly - this is used by the
+        # extra_order_by_lastname_of_first_candidate() method.
+        return self.extra(
+            select={
+                "lastname_of_first_candidate": """
+                    SELECT
+                        devilry_account_user.lastname
+                    FROM core_candidate
+                    INNER JOIN core_relatedstudent
+                        ON (core_relatedstudent.id = core_candidate.relatedstudent_id)
+                    INNER JOIN devilry_account_user
+                        ON (devilry_account_user.id = core_relatedstudent.user_id)
+                    WHERE
+                        core_candidate.assignment_group_id = core_assignmentgroup.id
+                    ORDER BY devilry_account_user.lastname ASC
+                    LIMIT 1
+                """
+            },
+        )
+
+    def extra_order_by_lastname_of_first_candidate(self, descending=False):
+        """
+        Order by lastname of the first candidate (ordered by lastname) in each group.
+
+        As the ``extra_`` prefix implies, this uses a fairly expensive custom SQL query
+        added using the ``extra()``-method of the QuerySet.
+
+        Args:
+            descending: Set this to ``True`` to order descending.
+        """
+        if descending:
+            order_by = ['-lastname_of_first_candidate']
+        else:
+            order_by = ['lastname_of_first_candidate']
+        return self.extra_annotate_with_lastname_of_first_candidate().extra(
+            order_by=order_by
+        )
+
+    def annotate_with_is_waiting_for_feedback(self):
+        """
+        Annotate the queryset with ``is_waiting_for_feedback``.
+
+        Groups waiting for feedback is all groups where
+        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
+        has expired, and the feedbackset does not have a
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
+        """
+        from devilry.devilry_group.models import FeedbackSet
+        now = timezone.now()
+        whenquery = models.Q(
+            feedbackset__is_last_in_group=True,
+            feedbackset__grading_published_datetime__isnull=True
+        ) & (
+            models.Q(
+                models.Q(feedbackset__deadline_datetime__lt=now),
+                ~models.Q(feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY)
+            ) |
+            models.Q(
+                feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                parentnode__first_deadline__lt=now
+            )
+        )
+        return self.annotate(
+            is_waiting_for_feedback=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(
+                    models.When(whenquery, then=1)
+                )
+            )
+        )
+
+    def annotate_with_is_waiting_for_deliveries(self):
+        """
+        Annotate the queryset with ``is_waiting_for_deliveries``.
+
+        Groups waiting for deliveries is all groups where
+        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
+        has not expired, and the feedbackset does not have a
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
+        """
+        from devilry.devilry_group.models import FeedbackSet
+        now = timezone.now()
+        whenquery = models.Q(
+            feedbackset__is_last_in_group=True,
+            feedbackset__grading_published_datetime__isnull=True
+        ) & (
+            models.Q(
+                models.Q(feedbackset__deadline_datetime__gte=now),
+                ~models.Q(feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY)
+            ) |
+            models.Q(
+                feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                parentnode__first_deadline__gte=now
+            )
+        )
+        return self.annotate(
+            is_waiting_for_deliveries=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(
+                    models.When(whenquery, then=1)
+                )
+            )
+        )
+
+    def annotate_with_is_corrected(self):
+        """
+        Annotate the queryset with ``is_corrected``.
+
+        Groups waiting for deliveries is all groups where
+        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
+        has not expired, and the feedbackset does not have a
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
+        """
+        from devilry.devilry_group.models import FeedbackSet
+        now = timezone.now()
+        whenquery = models.Q(
+            feedbackset__is_last_in_group=True,
+            feedbackset__grading_published_datetime__isnull=False
+        )
+        return self.annotate(
+            is_corrected=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(
+                    models.When(whenquery, then=1)
+                )
+            )
+        )
 
 
 class AssignmentGroupManager(models.Manager):

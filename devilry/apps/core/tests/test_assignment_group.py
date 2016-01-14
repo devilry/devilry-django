@@ -1258,7 +1258,6 @@ class TestAssignmentGroupStatus(TestCase):
 
 
 class TestAssignmentGroupManager(TestCase):
-
     def test_filter_waiting_for_deliveries(self):
         examiner1 = UserBuilder('examiner1').user
         week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
@@ -1390,6 +1389,671 @@ class TestAssignmentGroupManager(TestCase):
         qry = AssignmentGroup.objects.filter_examiner_has_access(examiner1)
         self.assertEquals(qry.count(), 1)
         self.assertEquals(qry[0], currentgroupbuilder.group)
+
+
+class TestAssignmentGroupQuerySetExtraOrdering(TestCase):
+    def test_extra_annotate_with_fullname_of_first_candidate_shortnameonly(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='userb',
+                   assignment_group=testgroup)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='usera',
+                   assignment_group=testgroup)
+        annotatedgroup = AssignmentGroup.objects.extra_annotate_with_fullname_of_first_candidate().first()
+        self.assertEqual('usera', annotatedgroup.fullname_of_first_candidate)
+
+    def test_extra_annotate_with_fullname_of_first_candidate_fullname(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='userb',
+                   relatedstudent__user__fullname='User B',
+                   assignment_group=testgroup)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='usera',
+                   relatedstudent__user__fullname='User A',
+                   assignment_group=testgroup)
+        annotatedgroup = AssignmentGroup.objects.extra_annotate_with_fullname_of_first_candidate().first()
+        self.assertEqual('user ausera', annotatedgroup.fullname_of_first_candidate)
+
+    def test_extra_annotate_with_fullname_of_first_candidate_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='userb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='usera',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='userx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='usery',
+                   assignment_group=testgroup2)
+        queryset = AssignmentGroup.objects.extra_annotate_with_fullname_of_first_candidate()
+        self.assertEqual('usera', queryset.get(id=testgroup1.id).fullname_of_first_candidate)
+        self.assertEqual('userx', queryset.get(id=testgroup2.id).fullname_of_first_candidate)
+
+    def test_extra_order_by_fullname_of_first_candidate_ascending_shortnames(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='userb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='usera',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='userx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='usery',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_fullname_of_first_candidate())
+        self.assertEqual(testgroup1, groups[0])
+        self.assertEqual(testgroup2, groups[1])
+
+    def test_extra_order_by_fullname_of_first_candidate_descending_shortnames(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='userb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='usera',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='userx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='usery',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_fullname_of_first_candidate(descending=True))
+        self.assertEqual(testgroup2, groups[0])
+        self.assertEqual(testgroup1, groups[1])
+
+    def test_extra_order_by_fullname_of_first_candidate_ascending_fullnames(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='user1',
+                   relatedstudent__user__fullname='BUser1',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='buser2',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='user3',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='user4',
+                   relatedstudent__user__fullname='AUser4',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_fullname_of_first_candidate())
+        self.assertEqual(testgroup2, groups[0])
+        self.assertEqual(testgroup1, groups[1])
+
+    def test_extra_order_by_fullname_of_first_candidate_descending_fullnames(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='user1',
+                   relatedstudent__user__fullname='BUser1',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='buser2',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='user3',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='user4',
+                   relatedstudent__user__fullname='AUser4',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_fullname_of_first_candidate(descending=True))
+        self.assertEqual(testgroup1, groups[0])
+        self.assertEqual(testgroup2, groups[1])
+
+    def test_extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate_anonymousid(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousb',
+                   assignment_group=testgroup)
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousa',
+                   assignment_group=testgroup)
+        annotatedgroup = AssignmentGroup.objects\
+            .extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate().first()
+        self.assertEqual('anonymousa',
+                         annotatedgroup.relatedstudents_anonymous_id_of_first_candidate)
+
+    def test_extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate_candidateid(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousb',
+                   relatedstudent__candidate_id='candidatex',
+                   assignment_group=testgroup)
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousa',
+                   relatedstudent__candidate_id='candidatey',
+                   assignment_group=testgroup)
+        annotatedgroup = AssignmentGroup.objects\
+            .extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate().first()
+        self.assertEqual('candidatexanonymousb',
+                         annotatedgroup.relatedstudents_anonymous_id_of_first_candidate)
+
+    def test_extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousa',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousy',
+                   assignment_group=testgroup2)
+        queryset = AssignmentGroup.objects\
+            .extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate()
+        self.assertEqual('anonymousa',
+                         queryset.get(id=testgroup1.id).relatedstudents_anonymous_id_of_first_candidate)
+        self.assertEqual('anonymousx',
+                         queryset.get(id=testgroup2.id).relatedstudents_anonymous_id_of_first_candidate)
+
+    def test_extra_order_by_relatedstudents_anonymous_id_of_first_candidate_ascending_anonymousids(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousa',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousy',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_relatedstudents_anonymous_id_of_first_candidate())
+        self.assertEqual(testgroup1, groups[0])
+        self.assertEqual(testgroup2, groups[1])
+
+    def test_extra_order_by_relatedstudents_anonymous_id_of_first_candidate_descending_anonymousids(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousa',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__automatic_anonymous_id='anonymousy',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_relatedstudents_anonymous_id_of_first_candidate(
+            descending=True))
+        self.assertEqual(testgroup2, groups[0])
+        self.assertEqual(testgroup1, groups[1])
+
+    def test_extra_order_by_relatedstudents_anonymous_id_of_first_candidate_ascending_candidateids(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__candidate_id='a',
+                   relatedstudent__automatic_anonymous_id='anonymousb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__candidate_id='b',
+                   relatedstudent__automatic_anonymous_id='anonymousa',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__candidate_id='c',
+                   relatedstudent__automatic_anonymous_id='anonymousx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__candidate_id='d',
+                   relatedstudent__automatic_anonymous_id='anonymousy',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_relatedstudents_anonymous_id_of_first_candidate())
+        self.assertEqual(testgroup1, groups[0])
+        self.assertEqual(testgroup2, groups[1])
+
+    def test_extra_order_by_relatedstudents_anonymous_id_of_first_candidate_descending_candidateids(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__candidate_id='a',
+                   relatedstudent__automatic_anonymous_id='anonymousb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__candidate_id='b',
+                   relatedstudent__automatic_anonymous_id='anonymousa',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__candidate_id='c',
+                   relatedstudent__automatic_anonymous_id='anonymousx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__candidate_id='d',
+                   relatedstudent__automatic_anonymous_id='anonymousy',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_relatedstudents_anonymous_id_of_first_candidate(
+            descending=True))
+        self.assertEqual(testgroup2, groups[0])
+        self.assertEqual(testgroup1, groups[1])
+
+    def test_extra_annotate_with_candidates_candidate_id_of_first_candidate(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   candidate_id='candidatex',
+                   assignment_group=testgroup)
+        mommy.make('core.Candidate',
+                   candidate_id='candidatey',
+                   assignment_group=testgroup)
+        annotatedgroup = AssignmentGroup.objects\
+            .extra_annotate_with_candidates_candidate_id_of_first_candidate().first()
+        self.assertEqual('candidatex',
+                         annotatedgroup.candidates_candidate_id_of_first_candidate)
+
+    def test_extra_annotate_with_candidates_candidate_id_of_first_candidate_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   candidate_id='candidateb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   candidate_id='candidatea',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   candidate_id='candidatex',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   candidate_id='candidatey',
+                   assignment_group=testgroup2)
+        queryset = AssignmentGroup.objects\
+            .extra_annotate_with_candidates_candidate_id_of_first_candidate()
+        self.assertEqual('candidatea',
+                         queryset.get(id=testgroup1.id).candidates_candidate_id_of_first_candidate)
+        self.assertEqual('candidatex',
+                         queryset.get(id=testgroup2.id).candidates_candidate_id_of_first_candidate)
+
+    def test_extra_order_by_candidates_candidate_id_of_first_candidate_ascending(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   candidate_id='a',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   candidate_id='b',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   candidate_id='c',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   candidate_id='d',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_candidates_candidate_id_of_first_candidate())
+        self.assertEqual(testgroup1, groups[0])
+        self.assertEqual(testgroup2, groups[1])
+
+    def test_extra_order_by_candidates_candidate_id_of_first_candidate_descending(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   candidate_id='a',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   candidate_id='b',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   candidate_id='c',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   candidate_id='d',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_candidates_candidate_id_of_first_candidate(
+            descending=True))
+        self.assertEqual(testgroup2, groups[0])
+        self.assertEqual(testgroup1, groups[1])
+
+    def test_extra_annotate_with_shortname_of_first_candidate(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='userb',
+                   assignment_group=testgroup)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='usera',
+                   assignment_group=testgroup)
+        annotatedgroup = AssignmentGroup.objects.extra_annotate_with_shortname_of_first_candidate().first()
+        self.assertEqual('usera', annotatedgroup.shortname_of_first_candidate)
+
+    def test_extra_annotate_with_shortname_of_first_candidate_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='userb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='usera',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='userx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='usery',
+                   assignment_group=testgroup2)
+        queryset = AssignmentGroup.objects.extra_annotate_with_shortname_of_first_candidate()
+        self.assertEqual('usera', queryset.get(id=testgroup1.id).shortname_of_first_candidate)
+        self.assertEqual('userx', queryset.get(id=testgroup2.id).shortname_of_first_candidate)
+
+    def test_extra_order_by_shortname_of_first_candidate_ascending(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='userb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='usera',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='userx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='usery',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_shortname_of_first_candidate())
+        self.assertEqual(testgroup1, groups[0])
+        self.assertEqual(testgroup2, groups[1])
+
+    def test_extra_order_by_shortname_of_first_candidate_descending(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='userb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='usera',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='userx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__shortname='usery',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_shortname_of_first_candidate(descending=True))
+        self.assertEqual(testgroup2, groups[0])
+        self.assertEqual(testgroup1, groups[1])
+
+    def test_extra_annotate_with_lastname_of_first_candidate(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='userb',
+                   assignment_group=testgroup)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='usera',
+                   assignment_group=testgroup)
+        annotatedgroup = AssignmentGroup.objects.extra_annotate_with_lastname_of_first_candidate().first()
+        self.assertEqual('usera', annotatedgroup.lastname_of_first_candidate)
+
+    def test_extra_annotate_with_lastname_of_first_candidate_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='userb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='usera',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='userx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='usery',
+                   assignment_group=testgroup2)
+        queryset = AssignmentGroup.objects.extra_annotate_with_lastname_of_first_candidate()
+        self.assertEqual('usera', queryset.get(id=testgroup1.id).lastname_of_first_candidate)
+        self.assertEqual('userx', queryset.get(id=testgroup2.id).lastname_of_first_candidate)
+
+    def test_extra_order_by_lastname_of_first_candidate_ascending(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='userb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='usera',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='userx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='usery',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_lastname_of_first_candidate())
+        self.assertEqual(testgroup1, groups[0])
+        self.assertEqual(testgroup2, groups[1])
+
+    def test_extra_order_by_lastname_of_first_candidate_descending(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='userb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='usera',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='userx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='usery',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_lastname_of_first_candidate(descending=True))
+        self.assertEqual(testgroup2, groups[0])
+        self.assertEqual(testgroup1, groups[1])
+
+
+class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
+    def test_annotate_with_is_waiting_for_feedback_false_feedback_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now() - timedelta(days=1),
+                   deadline_datetime=timezone.now() - timedelta(days=2),
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
+        self.assertFalse(queryset.first().is_waiting_for_feedback)
+
+    def test_annotate_with_is_waiting_for_feedback_false_deadline_not_expired(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() + timedelta(days=2),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
+        self.assertFalse(queryset.first().is_waiting_for_feedback)
+
+    def test_annotate_with_is_waiting_for_feedback_false_deadline_not_expired_first_try(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() + timedelta(days=2))
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
+        self.assertFalse(queryset.first().is_waiting_for_feedback)
+
+    def test_annotate_with_is_waiting_for_feedback_true_deadline_expired(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() - timedelta(days=1),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
+        self.assertTrue(queryset.first().is_waiting_for_feedback)
+
+    def test_annotate_with_is_waiting_for_feedback_true_deadline_expired_first_try(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() - timedelta(days=2))
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
+        self.assertTrue(queryset.first().is_waiting_for_feedback)
+
+    def test_annotate_with_is_waiting_for_feedback_true_multiple_feedbacksets(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() - timedelta(days=2))
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now() - timedelta(days=1),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   is_last_in_group=None)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() - timedelta(days=1),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
+        self.assertTrue(queryset.first().is_waiting_for_feedback)
+
+
+class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForDeliveries(TestCase):
+    def test_annotate_with_is_waiting_for_deliveries_false_feedback_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now() - timedelta(days=1),
+                   deadline_datetime=timezone.now() - timedelta(days=2),
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_deliveries()
+        self.assertFalse(queryset.first().is_waiting_for_deliveries)
+
+    def test_annotate_with_is_waiting_for_deliveries_false_deadline_expired(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() - timedelta(days=2),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_deliveries()
+        self.assertFalse(queryset.first().is_waiting_for_deliveries)
+
+    def test_annotate_with_is_waiting_for_deliveries_false_deadline_expired_first_try(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() - timedelta(days=2))
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_deliveries()
+        self.assertFalse(queryset.first().is_waiting_for_deliveries)
+
+    def test_annotate_with_is_waiting_for_deliveries_true_deadline_not_expired(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() + timedelta(days=1),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_deliveries()
+        self.assertTrue(queryset.first().is_waiting_for_deliveries)
+
+    def test_annotate_with_is_waiting_for_deliveries_true_deadline_not_expired_first_try(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() + timedelta(days=2))
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_deliveries()
+        self.assertTrue(queryset.first().is_waiting_for_deliveries)
+
+    def test_annotate_with_is_waiting_for_deliveries_true_multiple_feedbacksets(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() - timedelta(days=2))
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now() - timedelta(days=1),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   is_last_in_group=None)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() + timedelta(days=1),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_deliveries()
+        self.assertTrue(queryset.first().is_waiting_for_deliveries)
+
+
+class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
+    def test_annotate_with_is_corrected_false_feedback_not_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_corrected()
+        self.assertFalse(queryset.first().is_corrected)
+
+    def test_annotate_with_is_corrected_true_feedback_is_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now(),
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_corrected()
+        self.assertTrue(queryset.first().is_corrected)
+
+    def test_annotate_with_is_corrected_false_multiple_feedbacksets_last_is_not_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now() - timedelta(days=3),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   is_last_in_group=None)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_corrected()
+        self.assertFalse(queryset.first().is_corrected)
+
+    def test_annotate_with_is_corrected_true_multiple_feedbacksets_last_is_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now() - timedelta(days=2),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   is_last_in_group=None)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now() - timedelta(days=1),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_corrected()
+        self.assertTrue(queryset.first().is_corrected)
 
 
 class TestAssignmentGroupQuerySetPermission(TestCase):

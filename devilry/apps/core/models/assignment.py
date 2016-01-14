@@ -97,12 +97,6 @@ class AssignmentQuerySet(models.QuerySet):
         """
         return self.filter_is_published().filter_user_is_candidate(user)
 
-    def filter_admin_has_access(self, user):
-        if user.is_superuser:
-            return self.all()
-        else:
-            return self.filter(Assignment.q_is_admin(user)).distinct()
-
     def annotate_with_waiting_for_feedback_count(self):
         """
         Annotate the queryset with ``waiting_for_feedback_count`` - the number
@@ -119,7 +113,10 @@ class AssignmentQuerySet(models.QuerySet):
             assignmentgroups__feedbackset__is_last_in_group=True,
             assignmentgroups__feedbackset__grading_published_datetime__isnull=True
         ) & (
-            models.Q(assignmentgroups__feedbackset__deadline_datetime__lt=now) |
+            models.Q(
+                models.Q(assignmentgroups__feedbackset__deadline_datetime__lt=now),
+                ~models.Q(assignmentgroups__feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY)
+            ) |
             models.Q(
                 assignmentgroups__feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
                 first_deadline__lt=now

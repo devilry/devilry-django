@@ -11,6 +11,7 @@ from django_cradmin.viewhelpers import listfilter
 
 from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Candidate
+from devilry.devilry_cradmin import devilry_listfilter
 
 
 class GroupItemValue(listbuilder.itemvalue.TitleDescription):
@@ -65,19 +66,26 @@ class GroupListView(listbuilderview.FilterListMixin,
             'filter',
             kwargs={'filters_string': filters_string})
 
+    def __add_filterlist_items_anonymous_uses_custom_candidate_ids(self, filterlist):
+        filterlist.append(devilry_listfilter.assignmentgroup.SearchAnonymousUsesCustomCandidateIds())
+        filterlist.append(devilry_listfilter.assignmentgroup.OrderByAnonymousUsesCustomCandidateIds())
+
+    def __add_filterlist_items_anonymous(self, filterlist):
+        filterlist.append(devilry_listfilter.assignmentgroup.SearchAnonymous())
+        filterlist.append(devilry_listfilter.assignmentgroup.OrderByAnonymous())
+
+    def __add_filterlist_items_not_anonymous(self, filterlist):
+        filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())
+        filterlist.append(devilry_listfilter.assignmentgroup.OrderByNotAnonymous())
+
     def add_filterlist_items(self, filterlist):
-        filterlist.append(listfilter.django.single.textinput.Search(
-            slug='search',
-            label=ugettext_lazy('Search'),
-            label_is_screenreader_only=True,
-            modelfields=[
-                'candidates__relatedstudent__user__fullname',
-                'candidates__relatedstudent__user__shortname',
-            ]))
-        # filterlist.append(devilry_listfilter.assignment.OrderByFullPath(
-        #     slug='orderby',
-        #     label=ugettext_lazy('Order by')
-        # ))
+        if self.assignment.is_anonymous:
+            if self.assignment.uses_custom_candidate_ids:
+                self.__add_filterlist_items_anonymous_uses_custom_candidate_ids(filterlist=filterlist)
+            else:
+                self.__add_filterlist_items_anonymous(filterlist=filterlist)
+        else:
+            self.__add_filterlist_items_not_anonymous(filterlist=filterlist)
 
     def get_unfiltered_queryset_for_role(self, role):
         assignment = role
@@ -89,10 +97,11 @@ class GroupListView(listbuilderview.FilterListMixin,
         return coremodels.AssignmentGroup.objects\
             .filter_examiner_has_access(user=self.request.user)\
             .filter(parentnode=assignment)\
+            .select_related('parentnode')\
             .prefetch_related(
                 models.Prefetch('candidates',
-                                queryset=candidatequeryset))
-            #.annotate_with_waiting_for_feedback_count()
+                                queryset=candidatequeryset))\
+            .distinct()
 
 
 class App(crapp.App):

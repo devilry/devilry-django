@@ -39,7 +39,7 @@ class AssignmentAssemblyView(ListView):
         return super(AssignmentAssemblyView, self).dispatch(request, *args, **kwargs)
 
     def _get_assignment_queryset(self):
-        return Assignment.objects.filter_admin_has_access(self.request.user)\
+        return Assignment.objects.filter_user_is_admin(self.request.user)\
             .select_related(
                 'parentnode',  # Period
                 'parentnode__parentnode')  # Subject
