@@ -1,13 +1,11 @@
-from django.core.files.base import ContentFile
-from django.utils import timezone
 from django.test import TestCase
+from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.devilry_group import models
 from devilry.devilry_group.models import GroupComment
-from devilry.devilry_group.tests import test_feedbackfeed_common
+from devilry.devilry_group.tests.feedbackfeed import test_feedbackfeed_common
 from devilry.devilry_group.views import feedbackfeed_examiner
-from devilry.devilry_comment import models as comment_models
 
 
 class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
