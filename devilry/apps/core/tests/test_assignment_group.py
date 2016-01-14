@@ -1934,6 +1934,78 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
         self.assertTrue(queryset.first().is_waiting_for_feedback)
 
 
+class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForDeliveries(TestCase):
+    def test_annotate_with_is_waiting_for_deliveries_false_feedback_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now() - timedelta(days=1),
+                   deadline_datetime=timezone.now() - timedelta(days=2),
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_deliveries()
+        self.assertFalse(queryset.first().is_waiting_for_deliveries)
+
+    def test_annotate_with_is_waiting_for_deliveries_false_deadline_expired(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() - timedelta(days=2),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_deliveries()
+        self.assertFalse(queryset.first().is_waiting_for_deliveries)
+
+    def test_annotate_with_is_waiting_for_deliveries_false_deadline_expired_first_try(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() - timedelta(days=2))
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_deliveries()
+        self.assertFalse(queryset.first().is_waiting_for_deliveries)
+
+    def test_annotate_with_is_waiting_for_deliveries_true_deadline_not_expired(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() + timedelta(days=1),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_deliveries()
+        self.assertTrue(queryset.first().is_waiting_for_deliveries)
+
+    def test_annotate_with_is_waiting_for_deliveries_true_deadline_not_expired_first_try(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() + timedelta(days=2))
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_deliveries()
+        self.assertTrue(queryset.first().is_waiting_for_deliveries)
+
+    def test_annotate_with_is_waiting_for_deliveries_true_multiple_feedbacksets(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() - timedelta(days=2))
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now() - timedelta(days=1),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   is_last_in_group=None)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() + timedelta(days=1),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_deliveries()
+        self.assertTrue(queryset.first().is_waiting_for_deliveries)
+
+
 class TestAssignmentGroupQuerySetPermission(TestCase):
     def test_filter_user_is_admin_is_not_admin_on_anything(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
