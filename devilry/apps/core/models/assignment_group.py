@@ -559,7 +559,7 @@ class AssignmentGroupQuerySet(models.QuerySet):
         Annotate the queryset with ``is_waiting_for_feedback``.
 
         Groups waiting for feedback is all groups where
-        The deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
+        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
         has expired, and the feedbackset does not have a
         :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
         """
@@ -569,7 +569,10 @@ class AssignmentGroupQuerySet(models.QuerySet):
             feedbackset__is_last_in_group=True,
             feedbackset__grading_published_datetime__isnull=True
         ) & (
-            models.Q(feedbackset__deadline_datetime__lt=now) |
+            models.Q(
+                models.Q(feedbackset__deadline_datetime__lt=now),
+                ~models.Q(feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY)
+            ) |
             models.Q(
                 feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
                 parentnode__first_deadline__lt=now
@@ -577,6 +580,38 @@ class AssignmentGroupQuerySet(models.QuerySet):
         )
         return self.annotate(
             is_waiting_for_feedback=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(
+                    models.When(whenquery, then=1)
+                )
+            )
+        )
+
+    def annotate_with_is_waiting_for_deliveries(self):
+        """
+        Annotate the queryset with ``is_waiting_for_deliveries``.
+
+        Groups waiting for deliveries is all groups where
+        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
+        has not expired, and the feedbackset does not have a
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
+        """
+        from devilry.devilry_group.models import FeedbackSet
+        now = timezone.now()
+        whenquery = models.Q(
+            feedbackset__is_last_in_group=True,
+            feedbackset__grading_published_datetime__isnull=True
+        ) & (
+            models.Q(
+                models.Q(feedbackset__deadline_datetime__gte=now),
+                ~models.Q(feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY)
+            ) |
+            models.Q(
+                feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                parentnode__first_deadline__gte=now
+            )
+        )
+        return self.annotate(
+            is_waiting_for_deliveries=devilry_djangoaggregate_functions.BooleanCount(
                 models.Case(
                     models.When(whenquery, then=1)
                 )

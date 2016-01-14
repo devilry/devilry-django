@@ -1258,7 +1258,6 @@ class TestAssignmentGroupStatus(TestCase):
 
 
 class TestAssignmentGroupManager(TestCase):
-
     def test_filter_waiting_for_deliveries(self):
         examiner1 = UserBuilder('examiner1').user
         week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
@@ -1862,7 +1861,7 @@ class TestAssignmentGroupQuerySet(TestCase):
         self.assertEqual(testgroup2, groups[0])
         self.assertEqual(testgroup1, groups[1])
 
-    def test_annotate_with_is_waiting_for_feedback_false(self):
+    def test_annotate_with_is_waiting_for_feedback_false_feedback_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
@@ -1872,27 +1871,62 @@ class TestAssignmentGroupQuerySet(TestCase):
         queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
         self.assertFalse(queryset.first().is_waiting_for_feedback)
 
-    def test_annotate_with_is_waiting_for_feedback_true(self):
+    def test_annotate_with_is_waiting_for_feedback_false_deadline_not_expired(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() + timedelta(days=2),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
+        self.assertFalse(queryset.first().is_waiting_for_feedback)
+
+    def test_annotate_with_is_waiting_for_feedback_false_deadline_not_expired_first_try(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() + timedelta(days=2))
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
+        self.assertFalse(queryset.first().is_waiting_for_feedback)
+
+    def test_annotate_with_is_waiting_for_feedback_true_deadline_expired(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    grading_published_datetime=None,
                    deadline_datetime=timezone.now() - timedelta(days=1),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
+        self.assertTrue(queryset.first().is_waiting_for_feedback)
+
+    def test_annotate_with_is_waiting_for_feedback_true_deadline_expired_first_try(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() - timedelta(days=2))
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
                    is_last_in_group=True)
         queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
         self.assertTrue(queryset.first().is_waiting_for_feedback)
 
     def test_annotate_with_is_waiting_for_feedback_true_multiple_feedbacksets(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() - timedelta(days=2))
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    grading_published_datetime=timezone.now() - timedelta(days=1),
-                   deadline_datetime=timezone.now() - timedelta(days=2),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
                    is_last_in_group=None)
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    grading_published_datetime=None,
                    deadline_datetime=timezone.now() - timedelta(days=1),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
                    is_last_in_group=True)
         queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
         self.assertTrue(queryset.first().is_waiting_for_feedback)
