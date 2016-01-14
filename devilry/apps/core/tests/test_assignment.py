@@ -157,22 +157,6 @@ class TestAssignment(TestCase):
         self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student1').exists())
         self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student2').exists())
 
-    def test_copy_groups_from_another_assignment_examiners(self):
-        sourceassignment = mommy.make('core.Assignment')
-        mommy.make('core.Examiner',
-                   assignmentgroup__parentnode=sourceassignment,
-                   user__shortname='examiner1')
-        mommy.make('core.Examiner',
-                   assignmentgroup__parentnode=sourceassignment,
-                   user__shortname='examiner2')
-
-        targetassignment = mommy.make('core.Assignment')
-        targetassignment.copy_groups_from_another_assignment(sourceassignment)
-        self.assertEqual(targetassignment.assignmentgroups.count(), 2)
-        candidatesqueryset = Examiner.objects.filter(assignmentgroup__parentnode=targetassignment)
-        self.assertTrue(candidatesqueryset.filter(user__shortname='examiner1').exists())
-        self.assertTrue(candidatesqueryset.filter(user__shortname='examiner2').exists())
-
     def test_copy_groups_from_another_assignment_querycount(self):
         sourceassignment = mommy.make('core.Assignment')
         group1 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
@@ -281,9 +265,10 @@ class TestAssignment(TestCase):
         testperiod = mommy.make('core.Period')
 
         examiner1 = mommy.make(settings.AUTH_USER_MODEL, shortname='examiner1')
+        relatedexaminer1 = mommy.make('core.RelatedExaminer', user=examiner1)
         mommy.make('core.RelatedExaminerSyncSystemTag',
                    relatedexaminer__period=testperiod,
-                   relatedexaminer__user=examiner1,
+                   relatedexaminer=relatedexaminer1,
                    tag='group1')
 
         student1 = mommy.make(settings.AUTH_USER_MODEL)
@@ -299,14 +284,14 @@ class TestAssignment(TestCase):
         mommy.make('core.Candidate', assignment_group=group1,
                    relatedstudent=relatedstudent1)
         mommy.make('core.Examiner', assignmentgroup=group1,
-                   user=examiner1)
+                   relatedexaminer=relatedexaminer1)
 
         # NOTE: The real test here is that we do not get an IntegrityError
         self.assertEqual(group1.examiners.count(), 1)
         testassignment.setup_examiners_by_relateduser_syncsystem_tags()
         group1 = AssignmentGroup.objects.get(id=group1.id)
         self.assertEqual(group1.examiners.count(), 1)
-        self.assertTrue(group1.examiners.filter(user__shortname='examiner1').exists())
+        self.assertTrue(group1.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
 
     def test_setup_examiners_by_relateduser_syncsystem_tags_multiple_tags_and_examiners(self):
         testperiod = mommy.make('core.Period')

@@ -847,7 +847,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             for otherexaminer in group.copied_from_list.examinerlist:
                 newexaminer = Examiner(
                     assignmentgroup=group,
-                    user_id=otherexaminer.user_id
+                    relatedexaminer_id=otherexaminer.relatedexaminer_id
                 )
                 examiners.append(newexaminer)
         Candidate.objects.bulk_create(candidates)
@@ -895,10 +895,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         period = self.period
 
         # We use this to avoid adding examiners to groups they are already on
-        # We could have used an exclude query, but this is more efficien because
+        # We could have used an exclude query, but this is more efficient because
         # it only requires one query.
         groupid_to_examineruserid_map = dict(Examiner.objects.filter(
-            assignmentgroup__parentnode=self).values_list('assignmentgroup_id', 'user_id'))
+            assignmentgroup__parentnode=self).values_list('assignmentgroup_id', 'relatedexaminer__user_id'))
 
         # We collect all the examiners to be created in this list, and bulk create
         # them at the end
