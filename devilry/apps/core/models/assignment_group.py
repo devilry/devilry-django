@@ -652,12 +652,14 @@ class AssignmentGroupQuerySet(models.QuerySet):
         set ``is_corrected`` to ``True`` will have a value for ``grading_points``.
         """
         return self.annotate(
-            grading_points=models.Case(
-                models.When(
-                    feedbackset__is_last_in_group=True,
-                    feedbackset__grading_published_datetime__isnull=False,
-                    then='feedbackset__grading_points'),
-                default=models.Value(None)
+            grading_points=models.Sum(
+                models.Case(
+                    models.When(
+                        feedbackset__is_last_in_group=True,
+                        feedbackset__grading_published_datetime__isnull=False,
+                        then='feedbackset__grading_points'
+                    )
+                )
             )
         )
 
@@ -713,6 +715,7 @@ class AssignmentGroupQuerySet(models.QuerySet):
             custom SQL query added using the ``extra()``-method of the QuerySet.
             This query is fairly expensive.
         """
+        from devilry.devilry_group.models import AbstractGroupComment
         return self.extra(
             select={
                 "datetime_of_last_student_comment": """
@@ -727,11 +730,16 @@ class AssignmentGroupQuerySet(models.QuerySet):
                         devilry_group_feedbackset.group_id = core_assignmentgroup.id
                         AND
                         devilry_comment_comment.user_role = %s
+                        AND
+                        devilry_group_groupcomment.visibility <> %s
                     ORDER BY devilry_comment_comment.published_datetime DESC
                     LIMIT 1
                 """
             },
-            select_params=[Comment.USER_ROLE_STUDENT]
+            select_params=[
+                Comment.USER_ROLE_STUDENT,
+                AbstractGroupComment.VISIBILITY_PRIVATE,
+            ]
         )
 
     def extra_order_by_datetime_of_last_student_comment(self, descending=False):
@@ -761,6 +769,7 @@ class AssignmentGroupQuerySet(models.QuerySet):
             custom SQL query added using the ``extra()``-method of the QuerySet.
             This query is fairly expensive.
         """
+        from devilry.devilry_group.models import AbstractGroupComment
         return self.extra(
             select={
                 "datetime_of_last_examiner_comment": """
@@ -775,11 +784,16 @@ class AssignmentGroupQuerySet(models.QuerySet):
                         devilry_group_feedbackset.group_id = core_assignmentgroup.id
                         AND
                         devilry_comment_comment.user_role = %s
+                        AND
+                        devilry_group_groupcomment.visibility <> %s
                     ORDER BY devilry_comment_comment.published_datetime DESC
                     LIMIT 1
                 """
             },
-            select_params=[Comment.USER_ROLE_EXAMINER]
+            select_params=[
+                Comment.USER_ROLE_EXAMINER,
+                AbstractGroupComment.VISIBILITY_PRIVATE,
+            ]
         )
 
     def extra_order_by_datetime_of_last_examiner_comment(self, descending=False):
@@ -809,6 +823,7 @@ class AssignmentGroupQuerySet(models.QuerySet):
             custom SQL query added using the ``extra()``-method of the QuerySet.
             This query is fairly expensive.
         """
+        from devilry.devilry_group.models import AbstractGroupComment
         return self.extra(
             select={
                 "datetime_of_last_admin_comment": """
@@ -823,11 +838,16 @@ class AssignmentGroupQuerySet(models.QuerySet):
                         devilry_group_feedbackset.group_id = core_assignmentgroup.id
                         AND
                         devilry_comment_comment.user_role = %s
+                        AND
+                        devilry_group_groupcomment.visibility <> %s
                     ORDER BY devilry_comment_comment.published_datetime DESC
                     LIMIT 1
                 """
             },
-            select_params=[Comment.USER_ROLE_ADMIN]
+            select_params=[
+                Comment.USER_ROLE_ADMIN,
+                AbstractGroupComment.VISIBILITY_PRIVATE,
+            ]
         )
 
     def extra_order_by_datetime_of_last_admin_comment(self, descending=False):
