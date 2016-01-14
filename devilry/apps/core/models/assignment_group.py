@@ -618,6 +618,29 @@ class AssignmentGroupQuerySet(models.QuerySet):
             )
         )
 
+    def annotate_with_is_corrected(self):
+        """
+        Annotate the queryset with ``is_corrected``.
+
+        Groups waiting for deliveries is all groups where
+        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
+        has not expired, and the feedbackset does not have a
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
+        """
+        from devilry.devilry_group.models import FeedbackSet
+        now = timezone.now()
+        whenquery = models.Q(
+            feedbackset__is_last_in_group=True,
+            feedbackset__grading_published_datetime__isnull=False
+        )
+        return self.annotate(
+            is_corrected=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(
+                    models.When(whenquery, then=1)
+                )
+            )
+        )
+
 
 class AssignmentGroupManager(models.Manager):
     """

@@ -2006,6 +2006,56 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForDeliveries(TestCase):
         self.assertTrue(queryset.first().is_waiting_for_deliveries)
 
 
+class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
+    def test_annotate_with_is_corrected_false_feedback_not_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_corrected()
+        self.assertFalse(queryset.first().is_corrected)
+
+    def test_annotate_with_is_corrected_true_feedback_is_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now(),
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_corrected()
+        self.assertTrue(queryset.first().is_corrected)
+
+    def test_annotate_with_is_corrected_false_multiple_feedbacksets_last_is_not_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now() - timedelta(days=3),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   is_last_in_group=None)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_corrected()
+        self.assertFalse(queryset.first().is_corrected)
+
+    def test_annotate_with_is_corrected_true_multiple_feedbacksets_last_is_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now() - timedelta(days=2),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   is_last_in_group=None)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now() - timedelta(days=1),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_corrected()
+        self.assertTrue(queryset.first().is_corrected)
+
+
 class TestAssignmentGroupQuerySetPermission(TestCase):
     def test_filter_user_is_admin_is_not_admin_on_anything(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
