@@ -97,12 +97,6 @@ class AssignmentQuerySet(models.QuerySet):
         """
         return self.filter_is_published().filter_user_is_candidate(user)
 
-    def filter_admin_has_access(self, user):
-        if user.is_superuser:
-            return self.all()
-        else:
-            return self.filter(Assignment.q_is_admin(user)).distinct()
-
     def annotate_with_waiting_for_feedback_count(self):
         """
         Annotate the queryset with ``waiting_for_feedback_count`` - the number

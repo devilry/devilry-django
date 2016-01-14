@@ -648,46 +648,6 @@ class TestAssignmentQuerySet(TestCase):
         self.assertEqual(1, queryset.get(pk=testassignment1.pk).waiting_for_feedback_count)
         self.assertEqual(2, queryset.get(pk=testassignment2.pk).waiting_for_feedback_count)
 
-    def test_filter_admin_has_access_directly_on_assignment(self):
-        admin1 = UserBuilder('admin1').user
-        periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()
-        assignment1 = periodbuilder.add_assignment('assignment1').add_admins(admin1).assignment
-        periodbuilder.add_assignment('assignment2')
-        qry = Assignment.objects.filter_admin_has_access(admin1)
-        self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], assignment1)
-
-    def test_filter_admin_has_access_recursive_from_subject(self):
-        admin1 = UserBuilder('admin1').user
-        nodebuilder = NodeBuilder('docku')
-        assignment1 = nodebuilder.add_subject('subject1')\
-            .add_admins(admin1)\
-            .add_6month_active_period()\
-            .add_assignment('assignment1').assignment
-        nodebuilder.add_subject('subject2')\
-            .add_6month_active_period()\
-            .add_assignment('assignment2')
-        qry = Assignment.objects.filter_admin_has_access(admin1)
-        self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], assignment1)
-
-    def test_filter_admin_has_access_recursive_from_node(self):
-        admin1 = UserBuilder('admin1').user
-        nodebuilder = NodeBuilder('docku')
-        assignment1 = nodebuilder\
-            .add_childnode('science').add_admins(admin1)\
-            .add_childnode('inf')\
-            .add_subject('subject1')\
-            .add_6month_active_period()\
-            .add_assignment('assignment1').assignment
-        nodebuilder\
-            .add_subject('subject2')\
-            .add_6month_active_period()\
-            .add_assignment('assignment2')
-        qry = Assignment.objects.filter_admin_has_access(admin1)
-        self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], assignment1)
-
     def test_filter_is_active(self):
         duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
         activeassignmentbuilder = duck1010builder.add_6month_active_period().add_assignment('week1')
