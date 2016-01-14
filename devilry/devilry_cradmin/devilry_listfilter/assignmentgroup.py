@@ -67,6 +67,14 @@ class AbstractOrderBy(listfilter.django.single.select.AbstractOrderBy):
                 'label': pgettext_lazy('orderby', 'Least recently commented by student'),
                 'order_by': [],  # Handled with custom query in filter()
             }),
+            ('last_commented_by_examiner_descending', {
+                'label': pgettext_lazy('orderby', 'Recently commented by examiner'),
+                'order_by': [],  # Handled with custom query in filter()
+            }),
+            ('last_commented_by_examiner_ascending', {
+                'label': pgettext_lazy('orderby', 'Least recently commented by examiner'),
+                'order_by': [],  # Handled with custom query in filter()
+            }),
         ]
 
     def get_ordering_options(self):
@@ -80,6 +88,10 @@ class AbstractOrderBy(listfilter.django.single.select.AbstractOrderBy):
             return queryobject.extra_order_by_datetime_of_last_student_comment()
         elif cleaned_value == 'last_commented_by_student_descending':
             return queryobject.extra_order_by_datetime_of_last_student_comment(descending=True)
+        elif cleaned_value == 'last_commented_by_examiner_ascending':
+            return queryobject.extra_order_by_datetime_of_last_examiner_comment()
+        elif cleaned_value == 'last_commented_by_examiner_descending':
+            return queryobject.extra_order_by_datetime_of_last_examiner_comment(descending=True)
         return super(AbstractOrderBy, self).filter(queryobject=queryobject).distinct()
 
 
