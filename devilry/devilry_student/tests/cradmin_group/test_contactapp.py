@@ -1,3 +1,5 @@
+import unittest
+
 from django.test import TestCase, RequestFactory
 from django_cradmin.crinstance import reverse_cradmin_url
 import htmls
@@ -6,6 +8,7 @@ from devilry.apps.core.models import Assignment
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder, PeriodBuilder
 
 
+@unittest.skip('Rewrite or delete these tests???')
 class TestContactApp(TestCase):
     def setUp(self):
         self.testuser = UserBuilder('testuser').user
