@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 
 from devilry.apps.core.models import Period
+from devilry.utils import devilry_djangoaggregate_functions
 from .node import Node
 from .abstract_is_admin import AbstractIsAdmin
 from .abstract_is_examiner import AbstractIsExaminer
@@ -551,6 +552,35 @@ class AssignmentGroupQuerySet(models.QuerySet):
             order_by = ['lastname_of_first_candidate']
         return self.extra_annotate_with_lastname_of_first_candidate().extra(
             order_by=order_by
+        )
+
+    def annotate_with_is_waiting_for_feedback(self):
+        """
+        Annotate the queryset with ``is_waiting_for_feedback``.
+
+        Groups waiting for feedback is all groups where
+        The deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
+        has expired, and the feedbackset does not have a
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
+        """
+        from devilry.devilry_group.models import FeedbackSet
+        now = timezone.now()
+        whenquery = models.Q(
+            feedbackset__is_last_in_group=True,
+            feedbackset__grading_published_datetime__isnull=True
+        ) & (
+            models.Q(feedbackset__deadline_datetime__lt=now) |
+            models.Q(
+                feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                parentnode__first_deadline__lt=now
+            )
+        )
+        return self.annotate(
+            is_waiting_for_feedback=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(
+                    models.When(whenquery, then=1)
+                )
+            )
         )
 
 

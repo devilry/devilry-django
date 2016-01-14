@@ -1862,6 +1862,41 @@ class TestAssignmentGroupQuerySet(TestCase):
         self.assertEqual(testgroup2, groups[0])
         self.assertEqual(testgroup1, groups[1])
 
+    def test_annotate_with_is_waiting_for_feedback_false(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now() - timedelta(days=1),
+                   deadline_datetime=timezone.now() - timedelta(days=2),
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
+        self.assertFalse(queryset.first().is_waiting_for_feedback)
+
+    def test_annotate_with_is_waiting_for_feedback_true(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() - timedelta(days=1),
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
+        self.assertTrue(queryset.first().is_waiting_for_feedback)
+
+    def test_annotate_with_is_waiting_for_feedback_true_multiple_feedbacksets(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now() - timedelta(days=1),
+                   deadline_datetime=timezone.now() - timedelta(days=2),
+                   is_last_in_group=None)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() - timedelta(days=1),
+                   is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
+        self.assertTrue(queryset.first().is_waiting_for_feedback)
+
 
 class TestAssignmentGroupQuerySetPermission(TestCase):
     def test_filter_user_is_admin_is_not_admin_on_anything(self):
