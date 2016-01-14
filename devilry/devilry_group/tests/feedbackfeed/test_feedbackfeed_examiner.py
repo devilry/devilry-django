@@ -95,24 +95,24 @@ class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFe
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
         self.assertEquals(examiner2.relatedexaminer.user.fullname, name)
 
-    def test_get_examiner_comment_part_of_grading_not_visible_to_other_examiner(self):
-        group = mommy.make('core.AssignmentGroup')
-        examiner1 = mommy.make('core.Examiner',
-                               assignmentgroup=group,
-                               relatedexaminer=mommy.make('core.RelatedExaminer'),)
-        examiner2 = mommy.make('core.Examiner',
-                               assignmentgroup=group,
-                               relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='Jane Doe'),)
-        mommy.make('devilry_group.GroupComment',
-                   user=examiner2.relatedexaminer.user,
-                   user_role='examiner',
-                   part_of_grading=True,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   published_datetime=timezone.now() - timezone.timedelta(days=1),
-                   feedback_set__group=group)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner1.assignmentgroup,
-                                                          requestuser=examiner1.relatedexaminer)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
+    # def test_get_examiner_comment_part_of_grading_private(self):
+    #     group = mommy.make('core.AssignmentGroup')
+    #     examiner1 = mommy.make('core.Examiner',
+    #                            assignmentgroup=group,
+    #                            relatedexaminer=mommy.make('core.RelatedExaminer'),)
+    #     examiner2 = mommy.make('core.Examiner',
+    #                            assignmentgroup=group,
+    #                            relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='Jane Doe'),)
+    #     mommy.make('devilry_group.GroupComment',
+    #                user=examiner2.relatedexaminer.user,
+    #                user_role='examiner',
+    #                part_of_grading=True,
+    #                visibility=GroupComment.VISIBILITY_PRIVATE,
+    #                published_datetime=timezone.now() - timezone.timedelta(days=1),
+    #                feedback_set__group=group)
+    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner1.assignmentgroup,
+    #                                                       requestuser=examiner1.relatedexaminer)
+    #     self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
 
     def test_post_feedbackset_comment_with_text(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet', )
