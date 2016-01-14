@@ -22,7 +22,7 @@ class Examiner(models.Model, AbstractIsAdmin):
 
     class Meta:
         app_label = 'core'
-        unique_together = ('user', 'assignmentgroup')
+        # unique_together = ('user', 'assignmentgroup')
         db_table = 'core_assignmentgroup_examiners'
 
     #: Will be removed in 3.0 - see https://github.com/devilry/devilry-django/issues/812
