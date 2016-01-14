@@ -17,7 +17,7 @@ from devilry.apps.core.models.assignment_group import GroupPopToFewCandiatesErro
 from devilry.apps.core.testhelper import TestHelper
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import devilry_group_mommy_factories
-from devilry.devilry_group.models import FeedbackSet
+from devilry.devilry_group.models import FeedbackSet, GroupComment
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
@@ -2214,16 +2214,29 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastStudentComment(T
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_student_comment()
         self.assertEqual(datetime(2010, 12, 24, 0, 0),
                          queryset.first().datetime_of_last_student_comment)
 
+    def test_extra_annotate_datetime_of_last_student_comment_ignore_private_comment(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_PRIVATE,
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   published_datetime=datetime(2010, 12, 24, 0, 0))
+        queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_student_comment()
+        self.assertEqual(None,
+                         queryset.first().datetime_of_last_student_comment)
+
     def test_extra_annotate_datetime_of_last_student_comment_ignore_examiner_comment(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_student_comment()
@@ -2234,6 +2247,7 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastStudentComment(T
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_ADMIN,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_student_comment()
@@ -2244,16 +2258,19 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastStudentComment(T
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT,
                    feedback_set__is_last_in_group=None,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT,
                    feedback_set__is_last_in_group=None,
                    published_datetime=datetime(2009, 12, 24, 0, 0))
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT,
                    published_datetime=datetime(2011, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_student_comment()
@@ -2306,16 +2323,29 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastExaminerComment(
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_examiner_comment()
         self.assertEqual(datetime(2010, 12, 24, 0, 0),
                          queryset.first().datetime_of_last_examiner_comment)
 
+    def test_extra_annotate_datetime_of_last_examiner_comment_ignore_private_comment(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_PRIVATE,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   published_datetime=datetime(2010, 12, 24, 0, 0))
+        queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_examiner_comment()
+        self.assertEqual(None,
+                         queryset.first().datetime_of_last_examiner_comment)
+
     def test_extra_annotate_datetime_of_last_examiner_comment_ignore_student_comment(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_examiner_comment()
@@ -2326,6 +2356,7 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastExaminerComment(
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_ADMIN,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_examiner_comment()
@@ -2336,16 +2367,19 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastExaminerComment(
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    feedback_set__is_last_in_group=None,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    feedback_set__is_last_in_group=None,
                    published_datetime=datetime(2009, 12, 24, 0, 0))
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    published_datetime=datetime(2011, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_examiner_comment()
@@ -2398,16 +2432,29 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastAdminComment(Tes
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_ADMIN,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_admin_comment()
         self.assertEqual(datetime(2010, 12, 24, 0, 0),
                          queryset.first().datetime_of_last_admin_comment)
 
+    def test_extra_annotate_datetime_of_last_admin_comment_ignore_private_comment(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_PRIVATE,
+                   user_role=Comment.USER_ROLE_ADMIN,
+                   published_datetime=datetime(2010, 12, 24, 0, 0))
+        queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_admin_comment()
+        self.assertEqual(None,
+                         queryset.first().datetime_of_last_admin_comment)
+
     def test_extra_annotate_datetime_of_last_admin_comment_ignore_student_comment(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_admin_comment()
@@ -2418,6 +2465,7 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastAdminComment(Tes
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_admin_comment()
@@ -2428,16 +2476,19 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastAdminComment(Tes
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_ADMIN,
                    feedback_set__is_last_in_group=None,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_ADMIN,
                    feedback_set__is_last_in_group=None,
                    published_datetime=datetime(2009, 12, 24, 0, 0))
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_ADMIN,
                    published_datetime=datetime(2011, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_admin_comment()
