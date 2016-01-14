@@ -1,4 +1,4 @@
-from django.db.models import Aggregate, Value, BooleanField
+from django.db.models import Aggregate, Value, IntegerField
 
 
 class BooleanCount(Aggregate):
@@ -14,7 +14,7 @@ class BooleanCount(Aggregate):
         if expression == '*':
             expression = Value(expression)
         super(BooleanCount, self).__init__(
-            expression, distinct='DISTINCT ' if distinct else '', output_field=BooleanField(), **extra)
+            expression, distinct='DISTINCT ' if distinct else '', output_field=IntegerField(), **extra)
 
     def __repr__(self):
         return "{}({}, distinct={})".format(
