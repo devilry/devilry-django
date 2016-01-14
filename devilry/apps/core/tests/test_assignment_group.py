@@ -2301,6 +2301,98 @@ class TestAssignmentGroupQuerySetExtraOrderByDatetimeOfLastStudentComment(TestCa
         self.assertEqual(testgroup2, groups[2])  # No student comment makes this come last
 
 
+class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastExaminerComment(TestCase):
+    def test_extra_annotate_datetime_of_last_examiner_comment(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   published_datetime=datetime(2010, 12, 24, 0, 0))
+        queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_examiner_comment()
+        self.assertEqual(datetime(2010, 12, 24, 0, 0),
+                         queryset.first().datetime_of_last_examiner_comment)
+
+    def test_extra_annotate_datetime_of_last_examiner_comment_ignore_examiner_comment(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   published_datetime=datetime(2010, 12, 24, 0, 0))
+        queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_examiner_comment()
+        self.assertEqual(None,
+                         queryset.first().datetime_of_last_examiner_comment)
+
+    def test_extra_annotate_datetime_of_last_examiner_comment_ignore_admin_comment(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   user_role=Comment.USER_ROLE_ADMIN,
+                   published_datetime=datetime(2010, 12, 24, 0, 0))
+        queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_examiner_comment()
+        self.assertEqual(None,
+                         queryset.first().datetime_of_last_examiner_comment)
+
+    def test_extra_annotate_datetime_of_last_examiner_comment_ordering(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   feedback_set__is_last_in_group=None,
+                   published_datetime=datetime(2010, 12, 24, 0, 0))
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   feedback_set__is_last_in_group=None,
+                   published_datetime=datetime(2009, 12, 24, 0, 0))
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   published_datetime=datetime(2011, 12, 24, 0, 0))
+        queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_examiner_comment()
+        self.assertEqual(datetime(2011, 12, 24, 0, 0),
+                         queryset.first().datetime_of_last_examiner_comment)
+
+
+class TestAssignmentGroupQuerySetExtraOrderByDatetimeOfLastExaminerComment(TestCase):
+    def test_extra_order_by_datetime_of_last_examiner_comment_ascending(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup1,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   published_datetime=datetime(2011, 12, 24, 0, 0))
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup2,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   published_datetime=datetime(2012, 12, 24, 0, 0))
+        testgroup3 = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup3,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   published_datetime=datetime(2010, 12, 24, 0, 0))
+        groups = list(AssignmentGroup.objects.all().extra_order_by_datetime_of_last_examiner_comment())
+        self.assertEqual(testgroup3, groups[0])
+        self.assertEqual(testgroup1, groups[1])
+        self.assertEqual(testgroup2, groups[2])
+
+    def test_extra_order_by_datetime_of_last_examiner_comment_no_examiner_comment_last(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup1,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   published_datetime=datetime(2010, 12, 24, 0, 0))
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        testgroup3 = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup3,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   published_datetime=datetime(2012, 12, 24, 0, 0))
+        groups = list(AssignmentGroup.objects.all().extra_order_by_datetime_of_last_examiner_comment())
+        self.assertEqual(testgroup1, groups[0])
+        self.assertEqual(testgroup3, groups[1])
+        self.assertEqual(testgroup2, groups[2])  # No examiner comment makes this come last
+
+
 class TestAssignmentGroupQuerySetPermission(TestCase):
     def test_filter_user_is_admin_is_not_admin_on_anything(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

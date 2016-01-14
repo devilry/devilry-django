@@ -753,6 +753,54 @@ class AssignmentGroupQuerySet(models.QuerySet):
             order_by=order_by
         )
 
+    def extra_annotate_datetime_of_last_examiner_comment(self):
+        """
+        Annotate with the datetiem of the last comment added by a student.
+
+        .. warning:: As the ``extra_`` prefix implies, this uses a
+            custom SQL query added using the ``extra()``-method of the QuerySet.
+            This query is fairly expensive.
+        """
+        return self.extra(
+            select={
+                "datetime_of_last_examiner_comment": """
+                    SELECT
+                        devilry_comment_comment.published_datetime
+                    FROM devilry_group_feedbackset
+                    LEFT OUTER JOIN devilry_group_groupcomment
+                        ON (devilry_group_groupcomment.feedback_set_id = devilry_group_feedbackset.id)
+                    INNER JOIN devilry_comment_comment
+                        ON (devilry_comment_comment.id = devilry_group_groupcomment.comment_ptr_id)
+                    WHERE
+                        devilry_group_feedbackset.group_id = core_assignmentgroup.id
+                        AND
+                        devilry_comment_comment.user_role = %s
+                    ORDER BY devilry_comment_comment.published_datetime DESC
+                    LIMIT 1
+                """
+            },
+            select_params=[Comment.USER_ROLE_EXAMINER]
+        )
+
+    def extra_order_by_datetime_of_last_examiner_comment(self, descending=False):
+        """
+        Order by datetime of the last comment by a student in each group.
+
+        .. warning:: As the ``extra_`` prefix implies, this uses a
+            custom SQL query added using the ``extra()``-method of the QuerySet.
+            This query is fairly expensive.
+
+        Args:
+            descending: Set this to ``True`` to order descending.
+        """
+        if descending:
+            order_by = ['-datetime_of_last_examiner_comment']
+        else:
+            order_by = ['datetime_of_last_examiner_comment']
+        return self.extra_annotate_datetime_of_last_examiner_comment().extra(
+            order_by=order_by
+        )
+
 
 class AssignmentGroupManager(models.Manager):
     """
