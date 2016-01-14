@@ -9,6 +9,23 @@ from devilry.devilry_comment import models as comment_models
 from devilry.apps.core.models import assignment_group
 
 
+class AbstractGroupCommentQuerySet(models.QuerySet):
+    """
+    Base class for QuerySets for :class:`.AbstractGroupComment`.
+    """
+    def exclude_private_comments_from_other_users(self, user):
+        return self.exclude(
+            models.Q(visibility=AbstractGroupComment.VISIBILITY_PRIVATE) &
+            ~models.Q(user=user)
+        )
+
+    def exclude_is_part_of_grading_feedbackset_unpublished(self):
+        return self.exclude(
+            part_of_grading=True,
+            feedback_set__published_datetime__isnull=True
+        )
+
+
 class AbstractGroupComment(comment_models.Comment):
     """
     The abstract superclass of all comments related to a delivery and feedback
@@ -24,21 +41,30 @@ class AbstractGroupComment(comment_models.Comment):
     #: this only controls when the comment is published.
     part_of_grading = models.BooleanField(default=False)
 
+    #: Comment only visible for :obj:`~devilry_comment.models.Comment.user` that created comment.
+    #: Choice for :obj:`~.AbstractGroupComment.visibility`.
+    VISIBILITY_PRIVATE = 'private'
+
     #: Comment should only be visible to examiners and admins that has
     #: access to the :obj:`~.AbstractGroupComment.feedback_set`.
+    #: Choice for :obj:`~.AbstractGroupComment.visibility`.
     VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS = 'visible-to-examiner-and-admins'
 
     #: Comment should be visible to everyone that has
     #: access to the :obj:`~.AbstractGroupComment.feedback_set`.
+    #: Choice for :obj:`~.AbstractGroupComment.visibility`.
     VISIBILITY_VISIBLE_TO_EVERYONE = 'visible-to-everyone'
 
     #: Choice list.
+    #: Choices for :obj:`~.AbstractGroupComment.visibility`.
     VISIBILITY_CHOICES = [
+        (VISIBILITY_PRIVATE, 'Private'),
         (VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS, 'Visible to examiners and admins'),
-        (VISIBILITY_VISIBLE_TO_EVERYONE, 'visible-to-everyone'),
+        (VISIBILITY_VISIBLE_TO_EVERYONE, 'Visible to everyone'),
     ]
 
     #: Sets the visibility choise of the comment.
+    #: Defaults to :obj:`~.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`.
     visibility = models.CharField(
         max_length=50,
         db_index=True,
@@ -68,24 +94,28 @@ class FeedbackSet(models.Model):
     is_last_in_group = models.NullBooleanField(default=True)
 
     #: This means the feedbackset is basically the first feedbackset.
+    #: Choice for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_FIRST_TRY = 'feedbackset_type_first_try'
 
     #: Is not the first feedbackset, but a new try.
+    #: Choice for :obj:`~.FeedbackSet.feedbackset_type`
     FEEDBACKSET_TYPE_NEW_TRY = 'feedbackset_type_new_try'
 
     #: Something went wrong on grading, with this option, a new
     #: deadline should not be given to student. Student should just
     #: get notified that a new feedback was given.
+    #: Choice for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_RE_EDIT = 'feedbackset_type_re_edit'
 
-    #: Grading status choises.
+    #: Grading status choices for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_CHOICES = [
-        (FEEDBACKSET_TYPE_FIRST_TRY, 'feedbackset_type_first_try'),
+        (FEEDBACKSET_TYPE_FIRST_TRY, 'Feedbackset_type_first_try'),
         (FEEDBACKSET_TYPE_NEW_TRY,'feedbackset_type_new_try'),
         (FEEDBACKSET_TYPE_RE_EDIT, 'feedbackset_type_re_edit'),
     ]
 
-    #: Sets data for grading status.
+    #: Sets the type of the feedbackset.
+    #: Defaults to :obj:`~.FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY`.
     feedbackset_type = models.CharField(
         max_length=50,
         db_index=True,
@@ -152,7 +182,7 @@ class FeedbackSet(models.Model):
         if self.grading_published_datetime is not None and self.grading_published_by is None:
             raise ValidationError({
                 'grading_published_datetime': ugettext_lazy('An assignment can not be published '
-                                                            'without providing "points".'),
+                                                            'without being published by someone.'),
             })
         if self.grading_published_datetime is not None and self.grading_points is None:
             raise ValidationError({
@@ -182,18 +212,34 @@ class FeedbackSet(models.Model):
     #         delattr(self, '_gradeform_data')
 
 
+class GroupCommentQuerySet(AbstractGroupCommentQuerySet):
+    """
+    QuerySet for :class:`.GroupComment`.
+    """
+
+
 class GroupComment(AbstractGroupComment):
     """
     A comment made to an `AssignmentGroup`.
     """
+    objects = GroupCommentQuerySet.as_manager()
+
     def __unicode__(self):
         return u"{} - {} - {}".format(self.feedback_set, self.user_role, self.user)
+
+
+class ImageAnnotationCommentQuerySet(AbstractGroupCommentQuerySet):
+    """
+    QuerySet for :class:`.ImageAnnotationComment`.
+    """
 
 
 class ImageAnnotationComment(AbstractGroupComment):
     """
     A comment made on a file, as an annotation
     """
+    objects = ImageAnnotationCommentQuerySet.as_manager()
+
     image = models.ForeignKey(comment_models.CommentFileImage)
     x_coordinate = models.PositiveIntegerField()
     y_coordinate = models.PositiveIntegerField()
