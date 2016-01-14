@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models.functions import Lower, Concat
 from django.utils.translation import ugettext_lazy
 from django_cradmin.viewhelpers import listfilter
@@ -52,13 +53,35 @@ class AbstractOrderBy(listfilter.django.single.select.AbstractOrderBy):
 
 class OrderByNotAnonymous(AbstractOrderBy):
     def get_ordering_options(self):
+        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+            shortname_ascending_label = ugettext_lazy('Email')
+            shortname_descending_label = ugettext_lazy('Email (descending)')
+        else:
+            shortname_ascending_label = ugettext_lazy('Username')
+            shortname_descending_label = ugettext_lazy('Username (descending)')
         return [
             ('', {
                 'label': ugettext_lazy('Name'),
                 'order_by': [],  # Handled with custom query in filter()
             }),
             ('name_descending', {
-                'label': ugettext_lazy('Name (reverse order)'),
+                'label': ugettext_lazy('Name (descending)'),
+                'order_by': [],  # Handled with custom query in filter()
+            }),
+            ('shortname_ascending', {
+                'label': shortname_ascending_label,
+                'order_by': [],  # Handled with custom query in filter()
+            }),
+            ('shortname_descending', {
+                'label': shortname_descending_label,
+                'order_by': [],  # Handled with custom query in filter()
+            }),
+            ('lastname_ascending', {
+                'label': ugettext_lazy('Last name'),
+                'order_by': [],  # Handled with custom query in filter()
+            }),
+            ('lastname_descending', {
+                'label': ugettext_lazy('Last name (descending)'),
                 'order_by': [],  # Handled with custom query in filter()
             }),
         ]
@@ -69,6 +92,14 @@ class OrderByNotAnonymous(AbstractOrderBy):
             return queryobject.extra_order_by_fullname_of_first_candidate()
         elif cleaned_value == 'name_descending':
             return queryobject.extra_order_by_fullname_of_first_candidate(descending=True)
+        elif cleaned_value == 'shortname_ascending':
+            return queryobject.extra_order_by_shortname_of_first_candidate()
+        elif cleaned_value == 'shortname_descending':
+            return queryobject.extra_order_by_shortname_of_first_candidate(descending=True)
+        elif cleaned_value == 'lastname_ascending':
+            return queryobject.extra_order_by_lastname_of_first_candidate()
+        elif cleaned_value == 'lastname_descending':
+            return queryobject.extra_order_by_lastname_of_first_candidate(descending=True)
         else:
             return super(OrderByNotAnonymous, self).filter(queryobject=queryobject)
 
@@ -81,7 +112,7 @@ class OrderByAnonymous(AbstractOrderBy):
                 'order_by': [],  # Handled with custom query in filter()
             }),
             ('name_descending', {
-                'label': ugettext_lazy('Anonymous ID (reverse order)'),
+                'label': ugettext_lazy('Anonymous ID (descending)'),
                 'order_by': [],  # Handled with custom query in filter()
             }),
         ]
@@ -104,7 +135,7 @@ class OrderByAnonymousUsesCustomCandidateIds(AbstractOrderBy):
                 'order_by': [],  # Handled with custom query in filter()
             }),
             ('name_descending', {
-                'label': ugettext_lazy('Candidate ID (reverse order)'),
+                'label': ugettext_lazy('Candidate ID (descending)'),
                 'order_by': [],  # Handled with custom query in filter()
             }),
         ]
