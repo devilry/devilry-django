@@ -1,6 +1,5 @@
 from django.conf import settings
-from django.db.models.functions import Lower, Concat
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin.viewhelpers import listfilter
 
 
@@ -43,29 +42,49 @@ class AbstractOrderBy(listfilter.django.single.select.AbstractOrderBy):
     def __init__(self, label_is_screenreader_only=False):
         super(AbstractOrderBy, self).__init__(
             slug='orderby',
-            label=ugettext_lazy('Order by'),
+            label=pgettext_lazy('orderby', 'Sort'),
             label_is_screenreader_only=label_is_screenreader_only
         )
+
+    def get_extra_ordering_options_pre(self):
+        return []
+
+    def get_common_ordering_options(self):
+        return [
+            ('points_descending', {
+                'label': pgettext_lazy('orderby', 'Points (highest first)'),
+                'order_by': ['-grading_points'],
+            }),
+            ('points_ascending', {
+                'label': pgettext_lazy('orderby', 'Points (lowest first)'),
+                'order_by': ['grading_points'],
+            }),
+        ]
+
+    def get_ordering_options(self):
+        ordering_options = self.get_extra_ordering_options_pre()
+        ordering_options.extend(self.get_common_ordering_options())
+        return ordering_options
 
     def filter(self, queryobject):
         return super(AbstractOrderBy, self).filter(queryobject=queryobject).distinct()
 
 
 class OrderByNotAnonymous(AbstractOrderBy):
-    def get_ordering_options(self):
+    def get_extra_ordering_options_pre(self):
         if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
-            shortname_ascending_label = ugettext_lazy('Email')
-            shortname_descending_label = ugettext_lazy('Email (descending)')
+            shortname_ascending_label = pgettext_lazy('orderby', 'Email')
+            shortname_descending_label = pgettext_lazy('orderby', 'Email (descending)')
         else:
-            shortname_ascending_label = ugettext_lazy('Username')
-            shortname_descending_label = ugettext_lazy('Username (descending)')
+            shortname_ascending_label = pgettext_lazy('orderby', 'Username')
+            shortname_descending_label = pgettext_lazy('orderby', 'Username (descending)')
         return [
             ('', {
-                'label': ugettext_lazy('Name'),
+                'label': pgettext_lazy('orderby', 'Name'),
                 'order_by': [],  # Handled with custom query in filter()
             }),
             ('name_descending', {
-                'label': ugettext_lazy('Name (descending)'),
+                'label': pgettext_lazy('orderby', 'Name (descending)'),
                 'order_by': [],  # Handled with custom query in filter()
             }),
             ('shortname_ascending', {
@@ -77,11 +96,11 @@ class OrderByNotAnonymous(AbstractOrderBy):
                 'order_by': [],  # Handled with custom query in filter()
             }),
             ('lastname_ascending', {
-                'label': ugettext_lazy('Last name'),
+                'label': pgettext_lazy('orderby', 'Last name'),
                 'order_by': [],  # Handled with custom query in filter()
             }),
             ('lastname_descending', {
-                'label': ugettext_lazy('Last name (descending)'),
+                'label': pgettext_lazy('orderby', 'Last name (descending)'),
                 'order_by': [],  # Handled with custom query in filter()
             }),
         ]
@@ -105,14 +124,14 @@ class OrderByNotAnonymous(AbstractOrderBy):
 
 
 class OrderByAnonymous(AbstractOrderBy):
-    def get_ordering_options(self):
+    def get_extra_ordering_options_pre(self):
         return [
             ('', {
-                'label': ugettext_lazy('Anonymous ID'),
+                'label': pgettext_lazy('orderby', 'Anonymous ID'),
                 'order_by': [],  # Handled with custom query in filter()
             }),
             ('name_descending', {
-                'label': ugettext_lazy('Anonymous ID (descending)'),
+                'label': pgettext_lazy('orderby', 'Anonymous ID (descending)'),
                 'order_by': [],  # Handled with custom query in filter()
             }),
         ]
@@ -128,14 +147,14 @@ class OrderByAnonymous(AbstractOrderBy):
 
 
 class OrderByAnonymousUsesCustomCandidateIds(AbstractOrderBy):
-    def get_ordering_options(self):
+    def get_extra_ordering_options_pre(self):
         return [
             ('', {
-                'label': ugettext_lazy('Candidate ID'),
+                'label': pgettext_lazy('orderby', 'Candidate ID'),
                 'order_by': [],  # Handled with custom query in filter()
             }),
             ('name_descending', {
-                'label': ugettext_lazy('Candidate ID (descending)'),
+                'label': pgettext_lazy('orderby', 'Candidate ID (descending)'),
                 'order_by': [],  # Handled with custom query in filter()
             }),
         ]
