@@ -1391,7 +1391,7 @@ class TestAssignmentGroupManager(TestCase):
         self.assertEquals(qry[0], currentgroupbuilder.group)
 
 
-class TestAssignmentGroupQuerySet(TestCase):
+class TestAssignmentGroupQuerySetExtraOrdering(TestCase):
     def test_extra_annotate_with_fullname_of_first_candidate_shortnameonly(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('core.Candidate',
@@ -1861,6 +1861,8 @@ class TestAssignmentGroupQuerySet(TestCase):
         self.assertEqual(testgroup2, groups[0])
         self.assertEqual(testgroup1, groups[1])
 
+
+class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
     def test_annotate_with_is_waiting_for_feedback_false_feedback_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
