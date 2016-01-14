@@ -115,7 +115,7 @@
 
                                         {% if comment.user_role == "examiner" %}
                                             <!--
-                                            Mush handle comments that are part of the grading, but have not been published yet!
+                                            Must handle comments that are part of the grading, but have not been published yet!
                                             -->
                                             {% if  not comment.instant_publish and not comment.feedback_set.published_datetime %}
                                                 <div class="devilry-group-feedbackfeed-right-badge-field not-published-badge">

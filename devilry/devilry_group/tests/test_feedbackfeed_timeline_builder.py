@@ -181,3 +181,72 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
                    published_datetime=timezone.now())
         timeline = timeline_builder.add_comments_to_timeline(group, {})
         self.assertEquals(4, len(timeline))
+
+    def test_examiner_timeline_builder_order(self):
+        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerFeedbackFeedView())
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        examiner = mommy.make('core.Examiner',
+                             assignmentgroup=group,
+                             relatedexaminer=mommy.make('core.RelatedExaminer'),)
+        student = mommy.make('core.Candidate',
+                             assignment_group=group,
+                             relatedstudent=mommy.make('core.RelatedStudent'),)
+        feedbackset1 = mommy.make('devilry_group.FeedbackSet',
+                                  group=group,
+                                  is_last_in_group=None,
+                                  created_datetime=assignment.publishing_time)
+
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=feedbackset1,
+                   published_datetime=assignment.first_deadline-timezone.timedelta(days=5))
+        mommy.make('devilry_group.GroupComment',
+                   user=student.relatedstudent.user,
+                   user_role='student',
+                   feedback_set=feedbackset1,
+                   published_datetime=assignment.first_deadline-timezone.timedelta(days=4))
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=feedbackset1,
+                   published_datetime=assignment.first_deadline-timezone.timedelta(days=3))
+
+        feedbackset2 = mommy.make('devilry_group.FeedbackSet',
+                                  group=group,
+                                  created_datetime=timezone.now()-timezone.timedelta(days=10),
+                                  deadline_datetime=timezone.now()-timezone.timedelta(days=1))
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=feedbackset1,
+                   published_datetime=timezone.now()-timezone.timedelta(days=4))
+        mommy.make('devilry_group.GroupComment',
+                   user=student.relatedstudent.user,
+                   user_role='student',
+                   feedback_set=feedbackset1,
+                   published_datetime=timezone.now()-timezone.timedelta(days=3))
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=feedbackset1,
+                   published_datetime=timezone.now()-timezone.timedelta(days=2))
+
+        timeline_events = []
+        last_deadline, timeline = timeline_builder.build_timeline(group, [feedbackset1, feedbackset2])
+
+        for timestamp, eventlist in timeline.items():
+            timeline_events.append(eventlist[0]['type'])
+            print(eventlist[0]['type'])
+
+        self.assertEquals(timeline_events[0], 'deadline_created')
+        self.assertEquals(timeline_events[1], 'comment')
+        self.assertEquals(timeline_events[2], 'comment')
+        self.assertEquals(timeline_events[3], 'comment')
+        self.assertEquals(timeline_events[4], 'deadline_expired')
+        self.assertEquals(timeline_events[5], 'deadline_created')
+        self.assertEquals(timeline_events[6], 'comment')
+        self.assertEquals(timeline_events[7], 'comment')
+        self.assertEquals(timeline_events[8], 'comment')
+        self.assertEquals(timeline_events[9], 'deadline_expired')
