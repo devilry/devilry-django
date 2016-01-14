@@ -2203,9 +2203,9 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
             group=testgroup3,
             grading_points=30)
         queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
-        self.assertTrue(queryset.get(id=testgroup1.id).grading_points)
-        self.assertTrue(queryset.get(id=testgroup2.id).grading_points)
-        self.assertFalse(queryset.get(id=testgroup3.id).grading_points)
+        self.assertTrue(queryset.get(id=testgroup1.id).is_passing_grade)
+        self.assertFalse(queryset.get(id=testgroup2.id).is_passing_grade)
+        self.assertTrue(queryset.get(id=testgroup3.id).is_passing_grade)
 
 
 class TestAssignmentGroupQuerySetPermission(TestCase):
