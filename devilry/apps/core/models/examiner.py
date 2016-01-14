@@ -26,7 +26,7 @@ class Examiner(models.Model, AbstractIsAdmin):
         db_table = 'core_assignmentgroup_examiners'
 
     #: Will be removed in 3.0 - see https://github.com/devilry/devilry-django/issues/812
-    old_reference_not_in_use_user = models.ForeignKey(User)
+    old_reference_not_in_use_user = models.ForeignKey(User) # null=True, default=None, blank=True)
 
     #: The :class:`devilry.apps.core.models.assignment_group.AssignmentGroup`
     #: where this examiner belongs.
@@ -34,8 +34,7 @@ class Examiner(models.Model, AbstractIsAdmin):
 
     #: ForeignKey to :class:`devilry.apps.core.models.relateduser.RelatedExaminer`
     #: (the model that ties User as examiner on a Period).
-    relatedexaminer = models.ForeignKey(RelatedExaminer,
-                                        null=True, default=None, blank=True)
+    relatedexaminer = models.ForeignKey(RelatedExaminer)
 
     @classmethod
     def q_is_admin(cls, user_obj):
