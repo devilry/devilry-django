@@ -55,7 +55,7 @@ class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
             # self._convert_temporary_files_to_comment_files(form, object)
 
     def dispatch(self, request, *args, **kwargs):
-        assignment = self.request.cradmin_role
+        assignment = self.request.cradmin_role.parentnode
         if assignment.anonymizationmode == core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
             if account_models.PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
                     user=self.request.user, period=assignment.period) != 'departmentadmin':
