@@ -101,6 +101,7 @@ class GroupListView(listbuilderview.FilterListMixin,
             .prefetch_related(
                 models.Prefetch('candidates',
                                 queryset=candidatequeryset))\
+            .annotate_with_grading_points()\
             .distinct()
 
 

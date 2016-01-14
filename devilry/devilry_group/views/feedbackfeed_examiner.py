@@ -4,6 +4,7 @@ import datetime
 from django.utils import timezone
 from django_cradmin import crapp
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import Q
 
 # devilry imports
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
@@ -20,6 +21,8 @@ class ExaminerFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     def _get_comments_for_group(self, group):
         return models.GroupComment.objects.filter(
             feedback_set__group=group
+        ).exclude_private_comments_from_other_users(
+            user=self.request.user
         )
 
     def get_context_data(self, **kwargs):
@@ -56,6 +59,7 @@ class ExaminerFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
             obj.published_datetime = timezone.now()
         elif form.data.get('examiner_add_comment_to_feedback_draft'):
             obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
+            obj.part_of_grading = True
 
         obj = super(ExaminerFeedbackFeedView, self).save_object(form)
         return obj

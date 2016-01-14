@@ -1,5 +1,6 @@
 from django.test import TestCase
-from devilry.devilry_group.tests import test_feedbackfeed_common
+
+from devilry.devilry_group.tests.feedbackfeed import test_feedbackfeed_common
 from devilry.devilry_group.views import feedbackfeed_admin
 
 

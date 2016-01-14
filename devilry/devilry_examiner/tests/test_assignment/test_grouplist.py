@@ -1,13 +1,19 @@
 import htmls
+from datetime import datetime
 from django import test
 from django.conf import settings
+from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 from model_mommy import mommy
 
+from devilry.apps.core import devilry_core_mommy_factories
 from devilry.apps.core.models import Assignment
+from devilry.devilry_comment.models import Comment
 from devilry.devilry_examiner.views.assignment import grouplist
+from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group.models import GroupComment
 
 
 class TestGroupItemValue(test.TestCase):
@@ -933,6 +939,182 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'filters_string': 'orderby-lastname_descending'},
+            requestuser=testuser)
+        self.assertEqual(
+            ['user1', 'user2'],
+            self.__get_titles(mockresponse.selector))
+
+    def test_orderby_points_ascending(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup3, shortname='user3')
+        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1, grading_points=3)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup2, grading_points=10)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup3, grading_points=2)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'orderby-points_ascending'},
+            requestuser=testuser)
+        self.assertEqual(
+            ['user3', 'user1', 'user2'],
+            self.__get_titles(mockresponse.selector))
+
+    def test_orderby_points_descending(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup3, shortname='user3')
+        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1, grading_points=3)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup2, grading_points=10)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup3, grading_points=2)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'orderby-points_descending'},
+            requestuser=testuser)
+        self.assertEqual(
+            ['user2', 'user1', 'user3'],
+            self.__get_titles(mockresponse.selector))
+
+    def test_orderby_last_commented_by_student_ascending(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup1,
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   published_datetime=datetime(2011, 12, 24, 0, 0))
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup2,
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   published_datetime=datetime(2010, 12, 24, 0, 0))
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'orderby-last_commented_by_student_ascending'},
+            requestuser=testuser)
+        self.assertEqual(
+            ['user2', 'user1'],
+            self.__get_titles(mockresponse.selector))
+
+    def test_orderby_last_commented_by_student_descending(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup1,
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   published_datetime=datetime(2011, 12, 24, 0, 0))
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup2,
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   published_datetime=datetime(2010, 12, 24, 0, 0))
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'orderby-last_commented_by_student_descending'},
+            requestuser=testuser)
+        self.assertEqual(
+            ['user1', 'user2'],
+            self.__get_titles(mockresponse.selector))
+
+    def test_orderby_last_commented_by_examiner_ascending(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup1,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   published_datetime=datetime(2011, 12, 24, 0, 0))
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup2,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   published_datetime=datetime(2010, 12, 24, 0, 0))
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'orderby-last_commented_by_examiner_ascending'},
+            requestuser=testuser)
+        self.assertEqual(
+            ['user2', 'user1'],
+            self.__get_titles(mockresponse.selector))
+
+    def test_orderby_last_commented_by_examiner_descending(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup1,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   published_datetime=datetime(2011, 12, 24, 0, 0))
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup2,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   published_datetime=datetime(2010, 12, 24, 0, 0))
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'orderby-last_commented_by_examiner_descending'},
             requestuser=testuser)
         self.assertEqual(
             ['user1', 'user2'],

@@ -1,10 +1,10 @@
 from django.test import TestCase
-from django.utils import timezone, formats
+from django.utils import timezone
 from model_mommy import mommy
 
-from devilry.devilry_group.tests import test_feedbackfeed_common
-from devilry.devilry_group.views import feedbackfeed_student
 from devilry.devilry_group.models import GroupComment
+from devilry.devilry_group.tests.feedbackfeed import test_feedbackfeed_common
+from devilry.devilry_group.views import feedbackfeed_student
 
 
 class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
