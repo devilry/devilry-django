@@ -238,7 +238,6 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
 
         for timestamp, eventlist in timeline.items():
             timeline_events.append(eventlist[0]['type'])
-            print(eventlist[0]['type'])
 
         self.assertEquals(timeline_events[0], 'deadline_created')
         self.assertEquals(timeline_events[1], 'comment')
