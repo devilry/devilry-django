@@ -514,6 +514,45 @@ class AssignmentGroupQuerySet(models.QuerySet):
             order_by=order_by
         )
 
+    def extra_annotate_with_lastname_of_first_candidate(self):
+        # Not ment to be used directly - this is used by the
+        # extra_order_by_lastname_of_first_candidate() method.
+        return self.extra(
+            select={
+                "lastname_of_first_candidate": """
+                    SELECT
+                        devilry_account_user.lastname
+                    FROM core_candidate
+                    INNER JOIN core_relatedstudent
+                        ON (core_relatedstudent.id = core_candidate.relatedstudent_id)
+                    INNER JOIN devilry_account_user
+                        ON (devilry_account_user.id = core_relatedstudent.user_id)
+                    WHERE
+                        core_candidate.assignment_group_id = core_assignmentgroup.id
+                    ORDER BY devilry_account_user.lastname ASC
+                    LIMIT 1
+                """
+            },
+        )
+
+    def extra_order_by_lastname_of_first_candidate(self, descending=False):
+        """
+        Order by lastname of the first candidate (ordered by lastname) in each group.
+
+        As the ``extra_`` prefix implies, this uses a fairly expensive custom SQL query
+        added using the ``extra()``-method of the QuerySet.
+
+        Args:
+            descending: Set this to ``True`` to order descending.
+        """
+        if descending:
+            order_by = ['-lastname_of_first_candidate']
+        else:
+            order_by = ['lastname_of_first_candidate']
+        return self.extra_annotate_with_lastname_of_first_candidate().extra(
+            order_by=order_by
+        )
+
 
 class AssignmentGroupManager(models.Manager):
     """

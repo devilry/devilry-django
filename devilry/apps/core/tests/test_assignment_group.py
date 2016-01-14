@@ -1794,6 +1794,74 @@ class TestAssignmentGroupQuerySet(TestCase):
         self.assertEqual(testgroup2, groups[0])
         self.assertEqual(testgroup1, groups[1])
 
+    def test_extra_annotate_with_lastname_of_first_candidate(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='userb',
+                   assignment_group=testgroup)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='usera',
+                   assignment_group=testgroup)
+        annotatedgroup = AssignmentGroup.objects.extra_annotate_with_lastname_of_first_candidate().first()
+        self.assertEqual('usera', annotatedgroup.lastname_of_first_candidate)
+
+    def test_extra_annotate_with_lastname_of_first_candidate_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='userb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='usera',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='userx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='usery',
+                   assignment_group=testgroup2)
+        queryset = AssignmentGroup.objects.extra_annotate_with_lastname_of_first_candidate()
+        self.assertEqual('usera', queryset.get(id=testgroup1.id).lastname_of_first_candidate)
+        self.assertEqual('userx', queryset.get(id=testgroup2.id).lastname_of_first_candidate)
+
+    def test_extra_order_by_lastname_of_first_candidate_ascending(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='userb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='usera',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='userx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='usery',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_lastname_of_first_candidate())
+        self.assertEqual(testgroup1, groups[0])
+        self.assertEqual(testgroup2, groups[1])
+
+    def test_extra_order_by_lastname_of_first_candidate_descending(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='userb',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='usera',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='userx',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__lastname='usery',
+                   assignment_group=testgroup2)
+        groups = list(AssignmentGroup.objects.extra_order_by_lastname_of_first_candidate(descending=True))
+        self.assertEqual(testgroup2, groups[0])
+        self.assertEqual(testgroup1, groups[1])
+
 
 class TestAssignmentGroupQuerySetPermission(TestCase):
     def test_filter_user_is_admin_is_not_admin_on_anything(self):
