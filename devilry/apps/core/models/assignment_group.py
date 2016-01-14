@@ -652,12 +652,14 @@ class AssignmentGroupQuerySet(models.QuerySet):
         set ``is_corrected`` to ``True`` will have a value for ``grading_points``.
         """
         return self.annotate(
-            grading_points=models.Case(
-                models.When(
-                    feedbackset__is_last_in_group=True,
-                    feedbackset__grading_published_datetime__isnull=False,
-                    then='feedbackset__grading_points'),
-                default=models.Value(None)
+            grading_points=models.Sum(
+                models.Case(
+                    models.When(
+                        feedbackset__is_last_in_group=True,
+                        feedbackset__grading_published_datetime__isnull=False,
+                        then='feedbackset__grading_points'
+                    )
+                )
             )
         )
 
