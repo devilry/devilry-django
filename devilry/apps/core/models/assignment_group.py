@@ -641,7 +641,14 @@ class AssignmentGroupQuerySet(models.QuerySet):
 
     def annotate_with_grading_points(self):
         """
-        Annotate the queryset with ``is_corrected``.
+        Annotate the queryset with ``grading_points``.
+
+        ``grading_points`` is the :obj:`devilry.devilry_group.models.FeedbackSet.grading_points`
+        for the last feedbackset in the group if that feedbackset is published.
+        If the last feedbackset is not published, ``grading_points`` is ``None``.
+
+        This means that all groups that :meth:`.annotate_with_is_corrected` would
+        set ``is_corrected`` to ``True`` will have a value for ``grading_points``.
         """
         return self.annotate(
             grading_points=models.Case(
@@ -650,6 +657,32 @@ class AssignmentGroupQuerySet(models.QuerySet):
                     feedbackset__grading_published_datetime__isnull=False,
                     then='feedbackset__grading_points'),
                 default=models.Value(None)
+            )
+        )
+
+    def annotate_with_is_passing_grade(self):
+        """
+        Annotate the queryset with ``is_passing_grade``.
+
+        ``is_passing_grade`` is ``True`` if the following is true
+        if the last :class:`~devilry.devilry_group.models.FeedbackSet` in the group:
+
+        - Is published.
+        - Has :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points`
+          greater or equal to ``passing_grade_min_points`` for the
+          :class:`.devilry.apps.core.models.Assignment`.
+        """
+        return self.annotate(
+            is_passing_grade=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(
+                    models.When(
+                        feedbackset__is_last_in_group=True,
+                        feedbackset__grading_published_datetime__isnull=False,
+                        feedbackset__grading_points__gte=models.F('parentnode__passing_grade_min_points'),
+                        then=1
+                    ),
+                    default=models.Value(None)
+                )
             )
         )
 

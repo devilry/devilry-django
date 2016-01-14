@@ -2122,6 +2122,92 @@ class TestAssignmentGroupQuerySetAnnotateWithGradingPoints(TestCase):
         self.assertEqual(20, queryset.get(id=testgroup2.id).grading_points)
 
 
+class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
+    def test_annotate_with_is_passing_grade_false_unpublished(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group=testgroup,
+            grading_points=10)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        self.assertFalse(queryset.first().is_passing_grade)
+
+    def test_annotate_with_is_passing_grade_false_published(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__passing_grade_min_points=10)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            grading_points=9)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        self.assertFalse(queryset.first().is_passing_grade)
+
+    def test_annotate_with_is_passing_grade_true(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__passing_grade_min_points=10)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            grading_points=20)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        self.assertTrue(queryset.first().is_passing_grade)
+
+    def test_annotate_with_is_passing_grade_true_gte(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__passing_grade_min_points=10)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            grading_points=10)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        self.assertTrue(queryset.first().is_passing_grade)
+
+    def test_annotate_with_is_passing_grade_multiple_last_published(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__passing_grade_min_points=10)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            grading_points=5,
+            is_last_in_group=False)
+        devilry_group_mommy_factories.feedbackset_new_try_published(
+            group=testgroup,
+            grading_points=15,
+            is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        self.assertTrue(queryset.first().is_passing_grade)
+
+    def test_annotate_with_is_passing_grade_multiple_last_unpublished(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__passing_grade_min_points=10)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            grading_points=5,
+            is_last_in_group=False)
+        devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+            group=testgroup,
+            grading_points=20,
+            is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        self.assertFalse(queryset.first().is_passing_grade)
+
+    def test_annotate_with_is_passing_grade_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup',
+                                parentnode__passing_grade_min_points=10)
+        testgroup2 = mommy.make('core.AssignmentGroup',
+                                parentnode__passing_grade_min_points=30)
+        testgroup3 = mommy.make('core.AssignmentGroup',
+                                parentnode__passing_grade_min_points=20)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1,
+            grading_points=10)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup2,
+            grading_points=20)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup3,
+            grading_points=30)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        self.assertTrue(queryset.get(id=testgroup1.id).grading_points)
+        self.assertTrue(queryset.get(id=testgroup2.id).grading_points)
+        self.assertFalse(queryset.get(id=testgroup3.id).grading_points)
+
+
 class TestAssignmentGroupQuerySetPermission(TestCase):
     def test_filter_user_is_admin_is_not_admin_on_anything(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
