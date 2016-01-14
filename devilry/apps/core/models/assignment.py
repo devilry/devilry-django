@@ -339,6 +339,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                           'examiners after the first feedback is provided.')
         ),
     ]
+    #: Dictionary for getting the :obj:`~.Assignment.ANONYMIZATIONMODE_CHOICES` descriptions
+    ANONYMIZATIONMODE_CHOICES_DICT = dict(ANONYMIZATIONMODE_CHOICES)
 
     #: A choicefield that specifies how the assignment is anonymized (or not).
     #:
