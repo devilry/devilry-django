@@ -1,13 +1,16 @@
 import htmls
 from django import test
 from django.conf import settings
+from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 from model_mommy import mommy
 
+from devilry.apps.core import devilry_core_mommy_factories
 from devilry.apps.core.models import Assignment
 from devilry.devilry_examiner.views.assignment import grouplist
+from devilry.devilry_group import devilry_group_mommy_factories
 
 
 class TestGroupItemValue(test.TestCase):
@@ -937,3 +940,31 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             ['user1', 'user2'],
             self.__get_titles(mockresponse.selector))
+
+    # def test_orderby_points_ascending(self):
+    #     testuser = mommy.make(settings.AUTH_USER_MODEL)
+    #     testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+    #     testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    #     devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+    #     mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+    #     testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    #     devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+    #     mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+    #     testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    #     devilry_core_mommy_factories.candidate(group=testgroup3, shortname='user3')
+    #     mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+    #
+    #     devilry_group_mommy_factories.feedbackset_first_try_published(
+    #         group=testgroup1, grading_points=3)
+    #     devilry_group_mommy_factories.feedbackset_first_try_published(
+    #         group=testgroup2, grading_points=10)
+    #     devilry_group_mommy_factories.feedbackset_first_try_published(
+    #         group=testgroup3, grading_points=2)
+    #
+    #     mockresponse = self.mock_http200_getrequest_htmls(
+    #         cradmin_role=testassignment,
+    #         viewkwargs={'filters_string': 'orderby-points_ascending'},
+    #         requestuser=testuser)
+    #     self.assertEqual(
+    #         ['user3', 'user1', 'user2'],
+    #         self.__get_titles(mockresponse.selector))

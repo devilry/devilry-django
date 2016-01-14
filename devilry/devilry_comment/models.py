@@ -32,23 +32,44 @@ class Comment(models.Model):
     #: when was the comment published by celery
     published_datetime = models.DateTimeField(null=True, blank=True)
 
+    #: Use this as value for :obj:`~.Comment.user_role` if the user
+    #: is commenting as a student.
+    USER_ROLE_STUDENT = 'student'
+
+    #: Use this as value for :obj:`~.Comment.user_role` if the user
+    #: is commenting as an examiner.
+    USER_ROLE_EXAMINER = 'examiner'
+
+    #: Use this as value for :obj:`~.Comment.user_role` if the user
+    #: is commenting as an admin.
+    USER_ROLE_ADMIN = 'admin'
+
+    #: Choices for the :obj:`~.Comment.user_role` field.
     USER_ROLE_CHOICES = (
-        ('student', 'Student'),
-        ('examiner', 'Examiner'),
-        ('admin', 'Admin'),
+        (USER_ROLE_STUDENT, 'Student'),
+        (USER_ROLE_EXAMINER, 'Examiner'),
+        (USER_ROLE_ADMIN, 'Admin'),
     )
 
     #: What role did the user publish as? This determines the style of the comment
     user_role = models.CharField(choices=USER_ROLE_CHOICES, max_length=42)
 
+    #: Use this as value for :obj:`~.Comment.comment_type` if the comment
+    #: is an :class:`devilry.devilry_group.models.ImageAnnotationComment`.
+    COMMENT_TYPE_IMAGEANNOTATION = 'imageannotationcomment'
+
+    #: Use this as value for :obj:`~.Comment.comment_type` if the comment
+    #: is a :class:`devilry.devilry_group.models.GroupComment`.
+    COMMENT_TYPE_GROUPCOMMENT = 'groupcomment'
+
+    #: Choices for the :obj:`~.Comment.comment_type` field.
     COMMENT_TYPE_CHOICES = (
-        ('imageannotationcomment', 'ImageAnnotationComment'),
-        ('groupcomment', 'GroupComment'),
+        (COMMENT_TYPE_IMAGEANNOTATION, 'ImageAnnotationComment'),
+        (COMMENT_TYPE_GROUPCOMMENT, 'GroupComment'),
     )
 
-    #: What type of comment is this. Used for reverse mapping to subclasses
+    #: What type of comment is this. Used for reverse mapping to subclasses.
     comment_type = models.CharField(choices=COMMENT_TYPE_CHOICES, max_length=42)
-
 
     def add_commentfile_from_temporary_file(self, tempfile):
         print "running add_commentfile_from_temporary_file"
