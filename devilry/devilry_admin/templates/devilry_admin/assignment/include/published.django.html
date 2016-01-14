@@ -1,8 +1,8 @@
 {% load i18n %}
 {% load humanize %}
 <div class="col-sm-8">
-    <div id="devilry_admin_assignment_published">
-        {% if assignment.publishing_time > now %}
+    <div id="devilry_admin_assignment_overview_published">
+        {% if assignment.publishing_time_is_in_future %}
             <h2>{% trans "Will be published:" %} <span
                     class="text-warning">{{ assignment.publishing_time|date:"SHORT_DATETIME_FORMAT" }}</span></h2>
             <p>
@@ -15,6 +15,13 @@
                 {% trans "This assignment is now avaibable for both students and examiners" %}
             </p>
         {% endif %}
+
+        <div id="devilry_admin_assignment_published_buttonrow">
+            <div class="btn-group btn-group-lg" role="group" aria-label="">
+                <a href="#" type="button" class="btn btn-success btn-lg">{% trans "Publish now" %}</a>
+                <a href="#" type="button" class="btn btn-default btn-lg">{% trans "Edit publishing time" %}</a>
+            </div>
+        </div>
 
     </div>
 </div>

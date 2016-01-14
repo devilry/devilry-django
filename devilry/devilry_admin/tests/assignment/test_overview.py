@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
@@ -60,6 +60,20 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertFalse(
                 mockresponse.selector.exists('.devilry-admin-assignment-examiners-exists'))
+
+    def test_published_row(self):
+        assignment = mommy.make('core.Assignment', publishing_time=datetime(2000, 1, 1))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one('#devilry_admin_assignment_overview_published h2').alltext_normalized,
+                "Was published: Jan 1 2000, 00:00")
+
+    def test_published_row_published_time_in_future(self):
+        assignment = mommy.make('core.Assignment', publishing_time=datetime(3000, 1, 1))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one('#devilry_admin_assignment_overview_published h2').alltext_normalized,
+                "Will be published: Jan 1 3000, 00:00")
 
     def test_settings_row(self):
         assignment = mommy.make('core.Assignment')

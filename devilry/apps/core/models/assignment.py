@@ -465,6 +465,17 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         return self.anonymizationmode != self.ANONYMIZATIONMODE_OFF
 
     @property
+    def publishing_time_is_in_future(self):
+        """
+
+        Returns: ``True``if ``publishing_time``is in the future
+
+        """
+        if self.publishing_time > datetime.now():
+            return True
+        return False
+
+    @property
     def students_can_create_groups_now(self):
         """
         Return ``True`` if :attr:`students_can_create_groups` is ``True``, and
