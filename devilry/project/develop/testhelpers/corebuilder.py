@@ -410,10 +410,8 @@ class AssignmentGroupBuilder(CoreBuilderBase):
     def add_examiners(self, *users):
         for user in users:
             period = self.group.period
-            relatedexaminer = RelatedExaminer.objects.get_or_create(user=user,
-                                                                    period=period)[0]
-            self.group.examiners.create(user=user,
-                                        relatedexaminer=relatedexaminer)
+            relatedexaminer = RelatedExaminer.objects.get_or_create(user=user, period=period)[0]
+            self.group.examiners.create(relatedexaminer=relatedexaminer)
         return self
 
     def add_deadline(self, **kwargs):

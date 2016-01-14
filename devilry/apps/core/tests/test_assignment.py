@@ -259,7 +259,7 @@ class TestAssignment(TestCase):
 
         testassignment.setup_examiners_by_relateduser_syncsystem_tags()
         self.assertEqual(group1.examiners.count(), 1)
-        self.assertTrue(group1.examiners.filter(user__shortname='examiner1').exists())
+        self.assertTrue(group1.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
 
     def test_setup_examiners_by_relateduser_syncsystem_tags_exclude_existing_examinerobjects(self):
         testperiod = mommy.make('core.Period')
@@ -336,11 +336,11 @@ class TestAssignment(TestCase):
         testassignment.setup_examiners_by_relateduser_syncsystem_tags()
         self.assertEqual(Examiner.objects.count(), 3)
         self.assertEqual(group1.examiners.count(), 1)
-        self.assertTrue(group1.examiners.filter(user__shortname='examiner1').exists())
-        self.assertFalse(group1.examiners.filter(user__shortname='examiner2').exists())
+        self.assertTrue(group1.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
+        self.assertFalse(group1.examiners.filter(relatedexaminer__user__shortname='examiner2').exists())
         self.assertEqual(group2.examiners.count(), 2)
-        self.assertTrue(group2.examiners.filter(user__shortname='examiner1').exists())
-        self.assertTrue(group2.examiners.filter(user__shortname='examiner2').exists())
+        self.assertTrue(group2.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
+        self.assertTrue(group2.examiners.filter(relatedexaminer__user__shortname='examiner2').exists())
 
     def test_setup_examiners_by_relateduser_syncsystem_tags_querycount_minimal(self):
         testperiod = mommy.make('core.Period')

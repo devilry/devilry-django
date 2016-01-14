@@ -919,6 +919,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             #        and bulk create Examiner objects for the groups
             #        if the user is not already examiner.
             if relatedstudentids:
+                relatedexaminer = relatedexaminer_syncsystem_tag.relatedexaminer
                 examineruser = relatedexaminer_syncsystem_tag.relatedexaminer.user
                 groupids = set()
                 for candidate in Candidate.objects\
@@ -930,7 +931,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
                 examinerobjects.extend([Examiner(
                     assignmentgroup_id=groupid,
-                    user=examineruser
+                    relatedexaminer=relatedexaminer
                 ) for groupid in groupids])
         if examinerobjects:
             Examiner.objects.bulk_create(examinerobjects)

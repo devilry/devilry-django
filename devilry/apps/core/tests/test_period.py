@@ -1,3 +1,4 @@
+import unittest
 from datetime import datetime
 from datetime import timedelta
 
@@ -186,7 +187,7 @@ class TestPeriodQuerySetPermission(TestCase):
                 {testperiod},
                 set(Period.objects.filter_user_is_admin(user=testuser)))
 
-
+@unittest.skip('Tests marked as OLD, should they be deleted?')
 class TestPeriodOld(TestCase, TestHelper):
     """
     Do not add new tests to this testcase, add to the newer testcases above,

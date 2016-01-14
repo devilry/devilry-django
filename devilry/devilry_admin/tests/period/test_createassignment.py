@@ -365,10 +365,10 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         created_assignment, mockresponse = self.__valid_post_request(period=period)
         self.assertEqual(1, created_assignment.assignmentgroups.count())
         created_group = created_assignment.assignmentgroups.first()
-        self.assertTrue(created_group.examiners.filter(user__shortname='examiner1').exists())
-        self.assertTrue(created_group.examiners.filter(user__shortname='examiner2').exists())
-        self.assertFalse(created_group.examiners.filter(user__shortname='examiner3').exists())
-        self.assertFalse(created_group.examiners.filter(user__shortname='otherperiodexaminer').exists())
+        self.assertTrue(created_group.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
+        self.assertTrue(created_group.examiners.filter(relatedexaminer__user__shortname='examiner2').exists())
+        self.assertFalse(created_group.examiners.filter(relatedexaminer__user__shortname='examiner3').exists())
+        self.assertFalse(created_group.examiners.filter(relatedexaminer__user__shortname='otherperiodexaminer').exists())
 
     def test_post_second_assignment_copies_setup_from_first_assignment(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -380,7 +380,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user__shortname='student1')
         mommy.make('core.Examiner',
                    assignmentgroup=group,
-                   user__shortname='examiner1')
+                   relatedexaminer__user__shortname='examiner1')
 
         created_assignment, mockresponse = self.__valid_post_request(period=period)
         self.assertEqual(1, created_assignment.assignmentgroups.count())
@@ -391,4 +391,4 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
         examinersqueryset = Examiner.objects.filter(assignmentgroup__parentnode=created_assignment)
         self.assertEqual(1, examinersqueryset.count())
-        self.assertTrue(examinersqueryset.filter(user__shortname='examiner1').exists())
+        self.assertTrue(examinersqueryset.filter(relatedexaminer__user__shortname='examiner1').exists())

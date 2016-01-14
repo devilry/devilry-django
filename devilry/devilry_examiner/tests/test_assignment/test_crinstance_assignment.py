@@ -11,7 +11,7 @@ class TestCradminInstanceAssignment(test.TestCase):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_oldperiod_end')
         mommy.make('core.Examiner',
-                   relatedexaminer__user=testuser, user=testuser,
+                   relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=testassignment)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
@@ -22,7 +22,7 @@ class TestCradminInstanceAssignment(test.TestCase):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_futureperiod_start')
         mommy.make('core.Examiner',
-                   relatedexaminer__user=testuser, user=testuser,
+                   relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=testassignment)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
@@ -33,7 +33,7 @@ class TestCradminInstanceAssignment(test.TestCase):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         mommy.make('core.Examiner',
-                   relatedexaminer__user=testuser, user=testuser,
+                   relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=testassignment)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
@@ -44,7 +44,7 @@ class TestCradminInstanceAssignment(test.TestCase):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mommy.make('core.Examiner',
-                   relatedexaminer__user=testuser, user=testuser,
+                   relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=testassignment)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser

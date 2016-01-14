@@ -14,7 +14,7 @@ class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFe
     def test_get(self):
         examiner = mommy.make('core.Examiner')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
-                                                          requestuser=examiner.relatedexaminer)
+                                                          requestuser=examiner.relatedexaminer.user)
         self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
                           examiner.assignmentgroup.assignment.get_path())
 
@@ -22,21 +22,21 @@ class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFe
         examiner = mommy.make('core.Examiner')
         feedbackset = mommy.make('devilry_group.FeedbackSet', group=examiner.assignmentgroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group,
-                                                          requestuser=examiner.relatedexaminer)
+                                                          requestuser=examiner.relatedexaminer.user)
         self.assertTrue(mockresponse.selector.exists('#submit-id-examiner_add_comment_for_examiners'))
 
     def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choise_add_comment_public_button(self):
         examiner = mommy.make('core.Examiner')
         feedbackset = mommy.make('devilry_group.FeedbackSet', group=examiner.assignmentgroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group,
-                                                          requestuser=examiner.relatedexaminer)
+                                                          requestuser=examiner.relatedexaminer.user)
         self.assertTrue(mockresponse.selector.exists('#submit-id-examiner_add_public_comment'))
 
     def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choise_add_comment_to_feedbackdraft_button(self):
         examiner = mommy.make('core.Examiner')
         feedbackset = mommy.make('devilry_group.FeedbackSet', group=examiner.assignmentgroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group,
-                                                          requestuser=examiner.relatedexaminer)
+                                                          requestuser=examiner.relatedexaminer.user)
         self.assertTrue(mockresponse.selector.exists('#submit-id-examiner_add_comment_to_feedback_draft'))
 
     def test_get_examiner_can_see_student_comment(self):
@@ -51,7 +51,7 @@ class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFe
                    published_datetime=timezone.now() - timezone.timedelta(days=1),
                    feedback_set__group=group)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
-                                                          requestuser=examiner.relatedexaminer)
+                                                          requestuser=examiner.relatedexaminer.user)
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
         self.assertEquals(student.relatedstudent.user.fullname, name)
 
