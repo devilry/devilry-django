@@ -15,6 +15,7 @@ from devilry.apps.core.models import deliverytypes, Assignment, RelatedStudent
 from devilry.apps.core.models.assignment_group import GroupPopNotCandiateError
 from devilry.apps.core.models.assignment_group import GroupPopToFewCandiatesError
 from devilry.apps.core.testhelper import TestHelper
+from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import FeedbackSet
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
@@ -2054,6 +2055,71 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
                    is_last_in_group=True)
         queryset = AssignmentGroup.objects.all().annotate_with_is_corrected()
         self.assertTrue(queryset.first().is_corrected)
+
+
+class TestAssignmentGroupQuerySetAnnotateWithGradingPoints(TestCase):
+    def test_annotate_with_grading_points_none_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group=testgroup,
+            grading_points=10)
+        queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
+        self.assertEqual(None, queryset.first().grading_points)
+
+    def test_annotate_with_grading_points(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            grading_points=10)
+        queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
+        self.assertEqual(10, queryset.first().grading_points)
+
+    def test_annotate_with_grading_points_zero_is_not_none(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            grading_points=0)
+        queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
+        self.assertEqual(0, queryset.first().grading_points)
+
+    def test_annotate_with_grading_points_multiple_last_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            grading_points=10,
+            is_last_in_group=False)
+        devilry_group_mommy_factories.feedbackset_new_try_published(
+            group=testgroup,
+            grading_points=20,
+            is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
+        self.assertEqual(20, queryset.first().grading_points)
+
+    def test_annotate_with_grading_points_multiple_last_unpublished(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            grading_points=10,
+            is_last_in_group=False)
+        devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+            group=testgroup,
+            grading_points=20,
+            is_last_in_group=True)
+        queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
+        self.assertEqual(None, queryset.first().grading_points)
+
+    def test_annotate_with_grading_points_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1,
+            grading_points=10)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup2,
+            grading_points=20)
+        queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
+        self.assertEqual(10, queryset.get(id=testgroup1.id).grading_points)
+        self.assertEqual(20, queryset.get(id=testgroup2.id).grading_points)
 
 
 class TestAssignmentGroupQuerySetPermission(TestCase):

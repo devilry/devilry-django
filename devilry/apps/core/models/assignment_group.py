@@ -639,6 +639,20 @@ class AssignmentGroupQuerySet(models.QuerySet):
             )
         )
 
+    def annotate_with_grading_points(self):
+        """
+        Annotate the queryset with ``is_corrected``.
+        """
+        return self.annotate(
+            grading_points=models.Case(
+                models.When(
+                    feedbackset__is_last_in_group=True,
+                    feedbackset__grading_published_datetime__isnull=False,
+                    then='feedbackset__grading_points'),
+                default=models.Value(None)
+            )
+        )
+
 
 class AssignmentGroupManager(models.Manager):
     """
