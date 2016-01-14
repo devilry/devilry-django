@@ -38,3 +38,31 @@ Datamodel API
 
 .. automodule:: devilry.devilry_group.models
     :members:
+
+
+*************
+Writing tests
+*************
+In most cases, just using ``model_mommy`` (mommy.make) should be enough,
+but we provide some factory-methods that makes this a bit easier.
+
+Example - create a group with two "tries"::
+
+    testgroup = mommy.make('core.AssignmentGroup',
+                           parentnode__first_deadline=timezone.now() - timedelta(days=10)
+    devilry_group_mommy_factories.feedbackset_first_try_published(
+        group=testgroup,
+        grading_points=10,
+        deadline_datetime=timezone.now() - timedelta(days=10),  # Not required - defaults not timezone.now()
+        is_last_in_group=False)
+    devilry_group_mommy_factories.feedbackset_new_try_published(
+        group=testgroup,
+        grading_points=20,
+        is_last_in_group=True)
+
+
+
+.. currentmodule:: devilry.devilry_group.devilry_group_mommy_factories
+
+.. automodule:: devilry.devilry_group.devilry_group_mommy_factories
+    :members:

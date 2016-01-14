@@ -141,6 +141,28 @@ when we just need to use a datetime within the bounds a time period:
 
 
 
+***************
+Mommy factories
+***************
+We also provide some factory functions for very common cases. These factory functions
+are just thin wrappers around ``mommy.make``.
+
+
+Factory functions for candidates and examiners
+==============================================
+
+Example::
+
+    testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    devilry_core_mommy_factories.candidate(group=testgroup, shortname='user1',
+                                           fullname='Test User 1',
+                                           automatic_anonymous_id='Loki')
+    devilry_core_mommy_factories.examiner(group=testgroup, shortname='user1')
+
+As you can see these factories are fairly limited, but they are very nice
+when you just need an examiner or candidate.
+
+
 ***************************************
 When NOT to use the model mommy recipes
 ***************************************
@@ -149,11 +171,14 @@ if the code just needs an Assignment object, and the period, publishing time,
 and first deadline does not matter, simpy use ``mommy.make('core.Assignment')``.
 
 
-*********************
-Mommy recipes apidocs
-*********************
+***********************************
+Mommy recipes and factories apidocs
+***********************************
 
 .. automodule:: devilry.apps.core.mommy_recipes
+    :members:
+
+.. automodule:: devilry.apps.core.devilry_core_mommy_factories
     :members:
 
 
