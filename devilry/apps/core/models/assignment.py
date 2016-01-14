@@ -113,7 +113,10 @@ class AssignmentQuerySet(models.QuerySet):
             assignmentgroups__feedbackset__is_last_in_group=True,
             assignmentgroups__feedbackset__grading_published_datetime__isnull=True
         ) & (
-            models.Q(assignmentgroups__feedbackset__deadline_datetime__lt=now) |
+            models.Q(
+                models.Q(assignmentgroups__feedbackset__deadline_datetime__lt=now),
+                ~models.Q(assignmentgroups__feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY)
+            ) |
             models.Q(
                 assignmentgroups__feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
                 first_deadline__lt=now
