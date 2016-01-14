@@ -1,7 +1,10 @@
 from crispy_forms import layout
+from django.utils import http
 from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crapp
 
+from devilry.apps.core import models as core_models
+from devilry.devilry_account import models as account_models
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models
 
@@ -50,6 +53,14 @@ class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
                 object.save()
             # object.save()
             # self._convert_temporary_files_to_comment_files(form, object)
+
+    def dispatch(self, request, *args, **kwargs):
+        assignment = self.request.cradmin_role.parentnode
+        if assignment.anonymizationmode == core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
+            if account_models.PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
+                    user=self.request.user, period=assignment.period) != 'departmentadmin':
+                raise http.Http404()
+        return super(AdminFeedbackFeedView, self).dispatch(request, *args, **kwargs)
 
 
 class App(crapp.App):
