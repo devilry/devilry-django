@@ -627,8 +627,6 @@ class AssignmentGroupQuerySet(models.QuerySet):
         has not expired, and the feedbackset does not have a
         :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
         """
-        from devilry.devilry_group.models import FeedbackSet
-        now = timezone.now()
         whenquery = models.Q(
             feedbackset__is_last_in_group=True,
             feedbackset__grading_published_datetime__isnull=False
