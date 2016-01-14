@@ -562,6 +562,16 @@ class TestAssignmentQuerySet(TestCase):
         returned_assignment = queryset.first()
         self.assertTrue(assignment.id, returned_assignment.id)
 
+    def test_filter_user_is_examiner_active_is_false_hence_user_is_not_examiner(self):
+        user = mommy.make(settings.AUTH_USER_MODEL)
+        assignment = mommy.make('core.Assignment')
+        assignmentgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        relatedexaminer = mommy.make('core.RelatedExaminer', user=user, active=False)
+        examiner = mommy.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=assignmentgroup)
+        mommy.make('core.AssignmentGroup', examiners=[examiner])
+        queryset = Assignment.objects.filter_user_is_examiner(user)
+        self.assertEquals(queryset.count(), 0)
+
     def test_filter_user_is_not_examiner(self):
         user_not_set_as_examiner = mommy.make(settings.AUTH_USER_MODEL)
         relatedexaminer = mommy.make('core.RelatedExaminer')

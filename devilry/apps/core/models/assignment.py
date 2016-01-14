@@ -58,7 +58,9 @@ class AssignmentQuerySet(models.QuerySet):
         Args:
             user: A :class:`devilry.devilry_account.models.User` object.
         """
-        return self.filter(assignmentgroups__examiners__relatedexaminer__user=user).distinct()
+        return self.filter(assignmentgroups__examiners__relatedexaminer__user=user)\
+            .exclude(assignmentgroups__examiners__relatedexaminer__active=False)\
+            .distinct()
 
     def filter_user_is_candidate(self, user):
         """
