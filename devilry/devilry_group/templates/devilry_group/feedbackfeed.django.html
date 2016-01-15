@@ -31,8 +31,16 @@
 {#                    {{ subject.long_name }} {{ period.long_name }}#}
                 </div>
                 {% if devilry_ui_role == 'examiner' %}
-                    <a href="#" class="devilry-group-feedbackfeed-feedback-button btn btn-primary">Feedback</a>
-                    <a href="#" class="devilry-group-feedbackfeed-discuss-button btn btn-primary">Discuss</a>
+                    <nav>
+                        <ul class="nav nav-pills">
+                            <li role="presentation" class="active">
+                                <a href="#" class="devilry-group-feedbackfeed-feedback-button">Feedback</a>
+                            </li>
+                            <li role="presentation" class="active">
+                                <a href="#" class="devilry-group-feedbackfeed-discuss-button active">Discuss</a>
+                            </li>
+                        </ul>
+                    </nav>
                 {% endif %}
 
             </div>
@@ -79,7 +87,6 @@
             {# Feedbackfeed #}
             <div class="col-md-8 col-md-pull-4 devilry-group-feedbackfeed-feed">
                 {% block feed %}
-
                     {% for timestamp, eventlist in timeline.items %}
                         {% for event in eventlist %}
                             <!--
