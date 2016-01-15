@@ -1,3 +1,4 @@
+import unittest
 from datetime import datetime, timedelta
 
 from django.conf import settings
@@ -11,6 +12,7 @@ from ..models.model_utils import EtagMismatchException
 from ..testhelper import TestHelper
 
 
+@unittest.skip('Rewrite or delete these old tests???')
 class TestSubject(TestCase, TestHelper):
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",

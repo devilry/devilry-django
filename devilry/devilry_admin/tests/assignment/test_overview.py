@@ -1,7 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
+
+from devilry.apps.core.models import Assignment
 from devilry.apps.core.mommy_recipes import assignment_activeperiod_end
 from devilry.apps.core import models as coremodels
 from devilry.devilry_admin.views.assignment import overview
@@ -59,6 +61,20 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertFalse(
                 mockresponse.selector.exists('.devilry-admin-assignment-examiners-exists'))
 
+    def test_published_row(self):
+        assignment = mommy.make('core.Assignment', publishing_time=datetime(2000, 1, 1))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one('#devilry_admin_assignment_overview_published h2').alltext_normalized,
+                "Was published: Jan 1 2000, 00:00")
+
+    def test_published_row_published_time_in_future(self):
+        assignment = mommy.make('core.Assignment', publishing_time=datetime(3000, 1, 1))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one('#devilry_admin_assignment_overview_published h2').alltext_normalized,
+                "Will be published: Jan 1 3000, 00:00")
+
     def test_settings_row(self):
         assignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
@@ -71,7 +87,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
-                    '#devilry_admin_assignment_overview_settings_first_deadline a').alltext_normalized,
+                        '#devilry_admin_assignment_overview_settings_first_deadline a').alltext_normalized,
                 "First deadline")
 
     def test_settings_row_first_deadline_description(self):
@@ -79,7 +95,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
-                    '#devilry_admin_assignment_overview_settings_first_deadline p').alltext_normalized,
+                        '#devilry_admin_assignment_overview_settings_first_deadline p').alltext_normalized,
                 "The first deadline is Saturday January 1, 2000, 00:00. This deadline is common for all "
                 "students unless a new deadline have been provided to a group.")
 
@@ -88,14 +104,93 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
-                    '#devilry_admin_assignment_overview_settings_anonymization a').alltext_normalized,
+                        '#devilry_admin_assignment_overview_settings_anonymization a').alltext_normalized,
                 "Anonymization")
 
-    def test_settings_row_anonymization_description(self):
+    def test_settings_row_anonymization_description_when_anonymizationmode_off(self):
+        assignment = mommy.make('core.Assignment')
+        # default = ANONYMIZATIONMODE_OFF
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                        '#devilry_admin_assignment_overview_settings_anonymization p').alltext_normalized,
+                Assignment.ANONYMIZATIONMODE_CHOICES_DICT.get(Assignment.ANONYMIZATIONMODE_OFF))
+
+    def test_settings_row_anonymization_description_when_anonymizationmode_semi_anonymous(self):
+        assignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                        '#devilry_admin_assignment_overview_settings_anonymization p').alltext_normalized,
+                Assignment.ANONYMIZATIONMODE_CHOICES_DICT.get(Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        )
+
+    def test_settings_row_anonymization_description_when_anonymizationmode_fully_anonymous(self):
+        assignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                        '#devilry_admin_assignment_overview_settings_anonymization p').alltext_normalized,
+                Assignment.ANONYMIZATIONMODE_CHOICES_DICT.get(Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        )
+
+    def test_gradingconfiguration_row_heading(self):
         assignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
-                    '#devilry_admin_assignment_overview_settings_anonymization p').alltext_normalized,
-                "Anonymization disabled. Students and examiners can see "
-                "each others names and other identifying information.")
+                        '#devilry_admin_assignment_gradingconfiguration h2').alltext_normalized,
+                "Grading configuration")
+
+    def test_gradingconfiguration_row_description(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                        '#devilry_admin_assignment_gradingconfiguration p').alltext_normalized,
+                "How do you grade your students?")
+
+    def test_gradingconfiguration_row_information_table_caption(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                        '#devilry_admin_assignment_overview_gradingconfiguration_information table caption').alltext_normalized,
+                "Current setup")
+
+    def test_gradingconfiguration_row_information_table_head(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                        '#devilry_admin_assignment_overview_gradingconfiguration_information table thead').alltext_normalized,
+                "Description Grading")
+
+    def test_gradingconfiguration_row_information_table_body(self):
+        """
+
+        TODO: need to be updated for the new grading configuration
+
+        """
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                        '#devilry_admin_assignment_overview_gradingconfiguration_information '
+                        'table tbody tr:nth-child(1)').alltext_normalized,
+                "Examiner choosesTODO")
+        self.assertEqual(
+                mockresponse.selector.one(
+                        '#devilry_admin_assignment_overview_gradingconfiguration_information '
+                        'table tbody tr:nth-child(2)').alltext_normalized,
+                "Students seeTODO")
+        self.assertEqual(
+                mockresponse.selector.one(
+                        '#devilry_admin_assignment_overview_gradingconfiguration_information '
+                        'table tbody tr:nth-child(3)').alltext_normalized,
+                "Maximum number of points achievableTODO")
+        self.assertEqual(
+                mockresponse.selector.one(
+                        '#devilry_admin_assignment_overview_gradingconfiguration_information '
+                        'table tbody tr:nth-child(4)').alltext_normalized,
+                "Minimum number of points required to passTODO")

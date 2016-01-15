@@ -58,7 +58,9 @@ class AssignmentQuerySet(models.QuerySet):
         Args:
             user: A :class:`devilry.devilry_account.models.User` object.
         """
-        return self.filter(assignmentgroups__examiners__relatedexaminer__user=user).distinct()
+        return self.filter(assignmentgroups__examiners__relatedexaminer__user=user)\
+            .exclude(assignmentgroups__examiners__relatedexaminer__active=False)\
+            .distinct()
 
     def filter_user_is_candidate(self, user):
         """
@@ -339,6 +341,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                           'examiners after the first feedback is provided.')
         ),
     ]
+    #: Dictionary for getting the :obj:`~.Assignment.ANONYMIZATIONMODE_CHOICES` descriptions
+    ANONYMIZATIONMODE_CHOICES_DICT = dict(ANONYMIZATIONMODE_CHOICES)
 
     #: A choicefield that specifies how the assignment is anonymized (or not).
     #:
@@ -461,6 +465,17 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         Returns ``True`` if ``anonymizationmode != "off"``.
         """
         return self.anonymizationmode != self.ANONYMIZATIONMODE_OFF
+
+    @property
+    def publishing_time_is_in_future(self):
+        """
+
+        Returns: ``True``if ``publishing_time``is in the future
+
+        """
+        if self.publishing_time > datetime.now():
+            return True
+        return False
 
     @property
     def students_can_create_groups_now(self):
@@ -847,7 +862,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             for otherexaminer in group.copied_from_list.examinerlist:
                 newexaminer = Examiner(
                     assignmentgroup=group,
-                    user_id=otherexaminer.user_id
+                    relatedexaminer_id=otherexaminer.relatedexaminer_id
                 )
                 examiners.append(newexaminer)
         Candidate.objects.bulk_create(candidates)
@@ -895,10 +910,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         period = self.period
 
         # We use this to avoid adding examiners to groups they are already on
-        # We could have used an exclude query, but this is more efficien because
+        # We could have used an exclude query, but this is more efficient because
         # it only requires one query.
         groupid_to_examineruserid_map = dict(Examiner.objects.filter(
-            assignmentgroup__parentnode=self).values_list('assignmentgroup_id', 'user_id'))
+            assignmentgroup__parentnode=self).values_list('assignmentgroup_id', 'relatedexaminer__user_id'))
 
         # We collect all the examiners to be created in this list, and bulk create
         # them at the end
@@ -919,6 +934,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             #        and bulk create Examiner objects for the groups
             #        if the user is not already examiner.
             if relatedstudentids:
+                relatedexaminer = relatedexaminer_syncsystem_tag.relatedexaminer
                 examineruser = relatedexaminer_syncsystem_tag.relatedexaminer.user
                 groupids = set()
                 for candidate in Candidate.objects\
@@ -930,7 +946,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
                 examinerobjects.extend([Examiner(
                     assignmentgroup_id=groupid,
-                    user=examineruser
+                    relatedexaminer=relatedexaminer
                 ) for groupid in groupids])
         if examinerobjects:
             Examiner.objects.bulk_create(examinerobjects)

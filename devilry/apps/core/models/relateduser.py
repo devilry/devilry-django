@@ -273,6 +273,10 @@ class RelatedExaminer(RelatedUserBase):
     """
     objects = RelatedExaminerManager()
 
+    #: Setting this to ``False`` indicates that the examiner is deleted from the course
+    #: for this period. All access is removed.
+    active = models.BooleanField(default=True)
+
     def get_anonymous_name(self):
         """
         Get the anonymous name for this RelatedExaminer.
