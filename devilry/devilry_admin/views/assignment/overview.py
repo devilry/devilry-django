@@ -5,6 +5,7 @@ from django_cradmin.viewhelpers.detail import DetailRoleView
 
 from devilry.apps.core import models as coremodels
 from .first_deadline import AssignmentFirstDeadlineUpdateView
+from .publishing_time import AssignmentPublishingTimeUpdateView
 
 
 class Overview(DetailRoleView):
@@ -24,7 +25,7 @@ class Overview(DetailRoleView):
         for group in self.assignment.assignmentgroups.all():
             examiners_count += group.examiners.count()
         return examiners_count
-    
+
     def get_assignmentgroups_count(self):
         return self.assignment.assignmentgroups.count()
 
@@ -44,5 +45,8 @@ class Overview(DetailRoleView):
 class App(crapp.App):
     appurls = [
         crapp.Url(r'^$', Overview.as_view(), name=crapp.INDEXVIEW_NAME),
-        crapp.Url(r'^update/(?P<pk>\d+)$', AssignmentFirstDeadlineUpdateView.as_view(), name="update_first_deadline")
+        crapp.Url(r'^update_first_deadline/(?P<pk>\d+)$', AssignmentFirstDeadlineUpdateView.as_view(),
+                  name="update_first_deadline"),
+        crapp.Url(r'^update_publishing_time/(?P<pk>\d+)$', AssignmentPublishingTimeUpdateView.as_view(),
+                  name="update_publishing_time")
     ]
