@@ -53,15 +53,17 @@ class FeedbackFeedTimelineBuilder(object):
         if len(feedbacksets) == 0:
             return group.parentnode.first_deadline, timeline
 
-        first_feedbackset = feedbacksets[0]
         last_deadline = None
 
         for index, feedbackset in enumerate(feedbacksets):
             if index == 0:
                 if group.parentnode.first_deadline is not None:
+                    # first feedback set should use assignments first_deadline
                     deadline_datetime = group.parentnode.first_deadline
                     last_deadline = group.parentnode.first_deadline
                 else:
+                    # if assignment has no first_deadline, fall back to the deadline
+                    # of the feedbackset (this shouldn't happen)
                     deadline_datetime = feedbackset.deadline_datetime
             else:
                 deadline_datetime = feedbackset.deadline_datetime
@@ -86,9 +88,8 @@ class FeedbackFeedTimelineBuilder(object):
                     timeline[feedbackset.created_datetime].append({
                         "type": "deadline_created",
                         "obj": group.parentnode.first_deadline,
-                        "user": first_feedbackset.created_by
+                        "user": feedbackset.created_by
                     })
-                    first_feedbackset = feedbackset
             elif feedbackset.deadline_datetime is not None:
                 if deadline_datetime <= feedbackset.deadline_datetime:
                     timeline[feedbackset.created_datetime].append({
@@ -96,7 +97,6 @@ class FeedbackFeedTimelineBuilder(object):
                         "obj": feedbackset.deadline_datetime,
                         "user": feedbackset.created_by
                     })
-                    first_feedbackset = feedbackset
             elif feedbackset is not feedbacksets[0]:
                 timeline[feedbackset.created_datetime].append({
                     "type": "deadline_created",
