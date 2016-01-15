@@ -18,6 +18,17 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
                           candidate.assignment_group.assignment.get_path())
 
+    def test_get_feedbackfeed_student_cannot_see_feedback_or_discuss_in_header(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=group,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
+                                                          requestuser=candidate.relatedstudent.user)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-feedback-button'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-discuss-button'))
+
     def test_get_feedbackfeed_student_add_comment_to_feedbackset_without_deadline(self):
         candidate = mommy.make('core.Candidate',
                              relatedstudent=mommy.make('core.RelatedStudent'))
