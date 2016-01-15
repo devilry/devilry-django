@@ -4,6 +4,7 @@ from django_cradmin import crapp
 from django_cradmin.viewhelpers.detail import DetailRoleView
 
 from devilry.apps.core import models as coremodels
+from .first_deadline import AssignmentFirstDeadlineUpdateView
 
 
 class Overview(DetailRoleView):
@@ -42,5 +43,6 @@ class Overview(DetailRoleView):
 
 class App(crapp.App):
     appurls = [
-        crapp.Url(r'^$', Overview.as_view(), name=crapp.INDEXVIEW_NAME)
+        crapp.Url(r'^$', Overview.as_view(), name=crapp.INDEXVIEW_NAME),
+        crapp.Url(r'^update/(?P<pk>\d+)$', AssignmentFirstDeadlineUpdateView.as_view(), name="update_first_deadline")
     ]
