@@ -11,11 +11,7 @@ class FrontpageView(TemplateView):
         user_model = get_user_model()
         context['user_is_student'] = user_model.objects.user_is_student(self.request.user)
         context['user_is_examiner'] = user_model.objects.user_is_examiner(self.request.user)
-        user_is_any_admin = (
-            user_model.objects.user_is_nodeadmin(self.request.user) or
-            user_model.objects.user_is_assignmentadmin(self.request.user) or
-            user_model.objects.user_is_periodadmin(self.request.user) or
-            user_model.objects.user_is_subjectadmin(self.request.user))
+        user_is_any_admin = user_model.objects.user_is_admin_or_superuser(self.request.user)
         context['user_is_any_admin'] = user_is_any_admin
         return context
 

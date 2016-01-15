@@ -3,7 +3,6 @@ from os.path import exists
 from django_dbdev.backends.postgres import DBSETTINGS
 
 from devilry.project.common.settings import *  # noqa
-from .log import create_logging_conf
 
 THIS_DIR = os.path.dirname(__file__)
 
@@ -21,7 +20,6 @@ if not exists(logdir):
     os.mkdir(logdir)
 MEDIA_ROOT = join(developfilesdir, "filestore")
 DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(developfilesdir, 'deliverystorehier')
-LOGGING = create_logging_conf(logdir)
 
 
 # DATABASES = {
@@ -162,3 +160,47 @@ MOMMY_CUSTOM_FIELDS_GEN = {
 }
 
 IEVVTASKS_DUMPDATA_DIRECTORY = os.path.join(os.path.dirname(THIS_DIR), 'dumps')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '[%(levelname)s %(asctime)s %(name)s %(pathname)s:%(lineno)s] %(message)s'
+        }
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'stderr': {
+            'level': 'DEBUG',
+            'formatter': 'verbose',
+            'class': 'logging.StreamHandler'
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['stderr'],
+            'level': 'DEBUG',
+            'propagate': False
+        },
+        'django.db': {
+            'handlers': ['stderr'],
+            'level': 'INFO',  # Do not set to debug - logs all queries
+            'propagate': False
+        },
+        'sh': {
+            'handlers': ['stderr'],
+            'level': 'WARNING',
+            'propagate': False
+        },
+        '': {
+            'handlers': ['stderr'],
+            'level': 'DEBUG',
+            'propagate': False
+        }
+    }
+}

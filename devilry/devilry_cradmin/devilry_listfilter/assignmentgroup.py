@@ -1,6 +1,10 @@
 from django.conf import settings
-from django.utils.translation import ugettext_lazy, pgettext_lazy
+from django.db import models
+from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy, pgettext_lazy, pgettext
 from django_cradmin.viewhelpers import listfilter
+from django_cradmin.viewhelpers.listfilter.basefilters.single import abstractradio
+from django_cradmin.viewhelpers.listfilter.basefilters.single import abstractselect
 
 
 class AbstractSearch(listfilter.django.single.textinput.Search):
@@ -192,3 +196,182 @@ class OrderByAnonymousUsesCustomCandidateIds(AbstractOrderBy):
             return queryobject.extra_order_by_candidates_candidate_id_of_first_candidate(descending=True)
         else:
             return super(OrderByAnonymousUsesCustomCandidateIds, self).filter(queryobject=queryobject)
+
+
+class StatusRadioFilter(abstractradio.AbstractRadioFilter):
+    def __init__(self, **kwargs):
+        self.view = kwargs.pop('view', None)
+        super(StatusRadioFilter, self).__init__(**kwargs)
+
+    def copy(self):
+        copy = super(StatusRadioFilter, self).copy()
+        copy.view = self.view
+        return copy
+
+    def get_slug(self):
+        return 'status'
+
+    def get_label(self):
+        return pgettext_lazy('group status filter', 'Status')
+
+    def __count_html(self, count, has_count_cssclass):
+        cssclass = 'label-default'
+        if count and has_count_cssclass:
+            cssclass = has_count_cssclass
+        return u'<span class="label {}">{}</span>'.format(cssclass, count)
+
+    def __make_label(self, label, count, has_count_cssclass=None):
+        return mark_safe(u'{label} {count}'.format(
+            label=label,
+            count=self.__count_html(count=count, has_count_cssclass=has_count_cssclass)))
+
+    def get_choices(self):
+        return [
+            ('',
+             self.__make_label(
+                 label=pgettext('group status filter', 'All students'),
+                 count=self.view.get_filtered_all_students_count()
+             )),
+            ('waiting-for-feedback',
+             self.__make_label(
+                 label=pgettext('group status filter', 'Waiting for feedback'),
+                 count=self.view.get_filtered_waiting_for_feedback_count(),
+                 has_count_cssclass='label-warning'
+             )),
+            ('waiting-for-deliveries',
+             self.__make_label(
+                 label=pgettext('group status filter', 'Waiting for deliveries'),
+                 count=self.view.get_filtered_waiting_for_deliveries_count()
+             )),
+            ('corrected',
+             self.__make_label(
+                 label=pgettext('group status filter', 'Corrected'),
+                 count=self.view.get_filtered_corrected_count()
+             )),
+        ]
+
+    def filter(self, queryobject):
+        cleaned_value = self.get_cleaned_value() or ''
+        if cleaned_value == 'waiting-for-feedback':
+            queryobject = queryobject.filter(is_waiting_for_feedback=True)
+        elif cleaned_value == 'waiting-for-deliveries':
+            queryobject = queryobject.filter(is_waiting_for_deliveries=True)
+        elif cleaned_value == 'corrected':
+            queryobject = queryobject.filter(is_corrected=True)
+        return queryobject
+
+
+class PointsFilter(listfilter.django.single.textinput.IntSearch):
+    def get_slug(self):
+        return 'points'
+
+    def get_label(self):
+        return pgettext_lazy('group points filter', 'Points')
+
+    def get_modelfields(self):
+        return ['grading_points']
+
+    # def get_placeholder(self):
+    #     return pgettext_lazy('group points filter', 'Type a number ...')
+
+
+class IsPassingGradeFilter(listfilter.django.single.select.Boolean):
+    def get_slug(self):
+        return 'is_passing_grade'
+
+    def get_modelfield(self):
+        return 'is_passing_grade'
+
+    def get_label(self):
+        return pgettext_lazy('group is passing grade filter',
+                             'Passing grade?')
+
+    def get_query(self, modelfield):
+        return models.Q(**{modelfield: False})
+
+
+class ExaminerFilter(abstractselect.AbstractSelectFilter):
+    def __init__(self, **kwargs):
+        self.view = kwargs.pop('view', None)
+        super(ExaminerFilter, self).__init__(**kwargs)
+
+    def copy(self):
+        copy = super(ExaminerFilter, self).copy()
+        copy.view = self.view
+        return copy
+
+    def get_slug(self):
+        return 'examiner'
+
+    def get_label(self):
+        return pgettext_lazy('group examiner filter', 'Examiner')
+
+    def __get_examiner_name(self, relatedexaminer):
+        return relatedexaminer.user.get_full_name()
+
+    def __get_choices_cached(self):
+        if not hasattr(self, '_choices'):
+            self._choices = [(str(relatedexaminer.id), self.__get_examiner_name(relatedexaminer))
+                             for relatedexaminer in self.view.get_distinct_relatedexaminers()]
+        return self._choices
+
+    def __get_valid_values(self):
+        return {int(choice[0])
+                for choice in self.__get_choices_cached()}
+
+    def get_choices(self):
+        choices = [
+            ('', '')
+        ]
+        choices.extend(self.__get_choices_cached())
+        return choices
+
+    def get_cleaned_value(self):
+        cleaned_value = super(ExaminerFilter, self).get_cleaned_value()
+        if cleaned_value:
+            try:
+                cleaned_value = int(cleaned_value)
+            except ValueError:
+                pass
+            else:
+                if cleaned_value in self.__get_valid_values():
+                    return cleaned_value
+        return None
+
+    def filter(self, queryobject):
+        cleaned_value = self.get_cleaned_value()
+        if cleaned_value is not None:
+            queryobject = queryobject.filter(examiners__relatedexaminer_id=cleaned_value)
+        return queryobject
+
+
+class ActivityFilter(abstractselect.AbstractSelectFilter):
+    def get_slug(self):
+        return 'activity'
+
+    def get_label(self):
+        return pgettext_lazy('group has comments filter',
+                             'Activity')
+
+    def get_choices(self):
+        return [
+            ('', ''),
+            ('studentcomment', pgettext_lazy('group has comments filter',
+                                             'Has comment(s) from student')),
+            ('studentfile', pgettext_lazy('group has comments filter',
+                                          'Has file(s) from student')),
+            ('examinercomment', pgettext_lazy('group has comments filter',
+                                              'Has comment(s) from examiner')),
+            ('admincomment', pgettext_lazy('group has comments filter',
+                                           'Has comment(s) from administrator')),
+        ]
+
+    def filter(self, queryobject):
+        cleaned_value = self.get_cleaned_value()
+        # if cleaned_value == 'studentcomment':
+            # queryobject = queryobject.extra_annotate_datetime_of_last_student_comment()\
+            #     .extra(where='datetime_of_last_student_comment IS NOT NULL')
+        # NOTE: Should probably have an annotation for number of student and examiner
+        #       comments on the queryset in the view (we need it for the listing).
+        #       So we can just filter on that number.
+        return queryobject
