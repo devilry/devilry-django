@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load humanize %}
+{% load cradmin_tags %}
 <div class="col-sm-8">
     <div id="devilry_admin_assignment_overview_settings">
         <h2>{% trans "Settings" %}</h2>
@@ -8,7 +9,7 @@
             <ul>
                 <li id="devilry_admin_assignment_overview_settings_first_deadline">
                     <h3>
-                        <a href="#">{% trans "First deadline" %}</a>
+                        <a href="{% cradmin_appurl "update_first_deadline" assignment.id %}">{% trans "First deadline" %}</a>
                     </h3>
                     <p>
                         {% blocktrans with deadline=assignment.first_deadline context "first_deadline description"%}
