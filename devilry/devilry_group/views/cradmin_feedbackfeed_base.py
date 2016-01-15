@@ -139,3 +139,6 @@ class FeedbackFeedBaseView(create.CreateView):
             groupcomment.add_commentfile_from_temporary_file(tempfile=temporaryfile)
 
         return True
+
+    def get_success_message(self, object):
+        return None
