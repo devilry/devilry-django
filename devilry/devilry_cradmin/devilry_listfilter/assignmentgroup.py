@@ -288,3 +288,58 @@ class IsPassingGradeFilter(listfilter.django.single.select.Boolean):
 
     def get_query(self, modelfield):
         return models.Q(**{modelfield: False})
+
+
+class ExaminerFilter(abstractselect.AbstractSelectFilter):
+    def __init__(self, **kwargs):
+        self.view = kwargs.pop('view', None)
+        super(ExaminerFilter, self).__init__(**kwargs)
+
+    def copy(self):
+        copy = super(ExaminerFilter, self).copy()
+        copy.view = self.view
+        return copy
+
+    def get_slug(self):
+        return 'examiner'
+
+    def get_label(self):
+        return pgettext_lazy('group examiner filter', 'Examiner')
+
+    def __get_examiner_name(self, relatedexaminer):
+        return relatedexaminer.user.get_full_name()
+
+    def __get_choices_cached(self):
+        if not hasattr(self, '_choices'):
+            self._choices = [(str(relatedexaminer.id), self.__get_examiner_name(relatedexaminer))
+                             for relatedexaminer in self.view.get_distinct_relatedexaminers()]
+        return self._choices
+
+    def __get_valid_values(self):
+        return {int(choice[0])
+                for choice in self.__get_choices_cached()}
+
+    def get_choices(self):
+        choices = [
+            ('', '')
+        ]
+        choices.extend(self.__get_choices_cached())
+        return choices
+
+    def get_cleaned_value(self):
+        cleaned_value = super(ExaminerFilter, self).get_cleaned_value()
+        if cleaned_value:
+            try:
+                cleaned_value = int(cleaned_value)
+            except ValueError:
+                pass
+            else:
+                if cleaned_value in self.__get_valid_values():
+                    return cleaned_value
+        return None
+
+    def filter(self, queryobject):
+        cleaned_value = self.get_cleaned_value()
+        if cleaned_value is not None:
+            queryobject = queryobject.filter(examiners__relatedexaminer_id=cleaned_value)
+        return queryobject

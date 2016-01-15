@@ -10,7 +10,7 @@ from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import listfilter
 
 from devilry.apps.core import models as coremodels
-from devilry.apps.core.models import Candidate
+from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer
 from devilry.devilry_cradmin import devilry_listfilter
 
 
@@ -89,6 +89,8 @@ class GroupListView(listbuilderview.FilterListMixin,
         filterlist.append(devilry_listfilter.assignmentgroup.StatusRadioFilter(view=self))
         filterlist.append(devilry_listfilter.assignmentgroup.IsPassingGradeFilter())
         filterlist.append(devilry_listfilter.assignmentgroup.PointsFilter())
+        if self.__has_multiple_examiners():
+            filterlist.append(devilry_listfilter.assignmentgroup.ExaminerFilter(view=self))
 
     def get_unfiltered_queryset_for_role(self, role):
         assignment = role
@@ -158,6 +160,24 @@ class GroupListView(listbuilderview.FilterListMixin,
                     exclude={'status'})\
             .filter(is_corrected=True)\
             .count()
+
+    def __get_distinct_relatedexaminer_ids(self):
+        if not hasattr(self, '_distinct_relatedexaminer_ids'):
+            self._distinct_relatedexaminer_ids = Examiner.objects\
+                .filter(assignmentgroup__in=self.__get_unfiltered_queryset_for_role())\
+                .values_list('relatedexaminer_id', flat=True)\
+                .distinct()
+            self._distinct_relatedexaminer_ids = list(self._distinct_relatedexaminer_ids)
+        return self._distinct_relatedexaminer_ids
+
+    def __has_multiple_examiners(self):
+        return len(self.__get_distinct_relatedexaminer_ids()) > 1
+
+    def get_distinct_relatedexaminers(self):
+        return RelatedExaminer.objects\
+            .filter(id__in=self.__get_distinct_relatedexaminer_ids())\
+            .select_related('user')\
+            .order_by(Lower(Concat('user__fullname', 'user__shortname')))
 
     def get_context_data(self, **kwargs):
         context = super(GroupListView, self).get_context_data(**kwargs)

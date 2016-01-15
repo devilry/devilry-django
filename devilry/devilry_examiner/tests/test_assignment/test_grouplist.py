@@ -157,8 +157,8 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mommy.make('core.Examiner', relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=testassignment,
-                   _quantity=20)
-        with self.assertNumQueries(8):
+                   _quantity=30)
+        with self.assertNumQueries(10):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                requestuser=testuser)
 
@@ -1451,4 +1451,82 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             {'user3'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_render_examiner_filter_if_multiple_examiners(self):
+        testuser1 = mommy.make(settings.AUTH_USER_MODEL)
+        testuser2 = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        relatedexaminer1 = mommy.make('core.RelatedExaminer', user=testuser1)
+        relatedexaminer2 = mommy.make('core.RelatedExaminer', user=testuser2)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer1)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer2)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser1)
+        self.assertTrue(mockresponse.selector.exists('#django_cradmin_listfilter_examiner_input'))
+
+    def test_do_not_render_examiner_filter_if_single_examiner(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        relatedexaminer = mommy.make('core.RelatedExaminer', user=testuser)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser)
+        self.assertFalse(mockresponse.selector.exists('#django_cradmin_listfilter_examiner_input'))
+
+    def test_render_examiner_filter_choices(self):
+        testuser1 = mommy.make(settings.AUTH_USER_MODEL, fullname='A')
+        testuser2 = mommy.make(settings.AUTH_USER_MODEL, shortname='c')
+        testuser3 = mommy.make(settings.AUTH_USER_MODEL, fullname='B')
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        relatedexaminer1 = mommy.make('core.RelatedExaminer', user=testuser1)
+        relatedexaminer2 = mommy.make('core.RelatedExaminer', user=testuser2)
+        relatedexaminer3 = mommy.make('core.RelatedExaminer', user=testuser3)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer1)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer2)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer3)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser1)
+        choices_labels = [
+            element.alltext_normalized
+            for element in mockresponse.selector.list('#django_cradmin_listfilter_examiner_input option')]
+        self.assertEqual(
+            ['', 'A', 'B', 'c'],
+            choices_labels)
+
+    def test_filter_examiner(self):
+        testuser1 = mommy.make(settings.AUTH_USER_MODEL)
+        testuser2 = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        relatedexaminer1 = mommy.make('core.RelatedExaminer', user=testuser1)
+        relatedexaminer2 = mommy.make('core.RelatedExaminer', user=testuser2)
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer=relatedexaminer1)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer=relatedexaminer2)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer=relatedexaminer1)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'examiner-{}'.format(relatedexaminer2.id)},
+            requestuser=testuser1)
+        self.assertEqual(
+            {'user1'},
             set(self.__get_titles(mockresponse.selector)))
