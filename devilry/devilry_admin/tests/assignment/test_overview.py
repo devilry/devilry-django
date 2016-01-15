@@ -75,6 +75,20 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.one('#devilry_admin_assignment_overview_published h2').alltext_normalized,
                 "Will be published: Jan 1 3000, 00:00")
 
+    def test_published_row_buttons(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                        "#devilry_admin_assignment_published_buttonrow a:nth-child(1)").alltext_normalized,
+                'Publish now'
+        )
+        self.assertEqual(
+                mockresponse.selector.one(
+                        "#devilry_admin_assignment_published_buttonrow a:nth-child(2)").alltext_normalized,
+                'Edit publishing time'
+        )
+
     def test_settings_row(self):
         assignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
@@ -194,3 +208,43 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
                         'table tbody tr:nth-child(4)').alltext_normalized,
                 "Minimum number of points required to passTODO")
+
+    def test_utilities_row(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one('#devilry_admin_assignment_overview_utilities h2').alltext_normalized,
+                "Utilities")
+
+    def test_utilities_row_passed_previous(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                        '#devilry_admin_assignment_overview_utilities_passed_previous a').alltext_normalized,
+                "Passed previous semester")
+
+    def test_utilities_row_passed_previous_description(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                        '#devilry_admin_assignment_overview_utilities_passed_previous p').alltext_normalized,
+                "Mark students that have passed this assignment previously.")
+
+    def test_utilities_row_detektor(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                        '#devilry_admin_assignment_overview_utilities_detektor a').alltext_normalized,
+                "Detektor")
+
+    def test_utilities_row_detektor_description(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                        '#devilry_admin_assignment_overview_utilities_detektor p').alltext_normalized,
+                'Compare programming code delivered by your students and '
+                'get statistics about similarities in the uploaded files.')
