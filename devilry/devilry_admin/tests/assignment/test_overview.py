@@ -75,6 +75,20 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.one('#devilry_admin_assignment_overview_published h2').alltext_normalized,
                 "Will be published: Jan 1 3000, 00:00")
 
+    def test_published_row_buttons(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                    "#devilry_admin_assignment_published_buttonrow a:nth-child(1)").alltext_normalized,
+                'Publish now'
+        )
+        self.assertEqual(
+                mockresponse.selector.one(
+                    "#devilry_admin_assignment_published_buttonrow a:nth-child(2)").alltext_normalized,
+                'Edit publishing time'
+        )
+
     def test_settings_row(self):
         assignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
