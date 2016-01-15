@@ -58,9 +58,7 @@ class AssignmentQuerySet(models.QuerySet):
         Args:
             user: A :class:`devilry.devilry_account.models.User` object.
         """
-        return self.filter(assignmentgroups__examiners__relatedexaminer__user=user)\
-            .exclude(assignmentgroups__examiners__relatedexaminer__active=False)\
-            .distinct()
+        return self.filter(assignmentgroups__examiners__relatedexaminer__user=user).distinct()
 
     def filter_user_is_candidate(self, user):
         """
@@ -91,7 +89,8 @@ class AssignmentQuerySet(models.QuerySet):
         """
         Returns all assignments that the given ``user`` has access to as examiner.
         """
-        return self.filter_is_active().filter_user_is_examiner(user)
+        return self.filter_is_active().filter_user_is_examiner(user)\
+            .exclude(assignmentgroups__examiners__relatedexaminer__active=False)
 
     def filter_student_has_access(self, user):
         """
