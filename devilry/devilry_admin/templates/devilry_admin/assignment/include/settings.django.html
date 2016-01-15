@@ -1,23 +1,13 @@
 {% load i18n %}
 {% load humanize %}
 {% load cradmin_tags %}
-<div class="col-sm-8">
+<div class="col-sm-6">
     <div id="devilry_admin_assignment_overview_settings">
         <h2>{% trans "Settings" %}</h2>
         <div id="devilry_admin_assignment_overview_settings_links"
              class="devilry-admin-assignment-overview-settings-links">
             <ul>
-                <li id="devilry_admin_assignment_overview_settings_first_deadline">
-                    <h3>
-                        <a href="{% cradmin_appurl "update_first_deadline" assignment.id %}">{% trans "First deadline" %}</a>
-                    </h3>
-                    <p>
-                        {% blocktrans with deadline=assignment.first_deadline context "first_deadline description"%}
-                            The first deadline is {{ deadline }}. This deadline is common for all students
-                            unless a new deadline have been provided to a group.
-                        {% endblocktrans %}
-                    </p>
-                </li>
+
                 <li id="devilry_admin_assignment_overview_settings_anonymization">
                     <h3>
                         <a href="#">{% trans "Anonymization" %}</a>
@@ -31,5 +21,5 @@
     </div>
 </div>
 
-<div class="col-sm-4">
+<div class="col-sm-6">
 </div>
