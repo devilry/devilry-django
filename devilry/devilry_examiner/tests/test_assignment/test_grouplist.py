@@ -1530,3 +1530,80 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             {'user1'},
             set(self.__get_titles(mockresponse.selector)))
+
+    def test_filter_no_result_message(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                   'devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__shortname='testuser')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                viewkwargs={'filters_string': 'search-nomatch'},
+                requestuser=testuser)
+        self.assertEqual(
+            'No students found matching your filters/search.',
+            mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
+
+    def test_filter_waiting_for_feedback_empty(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            first_deadline=timezone.now() - timedelta(days=2))
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'status-waiting-for-feedback'},
+            requestuser=testuser)
+        self.assertEqual(
+            'You have no students waiting for feedback.',
+            mockresponse.selector.one('.devilry-examiner-grouplist-empty').alltext_normalized)
+        self.assertTrue(
+            mockresponse.selector.one('.devilry-examiner-grouplist-empty').hasclass(
+                'devilry-examiner-grouplist-empty-waiting-for-feedback'))
+
+    def test_filter_waiting_for_deliveries_empty(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            first_deadline=timezone.now() + timedelta(days=2))
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
+            requestuser=testuser)
+        self.assertEqual(
+            'You are currently not expecting new deliveries from any students.',
+            mockresponse.selector.one('.devilry-examiner-grouplist-empty').alltext_normalized)
+        self.assertTrue(
+            mockresponse.selector.one('.devilry-examiner-grouplist-empty').hasclass(
+                'devilry-examiner-grouplist-empty-waiting-for-deliveries'))
+
+    def test_filter_corrected_empty(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'status-corrected'},
+            requestuser=testuser)
+        self.assertEqual(
+            'You have not finished correcting any students yet.',
+            mockresponse.selector.one('.devilry-examiner-grouplist-empty').alltext_normalized)
+        self.assertTrue(
+            mockresponse.selector.one('.devilry-examiner-grouplist-empty').hasclass(
+                'devilry-examiner-grouplist-empty-corrected'))

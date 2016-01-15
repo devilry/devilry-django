@@ -14,14 +14,19 @@
             {% trans "No students found matching your filters/search." %}
         </p>
     {% else %}
-        <div class="devilry-examiner-grouplist-empty devilry-examiner-grouplist-empty-{{ status_filter_value }}">
+        <div class="devilry-examiner-grouplist-empty devilry-examiner-grouplist-empty-{{ status_filter_value_normalized }}">
             {% if status_filter_value_normalized == "waiting-for-feedback" %}
-                {% trans "You have no students waiting for feedback" %}
+                {% trans "You have no students waiting for feedback." %}
             {% elif status_filter_value_normalized == "waiting-for-deliveries" %}
-                {% trans "You are currently not expecting new deliveries from any students" %}
+                {% trans "You are currently not expecting new deliveries from any students." %}
             {% elif status_filter_value_normalized == "corrected" %}
-                {% trans "You have not finished correcting any students yet" %}
+                {% trans "You have not finished correcting any students yet." %}
             {% endif %}
+            {% comment %}
+                NOTE: We never get status_filter_value_normalized == "all" here
+                      - that would end in a 404 instead because the examiner does
+                      not have access.
+            {% endcomment %}
         </div>
     {% endif %}
 {% endblock no-items-wrapper %}
