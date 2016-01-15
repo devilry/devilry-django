@@ -1,8 +1,10 @@
 from django.conf import settings
+from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy, pgettext_lazy, pgettext
 from django_cradmin.viewhelpers import listfilter
 from django_cradmin.viewhelpers.listfilter.basefilters.single import abstractradio
+from django_cradmin.viewhelpers.listfilter.basefilters.single import abstractselect
 
 
 class AbstractSearch(listfilter.django.single.textinput.Search):
@@ -257,3 +259,32 @@ class StatusRadioFilter(abstractradio.AbstractRadioFilter):
         elif cleaned_value == 'corrected':
             queryobject = queryobject.filter(is_corrected=True)
         return queryobject
+
+
+class PointsFilter(listfilter.django.single.textinput.IntSearch):
+    def get_slug(self):
+        return 'points'
+
+    def get_label(self):
+        return pgettext_lazy('group points filter', 'Points')
+
+    def get_modelfields(self):
+        return ['grading_points']
+
+    # def get_placeholder(self):
+    #     return pgettext_lazy('group points filter', 'Type a number ...')
+
+
+class IsPassingGradeFilter(listfilter.django.single.select.Boolean):
+    def get_slug(self):
+        return 'is_passing_grade'
+
+    def get_modelfield(self):
+        return 'is_passing_grade'
+
+    def get_label(self):
+        return pgettext_lazy('group is passing grade filter',
+                             'Passing grade?')
+
+    def get_query(self, modelfield):
+        return models.Q(**{modelfield: False})

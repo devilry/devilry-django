@@ -87,6 +87,8 @@ class GroupListView(listbuilderview.FilterListMixin,
         else:
             self.__add_filterlist_items_not_anonymous(filterlist=filterlist)
         filterlist.append(devilry_listfilter.assignmentgroup.StatusRadioFilter(view=self))
+        filterlist.append(devilry_listfilter.assignmentgroup.IsPassingGradeFilter())
+        filterlist.append(devilry_listfilter.assignmentgroup.PointsFilter())
 
     def get_unfiltered_queryset_for_role(self, role):
         assignment = role
@@ -103,6 +105,7 @@ class GroupListView(listbuilderview.FilterListMixin,
                 models.Prefetch('candidates',
                                 queryset=candidatequeryset))\
             .annotate_with_grading_points()\
+            .annotate_with_is_passing_grade()\
             .annotate_with_is_waiting_for_feedback()\
             .annotate_with_is_waiting_for_deliveries()\
             .annotate_with_is_corrected()\
