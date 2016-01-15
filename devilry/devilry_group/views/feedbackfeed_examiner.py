@@ -3,7 +3,7 @@ import datetime
 
 from django.utils import timezone
 from django_cradmin import crapp
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from django.db.models import Q
 
 # devilry imports
@@ -14,7 +14,7 @@ from devilry.devilry_group import models
 from crispy_forms import layout
 
 
-class ExaminerFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
+class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     """
     TODO: Document!
     """
@@ -26,7 +26,7 @@ class ExaminerFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         )
 
     def get_context_data(self, **kwargs):
-        context = super(ExaminerFeedbackFeedView, self).get_context_data(**kwargs)
+        context = super(ExaminerBaseFeedbackFeedView, self).get_context_data(**kwargs)
         context['devilry_ui_role'] = 'examiner'
         return context
 
@@ -34,21 +34,21 @@ class ExaminerFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         return [
             layout.Submit('examiner_add_comment_for_examiners',
                 _('Add comment for examiners'),
-               css_class='btn btn-primary'),
+               css_class='btn btn-default'),
             layout.Submit('examiner_add_public_comment',
                _('Add public comment'),
                css_class='btn btn-primary'),
             layout.Submit('examiner_add_comment_to_feedback_draft',
                    _('Add to feedback'),
-                   css_class='btn btn-primary')
+                   css_class='btn btn-default')
         ]
 
     def set_automatic_attributes(self, obj):
-        super(ExaminerFeedbackFeedView, self).set_automatic_attributes(obj)
+        super(ExaminerBaseFeedbackFeedView, self).set_automatic_attributes(obj)
         obj.user_role = 'examiner'
 
     def save_object(self, form, commit=True):
-        obj = super(ExaminerFeedbackFeedView, self).save_object(form)
+        obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form)
 
         self._convert_temporary_files_to_comment_files(form, obj)
         if form.data.get('examiner_add_comment_for_examiners'):
@@ -61,14 +61,33 @@ class ExaminerFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
             obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
             obj.part_of_grading = True
 
-        obj = super(ExaminerFeedbackFeedView, self).save_object(form)
+        obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form)
         return obj
+
+
+class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
+    """
+    TODO: Document
+    """
+
+
+class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
+    """
+    TODO: Document
+    """
+    def get_success_url(self):
+        return self.request.cradmin_app.reverse_appurl(viewname='discuss')
 
 
 class App(crapp.App):
     appurls = [
         crapp.Url(
             r'^$',
-            ExaminerFeedbackFeedView.as_view(),
+            ExaminerFeedbackView.as_view(),
             name=crapp.INDEXVIEW_NAME),
+        crapp.Url(
+            r'^discuss$',
+            ExaminerDiscussView.as_view(),
+            name='discuss'
+        )
     ]
