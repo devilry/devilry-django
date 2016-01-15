@@ -6,3 +6,22 @@
 {#    <p class="devilry-page-subheader">#}
 {#    </p>#}
 {% endblock pageheader-inner %}
+
+
+{% block no-items-wrapper %}
+    {% if excluding_filters_other_than_status_is_applied %}
+        <p class="django-cradmin-listing-no-items-message django-cradmin-listbuilderview-no-items-message">
+            {% trans "No students found matching your filters/search." %}
+        </p>
+    {% else %}
+        <div class="devilry-examiner-grouplist-empty devilry-examiner-grouplist-empty-{{ status_filter_value }}">
+            {% if status_filter_value_normalized == "waiting-for-feedback" %}
+                {% trans "You have no students waiting for feedback" %}
+            {% elif status_filter_value_normalized == "waiting-for-deliveries" %}
+                {% trans "You are currently not expecting new deliveries from any students" %}
+            {% elif status_filter_value_normalized == "corrected" %}
+                {% trans "You have not finished correcting any students yet" %}
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock no-items-wrapper %}
