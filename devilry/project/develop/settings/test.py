@@ -13,7 +13,6 @@ if not exists(logdir):
     os.mkdir(logdir)
 MEDIA_ROOT = join(developfilesdir, "filestore")
 DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(developfilesdir, 'deliverystorehier')
-LOGGING = create_logging_conf(logdir)
 
 
 if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' in MIDDLEWARE_CLASSES:

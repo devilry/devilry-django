@@ -2,15 +2,13 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.db.models.functions import Lower, Concat
-from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 from django_cradmin.viewhelpers import listbuilder
 from django_cradmin.viewhelpers import listbuilderview
-from django_cradmin.viewhelpers import listfilter
 
 from devilry.apps.core import models as coremodels
-from devilry.apps.core.models import Candidate
+from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer
 from devilry.devilry_cradmin import devilry_listfilter
 
 
@@ -86,6 +84,12 @@ class GroupListView(listbuilderview.FilterListMixin,
                 self.__add_filterlist_items_anonymous(filterlist=filterlist)
         else:
             self.__add_filterlist_items_not_anonymous(filterlist=filterlist)
+        filterlist.append(devilry_listfilter.assignmentgroup.StatusRadioFilter(view=self))
+        filterlist.append(devilry_listfilter.assignmentgroup.IsPassingGradeFilter())
+        filterlist.append(devilry_listfilter.assignmentgroup.PointsFilter())
+        if self.__has_multiple_examiners():
+            filterlist.append(devilry_listfilter.assignmentgroup.ExaminerFilter(view=self))
+        filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
 
     def get_unfiltered_queryset_for_role(self, role):
         assignment = role
@@ -102,7 +106,86 @@ class GroupListView(listbuilderview.FilterListMixin,
                 models.Prefetch('candidates',
                                 queryset=candidatequeryset))\
             .annotate_with_grading_points()\
+            .annotate_with_is_passing_grade()\
+            .annotate_with_is_waiting_for_feedback()\
+            .annotate_with_is_waiting_for_deliveries()\
+            .annotate_with_is_corrected()\
             .distinct()
+
+    def __get_status_filter_value(self):
+        status_value = self.get_filterlist().filtershandler.get_cleaned_value_for('status')
+        if not status_value:
+            status_value = 'all'
+        return status_value
+
+    def __get_unfiltered_queryset_for_role(self):
+        return self.get_unfiltered_queryset_for_role(role=self.request.cradmin_role)
+
+    def __get_total_groupcount(self):
+        return self.__get_unfiltered_queryset_for_role().count()
+
+    # def __get_filtered_groupcount(self):
+    #     return self.get_queryset().count()
+
+    def __get_excluding_filters_other_than_status_is_applied(self, total_groupcount):
+        return self.get_filterlist().filter(
+            queryobject=self.__get_unfiltered_queryset_for_role(),
+            exclude={'status'}
+        ).count() < total_groupcount
+
+    def get_filtered_all_students_count(self):
+        return self.get_filterlist()\
+            .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
+                    exclude={'status'})\
+            .count()
+
+    def get_filtered_waiting_for_feedback_count(self):
+        return self.get_filterlist()\
+            .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
+                    exclude={'status'})\
+            .filter(is_waiting_for_feedback=True)\
+            .count()
+
+    def get_filtered_waiting_for_deliveries_count(self):
+        return self.get_filterlist()\
+            .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
+                    exclude={'status'})\
+            .filter(is_waiting_for_deliveries=True)\
+            .count()
+
+    def get_filtered_corrected_count(self):
+        return self.get_filterlist()\
+            .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
+                    exclude={'status'})\
+            .filter(is_corrected=True)\
+            .count()
+
+    def __get_distinct_relatedexaminer_ids(self):
+        if not hasattr(self, '_distinct_relatedexaminer_ids'):
+            self._distinct_relatedexaminer_ids = Examiner.objects\
+                .filter(assignmentgroup__in=self.__get_unfiltered_queryset_for_role())\
+                .values_list('relatedexaminer_id', flat=True)\
+                .distinct()
+            self._distinct_relatedexaminer_ids = list(self._distinct_relatedexaminer_ids)
+        return self._distinct_relatedexaminer_ids
+
+    def __has_multiple_examiners(self):
+        return len(self.__get_distinct_relatedexaminer_ids()) > 1
+
+    def get_distinct_relatedexaminers(self):
+        return RelatedExaminer.objects\
+            .filter(id__in=self.__get_distinct_relatedexaminer_ids())\
+            .select_related('user')\
+            .order_by(Lower(Concat('user__fullname', 'user__shortname')))
+
+    def get_context_data(self, **kwargs):
+        context = super(GroupListView, self).get_context_data(**kwargs)
+        context['status_filter_value_normalized'] = self.__get_status_filter_value()
+        total_groupcount = self.__get_total_groupcount()
+        context['excluding_filters_other_than_status_is_applied'] = \
+            self.__get_excluding_filters_other_than_status_is_applied(
+                total_groupcount=total_groupcount)
+        return context
 
 
 class App(crapp.App):

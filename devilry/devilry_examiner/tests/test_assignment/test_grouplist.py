@@ -1,5 +1,6 @@
+from datetime import datetime, timedelta
+
 import htmls
-from datetime import datetime
 from django import test
 from django.conf import settings
 from django.utils import timezone
@@ -156,8 +157,8 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mommy.make('core.Examiner', relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=testassignment,
-                   _quantity=20)
-        with self.assertNumQueries(2):
+                   _quantity=30)
+        with self.assertNumQueries(10):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                requestuser=testuser)
 
@@ -1119,3 +1120,490 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             ['user1', 'user2'],
             self.__get_titles(mockresponse.selector))
+
+    def test_filter_status_all(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser)
+        self.assertEqual(
+            {'user1', 'user2'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_filter_status_waiting_for_feedback(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                first_deadline=timezone.now() - timedelta(days=2))
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1, grading_points=1)
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group=testgroup2)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'status-waiting-for-feedback'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user2'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_filter_status_waiting_for_deliveries(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                first_deadline=timezone.now() + timedelta(days=2))
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1, grading_points=1)
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group=testgroup2)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user2'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_filter_status_corrected(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1, grading_points=1)
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group=testgroup2)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'status-corrected'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user1'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_render_status_all_label(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup2)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup3)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser)
+        self.assertEqual(
+            'All students 3',
+            mockresponse.selector.one(
+                '#django_cradmin_listfilter_status_input__label').alltext_normalized)
+
+    def test_render_status_waiting_for_feedback_label(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                first_deadline=timezone.now() - timedelta(days=2))
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup1)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group=testgroup2)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup3)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup3)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser)
+        self.assertEqual(
+            'Waiting for feedback 2',
+            mockresponse.selector.one(
+                '#django_cradmin_listfilter_status_input_waiting-for-feedback_label').alltext_normalized)
+
+    def test_render_status_waiting_for_deliveries_label(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                first_deadline=timezone.now() + timedelta(days=2))
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup1)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group=testgroup2)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup3)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup3, grading_points=1)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser)
+        self.assertEqual(
+            'Waiting for deliveries 2',
+            mockresponse.selector.one(
+                '#django_cradmin_listfilter_status_input_waiting-for-deliveries_label').alltext_normalized)
+
+    def test_render_status_corrected_label(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                first_deadline=timezone.now() - timedelta(days=2))
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup1)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup2)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup3)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup3)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser)
+        self.assertEqual(
+            'Corrected 2',
+            mockresponse.selector.one(
+                '#django_cradmin_listfilter_status_input_corrected_label').alltext_normalized)
+
+    def test_filter_is_passing_grade_true(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            passing_grade_min_points=1)
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1, grading_points=0)
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group=testgroup2)
+
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup3, shortname='user3')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup3, grading_points=1)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'is_passing_grade-true'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user3'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_filter_is_passing_grade_false(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            passing_grade_min_points=1)
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1, grading_points=0)
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group=testgroup2)
+
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup3, shortname='user3')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup3, grading_points=1)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'is_passing_grade-false'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user1', 'user2'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_filter_points_zero(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1, grading_points=0)
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group=testgroup2)
+
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup3, shortname='user3')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup3, grading_points=10)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'points-0'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user1'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_filter_points_nonzero(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1, grading_points=0)
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group=testgroup2)
+
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup3, shortname='user3')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup3, grading_points=10)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'points-10'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user3'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_render_examiner_filter_if_multiple_examiners(self):
+        testuser1 = mommy.make(settings.AUTH_USER_MODEL)
+        testuser2 = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        relatedexaminer1 = mommy.make('core.RelatedExaminer', user=testuser1)
+        relatedexaminer2 = mommy.make('core.RelatedExaminer', user=testuser2)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer1)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer2)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser1)
+        self.assertTrue(mockresponse.selector.exists('#django_cradmin_listfilter_examiner_input'))
+
+    def test_do_not_render_examiner_filter_if_single_examiner(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        relatedexaminer = mommy.make('core.RelatedExaminer', user=testuser)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser)
+        self.assertFalse(mockresponse.selector.exists('#django_cradmin_listfilter_examiner_input'))
+
+    def test_render_examiner_filter_choices(self):
+        testuser1 = mommy.make(settings.AUTH_USER_MODEL, fullname='A')
+        testuser2 = mommy.make(settings.AUTH_USER_MODEL, shortname='c')
+        testuser3 = mommy.make(settings.AUTH_USER_MODEL, fullname='B')
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        relatedexaminer1 = mommy.make('core.RelatedExaminer', user=testuser1)
+        relatedexaminer2 = mommy.make('core.RelatedExaminer', user=testuser2)
+        relatedexaminer3 = mommy.make('core.RelatedExaminer', user=testuser3)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer1)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer2)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer3)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser1)
+        choices_labels = [
+            element.alltext_normalized
+            for element in mockresponse.selector.list('#django_cradmin_listfilter_examiner_input option')]
+        self.assertEqual(
+            ['', 'A', 'B', 'c'],
+            choices_labels)
+
+    def test_filter_examiner(self):
+        testuser1 = mommy.make(settings.AUTH_USER_MODEL)
+        testuser2 = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        relatedexaminer1 = mommy.make('core.RelatedExaminer', user=testuser1)
+        relatedexaminer2 = mommy.make('core.RelatedExaminer', user=testuser2)
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer=relatedexaminer1)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer=relatedexaminer2)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer=relatedexaminer1)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'examiner-{}'.format(relatedexaminer2.id)},
+            requestuser=testuser1)
+        self.assertEqual(
+            {'user1'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_filter_no_result_message(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                   'devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__shortname='testuser')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                viewkwargs={'filters_string': 'search-nomatch'},
+                requestuser=testuser)
+        self.assertEqual(
+            'No students found matching your filters/search.',
+            mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
+
+    def test_filter_waiting_for_feedback_empty(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            first_deadline=timezone.now() - timedelta(days=2))
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'status-waiting-for-feedback'},
+            requestuser=testuser)
+        self.assertEqual(
+            'You have no students waiting for feedback.',
+            mockresponse.selector.one('.devilry-examiner-grouplist-empty').alltext_normalized)
+        self.assertTrue(
+            mockresponse.selector.one('.devilry-examiner-grouplist-empty').hasclass(
+                'devilry-examiner-grouplist-empty-waiting-for-feedback'))
+
+    def test_filter_waiting_for_deliveries_empty(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            first_deadline=timezone.now() + timedelta(days=2))
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
+            requestuser=testuser)
+        self.assertEqual(
+            'You are currently not expecting new deliveries from any students.',
+            mockresponse.selector.one('.devilry-examiner-grouplist-empty').alltext_normalized)
+        self.assertTrue(
+            mockresponse.selector.one('.devilry-examiner-grouplist-empty').hasclass(
+                'devilry-examiner-grouplist-empty-waiting-for-deliveries'))
+
+    def test_filter_corrected_empty(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'status-corrected'},
+            requestuser=testuser)
+        self.assertEqual(
+            'You have not finished correcting any students yet.',
+            mockresponse.selector.one('.devilry-examiner-grouplist-empty').alltext_normalized)
+        self.assertTrue(
+            mockresponse.selector.one('.devilry-examiner-grouplist-empty').hasclass(
+                'devilry-examiner-grouplist-empty-corrected'))

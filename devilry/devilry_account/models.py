@@ -132,46 +132,13 @@ class UserManager(BaseUserManager):
                 return True
         return False
 
-    def user_is_nodeadmin(self, user):
-        """
-        Check if the given user is admin on any node.
-        """
-        from devilry.apps.core.models.node import Node
-        return self.user_is_basenodeadmin(user, Node)
-
-    def user_is_subjectadmin(self, user):
-        """
-        Check if the given user is admin on any subject.
-        """
-        from devilry.apps.core.models.subject import Subject
-        return self.user_is_basenodeadmin(user, Subject)
-
-    def user_is_periodadmin(self, user):
-        """
-        Check if the given user is admin on any period.
-        """
-        from devilry.apps.core.models.period import Period
-        return self.user_is_basenodeadmin(user, Period)
-
-    def user_is_assignmentadmin(self, user):
-        """
-        Check if the given user is admin on any assignment.
-        """
-        from devilry.apps.core.models.assignment import Assignment
-        return self.user_is_basenodeadmin(user, Assignment)
-
     def user_is_admin(self, user):
         """
-        Check if the given user is admin on any node, subject, period or
-        assignment.
+        Check if the given user is admin on any subject or period.
         """
-        from devilry.apps.core.models.node import Node
-        from devilry.apps.core.models.subject import Subject
-        from devilry.apps.core.models.period import Period
-        from devilry.apps.core.models.assignment import Assignment
-        return self.user_is_basenodeadmin(user, Node, Subject, Period, Assignment)
+        return PermissionGroupUser.objects.filter(user=user).exists()
 
-    def user_is_admin_or_superadmin(self, user):
+    def user_is_admin_or_superuser(self, user):
         """
         Return ``True`` if ``user.is_superuser``, and fall back to calling
         :func:`.user_is_admin` if not.
@@ -186,14 +153,14 @@ class UserManager(BaseUserManager):
         Returns ``True`` if the given ``user`` is examiner on any AssignmentGroup.
         """
         from devilry.apps.core.models.assignment_group import AssignmentGroup
-        return AssignmentGroup.published_where_is_examiner(user).exists()
+        return AssignmentGroup.objects.filter_examiner_has_access(user).exists()
 
     def user_is_student(self, user):
         """
         Returns ``True`` if the given ``user`` is candidate on any AssignmentGroup.
         """
         from devilry.apps.core.models.assignment_group import AssignmentGroup
-        return AssignmentGroup.published_where_is_candidate(user).exists()
+        return AssignmentGroup.objects.filter_student_has_access(user).exists()
 
     def create_user(self, username='', email='', password=None, **kwargs):
         """
