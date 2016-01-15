@@ -343,3 +343,35 @@ class ExaminerFilter(abstractselect.AbstractSelectFilter):
         if cleaned_value is not None:
             queryobject = queryobject.filter(examiners__relatedexaminer_id=cleaned_value)
         return queryobject
+
+
+class ActivityFilter(abstractselect.AbstractSelectFilter):
+    def get_slug(self):
+        return 'activity'
+
+    def get_label(self):
+        return pgettext_lazy('group has comments filter',
+                             'Activity')
+
+    def get_choices(self):
+        return [
+            ('', ''),
+            ('studentcomment', pgettext_lazy('group has comments filter',
+                                             'Has comment(s) from student')),
+            ('studentfile', pgettext_lazy('group has comments filter',
+                                          'Has file(s) from student')),
+            ('examinercomment', pgettext_lazy('group has comments filter',
+                                              'Has comment(s) from examiner')),
+            ('admincomment', pgettext_lazy('group has comments filter',
+                                           'Has comment(s) from administrator')),
+        ]
+
+    def filter(self, queryobject):
+        cleaned_value = self.get_cleaned_value()
+        # if cleaned_value == 'studentcomment':
+            # queryobject = queryobject.extra_annotate_datetime_of_last_student_comment()\
+            #     .extra(where='datetime_of_last_student_comment IS NOT NULL')
+        # NOTE: Should probably have an annotation for number of student and examiner
+        #       comments on the queryset in the view (we need it for the listing).
+        #       So we can just filter on that number.
+        return queryobject

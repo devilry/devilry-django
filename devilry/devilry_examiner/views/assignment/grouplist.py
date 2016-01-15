@@ -2,12 +2,10 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.db.models.functions import Lower, Concat
-from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 from django_cradmin.viewhelpers import listbuilder
 from django_cradmin.viewhelpers import listbuilderview
-from django_cradmin.viewhelpers import listfilter
 
 from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer
@@ -91,6 +89,7 @@ class GroupListView(listbuilderview.FilterListMixin,
         filterlist.append(devilry_listfilter.assignmentgroup.PointsFilter())
         if self.__has_multiple_examiners():
             filterlist.append(devilry_listfilter.assignmentgroup.ExaminerFilter(view=self))
+        filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
 
     def get_unfiltered_queryset_for_role(self, role):
         assignment = role

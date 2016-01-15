@@ -192,6 +192,11 @@ LOGGING = {
             'level': 'INFO',  # Do not set to debug - logs all queries
             'propagate': False
         },
+        'sh': {
+            'handlers': ['stderr'],
+            'level': 'WARNING',
+            'propagate': False
+        },
         '': {
             'handlers': ['stderr'],
             'level': 'DEBUG',
