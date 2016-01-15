@@ -9,7 +9,7 @@ from devilry.devilry_group.views import feedbackfeed_examiner
 
 
 class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
-    viewclass = feedbackfeed_examiner.ExaminerFeedbackFeedView
+    viewclass = feedbackfeed_examiner.ExaminerBaseFeedbackFeedView
 
     def test_get(self):
         examiner = mommy.make('core.Examiner')

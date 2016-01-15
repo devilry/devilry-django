@@ -8,7 +8,7 @@ from model_mommy import mommy
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group.timeline_builder.feedbackfeed_timeline_builder import FeedbackFeedTimelineBuilder
 from devilry.devilry_group.views.feedbackfeed_admin import AdminFeedbackFeedView
-from devilry.devilry_group.views.feedbackfeed_examiner import ExaminerFeedbackFeedView
+from devilry.devilry_group.views.feedbackfeed_examiner import ExaminerBaseFeedbackFeedView
 from devilry.devilry_group.views.feedbackfeed_student import StudentFeedbackFeedView
 from devilry.devilry_group import models as group_models
 
@@ -40,7 +40,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
-        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerFeedbackFeedView(request=mockrequest))
+        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerBaseFeedbackFeedView(request=mockrequest))
         timeline = timeline_builder.build_timeline(feedbackset.group, [feedbackset])
         self.assertEquals(timeline[0], feedbackset.group.assignment.first_deadline)
 
@@ -55,7 +55,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
-        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerFeedbackFeedView(request=mockrequest))
+        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerBaseFeedbackFeedView(request=mockrequest))
         timeline = timeline_builder.build_timeline(feedbackset1.group, [feedbackset1, feedbackset2])
         self.assertEquals(timeline[0], feedbackset2.deadline_datetime)
 
@@ -161,7 +161,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
-        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerFeedbackFeedView(request=mockrequest))
+        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerBaseFeedbackFeedView(request=mockrequest))
         group = mommy.make('core.AssignmentGroup')
         feedbackset = mommy.make('devilry_group.FeedbackSet', group=group)
         student = mommy.make('core.Candidate',
@@ -199,7 +199,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
-        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerFeedbackFeedView(request=mockrequest))
+        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerBaseFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         examiner = mommy.make('core.Examiner',
@@ -415,7 +415,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
-        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerFeedbackFeedView(request=mockrequest))
+        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerBaseFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         feedbackset = group_mommy.feedbackset_first_try_published(
                 created_datetime=assignment.publishing_time,
@@ -471,7 +471,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
-        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerFeedbackFeedView(request=mockrequest))
+        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerBaseFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         feedbackset1 = group_mommy.feedbackset_first_try_published(
                 created_datetime=assignment.publishing_time,
@@ -555,7 +555,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
-        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerFeedbackFeedView(request=mockrequest))
+        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerBaseFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         feedbackset = group_mommy.feedbackset_first_try_unpublished(
                 created_datetime=assignment.publishing_time,
@@ -609,7 +609,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
-        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerFeedbackFeedView(request=mockrequest))
+        timeline_builder = FeedbackFeedTimelineBuilder(ExaminerBaseFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         feedbackset1 = group_mommy.feedbackset_first_try_published(
                 created_datetime=assignment.publishing_time,
