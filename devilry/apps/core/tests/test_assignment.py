@@ -555,8 +555,7 @@ class TestAssignmentQuerySet(TestCase):
         assignment = mommy.make('core.Assignment')
         assignmentgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
         relatedexaminer = mommy.make('core.RelatedExaminer', user=user)
-        examiner = mommy.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=assignmentgroup)
-        mommy.make('core.AssignmentGroup', examiners=[examiner])
+        mommy.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=assignmentgroup)
         queryset = Assignment.objects.filter_user_is_examiner(user)
         self.assertEquals(queryset.count(), 1)
         returned_assignment = queryset.first()
@@ -567,8 +566,8 @@ class TestAssignmentQuerySet(TestCase):
         assignment = mommy.make('core.Assignment')
         assignmentgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
         relatedexaminer = mommy.make('core.RelatedExaminer', user=user, active=False)
-        examiner = mommy.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=assignmentgroup)
-        mommy.make('core.AssignmentGroup', examiners=[examiner])
+        mommy.make('core.Examiner', relatedexaminer=relatedexaminer,
+                   assignmentgroup=assignmentgroup)
         queryset = Assignment.objects.filter_user_is_examiner(user)
         self.assertEquals(queryset.count(), 0)
 
