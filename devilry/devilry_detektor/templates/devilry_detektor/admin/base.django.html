@@ -1,4 +1,4 @@
-{% extends "devilry_subjectadmin/base.django.html" %}
+{% extends "django_cradmin/base.django.html" %}
 {% load i18n %}
 {% load url from future %}
 
@@ -19,7 +19,7 @@
 
     <div class="container-fluid">
         <ol class="breadcrumb">
-            {% include "devilry_subjectadmin/include/assignment_breadcrumb.django.html" %}
+
             {% block breadcrumbtail %}
                 <li><a href="{% url 'devilry_detector_admin_assignmentassembly' assignment.id %}">
                     {% trans "Similarity checks" %}
