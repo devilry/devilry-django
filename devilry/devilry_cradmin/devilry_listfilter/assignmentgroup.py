@@ -1,6 +1,8 @@
 from django.conf import settings
-from django.utils.translation import ugettext_lazy, pgettext_lazy
+from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy, pgettext_lazy, pgettext
 from django_cradmin.viewhelpers import listfilter
+from django_cradmin.viewhelpers.listfilter.basefilters.single import abstractradio
 
 
 class AbstractSearch(listfilter.django.single.textinput.Search):
@@ -192,3 +194,66 @@ class OrderByAnonymousUsesCustomCandidateIds(AbstractOrderBy):
             return queryobject.extra_order_by_candidates_candidate_id_of_first_candidate(descending=True)
         else:
             return super(OrderByAnonymousUsesCustomCandidateIds, self).filter(queryobject=queryobject)
+
+
+class StatusRadioFilter(abstractradio.AbstractRadioFilter):
+    def __init__(self, **kwargs):
+        self.view = kwargs.pop('view', None)
+        super(StatusRadioFilter, self).__init__(**kwargs)
+
+    def copy(self):
+        copy = super(StatusRadioFilter, self).copy()
+        copy.view = self.view
+        return copy
+
+    def get_slug(self):
+        return 'status'
+
+    def get_label(self):
+        return pgettext_lazy('group status filter', 'Status')
+
+    def __count_html(self, count, has_count_cssclass):
+        cssclass = 'label-default'
+        if count and has_count_cssclass:
+            cssclass = has_count_cssclass
+        return u'<span class="label {}">{}</span>'.format(cssclass, count)
+
+    def __make_label(self, label, count, has_count_cssclass=None):
+        return mark_safe(u'{label} {count}'.format(
+            label=label,
+            count=self.__count_html(count=count, has_count_cssclass=has_count_cssclass)))
+
+    def get_choices(self):
+        return [
+            ('',
+             self.__make_label(
+                 label=pgettext('group status filter', 'All students'),
+                 count=self.view.get_filtered_all_students_count()
+             )),
+            ('waiting-for-feedback',
+             self.__make_label(
+                 label=pgettext('group status filter', 'Waiting for feedback'),
+                 count=self.view.get_filtered_waiting_for_feedback_count(),
+                 has_count_cssclass='label-warning'
+             )),
+            ('waiting-for-deliveries',
+             self.__make_label(
+                 label=pgettext('group status filter', 'Waiting for deliveries'),
+                 count=self.view.get_filtered_waiting_for_deliveries_count()
+             )),
+            ('corrected',
+             self.__make_label(
+                 label=pgettext('group status filter', 'Corrected'),
+                 count=self.view.get_filtered_corrected_count()
+             )),
+        ]
+
+    def filter(self, queryobject):
+        cleaned_value = self.get_cleaned_value() or ''
+        if cleaned_value == 'waiting-for-feedback':
+            queryobject = queryobject.filter(is_waiting_for_feedback=True)
+        elif cleaned_value == 'waiting-for-deliveries':
+            queryobject = queryobject.filter(is_waiting_for_deliveries=True)
+        elif cleaned_value == 'corrected':
+            queryobject = queryobject.filter(is_corrected=True)
+        return queryobject
