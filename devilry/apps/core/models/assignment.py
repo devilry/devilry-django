@@ -417,9 +417,37 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             ("raw-points", _("As points")),
             ("custom-table", _("As a text looked up in a custom table")),
         ))
+
+    GRADING_SYSTEM_PLUGIN_ID_APPROVED = 'devilry_gradingsystemplugin_approved'
+    GRADING_SYSTEM_PLUGIN_ID_POINTS = 'devilry_gradingsystemplugin_points'
+    GRADING_SYSTEM_PLUGIN_ID_SCHEMA = 'schema'
+    GRADING_SYSTEM_PLUGIN_ID_CHOICES = [
+        (
+            GRADING_SYSTEM_PLUGIN_ID_APPROVED,
+            pgettext_lazy(
+                'assignment grading plugin',
+                'PASSED/FAILED. The examiner selects passed or failed.')
+        ),
+        (
+            GRADING_SYSTEM_PLUGIN_ID_POINTS,
+            pgettext_lazy(
+                'assignment grading plugin',
+                'POINTS. The examiner types in the number of points to award the '
+                'student(s) for this assignment.')
+        ),
+        (
+            GRADING_SYSTEM_PLUGIN_ID_SCHEMA,
+            pgettext_lazy(
+                'assignment grading plugin',
+                'SCHEMA. The examiner fill in a schema defined by you.')
+        )
+    ]
+
+    #: Grading system plugin ID. Defines how examiners grade the students.
     grading_system_plugin_id = models.CharField(
-        default='devilry_gradingsystemplugin_approved',
-        max_length=300, blank=True, null=True)
+        default=GRADING_SYSTEM_PLUGIN_ID_APPROVED,
+        max_length=300, blank=True, null=True,
+        choices=GRADING_SYSTEM_PLUGIN_ID_CHOICES)
 
     students_can_create_groups = models.BooleanField(
         default=False,
@@ -709,9 +737,13 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """
         if self.points_to_grade_mapper == 'passed-failed':
             if points == 0:
-                return 'Failed'
+                return pgettext_lazy(
+                    'assignment passed-or-failed',
+                    'Failed')
             else:
-                return 'Passed'
+                return pgettext_lazy(
+                    'assignment passed-or-failed',
+                    'Passed')
         elif self.points_to_grade_mapper == 'raw-points':
             return u'{}/{}'.format(points, self.max_points)
         else:
