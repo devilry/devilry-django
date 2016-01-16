@@ -363,23 +363,6 @@ class AssignmentGroupQuerySet(models.QuerySet):
             )
         )
 
-    # def annotate_with_has_unpublished_feedbackset(self):
-    #     """
-    #     Annotate the queryset with ``has_unpublished_feedbackset``.
-    #
-    #     Annotates all groups with unpublished FeedbackSet with
-    #     ``has_unpublished_feedbackset=True``, and all groups without
-    #     unpublished FeedbackSet with ``has_unpublished_feedbackset=False``
-    #     """
-    #     return self.annotate(
-    #         has_unpublished_feedbackset=devilry_djangoaggregate_functions.BooleanCount(
-    #             models.Case(
-    #                 models.When(feedbackset__grading_published_datetime__isnull=True,
-    #                             then=1)
-    #             )
-    #         )
-    #     )
-
     def annotate_with_number_of_imageannotationcomments(self):
         """
         Annotate the queryset with ``number_of_imageannotationcomments`` -
@@ -460,6 +443,23 @@ class AssignmentGroupQuerySet(models.QuerySet):
         return self.annotate(
             number_of_imageannotationcomments_from_admins=models.Count(
                 models.Case(whenquery)
+            )
+        )
+
+    def annotate_with_has_unpublished_feedbackset(self):
+        """
+        Annotate the queryset with ``has_unpublished_feedbackset``.
+
+        Annotates all groups with unpublished FeedbackSet with
+        ``has_unpublished_feedbackset=True``, and all groups without
+        unpublished FeedbackSet with ``has_unpublished_feedbackset=False``
+        """
+        return self.annotate(
+            has_unpublished_feedbackset=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(
+                    models.When(feedbackset__grading_published_datetime__isnull=True,
+                                then=1),
+                )
             )
         )
 
