@@ -320,6 +320,30 @@ class AssignmentGroupQuerySet(models.QuerySet):
             )
         )
 
+    def annotate_with_number_of_groupcomments_from_examiners(self):
+        """
+        Annotate the queryset with ``number_of_groupcomments_from_examiners`` -
+        the number of :class:`devilry.devilry_group.models.GroupComment`
+        added by examiners within each AssignmentGroup.
+
+        Only comments that should be visible to everyone with access to the
+        group is included.
+        """
+        from devilry.devilry_group.models import GroupComment
+        return self.annotate(
+            number_of_groupcomments_from_examiners=models.Count(
+                models.Case(
+                    models.When(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                                feedbackset__groupcomment__user_role=GroupComment.USER_ROLE_EXAMINER,
+                                then=1)
+                )
+            )
+        )
+
+    # def annotate_with_number_of_groupcomments_from_admins(self):
+
+    # def annotate_with_number_of_unpublished_feedbacksets(self):
+
     def annotate_with_number_of_imageannotationcomments(self):
         """
         Annotate the queryset with ``number_of_imageannotationcomments`` -
