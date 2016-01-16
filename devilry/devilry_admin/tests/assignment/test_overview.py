@@ -65,14 +65,14 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         assignment = mommy.make('core.Assignment', publishing_time=datetime(2000, 1, 1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
-                mockresponse.selector.one('#devilry_admin_assignment_overview_published h2').alltext_normalized,
+                mockresponse.selector.one('#devilry_admin_assignment_overview_published h3').alltext_normalized,
                 "Was published: Jan 1 2000, 00:00")
 
     def test_published_row_published_time_in_future(self):
         assignment = mommy.make('core.Assignment', publishing_time=datetime(3000, 1, 1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
-                mockresponse.selector.one('#devilry_admin_assignment_overview_published h2').alltext_normalized,
+                mockresponse.selector.one('#devilry_admin_assignment_overview_published h3').alltext_normalized,
                 "Will be published: Jan 1 3000, 00:00")
 
     def test_published_row_buttons(self):
@@ -102,7 +102,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_settings_first_deadline a').alltext_normalized,
-                "First deadline")
+                "Edit first deadline")
 
     def test_settings_row_first_deadline_description(self):
         assignment = mommy.make('core.Assignment', first_deadline=datetime(2000, 1, 1))
