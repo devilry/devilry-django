@@ -93,18 +93,29 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         if form.data.get('examiner_add_comment_to_feedback_draft'):
             obj.visibility = models.GroupComment.VISIBILITY_PRIVATE
             obj.part_of_grading = True
-        # if form.data.get('examiner_publish_feedback'):
-            # obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
-            # obj.part_of_grading = False
-            # feedbackset = obj.feedback_set
-            # feedbackset.grading_points = 10
-            # feedbackset.grading_published_datetime = timezone.now()
-            # feedbackset.grading_published_by = obj.user
-            # obj.published_datetime = timezone.now()
-            # feedbackset.save()
+            obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=True)
+        elif form.data.get('examiner_publish_feedback'):
+            feedbackset = obj.feedback_set
+            current_deadline = feedbackset.deadline_datetime
+            if feedbackset.deadline_datetime is None:
+                current_deadline = feedbackset.group.parentnode.first_deadline
+            if current_deadline < timezone.now():
+                if feedbackset.grading_points is not None:
+                    obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
+                    obj.part_of_grading = False
+                    feedbackset.grading_published_datetime = timezone.now()
+                    feedbackset.grading_published_by = obj.user
+                    obj.published_datetime = timezone.now()
+                    feedbackset.save()
+                    obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=True)
+            else:
+                self.form_invalid(form)
+                obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=False)
 
-        obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=True)
         return obj
+
+    def get_form_invalid_message(self, form):
+        return 'Cannot publish feedback until deadline has passed!'
 
 
 class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
