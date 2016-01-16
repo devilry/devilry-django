@@ -445,7 +445,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     #: Grading system plugin ID. Defines how examiners grade the students.
     grading_system_plugin_id = models.CharField(
-        default=GRADING_SYSTEM_PLUGIN_ID_APPROVED,
+        default=GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
         max_length=300, blank=True, null=True,
         choices=GRADING_SYSTEM_PLUGIN_ID_CHOICES)
 
