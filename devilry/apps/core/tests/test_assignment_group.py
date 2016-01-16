@@ -17,7 +17,7 @@ from devilry.apps.core.models.assignment_group import GroupPopToFewCandiatesErro
 from devilry.apps.core.testhelper import TestHelper
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import devilry_group_mommy_factories
-from devilry.devilry_group.models import FeedbackSet, GroupComment
+from devilry.devilry_group.models import FeedbackSet, GroupComment, ImageAnnotationComment
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
@@ -686,123 +686,6 @@ class TestAssignmentGroup(TestCase):
         self.assertEqual(
             [group],
             list(AssignmentGroup.objects.filter_user_is_examiner(user=testuser)))
-
-    def test_annotate_with_number_of_groupcomments_zero(self):
-        mommy.make('core.AssignmentGroup')
-        self.assertEqual(
-            0,
-            AssignmentGroup.objects.annotate_with_number_of_groupcomments()
-            .first().number_of_groupcomments)
-
-    def test_annotate_with_number_of_groupcomments_multiple(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup,
-                   feedback_set__is_last_in_group=None)
-        mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup)
-        self.assertEqual(
-            2,
-            AssignmentGroup.objects.annotate_with_number_of_groupcomments()
-            .first().number_of_groupcomments)
-
-    def test_annotate_with_number_of_imageannotationcomments_zero(self):
-        mommy.make('core.AssignmentGroup')
-        self.assertEqual(
-            0,
-            AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments()
-            .first().number_of_imageannotationcomments)
-
-    def test_annotate_with_number_of_imageannotationcomments_multiple(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.ImageAnnotationComment',
-                   feedback_set__group=testgroup,
-                   feedback_set__is_last_in_group=None,)
-        mommy.make('devilry_group.ImageAnnotationComment',
-                   feedback_set__group=testgroup)
-        self.assertEqual(
-            2,
-            AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments()
-            .first().number_of_imageannotationcomments)
-
-    def test_annotate_with_number_of_published_feedbacksets_zero(self):
-        mommy.make('core.AssignmentGroup')
-        self.assertEqual(
-            0,
-            AssignmentGroup.objects.annotate_with_number_of_published_feedbacksets()
-            .first().number_of_published_feedbacksets)
-
-    def test_annotate_with_number_of_published_feedbacksets_multiple_feedbacksets(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup,
-                   is_last_in_group=None,
-                   grading_published_datetime=timezone.now())
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup,
-                   is_last_in_group=None,
-                   grading_published_datetime=timezone.now())
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup,
-                   is_last_in_group=None,
-                   grading_published_datetime=None)
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup,
-                   grading_published_datetime=timezone.now())
-        self.assertEqual(
-            3,
-            AssignmentGroup.objects.annotate_with_number_of_published_feedbacksets()
-            .first().number_of_published_feedbacksets)
-
-    def test_annotate_with_number_of_published_feedbacksets_multiple_groups(self):
-        testgroup1 = mommy.make('core.AssignmentGroup')
-        testgroup2 = mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup1,
-                   is_last_in_group=None,
-                   grading_published_datetime=timezone.now())
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup1,
-                   is_last_in_group=None,
-                   grading_published_datetime=timezone.now())
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup2,
-                   is_last_in_group=None,
-                   grading_published_datetime=None)
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup2,
-                   grading_published_datetime=timezone.now())
-        queryset = AssignmentGroup.objects.annotate_with_number_of_published_feedbacksets()\
-            .order_by('number_of_published_feedbacksets')
-        self.assertEqual(testgroup2, queryset[0])
-        self.assertEqual(1, queryset[0].number_of_published_feedbacksets)
-        self.assertEqual(testgroup1, queryset[1])
-        self.assertEqual(2, queryset[1].number_of_published_feedbacksets)
-
-    def test_filter_with_published_feedback_or_comments(self):
-        testgroup_with_published_feedback = mommy.make('core.AssignmentGroup')
-        testgroup_with_unpublished_feedback = mommy.make('core.AssignmentGroup')
-        testgroup_with_groupcomment = mommy.make('core.AssignmentGroup')
-        testgroup_with_imageannotationcomment = mommy.make('core.AssignmentGroup')
-        mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup_with_published_feedback,
-                   is_last_in_group=None,
-                   grading_published_datetime=timezone.now())
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup_with_unpublished_feedback,
-                   is_last_in_group=None,
-                   grading_published_datetime=None)
-        mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup_with_groupcomment)
-        mommy.make('devilry_group.ImageAnnotationComment',
-                   feedback_set__group=testgroup_with_imageannotationcomment)
-        queryset = AssignmentGroup.objects.filter_with_published_feedback_or_comments()
-        self.assertEqual(
-            {testgroup_with_published_feedback,
-             testgroup_with_groupcomment,
-             testgroup_with_imageannotationcomment},
-            set(queryset))
 
 
 @unittest.skip('Must be updated for new FeedbackSet structure')
@@ -2626,3 +2509,1015 @@ class TestAssignmentGroupQuerySetPermission(TestCase):
         self.assertEqual(
                 {testgroup},
                 set(AssignmentGroup.objects.filter_user_is_admin(user=testuser)))
+
+
+class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcomments(TestCase):
+    def test_annotate_with_number_of_groupcomments_zero(self):
+        mommy.make('core.AssignmentGroup')
+        queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments()
+        self.assertEqual(0, queryset.first().number_of_groupcomments)
+
+    def test_annotate_with_number_of_groupcomments_only_visible_to_everyone(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   visibility=GroupComment.VISIBILITY_PRIVATE)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_groupcomments().first()
+        self.assertEqual(1, annotated_group.number_of_groupcomments)
+
+    def test_annotate_with_number_of_groupcomments_multiple_comments(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            is_last_in_group=False)
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+            group=testgroup,
+            is_last_in_group=True)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset1,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset1,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset2,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments()
+        self.assertEqual(3, queryset.first().number_of_groupcomments)
+
+    def test_annotate_with_number_of_groupcomments_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset1,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset1,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup2)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset2,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments()
+        self.assertEqual(
+            2,
+            queryset.get(id=testgroup1.id).number_of_groupcomments)
+        self.assertEqual(
+            1,
+            queryset.get(id=testgroup2.id).number_of_groupcomments)
+
+
+class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromStudents(TestCase):
+    def test_annotate_with_number_of_groupcomments_from_students_zero(self):
+        mommy.make('core.AssignmentGroup')
+        queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_students()
+        self.assertEqual(0, queryset.first().number_of_groupcomments_from_students)
+
+    def test_annotate_with_number_of_groupcomments_from_students_only_visible_to_everyone(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_PRIVATE)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_students().first()
+        self.assertEqual(1, annotated_group.number_of_groupcomments_from_students)
+
+    def test_annotate_with_number_of_groupcomments_from_students_only_from_students(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_ADMIN,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_students().first()
+        self.assertEqual(1, annotated_group.number_of_groupcomments_from_students)
+
+    def test_annotate_with_number_of_groupcomments_from_students_multiple_comments(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            is_last_in_group=False)
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+            group=testgroup,
+            is_last_in_group=True)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset1,
+                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset1,
+                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset2,
+                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_students()
+        self.assertEqual(3, queryset.first().number_of_groupcomments_from_students)
+
+    def test_annotate_with_number_of_groupcomments_from_students_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset1,
+                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset1,
+                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup2)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset2,
+                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_students()
+        self.assertEqual(
+            2,
+            queryset.get(id=testgroup1.id).number_of_groupcomments_from_students)
+        self.assertEqual(
+            1,
+            queryset.get(id=testgroup2.id).number_of_groupcomments_from_students)
+
+
+class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromExaminers(TestCase):
+    def test_annotate_with_number_of_groupcomments_from_examiners_zero(self):
+        mommy.make('core.AssignmentGroup')
+        queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_examiners()
+        self.assertEqual(0, queryset.first().number_of_groupcomments_from_examiners)
+
+    def test_annotate_with_number_of_groupcomments_from_examiners_only_visible_to_everyone(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_PRIVATE)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_examiners().first()
+        self.assertEqual(1, annotated_group.number_of_groupcomments_from_examiners)
+
+    def test_annotate_with_number_of_groupcomments_from_examiners_only_from_examiners(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_ADMIN,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_examiners().first()
+        self.assertEqual(1, annotated_group.number_of_groupcomments_from_examiners)
+
+    def test_annotate_with_number_of_groupcomments_from_examiners_multiple_comments(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            is_last_in_group=False)
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+            group=testgroup,
+            is_last_in_group=True)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset1,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset1,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset2,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_examiners()
+        self.assertEqual(3, queryset.first().number_of_groupcomments_from_examiners)
+
+    def test_annotate_with_number_of_groupcomments_from_examiners_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset1,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset1,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup2)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset2,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_examiners()
+        self.assertEqual(
+            2,
+            queryset.get(id=testgroup1.id).number_of_groupcomments_from_examiners)
+        self.assertEqual(
+            1,
+            queryset.get(id=testgroup2.id).number_of_groupcomments_from_examiners)
+
+
+class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromAdmins(TestCase):
+    def test_annotate_with_number_of_groupcomments_from_admins_zero(self):
+        mommy.make('core.AssignmentGroup')
+        queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_admins()
+        self.assertEqual(0, queryset.first().number_of_groupcomments_from_admins)
+
+    def test_annotate_with_number_of_groupcomments_from_admins_only_visible_to_everyone(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_ADMIN,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_ADMIN,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_ADMIN,
+                   visibility=GroupComment.VISIBILITY_PRIVATE)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_admins().first()
+        self.assertEqual(1, annotated_group.number_of_groupcomments_from_admins)
+
+    def test_annotate_with_number_of_groupcomments_from_admins_only_from_admins(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_ADMIN,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_admins().first()
+        self.assertEqual(1, annotated_group.number_of_groupcomments_from_admins)
+
+    def test_annotate_with_number_of_groupcomments_from_admins_multiple_comments(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            is_last_in_group=False)
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+            group=testgroup,
+            is_last_in_group=True)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset1,
+                   user_role=GroupComment.USER_ROLE_ADMIN,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset1,
+                   user_role=GroupComment.USER_ROLE_ADMIN,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset2,
+                   user_role=GroupComment.USER_ROLE_ADMIN,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_admins()
+        self.assertEqual(3, queryset.first().number_of_groupcomments_from_admins)
+
+    def test_annotate_with_number_of_groupcomments_from_admins_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset1,
+                   user_role=GroupComment.USER_ROLE_ADMIN,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset1,
+                   user_role=GroupComment.USER_ROLE_ADMIN,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup2)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset2,
+                   user_role=GroupComment.USER_ROLE_ADMIN,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_admins()
+        self.assertEqual(
+            2,
+            queryset.get(id=testgroup1.id).number_of_groupcomments_from_admins)
+        self.assertEqual(
+            1,
+            queryset.get(id=testgroup2.id).number_of_groupcomments_from_admins)
+
+
+class AssignmentGroupQuerySetAnnotateWithNumberOfImageAnnotationcomments(TestCase):
+    def test_annotate_with_number_of_imageannotationcomments_zero(self):
+        mommy.make('core.AssignmentGroup')
+        queryset = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments()
+        self.assertEqual(0, queryset.first().number_of_imageannotationcomments)
+
+    def test_annotate_with_number_of_imageannotationcomments_only_visible_to_everyone(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments().first()
+        self.assertEqual(1, annotated_group.number_of_imageannotationcomments)
+
+    def test_annotate_with_number_of_imageannotationcomments_multiple_comments(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            is_last_in_group=False)
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+            group=testgroup,
+            is_last_in_group=True)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset2,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        queryset = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments()
+        self.assertEqual(3, queryset.first().number_of_imageannotationcomments)
+
+    def test_annotate_with_number_of_imageannotationcomments_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup2)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset2,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        queryset = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments()
+        self.assertEqual(
+            2,
+            queryset.get(id=testgroup1.id).number_of_imageannotationcomments)
+        self.assertEqual(
+            1,
+            queryset.get(id=testgroup2.id).number_of_imageannotationcomments)
+
+
+class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromStudents(TestCase):
+    def test_annotate_with_number_of_imageannotationcomments_from_students_zero(self):
+        mommy.make('core.AssignmentGroup')
+        queryset = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_students()
+        self.assertEqual(0, queryset.first().number_of_imageannotationcomments_from_students)
+
+    def test_annotate_with_number_of_imageannotationcomments_from_students_only_visible_to_everyone(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_students().first()
+        self.assertEqual(1, annotated_group.number_of_imageannotationcomments_from_students)
+
+    def test_annotate_with_number_of_imageannotationcomments_from_students_only_from_students(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_students().first()
+        self.assertEqual(1, annotated_group.number_of_imageannotationcomments_from_students)
+
+    def test_annotate_with_number_of_imageannotationcomments_from_students_multiple_comments(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            is_last_in_group=False)
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+            group=testgroup,
+            is_last_in_group=True)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset2,
+                   user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        queryset = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_students()
+        self.assertEqual(3, queryset.first().number_of_imageannotationcomments_from_students)
+
+    def test_annotate_with_number_of_imageannotationcomments_from_students_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup2)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset2,
+                   user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        queryset = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_students()
+        self.assertEqual(
+            2,
+            queryset.get(id=testgroup1.id).number_of_imageannotationcomments_from_students)
+        self.assertEqual(
+            1,
+            queryset.get(id=testgroup2.id).number_of_imageannotationcomments_from_students)
+
+
+class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromExaminers(TestCase):
+    def test_annotate_with_number_of_imageannotationcomments_from_examiners_zero(self):
+        mommy.make('core.AssignmentGroup')
+        queryset = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_examiners()
+        self.assertEqual(0, queryset.first().number_of_imageannotationcomments_from_examiners)
+
+    def test_annotate_with_number_of_imageannotationcomments_from_examiners_only_visible_to_everyone(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_examiners().first()
+        self.assertEqual(1, annotated_group.number_of_imageannotationcomments_from_examiners)
+
+    def test_annotate_with_number_of_imageannotationcomments_from_examiners_only_from_examiners(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_examiners().first()
+        self.assertEqual(1, annotated_group.number_of_imageannotationcomments_from_examiners)
+
+    def test_annotate_with_number_of_imageannotationcomments_from_examiners_multiple_comments(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            is_last_in_group=False)
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+            group=testgroup,
+            is_last_in_group=True)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset2,
+                   user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        queryset = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_examiners()
+        self.assertEqual(3, queryset.first().number_of_imageannotationcomments_from_examiners)
+
+    def test_annotate_with_number_of_imageannotationcomments_from_examiners_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup2)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset2,
+                   user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        queryset = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_examiners()
+        self.assertEqual(
+            2,
+            queryset.get(id=testgroup1.id).number_of_imageannotationcomments_from_examiners)
+        self.assertEqual(
+            1,
+            queryset.get(id=testgroup2.id).number_of_imageannotationcomments_from_examiners)
+
+
+class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromAdmins(TestCase):
+    def test_annotate_with_number_of_imageannotationcomments_from_admins_zero(self):
+        mommy.make('core.AssignmentGroup')
+        queryset = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_admins()
+        self.assertEqual(0, queryset.first().number_of_imageannotationcomments_from_admins)
+
+    def test_annotate_with_number_of_imageannotationcomments_from_admins_only_visible_to_everyone(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_admins().first()
+        self.assertEqual(1, annotated_group.number_of_imageannotationcomments_from_admins)
+
+    def test_annotate_with_number_of_imageannotationcomments_from_admins_only_from_admins(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_admins().first()
+        self.assertEqual(1, annotated_group.number_of_imageannotationcomments_from_admins)
+
+    def test_annotate_with_number_of_imageannotationcomments_from_admins_multiple_comments(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup,
+            is_last_in_group=False)
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+            group=testgroup,
+            is_last_in_group=True)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset2,
+                   user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        queryset = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_admins()
+        self.assertEqual(3, queryset.first().number_of_imageannotationcomments_from_admins)
+
+    def test_annotate_with_number_of_imageannotationcomments_from_admins_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup2)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset2,
+                   user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        queryset = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_admins()
+        self.assertEqual(
+            2,
+            queryset.get(id=testgroup1.id).number_of_imageannotationcomments_from_admins)
+        self.assertEqual(
+            1,
+            queryset.get(id=testgroup2.id).number_of_imageannotationcomments_from_admins)
+
+
+class AssignmentGroupQuerySetAnnotateWithNumberOfPublishedFeedbacksets(TestCase):
+    def test_annotate_with_number_of_published_feedbacksets_zero(self):
+        mommy.make('core.AssignmentGroup')
+        self.assertEqual(
+            0,
+            AssignmentGroup.objects.annotate_with_number_of_published_feedbacksets()
+            .first().number_of_published_feedbacksets)
+
+    def test_annotate_with_number_of_published_feedbacksets_multiple_feedbacksets(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   is_last_in_group=None,
+                   grading_published_datetime=timezone.now())
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   is_last_in_group=None,
+                   grading_published_datetime=timezone.now())
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   is_last_in_group=None,
+                   grading_published_datetime=None)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now())
+        self.assertEqual(
+            3,
+            AssignmentGroup.objects.annotate_with_number_of_published_feedbacksets()
+            .first().number_of_published_feedbacksets)
+
+    def test_annotate_with_number_of_published_feedbacksets_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup1,
+                   is_last_in_group=None,
+                   grading_published_datetime=timezone.now())
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup1,
+                   is_last_in_group=None,
+                   grading_published_datetime=timezone.now())
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup2,
+                   is_last_in_group=None,
+                   grading_published_datetime=None)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup2,
+                   grading_published_datetime=timezone.now())
+        queryset = AssignmentGroup.objects.annotate_with_number_of_published_feedbacksets()\
+            .order_by('number_of_published_feedbacksets')
+        self.assertEqual(testgroup2, queryset[0])
+        self.assertEqual(1, queryset[0].number_of_published_feedbacksets)
+        self.assertEqual(testgroup1, queryset[1])
+        self.assertEqual(2, queryset[1].number_of_published_feedbacksets)
+
+
+class AssignmentGroupQuerySetFilterWithPublishedFeedbackOrComments(TestCase):
+    def test_filter_with_published_feedback_or_comments(self):
+        testgroup_with_published_feedback = mommy.make('core.AssignmentGroup')
+        testgroup_with_unpublished_feedback = mommy.make('core.AssignmentGroup')
+        testgroup_with_groupcomment = mommy.make('core.AssignmentGroup')
+        testgroup_with_imageannotationcomment = mommy.make('core.AssignmentGroup')
+        mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup_with_published_feedback,
+                   is_last_in_group=None,
+                   grading_published_datetime=timezone.now())
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup_with_unpublished_feedback,
+                   is_last_in_group=None,
+                   grading_published_datetime=None)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup_with_groupcomment)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set__group=testgroup_with_imageannotationcomment)
+        queryset = AssignmentGroup.objects.filter_with_published_feedback_or_comments()
+        self.assertEqual(
+            {testgroup_with_published_feedback,
+             testgroup_with_groupcomment,
+             testgroup_with_imageannotationcomment},
+            set(queryset))
+
+
+class AssignmentGroupQuerySetAnnotateWithHasUnpublishedFeedbackset(TestCase):
+    def test_annotate_with_has_unpublished_feedbackset_no_feedbackset(self):
+        mommy.make('core.AssignmentGroup')
+        self.assertTrue(
+            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
+            .first().has_unpublished_feedbackset)
+
+    def test_annotate_with_has_unpublished_feedbackset_false(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_try_published(group=testgroup)
+        self.assertFalse(
+            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
+            .first().has_unpublished_feedbackset)
+
+    def test_annotate_with_has_unpublished_feedbackset_true(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup)
+        self.assertTrue(
+            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
+            .first().has_unpublished_feedbackset)
+
+    def test_annotate_with_has_unpublished_feedbackset_multiple_feedbacksets(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup, is_last_in_group=None)
+        devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+            group=testgroup, is_last_in_group=True)
+        self.assertTrue(
+            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
+            .first().has_unpublished_feedbackset)
+
+    def test_annotate_with_has_unpublished_feedbackset_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_try_published(group=testgroup2)
+
+        queryset = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
+        self.assertTrue(queryset.get(id=testgroup1.id).has_unpublished_feedbackset)
+        self.assertFalse(queryset.get(id=testgroup2.id).has_unpublished_feedbackset)
+
+
+class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCase):
+    def test_no_comments(self):
+        mommy.make('core.AssignmentGroup')
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        self.assertEqual(0, annotated_group.number_of_commentfiles_from_students)
+
+    def test_no_commentfiles(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        self.assertEqual(0, annotated_group.number_of_commentfiles_from_students)
+
+    def test_has_commentfile_groupcomment(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=feedbackset,
+                                 user_role=GroupComment.USER_ROLE_STUDENT,
+                                 visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        self.assertEqual(1, annotated_group.number_of_commentfiles_from_students)
+
+    def test_has_commentfile_imageannotationcomment(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        testcomment = mommy.make('devilry_group.ImageAnnotationComment',
+                                 feedback_set=feedbackset,
+                                 user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                                 visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        self.assertEqual(1, annotated_group.number_of_commentfiles_from_students)
+
+    def test_commentfile_on_non_public_groupcomment_ignored(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=feedbackset,
+                                 user_role=GroupComment.USER_ROLE_STUDENT,
+                                 visibility=GroupComment.VISIBILITY_PRIVATE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        self.assertEqual(0, annotated_group.number_of_commentfiles_from_students)
+
+    def test_commentfile_on_non_public_imageannotationcomment_ignored(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        testcomment = mommy.make('devilry_group.ImageAnnotationComment',
+                                 feedback_set=feedbackset,
+                                 user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                                 visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        self.assertEqual(0, annotated_group.number_of_commentfiles_from_students)
+
+    def test_commentfile_from_examiner_on_groupcomment_ignored(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=feedbackset,
+                                 user_role=GroupComment.USER_ROLE_EXAMINER,
+                                 visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        self.assertEqual(0, annotated_group.number_of_commentfiles_from_students)
+
+    def test_commentfile_from_examiner_on_imageannotationcomment_ignored(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        testcomment = mommy.make('devilry_group.ImageAnnotationComment',
+                                 feedback_set=feedbackset,
+                                 user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                                 visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        self.assertEqual(0, annotated_group.number_of_commentfiles_from_students)
+
+    def test_commentfile_from_admin_on_groupcomment_ignored(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=feedbackset,
+                                 user_role=GroupComment.USER_ROLE_ADMIN,
+                                 visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        self.assertEqual(0, annotated_group.number_of_commentfiles_from_students)
+
+    def test_commentfile_from_admin_on_imageannotationcomment_ignored(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        testcomment = mommy.make('devilry_group.ImageAnnotationComment',
+                                 feedback_set=feedbackset,
+                                 user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                                 visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        self.assertEqual(0, annotated_group.number_of_commentfiles_from_students)
+
+    def test_multiple_commentfiles(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup, is_last_in_group=None)
+        mommy.make('devilry_comment.CommentFile',
+                   comment=mommy.make('devilry_group.GroupComment',
+                                      feedback_set=feedbackset1,
+                                      user_role=GroupComment.USER_ROLE_STUDENT,
+                                      visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE))
+        mommy.make('devilry_comment.CommentFile',
+                   comment=mommy.make('devilry_group.GroupComment',
+                                      feedback_set=feedbackset1,
+                                      user_role=GroupComment.USER_ROLE_STUDENT,
+                                      visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE))
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+            group=testgroup)
+
+        mommy.make('devilry_comment.CommentFile',
+                   comment=mommy.make('devilry_group.GroupComment',
+                                      feedback_set=feedbackset2,
+                                      user_role=GroupComment.USER_ROLE_STUDENT,
+                                      visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE))
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        self.assertEqual(3, annotated_group.number_of_commentfiles_from_students)
+
+    def test_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1, is_last_in_group=None)
+        mommy.make('devilry_comment.CommentFile',
+                   comment=mommy.make('devilry_group.GroupComment',
+                                      feedback_set=feedbackset1,
+                                      user_role=GroupComment.USER_ROLE_STUDENT,
+                                      visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE))
+        mommy.make('devilry_comment.CommentFile',
+                   comment=mommy.make('devilry_group.GroupComment',
+                                      feedback_set=feedbackset1,
+                                      user_role=GroupComment.USER_ROLE_STUDENT,
+                                      visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE))
+
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup2, is_last_in_group=None)
+        mommy.make('devilry_comment.CommentFile',
+                   comment=mommy.make('devilry_group.GroupComment',
+                                      feedback_set=feedbackset2,
+                                      user_role=GroupComment.USER_ROLE_STUDENT,
+                                      visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE))
+        queryset = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students()
+        self.assertEqual(2, queryset.get(id=testgroup1.id).number_of_commentfiles_from_students)
+        self.assertEqual(1, queryset.get(id=testgroup2.id).number_of_commentfiles_from_students)
