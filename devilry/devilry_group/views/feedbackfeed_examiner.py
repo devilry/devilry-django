@@ -47,23 +47,6 @@ class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseVie
         super(ExaminerBaseFeedbackFeedView, self).set_automatic_attributes(obj)
         obj.user_role = 'examiner'
 
-    # def save_object(self, form, commit=False):
-    #     obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=commit)
-    #
-    #     self._convert_temporary_files_to_comment_files(form, obj)
-    #     # if form.data.get('examiner_add_comment_for_examiners'):
-    #     #     obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
-    #     #     obj.published_datetime = timezone.now()
-    #     # elif form.data.get('examiner_add_public_comment'):
-    #     #     obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
-    #     #     obj.published_datetime = timezone.now()
-    #     # elif form.data.get('examiner_add_comment_to_feedback_draft'):
-    #     #     obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
-    #     #     obj.part_of_grading = True
-    #     #
-    #     # obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form)
-    #     return obj
-
 
 class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
     """
