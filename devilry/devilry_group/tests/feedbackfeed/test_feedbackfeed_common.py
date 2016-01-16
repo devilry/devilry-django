@@ -334,63 +334,63 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-failed'))
 
-    def test_post_302(self):
-        feedbackset = mommy.make('devilry_group.FeedbackSet')
-        mockresponse = self.mock_http302_postrequest(
-            cradmin_role=feedbackset.group,
-            viewkwargs={'pk': feedbackset.group.id},
-            requestkwargs={
-                'data': {
-                    'text': 'asd',
-                }
-            })
-        self.assertEquals(mockresponse.response.status_code, 302)
-
-    # def test_post_comment_blank(self):
+    # def test_post_302(self):
     #     feedbackset = mommy.make('devilry_group.FeedbackSet')
-    #     self.mock_http302_postrequest(
+    #     mockresponse = self.mock_http302_postrequest(
     #         cradmin_role=feedbackset.group,
     #         viewkwargs={'pk': feedbackset.group.id},
     #         requestkwargs={
     #             'data': {
-    #                 'text': '',
+    #                 'text': 'asd',
     #             }
     #         })
-    #     comments = models.GroupComment.objects.all()
-    #     self.assertEquals(0, len(comments))
-
-    def test_post_comment(self):
-        feedbackset = mommy.make('devilry_group.FeedbackSet')
-        self.mock_http302_postrequest(
-            cradmin_role=feedbackset.group,
-            viewkwargs={'pk': feedbackset.group.id},
-            requestkwargs={
-                'data': {
-                    'text': 'This is a comment',
-                }
-            })
-        comments = models.GroupComment.objects.all()
-        self.assertEquals(1, len(comments))
-
-    # def test_post_comment_file(self):
+    #     self.assertEquals(mockresponse.response.status_code, 302)
+    #
+    # # def test_post_comment_blank(self):
+    # #     feedbackset = mommy.make('devilry_group.FeedbackSet')
+    # #     self.mock_http302_postrequest(
+    # #         cradmin_role=feedbackset.group,
+    # #         viewkwargs={'pk': feedbackset.group.id},
+    # #         requestkwargs={
+    # #             'data': {
+    # #                 'text': '',
+    # #             }
+    # #         })
+    # #     comments = models.GroupComment.objects.all()
+    # #     self.assertEquals(0, len(comments))
+    #
+    # def test_post_comment(self):
     #     feedbackset = mommy.make('devilry_group.FeedbackSet')
-    #     filecollection = mommy.make(
-    #         'cradmin_temporaryfileuploadstore.TemporaryFileCollection',
-    #     )
-    #     test_file = mommy.make(
-    #         'cradmin_temporaryfileuploadstore.TemporaryFile',
-    #         filename='test.txt',
-    #         collection=filecollection
-    #     )
-    #     test_file.file.save('test.txt', ContentFile('test'))
     #     self.mock_http302_postrequest(
     #         cradmin_role=feedbackset.group,
     #         viewkwargs={'pk': feedbackset.group.id},
     #         requestkwargs={
     #             'data': {
     #                 'text': 'This is a comment',
-    #                 'temporary_file_collection_id': filecollection.id,
     #             }
     #         })
-    #     comment_files = comment_models.CommentFile.objects.all()
-    #     self.assertEquals(1, len(comment_files))
+    #     comments = models.GroupComment.objects.all()
+    #     self.assertEquals(1, len(comments))
+    #
+    # # def test_post_comment_file(self):
+    # #     feedbackset = mommy.make('devilry_group.FeedbackSet')
+    # #     filecollection = mommy.make(
+    # #         'cradmin_temporaryfileuploadstore.TemporaryFileCollection',
+    # #     )
+    # #     test_file = mommy.make(
+    # #         'cradmin_temporaryfileuploadstore.TemporaryFile',
+    # #         filename='test.txt',
+    # #         collection=filecollection
+    # #     )
+    # #     test_file.file.save('test.txt', ContentFile('test'))
+    # #     self.mock_http302_postrequest(
+    # #         cradmin_role=feedbackset.group,
+    # #         viewkwargs={'pk': feedbackset.group.id},
+    # #         requestkwargs={
+    # #             'data': {
+    # #                 'text': 'This is a comment',
+    # #                 'temporary_file_collection_id': filecollection.id,
+    # #             }
+    # #         })
+    # #     comment_files = comment_models.CommentFile.objects.all()
+    # #     self.assertEquals(1, len(comment_files))
