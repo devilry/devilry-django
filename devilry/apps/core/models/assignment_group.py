@@ -446,6 +446,42 @@ class AssignmentGroupQuerySet(models.QuerySet):
             )
         )
 
+    def extra_annotate_with_number_of_commentfiles_from_students(self):
+        """
+        Annotate the queryset with ``number_of_imageannotationcomments`` -
+        the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
+        added by admins within each AssignmentGroup.
+
+        Only comments that should be visible to everyone with access to the
+        group is included.
+        """
+        from devilry.devilry_group.models import AbstractGroupComment
+        return self.extra(
+            select={
+                "number_of_commentfiles_from_students": """
+                    SELECT
+                        COUNT(devilry_comment_commentfile.id)
+                    FROM devilry_group_feedbackset
+                    LEFT OUTER JOIN devilry_group_groupcomment
+                        ON (devilry_group_groupcomment.feedback_set_id = devilry_group_feedbackset.id)
+                    INNER JOIN devilry_comment_comment
+                        ON (devilry_comment_comment.id = devilry_group_groupcomment.comment_ptr_id)
+                    LEFT OUTER JOIN devilry_comment_commentfile
+                        ON (devilry_comment_commentfile.comment_id = devilry_comment_comment.id)
+                    WHERE
+                        devilry_group_feedbackset.group_id = core_assignmentgroup.id
+                        AND
+                        devilry_comment_comment.user_role = %s
+                        AND
+                        devilry_group_groupcomment.visibility = %s
+                """
+            },
+            select_params=[
+                Comment.USER_ROLE_STUDENT,
+                AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            ]
+        )
+
     def annotate_with_has_unpublished_feedbackset(self):
         """
         Annotate the queryset with ``has_unpublished_feedbackset``.
