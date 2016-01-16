@@ -8,13 +8,6 @@ from devilry.devilry_examiner.cradminextensions import devilry_crmenu_examiner
 from devilry.devilry_group.views import feedbackfeed_examiner
 
 
-# class Menu(crmenu.Menu):
-#     def build_menu(self):
-#         group = self.request.cradmin_role
-#         self.add_headeritem(
-#             label=group.subject.long_name,
-#             url=self.appindex_url('feedbackfeed'))
-
 class Menu(devilry_crmenu_examiner.Menu):
     def build_menu(self):
         super(Menu, self).build_menu()
