@@ -290,9 +290,33 @@ class AssignmentGroupQuerySet(models.QuerySet):
         the number of :class:`devilry.devilry_group.models.GroupComment`
         within each AssignmentGroup.
         """
+        from devilry.devilry_group.models import GroupComment
         return self.annotate(
             number_of_groupcomments=models.Count(
-                'feedbackset__groupcomment'
+                models.Case(
+                    models.When(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                                then=1)
+                )
+            )
+        )
+
+    def annotate_with_number_of_groupcomments_from_students(self):
+        """
+        Annotate the queryset with ``number_of_groupcomments_from_students`` -
+        the number of :class:`devilry.devilry_group.models.GroupComment`
+        added by students within each AssignmentGroup.
+
+        Only comments that should be visible to everyone with access to the
+        group is included.
+        """
+        from devilry.devilry_group.models import GroupComment
+        return self.annotate(
+            number_of_groupcomments_from_students=models.Count(
+                models.Case(
+                    models.When(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                                feedbackset__groupcomment__user_role=GroupComment.USER_ROLE_STUDENT,
+                                then=1)
+                )
             )
         )
 
