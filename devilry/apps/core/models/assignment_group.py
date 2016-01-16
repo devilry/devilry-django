@@ -377,16 +377,21 @@ class AssignmentGroupQuerySet(models.QuerySet):
     #         )
     #     )
 
-
     def annotate_with_number_of_imageannotationcomments(self):
         """
         Annotate the queryset with ``number_of_imageannotationcomments`` -
         the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
         within each AssignmentGroup.
         """
+        from devilry.devilry_group.models import ImageAnnotationComment
+        whenquery = models.When(
+            feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            # feedbackset__imageannotationcomment__user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+            then=1
+        )
         return self.annotate(
             number_of_imageannotationcomments=models.Count(
-                'feedbackset__imageannotationcomment'
+                models.Case(whenquery)
             )
         )
 
