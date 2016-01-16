@@ -113,10 +113,10 @@ class FeedbackFeedBaseView(create.CreateView):
         obj.feedback_set = self.request.cradmin_role.feedbackset_set.latest('created_datetime')
 
     def save_object(self, form, commit=False):
-        if commit:
-            raise NotImplementedError('Must be implemented by subclass!')
+        # if commit:
+        #     raise NotImplementedError('Must be implemented by subclass!')
 
-        obj = super(FeedbackFeedBaseView, self,).save_object(form, True)
+        obj = super(FeedbackFeedBaseView, self,).save_object(form, commit=commit)
         # self._convert_temporary_files_to_comment_files(form, obj)
         return obj
 
