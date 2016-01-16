@@ -21,15 +21,38 @@ from xml.sax.saxutils import quoteattr
 from devilry.devilry_group.timeline_builder import feedbackfeed_timeline_builder
 
 
+class GroupCommentForm(forms.ModelForm):
+
+    class Meta:
+        fields = ['text']
+        model = group_models.GroupComment
+
+    def __init__(self, *args, **kwargs):
+        self.group = kwargs.pop('group')
+        super(GroupCommentForm, self).__init__(*args, **kwargs)
+
+    @classmethod
+    def get_field_layout(self):
+        return []
+
+
 class FeedbackFeedBaseView(create.CreateView):
     template_name = "devilry_group/feedbackfeed.django.html"
 
     # for cradmin CreateView
-    model=group_models.GroupComment
-    fields=["text"]
+    model = group_models.GroupComment
     form_attributes = {
         'django-cradmin-bulkfileupload-form': ''
     }
+
+    def get_form_class(self):
+        return GroupCommentForm
+
+    def get_form_kwargs(self):
+        kwargs = super(FeedbackFeedBaseView, self).get_form_kwargs()
+        group = self.request.cradmin_role
+        kwargs['group'] = group
+        return kwargs
 
     def _get_comments_for_group(self, group):
         raise NotImplementedError("Subclasses must implement _get_queryset_for_group!")
@@ -68,32 +91,32 @@ class FeedbackFeedBaseView(create.CreateView):
         raise NotImplementedError("Subclasses must implement get_buttons!")
 
     def get_field_layout(self):
+        field_layout = []
+        field_layout.extend(self.get_form_class().get_field_layout())
+        field_layout.append('text')
+        field_layout.append(
+            layout.Div(
+                layout.HTML(render_to_string(
+                    'devilry_group/include/fileupload.django.html',
+                    {
+                        "apiparameters": quoteattr(json.dumps({
+                            "unique_filenames": True,
+                            "max_filename_length": comment_models.CommentFile.MAX_FILENAME_LENGTH
+                        })),
+                        "hiddenfieldname": "temporary_file_collection_id",
+                        "apiurl": reverse('cradmin_temporary_file_upload_api')
+                    })),
+                # css_class='panel-footer'
+            ))
         return [
             layout.Fieldset(
                 '',
                 layout.Div(
-                    layout.Div(
-                        'text',
-                        # css_class='panel-body'
-                    ),
-                    layout.Div(
-                        layout.HTML(render_to_string(
-                            'devilry_group/include/fileupload.django.html',
-                            {
-                                "apiparameters": quoteattr(json.dumps({
-                                    "unique_filenames": True,
-                                    "max_filename_length": comment_models.CommentFile.MAX_FILENAME_LENGTH
-                                })),
-                                "hiddenfieldname": "temporary_file_collection_id",
-                                "apiurl": reverse('cradmin_temporary_file_upload_api')
-                            })),
-                        # css_class='panel-footer'
-                    ),
-                    # css_class='panel panel-default'
+                    *field_layout
                 ),
                 layout.Div(
                     layout.Div(*self.get_buttons()),
-                    css_class="col-xs-12 text-right"
+                    css_class="text-right"
                 ),
                 css_class='comment-form-container'
             )

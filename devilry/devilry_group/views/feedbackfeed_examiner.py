@@ -1,17 +1,22 @@
 # django imports
 import datetime
 
+from django import forms
+from django.contrib import messages
 from django.utils import timezone
 from django_cradmin import crapp
-from django.utils.translation import ugettext_lazy as _, ugettext_lazy
+from django.utils.translation import ugettext_lazy as _, ugettext_lazy, pgettext_lazy
 from django.db.models import Q
 
 # devilry imports
+from devilry.apps.core.models import Assignment
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models
 
 # crispy forms
 from crispy_forms import layout
+
+from devilry.devilry_group.views.cradmin_feedbackfeed_base import GroupCommentForm
 
 
 class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
@@ -48,6 +53,51 @@ class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseVie
         obj.user_role = 'examiner'
 
 
+class AbstractFeedbackForm(GroupCommentForm):
+
+    def get_grading_points(self):
+        raise NotImplementedError()
+
+
+class PassedFailedFeedbackForm(AbstractFeedbackForm):
+    passed = forms.BooleanField(
+        label=pgettext_lazy('grading', 'Passed?'),
+        help_text=pgettext_lazy('grading', 'Check to provide a passing grade.'),
+        initial=True,
+        required=False)
+
+    @classmethod
+    def get_field_layout(self):
+        return ['passed']
+
+    def get_grading_points(self):
+        if self.cleaned_data['passed']:
+            return 1
+        else:
+            return 0
+
+
+class PointsFeedbackForm(AbstractFeedbackForm):
+    points = forms.IntegerField(
+            required=True,
+            min_value = 0,
+            label=_('Points'))
+
+    def __init__(self, *args, **kwargs):
+        super(PointsFeedbackForm, self).__init__(*args, **kwargs)
+        self.fields['points'].max_value = self.group.assignment.max_points
+        self.fields['points'].help_text = pgettext_lazy('grading', 'Number between 0 and %(max_points)s.') % {
+            'max_points': self.group.assignment.max_points
+        }
+
+    @classmethod
+    def get_field_layout(self):
+        return ['points']
+
+    def get_grading_points(self):
+        return self.cleaned_data['points']
+
+
 class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
     """
     TODO: Document
@@ -59,6 +109,15 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         ).exclude_private_comments_from_other_users(
             user=self.request.user
         )
+
+    def get_form_class(self):
+        assignment = self.request.cradmin_role.assignment
+        if assignment.grading_system_plugin_id == Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED:
+            return PassedFailedFeedbackForm
+        elif assignment.grading_system_plugin_id == Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS:
+            return PointsFeedbackForm
+        else:
+            raise ValueError('Unsupported grading_system_plugin_id: {}'.format(assignment.grading_system_plugin_id))
 
     def get_buttons(self):
         return [
@@ -84,6 +143,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
                 current_deadline = feedbackset.group.parentnode.first_deadline
             if current_deadline < timezone.now():
                 if feedbackset.grading_points is not None:
+                    feedbackset.grading_points = form.get_grading_points()
                     obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
                     obj.part_of_grading = False
                     feedbackset.grading_published_datetime = timezone.now()
@@ -93,9 +153,8 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
                     feedbackset.save()
                     obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=True)
             else:
-                self.form_invalid(form)
-                obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=False)
-
+                messages.warning(self.request, ugettext_lazy('The deadline has not expired. '
+                                                             'Feedback was saved, but not published.'))
         return obj
 
     def get_form_invalid_message(self, form):
