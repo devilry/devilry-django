@@ -418,12 +418,12 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             ("custom-table", _("As a text looked up in a custom table")),
         ))
 
-    GRADING_SYSTEM_PLUGIN_ID_APPROVED = 'devilry_gradingsystemplugin_approved'
+    GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED = 'devilry_gradingsystemplugin_approved'
     GRADING_SYSTEM_PLUGIN_ID_POINTS = 'devilry_gradingsystemplugin_points'
     GRADING_SYSTEM_PLUGIN_ID_SCHEMA = 'schema'
     GRADING_SYSTEM_PLUGIN_ID_CHOICES = [
         (
-            GRADING_SYSTEM_PLUGIN_ID_APPROVED,
+            GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
             pgettext_lazy(
                 'assignment grading plugin',
                 'PASSED/FAILED. The examiner selects passed or failed.')
@@ -445,7 +445,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     #: Grading system plugin ID. Defines how examiners grade the students.
     grading_system_plugin_id = models.CharField(
-        default=GRADING_SYSTEM_PLUGIN_ID_APPROVED,
+        default=GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
         max_length=300, blank=True, null=True,
         choices=GRADING_SYSTEM_PLUGIN_ID_CHOICES)
 
