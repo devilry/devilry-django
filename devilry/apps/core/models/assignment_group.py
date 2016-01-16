@@ -289,6 +289,9 @@ class AssignmentGroupQuerySet(models.QuerySet):
         Annotate the queryset with ``number_of_groupcomments`` -
         the number of :class:`devilry.devilry_group.models.GroupComment`
         within each AssignmentGroup.
+
+        Only comments that should be visible to everyone with access to the
+        group is included.
         """
         from devilry.devilry_group.models import GroupComment
         return self.annotate(
@@ -382,15 +385,80 @@ class AssignmentGroupQuerySet(models.QuerySet):
         Annotate the queryset with ``number_of_imageannotationcomments`` -
         the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
         within each AssignmentGroup.
+
+        Only comments that should be visible to everyone with access to the
+        group is included.
         """
         from devilry.devilry_group.models import ImageAnnotationComment
         whenquery = models.When(
             feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-            # feedbackset__imageannotationcomment__user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
             then=1
         )
         return self.annotate(
             number_of_imageannotationcomments=models.Count(
+                models.Case(whenquery)
+            )
+        )
+
+    def annotate_with_number_of_imageannotationcomments_from_students(self):
+        """
+        Annotate the queryset with ``number_of_imageannotationcomments`` -
+        the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
+        added by students within each AssignmentGroup.
+
+        Only comments that should be visible to everyone with access to the
+        group is included.
+        """
+        from devilry.devilry_group.models import ImageAnnotationComment
+        whenquery = models.When(
+            feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            feedbackset__imageannotationcomment__user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+            then=1
+        )
+        return self.annotate(
+            number_of_imageannotationcomments_from_students=models.Count(
+                models.Case(whenquery)
+            )
+        )
+
+    def annotate_with_number_of_imageannotationcomments_from_examiners(self):
+        """
+        Annotate the queryset with ``number_of_imageannotationcomments`` -
+        the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
+        added by examiners within each AssignmentGroup.
+
+        Only comments that should be visible to everyone with access to the
+        group is included.
+        """
+        from devilry.devilry_group.models import ImageAnnotationComment
+        whenquery = models.When(
+            feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            feedbackset__imageannotationcomment__user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+            then=1
+        )
+        return self.annotate(
+            number_of_imageannotationcomments_from_examiners=models.Count(
+                models.Case(whenquery)
+            )
+        )
+
+    def annotate_with_number_of_imageannotationcomments_from_admins(self):
+        """
+        Annotate the queryset with ``number_of_imageannotationcomments`` -
+        the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
+        added by admins within each AssignmentGroup.
+
+        Only comments that should be visible to everyone with access to the
+        group is included.
+        """
+        from devilry.devilry_group.models import ImageAnnotationComment
+        whenquery = models.When(
+            feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            feedbackset__imageannotationcomment__user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+            then=1
+        )
+        return self.annotate(
+            number_of_imageannotationcomments_from_admins=models.Count(
                 models.Case(whenquery)
             )
         )
