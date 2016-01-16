@@ -89,6 +89,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
                     feedbackset.grading_published_datetime = timezone.now()
                     feedbackset.grading_published_by = obj.user
                     obj.published_datetime = timezone.now()
+                    feedbackset.full_clean()
                     feedbackset.save()
                     obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=True)
             else:
