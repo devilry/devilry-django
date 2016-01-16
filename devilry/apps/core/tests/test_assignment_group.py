@@ -3356,10 +3356,10 @@ class AssignmentGroupQuerySetAnnotateWithHasUnpublishedFeedbackset(TestCase):
         self.assertFalse(queryset.get(id=testgroup2.id).has_unpublished_feedbackset)
 
 
-class AssignmentGroupQuerySetExtraAnnotateWithNumberOfCommentfilesFromStudents(TestCase):
+class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCase):
     def test_no_comments(self):
         mommy.make('core.AssignmentGroup')
-        annotated_group = AssignmentGroup.objects.extra_annotate_with_number_of_commentfiles_from_students().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
         self.assertEqual(0, annotated_group.number_of_commentfiles_from_students)
 
     def test_no_commentfiles(self):
@@ -3370,10 +3370,10 @@ class AssignmentGroupQuerySetExtraAnnotateWithNumberOfCommentfilesFromStudents(T
                    feedback_set=feedbackset,
                    user_role=GroupComment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        annotated_group = AssignmentGroup.objects.extra_annotate_with_number_of_commentfiles_from_students().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
         self.assertEqual(0, annotated_group.number_of_commentfiles_from_students)
 
-    def test_has_commentfile(self):
+    def test_has_commentfile_groupcomment(self):
         testgroup = mommy.make('core.AssignmentGroup')
         feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
             group=testgroup)
@@ -3382,10 +3382,22 @@ class AssignmentGroupQuerySetExtraAnnotateWithNumberOfCommentfilesFromStudents(T
                                  user_role=GroupComment.USER_ROLE_STUDENT,
                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mommy.make('devilry_comment.CommentFile', comment=testcomment)
-        annotated_group = AssignmentGroup.objects.extra_annotate_with_number_of_commentfiles_from_students().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
         self.assertEqual(1, annotated_group.number_of_commentfiles_from_students)
 
-    def test_commentfile_on_non_public_comment_ignored(self):
+    def test_has_commentfile_imageannotationcomment(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        testcomment = mommy.make('devilry_group.ImageAnnotationComment',
+                                 feedback_set=feedbackset,
+                                 user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                                 visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        self.assertEqual(1, annotated_group.number_of_commentfiles_from_students)
+
+    def test_commentfile_on_non_public_groupcomment_ignored(self):
         testgroup = mommy.make('core.AssignmentGroup')
         feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
             group=testgroup)
@@ -3394,10 +3406,22 @@ class AssignmentGroupQuerySetExtraAnnotateWithNumberOfCommentfilesFromStudents(T
                                  user_role=GroupComment.USER_ROLE_STUDENT,
                                  visibility=GroupComment.VISIBILITY_PRIVATE)
         mommy.make('devilry_comment.CommentFile', comment=testcomment)
-        annotated_group = AssignmentGroup.objects.extra_annotate_with_number_of_commentfiles_from_students().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
         self.assertEqual(0, annotated_group.number_of_commentfiles_from_students)
 
-    def test_commentfile_from_examiner_ignored(self):
+    def test_commentfile_on_non_public_imageannotationcomment_ignored(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        testcomment = mommy.make('devilry_group.ImageAnnotationComment',
+                                 feedback_set=feedbackset,
+                                 user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                                 visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        self.assertEqual(0, annotated_group.number_of_commentfiles_from_students)
+
+    def test_commentfile_from_examiner_on_groupcomment_ignored(self):
         testgroup = mommy.make('core.AssignmentGroup')
         feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
             group=testgroup)
@@ -3406,10 +3430,22 @@ class AssignmentGroupQuerySetExtraAnnotateWithNumberOfCommentfilesFromStudents(T
                                  user_role=GroupComment.USER_ROLE_EXAMINER,
                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mommy.make('devilry_comment.CommentFile', comment=testcomment)
-        annotated_group = AssignmentGroup.objects.extra_annotate_with_number_of_commentfiles_from_students().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
         self.assertEqual(0, annotated_group.number_of_commentfiles_from_students)
 
-    def test_commentfile_from_admin_ignored(self):
+    def test_commentfile_from_examiner_on_imageannotationcomment_ignored(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        testcomment = mommy.make('devilry_group.ImageAnnotationComment',
+                                 feedback_set=feedbackset,
+                                 user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                                 visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        self.assertEqual(0, annotated_group.number_of_commentfiles_from_students)
+
+    def test_commentfile_from_admin_on_groupcomment_ignored(self):
         testgroup = mommy.make('core.AssignmentGroup')
         feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
             group=testgroup)
@@ -3418,7 +3454,19 @@ class AssignmentGroupQuerySetExtraAnnotateWithNumberOfCommentfilesFromStudents(T
                                  user_role=GroupComment.USER_ROLE_ADMIN,
                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mommy.make('devilry_comment.CommentFile', comment=testcomment)
-        annotated_group = AssignmentGroup.objects.extra_annotate_with_number_of_commentfiles_from_students().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        self.assertEqual(0, annotated_group.number_of_commentfiles_from_students)
+
+    def test_commentfile_from_admin_on_imageannotationcomment_ignored(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        testcomment = mommy.make('devilry_group.ImageAnnotationComment',
+                                 feedback_set=feedbackset,
+                                 user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                                 visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
         self.assertEqual(0, annotated_group.number_of_commentfiles_from_students)
 
     def test_multiple_commentfiles(self):
@@ -3444,7 +3492,7 @@ class AssignmentGroupQuerySetExtraAnnotateWithNumberOfCommentfilesFromStudents(T
                                       feedback_set=feedbackset2,
                                       user_role=GroupComment.USER_ROLE_STUDENT,
                                       visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE))
-        annotated_group = AssignmentGroup.objects.extra_annotate_with_number_of_commentfiles_from_students().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
         self.assertEqual(3, annotated_group.number_of_commentfiles_from_students)
 
     def test_multiple_groups(self):
@@ -3470,6 +3518,6 @@ class AssignmentGroupQuerySetExtraAnnotateWithNumberOfCommentfilesFromStudents(T
                                       feedback_set=feedbackset2,
                                       user_role=GroupComment.USER_ROLE_STUDENT,
                                       visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE))
-        queryset = AssignmentGroup.objects.extra_annotate_with_number_of_commentfiles_from_students()
+        queryset = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students()
         self.assertEqual(2, queryset.get(id=testgroup1.id).number_of_commentfiles_from_students)
         self.assertEqual(1, queryset.get(id=testgroup2.id).number_of_commentfiles_from_students)

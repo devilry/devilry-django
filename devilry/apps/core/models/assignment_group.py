@@ -446,7 +446,7 @@ class AssignmentGroupQuerySet(models.QuerySet):
             )
         )
 
-    def extra_annotate_with_number_of_commentfiles_from_students(self):
+    def annotate_with_number_of_commentfiles_from_students(self):
         """
         Annotate the queryset with ``number_of_imageannotationcomments`` -
         the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
@@ -455,31 +455,24 @@ class AssignmentGroupQuerySet(models.QuerySet):
         Only comments that should be visible to everyone with access to the
         group is included.
         """
-        from devilry.devilry_group.models import AbstractGroupComment
-        return self.extra(
-            select={
-                "number_of_commentfiles_from_students": """
-                    SELECT
-                        COUNT(devilry_comment_commentfile.id)
-                    FROM devilry_group_feedbackset
-                    LEFT OUTER JOIN devilry_group_groupcomment
-                        ON (devilry_group_groupcomment.feedback_set_id = devilry_group_feedbackset.id)
-                    INNER JOIN devilry_comment_comment
-                        ON (devilry_comment_comment.id = devilry_group_groupcomment.comment_ptr_id)
-                    LEFT OUTER JOIN devilry_comment_commentfile
-                        ON (devilry_comment_commentfile.comment_id = devilry_comment_comment.id)
-                    WHERE
-                        devilry_group_feedbackset.group_id = core_assignmentgroup.id
-                        AND
-                        devilry_comment_comment.user_role = %s
-                        AND
-                        devilry_group_groupcomment.visibility = %s
-                """
-            },
-            select_params=[
-                Comment.USER_ROLE_STUDENT,
-                AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-            ]
+        from devilry.devilry_group.models import ImageAnnotationComment
+        from devilry.devilry_group.models import GroupComment
+        whenquery = models.When(
+            models.Q(
+                feedbackset__groupcomment__commentfile__isnull=False,
+                feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                feedbackset__groupcomment__user_role=GroupComment.USER_ROLE_STUDENT,
+            ) | models.Q(
+                feedbackset__imageannotationcomment__commentfile__isnull=False,
+                feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                feedbackset__imageannotationcomment__user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+            ),
+            then=1
+        )
+        return self.annotate(
+            number_of_commentfiles_from_students=models.Count(
+                models.Case(whenquery)
+            )
         )
 
     def annotate_with_has_unpublished_feedbackset(self):
