@@ -10,25 +10,7 @@ from django_cradmin.viewhelpers import listbuilderview
 from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer
 from devilry.devilry_cradmin import devilry_listfilter
-
-
-class GroupItemValue(listbuilder.itemvalue.TitleDescription):
-    valuealias = 'group'
-    template_name = 'devilry_examiner/assignment/itemvalue/group-item-value.django.html'
-
-    def get_candidate_users(self):
-        return [candidate.relatedstudent.user for candidate in self.group.candidates.all()]
-
-    def get_description(self):
-        return ''
-
-    # def get_extra_css_classes_list(self):
-    #     css_classes = ['devilry-examiner-listbuilder-assignmentlist-assignmentitemvalue']
-    #     if self.group.waiting_for_feedback_count > 0:
-    #         css_classes.append('devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning')
-    #     else:
-    #         css_classes.append('devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-muted')
-    #     return css_classes
+from devilry.devilry_cradmin import devilry_listbuilder
 
 
 class GroupItemFrame(listbuilder.itemframe.Link):
@@ -46,7 +28,7 @@ class GroupItemFrame(listbuilder.itemframe.Link):
 class GroupListView(listbuilderview.FilterListMixin,
                     listbuilderview.View):
     model = coremodels.AssignmentGroup
-    value_renderer_class = GroupItemValue
+    value_renderer_class = devilry_listbuilder.assignmentgroup.ExaminerItemValue
     frame_renderer_class = GroupItemFrame
 
     def dispatch(self, request, *args, **kwargs):

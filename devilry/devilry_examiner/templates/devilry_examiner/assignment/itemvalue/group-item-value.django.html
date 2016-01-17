@@ -1,6 +1,1 @@
-{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
-{% load devilry_core_tags %}
-
-{% block title-content %}
-    {% devilry_multiple_candidates_long_displayname me.group.assignment me.group.candidates.all "examiner" %}
-{% endblock title-content %}
+{% extends "devilry_cradmin/devilry_listbuilder/assignmentgroup/group-item-value.django.html" %}

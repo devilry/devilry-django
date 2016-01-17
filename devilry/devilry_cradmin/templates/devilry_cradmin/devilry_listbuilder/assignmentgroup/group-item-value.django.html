@@ -1,0 +1,19 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load devilry_core_tags %}
+
+{% block title-content %}
+    {% devilry_multiple_candidates_long_displayname me.group.assignment me.group.candidates.all me.get_devilryrole %}
+{% endblock title-content %}
+
+{% block below-description %}
+    <p class="devilry-cradmin-groupitemvalue-status-and-grade">
+        <span class="devilry-cradmin-groupitemvalue-status">
+        </span>
+        {% if me.group.is_corrected %}
+            <span class="devilry-cradmin-groupitemvalue-grade">
+                TODO: grade
+            </span>
+        {% endif %}
+    </p>
+{% endblock below-description %}

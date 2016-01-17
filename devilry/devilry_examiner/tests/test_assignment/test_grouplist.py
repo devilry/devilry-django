@@ -17,30 +17,6 @@ from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import GroupComment, ImageAnnotationComment
 
 
-class TestGroupItemValue(test.TestCase):
-    def test_title(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__fullname='Test User',
-                   relatedstudent__user__shortname='testuser@example.com')
-        selector = htmls.S(grouplist.GroupItemValue(value=testgroup).render())
-        self.assertEqual(
-            'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
-
-    def test_title_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
-        selector = htmls.S(grouplist.GroupItemValue(value=testgroup).render())
-        self.assertEqual(
-            'MyAnonymousID',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
-
-
 class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = grouplist.GroupListView
 
