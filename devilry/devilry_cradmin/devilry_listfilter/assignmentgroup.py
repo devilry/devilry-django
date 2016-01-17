@@ -356,18 +356,24 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
     def get_choices(self):
         return [
             ('', ''),
-            ('studentcomment', pgettext_lazy('group activity',
-                                             'Has comment(s) from student')),
-            ('studentfile', pgettext_lazy('group activity',
-                                          'Has file(s) from student')),
-            ('examinercomment', pgettext_lazy('group activity',
-                                              'Has comment(s) from examiner')),
-            ('unpublishedfeedback', pgettext_lazy('group activity',
-                                                   'Has unpublished feedback')),
-            ('admincomment', pgettext_lazy('group activity',
-                                           'Has comment(s) from administrator')),
-            ('privatecomment', pgettext_lazy('group activity',
-                                              'Has unpublished comment(s) from YOU')),
+            (pgettext_lazy('group activity', 'From student'), (
+                ('studentcomment', pgettext_lazy('group activity',
+                                                 'Has comment(s) from student')),
+                ('studentfile', pgettext_lazy('group activity',
+                                              'Has file(s) from student')),
+            )),
+            (pgettext_lazy('group activity', 'From examiner'), (
+                ('examinercomment', pgettext_lazy('group activity',
+                                                  'Has comment(s) from examiner')),
+                ('unpublishedfeedback', pgettext_lazy('group activity',
+                                                      'Has unpublished feedback')),
+                ('privatecomment', pgettext_lazy('group activity',
+                                                 'Has unpublished comment(s) from YOU')),
+            )),
+            (pgettext_lazy('group activity', 'From administrator'), (
+                ('admincomment', pgettext_lazy('group activity',
+                                               'Has comment(s) from administrator')),
+            ))
         ]
 
     def filter(self, queryobject):
