@@ -50,39 +50,46 @@ class AbstractOrderBy(listfilter.django.single.select.AbstractOrderBy):
             label_is_screenreader_only=label_is_screenreader_only
         )
 
-    def get_extra_ordering_options_pre(self):
+    def get_user_ordering_options(self):
         return []
 
     def get_common_ordering_options(self):
         return [
-            ('points_descending', {
-                'label': pgettext_lazy('orderby', 'Points (highest first)'),
-                'order_by': ['-grading_points'],
-            }),
-            ('points_ascending', {
-                'label': pgettext_lazy('orderby', 'Points (lowest first)'),
-                'order_by': ['grading_points'],
-            }),
-            ('last_commented_by_student_descending', {
-                'label': pgettext_lazy('orderby', 'Recently commented by student'),
-                'order_by': [],  # Handled with custom query in filter()
-            }),
-            ('last_commented_by_student_ascending', {
-                'label': pgettext_lazy('orderby', 'Least recently commented by student'),
-                'order_by': [],  # Handled with custom query in filter()
-            }),
-            ('last_commented_by_examiner_descending', {
-                'label': pgettext_lazy('orderby', 'Recently commented by examiner'),
-                'order_by': [],  # Handled with custom query in filter()
-            }),
-            ('last_commented_by_examiner_ascending', {
-                'label': pgettext_lazy('orderby', 'Least recently commented by examiner'),
-                'order_by': [],  # Handled with custom query in filter()
-            }),
+            (pgettext_lazy('orderby', 'By points'), (
+                ('points_descending', {
+                    'label': pgettext_lazy('orderby', 'Points (highest first)'),
+                    'order_by': ['-grading_points'],
+                }),
+                ('points_ascending', {
+                    'label': pgettext_lazy('orderby', 'Points (lowest first)'),
+                    'order_by': ['grading_points'],
+                }),
+            )),
+            (pgettext_lazy('orderby', 'By activity'), (
+                ('last_commented_by_student_descending', {
+                    'label': pgettext_lazy('orderby', 'Recently commented by student'),
+                    'order_by': [],  # Handled with custom query in filter()
+                }),
+                ('last_commented_by_student_ascending', {
+                    'label': pgettext_lazy('orderby', 'Least recently commented by student'),
+                    'order_by': [],  # Handled with custom query in filter()
+                }),
+                ('last_commented_by_examiner_descending', {
+                    'label': pgettext_lazy('orderby', 'Recently commented by examiner'),
+                    'order_by': [],  # Handled with custom query in filter()
+                }),
+                ('last_commented_by_examiner_ascending', {
+                    'label': pgettext_lazy('orderby', 'Least recently commented by examiner'),
+                    'order_by': [],  # Handled with custom query in filter()
+                }),
+            ))
         ]
 
     def get_ordering_options(self):
-        ordering_options = self.get_extra_ordering_options_pre()
+        ordering_options = [(
+            pgettext_lazy('orderby', 'By student name'),
+            self.get_user_ordering_options()
+        )]
         ordering_options.extend(self.get_common_ordering_options())
         return ordering_options
 
@@ -100,7 +107,7 @@ class AbstractOrderBy(listfilter.django.single.select.AbstractOrderBy):
 
 
 class OrderByNotAnonymous(AbstractOrderBy):
-    def get_extra_ordering_options_pre(self):
+    def get_user_ordering_options(self):
         if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
             shortname_ascending_label = pgettext_lazy('orderby', 'Email')
             shortname_descending_label = pgettext_lazy('orderby', 'Email (descending)')
@@ -153,7 +160,7 @@ class OrderByNotAnonymous(AbstractOrderBy):
 
 
 class OrderByAnonymous(AbstractOrderBy):
-    def get_extra_ordering_options_pre(self):
+    def get_user_ordering_options(self):
         return [
             ('', {
                 'label': pgettext_lazy('orderby', 'Anonymous ID'),
@@ -176,7 +183,7 @@ class OrderByAnonymous(AbstractOrderBy):
 
 
 class OrderByAnonymousUsesCustomCandidateIds(AbstractOrderBy):
-    def get_extra_ordering_options_pre(self):
+    def get_user_ordering_options(self):
         return [
             ('', {
                 'label': pgettext_lazy('orderby', 'Candidate ID'),
