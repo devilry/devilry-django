@@ -373,7 +373,7 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
                 ('examinercomment', pgettext_lazy('group activity',
                                                   'Has comment(s) from examiner')),
                 ('unpublishedfeedback', pgettext_lazy('group activity',
-                                                      'Has unpublished feedback')),
+                                                      'Has unpublished feedback draft')),
                 ('privatecomment', pgettext_lazy('group activity',
                                                  'Has unpublished comment(s) from YOU')),
             )),
