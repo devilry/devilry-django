@@ -1,9 +1,13 @@
+from datetime import timedelta
+
 import htmls
 from django import test
+from django.utils import timezone
 from model_mommy import mommy
 
-from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import Assignment, AssignmentGroup
 from devilry.devilry_cradmin import devilry_listbuilder
+from devilry.devilry_group import devilry_group_mommy_factories
 
 
 class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
@@ -115,8 +119,8 @@ class TestExaminerItemValue(test.TestCase):
                    relatedexaminer__user__shortname='testuser@example.com')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
             value=testgroup, include_examiners=False).render())
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-examiners-names'))
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-examiners'))
-        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-examiners-wrapper'))
 
 
 class TestPeriodAdminItemValue(test.TestCase):
@@ -248,3 +252,31 @@ class TestItemValue(test.TestCase):
         self.assertEqual(
             'MyAnonymousID',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_status_is_corrected(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            grading_points=1)
+        testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        selector = htmls.S(MockItemValue(value=testgroup).render())
+        self.assertEqual(
+            'Status: corrected',
+            selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)
+
+    def test_status_is_waiting_for_feedback(self):
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+        selector = htmls.S(MockItemValue(value=testgroup).render())
+        self.assertEqual(
+            'Status: waiting for feedback',
+            selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)
+
+    def test_status_is_waiting_for_deliveries(self):
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                                first_deadline=timezone.now() + timedelta(days=2)))
+        testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        selector = htmls.S(MockItemValue(value=testgroup).render())
+        self.assertEqual(
+            'Status: waiting for deliveries',
+            selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)

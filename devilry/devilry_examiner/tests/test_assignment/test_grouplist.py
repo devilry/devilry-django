@@ -1210,7 +1210,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             requestuser=testuser)
         self.assertEqual(
-            'All students 3',
+            'all students 3',
             mockresponse.selector.one(
                 '#django_cradmin_listfilter_status_input__label').alltext_normalized)
 
@@ -1240,7 +1240,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             requestuser=testuser)
         self.assertEqual(
-            'Waiting for feedback 2',
+            'waiting for feedback 2',
             mockresponse.selector.one(
                 '#django_cradmin_listfilter_status_input_waiting-for-feedback_label').alltext_normalized)
 
@@ -1270,7 +1270,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             requestuser=testuser)
         self.assertEqual(
-            'Waiting for deliveries 2',
+            'waiting for deliveries 2',
             mockresponse.selector.one(
                 '#django_cradmin_listfilter_status_input_waiting-for-deliveries_label').alltext_normalized)
 
@@ -1300,7 +1300,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             requestuser=testuser)
         self.assertEqual(
-            'Corrected 2',
+            'corrected 2',
             mockresponse.selector.one(
                 '#django_cradmin_listfilter_status_input_corrected_label').alltext_normalized)
 

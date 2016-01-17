@@ -8,7 +8,7 @@
 
 {% block below-description %}
     {% if me.should_include_examiners %}
-        <p class="devilry-cradmin-groupitemvalue-examiners-wrapper">
+        <p class="devilry-cradmin-groupitemvalue-examiners">
             <span class="devilry-cradmin-groupitemvalue-examiners-title">
                 {% trans "Examiners" %}:
             </span>
@@ -19,6 +19,10 @@
     {% endif %}
     <p class="devilry-cradmin-groupitemvalue-status-and-grade">
         <span class="devilry-cradmin-groupitemvalue-status">
+            <span class="devilry-cradmin-groupitemvalue-status-title">
+                {% trans "Status" context "group status" %}:
+            </span>
+            {% devilry_groupstatus me.group %}
         </span>
         {% if me.group.is_corrected %}
             <span class="devilry-cradmin-groupitemvalue-grade">
