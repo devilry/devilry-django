@@ -3312,6 +3312,87 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateGroupcommentsFromUser(Te
             queryset.get(id=testgroup2.id).number_of_groupcomments_from_user)
 
 
+class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateImageannotationcommentsFromUser(TestCase):
+    def test_zero(self):
+        mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        queryset = AssignmentGroup.objects.annotate_with_number_of_private_imageannotationcomments_from_user(
+            user=testuser)
+        self.assertEqual(0, queryset.first().number_of_imageannotationcomments_from_user)
+
+    def test_only_private(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user=testuser,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user=testuser,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user=testuser,
+                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        annotated_group = AssignmentGroup.objects\
+            .annotate_with_number_of_private_imageannotationcomments_from_user(user=testuser).first()
+        self.assertEqual(1, annotated_group.number_of_imageannotationcomments_from_user)
+
+    def test_only_from_user(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user=testuser,
+                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   user=testuser,
+                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        annotated_group = AssignmentGroup.objects\
+            .annotate_with_number_of_private_imageannotationcomments_from_user(user=testuser).first()
+        self.assertEqual(2, annotated_group.number_of_imageannotationcomments_from_user)
+
+    def test_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup1)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   user=testuser,
+                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset1,
+                   user=testuser,
+                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup2)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset2,
+                   user=testuser,
+                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+
+        queryset = AssignmentGroup.objects\
+            .annotate_with_number_of_private_imageannotationcomments_from_user(user=testuser)
+        self.assertEqual(
+            2,
+            queryset.get(id=testgroup1.id).number_of_imageannotationcomments_from_user)
+        self.assertEqual(
+            1,
+            queryset.get(id=testgroup2.id).number_of_imageannotationcomments_from_user)
+
+
 class AssignmentGroupQuerySetAnnotateWithNumberOfPublishedFeedbacksets(TestCase):
     def test_annotate_with_number_of_published_feedbacksets_zero(self):
         mommy.make('core.AssignmentGroup')
