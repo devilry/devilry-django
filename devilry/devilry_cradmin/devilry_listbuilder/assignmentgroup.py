@@ -30,7 +30,7 @@ class FullyAnonymousSubjectAdminItemValue(listbuilder.itemvalue.TitleDescription
 
 class AbstractItemValue(listbuilder.itemvalue.TitleDescription):
     valuealias = 'group'
-    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/group-item-value.django.html'
+    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/item-value.django.html'
 
     def __init__(self, *args, **kwargs):
         super(AbstractItemValue, self).__init__(*args, **kwargs)
@@ -60,6 +60,8 @@ class StudentItemValue(AbstractItemValue):
 
 
 class ExaminerItemValue(AbstractItemValue):
+    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/examiner-item-value.django.html'
+
     def get_devilryrole(self):
         return 'examiner'
 
