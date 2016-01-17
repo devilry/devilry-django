@@ -110,6 +110,14 @@ class GroupListView(listbuilderview.FilterListMixin,
             .annotate_with_is_waiting_for_feedback()\
             .annotate_with_is_waiting_for_deliveries()\
             .annotate_with_is_corrected()\
+            .annotate_with_number_of_commentfiles_from_students()\
+            .annotate_with_number_of_groupcomments_from_students()\
+            .annotate_with_number_of_groupcomments_from_examiners()\
+            .annotate_with_number_of_groupcomments_from_admins()\
+            .annotate_with_number_of_imageannotationcomments_from_students()\
+            .annotate_with_number_of_imageannotationcomments_from_examiners()\
+            .annotate_with_number_of_imageannotationcomments_from_admins()\
+            .annotate_with_has_unpublished_feedbackset()\
             .distinct()
 
     def __get_status_filter_value(self):

@@ -350,28 +350,36 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
         return 'activity'
 
     def get_label(self):
-        return pgettext_lazy('group has comments filter',
+        return pgettext_lazy('group activity',
                              'Activity')
 
     def get_choices(self):
         return [
             ('', ''),
-            ('studentcomment', pgettext_lazy('group has comments filter',
+            ('studentcomment', pgettext_lazy('group activity',
                                              'Has comment(s) from student')),
-            ('studentfile', pgettext_lazy('group has comments filter',
+            ('studentfile', pgettext_lazy('group activity',
                                           'Has file(s) from student')),
-            ('examinercomment', pgettext_lazy('group has comments filter',
+            ('examinercomment', pgettext_lazy('group activity',
                                               'Has comment(s) from examiner')),
-            ('admincomment', pgettext_lazy('group has comments filter',
+            ('unpublished_feedback', pgettext_lazy('group activity',
+                                                   'Has unpublished feedback')),
+            ('admincomment', pgettext_lazy('group activity',
                                            'Has comment(s) from administrator')),
         ]
 
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value()
-        # if cleaned_value == 'studentcomment':
-            # queryobject = queryobject.extra_annotate_datetime_of_last_student_comment()\
-            #     .extra(where='datetime_of_last_student_comment IS NOT NULL')
-        # NOTE: Should probably have an annotation for number of student and examiner
-        #       comments on the queryset in the view (we need it for the listing).
-        #       So we can just filter on that number.
+        if cleaned_value == 'studentcomment':
+            queryobject = queryobject.filter(
+                models.Q(number_of_groupcomments_from_students__gt=0) |
+                models.Q(number_of_imageannotationcomments_from_students__gt=0))
+        elif cleaned_value == 'examinercomment':
+            queryobject = queryobject.filter(
+                models.Q(number_of_groupcomments_from_examiners__gt=0) |
+                models.Q(number_of_imageannotationcomments_from_examiners__gt=0))
+        elif cleaned_value == 'admincomment':
+            queryobject = queryobject.filter(
+                models.Q(number_of_groupcomments_from_admins__gt=0) |
+                models.Q(number_of_imageannotationcomments_from_admins__gt=0))
         return queryobject
