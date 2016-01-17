@@ -1,4 +1,5 @@
 import htmls
+import mock
 from django import test
 from django.template.loader import render_to_string
 from model_mommy import mommy
@@ -733,3 +734,49 @@ class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
         names = [element.alltext_normalized
                  for element in selector.list('.devilry-core-examiner-anonymous-name')]
         self.assertEqual(['MyAnonymousId1', 'MyAnonymousId2'], names)
+
+
+class MockGroupStatusGroup(object):
+    def __init__(self, is_corrected=False, is_waiting_for_feedback=False,
+                 is_waiting_for_deliveries=False):
+        self.is_corrected = is_corrected
+        self.is_waiting_for_feedback = is_waiting_for_feedback
+        self.is_waiting_for_deliveries = is_waiting_for_deliveries
+
+
+class TestDevilryGroupstatus(test.TestCase):
+    def test_is_corrected(self):
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/groupstatus.django.html',
+                devilry_core_tags.devilry_groupstatus(MockGroupStatusGroup(is_corrected=True))))
+        self.assertTrue(selector.exists('.devilry-core-groupstatus'))
+        self.assertFalse(selector.exists('.devilry-core-groupstatus-waiting-for-feedback'))
+        self.assertFalse(selector.exists('.devilry-core-groupstatus-deliveries'))
+        self.assertEqual(
+            'corrected',
+            selector.one('.devilry-core-groupstatus-corrected').alltext_normalized)
+
+    def test_is_waiting_for_feedback(self):
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/groupstatus.django.html',
+                devilry_core_tags.devilry_groupstatus(MockGroupStatusGroup(is_waiting_for_feedback=True))))
+        self.assertTrue(selector.exists('.devilry-core-groupstatus'))
+        self.assertFalse(selector.exists('.devilry-core-groupstatus-corrected'))
+        self.assertFalse(selector.exists('.devilry-core-groupstatus-deliveries'))
+        self.assertTrue(
+            'waiting for feedback',
+            selector.one('.devilry-core-groupstatus-waiting-for-feedback').alltext_normalized)
+
+    def test_is_waiting_for_deliveries(self):
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/groupstatus.django.html',
+                devilry_core_tags.devilry_groupstatus(MockGroupStatusGroup(is_waiting_for_deliveries=True))))
+        self.assertTrue(selector.exists('.devilry-core-groupstatus'))
+        self.assertFalse(selector.exists('.devilry-core-groupstatus-corrected'))
+        self.assertFalse(selector.exists('.devilry-core-groupstatus-waiting-for-feedback'))
+        self.assertTrue(
+            'waiting for deliveries',
+            selector.one('.devilry-core-groupstatus-waiting-for-deliveries').alltext_normalized)
