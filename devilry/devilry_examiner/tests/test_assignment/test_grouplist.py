@@ -1708,7 +1708,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             {'user1'},
             set(self.__get_titles(mockresponse.selector)))
 
-    def test_filter_activity_unpublished_feedback(self):
+    def test_filter_activity_unpublishedfeedback(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -1726,7 +1726,55 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'filters_string': 'activity-unpublished_feedback'},
+            viewkwargs={'filters_string': 'activity-unpublishedfeedback'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user1'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_filter_activity_private_comment_groupcomment(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup1),
+                   user=testuser,
+                   visibility=GroupComment.VISIBILITY_PRIVATE)
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'activity-privatecomment'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user1'},
+            set(self.__get_titles(mockresponse.selector)))
+
+    def test_filter_activity_private_comment_imageannotationcomment(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup1),
+                   user=testuser,
+                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'activity-privatecomment'},
             requestuser=testuser)
         self.assertEqual(
             {'user1'},

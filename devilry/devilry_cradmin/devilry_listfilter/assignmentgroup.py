@@ -362,10 +362,12 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
                                           'Has file(s) from student')),
             ('examinercomment', pgettext_lazy('group activity',
                                               'Has comment(s) from examiner')),
-            ('unpublished_feedback', pgettext_lazy('group activity',
+            ('unpublishedfeedback', pgettext_lazy('group activity',
                                                    'Has unpublished feedback')),
             ('admincomment', pgettext_lazy('group activity',
                                            'Has comment(s) from administrator')),
+            ('privatecomment', pgettext_lazy('group activity',
+                                              'Has unpublished comment(s) from YOU')),
         ]
 
     def filter(self, queryobject):
@@ -380,10 +382,14 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
             queryobject = queryobject.filter(
                 models.Q(number_of_groupcomments_from_examiners__gt=0) |
                 models.Q(number_of_imageannotationcomments_from_examiners__gt=0))
-        elif cleaned_value == 'unpublished_feedback':
+        elif cleaned_value == 'unpublishedfeedback':
             queryobject = queryobject.filter(has_unpublished_feedbackset=True)
         elif cleaned_value == 'admincomment':
             queryobject = queryobject.filter(
                 models.Q(number_of_groupcomments_from_admins__gt=0) |
                 models.Q(number_of_imageannotationcomments_from_admins__gt=0))
+        elif cleaned_value == 'privatecomment':
+            queryobject = queryobject.filter(
+                models.Q(number_of_groupcomments_from_user__gt=0) |
+                models.Q(number_of_imageannotationcomments_from_user__gt=0))
         return queryobject
