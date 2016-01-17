@@ -90,7 +90,7 @@ class TestPeriodAdminItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
-    def test_title_anonymous_not_allowed(self):
+    def test_anonymous_not_allowed(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         with self.assertRaisesMessage(ValueError,
@@ -123,7 +123,7 @@ class TestSubjectAdminItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
-    def test_title_fully_anonymous_is_not_allowed(self):
+    def test_fully_anonymous_is_not_allowed(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         with self.assertRaisesMessage(ValueError,
@@ -164,6 +164,36 @@ class TestDepartmentAdminItemValue(test.TestCase):
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(value=testgroup).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+
+class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
+    def test_non_anonymous_not_allowed(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        with self.assertRaisesMessage(ValueError,
+                                      'Can only use FullyAnonymousSubjectAdminItemValue for fully '
+                                      'anonymous assignments. Use SubjectAdminItemValue istead.'):
+            devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue(value=testgroup)
+
+    def test_semi_anonymous_is_not_allowed(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        with self.assertRaisesMessage(ValueError,
+                                      'Can only use FullyAnonymousSubjectAdminItemValue for fully '
+                                      'anonymous assignments. Use SubjectAdminItemValue istead.'):
+            devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue(value=testgroup)
+
+    def test_title_fully_anonymous_is_not_anoymized(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue(
+            value=testgroup).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)

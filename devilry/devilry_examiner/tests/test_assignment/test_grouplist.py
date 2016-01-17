@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 
-import htmls
 from django import test
 from django.conf import settings
 from django.utils import timezone

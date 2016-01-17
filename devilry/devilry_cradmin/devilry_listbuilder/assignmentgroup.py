@@ -65,4 +65,28 @@ class DepartmentAdminItemValue(AbstractAdminItemValue):
         return 'departmentadmin'
 
 
-# class FullyAnonymousSubjectAdminItemValue(AbstractAdminItemValue):
+class FullyAnonymousSubjectAdminItemValue(AbstractAdminItemValue):
+    """
+    This item value renderer is for fully anonymous assignments
+    with the "subjectadmin" devilryrole. It does not include anything
+    that can link the student to an anonymized student in the examiner
+    UI (in case the admin is also examiner). It basically only
+    renders the name of the students in each group.
+
+    See :devilryissue:`846` for more information.
+    """
+    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/' \
+                    'fully-anonymous-subjectadmin-group-item-value.django.html'
+
+    def __init__(self, *args, **kwargs):
+        super(FullyAnonymousSubjectAdminItemValue, self).__init__(*args, **kwargs)
+        if self.group.assignment.anonymizationmode != Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
+            raise ValueError('Can only use FullyAnonymousSubjectAdminItemValue for fully anonymous assignments. '
+                             'Use SubjectAdminItemValue istead.')
+
+    def get_devilryrole(self):
+        return 'subjectadmin'
+
+    def get_all_candidate_users(self):
+        return [candidate.relatedstudent.user
+                for candidate in self.group.candidates.all()]
