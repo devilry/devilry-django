@@ -374,6 +374,8 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
             queryobject = queryobject.filter(
                 models.Q(number_of_groupcomments_from_students__gt=0) |
                 models.Q(number_of_imageannotationcomments_from_students__gt=0))
+        elif cleaned_value == 'studentfile':
+            queryobject = queryobject.filter(number_of_commentfiles_from_students__gt=0)
         elif cleaned_value == 'examinercomment':
             queryobject = queryobject.filter(
                 models.Q(number_of_groupcomments_from_examiners__gt=0) |
