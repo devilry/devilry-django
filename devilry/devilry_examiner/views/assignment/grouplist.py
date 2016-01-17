@@ -98,7 +98,7 @@ class GroupListView(listbuilderview.FilterListMixin,
             .order_by(
                 Lower(Concat('relatedstudent__user__fullname',
                              'relatedstudent__user__shortname')))
-        return coremodels.AssignmentGroup.objects\
+        queryset = coremodels.AssignmentGroup.objects\
             .filter_examiner_has_access(user=self.request.user)\
             .filter(parentnode=assignment)\
             .select_related('parentnode')\
@@ -118,7 +118,9 @@ class GroupListView(listbuilderview.FilterListMixin,
             .annotate_with_number_of_imageannotationcomments_from_examiners()\
             .annotate_with_number_of_imageannotationcomments_from_admins()\
             .annotate_with_has_unpublished_feedbackset()\
+            .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user)\
             .distinct()
+        return queryset
 
     def __get_status_filter_value(self):
         status_value = self.get_filterlist().filtershandler.get_cleaned_value_for('status')

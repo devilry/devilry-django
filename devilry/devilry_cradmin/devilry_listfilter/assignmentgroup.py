@@ -380,6 +380,8 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
             queryobject = queryobject.filter(
                 models.Q(number_of_groupcomments_from_examiners__gt=0) |
                 models.Q(number_of_imageannotationcomments_from_examiners__gt=0))
+        elif cleaned_value == 'unpublished_feedback':
+            queryobject = queryobject.filter(has_unpublished_feedbackset=True)
         elif cleaned_value == 'admincomment':
             queryobject = queryobject.filter(
                 models.Q(number_of_groupcomments_from_admins__gt=0) |

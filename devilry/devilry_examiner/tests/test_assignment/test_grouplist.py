@@ -1708,6 +1708,30 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             {'user1'},
             set(self.__get_titles(mockresponse.selector)))
 
+    def test_filter_activity_unpublished_feedback(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group=testgroup1, grading_points=1),
+
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group=testgroup2),
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'activity-unpublished_feedback'},
+            requestuser=testuser)
+        self.assertEqual(
+            {'user1'},
+            set(self.__get_titles(mockresponse.selector)))
+
     def test_filter_no_result_message(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testgroup = mommy.make('core.AssignmentGroup',
