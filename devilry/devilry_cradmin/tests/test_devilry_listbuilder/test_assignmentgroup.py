@@ -76,6 +76,39 @@ class TestStudentItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
+    def test_examiners(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(value=testgroup).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_examiners_semi_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__automatic_anonymous_id='MyAnonymousID')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(value=testgroup).render())
+        self.assertEqual(
+            'MyAnonymousID',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_examiners_fully_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__automatic_anonymous_id='MyAnonymousID')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(value=testgroup).render())
+        self.assertEqual(
+            'MyAnonymousID',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
 
 class TestExaminerItemValue(test.TestCase):
     def test_name(self):
@@ -122,6 +155,44 @@ class TestExaminerItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-examiners-names'))
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-examiners'))
 
+    def test_examiners_include_examiners_true(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
+            value=testgroup, include_examiners=True).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_examiners_semi_anonymous_include_examiners_true(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
+            value=testgroup, include_examiners=True).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_examiners_fully_anonymous_include_examiners_true(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
+            value=testgroup, include_examiners=True).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
 
 class TestPeriodAdminItemValue(test.TestCase):
     def test_name(self):
@@ -142,6 +213,17 @@ class TestPeriodAdminItemValue(test.TestCase):
                                       'Can not use PeriodAdminItemValue for anonymous assignments. '
                                       'Periodadmins are not supposed have access to them.'):
             devilry_listbuilder.assignmentgroup.PeriodAdminItemValue(value=testgroup)
+
+    def test_examiners(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.PeriodAdminItemValue(value=testgroup).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
 
 class TestSubjectAdminItemValue(test.TestCase):
@@ -175,6 +257,29 @@ class TestSubjectAdminItemValue(test.TestCase):
                                       'Can not use SubjectAdminItemValue for fully anonymous assignments. '
                                       'Use FullyAnonymousSubjectAdminItemValue istead.'):
             devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(value=testgroup)
+
+    def test_examiners(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(value=testgroup).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_examiners_semi_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(value=testgroup).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
 
 class TestDepartmentAdminItemValue(test.TestCase):
@@ -213,20 +318,13 @@ class TestDepartmentAdminItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
-
-class MockItemValue(devilry_listbuilder.assignmentgroup.AbstractItemValue):
-    def get_devilryrole(self):
-        return 'student'  # Should not affect any of the tests that uses this class
-
-
-class TestItemValue(test.TestCase):
     def test_examiners(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
-        selector = htmls.S(MockItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(value=testgroup).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
@@ -236,10 +334,11 @@ class TestItemValue(test.TestCase):
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         mommy.make('core.Examiner',
                    assignmentgroup=testgroup,
-                   relatedexaminer__automatic_anonymous_id='MyAnonymousID')
-        selector = htmls.S(MockItemValue(value=testgroup).render())
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(value=testgroup).render())
         self.assertEqual(
-            'MyAnonymousID',
+            'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_examiners_fully_anonymous(self):
@@ -247,12 +346,20 @@ class TestItemValue(test.TestCase):
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         mommy.make('core.Examiner',
                    assignmentgroup=testgroup,
-                   relatedexaminer__automatic_anonymous_id='MyAnonymousID')
-        selector = htmls.S(MockItemValue(value=testgroup).render())
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(value=testgroup).render())
         self.assertEqual(
-            'MyAnonymousID',
+            'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
+
+class MockItemValue(devilry_listbuilder.assignmentgroup.AbstractItemValue):
+    def get_devilryrole(self):
+        return 'student'  # Should not affect any of the tests that uses this class
+
+
+class TestItemValue(test.TestCase):
     def test_status_is_corrected(self):
         devilry_group_mommy_factories.feedbackset_first_try_published(
             grading_points=1)
