@@ -80,6 +80,11 @@ class GroupListView(listbuilderview.FilterListMixin,
             .order_by(
                 Lower(Concat('relatedstudent__user__fullname',
                              'relatedstudent__user__shortname')))
+        examinerqueryset = Examiner.objects\
+            .select_related('relatedexaminer')\
+            .order_by(
+                Lower(Concat('relatedexaminer__user__fullname',
+                             'relatedexaminer__user__shortname')))
         queryset = coremodels.AssignmentGroup.objects\
             .filter_examiner_has_access(user=self.request.user)\
             .filter(parentnode=assignment)\
@@ -87,6 +92,9 @@ class GroupListView(listbuilderview.FilterListMixin,
             .prefetch_related(
                 models.Prefetch('candidates',
                                 queryset=candidatequeryset))\
+            .prefetch_related(
+                models.Prefetch('examiners',
+                                queryset=examinerqueryset))\
             .annotate_with_grading_points()\
             .annotate_with_is_passing_grade()\
             .annotate_with_is_waiting_for_feedback()\

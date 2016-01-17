@@ -133,7 +133,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Examiner', relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=testassignment,
                    _quantity=30)
-        with self.assertNumQueries(10):
+        with self.assertNumQueries(11):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                requestuser=testuser)
 
