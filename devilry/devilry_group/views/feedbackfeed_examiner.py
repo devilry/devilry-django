@@ -165,7 +165,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         if current_deadline is None:
             current_deadline = feedbackset.group.parentnode.first_deadline
         if current_deadline < timezone.now():
-            comment_publish, feedbackset_publish = self._set_unpublished_feedback_comments_published_datetime(
+            comment_publish, feedbackset_publish = self._save_unpublished_feedback_comments(
                     obj.feedback_set.group
             )
             feedbackset.grading_points = form.get_grading_points()
@@ -176,7 +176,8 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
             feedbackset.grading_published_by = obj.user
             feedbackset.full_clean()
             feedbackset.save()
-            obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=True)
+            if len(obj.text) > 0:
+                obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=True)
         else:
             messages.warning(self.request, ugettext_lazy('The deadline has not expired. '
                                                          'Feedback was saved, but not published.'))
@@ -184,14 +185,14 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
 
 
 
-    def _set_unpublished_feedback_comments_published_datetime(self, group):
+    def _save_unpublished_feedback_comments(self, group):
         feedback_comments = models.GroupComment.objects.filter(
             feedback_set__group=group,
-            part_of_grading=False
+            part_of_grading=True
         ).exclude_private_comments_from_other_users(
             user=self.request.user
         ).order_by('created_datetime')
-        print(feedback_comments)
+
         now = timezone.now().replace(second=0, microsecond=0)
         time_accumulator = 0
         for comment in feedback_comments:
@@ -200,9 +201,9 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
             comment.full_clean()
             comment.save()
             time_accumulator += 1
-        print(time_accumulator)
         last_comment_publish_time = now + timezone.timedelta(microseconds=time_accumulator)
         feedbackset_publish_time = now + timezone.timedelta(microseconds=time_accumulator+1)
+
         return last_comment_publish_time, feedbackset_publish_time
 
     def get_form_invalid_message(self, form):
