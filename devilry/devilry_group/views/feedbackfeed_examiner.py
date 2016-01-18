@@ -150,7 +150,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         ]
 
     def save_object(self, form, commit=True):
-        obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=False)
+        obj = super(ExaminerFeedbackView, self).save_object(form=form)
         if form.data.get('examiner_add_comment_to_feedback_draft'):
             obj.visibility = models.GroupComment.VISIBILITY_PRIVATE
             obj.part_of_grading = True
@@ -161,16 +161,15 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
             if current_deadline is None:
                 current_deadline = feedbackset.group.parentnode.first_deadline
             if current_deadline < timezone.now():
-                if feedbackset.grading_points is not None:
-                    feedbackset.grading_points = form.get_grading_points()
-                    obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
-                    obj.part_of_grading = False
-                    feedbackset.grading_published_datetime = timezone.now()
-                    feedbackset.grading_published_by = obj.user
-                    obj.published_datetime = timezone.now()
-                    feedbackset.full_clean()
-                    feedbackset.save()
-                    obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=True)
+                feedbackset.grading_points = form.get_grading_points()
+                obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
+                obj.part_of_grading = False
+                feedbackset.grading_published_datetime = timezone.now()
+                feedbackset.grading_published_by = obj.user
+                obj.published_datetime = timezone.now()
+                feedbackset.full_clean()
+                feedbackset.save()
+                obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=True)
             else:
                 messages.warning(self.request, ugettext_lazy('The deadline has not expired. '
                                                              'Feedback was saved, but not published.'))
