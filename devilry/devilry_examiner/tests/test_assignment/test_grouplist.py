@@ -128,11 +128,35 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIn('MyAnonymousID', mockresponse.response.content)
 
     def test_querycount(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = mommy.make(settings.AUTH_USER_MODEL,
+                              fullname='testuser')
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        mommy.make('core.Examiner', relatedexaminer__user=testuser,
-                   assignmentgroup__parentnode=testassignment,
-                   _quantity=30)
+        for number in range(30):
+            group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            mommy.make('core.Examiner',
+                       relatedexaminer__user=testuser,
+                       assignmentgroup=group)
+            mommy.make('core.Candidate',
+                       relatedstudent__user__fullname='candidate{}'.format(number),
+                       assignment_group=group)
+        with self.assertNumQueries(11):
+            self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
+                                               requestuser=testuser)
+
+    def test_querycount_anonymous(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL,
+                              fullname='testuser')
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        for number in range(30):
+            group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            mommy.make('core.Examiner',
+                       relatedexaminer__user=testuser,
+                       assignmentgroup=group)
+            mommy.make('core.Candidate',
+                       relatedstudent__user__fullname='candidate{}'.format(number),
+                       assignment_group=group)
         with self.assertNumQueries(11):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                requestuser=testuser)

@@ -3,7 +3,7 @@
 {% load devilry_core_tags %}
 
 {% block title-content %}
-    {% devilry_multiple_candidates_long_displayname me.group.assignment me.group.candidates.all me.get_devilryrole %}
+    {% devilry_multiple_candidates_long_displayname me.get_assignment me.group.candidates.all me.get_devilryrole %}
 {% endblock title-content %}
 
 {% block below-description %}
@@ -13,7 +13,7 @@
                 {% trans "Examiners" %}:
             </span>
             <span class="devilry-cradmin-groupitemvalue-examiners-names">
-                {% devilry_multiple_examiners_long_displayname me.group.assignment me.get_examiners me.get_devilryrole %}
+                {% devilry_multiple_examiners_long_displayname me.get_assignment me.get_examiners me.get_devilryrole %}
             </span>
         </p>
     {% endif %}
