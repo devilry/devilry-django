@@ -9,16 +9,16 @@ import json
 import datetime
 
 # Devilry/cradmin imports
-from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
+from devilry.devilry_group.timeline_builder import feedbackfeed_timeline_builder
+from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
+from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
+from django_cradmin.viewhelpers import create
 
 # 3rd party imports
 from crispy_forms import layout
-from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
-from django_cradmin.viewhelpers import create
 from xml.sax.saxutils import quoteattr
-from devilry.devilry_group.timeline_builder import feedbackfeed_timeline_builder
 
 
 class GroupCommentForm(forms.ModelForm):
@@ -37,6 +37,9 @@ class GroupCommentForm(forms.ModelForm):
 
 
 class FeedbackFeedBaseView(create.CreateView):
+    """
+
+    """
     template_name = "devilry_group/feedbackfeed.django.html"
 
     # for cradmin CreateView

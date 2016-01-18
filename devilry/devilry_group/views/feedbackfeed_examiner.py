@@ -1,22 +1,18 @@
-# django imports
-import datetime
-
+# Django imports
 from django import forms
 from django.contrib import messages
 from django.utils import timezone
 from django_cradmin import crapp
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy, pgettext_lazy
-from django.db.models import Q
 
-# devilry imports
-from devilry.apps.core.models import Assignment
+# Devilry/cradmin imports
+from devilry.apps.core import models as core_models
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models
-
-# crispy forms
-from crispy_forms import layout
-
 from devilry.devilry_group.views.cradmin_feedbackfeed_base import GroupCommentForm
+
+# 3rd party imports
+from crispy_forms import layout
 
 
 class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
@@ -112,9 +108,9 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
 
     def get_form_class(self):
         assignment = self.request.cradmin_role.assignment
-        if assignment.grading_system_plugin_id == Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED:
+        if assignment.grading_system_plugin_id == core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED:
             return PassedFailedFeedbackForm
-        elif assignment.grading_system_plugin_id == Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS:
+        elif assignment.grading_system_plugin_id == core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS:
             return PointsFeedbackForm
         else:
             raise ValueError('Unsupported grading_system_plugin_id: {}'.format(assignment.grading_system_plugin_id))

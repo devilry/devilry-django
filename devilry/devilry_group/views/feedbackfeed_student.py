@@ -1,16 +1,14 @@
 # django imports
-import datetime
-
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django_cradmin import crapp
 from django.db.models import Q
 
-# devilry imports
+# Devilry/cradmin imports
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models
+from django_cradmin import crapp
 
-# crispy forms
+# 3rd party imports
 from crispy_forms import layout
 
 

@@ -1,12 +1,16 @@
-from crispy_forms import layout
+# Django imports
 from django.utils import http
 from django.utils.translation import ugettext_lazy as _
-from django_cradmin import crapp
 
+# Devilry/cradmin imports
 from devilry.apps.core import models as core_models
 from devilry.devilry_account import models as account_models
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models
+from django_cradmin import crapp
+
+# 3rd party imports
+from crispy_forms import layout
 
 
 class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):

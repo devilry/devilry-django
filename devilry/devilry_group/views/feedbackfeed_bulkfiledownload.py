@@ -1,11 +1,13 @@
+# Python imports
 import os
-
+import zipfile
 import io
+
+# Django imports
 from django import http
 from django.views import generic
 
-import zipfile
-
+# Devilry/cradmin imports
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group.models import GroupComment
 
