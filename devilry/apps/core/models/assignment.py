@@ -743,6 +743,21 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                 assignment=self)
             return self.pointtogrademap
 
+    def get_points_to_grade_map_as_cached_dict(self):
+        """
+        Uses :meth:`.get_point_to_grade_map` to get the grade to points map
+        object, then transforms it into an OrderedDict using
+        :meth:`devilry.apps.core.models.PointToGradeMap.as_flat_dict`.
+
+        The results are cached on this Assignment object, so multiple
+        calls to this method on an Assignment object does not require any
+        extra performance cost.
+        """
+        if not hasattr(self, '_points_to_grade_map_as_cached_dict'):
+            self._points_to_grade_map_as_cached_dict = self.get_point_to_grade_map()\
+                .as_flat_dict()
+        return self._points_to_grade_map_as_cached_dict
+
     def points_is_passing_grade(self, points):
         """
         Checks if the given points represents a passing grade.
@@ -770,7 +785,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         elif self.points_to_grade_mapper == self.POINTS_TO_GRADE_MAPPER_RAW_POINTS:
             return u'{}/{}'.format(points, self.max_points)
         elif self.points_to_grade_mapper == self.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE:
-            return self.pointtogrademap.points_to_grade(points).grade
+            return self.get_points_to_grade_map_as_cached_dict()[points]
         else:
             raise ValueError(
                 'Assignment with id=#{} has invalid value '

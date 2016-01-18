@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.db import models
 from django.db.models import Q
 from django.core.exceptions import ValidationError
@@ -120,6 +122,18 @@ class PointToGradeMap(models.Model):
         """
         return [(pointrange.minimum_points, pointrange.grade)
                 for pointrange in self.pointrangetograde_set.all()]
+
+    def as_flat_dict(self):
+        """
+        Get a dict where the possible points in the PointToGradeMap
+        are keys mapping to the grade for that amount of points.
+        """
+        points_to_grade_dict = {}
+        for pointrange_to_grade in self.pointrangetograde_set.order_by('minimum_points'):
+            for points in range(pointrange_to_grade.minimum_points,
+                                pointrange_to_grade.maximum_points + 1):
+                points_to_grade_dict[points] = pointrange_to_grade.grade
+        return points_to_grade_dict
 
     def __unicode__(self):
         return u'Point to grade map for {}'.format(self.assignment.get_path())
