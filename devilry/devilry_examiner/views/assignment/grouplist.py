@@ -83,18 +83,34 @@ class GroupListView(listbuilderview.FilterListMixin,
     def get_unfiltered_queryset_for_role(self, role):
         assignment = role
         candidatequeryset = Candidate.objects\
-            .select_related('relatedstudent')\
+            .select_related('relatedstudent__user')\
+            .only(
+                'candidate_id',
+                'assignment_group',
+                'relatedstudent__candidate_id',
+                'relatedstudent__automatic_anonymous_id',
+                'relatedstudent__user__shortname',
+                'relatedstudent__user__fullname',
+            )\
             .order_by(
                 Lower(Concat('relatedstudent__user__fullname',
                              'relatedstudent__user__shortname')))
         examinerqueryset = Examiner.objects\
-            .select_related('relatedexaminer')\
+            .select_related('relatedexaminer__user')\
+            .only(
+                'relatedexaminer',
+                'assignmentgroup',
+                'relatedexaminer__automatic_anonymous_id',
+                'relatedexaminer__user__shortname',
+                'relatedexaminer__user__fullname',
+            )\
             .order_by(
                 Lower(Concat('relatedexaminer__user__fullname',
                              'relatedexaminer__user__shortname')))
         queryset = coremodels.AssignmentGroup.objects\
             .filter_examiner_has_access(user=self.request.user)\
             .filter(parentnode=assignment)\
+            .only('name')\
             .prefetch_related(
                 models.Prefetch('candidates',
                                 queryset=candidatequeryset))\
