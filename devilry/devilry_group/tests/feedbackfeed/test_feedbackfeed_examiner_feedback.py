@@ -327,28 +327,28 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFe
                    user_role='examiner',
                    visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                    part_of_grading=True,
-                   feedback_set__group=feedbackset.group)
+                   feedback_set=feedbackset)
         mommy.make('devilry_group.GroupComment',
                    text='test text 2',
                    user=examiner.relatedexaminer.user,
                    user_role='examiner',
                    visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                    part_of_grading=True,
-                   feedback_set__group=feedbackset.group)
+                   feedback_set=feedbackset)
         mommy.make('devilry_group.GroupComment',
                    text='test text 3',
                    user=examiner.relatedexaminer.user,
                    user_role='examiner',
                    visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                    part_of_grading=True,
-                   feedback_set__group=feedbackset.group)
+                   feedback_set=feedbackset)
         mommy.make('devilry_group.GroupComment',
                    text='test text 4',
                    user=examiner.relatedexaminer.user,
                    user_role='examiner',
                    visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                    part_of_grading=True,
-                   feedback_set__group=feedbackset.group)
+                   feedback_set=feedbackset)
         mockresponse = self.mock_http302_postrequest(
             cradmin_role=examiner.assignmentgroup,
             requestuser=examiner.relatedexaminer.user,
@@ -361,8 +361,15 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFe
                 }
             })
         feedbacksets = group_models.FeedbackSet.objects.all()
+        feedback_comments = group_models.GroupComment.objects.all()
         self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
         self.assertEquals(1, feedbacksets[0].grading_points)
+        self.assertEquals(5, len(feedback_comments))
+        self.assertEquals(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE, feedback_comments[0].VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEquals(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE, feedback_comments[1].VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEquals(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE, feedback_comments[2].VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEquals(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE, feedback_comments[3].VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEquals(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE, feedback_comments[4].VISIBILITY_VISIBLE_TO_EVERYONE)
 
     # def test_post_feedbackset_comment_with_text_published_datetime_is_set(self):
     #     feedbackset = mommy.make('devilry_group.FeedbackSet', )
