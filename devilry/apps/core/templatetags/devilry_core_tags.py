@@ -244,3 +244,11 @@ def devilry_groupstatus(group):
     return {
         'group': group
     }
+
+
+@register.inclusion_tag('devilry_core/templatetags/grade.django.html')
+def devilry_grade(assignment, grading_points):
+    return {
+        'assignment': assignment,
+        'grade': assignment.points_to_grade(points=grading_points)
+    }

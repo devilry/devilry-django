@@ -780,3 +780,70 @@ class TestDevilryGroupstatus(test.TestCase):
         self.assertTrue(
             'waiting for deliveries',
             selector.one('.devilry-core-groupstatus-waiting-for-deliveries').alltext_normalized)
+
+
+class TestDevilryGrade(test.TestCase):
+    def test_grade_passed_failed_failed(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade.django.html',
+                devilry_core_tags.devilry_grade(testassignment, 0)))
+        self.assertTrue(selector.exists('.devilry-core-grade.devilry-core-grade-passed-failed'))
+        self.assertEqual(
+            'failed',
+            selector.one('.devilry-core-grade').alltext_normalized)
+
+    def test_grade_passed_failed_passed(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade.django.html',
+                devilry_core_tags.devilry_grade(testassignment, 10)))
+        self.assertTrue(selector.exists('.devilry-core-grade.devilry-core-grade-passed-failed'))
+        self.assertEqual(
+            'passed',
+            selector.one('.devilry-core-grade').alltext_normalized)
+
+    def test_grade_passedorfailed_raw_points(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
+            max_points=100)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade.django.html',
+                devilry_core_tags.devilry_grade(testassignment, 10)))
+        self.assertTrue(selector.exists('.devilry-core-grade.devilry-core-grade-raw-points'))
+        self.assertEqual(
+            '10/100',
+            selector.one('.devilry-core-grade').alltext_normalized)
+
+    def test_grade_passedorfailed_custom_table(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
+        point_to_grade_map = mommy.make('core.PointToGradeMap',
+                                        assignment=testassignment, invalid=False)
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=0,
+                   maximum_points=10,
+                   grade='Bad')
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=11,
+                   maximum_points=100,
+                   grade='Good')
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade.django.html',
+                devilry_core_tags.devilry_grade(testassignment, 10)))
+        self.assertTrue(selector.exists('.devilry-core-grade.devilry-core-grade-custom-table'))
+        self.assertEqual(
+            'Bad',
+            selector.one('.devilry-core-grade').alltext_normalized)
