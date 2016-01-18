@@ -2,7 +2,7 @@
 
 {% if anonymous %}
     <span class="devilry-core-candidate-anonymous-name">
-        {{ candidate.get_anonymous_name  }}
+        {{ anonymous_name  }}
     </span>
 {% else %}
     {% devilry_user_verbose_inline candidate.relatedstudent.user %}

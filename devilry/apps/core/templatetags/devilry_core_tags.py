@@ -67,7 +67,8 @@ def devilry_single_candidate_long_displayname(assignment, candidate, devilryrole
     return {
         'candidate': candidate,
         'anonymous': assignment.students_must_be_anonymized_for_devilryrole(
-            devilryrole=devilryrole)
+            devilryrole=devilryrole),
+        'anonymous_name': candidate.get_anonymous_name(assignment=assignment)
     }
 
 
@@ -89,7 +90,8 @@ def devilry_single_candidate_short_displayname(assignment, candidate, devilryrol
     return {
         'candidate': candidate,
         'anonymous': assignment.students_must_be_anonymized_for_devilryrole(
-            devilryrole=devilryrole)
+            devilryrole=devilryrole),
+        'anonymous_name': candidate.get_anonymous_name(assignment=assignment)
     }
 
 
