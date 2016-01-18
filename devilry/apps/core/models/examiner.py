@@ -53,5 +53,5 @@ class Examiner(models.Model, AbstractIsAdmin):
 
     def __unicode__(self):
         return u'Examiner {} for {}'.format(
-            self.user, self.assignmentgroup
+            self.relatedexaminer, self.assignmentgroup
         )
