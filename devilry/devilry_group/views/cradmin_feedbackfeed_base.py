@@ -38,11 +38,9 @@ class GroupCommentForm(forms.ModelForm):
 
 class FeedbackFeedBaseView(create.CreateView):
     """
-
+    Base feedbackfeed view. Subclass views inherits from this.
     """
     template_name = "devilry_group/feedbackfeed.django.html"
-
-    # for cradmin CreateView
     model = group_models.GroupComment
     form_attributes = {
         'django-cradmin-bulkfileupload-form': ''
@@ -58,9 +56,29 @@ class FeedbackFeedBaseView(create.CreateView):
         return kwargs
 
     def _get_comments_for_group(self, group):
+        """
+        Retrieves the comments a user has access to.
+        This function must be implemented by subclasses of :class:`~.FeedbackFeedBaseView`
+
+        :param group:
+            The :class:`devilry.apps.core.models.AssignmentGroup` the user belongs to.
+
+        Returns:
+            List of :class:`devilry.devilry_group.models.GroupComment` objects.
+
+        """
         raise NotImplementedError("Subclasses must implement _get_queryset_for_group!")
 
     def get_context_data(self, **kwargs):
+        """
+        Sets the context data needed to render elements in the template.
+
+        :param kwargs:
+            Parameters to get_context_data.
+
+        Returns:
+            The context data dictionary.
+        """
         context = super(FeedbackFeedBaseView, self).get_context_data(**kwargs)
         timelime_builder = feedbackfeed_timeline_builder.FeedbackFeedTimelineBuilder(self)
         context['subject'] = self.request.cradmin_role.assignment.period.subject

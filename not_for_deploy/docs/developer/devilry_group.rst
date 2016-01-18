@@ -29,7 +29,6 @@ How does the feedbackset work
 asd
 
 
-
 *************
 Datamodel API
 *************
@@ -39,6 +38,29 @@ Datamodel API
 .. automodule:: devilry.devilry_group.models
     :members:
 
+*********
+Views API
+*********
+
+.. currentmodule:: devilry.devilry_group.cradmin_feedbackfeed_base
+
+.. currentmodule:: devilry.devilry_group.feedbackfeed_student
+
+.. currentmodule:: devilry.devilry_group.feedbackfeed_examiner
+
+.. currentmodule:: devilry.devilry_group.feedbackfeed_admin
+
+.. automodule:: devilry.devilry_group.views.cradmin_feedbackfeed_base
+    :members:
+
+.. automodule:: devilry.devilry_group.views.feedbackfeed_student
+    :members:
+
+.. automodule:: devilry.devilry_group.views.feedbackfeed_examiner
+    :members:
+
+.. automodule:: devilry.devilry_group.views.feedbackfeed_admin
+    :members:
 
 *************
 Writing tests
