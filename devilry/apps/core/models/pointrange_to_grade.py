@@ -125,7 +125,7 @@ class PointToGradeMap(models.Model):
         return u'Point to grade map for {}'.format(self.assignment.get_path())
 
 
-class PointRangeToGradeMapQueryset(models.QuerySet):
+class PointRangeToGradeQueryset(models.QuerySet):
     def filter_overlapping_ranges(self, start, end):
         return self.filter(
             Q(minimum_points__lte=start, maximum_points__gte=start) |
@@ -139,14 +139,14 @@ class PointRangeToGradeMapQueryset(models.QuerySet):
         )
 
 
-class PointRangeToGradeMapManager(models.Manager):
+class PointRangeToGradeManager(models.Manager):
     """
     Reflect custom QuerySet methods for custom QuerySet
     more info: https://github.com/devilry/devilry-django/issues/491
     """
 
     def get_queryset(self):
-        return PointRangeToGradeMapQueryset(self.model, using=self._db)
+        return PointRangeToGradeQueryset(self.model, using=self._db)
 
     def filter_overlapping_ranges(self, start, end):
         """
@@ -188,7 +188,7 @@ class PointRangeToGrade(models.Model):
 
         The grade that this entry represents a match for.
     """
-    objects = PointRangeToGradeMapManager()
+    objects = PointRangeToGradeManager()
     point_to_grade_map = models.ForeignKey(PointToGradeMap)
     minimum_points = models.PositiveIntegerField()
     maximum_points = models.PositiveIntegerField()

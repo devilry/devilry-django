@@ -400,10 +400,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     #: The "passed-or-failed" value for :obj:`~.Assignment.points_to_grade_mapper`.
     #: Zero points results in a failing grade, other points results in a passing grade.
-    POINTS_TO_GRADE_MAPPER_PASSED_OR_FAILED = 'passed-failed'
+    POINTS_TO_GRADE_MAPPER_PASSED_FAILED = 'passed-failed'
 
     #: The "raw-points" value for :obj:`~.Assignment.points_to_grade_mapper`.
-    #: The grade is ``<points>/<max-points>``
+    #: The grade is ``<points>/<max-points>``.
     POINTS_TO_GRADE_MAPPER_RAW_POINTS = 'raw-points'
 
     #: The "custom-table" value for :obj:`~.Assignment.points_to_grade_mapper`.
@@ -414,7 +414,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     #: Choices for :obj:`~.Assignment.points_to_grade_mapper`
     POINTS_TO_GRADE_MAPPER_CHOICES = [
         (
-            POINTS_TO_GRADE_MAPPER_PASSED_OR_FAILED,
+            POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
             pgettext_lazy('assignment points-to-grade mapper',
                           'As passed or failed')
         ),
@@ -433,12 +433,12 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     #: Points to grade mapper. Defines how we map points to a grade.
     #: Choices are:
     #:
-    #: - :obj:`~.Assignment.POINTS_TO_GRADE_MAPPER_PASSED_OR_FAILED` (default value)
+    #: - :obj:`~.Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED` (default value)
     #: - :obj:`~.Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS`
     #: - :obj:`~.Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE`
     points_to_grade_mapper = models.CharField(
         max_length=25, blank=True, null=True,
-        default=POINTS_TO_GRADE_MAPPER_PASSED_OR_FAILED,
+        default=POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
         choices=POINTS_TO_GRADE_MAPPER_CHOICES)
 
     GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED = 'devilry_gradingsystemplugin_approved'
@@ -758,7 +758,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
         WARNING: This will not work if :meth:`.has_valid_grading_setup` is not ``True``.
         """
-        if self.points_to_grade_mapper == 'passed-failed':
+        if self.points_to_grade_mapper == self.POINTS_TO_GRADE_MAPPER_PASSED_FAILED:
             if points == 0:
                 return pgettext_lazy(
                     'assignment grade passed-or-failed',
@@ -767,10 +767,15 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                 return pgettext_lazy(
                     'assignment grade passed-or-failed',
                     'passed')
-        elif self.points_to_grade_mapper == 'raw-points':
+        elif self.points_to_grade_mapper == self.POINTS_TO_GRADE_MAPPER_RAW_POINTS:
             return u'{}/{}'.format(points, self.max_points)
-        else:
+        elif self.points_to_grade_mapper == self.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE:
             return self.pointtogrademap.points_to_grade(points).grade
+        else:
+            raise ValueError(
+                'Assignment with id=#{} has invalid value '
+                'for points_to_grade_mapper: {}'.format(
+                    self.id, self.points_to_grade_mapper))
 
     @classmethod
     def q_published(cls, old=True, active=True):
