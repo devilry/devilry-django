@@ -47,7 +47,8 @@ class TestStudentItemValue(test.TestCase):
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -59,7 +60,8 @@ class TestStudentItemValue(test.TestCase):
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -71,7 +73,8 @@ class TestStudentItemValue(test.TestCase):
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -82,7 +85,8 @@ class TestStudentItemValue(test.TestCase):
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
@@ -93,7 +97,8 @@ class TestStudentItemValue(test.TestCase):
         mommy.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__automatic_anonymous_id='MyAnonymousID')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'MyAnonymousID',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
@@ -104,7 +109,8 @@ class TestStudentItemValue(test.TestCase):
         mommy.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__automatic_anonymous_id='MyAnonymousID')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'MyAnonymousID',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
@@ -117,7 +123,8 @@ class TestExaminerItemValue(test.TestCase):
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -128,7 +135,8 @@ class TestExaminerItemValue(test.TestCase):
         mommy.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__automatic_anonymous_id='MyAnonymousID')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'MyAnonymousID',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -139,7 +147,8 @@ class TestExaminerItemValue(test.TestCase):
         mommy.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__automatic_anonymous_id='MyAnonymousID')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'MyAnonymousID',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -151,7 +160,7 @@ class TestExaminerItemValue(test.TestCase):
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
-            value=testgroup, include_examiners=False).render())
+            value=testgroup, assignment=testgroup.assignment, include_examiners=False).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-examiners-names'))
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-examiners'))
 
@@ -162,7 +171,7 @@ class TestExaminerItemValue(test.TestCase):
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
-            value=testgroup, include_examiners=True).render())
+            value=testgroup, assignment=testgroup.assignment, include_examiners=True).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
@@ -175,7 +184,7 @@ class TestExaminerItemValue(test.TestCase):
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
-            value=testgroup, include_examiners=True).render())
+            value=testgroup, assignment=testgroup.assignment, include_examiners=True).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
@@ -188,7 +197,7 @@ class TestExaminerItemValue(test.TestCase):
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
-            value=testgroup, include_examiners=True).render())
+            value=testgroup, assignment=testgroup.assignment, include_examiners=True).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
@@ -197,14 +206,14 @@ class TestExaminerItemValue(test.TestCase):
         devilry_group_mommy_factories.feedbackset_first_try_published(grading_points=1),
         testgroup = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset().first()
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
-            value=testgroup).render())
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-unpublished-feedbackdraft'))
 
     def test_has_unpublished_feedbackset_draft_true(self):
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(grading_points=1),
         testgroup = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset().first()
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
-            value=testgroup).render())
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Unpublished feedback draft',
             selector.one('.devilry-cradmin-groupitemvalue-unpublished-feedbackdraft').alltext_normalized)
@@ -217,7 +226,8 @@ class TestPeriodAdminItemValue(test.TestCase):
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.PeriodAdminItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.PeriodAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -228,7 +238,7 @@ class TestPeriodAdminItemValue(test.TestCase):
         with self.assertRaisesMessage(ValueError,
                                       'Can not use PeriodAdminItemValue for anonymous assignments. '
                                       'Periodadmins are not supposed have access to them.'):
-            devilry_listbuilder.assignmentgroup.PeriodAdminItemValue(value=testgroup)
+            devilry_listbuilder.assignmentgroup.PeriodAdminItemValue(value=testgroup, assignment=testgroup.assignment)
 
     def test_examiners(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -236,7 +246,8 @@ class TestPeriodAdminItemValue(test.TestCase):
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.PeriodAdminItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.PeriodAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
@@ -249,7 +260,8 @@ class TestSubjectAdminItemValue(test.TestCase):
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -261,7 +273,8 @@ class TestSubjectAdminItemValue(test.TestCase):
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -272,7 +285,7 @@ class TestSubjectAdminItemValue(test.TestCase):
         with self.assertRaisesMessage(ValueError,
                                       'Can not use SubjectAdminItemValue for fully anonymous assignments. '
                                       'Use FullyAnonymousSubjectAdminItemValue istead.'):
-            devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(value=testgroup)
+            devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(value=testgroup, assignment=testgroup.assignment)
 
     def test_examiners(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -280,7 +293,8 @@ class TestSubjectAdminItemValue(test.TestCase):
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
@@ -292,7 +306,8 @@ class TestSubjectAdminItemValue(test.TestCase):
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
@@ -305,7 +320,8 @@ class TestDepartmentAdminItemValue(test.TestCase):
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -317,7 +333,8 @@ class TestDepartmentAdminItemValue(test.TestCase):
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -329,7 +346,8 @@ class TestDepartmentAdminItemValue(test.TestCase):
                    assignment_group=testgroup,
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -340,7 +358,8 @@ class TestDepartmentAdminItemValue(test.TestCase):
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
@@ -352,7 +371,8 @@ class TestDepartmentAdminItemValue(test.TestCase):
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
@@ -364,7 +384,8 @@ class TestDepartmentAdminItemValue(test.TestCase):
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(value=testgroup).render())
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
@@ -380,7 +401,7 @@ class TestItemValue(test.TestCase):
         devilry_group_mommy_factories.feedbackset_first_try_published(
             grading_points=1)
         testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
-        selector = htmls.S(MockItemValue(value=testgroup).render())
+        selector = htmls.S(MockItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Status: corrected',
             selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)
@@ -389,7 +410,7 @@ class TestItemValue(test.TestCase):
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(
             group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
         testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
-        selector = htmls.S(MockItemValue(value=testgroup).render())
+        selector = htmls.S(MockItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Status: waiting for feedback',
             selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)
@@ -399,7 +420,7 @@ class TestItemValue(test.TestCase):
             group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                 first_deadline=timezone.now() + timedelta(days=2)))
         testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
-        selector = htmls.S(MockItemValue(value=testgroup).render())
+        selector = htmls.S(MockItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Status: waiting for deliveries',
             selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)

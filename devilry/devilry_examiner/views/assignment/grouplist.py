@@ -46,6 +46,13 @@ class GroupListView(listbuilderview.FilterListMixin,
             'filter',
             kwargs={'filters_string': filters_string})
 
+    def get_listbuilder_list_kwargs(self):
+        kwargs = super(GroupListView, self).get_listbuilder_list_kwargs()
+        kwargs['value_and_frame_renderer_kwargs'] = {
+            'assignment': self.assignment
+        }
+        return kwargs
+
     def __add_filterlist_items_anonymous_uses_custom_candidate_ids(self, filterlist):
         filterlist.append(devilry_listfilter.assignmentgroup.SearchAnonymousUsesCustomCandidateIds())
         filterlist.append(devilry_listfilter.assignmentgroup.OrderByAnonymousUsesCustomCandidateIds())
@@ -88,7 +95,6 @@ class GroupListView(listbuilderview.FilterListMixin,
         queryset = coremodels.AssignmentGroup.objects\
             .filter_examiner_has_access(user=self.request.user)\
             .filter(parentnode=assignment)\
-            .select_related('parentnode')\
             .prefetch_related(
                 models.Prefetch('candidates',
                                 queryset=candidatequeryset))\

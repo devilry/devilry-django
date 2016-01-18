@@ -33,6 +33,12 @@ class AbstractItemValue(listbuilder.itemvalue.TitleDescription):
     template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/item-value.django.html'
 
     def __init__(self, *args, **kwargs):
+        """
+        Args:
+            *args: Args for the superclass.
+            **kwargs: Kwargs for the superclass. Must contain the Assignment object
+                in the ``"assignment"`` key.
+        """
         super(AbstractItemValue, self).__init__(*args, **kwargs)
         self._examiners = list(self.group.examiners.all())
 
@@ -41,6 +47,9 @@ class AbstractItemValue(listbuilder.itemvalue.TitleDescription):
 
     def should_include_examiners(self):
         return True
+
+    def get_assignment(self):
+        return self.kwargs['assignment']
 
     def get_examiners(self):
         return self._examiners
