@@ -156,24 +156,54 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
             obj.part_of_grading = True
             obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=True)
         elif form.data.get('examiner_publish_feedback'):
-            feedbackset = obj.feedback_set
-            current_deadline = feedbackset.deadline_datetime
-            if current_deadline is None:
-                current_deadline = feedbackset.group.parentnode.first_deadline
-            if current_deadline < timezone.now():
-                feedbackset.grading_points = form.get_grading_points()
-                obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
-                obj.part_of_grading = False
-                feedbackset.grading_published_datetime = timezone.now()
-                feedbackset.grading_published_by = obj.user
-                obj.published_datetime = timezone.now()
-                feedbackset.full_clean()
-                feedbackset.save()
-                obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=True)
-            else:
-                messages.warning(self.request, ugettext_lazy('The deadline has not expired. '
-                                                             'Feedback was saved, but not published.'))
+            obj = self._handle_publish_feedback(form, obj)
         return obj
+
+    def _handle_publish_feedback(self, form, obj):
+        feedbackset = obj.feedback_set
+        current_deadline = feedbackset.deadline_datetime
+        if current_deadline is None:
+            current_deadline = feedbackset.group.parentnode.first_deadline
+        if current_deadline < timezone.now():
+            comment_publish, feedbackset_publish = self._set_unpublished_feedback_comments_published_datetime(
+                    obj.feedback_set.group
+            )
+            feedbackset.grading_points = form.get_grading_points()
+            obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
+            obj.part_of_grading = False
+            obj.published_datetime = comment_publish
+            feedbackset.grading_published_datetime = feedbackset_publish
+            feedbackset.grading_published_by = obj.user
+            feedbackset.full_clean()
+            feedbackset.save()
+            obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=True)
+        else:
+            messages.warning(self.request, ugettext_lazy('The deadline has not expired. '
+                                                         'Feedback was saved, but not published.'))
+        return obj
+
+
+
+    def _set_unpublished_feedback_comments_published_datetime(self, group):
+        feedback_comments = models.GroupComment.objects.filter(
+            feedback_set__group=group,
+            part_of_grading=False
+        ).exclude_private_comments_from_other_users(
+            user=self.request.user
+        ).order_by('created_datetime')
+        print(feedback_comments)
+        now = timezone.now().replace(second=0, microsecond=0)
+        time_accumulator = 0
+        for comment in feedback_comments:
+            comment.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
+            comment.published_datetime = now + timezone.timedelta(microseconds=time_accumulator)
+            comment.full_clean()
+            comment.save()
+            time_accumulator += 1
+        print(time_accumulator)
+        last_comment_publish_time = now + timezone.timedelta(microseconds=time_accumulator)
+        feedbackset_publish_time = now + timezone.timedelta(microseconds=time_accumulator+1)
+        return last_comment_publish_time, feedbackset_publish_time
 
     def get_form_invalid_message(self, form):
         return 'Cannot publish feedback until deadline has passed!'
