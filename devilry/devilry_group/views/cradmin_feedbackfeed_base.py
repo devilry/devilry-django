@@ -157,11 +157,19 @@ class FeedbackFeedBaseView(create.CreateView):
         obj.feedback_set = self.request.cradmin_role.feedbackset_set.latest('created_datetime')
 
     def save_object(self, form, commit=False):
-        # if commit:
-        #     raise NotImplementedError('Must be implemented by subclass!')
+        """
+        How post of the should be handled. This can be handled more specifically in subclasses.
+        Should add a call to super in the subclass implementation on override.
 
+        :param form:
+            form thats passed on post.
+        :param commit:
+            if form-object(:class:`~devilry.devilry_group.models.GroupComment`) should be saved.
+
+        Returns:
+            The form-object, :class:`~devilry.devilry_group.models.GroupComment`.
+        """
         obj = super(FeedbackFeedBaseView, self,).save_object(form, commit=commit)
-        # self._convert_temporary_files_to_comment_files(form, obj)
         return obj
 
     def get_collectionqueryset(self):

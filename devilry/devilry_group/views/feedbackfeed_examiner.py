@@ -17,9 +17,21 @@ from crispy_forms import layout
 
 class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     """
-    TODO: Document!
+    Base view for examiner.
     """
     def _get_comments_for_group(self, group):
+        """
+        Filters the comments a examiner should have access to.
+        A examiner is able to see all comment except comments from other examiners
+        with :obj:`devilry.devilry_group.models.AbstractGroupComment.visibility` set to
+        :obj:`devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_PRIVATE`.
+
+        :param group:
+            The :class:`devilry.apps.core.models.AssignmentGroup` the user belongs to.
+
+        Returns:
+            List of :class:`devilry.devilry_group.models.GroupComment` objects.
+        """
         return models.GroupComment.objects.filter(
             feedback_set__group=group
         ).exclude_private_comments_from_other_users(
@@ -56,6 +68,11 @@ class AbstractFeedbackForm(GroupCommentForm):
 
 
 class PassedFailedFeedbackForm(AbstractFeedbackForm):
+    """
+    Form for passed/failed grade plugin.
+    """
+
+    #: Set delivery as passed or failed.
     passed = forms.BooleanField(
         label=pgettext_lazy('grading', 'Passed?'),
         help_text=pgettext_lazy('grading', 'Check to provide a passing grade.'),
@@ -74,6 +91,11 @@ class PassedFailedFeedbackForm(AbstractFeedbackForm):
 
 
 class PointsFeedbackForm(AbstractFeedbackForm):
+    """
+    Form for point-based grade plugin.
+    """
+
+    #: Set points that should be given to the delivery.
     points = forms.IntegerField(
             required=True,
             min_value = 0,
@@ -96,17 +118,19 @@ class PointsFeedbackForm(AbstractFeedbackForm):
 
 class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
     """
-    TODO: Document
+    The examiner feedbackview.
+    This is the view where examiner corrects the delivery made by a student
+    and is only able to create drafted comments, or publish grading.
     """
 
-    def _get_comments_for_group(self, group):
-        return models.GroupComment.objects.filter(
-            feedback_set__group=group
-        ).exclude_private_comments_from_other_users(
-            user=self.request.user
-        )
-
     def get_form_class(self):
+        """
+        Get the correct form based on what grade plugin that is used.
+
+        Returns:
+            A :class:`devilry.devilry_group.views.cradmin_feedbackfeed_base.GroupCommentForm`
+
+        """
         assignment = self.request.cradmin_role.assignment
         if assignment.grading_system_plugin_id == core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED:
             return PassedFailedFeedbackForm
@@ -158,7 +182,8 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
 
 class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
     """
-    TODO: Document
+    The examiner discussview.
+    This is the view examiner uses for communicating with students and admins in the feedbackfeed.
     """
 
     def _get_comments_for_group(self, group):
