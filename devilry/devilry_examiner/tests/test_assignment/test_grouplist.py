@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 
-import htmls
 from django import test
 from django.conf import settings
 from django.utils import timezone
@@ -134,7 +133,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Examiner', relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=testassignment,
                    _quantity=30)
-        with self.assertNumQueries(10):
+        with self.assertNumQueries(11):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                requestuser=testuser)
 
@@ -1211,7 +1210,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             requestuser=testuser)
         self.assertEqual(
-            'All students 3',
+            'all students 3',
             mockresponse.selector.one(
                 '#django_cradmin_listfilter_status_input__label').alltext_normalized)
 
@@ -1241,7 +1240,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             requestuser=testuser)
         self.assertEqual(
-            'Waiting for feedback 2',
+            'waiting for feedback 2',
             mockresponse.selector.one(
                 '#django_cradmin_listfilter_status_input_waiting-for-feedback_label').alltext_normalized)
 
@@ -1271,7 +1270,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             requestuser=testuser)
         self.assertEqual(
-            'Waiting for deliveries 2',
+            'waiting for deliveries 2',
             mockresponse.selector.one(
                 '#django_cradmin_listfilter_status_input_waiting-for-deliveries_label').alltext_normalized)
 
@@ -1301,7 +1300,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             requestuser=testuser)
         self.assertEqual(
-            'Corrected 2',
+            'corrected 2',
             mockresponse.selector.one(
                 '#django_cradmin_listfilter_status_input_corrected_label').alltext_normalized)
 

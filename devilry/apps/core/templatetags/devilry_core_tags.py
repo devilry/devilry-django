@@ -235,3 +235,10 @@ def devilry_multiple_examiners_short_displayname(assignment, examiners, devilryr
         'examiners': examiners,
         'devilryrole': devilryrole,
     }
+
+
+@register.inclusion_tag('devilry_core/templatetags/groupstatus.django.html')
+def devilry_groupstatus(group):
+    return {
+        'group': group
+    }

@@ -1,0 +1,18 @@
+{% load i18n %}
+<span class="devilry-core-groupstatus
+             {% if group.is_corrected %}
+                devilry-core-groupstatus-corrected
+             {% elif group.is_waiting_for_feedback %}
+                devilry-core-groupstatus-waiting-for-feedback
+             {% elif group.is_waiting_for_deliveries %}
+                devilry-core-groupstatus-waiting-for-deliveries
+             {% endif %}
+             ">
+    {% if group.is_corrected %}
+        {% trans "corrected" context "group status" %}
+    {% elif group.is_waiting_for_feedback %}
+        {% trans "waiting for feedback" context "group status" %}
+    {% elif group.is_waiting_for_deliveries %}
+        {% trans "waiting for deliveries" context "group status" %}
+    {% endif %}
+</span>

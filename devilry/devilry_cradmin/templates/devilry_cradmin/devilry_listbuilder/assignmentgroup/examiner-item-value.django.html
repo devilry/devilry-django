@@ -1,0 +1,10 @@
+{% extends "devilry_cradmin/devilry_listbuilder/assignmentgroup/item-value.django.html" %}
+{% load i18n %}
+
+{% block end-of-content %}
+    {% if me.group.has_unpublished_feedbackset %}
+        <p class="devilry-cradmin-groupitemvalue-unpublished-feedbackdraft">
+            {% trans "Unpublished feedback draft" %}
+        </p>
+    {% endif %}
+{% endblock end-of-content %}

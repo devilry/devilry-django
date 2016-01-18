@@ -219,7 +219,7 @@ class StatusRadioFilter(abstractradio.AbstractRadioFilter):
         return 'status'
 
     def get_label(self):
-        return pgettext_lazy('group status filter', 'Status')
+        return pgettext_lazy('group status', 'Status')
 
     def __count_html(self, count, has_count_cssclass):
         cssclass = 'label-default'
@@ -236,23 +236,23 @@ class StatusRadioFilter(abstractradio.AbstractRadioFilter):
         return [
             ('',
              self.__make_label(
-                 label=pgettext('group status filter', 'All students'),
+                 label=pgettext('group status', 'all students'),
                  count=self.view.get_filtered_all_students_count()
              )),
             ('waiting-for-feedback',
              self.__make_label(
-                 label=pgettext('group status filter', 'Waiting for feedback'),
+                 label=pgettext('group status', 'waiting for feedback'),
                  count=self.view.get_filtered_waiting_for_feedback_count(),
                  has_count_cssclass='label-warning'
              )),
             ('waiting-for-deliveries',
              self.__make_label(
-                 label=pgettext('group status filter', 'Waiting for deliveries'),
+                 label=pgettext('group status', 'waiting for deliveries'),
                  count=self.view.get_filtered_waiting_for_deliveries_count()
              )),
             ('corrected',
              self.__make_label(
-                 label=pgettext('group status filter', 'Corrected'),
+                 label=pgettext('group status', 'corrected'),
                  count=self.view.get_filtered_corrected_count()
              )),
         ]
@@ -373,7 +373,7 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
                 ('examinercomment', pgettext_lazy('group activity',
                                                   'Has comment(s) from examiner')),
                 ('unpublishedfeedback', pgettext_lazy('group activity',
-                                                      'Has unpublished feedback')),
+                                                      'Has unpublished feedback draft')),
                 ('privatecomment', pgettext_lazy('group activity',
                                                  'Has unpublished comment(s) from YOU')),
             )),

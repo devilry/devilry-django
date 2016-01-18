@@ -7,8 +7,22 @@
 {% endblock title-content %}
 
 {% block below-description %}
+    {% if me.should_include_examiners %}
+        <p class="devilry-cradmin-groupitemvalue-examiners">
+            <span class="devilry-cradmin-groupitemvalue-examiners-title">
+                {% trans "Examiners" %}:
+            </span>
+            <span class="devilry-cradmin-groupitemvalue-examiners-names">
+                {% devilry_multiple_examiners_long_displayname me.group.assignment me.get_examiners me.get_devilryrole %}
+            </span>
+        </p>
+    {% endif %}
     <p class="devilry-cradmin-groupitemvalue-status-and-grade">
         <span class="devilry-cradmin-groupitemvalue-status">
+            <span class="devilry-cradmin-groupitemvalue-status-title">
+                {% trans "Status" context "group status" %}:
+            </span>
+            {% devilry_groupstatus me.group %}
         </span>
         {% if me.group.is_corrected %}
             <span class="devilry-cradmin-groupitemvalue-grade">
