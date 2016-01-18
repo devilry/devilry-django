@@ -202,10 +202,27 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                                                           requestuser=candidate.relatedstudent.user)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-created-by-role'))
 
+    def test_get_student_cannot_see_comment_visibility_private(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        candidate = mommy.make('core.Candidate',
+                             assignment_group__assignment=assignment,
+                             relatedstudent=mommy.make('core.RelatedStudent'))
+        examiner = mommy.make('core.Examiner', assignmentgroup=candidate.assignment_group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='John Doe'),)
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   visibility=GroupComment.VISIBILITY_PRIVATE,
+                   published_datetime=timezone.now(),
+                   feedback_set__group=examiner.assignmentgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
+                                                          requestuser=candidate.relatedstudent.user)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
+
     def test_post_feedbackset_comment_with_text(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet')
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group,
-                             # NOTE: The line blow can be removed when relatedstudent field is migrated to null=False
+                             # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
                              relatedstudent=mommy.make('core.RelatedStudent'))
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
@@ -222,7 +239,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
     def test_post_feedbackset_comment_with_text_published_datetime_is_set(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet')
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group,
-                             # NOTE: The line blow can be removed when relatedstudent field is migrated to null=False
+                             # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
                              relatedstudent=mommy.make('core.RelatedStudent'))
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,

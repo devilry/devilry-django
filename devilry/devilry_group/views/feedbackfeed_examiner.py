@@ -131,7 +131,6 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
 
     def save_object(self, form, commit=True):
         obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=False)
-
         if form.data.get('examiner_add_comment_to_feedback_draft'):
             obj.visibility = models.GroupComment.VISIBILITY_PRIVATE
             obj.part_of_grading = True
@@ -139,7 +138,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         elif form.data.get('examiner_publish_feedback'):
             feedbackset = obj.feedback_set
             current_deadline = feedbackset.deadline_datetime
-            if feedbackset.deadline_datetime is None:
+            if current_deadline is None:
                 current_deadline = feedbackset.group.parentnode.first_deadline
             if current_deadline < timezone.now():
                 if feedbackset.grading_points is not None:
@@ -186,7 +185,6 @@ class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
 
     def save_object(self, form, commit=True):
         obj = super(ExaminerDiscussView, self).save_object(form)
-
         self._convert_temporary_files_to_comment_files(form, obj)
         if form.data.get('examiner_add_comment_for_examiners'):
             obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS

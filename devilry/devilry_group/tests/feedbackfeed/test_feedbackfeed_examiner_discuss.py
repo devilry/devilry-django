@@ -6,6 +6,7 @@ from devilry.devilry_group import models
 from devilry.devilry_group.models import GroupComment
 from devilry.devilry_group.tests.feedbackfeed import test_feedbackfeed_common
 from devilry.devilry_group.views import feedbackfeed_examiner
+from devilry.apps.core import models as core_models
 
 class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
     viewclass = feedbackfeed_examiner.ExaminerDiscussView
@@ -16,6 +17,17 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_common.TestFee
                                                           requestuser=examiner.relatedexaminer.user)
         self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
                           examiner.assignmentgroup.assignment.get_path())
+
+    def test_get_no_form_grade_option(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=mommy.make('core.AssignmentGroup', parentnode=assignment),
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
+                                                          requestuser=examiner.relatedexaminer.user)
+        self.assertFalse(mockresponse.selector.exists('#div_id_passed'))
+        self.assertFalse(mockresponse.selector.exists('#div_id_points'))
 
     def test_get_feedbackfeed_examiner_can_see_feedback_and_discuss_in_header(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
