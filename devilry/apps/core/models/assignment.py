@@ -218,18 +218,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         feedback on the assignment, effectively creating new StaticFeedbacks
         from the latest published FeedbackDrafts for each AssignmentGroup.
 
-    .. attribute:: points_to_grade_mapper
-
-        Configures how points should be mapped to a grade. Valid choices:
-
-        - ``passed-failed`` - Points is mapped directly to passed/failed.
-          Zero points results in a failing grade, other points results in
-          a passing grade.
-        - ``raw-points`` - The grade is ``<points>/<max-points>``.
-        - ``table-lookup`` - Points is mapped to a grade via a table lookup.
-          This means that someone configures a mapping from point thresholds
-          to grades using :class:`devilry.apps.core.models.PointRangeToGrade`.
-
     .. attribute:: grading_system_plugin_id
 
         A CharField containing the ID of the grading system plugin this
@@ -409,14 +397,49 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         null=True, blank=True,
         verbose_name=_('Minumum number of points required to pass'),
         default=1)
+
+    #: The "passed-or-failed" value for :obj:`~.Assignment.points_to_grade_mapper`.
+    #: Zero points results in a failing grade, other points results in a passing grade.
+    POINTS_TO_GRADE_MAPPER_PASSED_OR_FAILED = 'passed-failed'
+
+    #: The "raw-points" value for :obj:`~.Assignment.points_to_grade_mapper`.
+    #: The grade is ``<points>/<max-points>``
+    POINTS_TO_GRADE_MAPPER_RAW_POINTS = 'raw-points'
+
+    #: The "custom-table" value for :obj:`~.Assignment.points_to_grade_mapper`.
+    #: For this choice, someone configures a mapping from point thresholds
+    #: to grades using :class:`devilry.apps.core.models.PointRangeToGrade`.
+    POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE = 'custom-table'
+
+    #: Choices for :obj:`~.Assignment.points_to_grade_mapper`
+    POINTS_TO_GRADE_MAPPER_CHOICES = [
+        (
+            POINTS_TO_GRADE_MAPPER_PASSED_OR_FAILED,
+            pgettext_lazy('assignment points-to-grade mapper',
+                          'As passed or failed')
+        ),
+        (
+            POINTS_TO_GRADE_MAPPER_RAW_POINTS,
+            pgettext_lazy('assignment points-to-grade mapper',
+                          'As points')
+        ),
+        (
+            POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
+            pgettext_lazy('assignment points-to-grade mapper',
+                          'As a text looked up in a custom table')
+        ),
+    ]
+
+    #: Points to grade mapper. Defines how we map points to a grade.
+    #: Choices are:
+    #:
+    #: - :obj:`~.Assignment.POINTS_TO_GRADE_MAPPER_PASSED_OR_FAILED` (default value)
+    #: - :obj:`~.Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS`
+    #: - :obj:`~.Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE`
     points_to_grade_mapper = models.CharField(
         max_length=25, blank=True, null=True,
-        default='passed-failed',
-        choices=(
-            ("passed-failed", _("As passed or failed")),
-            ("raw-points", _("As points")),
-            ("custom-table", _("As a text looked up in a custom table")),
-        ))
+        default=POINTS_TO_GRADE_MAPPER_PASSED_OR_FAILED,
+        choices=POINTS_TO_GRADE_MAPPER_CHOICES)
 
     GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED = 'devilry_gradingsystemplugin_approved'
     GRADING_SYSTEM_PLUGIN_ID_POINTS = 'devilry_gradingsystemplugin_points'
@@ -738,12 +761,12 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         if self.points_to_grade_mapper == 'passed-failed':
             if points == 0:
                 return pgettext_lazy(
-                    'assignment passed-or-failed',
-                    'Failed')
+                    'assignment grade passed-or-failed',
+                    'failed')
             else:
                 return pgettext_lazy(
-                    'assignment passed-or-failed',
-                    'Passed')
+                    'assignment grade passed-or-failed',
+                    'passed')
         elif self.points_to_grade_mapper == 'raw-points':
             return u'{}/{}'.format(points, self.max_points)
         else:
