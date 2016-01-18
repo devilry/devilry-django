@@ -11,6 +11,10 @@ class FullyAnonymousSubjectAdminItemValue(listbuilder.itemvalue.TitleDescription
     UI (in case the admin is also examiner). It basically only
     renders the name of the students in each group.
 
+    We have purposly not let this inherit from :class:`.AbstractItemValue`
+    because we do not want to risk that a change in that class affects
+    anonymization.
+
     See :devilryissue:`846` for more information.
     """
     valuealias = 'group'
