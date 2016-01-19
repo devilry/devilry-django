@@ -248,5 +248,5 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_common.TestFee
             })
         comments = models.GroupComment.objects.all()
         self.assertEquals(len(comments), 1)
-        self.assertEquals(feedbackset_last, comments[0].feedback_set)
+        self.assertEquals(feedbackset_last.is_last_in_group, comments[0].feedback_set.is_last_in_group)
 
