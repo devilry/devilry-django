@@ -373,6 +373,10 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
                                                  'Has comment(s) from student')),
                 ('studentfile', pgettext_lazy('group activity',
                                               'Has file(s) from student')),
+                ('no-studentcomment', pgettext_lazy('group activity',
+                                                    'No comments from student')),
+                ('no-studentfile', pgettext_lazy('group activity',
+                                                 'No files from student')),
             )),
             (pgettext_lazy('group activity', 'From examiner'), (
                 ('examinercomment', pgettext_lazy('group activity',
@@ -381,6 +385,8 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
                                                       'Has unpublished feedback draft')),
                 ('privatecomment', pgettext_lazy('group activity',
                                                  'Has unpublished comment(s) from YOU')),
+                ('no-examinercomment', pgettext_lazy('group activity',
+                                                     'No comments from examiner')),
             )),
             (pgettext_lazy('group activity', 'From administrator'), (
                 ('admincomment', pgettext_lazy('group activity',
@@ -394,12 +400,22 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
             queryobject = queryobject.filter(
                 models.Q(number_of_groupcomments_from_students__gt=0) |
                 models.Q(number_of_imageannotationcomments_from_students__gt=0))
+        elif cleaned_value == 'no-studentcomment':
+            queryobject = queryobject.filter(
+                models.Q(number_of_groupcomments_from_students=0) &
+                models.Q(number_of_imageannotationcomments_from_students=0))
         elif cleaned_value == 'studentfile':
             queryobject = queryobject.filter(number_of_commentfiles_from_students__gt=0)
+        elif cleaned_value == 'no-studentfile':
+            queryobject = queryobject.filter(number_of_commentfiles_from_students=0)
         elif cleaned_value == 'examinercomment':
             queryobject = queryobject.filter(
                 models.Q(number_of_groupcomments_from_examiners__gt=0) |
                 models.Q(number_of_imageannotationcomments_from_examiners__gt=0))
+        elif cleaned_value == 'no-examinercomment':
+            queryobject = queryobject.filter(
+                models.Q(number_of_groupcomments_from_examiners=0) &
+                models.Q(number_of_imageannotationcomments_from_examiners=0))
         elif cleaned_value == 'unpublishedfeedback':
             queryobject = queryobject.filter(has_unpublished_feedbackdraft=True)
         elif cleaned_value == 'admincomment':
