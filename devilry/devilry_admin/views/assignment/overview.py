@@ -5,6 +5,7 @@ from django_cradmin.viewhelpers.detail import DetailRoleView
 
 from devilry.apps.core import models as coremodels
 from devilry.devilry_admin.views.assignment.anonymizationmode import AssignmentAnonymizationmodeUpdateView
+from devilry.devilry_admin.views.assignment.gradingconfiguration import AssignmentGradingConfigurationUpdateView
 from devilry.devilry_admin.views.assignment.projectgroups import AssignmentProjectGroupUpdateView
 from .first_deadline import AssignmentFirstDeadlineUpdateView
 from .publishing_time import AssignmentPublishingTimeUpdateView, PublishNowRedirectView
@@ -55,6 +56,8 @@ class App(crapp.App):
                   name="update_anonymizationmode"),
         crapp.Url(r'^update_projectgroup_settings/(?P<pk>\d+)$', AssignmentProjectGroupUpdateView.as_view(),
                   name="update_projectgroup_settings"),
+        crapp.Url(r'^update_gradingconfiguration/(?P<pk>\d+)$', AssignmentGradingConfigurationUpdateView.as_view(),
+                  name="update_gradingconfiguration"),
         crapp.Url(r'^publish_assignment_now/(?P<pk>\d+)$', PublishNowRedirectView.as_view(),
                   name="publish_assignment_now")
     ]
