@@ -6,6 +6,7 @@ from django_cradmin.viewhelpers.detail import DetailRoleView
 from devilry.apps.core import models as coremodels
 from devilry.devilry_admin.views.assignment.anonymizationmode import AssignmentAnonymizationmodeUpdateView
 from devilry.devilry_admin.views.assignment.gradingconfiguration import AssignmentGradingConfigurationUpdateView
+from devilry.devilry_admin.views.assignment.long_and_shortname import AssignmentLongAndShortNameUpdateView
 from devilry.devilry_admin.views.assignment.projectgroups import AssignmentProjectGroupUpdateView
 from .first_deadline import AssignmentFirstDeadlineUpdateView
 from .publishing_time import AssignmentPublishingTimeUpdateView, PublishNowRedirectView
@@ -15,10 +16,6 @@ class Overview(DetailRoleView):
     model = coremodels.Assignment
     context_object_name = "assignment"
     template_name = 'devilry_admin/assignment/overview.django.html'
-
-    def get_administrators_count(self):
-        # len(self.assignment.get_all_admins()) is deprecated
-        return 10
 
     def get_candidates_count(self):
         return coremodels.Candidate.objects.filter(assignment_group__parentnode=self.assignment).count()
@@ -40,7 +37,6 @@ class Overview(DetailRoleView):
         context = super(Overview, self).get_context_data(**kwargs)
         context['assignmentgroups_count'] = self.get_assignmentgroups_count()
         context['candidates_count'] = self.get_assignmentgroups_count()
-        context['administrator_count'] = self.get_administrators_count()
         context['examiners_count'] = self.get_examiners_count()
         return context
 
@@ -58,6 +54,8 @@ class App(crapp.App):
                   name="update_projectgroup_settings"),
         crapp.Url(r'^update_gradingconfiguration/(?P<pk>\d+)$', AssignmentGradingConfigurationUpdateView.as_view(),
                   name="update_gradingconfiguration"),
+        crapp.Url(r'^update_assignment_short_and_long_name/(?P<pk>\d+)$', AssignmentLongAndShortNameUpdateView.as_view(),
+                  name="update_assignment_short_and_long_name"),
         crapp.Url(r'^publish_assignment_now/(?P<pk>\d+)$', PublishNowRedirectView.as_view(),
                   name="publish_assignment_now")
     ]

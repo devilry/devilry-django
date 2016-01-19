@@ -18,8 +18,14 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                                        parentnode__parentnode__short_name="testsubject"  # Subject
                                        )
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
-                          'testsubject.testperiod.testassignment')
+        self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
+                         'testsubject.testperiod.testassignment')
+
+    def test_devilry_admin_assignment_edit_long_name(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(mockresponse.selector.one('#devilry_admin_assignment_edit_long_name').alltext_normalized,
+                         'Edit name')
 
     def test_h1(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end',

@@ -2,6 +2,7 @@
 {% load static %}
 {% load i18n %}
 {% load humanize %}
+{% load cradmin_tags %}
 
 {% block title %}
     {{ assignment.get_path }}
@@ -11,6 +12,11 @@
     <h1>
         {{ assignment.long_name }}
     </h1>
+    <p id="devilry_admin_assignment_edit_long_name" class="pull-right">
+        <small><a
+                href="{% cradmin_appurl "update_assignment_short_and_long_name" assignment.id %}">{% trans "Edit name" %}</a>
+        </small>
+    </p>
 {% endblock pageheader-inner %}
 
 {% block content %}
@@ -35,8 +41,8 @@
             {% include "devilry_admin/assignment/include/utilities.django.html" %}
         </div>
         <hr>
-{#        <div class="row">#}
-{#            {% include "devilry_admin/assignment/include/administrators.django.html" %}#}
-{#        </div>#}
+        {#        <div class="row">#}
+        {#            {% include "devilry_admin/assignment/include/administrators.django.html" %}#}
+        {#        </div>#}
     </div>
 {% endblock content %}
