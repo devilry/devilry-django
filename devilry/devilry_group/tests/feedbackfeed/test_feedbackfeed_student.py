@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.utils import timezone
 from model_mommy import mommy
 
-from devilry.devilry_group.models import GroupComment
+from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.feedbackfeed import test_feedbackfeed_common
 from devilry.devilry_group.views import feedbackfeed_student
 
@@ -84,7 +84,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         comment = mommy.make('devilry_group.GroupComment',
                              user=candidate.relatedstudent.user,
                              user_role='student',
-                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                             visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                              published_datetime=timezone.now(),
                              feedback_set__group=candidate.assignment_group)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
@@ -102,7 +102,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         mommy.make('devilry_group.GroupComment',
                    user=johndoe.relatedstudent.user,
                    user_role='student',
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=timezone.now(),
                    feedback_set__group=johndoe.assignment_group)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=janedoe.assignment_group,
@@ -121,7 +121,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         mommy.make('devilry_group.GroupComment',
                    user=johndoe.relatedstudent.user,
                    user_role='student',
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=timezone.now(),
                    feedback_set__group=johndoe.assignment_group)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=janedoe.assignment_group,
@@ -158,7 +158,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         mommy.make('devilry_group.GroupComment',
                    user=examiner.relatedexaminer.user,
                    user_role='examiner',
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=timezone.now(),
                    feedback_set__group=examiner.assignmentgroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
@@ -177,7 +177,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         mommy.make('devilry_group.GroupComment',
                    user=examiner.relatedexaminer.user,
                    user_role='examiner',
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=timezone.now(),
                    feedback_set__group=examiner.assignmentgroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
@@ -195,17 +195,34 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         mommy.make('devilry_group.GroupComment',
                    user=examiner.relatedexaminer.user,
                    user_role='examiner',
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
                    published_datetime=timezone.now() - timezone.timedelta(days=1),
                    feedback_set__group=examiner.assignmentgroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
                                                           requestuser=candidate.relatedstudent.user)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-created-by-role'))
 
+    def test_get_student_cannot_see_comment_visibility_private(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        candidate = mommy.make('core.Candidate',
+                             assignment_group__assignment=assignment,
+                             relatedstudent=mommy.make('core.RelatedStudent'))
+        examiner = mommy.make('core.Examiner', assignmentgroup=candidate.assignment_group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='John Doe'),)
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
+                   published_datetime=timezone.now(),
+                   feedback_set__group=examiner.assignmentgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
+                                                          requestuser=candidate.relatedstudent.user)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
+
     def test_post_feedbackset_comment_with_text(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet')
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group,
-                             # NOTE: The line blow can be removed when relatedstudent field is migrated to null=False
+                             # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
                              relatedstudent=mommy.make('core.RelatedStudent'))
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
@@ -217,12 +234,12 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                     'student_add_comment': 'unused value',
                 }
             })
-        self.assertEquals(1, len(GroupComment.objects.all()))
+        self.assertEquals(1, len(group_models.GroupComment.objects.all()))
 
     def test_post_feedbackset_comment_with_text_published_datetime_is_set(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet')
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group,
-                             # NOTE: The line blow can be removed when relatedstudent field is migrated to null=False
+                             # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
                              relatedstudent=mommy.make('core.RelatedStudent'))
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
@@ -234,7 +251,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                     'student_add_comment': 'unused value',
                 }
             })
-        self.assertIsNotNone(GroupComment.objects.all()[0].published_datetime)
+        self.assertIsNotNone(group_models.GroupComment.objects.all()[0].published_datetime)
 
     # def test_post_feedbackset_post_comment_without_text(self):
     #     feedbackset = mommy.make('devilry_group.FeedbackSet')

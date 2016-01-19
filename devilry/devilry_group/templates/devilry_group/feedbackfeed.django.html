@@ -129,8 +129,9 @@
                                             <!--
                                             Must handle comments that are part of the grading, but have not been published yet!
                                             -->
-                                            {% if comment.part_of_grading and not comment.feedback_set.published_datetime %}
+                                            {% if comment.part_of_grading == True and comment.feedback_set.published_datetime != None %}
                                                 <div class="devilry-group-feedbackfeed-right-badge-field not-published-badge">
+                                                    {{ comment.part_of_grading }}
                                                     <p class="badge-text">{% trans "Not published" %}</p>
     {#                                                <p class="badge-text-new">{% trans "NOT PUBLISHED" %}</p>#}
                                                 </div>

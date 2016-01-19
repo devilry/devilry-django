@@ -1,13 +1,13 @@
-# django imports
-from django import http
-from django.shortcuts import get_object_or_404
-from django.views import generic
-
 # python imports
 from tempfile import NamedTemporaryFile
 import posixpath
 import os
 import zipfile
+
+# django imports
+from django import http
+from django.shortcuts import get_object_or_404
+from django.views import generic
 
 # devilry imports
 from devilry.devilry_group import models as group_models

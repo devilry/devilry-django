@@ -9,16 +9,16 @@ import json
 import datetime
 
 # Devilry/cradmin imports
-from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
+from devilry.devilry_group.timeline_builder import feedbackfeed_timeline_builder
+from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
+from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
+from django_cradmin.viewhelpers import create
 
 # 3rd party imports
 from crispy_forms import layout
-from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
-from django_cradmin.viewhelpers import create
 from xml.sax.saxutils import quoteattr
-from devilry.devilry_group.timeline_builder import feedbackfeed_timeline_builder
 
 
 class GroupCommentForm(forms.ModelForm):
@@ -37,9 +37,10 @@ class GroupCommentForm(forms.ModelForm):
 
 
 class FeedbackFeedBaseView(create.CreateView):
+    """
+    Base feedbackfeed view. Subclass views inherits from this.
+    """
     template_name = "devilry_group/feedbackfeed.django.html"
-
-    # for cradmin CreateView
     model = group_models.GroupComment
     form_attributes = {
         'django-cradmin-bulkfileupload-form': ''
@@ -55,9 +56,29 @@ class FeedbackFeedBaseView(create.CreateView):
         return kwargs
 
     def _get_comments_for_group(self, group):
+        """
+        Retrieves the comments a user has access to.
+        This function must be implemented by subclasses of :class:`~.FeedbackFeedBaseView`
+
+        :param group:
+            The :class:`devilry.apps.core.models.AssignmentGroup` the user belongs to.
+
+        Returns:
+            List of :class:`devilry.devilry_group.models.GroupComment` objects.
+
+        """
         raise NotImplementedError("Subclasses must implement _get_queryset_for_group!")
 
     def get_context_data(self, **kwargs):
+        """
+        Sets the context data needed to render elements in the template.
+
+        :param kwargs:
+            Parameters to get_context_data.
+
+        Returns:
+            The context data dictionary.
+        """
         context = super(FeedbackFeedBaseView, self).get_context_data(**kwargs)
         timelime_builder = feedbackfeed_timeline_builder.FeedbackFeedTimelineBuilder(self)
         context['subject'] = self.request.cradmin_role.assignment.period.subject
@@ -136,11 +157,19 @@ class FeedbackFeedBaseView(create.CreateView):
         obj.feedback_set = self.request.cradmin_role.feedbackset_set.latest('created_datetime')
 
     def save_object(self, form, commit=False):
-        # if commit:
-        #     raise NotImplementedError('Must be implemented by subclass!')
+        """
+        How post of the should be handled. This can be handled more specifically in subclasses.
+        Should add a call to super in the subclass implementation on override.
 
+        :param form:
+            form thats passed on post.
+        :param commit:
+            if form-object(:class:`~devilry.devilry_group.models.GroupComment`) should be saved.
+
+        Returns:
+            The form-object, :class:`~devilry.devilry_group.models.GroupComment`.
+        """
         obj = super(FeedbackFeedBaseView, self,).save_object(form, commit=commit)
-        # self._convert_temporary_files_to_comment_files(form, obj)
         return obj
 
     def get_collectionqueryset(self):
