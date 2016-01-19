@@ -1,6 +1,8 @@
 import bleach
 from django import template
 from django.utils.translation import ugettext_lazy as _
+
+from devilry.apps.core.models import Assignment
 from devilry.utils import datetimeutils
 
 register = template.Library()
@@ -246,9 +248,58 @@ def devilry_groupstatus(group):
     }
 
 
-@register.inclusion_tag('devilry_core/templatetags/grade.django.html')
-def devilry_grade(assignment, grading_points):
+@register.inclusion_tag('devilry_core/templatetags/grade-short.django.html')
+def devilry_grade_short(assignment, points):
+    """
+    Renders a grade as in its shortest form - no information about passed or failed,
+    only the grade text (E.g.: "passed", "8/10", "A").
+
+    Args:
+        assignment: An :class:`devilry.apps.core.models.Assignment` object.
+        points: The points to render the grade for.
+    """
     return {
         'assignment': assignment,
-        'grade': assignment.points_to_grade(points=grading_points)
+        'grade': assignment.points_to_grade(points=points),
+        'is_passing_grade': assignment.points_is_passing_grade(points=points),
+    }
+
+
+@register.inclusion_tag('devilry_core/templatetags/grade-full.django.html')
+def devilry_grade_full(assignment, points, devilryrole):
+    """
+    Renders a grade as in its long form - including information about passed or failed.
+    Examples::
+
+        "passed"
+        "8/10 (passed)"
+        "F (failed)"
+
+    If the ``students_can_see_points`` attribute of the assignment is
+    set to ``True``, students are allowed to see the points behind
+    a grade, so we include the points. Examples::
+
+        "passed"
+        "8/10 (passed)"
+        "F (failed - 10/100)"
+        "A (passed - 97/100)"
+
+    Args:
+        assignment: An :class:`devilry.apps.core.models.Assignment` object.
+        points (int): The points to render the grade for.
+        devilryrole (str): Must be one of the choices documented in
+            :meth:`devilry.apps.core.models.Assignment.examiners_must_be_anonymized_for_devilryrole`.
+    """
+    include_is_passing_grade = assignment.points_to_grade_mapper != Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED
+    include_points = assignment.points_to_grade_mapper != Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS
+    if devilryrole == 'student' and not assignment.students_can_see_points:
+        include_points = False
+
+    return {
+        'assignment': assignment,
+        'grade': assignment.points_to_grade(points=points),
+        'points': points,
+        'is_passing_grade': assignment.points_is_passing_grade(points=points),
+        'include_is_passing_grade': include_is_passing_grade,
+        'include_points': include_points,
     }

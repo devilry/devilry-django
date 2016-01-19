@@ -1,0 +1,12 @@
+<span class="devilry-core-grade
+             devilry-core-grade-mapper-{{ assignment.points_to_grade_mapper }}
+             {% if is_passing_grade %}
+                 devilry-core-grade-passed
+             {% else %}
+                 devilry-core-grade-failed
+             {% endif %}
+             {% block extra_css_class %}{% endblock %}">
+    {% block grade %}
+        {{ grade }}
+    {% endblock grade %}
+</span>

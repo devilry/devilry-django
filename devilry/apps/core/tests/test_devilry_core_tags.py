@@ -782,48 +782,75 @@ class TestDevilryGroupstatus(test.TestCase):
             selector.one('.devilry-core-groupstatus-waiting-for-deliveries').alltext_normalized)
 
 
-class TestDevilryGrade(test.TestCase):
-    def test_grade_passed_failed_failed(self):
+class TestDevilryGradeShort(test.TestCase):
+    def test_failed(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            passing_grade_min_points=1,
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-short.django.html',
+                devilry_core_tags.devilry_grade_short(testassignment, 0)))
+        self.assertTrue(selector.exists(
+            '.devilry-core-grade-short.devilry-core-grade-failed'))
+
+    def test_passed(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            passing_grade_min_points=1,
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-short.django.html',
+                devilry_core_tags.devilry_grade_short(testassignment, 1)))
+        self.assertTrue(selector.exists(
+            '.devilry-core-grade-short.devilry-core-grade-passed'))
+
+    def test_passed_failed_failed(self):
         testassignment = mommy.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
         selector = htmls.S(
             render_to_string(
-                'devilry_core/templatetags/grade.django.html',
-                devilry_core_tags.devilry_grade(testassignment, 0)))
-        self.assertTrue(selector.exists('.devilry-core-grade.devilry-core-grade-passed-failed'))
+                'devilry_core/templatetags/grade-short.django.html',
+                devilry_core_tags.devilry_grade_short(testassignment, 0)))
+        self.assertTrue(selector.exists(
+            '.devilry-core-grade-short.devilry-core-grade.devilry-core-grade-mapper-passed-failed'))
         self.assertEqual(
             'failed',
             selector.one('.devilry-core-grade').alltext_normalized)
 
-    def test_grade_passed_failed_passed(self):
+    def test_passed_failed_passed(self):
         testassignment = mommy.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
         selector = htmls.S(
             render_to_string(
-                'devilry_core/templatetags/grade.django.html',
-                devilry_core_tags.devilry_grade(testassignment, 10)))
-        self.assertTrue(selector.exists('.devilry-core-grade.devilry-core-grade-passed-failed'))
+                'devilry_core/templatetags/grade-short.django.html',
+                devilry_core_tags.devilry_grade_short(testassignment, 10)))
+        self.assertTrue(selector.exists(
+            '.devilry-core-grade-short.devilry-core-grade.devilry-core-grade-mapper-passed-failed'))
         self.assertEqual(
             'passed',
             selector.one('.devilry-core-grade').alltext_normalized)
 
-    def test_grade_passedorfailed_raw_points(self):
+    def test_raw_points(self):
         testassignment = mommy.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
             max_points=100)
         selector = htmls.S(
             render_to_string(
-                'devilry_core/templatetags/grade.django.html',
-                devilry_core_tags.devilry_grade(testassignment, 10)))
-        self.assertTrue(selector.exists('.devilry-core-grade.devilry-core-grade-raw-points'))
+                'devilry_core/templatetags/grade-short.django.html',
+                devilry_core_tags.devilry_grade_short(testassignment, 10)))
+        self.assertTrue(selector.exists(
+            '.devilry-core-grade-short.devilry-core-grade.devilry-core-grade-mapper-raw-points'))
         self.assertEqual(
             '10/100',
             selector.one('.devilry-core-grade').alltext_normalized)
 
-    def test_grade_passedorfailed_custom_table(self):
+    def test_custom_table(self):
         testassignment = mommy.make(
             'core.Assignment',
             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
@@ -841,9 +868,355 @@ class TestDevilryGrade(test.TestCase):
                    grade='Good')
         selector = htmls.S(
             render_to_string(
-                'devilry_core/templatetags/grade.django.html',
-                devilry_core_tags.devilry_grade(testassignment, 10)))
-        self.assertTrue(selector.exists('.devilry-core-grade.devilry-core-grade-custom-table'))
+                'devilry_core/templatetags/grade-short.django.html',
+                devilry_core_tags.devilry_grade_short(testassignment, 10)))
+        self.assertTrue(selector.exists(
+            '.devilry-core-grade-short.devilry-core-grade.devilry-core-grade-mapper-custom-table'))
         self.assertEqual(
             'Bad',
+            selector.one('.devilry-core-grade').alltext_normalized)
+
+
+class TestDevilryGradeFull(test.TestCase):
+    def test_failed(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            passing_grade_min_points=1,
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 0, "student")))
+        self.assertTrue(selector.exists(
+            '.devilry-core-grade-full.devilry-core-grade-failed'))
+
+    def test_passed(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            passing_grade_min_points=1,
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 1, "student")))
+        self.assertTrue(selector.exists(
+            '.devilry-core-grade-full.devilry-core-grade-passed'))
+
+    def test_passed_failed_failed(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 0, "student")))
+        self.assertTrue(selector.exists(
+            '.devilry-core-grade-full.devilry-core-grade.devilry-core-grade-mapper-passed-failed'))
+        self.assertEqual(
+            'failed',
+            selector.one('.devilry-core-grade .devilry-core-grade-main').alltext_normalized)
+
+    def test_passed_failed_passed(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 10, "student")))
+        self.assertTrue(selector.exists(
+            '.devilry-core-grade-full.devilry-core-grade.devilry-core-grade-mapper-passed-failed'))
+        self.assertEqual(
+            'passed',
+            selector.one('.devilry-core-grade .devilry-core-grade-main').alltext_normalized)
+
+    def test_raw_points(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
+            max_points=100)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 10, "student")))
+        self.assertTrue(selector.exists(
+            '.devilry-core-grade-full.devilry-core-grade.devilry-core-grade-mapper-raw-points'))
+        self.assertEqual(
+            '10/100',
+            selector.one('.devilry-core-grade .devilry-core-grade-main').alltext_normalized)
+
+    def test_custom_table(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
+        point_to_grade_map = mommy.make('core.PointToGradeMap',
+                                        assignment=testassignment, invalid=False)
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=0,
+                   maximum_points=10,
+                   grade='Bad')
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=11,
+                   maximum_points=100,
+                   grade='Good')
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 10, "student")))
+        self.assertTrue(selector.exists(
+            '.devilry-core-grade-full.devilry-core-grade.devilry-core-grade-mapper-custom-table'))
+        self.assertEqual(
+            'Bad',
+            selector.one('.devilry-core-grade .devilry-core-grade-main').alltext_normalized)
+
+    def test_details_students_can_see_points_false(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
+            students_can_see_points=False,
+            max_points=10)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 8, "student")))
+        self.assertFalse(selector.exists('.devilry-core-grade-details-points'))
+
+    def test_details_students_can_see_points_false_not_student(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
+            students_can_see_points=False,
+            max_points=10)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 8, "examiner")))
+        self.assertEqual(
+            '8/10',
+            selector.one('.devilry-core-grade-details-points').alltext_normalized)
+
+    def test_details_students_can_see_points_true(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
+            students_can_see_points=True,
+            max_points=10)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 8, "student")))
+        self.assertEqual(
+            '8/10',
+            selector.one('.devilry-core-grade-details-points').alltext_normalized)
+
+    def test_details_students_can_see_points_true_mapper_raw_points(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
+            students_can_see_points=True,
+            max_points=10)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 8, "student")))
+        self.assertFalse(selector.exists('.devilry-core-grade-details-points'))
+
+    def test_details_is_passing_grade_mapper_passedfailed(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 8, "student")))
+        self.assertFalse(selector.exists('.devilry-core-grade-details-is-passing-grade'))
+
+    def test_details_is_passing_grade_true(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
+            passing_grade_min_points=1)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 8, "student")))
+        self.assertEqual(
+            'passed',
+            selector.one('.devilry-core-grade-details-is-passing-grade').alltext_normalized)
+
+    def test_details_is_passing_grade_false(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
+            passing_grade_min_points=1)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 0, "student")))
+        self.assertEqual(
+            'failed',
+            selector.one('.devilry-core-grade-details-is-passing-grade').alltext_normalized)
+
+    def test_passedfailed_grade_sanitycheck_students_can_see_points_true(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
+            students_can_see_points=True,
+            passing_grade_min_points=1,
+            max_points=10)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 5, "student")))
+        self.assertEqual(
+            'passed (5/10)',
+            selector.one('.devilry-core-grade').alltext_normalized)
+
+    def test_rawpoints_grade_sanitycheck_students_can_see_points_true(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
+            students_can_see_points=True,
+            passing_grade_min_points=1,
+            max_points=10)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 5, "student")))
+        self.assertEqual(
+            '5/10 (passed)',
+            selector.one('.devilry-core-grade').alltext_normalized)
+
+    def test_custom_table_full_grade_sanitycheck_students_can_see_points_true(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
+            passing_grade_min_points=1,
+            students_can_see_points=True,
+            max_points=10)
+        point_to_grade_map = mommy.make('core.PointToGradeMap',
+                                        assignment=testassignment, invalid=False)
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=0,
+                   maximum_points=10,
+                   grade='Bad')
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 5, "student")))
+        self.assertTrue(selector.exists(
+            '.devilry-core-grade-full.devilry-core-grade.devilry-core-grade-mapper-custom-table'))
+        self.assertEqual(
+            'Bad (passed - 5/10)',
+            selector.one('.devilry-core-grade').alltext_normalized)
+
+    def test_passedfailed_grade_sanitycheck_students_can_see_points_false_student(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
+            students_can_see_points=False,
+            passing_grade_min_points=1,
+            max_points=10)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 5, "student")))
+        self.assertEqual(
+            'passed',
+            selector.one('.devilry-core-grade').alltext_normalized)
+
+    def test_rawpoints_grade_sanitycheck_students_can_see_points_false_student(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
+            students_can_see_points=False,
+            passing_grade_min_points=1,
+            max_points=10)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 5, "student")))
+        self.assertEqual(
+            '5/10 (passed)',
+            selector.one('.devilry-core-grade').alltext_normalized)
+
+    def test_custom_table_full_grade_sanitycheck_students_can_see_points_false_student(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
+            passing_grade_min_points=1,
+            students_can_see_points=False,
+            max_points=10)
+        point_to_grade_map = mommy.make('core.PointToGradeMap',
+                                        assignment=testassignment, invalid=False)
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=0,
+                   maximum_points=10,
+                   grade='Bad')
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 5, "student")))
+        self.assertTrue(selector.exists(
+            '.devilry-core-grade-full.devilry-core-grade.devilry-core-grade-mapper-custom-table'))
+        self.assertEqual(
+            'Bad (passed)',
+            selector.one('.devilry-core-grade').alltext_normalized)
+
+    def test_passedfailed_grade_sanitycheck_students_can_see_points_false_not_student(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
+            students_can_see_points=False,
+            passing_grade_min_points=1,
+            max_points=10)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 5, "examiner")))
+        self.assertEqual(
+            'passed (5/10)',
+            selector.one('.devilry-core-grade').alltext_normalized)
+
+    def test_rawpoints_grade_sanitycheck_students_can_see_points_false_not_student(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
+            students_can_see_points=False,
+            passing_grade_min_points=1,
+            max_points=10)
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 5, "examiner")))
+        self.assertEqual(
+            '5/10 (passed)',
+            selector.one('.devilry-core-grade').alltext_normalized)
+
+    def test_custom_table_full_grade_sanitycheck_students_can_see_points_false_not_student(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
+            passing_grade_min_points=1,
+            students_can_see_points=False,
+            max_points=10)
+        point_to_grade_map = mommy.make('core.PointToGradeMap',
+                                        assignment=testassignment, invalid=False)
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=0,
+                   maximum_points=10,
+                   grade='Bad')
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/grade-full.django.html',
+                devilry_core_tags.devilry_grade_full(testassignment, 5, "examiner")))
+        self.assertTrue(selector.exists(
+            '.devilry-core-grade-full.devilry-core-grade.devilry-core-grade-mapper-custom-table'))
+        self.assertEqual(
+            'Bad (passed - 5/10)',
             selector.one('.devilry-core-grade').alltext_normalized)
