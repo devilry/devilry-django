@@ -214,3 +214,39 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_common.TestFee
                 }
             })
         self.assertEquals('visible-to-examiner-and-admins', models.GroupComment.objects.all()[0].visibility)
+
+    def test_post_comment_always_to_last_feedbackset(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        feedbackset1 = mommy.make('devilry_group.FeedbackSet',
+                                  is_last_in_group=None,
+                                  grading_points=0,
+                                  grading_published_by=examiner.relatedexaminer.user,
+                                  grading_published_datetime=timezone.now(),
+                                  group=group)
+        feedbackset2 = mommy.make('devilry_group.FeedbackSet',
+                                  is_last_in_group=None,
+                                  grading_points=0,
+                                  grading_published_by=examiner.relatedexaminer.user,
+                                  grading_published_datetime=timezone.now(),
+                                  group=group)
+        feedbackset_last = mommy.make('devilry_group.FeedbackSet', group=group)
+        mockresponse = self.mock_http302_postrequest(
+            cradmin_role=examiner.assignmentgroup,
+            requestuser=examiner.relatedexaminer.user,
+            viewkwargs={'pk': group.id},
+            requestkwargs={
+                'data': {
+                    'text': 'This is a feedback',
+                    'examiner_add_public_comment': 'unused value',
+                }
+            })
+        comments = models.GroupComment.objects.all()
+        self.assertEquals(len(comments), 1)
+        self.assertEquals(feedbackset_last, comments[0].feedback_set)
+
