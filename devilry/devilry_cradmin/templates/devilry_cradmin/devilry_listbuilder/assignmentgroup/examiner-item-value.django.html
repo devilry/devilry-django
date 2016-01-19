@@ -1,10 +1,16 @@
 {% extends "devilry_cradmin/devilry_listbuilder/assignmentgroup/item-value.django.html" %}
 {% load i18n %}
+{% load devilry_core_tags %}
 
 {% block end-of-content %}
     {% if me.group.has_unpublished_feedbackdraft %}
         <p class="devilry-cradmin-groupitemvalue-unpublished-feedbackdraft">
-            {% trans "Unpublished feedback draft" %}
+            <span class="devilry-cradmin-groupitemvalue-unpublished-feedbackdraft-label">
+                {% trans "Unpublished feedback draft" %}:
+            </span>
+            <span class="devilry-cradmin-groupitemvalue-unpublished-feedbackdraft-grade">
+                {% devilry_grade_full me.get_assignment me.group.grading_points me.get_devilryrole %}
+            </span>
         </p>
     {% endif %}
 {% endblock end-of-content %}

@@ -232,18 +232,22 @@ class TestExaminerItemValue(test.TestCase):
 
     def test_has_unpublished_feedbackdraft_draft_false(self):
         devilry_group_mommy_factories.feedbackset_first_try_published(grading_points=1),
-        testgroup = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_grading_points()\
+            .annotate_with_has_unpublished_feedbackdraft().first()
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-unpublished-feedbackdraft'))
 
     def test_has_unpublished_feedbackdraft_draft_true(self):
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(grading_points=1),
-        testgroup = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_grading_points()\
+            .annotate_with_has_unpublished_feedbackdraft().first()
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
-            'Unpublished feedback draft',
+            'Unpublished feedback draft: passed (1/1)',
             selector.one('.devilry-cradmin-groupitemvalue-unpublished-feedbackdraft').alltext_normalized)
 
     def test_grade_students_can_see_points_false(self):
@@ -552,6 +556,7 @@ class TestItemValue(test.TestCase):
         self.assertEqual(
             'Status: waiting for feedback',
             selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_status_is_waiting_for_deliveries(self):
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(
@@ -562,6 +567,7 @@ class TestItemValue(test.TestCase):
         self.assertEqual(
             'Status: waiting for deliveries',
             selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_grade_not_available_unless_corrected(self):
         devilry_group_mommy_factories.feedbackset_first_try_unpublished()
