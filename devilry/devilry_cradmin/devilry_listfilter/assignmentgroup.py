@@ -403,6 +403,6 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
                 models.Q(number_of_imageannotationcomments_from_admins__gt=0))
         elif cleaned_value == 'privatecomment':
             queryobject = queryobject.filter(
-                models.Q(number_of_groupcomments_from_user__gt=0) |
+                models.Q(number_of_private_groupcomments_from_user__gt=0) |
                 models.Q(number_of_imageannotationcomments_from_user__gt=0))
         return queryobject

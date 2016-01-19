@@ -477,7 +477,7 @@ class AssignmentGroupQuerySet(models.QuerySet):
 
     def annotate_with_number_of_private_groupcomments_from_user(self, user):
         """
-        Annotate the queryset with ``number_of_groupcomments_from_user`` -
+        Annotate the queryset with ``number_of_private_groupcomments_from_user`` -
         the number of :class:`devilry.devilry_group.models.GroupComment`
         with private :obj:`~devilry.devilry_group.models.GroupComment.visibility`
         added by the provided ``user``.
@@ -487,7 +487,7 @@ class AssignmentGroupQuerySet(models.QuerySet):
         """
         from devilry.devilry_group.models import GroupComment
         return self.annotate(
-            number_of_groupcomments_from_user=models.Count(
+            number_of_private_groupcomments_from_user=models.Count(
                 models.Case(
                     models.When(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_PRIVATE,
                                 feedbackset__groupcomment__user=user,

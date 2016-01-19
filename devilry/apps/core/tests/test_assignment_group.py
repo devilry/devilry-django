@@ -3237,7 +3237,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateGroupcommentsFromUser(Te
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         queryset = AssignmentGroup.objects.annotate_with_number_of_private_groupcomments_from_user(
             user=testuser)
-        self.assertEqual(0, queryset.first().number_of_groupcomments_from_user)
+        self.assertEqual(0, queryset.first().number_of_private_groupcomments_from_user)
 
     def test_only_private(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -3258,7 +3258,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateGroupcommentsFromUser(Te
                    visibility=GroupComment.VISIBILITY_PRIVATE)
         annotated_group = AssignmentGroup.objects\
             .annotate_with_number_of_private_groupcomments_from_user(user=testuser).first()
-        self.assertEqual(1, annotated_group.number_of_groupcomments_from_user)
+        self.assertEqual(1, annotated_group.number_of_private_groupcomments_from_user)
 
     def test_only_from_user(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -3278,7 +3278,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateGroupcommentsFromUser(Te
                    visibility=GroupComment.VISIBILITY_PRIVATE)
         annotated_group = AssignmentGroup.objects\
             .annotate_with_number_of_private_groupcomments_from_user(user=testuser).first()
-        self.assertEqual(2, annotated_group.number_of_groupcomments_from_user)
+        self.assertEqual(2, annotated_group.number_of_private_groupcomments_from_user)
 
     def test_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
@@ -3306,10 +3306,10 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateGroupcommentsFromUser(Te
             .annotate_with_number_of_private_groupcomments_from_user(user=testuser)
         self.assertEqual(
             2,
-            queryset.get(id=testgroup1.id).number_of_groupcomments_from_user)
+            queryset.get(id=testgroup1.id).number_of_private_groupcomments_from_user)
         self.assertEqual(
             1,
-            queryset.get(id=testgroup2.id).number_of_groupcomments_from_user)
+            queryset.get(id=testgroup2.id).number_of_private_groupcomments_from_user)
 
 
 class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateImageannotationcommentsFromUser(TestCase):

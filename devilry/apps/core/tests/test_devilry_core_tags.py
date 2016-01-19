@@ -1,11 +1,14 @@
 import htmls
 import mock
 from django import test
+from django.conf import settings
 from django.template.loader import render_to_string
 from model_mommy import mommy
 
-from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import Assignment, AssignmentGroup
 from devilry.apps.core.templatetags import devilry_core_tags
+from devilry.devilry_comment.models import Comment
+from devilry.devilry_group.models import GroupComment
 
 
 class TestDevilrySingleCandidateLongDisplayname(test.TestCase):
@@ -1220,3 +1223,201 @@ class TestDevilryGradeFull(test.TestCase):
         self.assertEqual(
             'Bad (passed - 5/10)',
             selector.one('.devilry-core-grade').alltext_normalized)
+
+
+class TestDevilryCommentSummary(test.TestCase):
+    def test_zero_comments_from_students(self):
+        mommy.make('core.AssignmentGroup')
+        testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_students().first()
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/comment-summary.django.html',
+                devilry_core_tags.devilry_comment_summary(testgroup)))
+        self.assertEqual(
+            '0 comments from student.',
+            selector.one('.devilry-core-comment-summary-studentcomments').alltext_normalized)
+
+    def test_one_comment_from_students(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   user_role=Comment.USER_ROLE_STUDENT)
+        testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_students().first()
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/comment-summary.django.html',
+                devilry_core_tags.devilry_comment_summary(testgroup)))
+        self.assertEqual(
+            '1 comment from student.',
+            selector.one('.devilry-core-comment-summary-studentcomments').alltext_normalized)
+
+    def test_multiple_comments_from_students(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   feedback_set__is_last_in_group=False,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   user_role=Comment.USER_ROLE_STUDENT)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   user_role=Comment.USER_ROLE_STUDENT)
+        testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_students().first()
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/comment-summary.django.html',
+                devilry_core_tags.devilry_comment_summary(testgroup)))
+        self.assertEqual(
+            '2 comments from student.',
+            selector.one('.devilry-core-comment-summary-studentcomments').alltext_normalized)
+
+    def test_zero_commentfiles_from_students(self):
+        mommy.make('core.AssignmentGroup')
+        testgroup = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/comment-summary.django.html',
+                devilry_core_tags.devilry_comment_summary(testgroup)))
+        self.assertEqual(
+            '0 files from student.',
+            selector.one('.devilry-core-comment-summary-studentfiles').alltext_normalized)
+
+    def test_one_commentfile_from_students(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set__group=testgroup,
+                                 visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                                 user_role=Comment.USER_ROLE_STUDENT)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        testgroup = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/comment-summary.django.html',
+                devilry_core_tags.devilry_comment_summary(testgroup)))
+        self.assertEqual(
+            '1 file from student.',
+            selector.one('.devilry-core-comment-summary-studentfiles').alltext_normalized)
+
+    def test_multiple_commentfiles_from_students(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        testcomment1 = mommy.make('devilry_group.GroupComment',
+                                  feedback_set__group=testgroup,
+                                  feedback_set__is_last_in_group=False,
+                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                                  user_role=Comment.USER_ROLE_STUDENT)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment1)
+        testcomment2 = mommy.make('devilry_group.GroupComment',
+                                  feedback_set__group=testgroup,
+                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                                  user_role=Comment.USER_ROLE_STUDENT)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment2)
+        testgroup = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/comment-summary.django.html',
+                devilry_core_tags.devilry_comment_summary(testgroup)))
+        self.assertEqual(
+            '2 files from student.',
+            selector.one('.devilry-core-comment-summary-studentfiles').alltext_normalized)
+
+    def test_zero_comments_from_examiners(self):
+        mommy.make('core.AssignmentGroup')
+        testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_examiners().first()
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/comment-summary.django.html',
+                devilry_core_tags.devilry_comment_summary(testgroup)))
+        self.assertEqual(
+            '0 comments from examiner.',
+            selector.one('.devilry-core-comment-summary-examinercomments').alltext_normalized)
+
+    def test_one_comment_from_examiners(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   user_role=Comment.USER_ROLE_EXAMINER)
+        testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_examiners().first()
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/comment-summary.django.html',
+                devilry_core_tags.devilry_comment_summary(testgroup)))
+        self.assertEqual(
+            '1 comment from examiner.',
+            selector.one('.devilry-core-comment-summary-examinercomments').alltext_normalized)
+
+    def test_multiple_comments_from_examiners(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   feedback_set__is_last_in_group=False,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   user_role=Comment.USER_ROLE_EXAMINER)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   user_role=Comment.USER_ROLE_EXAMINER)
+        testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_examiners().first()
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/comment-summary.django.html',
+                devilry_core_tags.devilry_comment_summary(testgroup)))
+        self.assertEqual(
+            '2 comments from examiner.',
+            selector.one('.devilry-core-comment-summary-examinercomments').alltext_normalized)
+
+    def test_zero_private_groupcomments_from_user(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.AssignmentGroup')
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_number_of_private_groupcomments_from_user(user=testuser).first()
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/comment-summary.django.html',
+                devilry_core_tags.devilry_comment_summary(testgroup)))
+        self.assertEqual(
+            '0 unpublished comments from you.',
+            selector.one('.devilry-core-comment-summary-unpublishedcomments').alltext_normalized)
+
+    def test_one_private_groupcomments_from_user(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   visibility=GroupComment.VISIBILITY_PRIVATE,
+                   user=testuser,
+                   user_role=Comment.USER_ROLE_EXAMINER)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_number_of_private_groupcomments_from_user(user=testuser).first()
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/comment-summary.django.html',
+                devilry_core_tags.devilry_comment_summary(testgroup)))
+        self.assertEqual(
+            '1 unpublished comment from you.',
+            selector.one('.devilry-core-comment-summary-unpublishedcomments').alltext_normalized)
+
+    def test_multiple_private_groupcomments_from_user(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   user=testuser,
+                   feedback_set__is_last_in_group=False,
+                   visibility=GroupComment.VISIBILITY_PRIVATE,
+                   user_role=Comment.USER_ROLE_EXAMINER)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup,
+                   user=testuser,
+                   visibility=GroupComment.VISIBILITY_PRIVATE,
+                   user_role=Comment.USER_ROLE_EXAMINER)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_number_of_private_groupcomments_from_user(user=testuser).first()
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/comment-summary.django.html',
+                devilry_core_tags.devilry_comment_summary(testgroup)))
+        self.assertEqual(
+            '2 unpublished comments from you.',
+            selector.one('.devilry-core-comment-summary-unpublishedcomments').alltext_normalized)

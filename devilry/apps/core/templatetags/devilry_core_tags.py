@@ -303,3 +303,24 @@ def devilry_grade_full(assignment, points, devilryrole):
         'include_is_passing_grade': include_is_passing_grade,
         'include_points': include_points,
     }
+
+
+@register.inclusion_tag('devilry_core/templatetags/comment-summary.django.html')
+def devilry_comment_summary(group):
+    """
+    Renders a comment summary for the given AssignmentGroup.
+
+    Assumes that the AssignmentGroup has been annotated with:
+
+    - :meth:`~devilry.apps.core.models.AssignmentGroupQuerySet.annotate_with_number_of_groupcomments_from_students`.
+    - :meth:`~devilry.apps.core.models.AssignmentGroupQuerySet.annotate_with_number_of_commentfiles_from_students`.
+    - :meth:`~devilry.apps.core.models.AssignmentGroupQuerySet.annotate_with_number_of_groupcomments_from_examiners`.
+    - :meth:`~devilry.apps.core.models.AssignmentGroupQuerySet.annotate_with_number_of_private_groupcomments_from_user`.
+
+    Args:
+        group: An :class:`devilry.apps.core.models.AssignmentGroup` object annotated
+            as explained above.
+    """
+    return {
+        'group': group
+    }
