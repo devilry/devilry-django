@@ -206,7 +206,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                requestuser=testuser)
 
-    def test_querycount_anonymous(self):
+    def test_querycount_fully_anonymous(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL,
                               fullname='testuser')
         testassignment = mommy.make_recipe(

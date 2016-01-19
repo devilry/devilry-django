@@ -136,6 +136,9 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mommy.make('core.Examiner',
                        relatedexaminer__user=testuser,
                        assignmentgroup=group)
+            mommy.make('core.Examiner',
+                       relatedexaminer__user__fullname='examiner{}'.format(number),
+                       assignmentgroup=group)
             mommy.make('core.Candidate',
                        relatedstudent__user__fullname='candidate{}'.format(number),
                        assignment_group=group)
@@ -153,6 +156,9 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
             mommy.make('core.Examiner',
                        relatedexaminer__user=testuser,
+                       assignmentgroup=group)
+            mommy.make('core.Examiner',
+                       relatedexaminer__user__fullname='examiner{}'.format(number),
                        assignmentgroup=group)
             mommy.make('core.Candidate',
                        relatedstudent__user__fullname='candidate{}'.format(number),

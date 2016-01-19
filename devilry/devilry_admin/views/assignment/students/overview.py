@@ -47,7 +47,6 @@ class Overview(listbuilderview.FilterListMixin, listbuilderview.View):
         filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
 
     def get_unfiltered_queryset_for_role(self, role):
-        assignment = role
         candidatequeryset = Candidate.objects\
             .select_related('relatedstudent__user')\
             .only(
@@ -75,7 +74,6 @@ class Overview(listbuilderview.FilterListMixin, listbuilderview.View):
                              'relatedexaminer__user__shortname')))
         queryset = coremodels.AssignmentGroup.objects\
             .filter(parentnode=self.assignment)\
-            .filter(parentnode=assignment)\
             .only('name')\
             .prefetch_related(
                 models.Prefetch('candidates',

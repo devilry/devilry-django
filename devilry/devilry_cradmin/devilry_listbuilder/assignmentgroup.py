@@ -102,7 +102,7 @@ class PeriodAdminItemValue(AbstractAdminItemValue):
 class SubjectAdminItemValue(AbstractAdminItemValue):
     def __init__(self, *args, **kwargs):
         super(SubjectAdminItemValue, self).__init__(*args, **kwargs)
-        if self.group.assignment.anonymizationmode == Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
+        if self.get_assignment().anonymizationmode == Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
             raise ValueError('Can not use SubjectAdminItemValue for fully anonymous assignments. '
                              'Use FullyAnonymousSubjectAdminItemValue istead.')
 
