@@ -11,4 +11,4 @@ class TestOverviewAppUpdateFirstDeadline(TestCase, cradmin_testhelpers.TestCaseM
     def test_h1(self):
         assignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment, viewkwargs={'pk':assignment.id})
-        self.assertEquals(mockresponse.selector.one('h1').alltext_normalized, 'Edit assignment')
+        self.assertEquals(mockresponse.selector.one('h1').alltext_normalized, 'Edit anonymization settings')

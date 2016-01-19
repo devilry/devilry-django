@@ -18,9 +18,11 @@
         {% endif %}
 
         <div id="devilry_admin_assignment_published_buttonrow">
-            <form method="post" action="{% cradmin_appurl 'publish_assignment_now' assignment.id %}">{% csrf_token %}
-                <input type="submit" value="{% trans "Publish now" %}" class="btn btn-success btn-lg">
-            </form>
+            {% if not assignment.is_published %}
+                <form id="devilry_admin_assignment_published_publishnow_form" method="post" action="{% cradmin_appurl 'publish_assignment_now' assignment.id %}">{% csrf_token %}
+                    <input type="submit" value="{% trans "Publish now" %}" class="btn btn-success btn-lg">
+                </form>
+            {% endif %}
             <a href="{% cradmin_appurl "update_publishing_time" assignment.id %}" type="button"
                class="btn btn-default btn-lg">{% trans "Edit publishing time" %}</a>
         </div>
