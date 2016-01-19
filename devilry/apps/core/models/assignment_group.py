@@ -876,18 +876,21 @@ class AssignmentGroupQuerySet(models.QuerySet):
         Annotate the queryset with ``grading_points``.
 
         ``grading_points`` is the :obj:`devilry.devilry_group.models.FeedbackSet.grading_points`
-        for the last feedbackset in the group if that feedbackset is published.
-        If the last feedbackset is not published, ``grading_points`` is ``None``.
+        for the last feedbackset in the group.
 
-        This means that all groups that :meth:`.annotate_with_is_corrected` would
-        set ``is_corrected`` to ``True`` will have a value for ``grading_points``.
+        We do not check if the feedback is published or not. This is for two
+        reasons:
+
+        - We can use :meth:`.annotate_with_is_corrected` to check this -
+         not need to have overlapping methods for that.
+        - We use this to show feedback draft previews (see
+          :meth:`.annotate_with_has_unpublished_feedbackdraft`).
         """
         return self.annotate(
             grading_points=models.Sum(
                 models.Case(
                     models.When(
                         feedbackset__is_last_in_group=True,
-                        feedbackset__grading_published_datetime__isnull=False,
                         then='feedbackset__grading_points'
                     )
                 )

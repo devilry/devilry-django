@@ -1942,13 +1942,13 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
 
 
 class TestAssignmentGroupQuerySetAnnotateWithGradingPoints(TestCase):
-    def test_annotate_with_grading_points_none_published(self):
+    def test_annotate_with_grading_points_not_published_is_still_counted(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(
             group=testgroup,
             grading_points=10)
         queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
-        self.assertEqual(None, queryset.first().grading_points)
+        self.assertEqual(10, queryset.first().grading_points)
 
     def test_annotate_with_grading_points(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -1990,7 +1990,7 @@ class TestAssignmentGroupQuerySetAnnotateWithGradingPoints(TestCase):
             grading_points=20,
             is_last_in_group=True)
         queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
-        self.assertEqual(None, queryset.first().grading_points)
+        self.assertEqual(20, queryset.first().grading_points)
 
     def test_annotate_with_grading_points_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
