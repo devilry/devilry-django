@@ -537,6 +537,17 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         return False
 
     @property
+    def is_published(self):
+        """
+
+        Returns: ``True``if ``publishing_time``is in the past
+
+        """
+        if self.publishing_time < datetime.now():
+            return True
+        return False
+
+    @property
     def students_can_create_groups_now(self):
         """
         Return ``True`` if :attr:`students_can_create_groups` is ``True``, and

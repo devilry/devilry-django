@@ -76,17 +76,25 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                 "Will be published: Jan 1 3000, 00:00")
 
     def test_published_row_buttons(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = mommy.make('core.Assignment', publishing_time=datetime(3000, 1, 1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
-                        "#devilry_admin_assignment_published_buttonrow form input")['value'],
+                        "#devilry_admin_assignment_published_publishnow_form input")['value'],
                 'Publish now'
         )
         self.assertEqual(
                 mockresponse.selector.one(
                         "#devilry_admin_assignment_published_buttonrow a").alltext_normalized,
                 'Edit publishing time'
+        )
+
+    def test_published_row_buttons_when_already_published(self):
+        assignment = mommy.make('core.Assignment', publishing_time=datetime(2000, 1, 1))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertFalse(
+                mockresponse.selector.exists(
+                        "#devilry_admin_assignment_published_publishnow_form")
         )
 
     def test_settings_row_first_deadline(self):
