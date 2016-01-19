@@ -72,7 +72,7 @@ class PassedFailedFeedbackForm(AbstractFeedbackForm):
 
     def get_grading_points(self):
         if self.cleaned_data['passed']:
-            return 1
+            return self.group.assignment.max_points
         else:
             return 0
 
