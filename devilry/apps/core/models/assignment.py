@@ -357,8 +357,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     )
 
     students_can_see_points = models.BooleanField(
-        default=True,
-        verbose_name="Students can see points")
+        default=False,
+        verbose_name=pgettext_lazy(
+            'assignment',
+            "Students can see points?"))
     admins = models.ManyToManyField(User, blank=True, verbose_name="Administrators")
     delivery_types = models.PositiveIntegerField(
         default=deliverytypes.ELECTRONIC,
