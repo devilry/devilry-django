@@ -1376,9 +1376,7 @@ class TestDevilryCommentSummary(test.TestCase):
             render_to_string(
                 'devilry_core/templatetags/comment-summary.django.html',
                 devilry_core_tags.devilry_comment_summary(testgroup)))
-        self.assertEqual(
-            '0 unpublished comments from you.',
-            selector.one('.devilry-core-comment-summary-unpublishedcomments').alltext_normalized)
+        self.assertFalse(selector.exists('.devilry-core-comment-summary-unpublishedcomments'))
 
     def test_one_private_groupcomments_from_user(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
