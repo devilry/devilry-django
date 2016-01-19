@@ -18,23 +18,34 @@ from devilry.devilry_group.models import GroupComment, ImageAnnotationComment
 class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = overview.Overview
 
+    def __mockinstance_with_devilryrole(self, devilryrole):
+        mockinstance = mock.MagicMock()
+        mockinstance.get_devilryrole_for_requestuser.return_value = devilryrole
+        return mockinstance
+
     def test_title(self):
         testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertIn(
             'Students on Test Assignment',
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
         testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             'Students on Test Assignment',
             mockresponse.selector.one('h1').alltext_normalized)
 
     def test_choices_sanity(self):
         testassignment = mommy.make('core.Assignment')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             3,
             mockresponse.selector.count(
@@ -42,14 +53,15 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_choice_create_groups_link(self):
         testassignment = mommy.make('core.Assignment')
-        mock_cradmin_instance = mock.MagicMock()
+        mock_cradmin_instance = self.__mockinstance_with_devilryrole('departmentadmin')
 
         def mock_reverse_url(appname, viewname, **kwargs):
             return '/{}/{}'.format(appname, viewname)
 
         mock_cradmin_instance.reverse_url = mock_reverse_url
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                                          cradmin_instance=mock_cradmin_instance)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=mock_cradmin_instance)
         self.assertEqual(
             '/create_groups/INDEX',
             mockresponse.selector
@@ -59,7 +71,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testassignment = mommy.make('core.Assignment',
                                     parentnode__short_name='testperiod',
                                     parentnode__parentnode__short_name='testsubject')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             'Add students',
             mockresponse.selector
@@ -68,14 +82,15 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_choice_merge_groups_link(self):
         testassignment = mommy.make('core.Assignment')
-        mock_cradmin_instance = mock.MagicMock()
+        mock_cradmin_instance = self.__mockinstance_with_devilryrole('departmentadmin')
 
         def mock_reverse_url(appname, viewname, **kwargs):
             return '/{}/{}'.format(appname, viewname)
 
         mock_cradmin_instance.reverse_url = mock_reverse_url
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                                          cradmin_instance=mock_cradmin_instance)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=mock_cradmin_instance)
         self.assertEqual(
             # '/merge_groups/INDEX',
             '#',
@@ -86,7 +101,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testassignment = mommy.make('core.Assignment',
                                     parentnode__short_name='testperiod',
                                     parentnode__parentnode__short_name='testsubject')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             'Organize students in project groups',
             mockresponse.selector
@@ -95,14 +112,15 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_choice_delete_groups_link(self):
         testassignment = mommy.make('core.Assignment')
-        mock_cradmin_instance = mock.MagicMock()
+        mock_cradmin_instance = self.__mockinstance_with_devilryrole('departmentadmin')
 
         def mock_reverse_url(appname, viewname, **kwargs):
             return '/{}/{}'.format(appname, viewname)
 
         mock_cradmin_instance.reverse_url = mock_reverse_url
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                                          cradmin_instance=mock_cradmin_instance)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=mock_cradmin_instance)
         self.assertEqual(
             # '/delete_groups/INDEX',
             '#',
@@ -113,7 +131,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testassignment = mommy.make('core.Assignment',
                                     parentnode__short_name='testperiod',
                                     parentnode__parentnode__short_name='testsubject')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             'Delete students or project groups',
             mockresponse.selector
@@ -124,8 +144,10 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mommy.make('core.AssignmentGroup', parentnode=testassignment, _quantity=3)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                                          requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            requestuser=testuser)
         self.assertEqual(
             3,
             mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
@@ -144,8 +166,10 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.assignment,
-                                                          requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            requestuser=testuser)
         self.assertIn('unanonymizedfullname', mockresponse.response.content)
         self.assertIn('A un-anonymized fullname', mockresponse.response.content)
         self.assertNotIn('MyAnonymousID', mockresponse.response.content)
@@ -164,8 +188,10 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.assignment,
-                                                          requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            requestuser=testuser)
         self.assertIn('unanonymizedfullname', mockresponse.response.content)
         self.assertIn('A un-anonymized fullname', mockresponse.response.content)
         self.assertNotIn('MyAnonymousID', mockresponse.response.content)
@@ -185,10 +211,11 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.assignment,
+                                                            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
                                                           requestuser=testuser)
-        self.assertNotIn('unanonymizedfullname', mockresponse.response.content)
-        self.assertNotIn('A un-anonymized fullname', mockresponse.response.content)
-        self.assertIn('MyAnonymousID', mockresponse.response.content)
+        self.assertIn('unanonymizedfullname', mockresponse.response.content)
+        self.assertIn('A un-anonymized fullname', mockresponse.response.content)
+        self.assertNotIn('MyAnonymousID', mockresponse.response.content)
 
     def test_querycount(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL,
@@ -204,6 +231,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                        assignment_group=group)
         with self.assertNumQueries(11):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
+                                               cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
                                                requestuser=testuser)
 
     def test_querycount_fully_anonymous(self):
@@ -222,6 +250,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                        assignment_group=group)
         with self.assertNumQueries(11):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
+                                               cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
                                                requestuser=testuser)
 
     def test_querycount_points_to_grade_mapper_custom_table(self):
@@ -258,6 +287,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 group=group, grading_points=3)
         with self.assertNumQueries(12):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
+                                               cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
                                                requestuser=testuser)
 
     def test_group_render_title_name_order(self):
@@ -270,8 +300,10 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__shortname='usera')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                                          requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            requestuser=testuser)
         self.assertEqual(
             'usera , userb',
             mockresponse.selector.one(
@@ -291,8 +323,10 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Candidate',
                    assignment_group=testgroup,
                    relatedstudent__user__shortname='usera')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                                          requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            requestuser=testuser)
         self.assertEqual(
             'A user(userc) , usera , userb',
             mockresponse.selector.one(
@@ -308,6 +342,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user__shortname='testuser')
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testgroup.assignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
                 viewkwargs={'filters_string': 'search-nomatch'},
                 requestuser=testuser)
         self.assertEqual(
@@ -324,6 +359,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user__fullname='TestUser')
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testgroup.assignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
                 viewkwargs={'filters_string': 'search-TestUser'},
                 requestuser=testuser)
         self.assertEqual(
@@ -340,6 +376,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user__shortname='testuser')
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testgroup.assignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
                 viewkwargs={'filters_string': 'search-testuser'},
                 requestuser=testuser)
         self.assertEqual(
@@ -357,6 +394,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    candidate_id='MyCandidateID')
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testgroup.assignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
                 viewkwargs={'filters_string': 'search-MyCandidateID'},
                 requestuser=testuser)
         self.assertEqual(
@@ -384,6 +422,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user__fullname='B')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser)
         self.assertEqual(
             ['A(b)', 'B(a)'],
@@ -404,6 +443,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user__fullname='B')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'orderby-name_descending'},
             requestuser=testuser)
         self.assertEqual(
@@ -426,6 +466,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user__fullname='B')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser)
         self.assertEqual(
             ['A(b)', 'B(a)'],
@@ -447,6 +488,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user__fullname='B')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'orderby-name_descending'},
             requestuser=testuser)
         self.assertEqual(
@@ -469,6 +511,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user__fullname='B')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser)
         self.assertEqual(
             ['A(b)', 'B(a)'],
@@ -482,13 +525,15 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('core.Candidate',
                    assignment_group=testgroup1,
-                   relatedstudent__automatic_anonymous_id='c')
+                   relatedstudent__user__shortname='b',
+                   relatedstudent__user__fullname='A')
         mommy.make('core.Candidate',
                    assignment_group=testgroup2,
-                   relatedstudent__automatic_anonymous_id='b',
-                   relatedstudent__candidate_id='A')
+                   relatedstudent__user__shortname='a',
+                   relatedstudent__user__fullname='B')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'orderby-name_descending'},
             requestuser=testuser)
         self.assertEqual(
@@ -506,6 +551,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
                 requestuser=testuser)
         self.assertTrue(self.__has_orderby_option_label(
             selector=mockresponse.selector, orderby_option_label='Email'))
@@ -518,6 +564,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testassignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
                 requestuser=testuser)
         self.assertFalse(self.__has_orderby_option_label(
             selector=mockresponse.selector, orderby_option_label='Email'))
@@ -537,6 +584,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user__shortname='a')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'orderby-shortname_ascending'},
             requestuser=testuser)
         self.assertEqual(
@@ -556,6 +604,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user__shortname='a')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'orderby-shortname_descending'},
             requestuser=testuser)
         self.assertEqual(
@@ -577,6 +626,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user__lastname='a')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'orderby-lastname_ascending'},
             requestuser=testuser)
         self.assertEqual(
@@ -598,6 +648,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user__lastname='a')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'orderby-lastname_descending'},
             requestuser=testuser)
         self.assertEqual(
@@ -623,6 +674,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'orderby-points_ascending'},
             requestuser=testuser)
         self.assertEqual(
@@ -648,6 +700,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'orderby-points_descending'},
             requestuser=testuser)
         self.assertEqual(
@@ -676,6 +729,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'orderby-last_commented_by_student_ascending'},
             requestuser=testuser)
         self.assertEqual(
@@ -704,6 +758,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'orderby-last_commented_by_student_descending'},
             requestuser=testuser)
         self.assertEqual(
@@ -732,6 +787,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'orderby-last_commented_by_examiner_ascending'},
             requestuser=testuser)
         self.assertEqual(
@@ -760,6 +816,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'orderby-last_commented_by_examiner_descending'},
             requestuser=testuser)
         self.assertEqual(
@@ -777,6 +834,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser)
         self.assertEqual(
             {'user1', 'user2'},
@@ -800,6 +858,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'status-waiting-for-feedback'},
             requestuser=testuser)
         self.assertEqual(
@@ -824,6 +883,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
             requestuser=testuser)
         self.assertEqual(
@@ -847,6 +907,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'status-corrected'},
             requestuser=testuser)
         self.assertEqual(
@@ -866,6 +927,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser)
         self.assertEqual(
             'all students 3',
@@ -893,6 +955,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser)
         self.assertEqual(
             'waiting for feedback 2',
@@ -920,6 +983,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser)
         self.assertEqual(
             'waiting for deliveries 2',
@@ -947,6 +1011,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser)
         self.assertEqual(
             'corrected 2',
@@ -976,6 +1041,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'is_passing_grade-true'},
             requestuser=testuser)
         self.assertEqual(
@@ -1005,6 +1071,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'is_passing_grade-false'},
             requestuser=testuser)
         self.assertEqual(
@@ -1032,6 +1099,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'points-0'},
             requestuser=testuser)
         self.assertEqual(
@@ -1059,6 +1127,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'points-10'},
             requestuser=testuser)
         self.assertEqual(
@@ -1078,6 +1147,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser1)
         self.assertTrue(mockresponse.selector.exists('#django_cradmin_listfilter_examiner_input'))
 
@@ -1091,6 +1161,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser)
         self.assertTrue(mockresponse.selector.exists('#django_cradmin_listfilter_examiner_input'))
 
@@ -1110,6 +1181,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser1)
         choices_labels = [
             element.alltext_normalized
@@ -1137,6 +1209,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'examiner-{}'.format(relatedexaminer2.id)},
             requestuser=testuser1)
         self.assertEqual(
@@ -1161,6 +1234,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'activity-studentfile'},
             requestuser=testuser)
         self.assertEqual(
@@ -1185,6 +1259,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'activity-no-studentfile'},
             requestuser=testuser)
         self.assertEqual(
@@ -1207,6 +1282,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'activity-studentcomment'},
             requestuser=testuser)
         self.assertEqual(
@@ -1229,6 +1305,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'activity-studentcomment'},
             requestuser=testuser)
         self.assertEqual(
@@ -1258,6 +1335,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'activity-no-studentcomment'},
             requestuser=testuser)
         self.assertEqual(
@@ -1280,6 +1358,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'activity-examinercomment'},
             requestuser=testuser)
         self.assertEqual(
@@ -1302,6 +1381,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'activity-examinercomment'},
             requestuser=testuser)
         self.assertEqual(
@@ -1331,6 +1411,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'activity-no-examinercomment'},
             requestuser=testuser)
         self.assertEqual(
@@ -1353,6 +1434,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'activity-admincomment'},
             requestuser=testuser)
         self.assertEqual(
@@ -1375,6 +1457,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'activity-admincomment'},
             requestuser=testuser)
         self.assertEqual(
@@ -1397,6 +1480,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'activity-unpublishedfeedback'},
             requestuser=testuser)
         self.assertEqual(
@@ -1419,6 +1503,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'activity-privatecomment'},
             requestuser=testuser)
         self.assertEqual(
@@ -1441,6 +1526,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'activity-privatecomment'},
             requestuser=testuser)
         self.assertEqual(
@@ -1457,6 +1543,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user__shortname='testuser')
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testgroup.assignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
                 viewkwargs={'filters_string': 'search-nomatch'},
                 requestuser=testuser)
         self.assertEqual(
@@ -1472,6 +1559,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'status-waiting-for-feedback'},
             requestuser=testuser)
         self.assertEqual(
@@ -1490,6 +1578,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
             requestuser=testuser)
         self.assertEqual(
@@ -1506,6 +1595,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'status-corrected'},
             requestuser=testuser)
         self.assertEqual(
@@ -1521,6 +1611,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser)
         self.assertEqual(
             'You have no students for this assignment. Add students using the link above.',

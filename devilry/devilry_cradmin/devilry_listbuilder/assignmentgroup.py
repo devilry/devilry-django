@@ -23,9 +23,12 @@ class FullyAnonymousSubjectAdminItemValue(listbuilder.itemvalue.TitleDescription
 
     def __init__(self, *args, **kwargs):
         super(FullyAnonymousSubjectAdminItemValue, self).__init__(*args, **kwargs)
-        if self.group.assignment.anonymizationmode != Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
+        if self.get_assignment().anonymizationmode != Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
             raise ValueError('Can only use FullyAnonymousSubjectAdminItemValue for fully anonymous assignments. '
                              'Use SubjectAdminItemValue istead.')
+
+    def get_assignment(self):
+        return self.kwargs['assignment']
 
     def get_all_candidate_users(self):
         return [candidate.relatedstudent.user
@@ -91,7 +94,7 @@ class AbstractAdminItemValue(AbstractItemValue):
 class PeriodAdminItemValue(AbstractAdminItemValue):
     def __init__(self, *args, **kwargs):
         super(PeriodAdminItemValue, self).__init__(*args, **kwargs)
-        if self.group.assignment.is_anonymous:
+        if self.get_assignment().is_anonymous:
             raise ValueError('Can not use PeriodAdminItemValue for anonymous assignments. '
                              'Periodadmins are not supposed have access to them.')
 

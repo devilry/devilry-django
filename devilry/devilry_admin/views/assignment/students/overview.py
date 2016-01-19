@@ -13,11 +13,24 @@ from devilry.devilry_cradmin import devilry_listfilter
 
 class Overview(listbuilderview.FilterListMixin, listbuilderview.View):
     model = coremodels.AssignmentGroup
-    value_renderer_class = devilry_listbuilder.assignmentgroup.SubjectAdminItemValue
 
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
         return super(Overview, self).dispatch(request, *args, **kwargs)
+
+    def get_value_renderer_class(self):
+        devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()
+        if devilryrole == 'departmentadmin':
+            return devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue
+        elif devilryrole == 'subjectadmin':
+            if self.assignment.anonymizationmode == Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
+                return devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue
+            else:
+                return devilry_listbuilder.assignmentgroup.SubjectAdminItemValue
+        elif devilryrole == 'periodadmin':
+            return devilry_listbuilder.assignmentgroup.PeriodAdminItemValue
+        else:
+            raise ValueError('Invalid devilryrole: {}'.format(devilryrole))
 
     def get_filterlist_template_name(self):
         return 'devilry_admin/assignment/students/overview.django.html'
