@@ -118,7 +118,6 @@ class GroupListView(listbuilderview.FilterListMixin,
                 models.Prefetch('examiners',
                                 queryset=examinerqueryset))\
             .annotate_with_grading_points()\
-            .annotate_with_is_passing_grade()\
             .annotate_with_is_waiting_for_feedback()\
             .annotate_with_is_waiting_for_deliveries()\
             .annotate_with_is_corrected()\

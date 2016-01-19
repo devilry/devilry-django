@@ -282,19 +282,24 @@ class PointsFilter(listfilter.django.single.textinput.IntSearch):
     #     return pgettext_lazy('group points filter', 'Type a number ...')
 
 
-class IsPassingGradeFilter(listfilter.django.single.select.Boolean):
+class IsPassingGradeFilter(abstractselect.AbstractBoolean):
     def get_slug(self):
-        return 'is_passing_grade'
-
-    def get_modelfield(self):
         return 'is_passing_grade'
 
     def get_label(self):
         return pgettext_lazy('group is passing grade filter',
                              'Passing grade?')
 
-    def get_query(self, modelfield):
-        return models.Q(**{modelfield: False})
+    def filter(self, queryobject):
+        cleaned_value = self.get_cleaned_value()
+        if cleaned_value in ('true', 'false'):
+            query = models.Q(is_passing_grade=False)
+            queryobject = queryobject.annotate_with_is_passing_grade()
+            if cleaned_value == 'true':
+                queryobject = queryobject.exclude(query)
+            elif cleaned_value == 'false':
+                queryobject = queryobject.filter(query)
+        return queryobject
 
 
 class ExaminerFilter(abstractselect.AbstractSelectFilter):
