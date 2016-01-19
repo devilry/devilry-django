@@ -579,3 +579,18 @@ class TestItemValue(test.TestCase):
         testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
         selector = htmls.S(MockItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
+
+    def test_grade_comment_summary_is_available(self):
+        mommy.make('core.AssignmentGroup')
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_number_of_commentfiles_from_students()\
+            .annotate_with_number_of_groupcomments_from_students()\
+            .annotate_with_number_of_groupcomments_from_examiners()\
+            .annotate_with_number_of_groupcomments_from_admins()\
+            .first()
+
+        selector = htmls.S(MockItemValue(value=testgroup, assignment=testgroup.assignment).render())
+        self.assertTrue(selector.exists('.devilry-cradmin-groupitemvalue-comments'))
+        self.assertEqual(
+            '0 comments from student. 0 files from student. 0 comments from examiner.',
+            selector.one('.devilry-cradmin-groupitemvalue-comments').alltext_normalized)
