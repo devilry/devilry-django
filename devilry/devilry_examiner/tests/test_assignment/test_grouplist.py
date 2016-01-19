@@ -161,6 +161,42 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                requestuser=testuser)
 
+    def test_querycount_points_to_grade_mapper_custom_table(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL,
+                              fullname='testuser')
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
+        point_to_grade_map = mommy.make('core.PointToGradeMap',
+                                        assignment=testassignment, invalid=False)
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=0,
+                   maximum_points=10,
+                   grade='Bad')
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=11,
+                   maximum_points=70,
+                   grade='Ok')
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=71,
+                   maximum_points=100,
+                   grade='Best')
+        for number in range(30):
+            group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            mommy.make('core.Examiner',
+                       relatedexaminer__user=testuser,
+                       assignmentgroup=group)
+            mommy.make('core.Candidate',
+                       relatedstudent__user__fullname='candidate{}'.format(number),
+                       assignment_group=group)
+            devilry_group_mommy_factories.feedbackset_first_try_published(
+                group=group, grading_points=3)
+        with self.assertNumQueries(12):
+            self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
+                                               requestuser=testuser)
+
     def test_group_render_title_name_order(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
