@@ -16,7 +16,9 @@ class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
         with self.assertRaisesMessage(ValueError,
                                       'Can only use FullyAnonymousSubjectAdminItemValue for fully '
                                       'anonymous assignments. Use SubjectAdminItemValue istead.'):
-            devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue(value=testgroup)
+            devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue(
+                value=testgroup,
+                assignment=testgroup.assignment)
 
     def test_semi_anonymous_is_not_allowed(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -24,7 +26,9 @@ class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
         with self.assertRaisesMessage(ValueError,
                                       'Can only use FullyAnonymousSubjectAdminItemValue for fully '
                                       'anonymous assignments. Use SubjectAdminItemValue istead.'):
-            devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue(value=testgroup)
+            devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue(
+                value=testgroup,
+                assignment=testgroup.assignment)
 
     def test_name_fully_anonymous_is_not_anoymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -34,7 +38,8 @@ class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue(
-            value=testgroup).render())
+            value=testgroup,
+            assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
