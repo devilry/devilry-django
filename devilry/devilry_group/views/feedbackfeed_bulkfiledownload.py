@@ -2,12 +2,13 @@ import os
 
 import io
 from django import http
+from django.db import models
 from django.views import generic
 
 import zipfile
 
 from devilry.devilry_comment.models import CommentFile
-from devilry.devilry_group.models import GroupComment
+from devilry.devilry_group.models import GroupComment, ImageAnnotationComment
 
 
 class ZipBuffer(object):
@@ -124,6 +125,23 @@ class BulkFileDownloadBaseView(generic.View):
             archivename = "{}{}-{}{}".format(archivebasename, split_filename[0], identical_filenames_counter, split_filename[1])
         return archivename
 
+    def __optimize_queryset(self, queryset):
+        commentfile_queryset = CommentFile.objects.order_by('created_datetime')
+        groupcomment_queryset = GroupComment.objects\
+            .order_by('created_datetime')\
+            .prefetch_related(models.Prefetch('commentfile_set',
+                                              queryset=commentfile_queryset))
+        imageannotationcomment_queryset = ImageAnnotationComment.objects\
+            .order_by('created_datetime')\
+            .prefetch_related(models.Prefetch('commentfile_set',
+                                              queryset=commentfile_queryset))
+        return queryset\
+            .order_by('group_id', 'created_datetime')\
+            .prefetch_related(models.Prefetch('groupcomment_set',
+                                              queryset=groupcomment_queryset))\
+            .prefetch_related(models.Prefetch('imageannotationcomment_set',
+                                              queryset=imageannotationcomment_queryset))
+
     def get_filestructure(self, queryset):
         """
         Iterate all FeedbackSet's in given queryset and build a dict containing archivepaths and actual filepaths
@@ -151,19 +169,15 @@ class BulkFileDownloadBaseView(generic.View):
         """
         files = {}
         attemptcounter = 1
-        for feedbackset in queryset.order_by('group_id', 'created_datetime'):
+        for feedbackset in self.__optimize_queryset(queryset):
             rootlabel = self.__get_rootlabel(feedbackset)
             attemptcounter, attemptlabel = self.__get_attemptlabel(feedbackset, attemptcounter)
-
-            # TODO: filter on what user can see..
-            commentfiles = CommentFile.objects.filter(
-                    comment_id__in=GroupComment.objects.filter(feedback_set=feedbackset))
-
-            for commentfile in commentfiles:
-                subfolderlabel = self.__check_if_subfolder(feedbackset, commentfile)
-                archivebasename = "{}{}{}".format(rootlabel, attemptlabel, subfolderlabel)
-                archivename = self.__get_full_archivename(files, commentfile, archivebasename)
-                files[archivename] = commentfile.file.path
+            for groupcomment in feedbackset.groupcomment_set.all():
+                for commentfile in groupcomment.commentfile_set.all():
+                    subfolderlabel = self.__check_if_subfolder(feedbackset, commentfile)
+                    archivebasename = "{}{}{}".format(rootlabel, attemptlabel, subfolderlabel)
+                    archivename = self.__get_full_archivename(files, commentfile, archivebasename)
+                    files[archivename] = commentfile.file.path
 
         return files
 

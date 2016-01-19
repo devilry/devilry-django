@@ -1,13 +1,14 @@
-from zipfile import ZipFile
-from StringIO import StringIO
 import datetime
-from model_mommy import mommy
+from StringIO import StringIO
+from zipfile import ZipFile
+
 from django import test
+from django.core.files.base import ContentFile
+from model_mommy import mommy
 
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import models as groupmodels
 from devilry.devilry_group.views import feedbackfeed_bulkfiledownload
-from django.core.files.base import ContentFile
 
 
 class BulkDownloadTestClass(feedbackfeed_bulkfiledownload.BulkFileDownloadBaseView):
