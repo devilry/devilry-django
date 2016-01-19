@@ -431,6 +431,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                           'As a text looked up in a custom table')
         ),
     ]
+    #: Dictionary for getting the :obj:`~.Assignment.POINTS_TO_GRADE_MAPPER_CHOICES` descriptions
+    POINTS_TO_GRADE_MAPPER_CHOICES_DICT = dict(POINTS_TO_GRADE_MAPPER_CHOICES)
 
     #: Points to grade mapper. Defines how we map points to a grade.
     #: Choices are:
@@ -467,6 +469,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                 'SCHEMA. The examiner fill in a schema defined by you.')
         )
     ]
+    #: Dictionary for getting the :obj:`~.Assignment.GRADING_SYSTEM_PLUGIN_ID_CHOICES` descriptions
+    GRADING_SYSTEM_PLUGIN_ID_CHOICES_DICT = dict(GRADING_SYSTEM_PLUGIN_ID_CHOICES)
 
     #: Grading system plugin ID. Defines how examiners grade the students.
     grading_system_plugin_id = models.CharField(
