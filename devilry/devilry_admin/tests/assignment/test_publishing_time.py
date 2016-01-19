@@ -7,13 +7,14 @@ from model_mommy import mommy
 from devilry.apps.core.models import Assignment
 from devilry.devilry_admin.views.assignment import publishing_time
 
+
 class TestAssignmentPublishingTimeUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = publishing_time.AssignmentPublishingTimeUpdateView
 
     def test_h1(self):
         assignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment, viewkwargs={'pk': assignment.id})
-        self.assertEqual(mockresponse.response.status_code, 405)
+        self.assertEquals(mockresponse.selector.one('h1').alltext_normalized, 'Edit assignment')
 
 
 class TestPublishNowRedirectView(TestCase, cradmin_testhelpers.TestCaseMixin):
