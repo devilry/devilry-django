@@ -80,12 +80,12 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
-                        "#devilry_admin_assignment_published_buttonrow a:nth-child(1)").alltext_normalized,
+                        "#devilry_admin_assignment_published_buttonrow form input")['value'],
                 'Publish now'
         )
         self.assertEqual(
                 mockresponse.selector.one(
-                        "#devilry_admin_assignment_published_buttonrow a:nth-child(2)").alltext_normalized,
+                        "#devilry_admin_assignment_published_buttonrow a").alltext_normalized,
                 'Edit publishing time'
         )
 

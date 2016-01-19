@@ -5,7 +5,7 @@ from django_cradmin.viewhelpers.detail import DetailRoleView
 
 from devilry.apps.core import models as coremodels
 from .first_deadline import AssignmentFirstDeadlineUpdateView
-from .publishing_time import AssignmentPublishingTimeUpdateView
+from .publishing_time import AssignmentPublishingTimeUpdateView, PublishNowRedirectView
 
 
 class Overview(DetailRoleView):
@@ -48,5 +48,7 @@ class App(crapp.App):
         crapp.Url(r'^update_first_deadline/(?P<pk>\d+)$', AssignmentFirstDeadlineUpdateView.as_view(),
                   name="update_first_deadline"),
         crapp.Url(r'^update_publishing_time/(?P<pk>\d+)$', AssignmentPublishingTimeUpdateView.as_view(),
-                  name="update_publishing_time")
+                  name="update_publishing_time"),
+        crapp.Url(r'^publish_assignment_now/(?P<pk>\d+)$', PublishNowRedirectView.as_view(),
+                  name="publish_assignment_now")
     ]
