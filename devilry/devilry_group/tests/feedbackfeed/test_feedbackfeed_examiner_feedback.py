@@ -313,6 +313,53 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFe
         self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
         self.assertEquals(1, feedbacksets[0].grading_points)
 
+    def test_post_publish_feedbackset_after_deadline_drafts_last_feedbackset_only(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        feedbackset_first = mommy.make('devilry_group.FeedbackSet',
+                                       is_last_in_group=False,
+                                       grading_published_datetime=timezone.now(),
+                                       group=group)
+        feedbackset_last = mommy.make('devilry_group.FeedbackSet',
+                                      group=group)
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        student = mommy.make('core.Candidate',
+                             assignment_group=group,
+                             relatedstudent=mommy.make('core.RelatedStudent'))
+        mommy.make('devilry_group.GroupComment',
+                       text='test text 1',
+                       user=examiner.relatedexaminer.user,
+                       user_role='examiner',
+                       visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
+                       part_of_grading=True,
+                       feedback_set=feedbackset_first)
+        comment2 = mommy.make('devilry_group.GroupComment',
+                       text='test text 2',
+                       user=examiner.relatedexaminer.user,
+                       user_role='examiner',
+                       visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
+                       part_of_grading=True,
+                       feedback_set=feedbackset_last)
+        mockresponse = self.mock_http302_postrequest(
+            cradmin_role=student.assignment_group,
+            requestuser=student.relatedstudent.user,
+            viewkwargs={'pk': group.id},
+            requestkwargs={
+                'data': {
+                    'passed': True,
+                    'text': 'post comment',
+                    'examiner_publish_feedback': 'unused value',
+                }
+            })
+        feedbacksets = group_models.FeedbackSet.objects.all()
+        feedback_comments = group_models.GroupComment.objects.all().filter(feedback_set=feedbacksets[1])
+        self.assertEquals(2, len(feedback_comments))
+        self.assertEquals(feedback_comments[0], comment2)
+        self.assertEquals(feedback_comments[1].text, 'post comment')
+
     def test_post_publish_feedbackset_after_deadline_test_publish_drafts_part_of_grading(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                        grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
@@ -365,11 +412,6 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFe
         self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
         self.assertEquals(1, feedbacksets[0].grading_points)
         self.assertEquals(5, len(feedback_comments))
-        self.assertEquals(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE, feedback_comments[0].VISIBILITY_VISIBLE_TO_EVERYONE)
-        self.assertEquals(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE, feedback_comments[1].VISIBILITY_VISIBLE_TO_EVERYONE)
-        self.assertEquals(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE, feedback_comments[2].VISIBILITY_VISIBLE_TO_EVERYONE)
-        self.assertEquals(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE, feedback_comments[3].VISIBILITY_VISIBLE_TO_EVERYONE)
-        self.assertEquals(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE, feedback_comments[4].VISIBILITY_VISIBLE_TO_EVERYONE)
 
     # def test_post_feedbackset_comment_with_text_published_datetime_is_set(self):
     #     feedbackset = mommy.make('devilry_group.FeedbackSet', )
