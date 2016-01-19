@@ -2,11 +2,11 @@ from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
-from devilry.devilry_admin.views.assignment import first_deadline
+from devilry.devilry_admin.views.assignment import anonymizationmode
 
 
 class TestOverviewAppUpdateFirstDeadline(TestCase, cradmin_testhelpers.TestCaseMixin):
-    viewclass = first_deadline.AssignmentFirstDeadlineUpdateView
+    viewclass = anonymizationmode.AssignmentAnonymizationmodeUpdateView
 
     def test_h1(self):
         assignment = mommy.make('core.Assignment')
