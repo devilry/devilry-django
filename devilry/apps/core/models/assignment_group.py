@@ -477,7 +477,7 @@ class AssignmentGroupQuerySet(models.QuerySet):
 
     def annotate_with_number_of_private_groupcomments_from_user(self, user):
         """
-        Annotate the queryset with ``number_of_groupcomments_from_user`` -
+        Annotate the queryset with ``number_of_private_groupcomments_from_user`` -
         the number of :class:`devilry.devilry_group.models.GroupComment`
         with private :obj:`~devilry.devilry_group.models.GroupComment.visibility`
         added by the provided ``user``.
@@ -487,7 +487,7 @@ class AssignmentGroupQuerySet(models.QuerySet):
         """
         from devilry.devilry_group.models import GroupComment
         return self.annotate(
-            number_of_groupcomments_from_user=models.Count(
+            number_of_private_groupcomments_from_user=models.Count(
                 models.Case(
                     models.When(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_PRIVATE,
                                 feedbackset__groupcomment__user=user,
@@ -518,23 +518,23 @@ class AssignmentGroupQuerySet(models.QuerySet):
             )
         )
 
-    def annotate_with_has_unpublished_feedbackset(self):
+    def annotate_with_has_unpublished_feedbackdraft(self):
         """
-        Annotate the queryset with ``has_unpublished_feedbackset``.
+        Annotate the queryset with ``has_unpublished_feedbackdraft``.
 
-        A group is considered to have an unpublished feedbackset if the following
+        A group is considered to have an unpublished feedback draft if the following
         is true:
 
         - :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime` is ``None``.
         - :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points` is not ``None``.
 
-        So this means that all groups annotated with ``has_unpublished_feedbackset``
+        So this means that all groups annotated with ``has_unpublished_feedbackdraft``
         are groups that are corrected, and ready be be published.
         """
         whenquery = models.Q(feedbackset__grading_published_datetime__isnull=True,
                              feedbackset__grading_points__isnull=False)
         return self.annotate(
-            has_unpublished_feedbackset=devilry_djangoaggregate_functions.BooleanCount(
+            has_unpublished_feedbackdraft=devilry_djangoaggregate_functions.BooleanCount(
                 models.Case(models.When(whenquery, then=1))
             )
         )
@@ -876,18 +876,21 @@ class AssignmentGroupQuerySet(models.QuerySet):
         Annotate the queryset with ``grading_points``.
 
         ``grading_points`` is the :obj:`devilry.devilry_group.models.FeedbackSet.grading_points`
-        for the last feedbackset in the group if that feedbackset is published.
-        If the last feedbackset is not published, ``grading_points`` is ``None``.
+        for the last feedbackset in the group.
 
-        This means that all groups that :meth:`.annotate_with_is_corrected` would
-        set ``is_corrected`` to ``True`` will have a value for ``grading_points``.
+        We do not check if the feedback is published or not. This is for two
+        reasons:
+
+        - We can use :meth:`.annotate_with_is_corrected` to check this -
+         not need to have overlapping methods for that.
+        - We use this to show feedback draft previews (see
+          :meth:`.annotate_with_has_unpublished_feedbackdraft`).
         """
         return self.annotate(
             grading_points=models.Sum(
                 models.Case(
                     models.When(
                         feedbackset__is_last_in_group=True,
-                        feedbackset__grading_published_datetime__isnull=False,
                         then='feedbackset__grading_points'
                     )
                 )

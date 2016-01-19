@@ -36,8 +36,8 @@ class TestAssignment(TestCase):
     def test_points_to_grade_passed_failed(self):
         assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1', points_to_grade_mapper='passed-failed').assignment
-        self.assertEquals(assignment1.points_to_grade(0), 'Failed')
-        self.assertEquals(assignment1.points_to_grade(1), 'Passed')
+        self.assertEquals(assignment1.points_to_grade(0), 'failed')
+        self.assertEquals(assignment1.points_to_grade(1), 'passed')
 
     def test_points_to_grade_points(self):
         assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\

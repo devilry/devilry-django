@@ -118,7 +118,6 @@ class GroupListView(listbuilderview.FilterListMixin,
                 models.Prefetch('examiners',
                                 queryset=examinerqueryset))\
             .annotate_with_grading_points()\
-            .annotate_with_is_passing_grade()\
             .annotate_with_is_waiting_for_feedback()\
             .annotate_with_is_waiting_for_deliveries()\
             .annotate_with_is_corrected()\
@@ -129,7 +128,7 @@ class GroupListView(listbuilderview.FilterListMixin,
             .annotate_with_number_of_imageannotationcomments_from_students()\
             .annotate_with_number_of_imageannotationcomments_from_examiners()\
             .annotate_with_number_of_imageannotationcomments_from_admins()\
-            .annotate_with_has_unpublished_feedbackset()\
+            .annotate_with_has_unpublished_feedbackdraft()\
             .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user)\
             .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)\
             .distinct()

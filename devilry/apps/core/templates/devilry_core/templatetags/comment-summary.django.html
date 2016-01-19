@@ -1,0 +1,34 @@
+{% load i18n %}
+
+<span class="devilry-core-comment-summary">
+    <span class="devilry-core-comment-summary-studentcomments">
+        {% blocktrans trimmed count commentcount=group.number_of_groupcomments_from_students %}
+            {{ commentcount }} comment from student.
+        {% plural %}
+            {{ commentcount }} comments from student.
+        {% endblocktrans %}
+    </span>
+    <span class="devilry-core-comment-summary-studentfiles">
+        {% blocktrans trimmed count filecount=group.number_of_commentfiles_from_students %}
+            {{ filecount }} file from student.
+        {% plural %}
+            {{ filecount }} files from student.
+        {% endblocktrans %}
+    </span>
+    <span class="devilry-core-comment-summary-examinercomments">
+        {% blocktrans trimmed count commentcount=group.number_of_groupcomments_from_examiners %}
+            {{ commentcount }} comment from examiner.
+        {% plural %}
+            {{ commentcount }} comments from examiner.
+        {% endblocktrans %}
+    </span>
+    {% if group.number_of_private_groupcomments_from_user > 0 %}
+        <span class="devilry-core-comment-summary-unpublishedcomments">
+            {% blocktrans trimmed count commentcount=group.number_of_private_groupcomments_from_user %}
+                {{ commentcount }} unpublished comment from you.
+            {% plural %}
+                {{ commentcount }} unpublished comments from you.
+            {% endblocktrans %}
+        </span>
+    {% endif %}
+</span>

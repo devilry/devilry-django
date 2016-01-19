@@ -1942,13 +1942,13 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
 
 
 class TestAssignmentGroupQuerySetAnnotateWithGradingPoints(TestCase):
-    def test_annotate_with_grading_points_none_published(self):
+    def test_annotate_with_grading_points_not_published_is_still_counted(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(
             group=testgroup,
             grading_points=10)
         queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
-        self.assertEqual(None, queryset.first().grading_points)
+        self.assertEqual(10, queryset.first().grading_points)
 
     def test_annotate_with_grading_points(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -1990,7 +1990,7 @@ class TestAssignmentGroupQuerySetAnnotateWithGradingPoints(TestCase):
             grading_points=20,
             is_last_in_group=True)
         queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
-        self.assertEqual(None, queryset.first().grading_points)
+        self.assertEqual(20, queryset.first().grading_points)
 
     def test_annotate_with_grading_points_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
@@ -3237,7 +3237,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateGroupcommentsFromUser(Te
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         queryset = AssignmentGroup.objects.annotate_with_number_of_private_groupcomments_from_user(
             user=testuser)
-        self.assertEqual(0, queryset.first().number_of_groupcomments_from_user)
+        self.assertEqual(0, queryset.first().number_of_private_groupcomments_from_user)
 
     def test_only_private(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -3258,7 +3258,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateGroupcommentsFromUser(Te
                    visibility=GroupComment.VISIBILITY_PRIVATE)
         annotated_group = AssignmentGroup.objects\
             .annotate_with_number_of_private_groupcomments_from_user(user=testuser).first()
-        self.assertEqual(1, annotated_group.number_of_groupcomments_from_user)
+        self.assertEqual(1, annotated_group.number_of_private_groupcomments_from_user)
 
     def test_only_from_user(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -3278,7 +3278,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateGroupcommentsFromUser(Te
                    visibility=GroupComment.VISIBILITY_PRIVATE)
         annotated_group = AssignmentGroup.objects\
             .annotate_with_number_of_private_groupcomments_from_user(user=testuser).first()
-        self.assertEqual(2, annotated_group.number_of_groupcomments_from_user)
+        self.assertEqual(2, annotated_group.number_of_private_groupcomments_from_user)
 
     def test_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
@@ -3306,10 +3306,10 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateGroupcommentsFromUser(Te
             .annotate_with_number_of_private_groupcomments_from_user(user=testuser)
         self.assertEqual(
             2,
-            queryset.get(id=testgroup1.id).number_of_groupcomments_from_user)
+            queryset.get(id=testgroup1.id).number_of_private_groupcomments_from_user)
         self.assertEqual(
             1,
-            queryset.get(id=testgroup2.id).number_of_groupcomments_from_user)
+            queryset.get(id=testgroup2.id).number_of_private_groupcomments_from_user)
 
 
 class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateImageannotationcommentsFromUser(TestCase):
@@ -3477,54 +3477,54 @@ class AssignmentGroupQuerySetFilterWithPublishedFeedbackOrComments(TestCase):
 
 
 class AssignmentGroupQuerySetAnnotateWithHasUnpublishedFeedbackset(TestCase):
-    def test_annotate_with_has_unpublished_feedbackset_no_feedbackset(self):
+    def test_annotate_with_has_unpublished_feedbackdraft_no_feedbackset(self):
         mommy.make('core.AssignmentGroup')
         self.assertFalse(
-            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
-            .first().has_unpublished_feedbackset)
+            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
+            .first().has_unpublished_feedbackdraft)
 
-    def test_annotate_with_has_unpublished_feedbackset_false_published(self):
+    def test_annotate_with_has_unpublished_feedbackdraft_false_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_try_published(group=testgroup)
         self.assertFalse(
-            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
-            .first().has_unpublished_feedbackset)
+            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
+            .first().has_unpublished_feedbackdraft)
 
-    def test_annotate_with_has_unpublished_feedbackset_false_no_grading_points(self):
+    def test_annotate_with_has_unpublished_feedbackdraft_false_no_grading_points(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup)
         self.assertFalse(
-            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
-            .first().has_unpublished_feedbackset)
+            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
+            .first().has_unpublished_feedbackdraft)
 
-    def test_annotate_with_has_unpublished_feedbackset_true(self):
+    def test_annotate_with_has_unpublished_feedbackdraft_true(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(
             group=testgroup, grading_points=1)
         self.assertTrue(
-            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
-            .first().has_unpublished_feedbackset)
+            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
+            .first().has_unpublished_feedbackdraft)
 
-    def test_annotate_with_has_unpublished_feedbackset_multiple_feedbacksets(self):
+    def test_annotate_with_has_unpublished_feedbackdraft_multiple_feedbacksets(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_try_published(
             group=testgroup, is_last_in_group=None)
         devilry_group_mommy_factories.feedbackset_new_try_unpublished(
             group=testgroup, is_last_in_group=True, grading_points=1)
         self.assertTrue(
-            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
-            .first().has_unpublished_feedbackset)
+            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
+            .first().has_unpublished_feedbackdraft)
 
-    def test_annotate_with_has_unpublished_feedbackset_multiple_groups(self):
+    def test_annotate_with_has_unpublished_feedbackdraft_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(
             group=testgroup1, grading_points=1)
         testgroup2 = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_try_published(
             group=testgroup2, grading_points=1)
-        queryset = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
-        self.assertTrue(queryset.get(id=testgroup1.id).has_unpublished_feedbackset)
-        self.assertFalse(queryset.get(id=testgroup2.id).has_unpublished_feedbackset)
+        queryset = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
+        self.assertTrue(queryset.get(id=testgroup1.id).has_unpublished_feedbackdraft)
+        self.assertFalse(queryset.get(id=testgroup2.id).has_unpublished_feedbackdraft)
 
 
 class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCase):

@@ -16,7 +16,9 @@ class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
         with self.assertRaisesMessage(ValueError,
                                       'Can only use FullyAnonymousSubjectAdminItemValue for fully '
                                       'anonymous assignments. Use SubjectAdminItemValue istead.'):
-            devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue(value=testgroup)
+            devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue(
+                value=testgroup,
+                assignment=testgroup.assignment)
 
     def test_semi_anonymous_is_not_allowed(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -24,7 +26,9 @@ class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
         with self.assertRaisesMessage(ValueError,
                                       'Can only use FullyAnonymousSubjectAdminItemValue for fully '
                                       'anonymous assignments. Use SubjectAdminItemValue istead.'):
-            devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue(value=testgroup)
+            devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue(
+                value=testgroup,
+                assignment=testgroup.assignment)
 
     def test_name_fully_anonymous_is_not_anoymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -34,7 +38,8 @@ class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
                    relatedstudent__user__fullname='Test User',
                    relatedstudent__user__shortname='testuser@example.com')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue(
-            value=testgroup).render())
+            value=testgroup,
+            assignment=testgroup.assignment).render())
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -114,6 +119,34 @@ class TestStudentItemValue(test.TestCase):
         self.assertEqual(
             'MyAnonymousID',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_grade_students_can_see_points_false(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=False,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+    def test_grade_students_can_see_points_true(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=True,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
 
 class TestExaminerItemValue(test.TestCase):
@@ -202,21 +235,53 @@ class TestExaminerItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
-    def test_has_unpublished_feedbackset_draft_false(self):
+    def test_has_unpublished_feedbackdraft_draft_false(self):
         devilry_group_mommy_factories.feedbackset_first_try_published(grading_points=1),
-        testgroup = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset().first()
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_grading_points()\
+            .annotate_with_has_unpublished_feedbackdraft().first()
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-unpublished-feedbackdraft'))
 
-    def test_has_unpublished_feedbackset_draft_true(self):
+    def test_has_unpublished_feedbackdraft_draft_true(self):
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(grading_points=1),
-        testgroup = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset().first()
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_grading_points()\
+            .annotate_with_has_unpublished_feedbackdraft().first()
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
-            'Unpublished feedback draft',
+            'Unpublished feedback draft: passed (1/1)',
             selector.one('.devilry-cradmin-groupitemvalue-unpublished-feedbackdraft').alltext_normalized)
+
+    def test_grade_students_can_see_points_false(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=False,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+    def test_grade_students_can_see_points_true(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=True,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
 
 class TestPeriodAdminItemValue(test.TestCase):
@@ -251,6 +316,34 @@ class TestPeriodAdminItemValue(test.TestCase):
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_grade_students_can_see_points_false(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=False,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.PeriodAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+    def test_grade_students_can_see_points_true(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=True,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.PeriodAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
 
 class TestSubjectAdminItemValue(test.TestCase):
@@ -311,6 +404,34 @@ class TestSubjectAdminItemValue(test.TestCase):
         self.assertEqual(
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_grade_students_can_see_points_false(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=False,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+    def test_grade_students_can_see_points_true(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=True,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
 
 class TestDepartmentAdminItemValue(test.TestCase):
@@ -390,6 +511,34 @@ class TestDepartmentAdminItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
+    def test_grade_students_can_see_points_false(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=False,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+    def test_grade_students_can_see_points_true(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=True,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
 
 class MockItemValue(devilry_listbuilder.assignmentgroup.AbstractItemValue):
     def get_devilryrole(self):
@@ -402,9 +551,7 @@ class TestItemValue(test.TestCase):
             grading_points=1)
         testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
         selector = htmls.S(MockItemValue(value=testgroup, assignment=testgroup.assignment).render())
-        self.assertEqual(
-            'Status: corrected',
-            selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-status'))
 
     def test_status_is_waiting_for_feedback(self):
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(
@@ -414,6 +561,7 @@ class TestItemValue(test.TestCase):
         self.assertEqual(
             'Status: waiting for feedback',
             selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_status_is_waiting_for_deliveries(self):
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(
@@ -424,3 +572,25 @@ class TestItemValue(test.TestCase):
         self.assertEqual(
             'Status: waiting for deliveries',
             selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
+
+    def test_grade_not_available_unless_corrected(self):
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished()
+        testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        selector = htmls.S(MockItemValue(value=testgroup, assignment=testgroup.assignment).render())
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
+
+    def test_grade_comment_summary_is_available(self):
+        mommy.make('core.AssignmentGroup')
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_number_of_commentfiles_from_students()\
+            .annotate_with_number_of_groupcomments_from_students()\
+            .annotate_with_number_of_groupcomments_from_examiners()\
+            .annotate_with_number_of_groupcomments_from_admins()\
+            .first()
+
+        selector = htmls.S(MockItemValue(value=testgroup, assignment=testgroup.assignment).render())
+        self.assertTrue(selector.exists('.devilry-cradmin-groupitemvalue-comments'))
+        self.assertEqual(
+            '0 comments from student. 0 files from student. 0 comments from examiner.',
+            selector.one('.devilry-cradmin-groupitemvalue-comments').alltext_normalized)

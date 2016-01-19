@@ -3,6 +3,7 @@ from django.db import models
 from django.core import files
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+from django.utils import timezone
 
 
 class Comment(models.Model):
@@ -116,12 +117,22 @@ class CommentFile(models.Model):
     #: a file set to something.
     file = models.FileField(upload_to=commentfile_directory_path, max_length=512,
                             null=False, blank=True, default='')
+
+    #: The name of the file - this is the name of the file that was uploaded.
     filename = models.CharField(max_length=MAX_FILENAME_LENGTH)
+
+    #: The size of the file in bytes
     filesize = models.PositiveIntegerField()
+
+    #: The comment owning this CommentFile. Permissions are inherited from the comment.
     comment = models.ForeignKey(Comment)
+
     processing_started_datetime = models.DateTimeField(null=True, blank=True)
     processing_completed_datetime = models.DateTimeField(null=True, blank=True)
     processing_successful = models.BooleanField(default=False)
+
+    #: The datetime when the CommentFile was created.
+    created_datetime = models.DateTimeField(default=timezone.now)
 
     def __unicode__(self):
         return u'{} - {}'.format(self.comment.user, self.filename)

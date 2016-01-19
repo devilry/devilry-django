@@ -17,17 +17,20 @@
             </span>
         </p>
     {% endif %}
-    <p class="devilry-cradmin-groupitemvalue-status-and-grade">
-        <span class="devilry-cradmin-groupitemvalue-status">
+    {% if me.group.is_corrected %}
+        <p class="devilry-cradmin-groupitemvalue-grade">
+            <span class="sr-only">{% trans "Grade" context "group grade" %}:</span>
+            {% devilry_grade_full me.get_assignment me.group.grading_points me.get_devilryrole %}
+        </p>
+    {% else %}
+        <p class="devilry-cradmin-groupitemvalue-status">
             <span class="devilry-cradmin-groupitemvalue-status-title">
                 {% trans "Status" context "group status" %}:
             </span>
             {% devilry_groupstatus me.group %}
-        </span>
-        {% if me.group.is_corrected %}
-            <span class="devilry-cradmin-groupitemvalue-grade">
-                TODO: grade
-            </span>
-        {% endif %}
+        </p>
+    {% endif %}
+    <p class="devilry-cradmin-groupitemvalue-comments">
+        {% devilry_comment_summary me.group %}
     </p>
 {% endblock below-description %}

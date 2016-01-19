@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.db import models
 from django.db.models import Q
 from django.core.exceptions import ValidationError
@@ -121,11 +123,23 @@ class PointToGradeMap(models.Model):
         return [(pointrange.minimum_points, pointrange.grade)
                 for pointrange in self.pointrangetograde_set.all()]
 
+    def as_flat_dict(self):
+        """
+        Get a dict where the possible points in the PointToGradeMap
+        are keys mapping to the grade for that amount of points.
+        """
+        points_to_grade_dict = {}
+        for pointrange_to_grade in self.pointrangetograde_set.order_by('minimum_points'):
+            for points in range(pointrange_to_grade.minimum_points,
+                                pointrange_to_grade.maximum_points + 1):
+                points_to_grade_dict[points] = pointrange_to_grade.grade
+        return points_to_grade_dict
+
     def __unicode__(self):
         return u'Point to grade map for {}'.format(self.assignment.get_path())
 
 
-class PointRangeToGradeMapQueryset(models.QuerySet):
+class PointRangeToGradeQueryset(models.QuerySet):
     def filter_overlapping_ranges(self, start, end):
         return self.filter(
             Q(minimum_points__lte=start, maximum_points__gte=start) |
@@ -139,14 +153,14 @@ class PointRangeToGradeMapQueryset(models.QuerySet):
         )
 
 
-class PointRangeToGradeMapManager(models.Manager):
+class PointRangeToGradeManager(models.Manager):
     """
     Reflect custom QuerySet methods for custom QuerySet
     more info: https://github.com/devilry/devilry-django/issues/491
     """
 
     def get_queryset(self):
-        return PointRangeToGradeMapQueryset(self.model, using=self._db)
+        return PointRangeToGradeQueryset(self.model, using=self._db)
 
     def filter_overlapping_ranges(self, start, end):
         """
@@ -188,7 +202,7 @@ class PointRangeToGrade(models.Model):
 
         The grade that this entry represents a match for.
     """
-    objects = PointRangeToGradeMapManager()
+    objects = PointRangeToGradeManager()
     point_to_grade_map = models.ForeignKey(PointToGradeMap)
     minimum_points = models.PositiveIntegerField()
     maximum_points = models.PositiveIntegerField()

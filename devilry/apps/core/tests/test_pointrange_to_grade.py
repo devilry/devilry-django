@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.db import transaction
+from model_mommy import mommy
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.apps.core.models import PointRangeToGrade
@@ -175,6 +176,30 @@ class TestPointRangeToGrade(TestCase):
             grade='D'
         )
         self.assertEquals(list(PointRangeToGrade.objects.all()), [f, e, d])
+
+    def test_as_flat_dict(self):
+        point_to_grade_map = mommy.make('core.PointToGradeMap')
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=0,
+                   maximum_points=2,
+                   grade='Bad')
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=3,
+                   maximum_points=6,
+                   grade='Medium')
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=7,
+                   maximum_points=10,
+                   grade='Good')
+        self.assertEqual(
+            {0: 'Bad', 1: 'Bad', 2: 'Bad',
+             3: 'Medium', 4: 'Medium', 5: 'Medium', 6: 'Medium',
+             7: 'Good', 8: 'Good', 9: 'Good', 10: 'Good'},
+            point_to_grade_map.as_flat_dict()
+        )
 
 
 class TestPointToGradeMap(TestCase):

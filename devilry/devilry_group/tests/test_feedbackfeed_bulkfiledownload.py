@@ -1,13 +1,15 @@
-from zipfile import ZipFile
-from StringIO import StringIO
 import datetime
-from model_mommy import mommy
+from StringIO import StringIO
+from zipfile import ZipFile
+
 from django import test
+from django.core.files.base import ContentFile
+from model_mommy import mommy
 
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import models as groupmodels
 from devilry.devilry_group.views import feedbackfeed_bulkfiledownload
-from django.core.files.base import ContentFile
+
 
 class BulkDownloadTestClass(feedbackfeed_bulkfiledownload.BulkFileDownloadBaseView):
     def get_queryset(self, request):
@@ -17,9 +19,6 @@ class BulkDownloadTestClass(feedbackfeed_bulkfiledownload.BulkFileDownloadBaseVi
         return 'testfile.zip'
 
 
-tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
-yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-
 class TestBulkFileDownloadBase(test.TestCase):
 
     def test_get_zipfile(self):
@@ -27,9 +26,10 @@ class TestBulkFileDownloadBase(test.TestCase):
                                       parentnode__parentnode__parentnode__short_name="test2100",
                                       parentnode__parentnode__short_name="spring2015",
                                       parentnode__short_name="oblig1")
-        candidate1 = mommy.make('core.Candidate',
-                                assignment_group=assignmentgroup1,
-                                relatedstudent__user__shortname="testuser1")
+        mommy.make('core.Candidate',
+                   assignment_group=assignmentgroup1,
+                   relatedstudent__user__shortname="testuser1")
+        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   is_last_in_group=True,
@@ -44,8 +44,8 @@ class TestBulkFileDownloadBase(test.TestCase):
 
         testclass = BulkDownloadTestClass()
         response = testclass.get(None)
-        file = ZipFile(StringIO(response.content))
-        filecontents = file.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1.txt')
+        zipfileobject = ZipFile(StringIO(response.content))
+        filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1.txt')
         self.assertEquals(filecontents, "test")
 
     def test_multiple_students_in_assignmentgroup(self):
@@ -53,12 +53,13 @@ class TestBulkFileDownloadBase(test.TestCase):
                                       parentnode__parentnode__parentnode__short_name="test2100",
                                       parentnode__parentnode__short_name="spring2015",
                                       parentnode__short_name="oblig1")
-        candidate1 = mommy.make('core.Candidate',
-                                assignment_group=assignmentgroup1,
-                                relatedstudent__user__shortname="testuser1")
-        candidate2 = mommy.make('core.Candidate',
-                                assignment_group=assignmentgroup1,
-                                relatedstudent__user__shortname="testuser2")
+        mommy.make('core.Candidate',
+                   assignment_group=assignmentgroup1,
+                   relatedstudent__user__shortname="testuser1")
+        mommy.make('core.Candidate',
+                   assignment_group=assignmentgroup1,
+                   relatedstudent__user__shortname="testuser2")
+        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   is_last_in_group=True,
@@ -73,8 +74,8 @@ class TestBulkFileDownloadBase(test.TestCase):
 
         testclass = BulkDownloadTestClass()
         response = testclass.get(None)
-        file = ZipFile(StringIO(response.content))
-        filecontents = file.read('test2100.spring2015.oblig1.testuser1.testuser2/attempt1/testfile1.txt')
+        zipfileobject = ZipFile(StringIO(response.content))
+        filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1.testuser2/attempt1/testfile1.txt')
         self.assertEquals(filecontents, "test")
 
     def test_multiple_attempts(self):
@@ -82,9 +83,10 @@ class TestBulkFileDownloadBase(test.TestCase):
                                       parentnode__parentnode__parentnode__short_name="test2100",
                                       parentnode__parentnode__short_name="spring2015",
                                       parentnode__short_name="oblig1")
-        candidate1 = mommy.make('core.Candidate',
-                                assignment_group=assignmentgroup1,
-                                relatedstudent__user__shortname="testuser1")
+        mommy.make('core.Candidate',
+                   assignment_group=assignmentgroup1,
+                   relatedstudent__user__shortname="testuser1")
+        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   is_last_in_group=False,
@@ -110,10 +112,10 @@ class TestBulkFileDownloadBase(test.TestCase):
 
         testclass = BulkDownloadTestClass()
         response = testclass.get(None)
-        file = ZipFile(StringIO(response.content))
-        filecontents = file.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1.txt')
+        zipfileobject = ZipFile(StringIO(response.content))
+        filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1.txt')
         self.assertEquals(filecontents, "test")
-        filecontents = file.read('test2100.spring2015.oblig1.testuser1/attempt2/testfile2.txt')
+        filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt2/testfile2.txt')
         self.assertEquals(filecontents, "test2")
 
     def test_multiple_files_same_attempt_same_name(self):
@@ -121,9 +123,10 @@ class TestBulkFileDownloadBase(test.TestCase):
                                       parentnode__parentnode__parentnode__short_name="test2100",
                                       parentnode__parentnode__short_name="spring2015",
                                       parentnode__short_name="oblig1")
-        candidate1 = mommy.make('core.Candidate',
-                                assignment_group=assignmentgroup1,
-                                relatedstudent__user__shortname="testuser1")
+        mommy.make('core.Candidate',
+                   assignment_group=assignmentgroup1,
+                   relatedstudent__user__shortname="testuser1")
+        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   is_last_in_group=True,
@@ -145,10 +148,10 @@ class TestBulkFileDownloadBase(test.TestCase):
 
         testclass = BulkDownloadTestClass()
         response = testclass.get(None)
-        file = ZipFile(StringIO(response.content))
-        filecontents = file.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1.txt')
+        zipfileobject = ZipFile(StringIO(response.content))
+        filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1.txt')
         self.assertEquals(filecontents, "test")
-        filecontents = file.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1-1.txt')
+        filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1-1.txt')
         self.assertEquals(filecontents, "test2")
 
     def test_multiple_files_same_comment_same_name(self):
@@ -156,9 +159,10 @@ class TestBulkFileDownloadBase(test.TestCase):
                                       parentnode__parentnode__parentnode__short_name="test2100",
                                       parentnode__parentnode__short_name="spring2015",
                                       parentnode__short_name="oblig1")
-        candidate1 = mommy.make('core.Candidate',
-                                assignment_group=assignmentgroup1,
-                                relatedstudent__user__shortname="testuser1")
+        mommy.make('core.Candidate',
+                   assignment_group=assignmentgroup1,
+                   relatedstudent__user__shortname="testuser1")
+        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   is_last_in_group=True,
@@ -177,10 +181,10 @@ class TestBulkFileDownloadBase(test.TestCase):
 
         testclass = BulkDownloadTestClass()
         response = testclass.get(None)
-        file = ZipFile(StringIO(response.content))
-        filecontents = file.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1.txt')
+        zipfileobject = ZipFile(StringIO(response.content))
+        filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1.txt')
         self.assertEquals(filecontents, "test2")
-        filecontents = file.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1-1.txt')
+        filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1-1.txt')
         self.assertEquals(filecontents, "test3")
 
     def test_file_from_examiner(self):
@@ -188,9 +192,10 @@ class TestBulkFileDownloadBase(test.TestCase):
                                       parentnode__parentnode__parentnode__short_name="test2100",
                                       parentnode__parentnode__short_name="spring2015",
                                       parentnode__short_name="oblig1")
-        candidate1 = mommy.make('core.Candidate',
-                                assignment_group=assignmentgroup1,
-                                relatedstudent__user__shortname="testuser1")
+        mommy.make('core.Candidate',
+                   assignment_group=assignmentgroup1,
+                   relatedstudent__user__shortname="testuser1")
+        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   is_last_in_group=True,
@@ -205,8 +210,8 @@ class TestBulkFileDownloadBase(test.TestCase):
 
         testclass = BulkDownloadTestClass()
         response = testclass.get(None)
-        file = ZipFile(StringIO(response.content))
-        filecontents = file.read('test2100.spring2015.oblig1.testuser1/attempt1/from_examiner/testfile1.txt')
+        zipfileobject = ZipFile(StringIO(response.content))
+        filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt1/from_examiner/testfile1.txt')
         self.assertEquals(filecontents, "test")
 
     def test_file_after_deadline(self):
@@ -214,9 +219,10 @@ class TestBulkFileDownloadBase(test.TestCase):
                                       parentnode__parentnode__parentnode__short_name="test2100",
                                       parentnode__parentnode__short_name="spring2015",
                                       parentnode__short_name="oblig1")
-        candidate1 = mommy.make('core.Candidate',
-                                assignment_group=assignmentgroup1,
-                                relatedstudent__user__shortname="testuser1")
+        mommy.make('core.Candidate',
+                   assignment_group=assignmentgroup1,
+                   relatedstudent__user__shortname="testuser1")
+        yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   is_last_in_group=True,
@@ -231,8 +237,9 @@ class TestBulkFileDownloadBase(test.TestCase):
 
         testclass = BulkDownloadTestClass()
         response = testclass.get(None)
-        file = ZipFile(StringIO(response.content))
-        filecontents = file.read('test2100.spring2015.oblig1.testuser1/attempt1/not_part_of_delivery/testfile1.txt')
+        zipfileobject = ZipFile(StringIO(response.content))
+        filecontents = zipfileobject.read(
+            'test2100.spring2015.oblig1.testuser1/attempt1/not_part_of_delivery/testfile1.txt')
         self.assertEquals(filecontents, "test")
 
     def test_multiple_assignmentgroups(self):
@@ -240,26 +247,27 @@ class TestBulkFileDownloadBase(test.TestCase):
                                       parentnode__parentnode__parentnode__short_name="test2100",
                                       parentnode__parentnode__short_name="spring2015",
                                       parentnode__short_name="oblig1")
-        candidate1 = mommy.make('core.Candidate',
-                                assignment_group=assignmentgroup1,
-                                relatedstudent__user__shortname="testuser1")
+        mommy.make('core.Candidate',
+                   assignment_group=assignmentgroup1,
+                   relatedstudent__user__shortname="testuser1")
+        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   is_last_in_group=True,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
                                   deadline_datetime=tomorrow)
         comment_fbs1 = mommy.make('devilry_group.GroupComment',
-                                    feedback_set=feedbackset1,
-                                    user_role=Comment.USER_ROLE_STUDENT)
+                                  feedback_set=feedbackset1,
+                                  user_role=Comment.USER_ROLE_STUDENT)
         commentfile_fbs1 = mommy.make('devilry_comment.CommentFile',
-                                        comment=comment_fbs1, filename='testfile1.txt')
+                                      comment=comment_fbs1, filename='testfile1.txt')
         commentfile_fbs1.file.save('testfile1.txt', ContentFile('test'))
 
         assignmentgroup2 = mommy.make('core.AssignmentGroup',
                                       parentnode=assignmentgroup1.parentnode)
-        candidate2 = mommy.make('core.Candidate',
-                                assignment_group=assignmentgroup2,
-                                relatedstudent__user__shortname="testuser2")
+        mommy.make('core.Candidate',
+                   assignment_group=assignmentgroup2,
+                   relatedstudent__user__shortname="testuser2")
         feedbackset2 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup2,
                                   is_last_in_group=True,
@@ -274,8 +282,8 @@ class TestBulkFileDownloadBase(test.TestCase):
 
         testclass = BulkDownloadTestClass()
         response = testclass.get(None)
-        file = ZipFile(StringIO(response.content))
-        filecontents = file.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1.txt')
+        zipfileobject = ZipFile(StringIO(response.content))
+        filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser1/attempt1/testfile1.txt')
         self.assertEquals(filecontents, "test")
-        filecontents = file.read('test2100.spring2015.oblig1.testuser2/attempt1/testfile2.txt')
+        filecontents = zipfileobject.read('test2100.spring2015.oblig1.testuser2/attempt1/testfile2.txt')
         self.assertEquals(filecontents, "test2")

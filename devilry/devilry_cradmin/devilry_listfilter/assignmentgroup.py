@@ -282,19 +282,24 @@ class PointsFilter(listfilter.django.single.textinput.IntSearch):
     #     return pgettext_lazy('group points filter', 'Type a number ...')
 
 
-class IsPassingGradeFilter(listfilter.django.single.select.Boolean):
+class IsPassingGradeFilter(abstractselect.AbstractBoolean):
     def get_slug(self):
-        return 'is_passing_grade'
-
-    def get_modelfield(self):
         return 'is_passing_grade'
 
     def get_label(self):
         return pgettext_lazy('group is passing grade filter',
                              'Passing grade?')
 
-    def get_query(self, modelfield):
-        return models.Q(**{modelfield: False})
+    def filter(self, queryobject):
+        cleaned_value = self.get_cleaned_value()
+        if cleaned_value in ('true', 'false'):
+            query = models.Q(is_passing_grade=False)
+            queryobject = queryobject.annotate_with_is_passing_grade()
+            if cleaned_value == 'true':
+                queryobject = queryobject.exclude(query)
+            elif cleaned_value == 'false':
+                queryobject = queryobject.filter(query)
+        return queryobject
 
 
 class ExaminerFilter(abstractselect.AbstractSelectFilter):
@@ -368,6 +373,10 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
                                                  'Has comment(s) from student')),
                 ('studentfile', pgettext_lazy('group activity',
                                               'Has file(s) from student')),
+                ('no-studentcomment', pgettext_lazy('group activity',
+                                                    'No comments from student')),
+                ('no-studentfile', pgettext_lazy('group activity',
+                                                 'No files from student')),
             )),
             (pgettext_lazy('group activity', 'From examiner'), (
                 ('examinercomment', pgettext_lazy('group activity',
@@ -376,6 +385,8 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
                                                       'Has unpublished feedback draft')),
                 ('privatecomment', pgettext_lazy('group activity',
                                                  'Has unpublished comment(s) from YOU')),
+                ('no-examinercomment', pgettext_lazy('group activity',
+                                                     'No comments from examiner')),
             )),
             (pgettext_lazy('group activity', 'From administrator'), (
                 ('admincomment', pgettext_lazy('group activity',
@@ -389,20 +400,30 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
             queryobject = queryobject.filter(
                 models.Q(number_of_groupcomments_from_students__gt=0) |
                 models.Q(number_of_imageannotationcomments_from_students__gt=0))
+        elif cleaned_value == 'no-studentcomment':
+            queryobject = queryobject.filter(
+                models.Q(number_of_groupcomments_from_students=0) &
+                models.Q(number_of_imageannotationcomments_from_students=0))
         elif cleaned_value == 'studentfile':
             queryobject = queryobject.filter(number_of_commentfiles_from_students__gt=0)
+        elif cleaned_value == 'no-studentfile':
+            queryobject = queryobject.filter(number_of_commentfiles_from_students=0)
         elif cleaned_value == 'examinercomment':
             queryobject = queryobject.filter(
                 models.Q(number_of_groupcomments_from_examiners__gt=0) |
                 models.Q(number_of_imageannotationcomments_from_examiners__gt=0))
+        elif cleaned_value == 'no-examinercomment':
+            queryobject = queryobject.filter(
+                models.Q(number_of_groupcomments_from_examiners=0) &
+                models.Q(number_of_imageannotationcomments_from_examiners=0))
         elif cleaned_value == 'unpublishedfeedback':
-            queryobject = queryobject.filter(has_unpublished_feedbackset=True)
+            queryobject = queryobject.filter(has_unpublished_feedbackdraft=True)
         elif cleaned_value == 'admincomment':
             queryobject = queryobject.filter(
                 models.Q(number_of_groupcomments_from_admins__gt=0) |
                 models.Q(number_of_imageannotationcomments_from_admins__gt=0))
         elif cleaned_value == 'privatecomment':
             queryobject = queryobject.filter(
-                models.Q(number_of_groupcomments_from_user__gt=0) |
+                models.Q(number_of_private_groupcomments_from_user__gt=0) |
                 models.Q(number_of_imageannotationcomments_from_user__gt=0))
         return queryobject
