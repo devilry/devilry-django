@@ -67,7 +67,7 @@ class PassedFailedFeedbackForm(AbstractFeedbackForm):
         required=False)
 
     @classmethod
-    def get_field_layout(self):
+    def get_field_layout(cls):
         return ['passed']
 
     def get_grading_points(self):
@@ -80,7 +80,7 @@ class PassedFailedFeedbackForm(AbstractFeedbackForm):
 class PointsFeedbackForm(AbstractFeedbackForm):
     points = forms.IntegerField(
             required=True,
-            min_value = 0,
+            min_value=0,
             label=_('Points'))
 
     def __init__(self, *args, **kwargs):
@@ -91,7 +91,7 @@ class PointsFeedbackForm(AbstractFeedbackForm):
         }
 
     @classmethod
-    def get_field_layout(self):
+    def get_field_layout(cls):
         return ['points']
 
     def get_grading_points(self):

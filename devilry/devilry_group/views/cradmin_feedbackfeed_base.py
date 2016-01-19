@@ -32,7 +32,7 @@ class GroupCommentForm(forms.ModelForm):
         super(GroupCommentForm, self).__init__(*args, **kwargs)
 
     @classmethod
-    def get_field_layout(self):
+    def get_field_layout(cls):
         return []
 
 
