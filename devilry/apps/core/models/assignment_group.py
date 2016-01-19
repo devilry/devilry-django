@@ -518,23 +518,23 @@ class AssignmentGroupQuerySet(models.QuerySet):
             )
         )
 
-    def annotate_with_has_unpublished_feedbackset(self):
+    def annotate_with_has_unpublished_feedbackdraft(self):
         """
-        Annotate the queryset with ``has_unpublished_feedbackset``.
+        Annotate the queryset with ``has_unpublished_feedbackdraft``.
 
-        A group is considered to have an unpublished feedbackset if the following
+        A group is considered to have an unpublished feedback draft if the following
         is true:
 
         - :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime` is ``None``.
         - :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points` is not ``None``.
 
-        So this means that all groups annotated with ``has_unpublished_feedbackset``
+        So this means that all groups annotated with ``has_unpublished_feedbackdraft``
         are groups that are corrected, and ready be be published.
         """
         whenquery = models.Q(feedbackset__grading_published_datetime__isnull=True,
                              feedbackset__grading_points__isnull=False)
         return self.annotate(
-            has_unpublished_feedbackset=devilry_djangoaggregate_functions.BooleanCount(
+            has_unpublished_feedbackdraft=devilry_djangoaggregate_functions.BooleanCount(
                 models.Case(models.When(whenquery, then=1))
             )
         )

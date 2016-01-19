@@ -3477,54 +3477,54 @@ class AssignmentGroupQuerySetFilterWithPublishedFeedbackOrComments(TestCase):
 
 
 class AssignmentGroupQuerySetAnnotateWithHasUnpublishedFeedbackset(TestCase):
-    def test_annotate_with_has_unpublished_feedbackset_no_feedbackset(self):
+    def test_annotate_with_has_unpublished_feedbackdraft_no_feedbackset(self):
         mommy.make('core.AssignmentGroup')
         self.assertFalse(
-            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
-            .first().has_unpublished_feedbackset)
+            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
+            .first().has_unpublished_feedbackdraft)
 
-    def test_annotate_with_has_unpublished_feedbackset_false_published(self):
+    def test_annotate_with_has_unpublished_feedbackdraft_false_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_try_published(group=testgroup)
         self.assertFalse(
-            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
-            .first().has_unpublished_feedbackset)
+            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
+            .first().has_unpublished_feedbackdraft)
 
-    def test_annotate_with_has_unpublished_feedbackset_false_no_grading_points(self):
+    def test_annotate_with_has_unpublished_feedbackdraft_false_no_grading_points(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup)
         self.assertFalse(
-            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
-            .first().has_unpublished_feedbackset)
+            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
+            .first().has_unpublished_feedbackdraft)
 
-    def test_annotate_with_has_unpublished_feedbackset_true(self):
+    def test_annotate_with_has_unpublished_feedbackdraft_true(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(
             group=testgroup, grading_points=1)
         self.assertTrue(
-            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
-            .first().has_unpublished_feedbackset)
+            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
+            .first().has_unpublished_feedbackdraft)
 
-    def test_annotate_with_has_unpublished_feedbackset_multiple_feedbacksets(self):
+    def test_annotate_with_has_unpublished_feedbackdraft_multiple_feedbacksets(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_try_published(
             group=testgroup, is_last_in_group=None)
         devilry_group_mommy_factories.feedbackset_new_try_unpublished(
             group=testgroup, is_last_in_group=True, grading_points=1)
         self.assertTrue(
-            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
-            .first().has_unpublished_feedbackset)
+            AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
+            .first().has_unpublished_feedbackdraft)
 
-    def test_annotate_with_has_unpublished_feedbackset_multiple_groups(self):
+    def test_annotate_with_has_unpublished_feedbackdraft_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(
             group=testgroup1, grading_points=1)
         testgroup2 = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_try_published(
             group=testgroup2, grading_points=1)
-        queryset = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset()
-        self.assertTrue(queryset.get(id=testgroup1.id).has_unpublished_feedbackset)
-        self.assertFalse(queryset.get(id=testgroup2.id).has_unpublished_feedbackset)
+        queryset = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
+        self.assertTrue(queryset.get(id=testgroup1.id).has_unpublished_feedbackdraft)
+        self.assertFalse(queryset.get(id=testgroup2.id).has_unpublished_feedbackdraft)
 
 
 class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCase):

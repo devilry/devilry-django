@@ -230,16 +230,16 @@ class TestExaminerItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
-    def test_has_unpublished_feedbackset_draft_false(self):
+    def test_has_unpublished_feedbackdraft_draft_false(self):
         devilry_group_mommy_factories.feedbackset_first_try_published(grading_points=1),
-        testgroup = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset().first()
+        testgroup = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-unpublished-feedbackdraft'))
 
-    def test_has_unpublished_feedbackset_draft_true(self):
+    def test_has_unpublished_feedbackdraft_draft_true(self):
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(grading_points=1),
-        testgroup = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackset().first()
+        testgroup = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerItemValue(
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(

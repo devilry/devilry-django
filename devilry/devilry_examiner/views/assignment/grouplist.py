@@ -129,7 +129,7 @@ class GroupListView(listbuilderview.FilterListMixin,
             .annotate_with_number_of_imageannotationcomments_from_students()\
             .annotate_with_number_of_imageannotationcomments_from_examiners()\
             .annotate_with_number_of_imageannotationcomments_from_admins()\
-            .annotate_with_has_unpublished_feedbackset()\
+            .annotate_with_has_unpublished_feedbackdraft()\
             .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user)\
             .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)\
             .distinct()

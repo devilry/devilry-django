@@ -396,7 +396,7 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
                 models.Q(number_of_groupcomments_from_examiners__gt=0) |
                 models.Q(number_of_imageannotationcomments_from_examiners__gt=0))
         elif cleaned_value == 'unpublishedfeedback':
-            queryobject = queryobject.filter(has_unpublished_feedbackset=True)
+            queryobject = queryobject.filter(has_unpublished_feedbackdraft=True)
         elif cleaned_value == 'admincomment':
             queryobject = queryobject.filter(
                 models.Q(number_of_groupcomments_from_admins__gt=0) |
