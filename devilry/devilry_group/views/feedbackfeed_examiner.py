@@ -160,13 +160,25 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         return obj
 
     def _handle_publish_feedback(self, form, obj):
+        """
+        Sets attributes to the feedbackset so that it can be published.
+
+        :param form:
+            Form passed from view.
+
+        :param obj:
+            The form object.
+
+        Returns:
+            The form object.
+        """
         feedbackset = obj.feedback_set
         current_deadline = feedbackset.deadline_datetime
         if current_deadline is None:
             current_deadline = feedbackset.group.parentnode.first_deadline
         if current_deadline < timezone.now():
             comment_publish, feedbackset_publish = self._save_unpublished_feedback_comments(
-                    obj.feedback_set.group
+                    obj.feedback_set
             )
             feedbackset.grading_points = form.get_grading_points()
             obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
@@ -183,11 +195,26 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
                                                          'Feedback was saved, but not published.'))
         return obj
 
+    def _save_unpublished_feedback_comments(self, feedbackset=None):
+        """
+        Goes through all drafted comments for this feedbackset, and publishes them by
+        giving the comments a grading published datetime with only microsecond delay. This is to make sure
+        the comments come in correct order. After all the comments get a publishing time and are saved, the
+        publishing time for the posted comment and feedbackset is returned, making sure the comments appear
+        before the grading result.
 
+        :param feedbackset:
+            The comments :class:`devilry.devilry_group.FeedbackSet`. This is used to filter comments
+            that only belongs to this particular feedbackset.
 
-    def _save_unpublished_feedback_comments(self, group):
+        Returns:
+            Publishing time of the form comment, and publishing time of the feedbackset
+
+        """
+        if feedbackset is None:
+            raise ValueError
         feedback_comments = models.GroupComment.objects.filter(
-            feedback_set__group=group,
+            feedback_set=feedbackset,
             part_of_grading=True
         ).exclude_private_comments_from_other_users(
             user=self.request.user
@@ -195,15 +222,13 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
 
         now = timezone.now().replace(second=0, microsecond=0)
         time_accumulator = 0
-        for comment in feedback_comments:
+        for time_accumulator, comment in enumerate(feedback_comments):
             comment.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
             comment.published_datetime = now + timezone.timedelta(microseconds=time_accumulator)
             comment.full_clean()
             comment.save()
-            time_accumulator += 1
-        last_comment_publish_time = now + timezone.timedelta(microseconds=time_accumulator)
-        feedbackset_publish_time = now + timezone.timedelta(microseconds=time_accumulator+1)
-
+        last_comment_publish_time = now + timezone.timedelta(microseconds=time_accumulator+1)
+        feedbackset_publish_time = now + timezone.timedelta(microseconds=time_accumulator+2)
         return last_comment_publish_time, feedbackset_publish_time
 
     def get_form_invalid_message(self, form):
