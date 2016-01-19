@@ -147,7 +147,7 @@ class BulkFileDownloadBaseView(generic.View):
         Iterate all FeedbackSet's in given queryset and build a dict containing archivepaths and actual filepaths
         for all commentfiles.
 
-        Final result will allow for a zip-archive structure like this:
+        Final result will allow for a zip-archive structure like this::
 
             inf2100.oblig2.student1.student2/
                 - attempt1/
@@ -164,8 +164,6 @@ class BulkFileDownloadBaseView(generic.View):
                     - .....
             inf2100.oblig2.student3.student4/
                 - ....
-
-        TODO: filtering to ensure users only get the files they should be allowed to see..
         """
         files = {}
         attemptcounter = 1
@@ -173,11 +171,13 @@ class BulkFileDownloadBaseView(generic.View):
             rootlabel = self.__get_rootlabel(feedbackset)
             attemptcounter, attemptlabel = self.__get_attemptlabel(feedbackset, attemptcounter)
             for groupcomment in feedbackset.groupcomment_set.all():
+                # TODO: Permission checks - only include what the user is allowed to see
                 for commentfile in groupcomment.commentfile_set.all():
                     subfolderlabel = self.__check_if_subfolder(feedbackset, commentfile)
                     archivebasename = "{}{}{}".format(rootlabel, attemptlabel, subfolderlabel)
                     archivename = self.__get_full_archivename(files, commentfile, archivebasename)
-                    files[archivename] = commentfile.file.path
+                    files[archivename] = commentfile
+            # TODO: Same thing as for groupcomment_set, but for imageannotationcomment_set
 
         return files
 
@@ -189,8 +189,10 @@ class BulkFileDownloadBaseView(generic.View):
         sink = ZipBuffer()
         archive = zipfile.ZipFile(sink, "w")
         files = self.get_filestructure(queryset)
-        for arcname, filepath in files.iteritems():
-            archive.writestr(arcname, open(filepath, 'r').read())
+        for archivename, commentfile in files.iteritems():
+            #: TODO: Can not use filepath like this - we need to use commentfile.file.read()
+            #:       I think we should just change
+            archive.writestr(archivename, commentfile.file.read())
             for chunk in sink.get_and_clear():
                 yield chunk
 
