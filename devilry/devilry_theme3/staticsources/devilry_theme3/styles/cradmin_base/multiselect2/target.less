@@ -1,0 +1,90 @@
+.django-cradmin-multiselect2-selected-item {
+  display: none;
+}
+
+.django-cradmin-multiselect2-item-wrapper-selected {
+  display: none;
+}
+
+
+.django-cradmin-multiselect2-target {
+  .django-cradmin-multiselect2-target-title {
+    font-size: @font-size-base;
+    font-weight: bold;
+    margin: 20px 0 10px 0;
+    @media (min-width: @screen-sm-min) {
+      margin-top: 0;
+    }
+    //padding: 0 0 5px 0;
+  }
+  .django-cradmin-multiselect2-target-selected-items {
+    .django-cradmin-multiselect2-target-selected-item {
+      background: @cradmin-focus-bg;
+      padding: @cradmin-multiselect2-target-selected-item-padding;
+      margin-top: 5px;
+      &:first-child {
+        margin-top: 0;
+      }
+      .django-cradmin-multiselect2-target-selected-item-title {
+        font-size: @font-size-base;
+        //margin-top: 10px;
+        margin: 0;
+        padding: 0;
+      }
+      .django-cradmin-multiselect2-target-selected-item-description {
+        margin-top: 10px;
+        font-size: @font-size-small;
+      }
+      .django-cradmin-multiselect2-target-selected-item-deselectbutton {
+        margin-top: 10px;
+      }
+    }
+  }
+  .django-cradmin-multiselect2-target-footer {
+    margin-top: 10px;
+  }
+
+  .django-cradmin-multiselect2-target-with-items-content {
+    display: none;
+  }
+  .django-cradmin-multiselect2-target-without-items-content {
+    display: block;
+  }
+  .django-cradmin-multiselect2-target-no-items-selected {
+    display: none;
+    color: @text-muted;
+    font-style: italic;
+  }
+
+  &.django-cradmin-multiselect2-target-with-items {
+    .django-cradmin-multiselect2-target-with-items-content {
+      display: block;
+    }
+    .django-cradmin-multiselect2-target-without-items-content {
+      display: none;
+    }
+  }
+
+  &.django-cradmin-multiselect2-target-empty-selection-allowed {
+    .django-cradmin-multiselect2-target-with-items-content {
+      display: block;
+    }
+    .django-cradmin-multiselect2-target-selected-items {
+      display: none;
+    }
+    .django-cradmin-multiselect2-target-without-items-content {
+      display: none;
+    }
+    .django-cradmin-multiselect2-target-no-items-selected {
+      display: block;
+    }
+    &.django-cradmin-multiselect2-target-with-items {
+      .django-cradmin-multiselect2-target-selected-items {
+        display: block;
+      }
+      .django-cradmin-multiselect2-target-no-items-selected {
+        display: none;
+      }
+    }
+  }
+}

@@ -4623,21 +4623,6 @@ a {
   color: inherit;
   text-decoration: underline;
 }
-@media (min-width: 768px) {
-  .django-cradmin-container-focus {
-    width: 720px;
-  }
-}
-@media (min-width: 992px) {
-  .django-cradmin-container-focus {
-    width: 940px;
-  }
-}
-@media (min-width: 1200px) {
-  .django-cradmin-container-focus {
-    width: 1140px;
-  }
-}
 .alert {
   position: relative;
 }
@@ -6670,7 +6655,7 @@ a.django-cradmin-listbuilder-itemframe-link:hover {
 }
 ol.django-cradmin-listbuilder-list li .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
   background: #fff;
-  padding: 15px 15px;
+  padding: 10px;
 }
 a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
   border-bottom: 3px solid transparent;
@@ -6784,15 +6769,31 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-title {
   font-size: 16px;
   font-weight: bold;
-  margin: 20px 0 0 0;
-  padding: 0 0 5px 0;
+  margin: 20px 0 10px 0;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items {
+@media (min-width: 768px) {
+  .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-title {
+    margin-top: 0;
+  }
+}
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items .django-cradmin-multiselect2-target-selected-item {
   background: #fff;
   padding: 10px;
+  margin-top: 5px;
+}
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items .django-cradmin-multiselect2-target-selected-item:first-child {
+  margin-top: 0;
 }
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items .django-cradmin-multiselect2-target-selected-item .django-cradmin-multiselect2-target-selected-item-title {
   font-size: 16px;
+  margin: 0;
+  padding: 0;
+}
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items .django-cradmin-multiselect2-target-selected-item .django-cradmin-multiselect2-target-selected-item-description {
+  margin-top: 10px;
+  font-size: 14px;
+}
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items .django-cradmin-multiselect2-target-selected-item .django-cradmin-multiselect2-target-selected-item-deselectbutton {
   margin-top: 10px;
 }
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-footer {
@@ -6832,6 +6833,9 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
 }
 .django-cradmin-multiselect2-target.django-cradmin-multiselect2-target-empty-selection-allowed.django-cradmin-multiselect2-target-with-items .django-cradmin-multiselect2-target-no-items-selected {
   display: none;
+}
+.django-cradmin-multiselect2-itemvalue .django-cradmin-multiselect2-itemvalue-buttons {
+  margin-bottom: 0;
 }
 .django-cradmin-loadmorepager {
   text-align: center;
