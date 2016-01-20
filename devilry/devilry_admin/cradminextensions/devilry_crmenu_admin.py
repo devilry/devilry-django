@@ -28,7 +28,7 @@ class Menu(devilry_crmenu.Menu):
             url=reverse_cradmin_url(
                 instanceid='devilry_admin_subjectadmin',
                 appname='overview',
-                roleid=self.request.user.id,
+                roleid=subject.id,
                 viewname=crapp.INDEXVIEW_NAME
             ),
             active=active
@@ -40,7 +40,7 @@ class Menu(devilry_crmenu.Menu):
             url=reverse_cradmin_url(
                 instanceid='devilry_admin_periodadmin',
                 appname='overview',
-                roleid=self.request.user.id,
+                roleid=period.id,
                 viewname=crapp.INDEXVIEW_NAME
             ),
             active=active
@@ -52,7 +52,7 @@ class Menu(devilry_crmenu.Menu):
             url=reverse_cradmin_url(
                 instanceid='devilry_admin_assignmentadmin',
                 appname='overview',
-                roleid=self.request.user.id,
+                roleid=assignment.id,
                 viewname=crapp.INDEXVIEW_NAME,
             ),
             active=active
