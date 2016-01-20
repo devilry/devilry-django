@@ -45,12 +45,12 @@ setup(
         'django-haystack==2.3.1',
         'httplib2==0.7.7',
         'detektor==1.1.0-beta.012',
-        'django_cradmin==1.0.1b54',
         'dj-static>=0.0.6',
         'dj-database-url>=0.3.0',
         'bleach>=1.4',
         'psycopg2==2.4.6',
         'elasticsearch==1.6.0',
+        'django_cradmin==1.0.1b55',
         'ievv_opensource==0.2.15',
     ]
 )
