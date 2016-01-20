@@ -243,6 +243,30 @@ def devilry_multiple_examiners_short_displayname(assignment, examiners, devilryr
 
 @register.inclusion_tag('devilry_core/templatetags/groupstatus.django.html')
 def devilry_groupstatus(group):
+    """
+    Get the status for the given AssignmentGroup.
+
+    The output is one of the following texts wrapped in some ``<span>`` elements
+    with appropriate css classes:
+
+    - ``"waiting for feedback"``
+    - ``"waiting for deliveries"``
+    - ``"corrected"``
+
+    .. note:: We normally do not show the corrected status, but instead show
+        the grade using :func:`.devilry_grade_full`, at least in listings
+        and other places where space is premium.
+
+    Assumes the AssignmentGroup queryset is annotated with:
+
+    - :meth:`~devilry.apps.core.models.AssignmentGroupQuerySet.annotate_with_is_waiting_for_feedback`
+    - :meth:`~devilry.apps.core.models.AssignmentGroupQuerySet.annotate_with_is_waiting_for_deliveries`
+    - :meth:`~devilry.apps.core.models.AssignmentGroupQuerySet.annotate_with_is_corrected`
+
+    Args:
+        group: A An :class:`devilry.apps.core.models.AssignmentGroup` object.
+
+    """
     return {
         'group': group
     }
@@ -279,7 +303,8 @@ def devilry_grade_full(assignment, points, devilryrole):
     set to ``True``, students are allowed to see the points behind
     a grade, so we include the points. Examples::
 
-        "passed"
+        "passed (10/10)"
+        "failed (0/10)"
         "8/10 (passed)"
         "F (failed - 10/100)"
         "A (passed - 97/100)"
