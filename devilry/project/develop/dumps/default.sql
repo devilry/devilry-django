@@ -140,7 +140,7 @@ CREATE TABLE core_assignment (
     short_name character varying(20) NOT NULL,
     long_name character varying(100) NOT NULL,
     publishing_time timestamp with time zone NOT NULL,
-    anonymous boolean NOT NULL,
+    deprecated_field_anonymous boolean NOT NULL,
     students_can_see_points boolean NOT NULL,
     delivery_types integer NOT NULL,
     deadline_handling integer NOT NULL,
@@ -154,6 +154,9 @@ CREATE TABLE core_assignment (
     students_can_not_create_groups_after timestamp with time zone,
     feedback_workflow character varying(50) NOT NULL,
     parentnode_id integer NOT NULL,
+    gradeform_setup_json text,
+    anonymizationmode character varying(15) NOT NULL,
+    uses_custom_candidate_ids boolean NOT NULL,
     CONSTRAINT core_assignment_deadline_handling_check CHECK ((deadline_handling >= 0)),
     CONSTRAINT core_assignment_delivery_types_check CHECK ((delivery_types >= 0)),
     CONSTRAINT core_assignment_max_points_check CHECK ((max_points >= 0)),
@@ -233,7 +236,8 @@ CREATE TABLE core_assignmentgroup (
     copied_from_id integer,
     feedback_id integer,
     last_deadline_id integer,
-    parentnode_id integer NOT NULL
+    parentnode_id integer NOT NULL,
+    batchoperation_id integer
 );
 
 
@@ -245,10 +249,9 @@ ALTER TABLE core_assignmentgroup OWNER TO dbdev;
 
 CREATE TABLE core_assignmentgroup_examiners (
     id integer NOT NULL,
-    automatic_anonymous_id character varying(255) NOT NULL,
     assignmentgroup_id integer NOT NULL,
-    user_id integer NOT NULL,
-    relatedexaminer_id integer
+    old_reference_not_in_use_user_id integer,
+    relatedexaminer_id integer NOT NULL
 );
 
 
@@ -337,10 +340,9 @@ ALTER SEQUENCE core_assignmentgrouptag_id_seq OWNED BY core_assignmentgrouptag.i
 CREATE TABLE core_candidate (
     id integer NOT NULL,
     candidate_id character varying(30),
-    automatic_anonymous_id character varying(255) NOT NULL,
     assignment_group_id integer NOT NULL,
-    student_id integer NOT NULL,
-    relatedstudent_id integer
+    old_reference_not_in_use_student_id integer,
+    relatedstudent_id integer NOT NULL
 );
 
 
@@ -815,7 +817,8 @@ CREATE TABLE core_relatedexaminer (
     tags text,
     period_id integer NOT NULL,
     user_id integer NOT NULL,
-    automatic_anonymous_id character varying(255) NOT NULL
+    automatic_anonymous_id character varying(255) NOT NULL,
+    active boolean NOT NULL
 );
 
 
@@ -1512,13 +1515,14 @@ ALTER SEQUENCE devilry_account_username_id_seq OWNED BY devilry_account_username
 
 CREATE TABLE devilry_comment_comment (
     id integer NOT NULL,
-    text character varying(4096) NOT NULL,
+    text text NOT NULL,
     created_datetime timestamp with time zone NOT NULL,
     published_datetime timestamp with time zone,
     user_role character varying(42) NOT NULL,
     comment_type character varying(42) NOT NULL,
     parent_id integer,
-    user_id integer NOT NULL
+    user_id integer NOT NULL,
+    draft_text text NOT NULL
 );
 
 
@@ -1559,6 +1563,7 @@ CREATE TABLE devilry_comment_commentfile (
     processing_completed_datetime timestamp with time zone,
     processing_successful boolean NOT NULL,
     comment_id integer NOT NULL,
+    created_datetime timestamp with time zone NOT NULL,
     CONSTRAINT devilry_comment_commentfile_filesize_check CHECK ((filesize >= 0))
 );
 
@@ -1862,14 +1867,17 @@ ALTER SEQUENCE devilry_gradingsystem_feedbackdraftfile_id_seq OWNED BY devilry_g
 
 CREATE TABLE devilry_group_feedbackset (
     id integer NOT NULL,
-    points integer NOT NULL,
+    grading_points integer,
     created_datetime timestamp with time zone NOT NULL,
-    published_datetime timestamp with time zone,
+    grading_published_datetime timestamp with time zone,
     deadline_datetime timestamp with time zone,
     created_by_id integer NOT NULL,
     group_id integer NOT NULL,
-    published_by_id integer NOT NULL,
-    CONSTRAINT devilry_group_feedbackset_points_check CHECK ((points >= 0))
+    grading_published_by_id integer,
+    gradeform_data_json text NOT NULL,
+    is_last_in_group boolean,
+    feedbackset_type character varying(50) NOT NULL,
+    CONSTRAINT devilry_group_feedbackset_grading_points_697ae108a5fe85ff_check CHECK ((grading_points >= 0))
 );
 
 
@@ -1902,9 +1910,9 @@ ALTER SEQUENCE devilry_group_feedbackset_id_seq OWNED BY devilry_group_feedbacks
 
 CREATE TABLE devilry_group_groupcomment (
     comment_ptr_id integer NOT NULL,
-    instant_publish boolean NOT NULL,
-    visible_for_students boolean NOT NULL,
-    feedback_set_id integer NOT NULL
+    feedback_set_id integer NOT NULL,
+    part_of_grading boolean NOT NULL,
+    visibility character varying(50) NOT NULL
 );
 
 
@@ -1916,12 +1924,12 @@ ALTER TABLE devilry_group_groupcomment OWNER TO dbdev;
 
 CREATE TABLE devilry_group_imageannotationcomment (
     comment_ptr_id integer NOT NULL,
-    instant_publish boolean NOT NULL,
-    visible_for_students boolean NOT NULL,
     x_coordinate integer NOT NULL,
     y_coordinate integer NOT NULL,
     feedback_set_id integer NOT NULL,
     image_id integer NOT NULL,
+    part_of_grading boolean NOT NULL,
+    visibility character varying(50) NOT NULL,
     CONSTRAINT devilry_group_imageannotationcomment_x_coordinate_check CHECK ((x_coordinate >= 0)),
     CONSTRAINT devilry_group_imageannotationcomment_y_coordinate_check CHECK ((y_coordinate >= 0))
 );
@@ -2207,6 +2215,50 @@ CREATE TABLE django_session (
 
 
 ALTER TABLE django_session OWNER TO dbdev;
+
+--
+-- Name: ievv_batchframework_batchoperation; Type: TABLE; Schema: public; Owner: dbdev; Tablespace: 
+--
+
+CREATE TABLE ievv_batchframework_batchoperation (
+    id integer NOT NULL,
+    created_datetime timestamp with time zone NOT NULL,
+    started_running_datetime timestamp with time zone,
+    finished_datetime timestamp with time zone,
+    context_object_id integer,
+    operationtype character varying(255) NOT NULL,
+    status character varying(12) NOT NULL,
+    result character varying(13) NOT NULL,
+    input_data_json text NOT NULL,
+    output_data_json text NOT NULL,
+    context_content_type_id integer,
+    started_by_id integer,
+    CONSTRAINT ievv_batchframework_batchoperation_context_object_id_check CHECK ((context_object_id >= 0))
+);
+
+
+ALTER TABLE ievv_batchframework_batchoperation OWNER TO dbdev;
+
+--
+-- Name: ievv_batchframework_batchoperation_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
+--
+
+CREATE SEQUENCE ievv_batchframework_batchoperation_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE ievv_batchframework_batchoperation_id_seq OWNER TO dbdev;
+
+--
+-- Name: ievv_batchframework_batchoperation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
+--
+
+ALTER SEQUENCE ievv_batchframework_batchoperation_id_seq OWNED BY ievv_batchframework_batchoperation.id;
+
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: dbdev
@@ -2608,6 +2660,13 @@ ALTER TABLE ONLY django_migrations ALTER COLUMN id SET DEFAULT nextval('django_m
 
 
 --
+-- Name: id; Type: DEFAULT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY ievv_batchframework_batchoperation ALTER COLUMN id SET DEFAULT nextval('ievv_batchframework_batchoperation_id_seq'::regclass);
+
+
+--
 -- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
@@ -2807,6 +2866,9 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 163	Can add compare two cache item	55	add_comparetwocacheitem
 164	Can change compare two cache item	55	change_comparetwocacheitem
 165	Can delete compare two cache item	55	delete_comparetwocacheitem
+166	Can add batch operation	56	add_batchoperation
+167	Can change batch operation	56	change_batchoperation
+168	Can delete batch operation	56	delete_batchoperation
 \.
 
 
@@ -2814,16 +2876,16 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('auth_permission_id_seq', 165, true);
+SELECT pg_catalog.setval('auth_permission_id_seq', 168, true);
 
 
 --
 -- Data for Name: core_assignment; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY core_assignment (id, short_name, long_name, publishing_time, anonymous, students_can_see_points, delivery_types, deadline_handling, scale_points_percent, first_deadline, max_points, passing_grade_min_points, points_to_grade_mapper, grading_system_plugin_id, students_can_create_groups, students_can_not_create_groups_after, feedback_workflow, parentnode_id) FROM stdin;
-1	assignment1	Assignment 1	2015-12-27 03:35:27.525662+01	f	t	0	0	100	2040-01-31 12:30:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1
-2	assignment2	Assignment 2	2016-01-03 04:41:40.730958+01	f	t	0	0	100	2040-02-14 12:30:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1
+COPY core_assignment (id, short_name, long_name, publishing_time, deprecated_field_anonymous, students_can_see_points, delivery_types, deadline_handling, scale_points_percent, first_deadline, max_points, passing_grade_min_points, points_to_grade_mapper, grading_system_plugin_id, students_can_create_groups, students_can_not_create_groups_after, feedback_workflow, parentnode_id, gradeform_setup_json, anonymizationmode, uses_custom_candidate_ids) FROM stdin;
+1	assignment1	Assignment 1	2015-12-27 03:35:27.525662+01	f	t	0	0	100	2040-01-31 12:30:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1	\N	off	f
+2	assignment2	Assignment 2	2016-01-03 04:41:40.730958+01	f	t	0	0	100	2040-02-14 12:30:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1	\N	off	f
 \.
 
 
@@ -2853,7 +2915,7 @@ SELECT pg_catalog.setval('core_assignment_id_seq', 2, true);
 -- Data for Name: core_assignmentgroup; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY core_assignmentgroup (id, name, is_open, etag, delivery_status, created_datetime, copied_from_id, feedback_id, last_deadline_id, parentnode_id) FROM stdin;
+COPY core_assignmentgroup (id, name, is_open, etag, delivery_status, created_datetime, copied_from_id, feedback_id, last_deadline_id, parentnode_id, batchoperation_id) FROM stdin;
 \.
 
 
@@ -2861,7 +2923,7 @@ COPY core_assignmentgroup (id, name, is_open, etag, delivery_status, created_dat
 -- Data for Name: core_assignmentgroup_examiners; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY core_assignmentgroup_examiners (id, automatic_anonymous_id, assignmentgroup_id, user_id, relatedexaminer_id) FROM stdin;
+COPY core_assignmentgroup_examiners (id, assignmentgroup_id, old_reference_not_in_use_user_id, relatedexaminer_id) FROM stdin;
 \.
 
 
@@ -2898,7 +2960,7 @@ SELECT pg_catalog.setval('core_assignmentgrouptag_id_seq', 1, false);
 -- Data for Name: core_candidate; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY core_candidate (id, candidate_id, automatic_anonymous_id, assignment_group_id, student_id, relatedstudent_id) FROM stdin;
+COPY core_candidate (id, candidate_id, assignment_group_id, old_reference_not_in_use_student_id, relatedstudent_id) FROM stdin;
 \.
 
 
@@ -3094,7 +3156,7 @@ SELECT pg_catalog.setval('core_pointtogrademap_id_seq', 1, false);
 -- Data for Name: core_relatedexaminer; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY core_relatedexaminer (id, tags, period_id, user_id, automatic_anonymous_id) FROM stdin;
+COPY core_relatedexaminer (id, tags, period_id, user_id, automatic_anonymous_id, active) FROM stdin;
 \.
 
 
@@ -3285,6 +3347,7 @@ SELECT pg_catalog.setval('cradmin_temporaryfileuploadstore_temporaryfilecollecti
 --
 
 COPY devilry_account_periodpermissiongroup (id, period_id, permissiongroup_id) FROM stdin;
+1	1	2
 \.
 
 
@@ -3292,7 +3355,7 @@ COPY devilry_account_periodpermissiongroup (id, period_id, permissiongroup_id) F
 -- Name: devilry_account_periodpermissiongroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_account_periodpermissiongroup_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_account_periodpermissiongroup_id_seq', 1, true);
 
 
 --
@@ -3301,6 +3364,8 @@ SELECT pg_catalog.setval('devilry_account_periodpermissiongroup_id_seq', 1, fals
 
 COPY devilry_account_permissiongroup (id, name, created_datetime, updated_datetime, syncsystem_update_datetime, grouptype, is_custom_manageable) FROM stdin;
 1	The grandmas	2015-12-22 20:28:12.198719+01	2015-12-29 18:36:56.731725+01	\N	departmentadmin	f
+2	duck1010.springaaaa admins	2016-01-20 04:17:30.493374+01	2016-01-20 04:18:08.798354+01	\N	periodadmin	f
+3	duck1010 administrators	2016-01-20 04:19:42.353192+01	2016-01-20 04:19:42.353219+01	\N	subjectadmin	f
 \.
 
 
@@ -3308,7 +3373,7 @@ COPY devilry_account_permissiongroup (id, name, created_datetime, updated_dateti
 -- Name: devilry_account_permissiongroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_account_permissiongroup_id_seq', 1, true);
+SELECT pg_catalog.setval('devilry_account_permissiongroup_id_seq', 3, true);
 
 
 --
@@ -3317,6 +3382,8 @@ SELECT pg_catalog.setval('devilry_account_permissiongroup_id_seq', 1, true);
 
 COPY devilry_account_permissiongroupuser (id, permissiongroup_id, user_id) FROM stdin;
 1	1	1
+2	2	12
+3	3	14
 \.
 
 
@@ -3324,7 +3391,7 @@ COPY devilry_account_permissiongroupuser (id, permissiongroup_id, user_id) FROM 
 -- Name: devilry_account_permissiongroupuser_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_account_permissiongroupuser_id_seq', 1, true);
+SELECT pg_catalog.setval('devilry_account_permissiongroupuser_id_seq', 3, true);
 
 
 --
@@ -3334,6 +3401,7 @@ SELECT pg_catalog.setval('devilry_account_permissiongroupuser_id_seq', 1, true);
 COPY devilry_account_subjectpermissiongroup (id, permissiongroup_id, subject_id) FROM stdin;
 1	1	1
 2	1	2
+3	3	1
 \.
 
 
@@ -3341,7 +3409,7 @@ COPY devilry_account_subjectpermissiongroup (id, permissiongroup_id, subject_id)
 -- Name: devilry_account_subjectpermissiongroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_account_subjectpermissiongroup_id_seq', 2, true);
+SELECT pg_catalog.setval('devilry_account_subjectpermissiongroup_id_seq', 3, true);
 
 
 --
@@ -3349,7 +3417,6 @@ SELECT pg_catalog.setval('devilry_account_subjectpermissiongroup_id_seq', 2, tru
 --
 
 COPY devilry_account_user (id, password, last_login, is_superuser, shortname, fullname, lastname, datetime_joined, suspended_datetime, suspended_reason, languagecode) FROM stdin;
-1	md5$wqtfXF0fIxXj$894c06ca065b6dfa906004e40da2e9a4	2015-12-22 19:38:59.554641+01	t	grandma@example.com			2015-12-21 18:01:21.212212+01	\N		
 2	md5$3KRT0BYBVYuO$94583357915e72f337fcd49100121ffe	\N	f	dewey@example.com	Dewey Duck	Duck	2016-01-03 00:01:23.904395+01	\N		
 3	md5$4kh8cjMMXX2M$7ebf58c36489254b715d79608c022101	\N	f	louie@example.com	Louie Duck	Duck	2016-01-03 00:01:23.920971+01	\N		
 4	md5$EC1N1bbdDH1I$f178f7136b3691e18906166ee0efe5ca	\N	f	huey@example.com	Huey Duck	Duck	2016-01-03 00:01:23.924138+01	\N		
@@ -3367,6 +3434,7 @@ COPY devilry_account_user (id, password, last_login, is_superuser, shortname, fu
 16	md5$IwVKSAdD2ueB$5e32c9a5bfa4092cdb4b4bda8a0e122e	\N	f	scrooge@example.com	Scrooge McDuck	McDuck	2016-01-03 00:03:59.432752+01	\N		
 17	md5$VNqEOHzoWJLP$742f1d1b4d56fb6f51cdb76efc2105fa	\N	f	noname@example.com			2016-01-04 15:08:14.258809+01	\N		
 18	md5$smoA02BvKYtp$17bc79166daf9d1c3de87d695e9708f9	\N	f	missingname@example.com			2016-01-04 15:25:10.473858+01	\N		
+1	md5$wqtfXF0fIxXj$894c06ca065b6dfa906004e40da2e9a4	2016-01-20 04:16:53.964445+01	t	grandma@example.com			2015-12-21 18:01:21.212212+01	\N		
 \.
 
 
@@ -3429,7 +3497,7 @@ SELECT pg_catalog.setval('devilry_account_username_id_seq', 1, false);
 -- Data for Name: devilry_comment_comment; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY devilry_comment_comment (id, text, created_datetime, published_datetime, user_role, comment_type, parent_id, user_id) FROM stdin;
+COPY devilry_comment_comment (id, text, created_datetime, published_datetime, user_role, comment_type, parent_id, user_id, draft_text) FROM stdin;
 \.
 
 
@@ -3444,7 +3512,7 @@ SELECT pg_catalog.setval('devilry_comment_comment_id_seq', 1, false);
 -- Data for Name: devilry_comment_commentfile; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY devilry_comment_commentfile (id, mimetype, file, filename, filesize, processing_started_datetime, processing_completed_datetime, processing_successful, comment_id) FROM stdin;
+COPY devilry_comment_commentfile (id, mimetype, file, filename, filesize, processing_started_datetime, processing_completed_datetime, processing_successful, comment_id, created_datetime) FROM stdin;
 \.
 
 
@@ -3564,7 +3632,7 @@ SELECT pg_catalog.setval('devilry_gradingsystem_feedbackdraftfile_id_seq', 1, fa
 -- Data for Name: devilry_group_feedbackset; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY devilry_group_feedbackset (id, points, created_datetime, published_datetime, deadline_datetime, created_by_id, group_id, published_by_id) FROM stdin;
+COPY devilry_group_feedbackset (id, grading_points, created_datetime, grading_published_datetime, deadline_datetime, created_by_id, group_id, grading_published_by_id, gradeform_data_json, is_last_in_group, feedbackset_type) FROM stdin;
 \.
 
 
@@ -3579,7 +3647,7 @@ SELECT pg_catalog.setval('devilry_group_feedbackset_id_seq', 1, false);
 -- Data for Name: devilry_group_groupcomment; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY devilry_group_groupcomment (comment_ptr_id, instant_publish, visible_for_students, feedback_set_id) FROM stdin;
+COPY devilry_group_groupcomment (comment_ptr_id, feedback_set_id, part_of_grading, visibility) FROM stdin;
 \.
 
 
@@ -3587,7 +3655,7 @@ COPY devilry_group_groupcomment (comment_ptr_id, instant_publish, visible_for_st
 -- Data for Name: devilry_group_imageannotationcomment; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
-COPY devilry_group_imageannotationcomment (comment_ptr_id, instant_publish, visible_for_students, x_coordinate, y_coordinate, feedback_set_id, image_id) FROM stdin;
+COPY devilry_group_imageannotationcomment (comment_ptr_id, x_coordinate, y_coordinate, feedback_set_id, image_id, part_of_grading, visibility) FROM stdin;
 \.
 
 
@@ -3734,6 +3802,7 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 53	devilry_detektor	detektordeliveryparseresult
 54	devilry_detektor	detektorassignmentcachelanguage
 55	devilry_detektor	comparetwocacheitem
+56	ievv_batchframework	batchoperation
 \.
 
 
@@ -3741,7 +3810,7 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('django_content_type_id_seq', 55, true);
+SELECT pg_catalog.setval('django_content_type_id_seq', 56, true);
 
 
 --
@@ -3781,6 +3850,48 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 30	sessions	0001_initial	2015-12-21 17:44:51.461004+01
 31	core	0007_auto_20151222_1955	2015-12-22 19:55:40.275339+01
 32	devilry_account	0004_auto_20151222_1955	2015-12-22 19:55:40.423018+01
+33	ievv_batchframework	0001_initial	2016-01-20 04:16:29.598382+01
+34	core	0007_assignment_gradeform_setup_json	2016-01-20 04:16:29.669148+01
+35	core	0008_auto_20151222_1955	2016-01-20 04:16:29.75359+01
+36	core	0009_assignmentgroup_batchoperation	2016-01-20 04:16:29.825241+01
+37	core	0010_assignment_anonymizationmode	2016-01-20 04:16:29.906544+01
+38	core	0011_datamigrate_anonymous_to_anonymizationmode	2016-01-20 04:16:29.921259+01
+39	core	0012_auto_20160111_2019	2016-01-20 04:16:29.99346+01
+40	core	0013_auto_20160111_2021	2016-01-20 04:16:30.066276+01
+41	core	0014_auto_20160112_1052	2016-01-20 04:16:30.202121+01
+42	core	0015_assignment_uses_custom_candidate_ids	2016-01-20 04:16:30.288533+01
+43	core	0016_auto_20160112_1831	2016-01-20 04:16:30.378829+01
+44	core	0017_candidate_relatedstudent_replaces_student_field	2016-01-20 04:16:30.390553+01
+45	core	0018_auto_20160112_1923	2016-01-20 04:16:30.569663+01
+46	core	0019_auto_20160113_2037	2016-01-20 04:16:30.638242+01
+47	core	0020_relatedexaminer_active	2016-01-20 04:16:30.95714+01
+48	core	0021_examiner_relatedexaminer_replaces_user_field	2016-01-20 04:16:30.970697+01
+49	core	0022_auto_20160114_1520	2016-01-20 04:16:31.05956+01
+50	core	0023_auto_20160114_1522	2016-01-20 04:16:31.148027+01
+51	core	0024_auto_20160114_1524	2016-01-20 04:16:31.232045+01
+52	core	0025_auto_20160114_1525	2016-01-20 04:16:31.31417+01
+53	core	0026_auto_20160114_1528	2016-01-20 04:16:31.389432+01
+54	core	0027_auto_20160116_1843	2016-01-20 04:16:31.452886+01
+55	core	0028_auto_20160119_0337	2016-01-20 04:16:31.528123+01
+56	devilry_account	0005_auto_20160113_2037	2016-01-20 04:16:31.611411+01
+57	devilry_comment	0002_auto_20160109_1210	2016-01-20 04:16:31.878484+01
+58	devilry_comment	0003_auto_20160109_1239	2016-01-20 04:16:32.061092+01
+59	devilry_comment	0004_commentfile_created_datetime	2016-01-20 04:16:32.153837+01
+60	devilry_group	0002_feedbackset_gradeform_json	2016-01-20 04:16:32.266148+01
+61	devilry_group	0003_auto_20160106_1418	2016-01-20 04:16:32.736409+01
+62	devilry_group	0004_auto_20160107_0918	2016-01-20 04:16:33.18398+01
+63	devilry_group	0005_auto_20160107_0958	2016-01-20 04:16:33.292917+01
+64	devilry_group	0006_auto_20160107_1000	2016-01-20 04:16:33.405345+01
+65	devilry_group	0007_auto_20160107_1031	2016-01-20 04:16:33.855025+01
+66	devilry_group	0008_auto_20160107_1053	2016-01-20 04:16:34.313824+01
+67	devilry_group	0009_auto_20160107_1100	2016-01-20 04:16:34.534037+01
+68	devilry_group	0010_auto_20160107_1106	2016-01-20 04:16:34.956665+01
+69	devilry_group	0011_auto_20160107_1111	2016-01-20 04:16:35.397259+01
+70	devilry_group	0012_auto_20160107_1129	2016-01-20 04:16:36.046402+01
+71	devilry_group	0013_auto_20160110_1621	2016-01-20 04:16:36.269064+01
+72	devilry_group	0014_feedbackset_grading_status	2016-01-20 04:16:36.387384+01
+73	devilry_group	0015_auto_20160111_1245	2016-01-20 04:16:36.615454+01
+74	devilry_group	0016_auto_20160114_2202	2016-01-20 04:16:36.940232+01
 \.
 
 
@@ -3788,7 +3899,7 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('django_migrations_id_seq', 32, true);
+SELECT pg_catalog.setval('django_migrations_id_seq', 74, true);
 
 
 --
@@ -3798,7 +3909,23 @@ SELECT pg_catalog.setval('django_migrations_id_seq', 32, true);
 COPY django_session (session_key, session_data, expire_date) FROM stdin;
 wa141zb8nabz6ki0bgfqjn2bj9h9kfzt	YzU4YTcxNTM2MzJjNDU3MzJiNzJjZGQ0ODBmY2Y4MDVhNTE1ZDhiYjp7Il9hdXRoX3VzZXJfaGFzaCI6IjgyZjlkZGFiMzllZTc1MjAwMjRhZGNhMGUyNTNiMmFkNTVkMGQxMTMiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSJ9	2016-01-04 18:01:46.760409+01
 j0jnngoym8g5pm6rmx0mckp9n36qtd78	YzU4YTcxNTM2MzJjNDU3MzJiNzJjZGQ0ODBmY2Y4MDVhNTE1ZDhiYjp7Il9hdXRoX3VzZXJfaGFzaCI6IjgyZjlkZGFiMzllZTc1MjAwMjRhZGNhMGUyNTNiMmFkNTVkMGQxMTMiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSJ9	2016-01-05 19:38:59.556246+01
+2nzg0111f2w6vke3qqqmflhw9gn4wq6a	NDJiYzE0MzEyNjdjM2E0NGQ0ODY3OWUzZGQ2MzkyNjIxZjljNTFjZDp7Il9hdXRoX3VzZXJfaGFzaCI6IjViMjA4NzZkYjI5ZGY2ZmJlNDE4N2U1YjE1ZTAzZTIyMGRiYjBiN2QiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSJ9	2016-02-03 04:16:53.965856+01
 \.
+
+
+--
+-- Data for Name: ievv_batchframework_batchoperation; Type: TABLE DATA; Schema: public; Owner: dbdev
+--
+
+COPY ievv_batchframework_batchoperation (id, created_datetime, started_running_datetime, finished_datetime, context_object_id, operationtype, status, result, input_data_json, output_data_json, context_content_type_id, started_by_id) FROM stdin;
+\.
+
+
+--
+-- Name: ievv_batchframework_batchoperation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
+--
+
+SELECT pg_catalog.setval('ievv_batchframework_batchoperation_id_seq', 1, false);
 
 
 --
@@ -3882,19 +4009,19 @@ ALTER TABLE ONLY core_assignment
 
 
 --
+-- Name: core_assignmentgroup_e_relatedexaminer_id_74db942d2f73e0d1_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev; Tablespace: 
+--
+
+ALTER TABLE ONLY core_assignmentgroup_examiners
+    ADD CONSTRAINT core_assignmentgroup_e_relatedexaminer_id_74db942d2f73e0d1_uniq UNIQUE (relatedexaminer_id, assignmentgroup_id);
+
+
+--
 -- Name: core_assignmentgroup_examiners_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev; Tablespace: 
 --
 
 ALTER TABLE ONLY core_assignmentgroup_examiners
     ADD CONSTRAINT core_assignmentgroup_examiners_pkey PRIMARY KEY (id);
-
-
---
--- Name: core_assignmentgroup_examiners_user_id_661b98de00fa9407_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev; Tablespace: 
---
-
-ALTER TABLE ONLY core_assignmentgroup_examiners
-    ADD CONSTRAINT core_assignmentgroup_examiners_user_id_661b98de00fa9407_uniq UNIQUE (user_id, assignmentgroup_id);
 
 
 --
@@ -4514,6 +4641,14 @@ ALTER TABLE ONLY devilry_gradingsystem_feedbackdraftfile
 
 
 --
+-- Name: devilry_group_feedbackset_group_id_4b67c434a334f6c0_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev; Tablespace: 
+--
+
+ALTER TABLE ONLY devilry_group_feedbackset
+    ADD CONSTRAINT devilry_group_feedbackset_group_id_4b67c434a334f6c0_uniq UNIQUE (group_id, is_last_in_group);
+
+
+--
 -- Name: devilry_group_feedbackset_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev; Tablespace: 
 --
 
@@ -4634,6 +4769,14 @@ ALTER TABLE ONLY django_session
 
 
 --
+-- Name: ievv_batchframework_batchoperation_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev; Tablespace: 
+--
+
+ALTER TABLE ONLY ievv_batchframework_batchoperation
+    ADD CONSTRAINT ievv_batchframework_batchoperation_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: auth_group_name_253ae2a6331666e8_like; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
 --
 
@@ -4697,6 +4840,13 @@ CREATE INDEX core_assignment_b25d0d2b ON core_assignment USING btree (parentnode
 
 
 --
+-- Name: core_assignment_ed066e54; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
+--
+
+CREATE INDEX core_assignment_ed066e54 ON core_assignment USING btree (anonymizationmode);
+
+
+--
 -- Name: core_assignment_long_name_74ff61759131213c_like; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
 --
 
@@ -4708,6 +4858,13 @@ CREATE INDEX core_assignment_long_name_74ff61759131213c_like ON core_assignment 
 --
 
 CREATE INDEX core_assignment_short_name_5a022141fd10855d_like ON core_assignment USING btree (short_name varchar_pattern_ops);
+
+
+--
+-- Name: core_assignmentgroup_3850dbd3; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
+--
+
+CREATE INDEX core_assignmentgroup_3850dbd3 ON core_assignmentgroup USING btree (batchoperation_id);
 
 
 --
@@ -4742,7 +4899,7 @@ CREATE INDEX core_assignmentgroup_examiners_769693bb ON core_assignmentgroup_exa
 -- Name: core_assignmentgroup_examiners_e8701ad4; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
 --
 
-CREATE INDEX core_assignmentgroup_examiners_e8701ad4 ON core_assignmentgroup_examiners USING btree (user_id);
+CREATE INDEX core_assignmentgroup_examiners_e8701ad4 ON core_assignmentgroup_examiners USING btree (old_reference_not_in_use_user_id);
 
 
 --
@@ -4770,7 +4927,7 @@ CREATE INDEX core_assignmentgrouptag_tag_445a27de8f965a31_like ON core_assignmen
 -- Name: core_candidate_30a811f6; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
 --
 
-CREATE INDEX core_candidate_30a811f6 ON core_candidate USING btree (student_id);
+CREATE INDEX core_candidate_30a811f6 ON core_candidate USING btree (old_reference_not_in_use_student_id);
 
 
 --
@@ -5467,6 +5624,13 @@ CREATE INDEX devilry_gradingsystem_feedbackdraftfile_bc7c970b ON devilry_grading
 
 
 --
+-- Name: devilry_group_feedbackset_0069413d; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
+--
+
+CREATE INDEX devilry_group_feedbackset_0069413d ON devilry_group_feedbackset USING btree (feedbackset_type);
+
+
+--
 -- Name: devilry_group_feedbackset_0e939a4f; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
 --
 
@@ -5477,7 +5641,7 @@ CREATE INDEX devilry_group_feedbackset_0e939a4f ON devilry_group_feedbackset USI
 -- Name: devilry_group_feedbackset_7dbe6d4c; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
 --
 
-CREATE INDEX devilry_group_feedbackset_7dbe6d4c ON devilry_group_feedbackset USING btree (published_by_id);
+CREATE INDEX devilry_group_feedbackset_7dbe6d4c ON devilry_group_feedbackset USING btree (grading_published_by_id);
 
 
 --
@@ -5495,6 +5659,13 @@ CREATE INDEX devilry_group_groupcomment_c08198b8 ON devilry_group_groupcomment U
 
 
 --
+-- Name: devilry_group_groupcomment_f79b1d64; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
+--
+
+CREATE INDEX devilry_group_groupcomment_f79b1d64 ON devilry_group_groupcomment USING btree (visibility);
+
+
+--
 -- Name: devilry_group_imageannotationcomment_c08198b8; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
 --
 
@@ -5506,6 +5677,13 @@ CREATE INDEX devilry_group_imageannotationcomment_c08198b8 ON devilry_group_imag
 --
 
 CREATE INDEX devilry_group_imageannotationcomment_f33175e6 ON devilry_group_imageannotationcomment USING btree (image_id);
+
+
+--
+-- Name: devilry_group_imageannotationcomment_f79b1d64; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
+--
+
+CREATE INDEX devilry_group_imageannotationcomment_f79b1d64 ON devilry_group_imageannotationcomment USING btree (visibility);
 
 
 --
@@ -5600,6 +5778,34 @@ CREATE INDEX django_session_session_key_461cfeaa630ca218_like ON django_session 
 
 
 --
+-- Name: ievv_batchframework_batchope_operationtype_86db17563402048_like; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
+--
+
+CREATE INDEX ievv_batchframework_batchope_operationtype_86db17563402048_like ON ievv_batchframework_batchoperation USING btree (operationtype varchar_pattern_ops);
+
+
+--
+-- Name: ievv_batchframework_batchoperation_62c990b1; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
+--
+
+CREATE INDEX ievv_batchframework_batchoperation_62c990b1 ON ievv_batchframework_batchoperation USING btree (started_by_id);
+
+
+--
+-- Name: ievv_batchframework_batchoperation_651b6541; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
+--
+
+CREATE INDEX ievv_batchframework_batchoperation_651b6541 ON ievv_batchframework_batchoperation USING btree (context_content_type_id);
+
+
+--
+-- Name: ievv_batchframework_batchoperation_e9e6a554; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
+--
+
+CREATE INDEX ievv_batchframework_batchoperation_e9e6a554 ON ievv_batchframework_batchoperation USING btree (operationtype);
+
+
+--
 -- Name: D181b2ae85af4a8c369c2bd09f842f6f; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
@@ -5632,6 +5838,14 @@ ALTER TABLE ONLY core_assignmentgrouptag
 
 
 --
+-- Name: D3ec90dcce686786fa6cfc7940d91960; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY core_assignmentgroup
+    ADD CONSTRAINT "D3ec90dcce686786fa6cfc7940d91960" FOREIGN KEY (batchoperation_id) REFERENCES ievv_batchframework_batchoperation(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: D5e4a1a4b4d81269fe677b9b11bcf9dd; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
@@ -5645,6 +5859,14 @@ ALTER TABLE ONLY devilry_group_imageannotationcomment
 
 ALTER TABLE ONLY devilry_detektor_detektordeliveryparseresult
     ADD CONSTRAINT "D5f5cf2622c65b08333d71d461503ad8" FOREIGN KEY (detektorassignment_id) REFERENCES devilry_detektor_detektorassignment(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: D5fa89d5f0632cab40e16a17b5422861; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY core_candidate
+    ADD CONSTRAINT "D5fa89d5f0632cab40e16a17b5422861" FOREIGN KEY (old_reference_not_in_use_student_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -5688,6 +5910,14 @@ ALTER TABLE ONLY devilry_detektor_detektorassignmentcachelanguage
 
 
 --
+-- Name: D8d96d0a9bf59345ab08863cddcf9249; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY ievv_batchframework_batchoperation
+    ADD CONSTRAINT "D8d96d0a9bf59345ab08863cddcf9249" FOREIGN KEY (context_content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: D8ec1ffb7a00b82f7d4d23443f299188; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
@@ -5709,6 +5939,14 @@ ALTER TABLE ONLY core_candidate
 
 ALTER TABLE ONLY devilry_account_subjectpermissiongroup
     ADD CONSTRAINT a3e107e91b77c6db5a281e5a98c442ab FOREIGN KEY (permissiongroup_id) REFERENCES devilry_account_permissiongroup(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: a8d214959af9e0c40bfad12ee683c8a0; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY devilry_group_feedbackset
+    ADD CONSTRAINT a8d214959af9e0c40bfad12ee683c8a0 FOREIGN KEY (grading_published_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -5840,14 +6078,6 @@ ALTER TABLE ONLY core_assignmentgroup
 
 
 --
--- Name: core_assign_user_id_1a363f9e86525194_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
---
-
-ALTER TABLE ONLY core_assignmentgroup_examiners
-    ADD CONSTRAINT core_assign_user_id_1a363f9e86525194_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
 -- Name: core_assignm_user_id_51116d5a7e12d3b_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
@@ -5861,14 +6091,6 @@ ALTER TABLE ONLY core_assignment_admins
 
 ALTER TABLE ONLY core_assignment
     ADD CONSTRAINT core_assignmen_parentnode_id_7072d3388816d25c_fk_core_period_id FOREIGN KEY (parentnode_id) REFERENCES core_period(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: core_can_student_id_3cfef9dad22e18db_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
---
-
-ALTER TABLE ONLY core_candidate
-    ADD CONSTRAINT core_can_student_id_3cfef9dad22e18db_fk_devilry_account_user_id FOREIGN KEY (student_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -6152,14 +6374,6 @@ ALTER TABLE ONLY devilry_gradingsystem_feedbackdraft
 
 
 --
--- Name: devi_published_by_id_2eb5ae2cfe02ede_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
---
-
-ALTER TABLE ONLY devilry_group_feedbackset
-    ADD CONSTRAINT devi_published_by_id_2eb5ae2cfe02ede_fk_devilry_account_user_id FOREIGN KEY (published_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
 -- Name: devil_comment_id_2e9f77d72415c03e_fk_devilry_comment_comment_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
@@ -6344,6 +6558,14 @@ ALTER TABLE ONLY django_admin_log
 
 
 --
+-- Name: e2e901148f6cd8765ee8ce180b39118d; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY core_assignmentgroup_examiners
+    ADD CONSTRAINT e2e901148f6cd8765ee8ce180b39118d FOREIGN KEY (old_reference_not_in_use_user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: f015661466f55b1eb40c72265d9a004b; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
@@ -6357,6 +6579,14 @@ ALTER TABLE ONLY devilry_detektor_comparetwocacheitem
 
 ALTER TABLE ONLY devilry_qualifiesforexam_periodtag
     ADD CONSTRAINT f2a2267fbb3f8424a3f20a79ed9ed35d FOREIGN KEY (deadlinetag_id) REFERENCES devilry_qualifiesforexam_deadlinetag(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: ievv__started_by_id_453323e9bb289a44_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY ievv_batchframework_batchoperation
+    ADD CONSTRAINT ievv__started_by_id_453323e9bb289a44_fk_devilry_account_user_id FOREIGN KEY (started_by_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
