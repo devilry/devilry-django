@@ -2885,9 +2885,9 @@ SELECT pg_catalog.setval('auth_permission_id_seq', 168, true);
 
 COPY core_assignment (id, short_name, long_name, publishing_time, deprecated_field_anonymous, students_can_see_points, delivery_types, deadline_handling, scale_points_percent, first_deadline, max_points, passing_grade_min_points, points_to_grade_mapper, grading_system_plugin_id, students_can_create_groups, students_can_not_create_groups_after, feedback_workflow, parentnode_id, gradeform_setup_json, anonymizationmode, uses_custom_candidate_ids) FROM stdin;
 1	assignment1	Assignment 1	2015-12-27 03:35:27.525662+01	f	t	0	0	100	2040-01-31 12:30:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1	\N	off	f
-2	assignment2	Assignment 2	2016-01-03 04:41:40.730958+01	f	t	0	0	100	2040-02-14 12:30:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1	\N	off	f
 3	semi-anonymous-exam	Semi anonymous exam	2016-01-19 12:30:00+01	f	f	0	0	100	2040-03-02 15:30:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1		semi_anonymous	f
 4	fully-anonymous-exam	Fully anonymous exam	2016-01-20 00:20:00+01	f	f	0	0	100	2040-03-15 23:59:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1		fully_anonymous	f
+2	assignment2	Assignment 2	2016-01-03 04:41:40.730958+01	f	t	0	0	100	2040-02-14 12:30:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1	\N	off	f
 \.
 
 
@@ -2918,6 +2918,14 @@ SELECT pg_catalog.setval('core_assignment_id_seq', 4, true);
 --
 
 COPY core_assignmentgroup (id, name, is_open, etag, delivery_status, created_datetime, copied_from_id, feedback_id, last_deadline_id, parentnode_id, batchoperation_id) FROM stdin;
+1		t	2016-01-20 11:17:01.6896+01	\N	2016-01-20 11:17:01.689048+01	\N	\N	\N	1	1
+2		t	2016-01-20 11:17:01.689643+01	\N	2016-01-20 11:17:01.689109+01	\N	\N	\N	1	1
+3		t	2016-01-20 11:17:01.689683+01	\N	2016-01-20 11:17:01.689159+01	\N	\N	\N	1	1
+4		t	2016-01-20 11:17:01.689714+01	\N	2016-01-20 11:17:01.689207+01	\N	\N	\N	1	1
+5		t	2016-01-20 11:17:01.689744+01	\N	2016-01-20 11:17:01.689254+01	\N	\N	\N	1	1
+6		t	2016-01-20 11:17:01.689774+01	\N	2016-01-20 11:17:01.689303+01	\N	\N	\N	1	1
+7		t	2016-01-20 11:17:01.689804+01	\N	2016-01-20 11:17:01.689349+01	\N	\N	\N	1	1
+8		t	2016-01-20 11:17:01.689833+01	\N	2016-01-20 11:17:01.689396+01	\N	\N	\N	1	1
 \.
 
 
@@ -2926,6 +2934,10 @@ COPY core_assignmentgroup (id, name, is_open, etag, delivery_status, created_dat
 --
 
 COPY core_assignmentgroup_examiners (id, assignmentgroup_id, old_reference_not_in_use_user_id, relatedexaminer_id) FROM stdin;
+1	1	\N	1
+2	2	\N	1
+3	4	\N	1
+4	7	\N	1
 \.
 
 
@@ -2933,14 +2945,14 @@ COPY core_assignmentgroup_examiners (id, assignmentgroup_id, old_reference_not_i
 -- Name: core_assignmentgroup_examiners_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_assignmentgroup_examiners_id_seq', 1, false);
+SELECT pg_catalog.setval('core_assignmentgroup_examiners_id_seq', 4, true);
 
 
 --
 -- Name: core_assignmentgroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_assignmentgroup_id_seq', 1, false);
+SELECT pg_catalog.setval('core_assignmentgroup_id_seq', 8, true);
 
 
 --
@@ -2963,6 +2975,14 @@ SELECT pg_catalog.setval('core_assignmentgrouptag_id_seq', 1, false);
 --
 
 COPY core_candidate (id, candidate_id, assignment_group_id, old_reference_not_in_use_student_id, relatedstudent_id) FROM stdin;
+1	\N	1	\N	1
+2	\N	2	\N	2
+3	\N	3	\N	3
+4	\N	4	\N	4
+5	\N	5	\N	5
+6	\N	6	\N	6
+7	\N	7	\N	7
+8	\N	8	\N	8
 \.
 
 
@@ -2970,7 +2990,7 @@ COPY core_candidate (id, candidate_id, assignment_group_id, old_reference_not_in
 -- Name: core_candidate_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_candidate_id_seq', 1, false);
+SELECT pg_catalog.setval('core_candidate_id_seq', 8, true);
 
 
 --
@@ -3159,6 +3179,7 @@ SELECT pg_catalog.setval('core_pointtogrademap_id_seq', 1, false);
 --
 
 COPY core_relatedexaminer (id, tags, period_id, user_id, automatic_anonymous_id, active) FROM stdin;
+1		1	1		t
 \.
 
 
@@ -3166,7 +3187,7 @@ COPY core_relatedexaminer (id, tags, period_id, user_id, automatic_anonymous_id,
 -- Name: core_relatedexaminer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_relatedexaminer_id_seq', 1, false);
+SELECT pg_catalog.setval('core_relatedexaminer_id_seq', 1, true);
 
 
 --
@@ -3635,6 +3656,14 @@ SELECT pg_catalog.setval('devilry_gradingsystem_feedbackdraftfile_id_seq', 1, fa
 --
 
 COPY devilry_group_feedbackset (id, grading_points, created_datetime, grading_published_datetime, deadline_datetime, created_by_id, group_id, grading_published_by_id, gradeform_data_json, is_last_in_group, feedbackset_type) FROM stdin;
+1	\N	2016-01-20 11:17:01.702251+01	\N	\N	1	1	\N		t	feedbackset_type_first_try
+2	\N	2016-01-20 11:17:01.702318+01	\N	\N	1	2	\N		t	feedbackset_type_first_try
+3	\N	2016-01-20 11:17:01.702364+01	\N	\N	1	3	\N		t	feedbackset_type_first_try
+4	\N	2016-01-20 11:17:01.702407+01	\N	\N	1	4	\N		t	feedbackset_type_first_try
+5	\N	2016-01-20 11:17:01.702449+01	\N	\N	1	5	\N		t	feedbackset_type_first_try
+6	\N	2016-01-20 11:17:01.702492+01	\N	\N	1	6	\N		t	feedbackset_type_first_try
+7	\N	2016-01-20 11:17:01.702533+01	\N	\N	1	7	\N		t	feedbackset_type_first_try
+8	\N	2016-01-20 11:17:01.702574+01	\N	\N	1	8	\N		t	feedbackset_type_first_try
 \.
 
 
@@ -3642,7 +3671,7 @@ COPY devilry_group_feedbackset (id, grading_points, created_datetime, grading_pu
 -- Name: devilry_group_feedbackset_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_group_feedbackset_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_group_feedbackset_id_seq', 8, true);
 
 
 --
@@ -3922,6 +3951,7 @@ nptdszmzzip61o80paabkskynqzn7xsg	YjZiOTUzMzEwOGYyNDlkNWZmZDdkOGFlMTEwZGI2ZGE4MGI
 --
 
 COPY ievv_batchframework_batchoperation (id, created_datetime, started_running_datetime, finished_datetime, context_object_id, operationtype, status, result, input_data_json, output_data_json, context_content_type_id, started_by_id) FROM stdin;
+1	2016-01-20 11:17:01.683541+01	2016-01-20 11:17:01.681915+01	2016-01-20 11:17:01.708512+01	1	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
 \.
 
 
@@ -3929,7 +3959,7 @@ COPY ievv_batchframework_batchoperation (id, created_datetime, started_running_d
 -- Name: ievv_batchframework_batchoperation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('ievv_batchframework_batchoperation_id_seq', 1, false);
+SELECT pg_catalog.setval('ievv_batchframework_batchoperation_id_seq', 1, true);
 
 
 --
