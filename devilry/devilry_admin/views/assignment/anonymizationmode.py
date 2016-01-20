@@ -12,7 +12,7 @@ class AssignmentAnonymizationmodeUpdateView(UpdateView):
     fields = ['anonymizationmode']
 
     def get_pagetitle(self):
-        return pgettext_lazy("Edit anonymization settings")
+        return pgettext_lazy('assignment config', "Edit anonymization settings")
 
     def get_queryset_for_role(self, role):
         return self.model.objects.filter(id=self.request.cradmin_role.id)
