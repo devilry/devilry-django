@@ -913,8 +913,8 @@ class PeriodPermissionGroup(models.Model):
     objects = PeriodPermissionGroupQuerySet.as_manager()
 
     class Meta:
-        verbose_name = _('Period permission group')
-        verbose_name_plural = _('Period permission groups')
+        verbose_name = _('Semester permission group')
+        verbose_name_plural = _('Semester permission groups')
         unique_together = (
             ('permissiongroup', 'period'),
         )
@@ -1039,8 +1039,8 @@ class SubjectPermissionGroup(models.Model):
     objects = SubjectPermissionGroupQuerySet.as_manager()
 
     class Meta:
-        verbose_name = _('Subject permission group')
-        verbose_name_plural = _('Subject permission groups')
+        verbose_name = _('Course permission group')
+        verbose_name_plural = _('Course permission groups')
         unique_together = (
             ('permissiongroup', 'subject'),
         )
