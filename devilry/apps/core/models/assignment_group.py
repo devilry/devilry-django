@@ -8,7 +8,8 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 
-from devilry.apps.core.models import Period
+from devilry.apps.core.models import Subject
+from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_comment.models import Comment
 from devilry.utils import devilry_djangoaggregate_functions
 from .node import Node
@@ -190,10 +191,31 @@ class AssignmentGroupQuerySet(models.QuerySet):
         if user.is_superuser:
             return self.all()
         else:
-            periodids_where_is_admin_queryset = Period.objects\
+            subjectids_where_is_admin_queryset = Subject.objects\
                 .filter_user_is_admin(user=user)\
                 .values_list('id', flat=True)
-            return self.filter(parentnode__parentnode_id__in=periodids_where_is_admin_queryset)
+            periodids_where_is_admin_queryset = PeriodPermissionGroup.objects \
+                .filter(models.Q(permissiongroup__users=user))\
+                .values_list('period_id', flat=True)
+            return self.filter(
+                # If anonymous, ignore periodadmins
+                models.Q(
+                    models.Q(
+                        models.Q(parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS) |
+                        models.Q(parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+                    ) &
+                    models.Q(parentnode__parentnode__parentnode_id__in=subjectids_where_is_admin_queryset)
+                ) |
+
+                # If not anonymous, include periodadmins
+                models.Q(
+                    models.Q(parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF) &
+                    models.Q(
+                        models.Q(parentnode__parentnode_id__in=periodids_where_is_admin_queryset) |
+                        models.Q(parentnode__parentnode__parentnode_id__in=subjectids_where_is_admin_queryset)
+                    )
+                )
+            )
 
     def filter_user_is_examiner(self, user):
         """

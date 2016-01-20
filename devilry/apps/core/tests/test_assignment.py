@@ -811,7 +811,7 @@ class TestAssignmentQuerySetFilterIsAdmin(TestCase):
             {testassignment1, testassignment2},
             set(Assignment.objects.filter_user_is_admin(user=testuser)))
 
-    def test_filter_user_is_admin_on_subject_ignore_semi_anonymous(self):
+    def test_filter_user_is_admin_on_subject_include_semi_anonymous(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testsubject = mommy.make('core.Subject')
         testassignment1 = mommy.make('core.Assignment',
@@ -828,7 +828,7 @@ class TestAssignmentQuerySetFilterIsAdmin(TestCase):
             {testassignment1, testassignment2},
             set(Assignment.objects.filter_user_is_admin(user=testuser)))
 
-    def test_filter_user_is_admin_on_subject_ignore_fully_anonymous(self):
+    def test_filter_user_is_admin_on_subject_include_fully_anonymous(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testsubject = mommy.make('core.Subject')
         testassignment1 = mommy.make('core.Assignment',

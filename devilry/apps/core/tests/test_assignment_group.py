@@ -2419,7 +2419,7 @@ class TestAssignmentGroupQuerySetExtraOrderByDatetimeOfLastAdminComment(TestCase
         self.assertEqual(testgroup2, groups[2])  # No admin comment makes this come last
 
 
-class TestAssignmentGroupQuerySetPermission(TestCase):
+class TestAssignmentGroupQuerySetFilterUserIsAdmin(TestCase):
     def test_filter_user_is_admin_is_not_admin_on_anything(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.AssignmentGroup')
@@ -2444,41 +2444,120 @@ class TestAssignmentGroupQuerySetPermission(TestCase):
                 {testgroup},
                 set(AssignmentGroup.objects.filter_user_is_admin(user=testuser)))
 
-    def test_filter_user_is_admin(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup')
-        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
-                                           period=testgroup.period)
-        mommy.make('devilry_account.PermissionGroupUser',
-                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
-        self.assertEqual(
-                {testgroup},
-                set(AssignmentGroup.objects.filter_user_is_admin(user=testuser)))
-
     def test_filter_user_is_admin_on_period(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testperiod = mommy.make('core.Period')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
+        testassignment1 = mommy.make('core.Assignment',
+                                     parentnode=testperiod)
+        testassignment2 = mommy.make('core.Assignment',
+                                     parentnode=testperiod)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
         periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
                                            period=testperiod)
         mommy.make('devilry_account.PermissionGroupUser',
                    user=testuser,
                    permissiongroup=periodpermissiongroup.permissiongroup)
         self.assertEqual(
-                {testgroup},
+                {testgroup1, testgroup2},
+                set(AssignmentGroup.objects.filter_user_is_admin(user=testuser)))
+
+    def test_filter_user_is_admin_on_period_ignore_semi_anonymous(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        testassignment1 = mommy.make('core.Assignment',
+                                     parentnode=testperiod)
+        testassignment2 = mommy.make(
+            'core.Assignment',
+            parentnode=testperiod,
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testperiod)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser,
+                   permissiongroup=periodpermissiongroup.permissiongroup)
+        self.assertEqual(
+                {testgroup1},
+                set(AssignmentGroup.objects.filter_user_is_admin(user=testuser)))
+
+    def test_filter_user_is_admin_on_period_ignore_fully_anonymous(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        testassignment1 = mommy.make('core.Assignment',
+                                     parentnode=testperiod)
+        testassignment2 = mommy.make(
+            'core.Assignment',
+            parentnode=testperiod,
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testperiod)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser,
+                   permissiongroup=periodpermissiongroup.permissiongroup)
+        self.assertEqual(
+                {testgroup1},
                 set(AssignmentGroup.objects.filter_user_is_admin(user=testuser)))
 
     def test_filter_user_is_admin_on_subject(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testsubject = mommy.make('core.Subject')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode__parentnode=testsubject)
+        testassignment1 = mommy.make('core.Assignment',
+                                     parentnode__parentnode=testsubject)
+        testassignment2 = mommy.make('core.Assignment',
+                                     parentnode__parentnode=testsubject)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
         subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
                                             subject=testsubject)
         mommy.make('devilry_account.PermissionGroupUser',
                    user=testuser,
                    permissiongroup=subjectpermissiongroup.permissiongroup)
         self.assertEqual(
-                {testgroup},
+                {testgroup1, testgroup2},
+                set(AssignmentGroup.objects.filter_user_is_admin(user=testuser)))
+
+    def test_filter_user_is_admin_on_subject_include_semi_anonymous(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        testassignment1 = mommy.make('core.Assignment',
+                                     parentnode__parentnode=testsubject)
+        testassignment2 = mommy.make(
+            'core.Assignment',
+            parentnode__parentnode=testsubject,
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser,
+                   permissiongroup=subjectpermissiongroup.permissiongroup)
+        self.assertEqual(
+                {testgroup1, testgroup2},
+                set(AssignmentGroup.objects.filter_user_is_admin(user=testuser)))
+
+    def test_filter_user_is_admin_on_subject_include_fully_anonymous(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        testassignment1 = mommy.make('core.Assignment',
+                                     parentnode__parentnode=testsubject)
+        testassignment2 = mommy.make(
+            'core.Assignment',
+            parentnode__parentnode=testsubject,
+            anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser,
+                   permissiongroup=subjectpermissiongroup.permissiongroup)
+        self.assertEqual(
+                {testgroup1, testgroup2},
                 set(AssignmentGroup.objects.filter_user_is_admin(user=testuser)))
 
     def test_filter_user_is_admin_distinct(self):
