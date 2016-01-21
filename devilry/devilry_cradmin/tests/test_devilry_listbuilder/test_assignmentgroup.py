@@ -300,9 +300,7 @@ class TestPeriodAdminItemValue(test.TestCase):
     def test_anonymous_not_allowed(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        with self.assertRaisesMessage(ValueError,
-                                      'Can not use PeriodAdminItemValue for anonymous assignments. '
-                                      'Periodadmins are not supposed have access to them.'):
+        with self.assertRaisesRegexp(ValueError, '^.*for anonymous assignments.*$'):
             devilry_listbuilder.assignmentgroup.PeriodAdminItemValue(value=testgroup, assignment=testgroup.assignment)
 
     def test_examiners(self):
@@ -375,9 +373,7 @@ class TestSubjectAdminItemValue(test.TestCase):
     def test_fully_anonymous_is_not_allowed(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        with self.assertRaisesMessage(ValueError,
-                                      'Can not use SubjectAdminItemValue for fully anonymous assignments. '
-                                      'Use FullyAnonymousSubjectAdminItemValue istead.'):
+        with self.assertRaisesRegexp(ValueError, '^.*for fully anonymous assignments.*$'):
             devilry_listbuilder.assignmentgroup.SubjectAdminItemValue(value=testgroup, assignment=testgroup.assignment)
 
     def test_examiners(self):
@@ -540,7 +536,8 @@ class TestDepartmentAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
 
-class MockItemValue(devilry_listbuilder.assignmentgroup.AbstractItemValue):
+class MockItemValue(devilry_listbuilder.assignmentgroup.ItemValueMixin,
+                    devilry_listbuilder.assignmentgroup.NoMultiselectItemValue):
     def get_devilryrole(self):
         return 'student'  # Should not affect any of the tests that uses this class
 

@@ -1,3 +1,4 @@
+import mock
 from django import test
 from django.conf import settings
 from django_cradmin import cradmin_testhelpers
@@ -14,6 +15,11 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     devilry.devilry_admin.tests.assignment.students.test_groupview_base.test_baseinforview.TestBaseInfoView
     """
     viewclass = overview.Overview
+
+    def __mockinstance_with_devilryrole(self, devilryrole):
+        mockinstance = mock.MagicMock()
+        mockinstance.get_devilryrole_for_requestuser.return_value = devilryrole
+        return mockinstance
 
     def test_title(self):
         testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
