@@ -162,9 +162,6 @@ class GroupViewMixin(object):
                 total_groupcount=total_groupcount)
         return context
 
-    def get_filterlist_template_name(self):
-        return self.template_name
-
 
 class BaseInfoView(GroupViewMixin, listbuilderview.FilterListMixin, listbuilderview.View):
     template_name = 'devilry_admin/assignment/students/groupview_base/base-info-view.django.html'
@@ -182,3 +179,6 @@ class BaseInfoView(GroupViewMixin, listbuilderview.FilterListMixin, listbuilderv
             return devilry_listbuilder.assignmentgroup.PeriodAdminItemValue
         else:
             raise ValueError('Invalid devilryrole: {}'.format(devilryrole))
+
+    def get_filterlist_template_name(self):
+        return self.template_name
