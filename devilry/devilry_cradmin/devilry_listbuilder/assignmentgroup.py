@@ -1,3 +1,4 @@
+from django.template.loader import render_to_string
 from django_cradmin.viewhelpers import listbuilder
 from django_cradmin.viewhelpers import multiselect2
 
@@ -143,14 +144,64 @@ class DepartmentAdminItemValue(DepartmentAdminItemValueMixin, NoMultiselectItemV
 # ItemValue classes for multiselect
 #
 #
-class SelectedGroupMinimal(multiselect2.selected_item_renderer.SelectedItem):
-    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/selected-group-minimal.django.html'
 
 
-class FullyAnonymousSelectedItem(multiselect2.selected_item_renderer.SelectedItem):
+class BaseSelectedItem(multiselect2.selected_item_renderer.SelectedItem):
+    valuealias = 'group'
+
+    def __init__(self, value, assignment):
+        self.assignment = assignment
+        super(BaseSelectedItem, self).__init__(value=value)
+
+    def get_assignment(self):
+        return self.assignment
+
+    def get_title(self):
+        return self.group.get_unanonymized_long_displayname()
+
+
+class MinimalUnanonymizedSelectedItem(BaseSelectedItem):
     valuealias = 'group'
     template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/' \
-                    'fully-anonymous-subjectadmin-selected-group.django.html'
+                    'minimal-unanonymized-selected-item.django.html'
+
+    def get_all_candidate_users(self):
+        return [candidate.relatedstudent.user
+                for candidate in self.group.candidates.all()]
+
+
+class SelectedItemFull(BaseSelectedItem):
+    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/selected-item-full.django.html'
+
+    def get_devilryrole(self):
+        raise NotImplementedError()
+
+
+class SelectedItemFullExaminer(SelectedItemFull):
+    def get_title(self):
+        if self.get_assignment().students_must_be_anonymized_for_devilryrole(
+                devilryrole='examiner'):
+            return self.group.get_anonymous_displayname()
+        else:
+            return super(SelectedItemFullExaminer, self).get_title()
+
+    def get_devilryrole(self):
+        return 'examiner'
+
+
+class SelectedItemFullPeriodAdmin(SelectedItemFull):
+    def get_devilryrole(self):
+        return 'periodadmin'
+
+
+class SelectedItemFullSubjectAdmin(SelectedItemFull):
+    def get_devilryrole(self):
+        return 'subjectadmin'
+
+
+class SelectedItemFullDepartmentAdmin(SelectedItemFull):
+    def get_devilryrole(self):
+        return 'departmentadmin'
 
 
 class FullyAnonymousSubjectAdminMultiselectItemValue(FullyAnonymousSubjectAdminItemValueMixin,
@@ -170,11 +221,14 @@ class FullyAnonymousSubjectAdminMultiselectItemValue(FullyAnonymousSubjectAdminI
     """
     template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/' \
                     'multiselect-fully-anonymous-subjectadmin-group-item-value.django.html'
-    selected_item_renderer_class = SelectedGroupMinimal
+    selected_item_renderer_class = MinimalUnanonymizedSelectedItem
 
+    def get_title(self):
+        return self.group.get_unanonymized_long_displayname()
 
-class SelectedGroupFull(multiselect2.selected_item_renderer.SelectedItem):
-    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/selected-group-full.django.html'
+    def make_selected_item_renderer(self):
+        return MinimalUnanonymizedSelectedItem(
+            value=self.value, assignment=self.get_assignment())
 
 
 class MultiselectItemValue(multiselect2.listbuilder_itemvalues.ItemValue):
@@ -182,20 +236,34 @@ class MultiselectItemValue(multiselect2.listbuilder_itemvalues.ItemValue):
     Not used directly - use one of the subclasses.
     """
     template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/multiselect-item-value.django.html'
-    selected_item_renderer_class = SelectedGroupMinimal
+    selected_item_renderer_class = SelectedItemFull
+
+    def get_title(self):
+        return self.group.get_unanonymized_long_displayname()
+
+    def make_selected_item_renderer(self):
+        return self.selected_item_renderer_class(
+            value=self.value, assignment=self.get_assignment())
 
 
 class ExaminerMultiselectItemValue(ExaminerItemValueMixin, MultiselectItemValue):
     template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/multiselect-examiner-item-value.django.html'
+    selected_item_renderer_class = SelectedItemFullExaminer
+
+    def get_title(self):
+        if self.get_assignment().students_must_be_anonymized_for_devilryrole(devilryrole='examiner'):
+            return self.group.get_anonymous_displayname()
+        else:
+            return self.group.get_unanonymized_long_displayname()
 
 
 class PeriodAdminMultiselectItemValue(PeriodAdminItemValueMixin, MultiselectItemValue):
-    pass
+    selected_item_renderer_class = SelectedItemFullPeriodAdmin
 
 
 class SubjectAdminMultiselectItemValue(SubjectAdminItemValueMixin, MultiselectItemValue):
-    pass
+    selected_item_renderer_class = SelectedItemFullSubjectAdmin
 
 
 class DepartmentAdminMultiselectItemValue(DepartmentAdminItemValueMixin, MultiselectItemValue):
-    pass
+    selected_item_renderer_class = SelectedItemFullDepartmentAdmin

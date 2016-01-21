@@ -627,6 +627,37 @@ class TestFullyAnonymousSubjectAdminMultiselectItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
+    def test_arialabels_fully_anonymous_is_not_anonymized(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Select "Test User"',
+            selector.one('.django-cradmin-multiselect2-itemvalue-button')['aria-label'])
+        self.assertEqual(
+            'Deselect "Test User"',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-deselectbutton')['aria-label'])
+
+    def test_selected_item_title(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+
 
 class TestExaminerMultiselectItemValue(test.TestCase):
     def test_name(self):
@@ -664,6 +695,93 @@ class TestExaminerMultiselectItemValue(test.TestCase):
         self.assertEqual(
             'MyAnonymousID',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_selected_item_title_not_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+
+    def test_selected_item_title_semi_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'MyAnonymousID',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+
+    def test_selected_item_title_fully_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'MyAnonymousID',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+
+    def test_arialabels_not_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Select "Test User"',
+            selector.one('.django-cradmin-multiselect2-itemvalue-button')['aria-label'])
+        self.assertEqual(
+            'Deselect "Test User"',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-deselectbutton')['aria-label'])
+
+    def test_arialabels_semi_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Select "MyAnonymousID"',
+            selector.one('.django-cradmin-multiselect2-itemvalue-button')['aria-label'])
+        self.assertEqual(
+            'Deselect "MyAnonymousID"',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-deselectbutton')['aria-label'])
+
+    def test_arialabels_fully_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Select "MyAnonymousID"',
+            selector.one('.django-cradmin-multiselect2-itemvalue-button')['aria-label'])
+        self.assertEqual(
+            'Deselect "MyAnonymousID"',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_examiners_include_examiners_false(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -734,6 +852,10 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             'Unpublished feedback draft: passed (1/1)',
             selector.one('.devilry-cradmin-groupitemvalue-unpublished-feedbackdraft').alltext_normalized)
 
+    def __get_both_grades(self, selector):
+        return [element.alltext_normalized
+                for element in selector.list('.devilry-cradmin-groupitemvalue-grade')]
+
     def test_grade_students_can_see_points_false(self):
         devilry_group_mommy_factories.feedbackset_first_try_published(
             group__parentnode__students_can_see_points=False,
@@ -745,8 +867,8 @@ class TestExaminerMultiselectItemValue(test.TestCase):
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
-            'Grade: passed (1/1)',
-            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+            ['Grade: passed (1/1)', 'Grade: passed (1/1)'],
+            self.__get_both_grades(selector))
 
     def test_grade_students_can_see_points_true(self):
         devilry_group_mommy_factories.feedbackset_first_try_published(
@@ -759,11 +881,18 @@ class TestExaminerMultiselectItemValue(test.TestCase):
         selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
-            'Grade: passed (1/1)',
-            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+            ['Grade: passed (1/1)', 'Grade: passed (1/1)'],
+            self.__get_both_grades(selector))
 
 
 class TestPeriodAdminMultiselectItemValue(test.TestCase):
+    def test_anonymous_not_allowed(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        with self.assertRaisesRegexp(ValueError, '^.*for anonymous assignments.*$'):
+            devilry_listbuilder.assignmentgroup.PeriodAdminMultiselectItemValue(
+                    value=testgroup, assignment=testgroup.assignment)
+
     def test_name(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('core.Candidate',
@@ -776,12 +905,34 @@ class TestPeriodAdminMultiselectItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
-    def test_anonymous_not_allowed(self):
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        with self.assertRaisesRegexp(ValueError, '^.*for anonymous assignments.*$'):
-            devilry_listbuilder.assignmentgroup.PeriodAdminMultiselectItemValue(
-                    value=testgroup, assignment=testgroup.assignment)
+    def test_selected_item_title(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.PeriodAdminMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+
+    def test_arialabels(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.PeriodAdminMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Select "Test User"',
+            selector.one('.django-cradmin-multiselect2-itemvalue-button')['aria-label'])
+        self.assertEqual(
+            'Deselect "Test User"',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_examiners(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -795,6 +946,10 @@ class TestPeriodAdminMultiselectItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
+    def __get_both_grades(self, selector):
+        return [element.alltext_normalized
+                for element in selector.list('.devilry-cradmin-groupitemvalue-grade')]
+
     def test_grade_students_can_see_points_false(self):
         devilry_group_mommy_factories.feedbackset_first_try_published(
             group__parentnode__students_can_see_points=False,
@@ -806,8 +961,8 @@ class TestPeriodAdminMultiselectItemValue(test.TestCase):
         selector = htmls.S(devilry_listbuilder.assignmentgroup.PeriodAdminMultiselectItemValue(
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
-            'Grade: passed (1/1)',
-            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+            ['Grade: passed (1/1)', 'Grade: passed (1/1)'],
+            self.__get_both_grades(selector))
 
     def test_grade_students_can_see_points_true(self):
         devilry_group_mommy_factories.feedbackset_first_try_published(
@@ -820,11 +975,17 @@ class TestPeriodAdminMultiselectItemValue(test.TestCase):
         selector = htmls.S(devilry_listbuilder.assignmentgroup.PeriodAdminMultiselectItemValue(
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
-            'Grade: passed (1/1)',
-            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+            ['Grade: passed (1/1)', 'Grade: passed (1/1)'],
+            self.__get_both_grades(selector))
 
 
 class TestSubjectAdminMultiselectItemValue(test.TestCase):
+    def test_fully_anonymous_is_not_allowed(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        with self.assertRaisesRegexp(ValueError, '^.*for fully anonymous assignments.*$'):
+            devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(value=testgroup, assignment=testgroup.assignment)
+
     def test_name(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('core.Candidate',
@@ -850,11 +1011,65 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
-    def test_fully_anonymous_is_not_allowed(self):
+    def test_selected_item_title(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+
+    def test_selected_item_title_semi_anonymous(self):
         testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        with self.assertRaisesRegexp(ValueError, '^.*for fully anonymous assignments.*$'):
-            devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(value=testgroup, assignment=testgroup.assignment)
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+
+    def test_arialabels(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Select "Test User"',
+            selector.one('.django-cradmin-multiselect2-itemvalue-button')['aria-label'])
+        self.assertEqual(
+            'Deselect "Test User"',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-deselectbutton')['aria-label'])
+
+    def test_arialabels_semi_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Select "Test User"',
+            selector.one('.django-cradmin-multiselect2-itemvalue-button')['aria-label'])
+        self.assertEqual(
+            'Deselect "Test User"',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-deselectbutton')['aria-label'])
 
     def test_examiners(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -881,6 +1096,10 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
+    def __get_both_grades(self, selector):
+        return [element.alltext_normalized
+                for element in selector.list('.devilry-cradmin-groupitemvalue-grade')]
+
     def test_grade_students_can_see_points_false(self):
         devilry_group_mommy_factories.feedbackset_first_try_published(
             group__parentnode__students_can_see_points=False,
@@ -892,8 +1111,8 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
         selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
-            'Grade: passed (1/1)',
-            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+            ['Grade: passed (1/1)', 'Grade: passed (1/1)'],
+            self.__get_both_grades(selector))
 
     def test_grade_students_can_see_points_true(self):
         devilry_group_mommy_factories.feedbackset_first_try_published(
@@ -906,8 +1125,8 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
         selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
-            'Grade: passed (1/1)',
-            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+            ['Grade: passed (1/1)', 'Grade: passed (1/1)'],
+            self.__get_both_grades(selector))
 
 
 class TestDepartmentAdminMultiselectItemValue(test.TestCase):
@@ -949,6 +1168,47 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
+    def test_selected_item_title(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+
+    def test_selected_item_title_semi_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+
+    def test_selected_item_title_fully_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
+
     def test_examiners(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('core.Examiner',
@@ -987,6 +1247,10 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
+    def __get_both_grades(self, selector):
+        return [element.alltext_normalized
+                for element in selector.list('.devilry-cradmin-groupitemvalue-grade')]
+
     def test_grade_students_can_see_points_false(self):
         devilry_group_mommy_factories.feedbackset_first_try_published(
             group__parentnode__students_can_see_points=False,
@@ -998,8 +1262,8 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
         selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminMultiselectItemValue(
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
-            'Grade: passed (1/1)',
-            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+            ['Grade: passed (1/1)', 'Grade: passed (1/1)'],
+            self.__get_both_grades(selector))
 
     def test_grade_students_can_see_points_true(self):
         devilry_group_mommy_factories.feedbackset_first_try_published(
@@ -1012,8 +1276,8 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
         selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminMultiselectItemValue(
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
-            'Grade: passed (1/1)',
-            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+            ['Grade: passed (1/1)', 'Grade: passed (1/1)'],
+            self.__get_both_grades(selector))
 
 
 class MockMultiselectItemValue(devilry_listbuilder.assignmentgroup.ItemValueMixin,
