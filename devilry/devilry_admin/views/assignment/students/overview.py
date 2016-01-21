@@ -43,12 +43,10 @@ class Overview(listbuilderview.FilterListMixin, listbuilderview.View):
             'filter',
             kwargs={'filters_string': filters_string})
 
-    def get_listbuilder_list_kwargs(self):
-        kwargs = super(Overview, self).get_listbuilder_list_kwargs()
-        kwargs['value_and_frame_renderer_kwargs'] = {
+    def get_value_and_frame_renderer_kwargs(self):
+        return {
             'assignment': self.assignment
         }
-        return kwargs
 
     def add_filterlist_items(self, filterlist):
         filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())

@@ -46,12 +46,10 @@ class GroupListView(listbuilderview.FilterListMixin,
             'filter',
             kwargs={'filters_string': filters_string})
 
-    def get_listbuilder_list_kwargs(self):
-        kwargs = super(GroupListView, self).get_listbuilder_list_kwargs()
-        kwargs['value_and_frame_renderer_kwargs'] = {
+    def get_value_and_frame_renderer_kwargs(self):
+        return {
             'assignment': self.assignment
         }
-        return kwargs
 
     def __add_filterlist_items_anonymous_uses_custom_candidate_ids(self, filterlist):
         filterlist.append(devilry_listfilter.assignmentgroup.SearchAnonymousUsesCustomCandidateIds())
