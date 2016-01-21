@@ -1458,7 +1458,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup.assignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
             requestuser=testuser)
         self.assertIn('unanonymizedfullname', mockresponse.response.content)
         self.assertIn('A un-anonymized fullname', mockresponse.response.content)
@@ -1480,7 +1480,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup.assignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
             requestuser=testuser)
         self.assertIn('unanonymizedfullname', mockresponse.response.content)
         self.assertIn('A un-anonymized fullname', mockresponse.response.content)
@@ -1500,30 +1500,119 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup.assignment,
-                                                          cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-                                                          requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
+            requestuser=testuser)
         self.assertIn('unanonymizedfullname', mockresponse.response.content)
         self.assertIn('A un-anonymized fullname', mockresponse.response.content)
         self.assertNotIn('MyAnonymousID', mockresponse.response.content)
 
-    def test_search_anonymous_nomatch_candidate_id_from_candidate(self):
+    def test_anonymizationmode_fully_anonymous_subjectadmin_no_examiners(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode=mommy.make_recipe(
                                    'devilry.apps.core.assignment_activeperiod_start',
-                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
-        mommy.make('core.Candidate',
-                   assignment_group=testgroup,
-                   candidate_id='MyCandidateID')
+                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
+                requestuser=testuser)
+        self.assertFalse(mockresponse.selector.exists('.devilry-cradmin-groupitemvalue-examiners'))
+
+    def test_anonymizationmode_fully_anonymous_departmentadmin_has_examiners(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                   'devilry.apps.core.assignment_activeperiod_start',
+                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testgroup.assignment,
                 cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-                viewkwargs={'filters_string': 'search-MyCandidateID'},
                 requestuser=testuser)
-        self.assertEqual(
-            0,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-cradmin-groupitemvalue-examiners'))
+
+    def test_anonymizationmode_fully_anonymous_subjectadmin_no_status(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                   'devilry.apps.core.assignment_activeperiod_start',
+                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
+                requestuser=testuser)
+        self.assertFalse(mockresponse.selector.exists('.devilry-cradmin-groupitemvalue-status'))
+
+    def test_anonymizationmode_fully_anonymous_departmentadmin_has_status(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                   'devilry.apps.core.assignment_activeperiod_start',
+                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+                requestuser=testuser)
+        self.assertTrue(mockresponse.selector.exists('.devilry-cradmin-groupitemvalue-status'))
+
+    def test_anonymizationmode_fully_anonymous_subjectadmin_no_grade(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                   'devilry.apps.core.assignment_activeperiod_start',
+                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup, grading_points=3)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
+                requestuser=testuser)
+        self.assertFalse(mockresponse.selector.exists('.devilry-cradmin-groupitemvalue-grade'))
+
+    def test_anonymizationmode_fully_anonymous_departmentadmin_has_grade(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                   'devilry.apps.core.assignment_activeperiod_start',
+                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup, grading_points=3)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+                requestuser=testuser)
+        self.assertTrue(mockresponse.selector.exists('.devilry-cradmin-groupitemvalue-grade'))
+
+    def test_anonymizationmode_fully_anonymous_subjectadmin_no_comments(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                   'devilry.apps.core.assignment_activeperiod_start',
+                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
+                requestuser=testuser)
+        self.assertFalse(mockresponse.selector.exists('.devilry-cradmin-groupitemvalue-comments'))
+
+    def test_anonymizationmode_fully_anonymous_departmentadmin_has_comments(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                   'devilry.apps.core.assignment_activeperiod_start',
+                                   anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+                requestuser=testuser)
+        self.assertTrue(mockresponse.selector.exists('.devilry-cradmin-groupitemvalue-comments'))
 
     def test_orderby_default_semi_anonymous(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
