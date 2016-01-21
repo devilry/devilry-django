@@ -10,14 +10,17 @@ from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
 
 
-class MergeGroupsTargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
+class DeleteGroupsTargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
     def get_submit_button_text(self):
-        return ugettext_lazy('Create project group')
+        return ugettext_lazy('Delete students')
+
+    def get_with_items_title(self):
+        return ugettext_lazy('Delete the following students:')
 
 
-class MergeGroupsView(groupview_base.BaseMultiselectView):
+class DeleteGroupsView(groupview_base.BaseMultiselectView):
     filterview_name = 'filter'
-    template_name = 'devilry_admin/assignment/students/merge_groups.django.html'
+    template_name = 'devilry_admin/assignment/students/delete_groups.django.html'
 
     def add_filterlist_items(self, filterlist):
         filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())
@@ -27,7 +30,22 @@ class MergeGroupsView(groupview_base.BaseMultiselectView):
         filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
 
     def get_target_renderer_class(self):
-        return MergeGroupsTargetRenderer
+        return DeleteGroupsTargetRenderer
+
+    def has_delete_with_content_permission(self):
+        return self.request.cradmin_instance.get_devilryrole_for_requestuser() == 'departmentadmin'
+
+    def get_unfiltered_queryset_for_role(self, role):
+        queryset = super(DeleteGroupsView, self).get_unfiltered_queryset_for_role(role=role)
+        if self.has_delete_with_content_permission():
+            return queryset
+        else:
+            return queryset\
+                .exclude(number_of_groupcomments_from_students__gt=0)\
+                .exclude(number_of_imageannotationcomments_from_students__gt=0)\
+                .exclude(number_of_groupcomments_from_examiners__gt=0)\
+                .exclude(number_of_imageannotationcomments_from_examiners__gt=0)\
+                .exclude(number_of_published_feedbacksets__gt=0)
 
     def form_valid(self, form):
         messages.warning(
@@ -39,9 +57,9 @@ class MergeGroupsView(groupview_base.BaseMultiselectView):
 class App(crapp.App):
     appurls = [
         crapp.Url(r'^$',
-                  MergeGroupsView.as_view(),
+                  DeleteGroupsView.as_view(),
                   name=crapp.INDEXVIEW_NAME),
         crapp.Url(r'^filter/(?P<filters_string>.+)?$',
-                  MergeGroupsView.as_view(),
+                  DeleteGroupsView.as_view(),
                   name='filter'),
     ]

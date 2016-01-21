@@ -119,8 +119,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=mock_cradmin_instance)
         self.assertEqual(
-            # '/delete_groups/INDEX',
-            '#',
+            '/delete_groups/INDEX',
             mockresponse.selector
             .one('#devilry_admin_assignment_students_overview_choice_delete_groups a')['href'])
 

@@ -1,0 +1,25 @@
+{% extends "devilry_admin/assignment/students/groupview_base/base-multiselect-view.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block title %}
+    {% trans "Delete students" %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {% trans "Delete students" %}
+    </h1>
+    <p>
+        {% trans 'Select one or more students, and select "Delete students".' %}
+        {% if not has_delete_with_content_permission %}
+            {% trans "You do not have permission to delete students with deliveries and/or feedback, so those students are not available in the list below." %}
+        {% endif %}
+    </p>
+    {% if has_delete_with_content_permission %}
+        <div class="alert alert-warning">
+            {% trans "You have permission to remove students with deliveries and/or feedback, so be careful before you click the delete button!" %}
+        </div>
+    {% endif %}
+
+{% endblock pageheader-inner %}
