@@ -143,6 +143,16 @@ class DepartmentAdminItemValue(DepartmentAdminItemValueMixin, NoMultiselectItemV
 # ItemValue classes for multiselect
 #
 #
+class SelectedGroupMinimal(multiselect2.selected_item_renderer.SelectedItem):
+    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/selected-group-minimal.django.html'
+
+
+class FullyAnonymousSelectedItem(multiselect2.selected_item_renderer.SelectedItem):
+    valuealias = 'group'
+    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/' \
+                    'fully-anonymous-subjectadmin-selected-group.django.html'
+
+
 class FullyAnonymousSubjectAdminMultiselectItemValue(FullyAnonymousSubjectAdminItemValueMixin,
                                                      multiselect2.listbuilder_itemvalues.ItemValue):
     """
@@ -160,6 +170,11 @@ class FullyAnonymousSubjectAdminMultiselectItemValue(FullyAnonymousSubjectAdminI
     """
     template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/' \
                     'multiselect-fully-anonymous-subjectadmin-group-item-value.django.html'
+    selected_item_renderer_class = SelectedGroupMinimal
+
+
+class SelectedGroupFull(multiselect2.selected_item_renderer.SelectedItem):
+    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/selected-group-full.django.html'
 
 
 class MultiselectItemValue(multiselect2.listbuilder_itemvalues.ItemValue):
@@ -167,6 +182,7 @@ class MultiselectItemValue(multiselect2.listbuilder_itemvalues.ItemValue):
     Not used directly - use one of the subclasses.
     """
     template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/multiselect-item-value.django.html'
+    selected_item_renderer_class = SelectedGroupMinimal
 
 
 class ExaminerMultiselectItemValue(ExaminerItemValueMixin, MultiselectItemValue):

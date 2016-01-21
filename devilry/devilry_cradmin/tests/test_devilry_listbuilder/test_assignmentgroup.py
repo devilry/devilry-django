@@ -30,7 +30,7 @@ class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
                 value=testgroup,
                 assignment=testgroup.assignment)
 
-    def test_name_fully_anonymous_is_not_anoymized(self):
+    def test_name_fully_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         mommy.make('core.Candidate',
@@ -58,7 +58,7 @@ class TestStudentItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
-    def test_name_semi_anonymous_is_not_anoymized(self):
+    def test_name_semi_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         mommy.make('core.Candidate',
@@ -71,7 +71,7 @@ class TestStudentItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
-    def test_name_fully_anonymous_is_not_anoymized(self):
+    def test_name_fully_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         mommy.make('core.Candidate',
@@ -443,7 +443,7 @@ class TestDepartmentAdminItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
-    def test_name_semi_anonymous_is_not_anoymized(self):
+    def test_name_semi_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         mommy.make('core.Candidate',
@@ -456,7 +456,7 @@ class TestDepartmentAdminItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
-    def test_name_fully_anonymous_is_not_anoymized(self):
+    def test_name_fully_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         mommy.make('core.Candidate',
@@ -613,7 +613,7 @@ class TestFullyAnonymousSubjectAdminMultiselectItemValue(test.TestCase):
                 value=testgroup,
                 assignment=testgroup.assignment)
 
-    def test_name_fully_anonymous_is_not_anoymized(self):
+    def test_name_fully_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         mommy.make('core.Candidate',
@@ -923,7 +923,7 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
-    def test_name_semi_anonymous_is_not_anoymized(self):
+    def test_name_semi_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         mommy.make('core.Candidate',
@@ -936,7 +936,7 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             'Test User(testuser@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
-    def test_name_fully_anonymous_is_not_anoymized(self):
+    def test_name_fully_anonymous_is_not_anonymized(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         mommy.make('core.Candidate',
