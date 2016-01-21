@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.db.models.functions import Lower, Concat
 from django_cradmin.viewhelpers import listbuilderview
+from django_cradmin.viewhelpers import multiselect2view
 
 from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer, Assignment
@@ -180,5 +181,20 @@ class BaseInfoView(GroupViewMixin, listbuilderview.FilterListMixin, listbuilderv
         else:
             raise ValueError('Invalid devilryrole: {}'.format(devilryrole))
 
-    def get_filterlist_template_name(self):
-        return self.template_name
+
+class BaseMultiselectView(GroupViewMixin, multiselect2view.ListbuilderFilterView):
+    template_name = 'devilry_admin/assignment/students/groupview_base/base-multiselect-view.django.html'
+
+    def get_value_renderer_class(self):
+        devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()
+        if devilryrole == 'departmentadmin':
+            return devilry_listbuilder.assignmentgroup.DepartmentAdminMultiselectItemValue
+        elif devilryrole == 'subjectadmin':
+            if self.assignment.anonymizationmode == Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
+                return devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminMultiselectItemValue
+            else:
+                return devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue
+        elif devilryrole == 'periodadmin':
+            return devilry_listbuilder.assignmentgroup.PeriodAdminMultiselectItemValue
+        else:
+            raise ValueError('Invalid devilryrole: {}'.format(devilryrole))

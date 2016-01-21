@@ -39,21 +39,6 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             'Students on Test Assignment',
             mockresponse.selector.one('h1').alltext_normalized)
 
-    def test_filter_all_empty(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            requestuser=testuser)
-        self.assertEqual(
-            'You have no students for this assignment. Add students using the link above.',
-            mockresponse.selector.one('.devilry-admin-grouplist-empty').alltext_normalized)
-        self.assertTrue(
-            mockresponse.selector.one('.devilry-admin-grouplist-empty').hasclass(
-                'devilry-admin-grouplist-empty-all'))
-
     def test_choices_sanity(self):
         testassignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(

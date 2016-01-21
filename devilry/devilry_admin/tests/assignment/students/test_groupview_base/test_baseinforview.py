@@ -100,6 +100,21 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('.devilry-admin-grouplist-empty').hasclass(
                 'devilry-admin-grouplist-empty-corrected'))
 
+    def test_filter_all_empty(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            requestuser=testuser)
+        self.assertEqual(
+            'There is no students registered for this assignment.',
+            mockresponse.selector.one('.devilry-admin-grouplist-empty').alltext_normalized)
+        self.assertTrue(
+            mockresponse.selector.one('.devilry-admin-grouplist-empty').hasclass(
+                'devilry-admin-grouplist-empty-all'))
+
     def test_group_render_title_name_order(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
