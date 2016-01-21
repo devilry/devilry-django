@@ -61,14 +61,6 @@ class AbstractItemValue(listbuilder.itemvalue.TitleDescription):
     def get_examiners(self):
         return self._examiners
 
-    # def get_extra_css_classes_list(self):
-    #     css_classes = ['devilry-examiner-listbuilder-assignmentlist-assignmentitemvalue']
-    #     if self.group.waiting_for_feedback_count > 0:
-    #         css_classes.append('devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning')
-    #     else:
-    #         css_classes.append('devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-muted')
-    #     return css_classes
-
 
 class StudentItemValue(AbstractItemValue):
     def get_devilryrole(self):
