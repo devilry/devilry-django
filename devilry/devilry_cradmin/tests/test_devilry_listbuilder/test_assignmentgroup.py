@@ -15,7 +15,7 @@ class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         with self.assertRaisesMessage(ValueError,
                                       'Can only use FullyAnonymousSubjectAdminItemValue for fully '
-                                      'anonymous assignments. Use SubjectAdminItemValue istead.'):
+                                      'anonymous assignments.'):
             devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue(
                 value=testgroup,
                 assignment=testgroup.assignment)
@@ -25,7 +25,7 @@ class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
                                parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         with self.assertRaisesMessage(ValueError,
                                       'Can only use FullyAnonymousSubjectAdminItemValue for fully '
-                                      'anonymous assignments. Use SubjectAdminItemValue istead.'):
+                                      'anonymous assignments.'):
             devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminItemValue(
                 value=testgroup,
                 assignment=testgroup.assignment)
@@ -536,8 +536,8 @@ class TestDepartmentAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
 
-class MockItemValue(devilry_listbuilder.assignmentgroup.ItemValueMixin,
-                    devilry_listbuilder.assignmentgroup.NoMultiselectItemValue):
+class MockNoMultiselectItemValue(devilry_listbuilder.assignmentgroup.ItemValueMixin,
+                                 devilry_listbuilder.assignmentgroup.NoMultiselectItemValue):
     def get_devilryrole(self):
         return 'student'  # Should not affect any of the tests that uses this class
 
@@ -547,14 +547,14 @@ class TestItemValue(test.TestCase):
         devilry_group_mommy_factories.feedbackset_first_try_published(
             grading_points=1)
         testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
-        selector = htmls.S(MockItemValue(value=testgroup, assignment=testgroup.assignment).render())
+        selector = htmls.S(MockNoMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-status'))
 
     def test_status_is_waiting_for_feedback(self):
         devilry_group_mommy_factories.feedbackset_first_try_unpublished(
             group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
         testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
-        selector = htmls.S(MockItemValue(value=testgroup, assignment=testgroup.assignment).render())
+        selector = htmls.S(MockNoMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Status: waiting for feedback',
             selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)
@@ -565,7 +565,7 @@ class TestItemValue(test.TestCase):
             group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                 first_deadline=timezone.now() + timedelta(days=2)))
         testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
-        selector = htmls.S(MockItemValue(value=testgroup, assignment=testgroup.assignment).render())
+        selector = htmls.S(MockNoMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
             'Status: waiting for deliveries',
             selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)
@@ -574,7 +574,7 @@ class TestItemValue(test.TestCase):
     def test_grade_not_available_unless_corrected(self):
         devilry_group_mommy_factories.feedbackset_first_try_unpublished()
         testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
-        selector = htmls.S(MockItemValue(value=testgroup, assignment=testgroup.assignment).render())
+        selector = htmls.S(MockNoMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_grade_comment_summary_is_available(self):
@@ -586,7 +586,487 @@ class TestItemValue(test.TestCase):
             .annotate_with_number_of_groupcomments_from_admins()\
             .first()
 
-        selector = htmls.S(MockItemValue(value=testgroup, assignment=testgroup.assignment).render())
+        selector = htmls.S(MockNoMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
+        self.assertTrue(selector.exists('.devilry-cradmin-groupitemvalue-comments'))
+        self.assertEqual(
+            '0 comments from student. 0 files from student. 0 comments from examiner.',
+            selector.one('.devilry-cradmin-groupitemvalue-comments').alltext_normalized)
+
+
+class TestFullyAnonymousSubjectAdminMultiselectItemValue(test.TestCase):
+    def test_non_anonymous_not_allowed(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        with self.assertRaisesMessage(ValueError,
+                                      'Can only use FullyAnonymousSubjectAdminMultiselectItemValue for fully '
+                                      'anonymous assignments.'):
+            devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminMultiselectItemValue(
+                value=testgroup,
+                assignment=testgroup.assignment)
+
+    def test_semi_anonymous_is_not_allowed(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        with self.assertRaisesMessage(ValueError,
+                                      'Can only use FullyAnonymousSubjectAdminMultiselectItemValue for fully '
+                                      'anonymous assignments.'):
+            devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminMultiselectItemValue(
+                value=testgroup,
+                assignment=testgroup.assignment)
+
+    def test_name_fully_anonymous_is_not_anoymized(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.FullyAnonymousSubjectAdminMultiselectItemValue(
+            value=testgroup,
+            assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+
+class TestExaminerMultiselectItemValue(test.TestCase):
+    def test_name(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_name_semi_anonymous_is_anonymized(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'MyAnonymousID',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_name_fully_anonymous_is_anonymized(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'MyAnonymousID',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_examiners_include_examiners_false(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment, include_examiners=False).render())
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-examiners-names'))
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-examiners'))
+
+    def test_examiners_include_examiners_true(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment, include_examiners=True).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_examiners_semi_anonymous_include_examiners_true(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment, include_examiners=True).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_examiners_fully_anonymous_include_examiners_true(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment, include_examiners=True).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_has_unpublished_feedbackdraft_draft_false(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(grading_points=1),
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_grading_points()\
+            .annotate_with_has_unpublished_feedbackdraft().first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-unpublished-feedbackdraft'))
+
+    def test_has_unpublished_feedbackdraft_draft_true(self):
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(grading_points=1),
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_grading_points()\
+            .annotate_with_has_unpublished_feedbackdraft().first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Unpublished feedback draft: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-unpublished-feedbackdraft').alltext_normalized)
+
+    def test_grade_students_can_see_points_false(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=False,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+    def test_grade_students_can_see_points_true(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=True,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+
+class TestPeriodAdminMultiselectItemValue(test.TestCase):
+    def test_name(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.PeriodAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_anonymous_not_allowed(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        with self.assertRaisesRegexp(ValueError, '^.*for anonymous assignments.*$'):
+            devilry_listbuilder.assignmentgroup.PeriodAdminMultiselectItemValue(
+                    value=testgroup, assignment=testgroup.assignment)
+
+    def test_examiners(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.PeriodAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_grade_students_can_see_points_false(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=False,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.PeriodAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+    def test_grade_students_can_see_points_true(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=True,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.PeriodAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+
+class TestSubjectAdminMultiselectItemValue(test.TestCase):
+    def test_name(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_name_semi_anonymous_is_not_anonymized(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_fully_anonymous_is_not_allowed(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        with self.assertRaisesRegexp(ValueError, '^.*for fully anonymous assignments.*$'):
+            devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(value=testgroup, assignment=testgroup.assignment)
+
+    def test_examiners(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_examiners_semi_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_grade_students_can_see_points_false(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=False,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+    def test_grade_students_can_see_points_true(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=True,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.SubjectAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+
+class TestDepartmentAdminMultiselectItemValue(test.TestCase):
+    def test_name(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_name_semi_anonymous_is_not_anoymized(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_name_fully_anonymous_is_not_anoymized(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_examiners(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_examiners_semi_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_examiners_fully_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_grade_students_can_see_points_false(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=False,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+    def test_grade_students_can_see_points_true(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=True,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(devilry_listbuilder.assignmentgroup.DepartmentAdminMultiselectItemValue(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+
+class MockMultiselectItemValue(devilry_listbuilder.assignmentgroup.ItemValueMixin,
+                               devilry_listbuilder.assignmentgroup.NoMultiselectItemValue):
+    def get_devilryrole(self):
+        return 'student'  # Should not affect any of the tests that uses this class
+
+
+class TestMultiselectItemValue(test.TestCase):
+    def test_status_is_corrected(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            grading_points=1)
+        testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        selector = htmls.S(MockMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-status'))
+
+    def test_status_is_waiting_for_feedback(self):
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+        selector = htmls.S(MockMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Status: waiting for feedback',
+            selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
+
+    def test_status_is_waiting_for_deliveries(self):
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                                first_deadline=timezone.now() + timedelta(days=2)))
+        testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        selector = htmls.S(MockMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Status: waiting for deliveries',
+            selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
+
+    def test_grade_not_available_unless_corrected(self):
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished()
+        testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        selector = htmls.S(MockMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
+
+    def test_grade_comment_summary_is_available(self):
+        mommy.make('core.AssignmentGroup')
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_number_of_commentfiles_from_students()\
+            .annotate_with_number_of_groupcomments_from_students()\
+            .annotate_with_number_of_groupcomments_from_examiners()\
+            .annotate_with_number_of_groupcomments_from_admins()\
+            .first()
+
+        selector = htmls.S(MockMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertTrue(selector.exists('.devilry-cradmin-groupitemvalue-comments'))
         self.assertEqual(
             '0 comments from student. 0 files from student. 0 comments from examiner.',

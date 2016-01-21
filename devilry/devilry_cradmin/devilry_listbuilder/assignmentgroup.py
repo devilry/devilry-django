@@ -1,4 +1,5 @@
 from django_cradmin.viewhelpers import listbuilder
+from django_cradmin.viewhelpers import multiselect2
 
 from devilry.apps.core.models import Assignment
 
@@ -9,8 +10,7 @@ class FullyAnonymousSubjectAdminItemValueMixin(object):
     def __init__(self, *args, **kwargs):
         super(FullyAnonymousSubjectAdminItemValueMixin, self).__init__(*args, **kwargs)
         if self.get_assignment().anonymizationmode != Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
-            raise ValueError('Can only use FullyAnonymousSubjectAdminItemValue for fully anonymous assignments. '
-                             'Use SubjectAdminItemValue istead.')
+            raise ValueError('Can only use {} for fully anonymous assignments.'.format(self.__class__.__name__))
 
     def get_assignment(self):
         return self.kwargs['assignment']
@@ -18,25 +18,6 @@ class FullyAnonymousSubjectAdminItemValueMixin(object):
     def get_all_candidate_users(self):
         return [candidate.relatedstudent.user
                 for candidate in self.group.candidates.all()]
-
-
-class FullyAnonymousSubjectAdminItemValue(FullyAnonymousSubjectAdminItemValueMixin,
-                                          listbuilder.itemvalue.TitleDescription):
-    """
-    This item value renderer is for fully anonymous assignments
-    with the "subjectadmin" devilryrole. It does not include anything
-    that can link the student to an anonymized student in the examiner
-    UI (in case the admin is also examiner). It basically only
-    renders the name of the students in each group.
-
-    We have purposly not let this inherit from :class:`.AbstractItemValue`
-    because we do not want to risk that a change in that class affects
-    anonymization.
-
-    See :devilryissue:`846` for more information.
-    """
-    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/' \
-                    'fully-anonymous-subjectadmin-group-item-value.django.html'
 
 
 class ItemValueMixin(object):
@@ -111,7 +92,29 @@ class DepartmentAdminItemValueMixin(ItemValueMixin):
 #
 #
 
+class FullyAnonymousSubjectAdminItemValue(FullyAnonymousSubjectAdminItemValueMixin,
+                                          listbuilder.itemvalue.TitleDescription):
+    """
+    This item value renderer is for fully anonymous assignments
+    with the "subjectadmin" devilryrole. It does not include anything
+    that can link the student to an anonymized student in the examiner
+    UI (in case the admin is also examiner). It basically only
+    renders the name of the students in each group.
+
+    We have purposly not let this inherit from :class:`.AbstractItemValue`
+    because we do not want to risk that a change in that class affects
+    anonymization.
+
+    See :devilryissue:`846` for more information.
+    """
+    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/' \
+                    'fully-anonymous-subjectadmin-group-item-value.django.html'
+
+
 class NoMultiselectItemValue(listbuilder.itemvalue.TitleDescription):
+    """
+    Not used directly - use one of the subclasses.
+    """
     template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/item-value.django.html'
 
 
@@ -132,4 +135,51 @@ class SubjectAdminItemValue(SubjectAdminItemValueMixin, NoMultiselectItemValue):
 
 
 class DepartmentAdminItemValue(DepartmentAdminItemValueMixin, NoMultiselectItemValue):
+    pass
+
+
+#
+#
+# ItemValue classes for multiselect
+#
+#
+class FullyAnonymousSubjectAdminMultiselectItemValue(FullyAnonymousSubjectAdminItemValueMixin,
+                                                     multiselect2.listbuilder_itemvalues.ItemValue):
+    """
+    This item value renderer is for fully anonymous assignments
+    with the "subjectadmin" devilryrole. It does not include anything
+    that can link the student to an anonymized student in the examiner
+    UI (in case the admin is also examiner). It basically only
+    renders the name of the students in each group.
+
+    We have purposly not let this inherit from :class:`.AbstractItemValue`
+    because we do not want to risk that a change in that class affects
+    anonymization.
+
+    See :devilryissue:`846` for more information.
+    """
+    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/' \
+                    'multiselect-fully-anonymous-subjectadmin-group-item-value.django.html'
+
+
+class MultiselectItemValue(multiselect2.listbuilder_itemvalues.ItemValue):
+    """
+    Not used directly - use one of the subclasses.
+    """
+    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/multiselect-item-value.django.html'
+
+
+class ExaminerMultiselectItemValue(ExaminerItemValueMixin, MultiselectItemValue):
+    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/multiselect-examiner-item-value.django.html'
+
+
+class PeriodAdminMultiselectItemValue(PeriodAdminItemValueMixin, MultiselectItemValue):
+    pass
+
+
+class SubjectAdminMultiselectItemValue(SubjectAdminItemValueMixin, MultiselectItemValue):
+    pass
+
+
+class DepartmentAdminMultiselectItemValue(DepartmentAdminItemValueMixin, MultiselectItemValue):
     pass
