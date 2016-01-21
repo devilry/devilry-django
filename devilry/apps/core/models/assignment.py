@@ -548,6 +548,20 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         return self.anonymizationmode != self.ANONYMIZATIONMODE_OFF
 
     @property
+    def is_semi_anonymous(self):
+        """
+        Returns ``True`` if ``anonymizationmode == "semi_anonymous"``.
+        """
+        return self.anonymizationmode != self.ANONYMIZATIONMODE_SEMI_ANONYMOUS
+
+    @property
+    def is_fully_anonymous(self):
+        """
+        Returns ``True`` if ``anonymizationmode == "semi_anonymous"``.
+        """
+        return self.anonymizationmode != self.ANONYMIZATIONMODE_FULLY_ANONYMOUS
+
+    @property
     def publishing_time_is_in_future(self):
         """
 
@@ -593,12 +607,15 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                   if the assignment is anonymous.
                 - If devilryrole is ``"examiner"``, candidates need to be anonymized if the assignment
                   is anonymous.
-                - If devilryrole is ``"periodadmin"``, candidates need to be anonymized if the assignment
-                  is anonymous.
+                - If devilryrole is ``"periodadmin"``, and the assignment is anonymous, we raise ValueError.
+                  This is because it is a bug for periodadmins to get access to any anonymous assignments.
                 - If devilryrole is ``"subjectadmin"``, candidates need to be
                   anonymized if the assignment is anonymized with ``anonymizationmode="fully_anonymous"``.
                 - If devilryrole is ``"departmentadmin"``, candidates do not need to be anonymized even
                   if the assignment is anonymous.
+
+        Raises:
+            ValueError: If the assignment is anonymous and ``devilryrole == "periodadmin"`` (explained above).
 
         Returns:
             bool: ``True`` if the candidates must be anonymized for the given role.
@@ -608,7 +625,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         elif devilryrole == 'examiner':
             return self.is_anonymous
         elif devilryrole == 'periodadmin':
-            return self.is_anonymous
+            if self.is_anonymous:
+                raise ValueError('It is illegal for periodadmins to have access to anonymous assignments.')
         elif devilryrole == 'subjectadmin':
             return self.anonymizationmode == self.ANONYMIZATIONMODE_FULLY_ANONYMOUS
         elif devilryrole == 'departmentadmin':
@@ -630,10 +648,12 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                   is anonymous.
                 - If devilryrole is ``"examiner"``, examiners do not need to be anonymized even
                   if the assignment is anonymous.
-                - If devilryrole is ``"periodadmin"``, examiners need to be anonymized if the assignment
-                  is anonymous.
+                - If devilryrole is ``"periodadmin"``, and the assignment is anonymous, we raise ValueError.
+                  This is because it is a bug for periodadmins to get access to any anonymous assignments.
                 - If devilryrole is ``"subjectadmin"``, examiners need to be
                   anonymized if the assignment is anonymized with ``anonymizationmode="fully_anonymous"``.
+        Raises:
+            ValueError: If the assignment is anonymous and ``devilryrole == "periodadmin"`` (explained above).
 
         Returns:
             bool: ``True`` if the examiners must be anonymized for the given role.
@@ -643,7 +663,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         elif devilryrole == 'examiner':
             return False
         elif devilryrole == 'periodadmin':
-            return self.is_anonymous
+            if self.is_anonymous:
+                raise ValueError('It is illegal for periodadmins to have access to anonymous assignments.')
         elif devilryrole == 'subjectadmin':
             return self.anonymizationmode == self.ANONYMIZATIONMODE_FULLY_ANONYMOUS
         elif devilryrole == 'departmentadmin':
