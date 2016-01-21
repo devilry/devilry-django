@@ -1372,10 +1372,10 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             'You have no students waiting for feedback.',
-            mockresponse.selector.one('.devilry-examiner-grouplist-empty').alltext_normalized)
+            mockresponse.selector.one('.devilry-admin-grouplist-empty').alltext_normalized)
         self.assertTrue(
-            mockresponse.selector.one('.devilry-examiner-grouplist-empty').hasclass(
-                'devilry-examiner-grouplist-empty-waiting-for-feedback'))
+            mockresponse.selector.one('.devilry-admin-grouplist-empty').hasclass(
+                'devilry-admin-grouplist-empty-waiting-for-feedback'))
 
     def test_filter_waiting_for_deliveries_empty(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -1391,10 +1391,10 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             'You are currently not expecting new deliveries from any students.',
-            mockresponse.selector.one('.devilry-examiner-grouplist-empty').alltext_normalized)
+            mockresponse.selector.one('.devilry-admin-grouplist-empty').alltext_normalized)
         self.assertTrue(
-            mockresponse.selector.one('.devilry-examiner-grouplist-empty').hasclass(
-                'devilry-examiner-grouplist-empty-waiting-for-deliveries'))
+            mockresponse.selector.one('.devilry-admin-grouplist-empty').hasclass(
+                'devilry-admin-grouplist-empty-waiting-for-deliveries'))
 
     def test_filter_corrected_empty(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -1408,10 +1408,10 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             'Your examiners have not finished correcting any students yet.',
-            mockresponse.selector.one('.devilry-examiner-grouplist-empty').alltext_normalized)
+            mockresponse.selector.one('.devilry-admin-grouplist-empty').alltext_normalized)
         self.assertTrue(
-            mockresponse.selector.one('.devilry-examiner-grouplist-empty').hasclass(
-                'devilry-examiner-grouplist-empty-corrected'))
+            mockresponse.selector.one('.devilry-admin-grouplist-empty').hasclass(
+                'devilry-admin-grouplist-empty-corrected'))
 
     def test_filter_all_empty(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -1423,10 +1423,10 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             'You have no students for this assignment. Add students using the link above.',
-            mockresponse.selector.one('.devilry-examiner-grouplist-empty').alltext_normalized)
+            mockresponse.selector.one('.devilry-admin-grouplist-empty').alltext_normalized)
         self.assertTrue(
-            mockresponse.selector.one('.devilry-examiner-grouplist-empty').hasclass(
-                'devilry-examiner-grouplist-empty-all'))
+            mockresponse.selector.one('.devilry-admin-grouplist-empty').hasclass(
+                'devilry-admin-grouplist-empty-all'))
 
     #
     #

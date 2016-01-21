@@ -1,4 +1,4 @@
-{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
+{% extends "devilry_admin/assignment/students/groupview_base/base-info-view.django.html" %}
 {% load i18n %}
 {% load cradmin_tags %}
 
@@ -41,23 +41,6 @@
     {{ block.super }}
 {% endblock content %}
 
-
-{% block no-items-wrapper %}
-    {% if excluding_filters_other_than_status_is_applied %}
-        <p class="django-cradmin-listing-no-items-message django-cradmin-listbuilderview-no-items-message">
-            {% trans "No students found matching your filters/search." %}
-        </p>
-    {% else %}
-        <div class="devilry-examiner-grouplist-empty devilry-examiner-grouplist-empty-{{ status_filter_value_normalized }}">
-            {% if status_filter_value_normalized == "waiting-for-feedback" %}
-                {% trans "You have no students waiting for feedback." %}
-            {% elif status_filter_value_normalized == "waiting-for-deliveries" %}
-                {% trans "You are currently not expecting new deliveries from any students." %}
-            {% elif status_filter_value_normalized == "corrected" %}
-                {% trans "Your examiners have not finished correcting any students yet." %}
-            {% elif status_filter_value_normalized == "all" %}
-                {% trans "You have no students for this assignment. Add students using the link above." %}
-            {% endif %}
-        </div>
-    {% endif %}
-{% endblock no-items-wrapper %}
+{% block no_students_at_all_message %}
+    {% trans "You have no students for this assignment. Add students using the link above." %}
+{% endblock no_students_at_all_message %}
