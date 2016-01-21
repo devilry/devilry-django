@@ -47,7 +47,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             3,
             mockresponse.selector.count(
-                    '#devilry_admin_assignment_students_overview_choices li'))
+                '#devilry_admin_assignment_students_overview_choices li'))
 
     def test_choice_create_groups_link(self):
         testassignment = mommy.make('core.Assignment')
@@ -90,8 +90,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=mock_cradmin_instance)
         self.assertEqual(
-            # '/merge_groups/INDEX',
-            '#',
+            '/merge_groups/INDEX',
             mockresponse.selector
             .one('#devilry_admin_assignment_students_overview_choice_merge_groups a')['href'])
 
