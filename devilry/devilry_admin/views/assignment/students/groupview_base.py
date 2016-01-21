@@ -1,12 +1,16 @@
 from __future__ import unicode_literals
 
+from django import forms
+from django.contrib import messages
 from django.db import models
 from django.db.models.functions import Lower, Concat
+from django.shortcuts import redirect
+from django.utils.translation import pgettext_lazy
 from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import multiselect2view
 
 from devilry.apps.core import models as coremodels
-from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer, Assignment
+from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer, Assignment, AssignmentGroup
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
 
@@ -182,6 +186,26 @@ class BaseInfoView(GroupViewMixin, listbuilderview.FilterListMixin, listbuilderv
             raise ValueError('Invalid devilryrole: {}'.format(devilryrole))
 
 
+class SelectedGroupsForm(forms.Form):
+    """
+    The form we use for validation and selected items extractions
+    when the user submits their selection.
+
+    It is just a plain Django form (can also be a ModelForm). You
+    just have to make sure that the name of the form field (``selected_items``)
+    matches the value returned by ``get_inputfield_name()`` in the
+    ``SelectableProductItemValue`` class.
+    """
+    selected_items = forms.ModelMultipleChoiceField(
+        queryset=AssignmentGroup.objects.none()
+    )
+
+    def __init__(self, *args, **kwargs):
+        selectable_groups_queryset = kwargs.pop('selectable_groups_queryset')
+        super(SelectedGroupsForm, self).__init__(*args, **kwargs)
+        self.fields['selected_items'].queryset = selectable_groups_queryset
+
+
 class BaseMultiselectView(GroupViewMixin, multiselect2view.ListbuilderFilterView):
     template_name = 'devilry_admin/assignment/students/groupview_base/base-multiselect-view.django.html'
 
@@ -201,3 +225,21 @@ class BaseMultiselectView(GroupViewMixin, multiselect2view.ListbuilderFilterView
 
     def get_target_renderer_class(self):
         return devilry_listbuilder.assignmentgroup.GroupTargetRenderer
+
+    def get_form_class(self):
+        return SelectedGroupsForm
+
+    def get_form_kwargs(self):
+        kwargs = super(BaseMultiselectView, self).get_form_kwargs()
+        kwargs['selectable_groups_queryset'] = self.get_unfiltered_queryset_for_role(
+            role=self.request.cradmin_role)
+        return kwargs
+
+    def get_form_invalid_message(self):
+        return pgettext_lazy('admin group multiselect submit',
+                             'Something went wrong. This may happen if changes was made to the selected '
+                             'students while you where working on them.')
+
+    def form_invalid(self, form):
+        messages.error(self.request, self.get_form_invalid_message())
+        return redirect(self.request.get_full_path())
