@@ -1,4 +1,5 @@
 from django.template.loader import render_to_string
+from django.utils.translation import ugettext_lazy
 from django_cradmin.viewhelpers import listbuilder
 from django_cradmin.viewhelpers import multiselect2
 
@@ -267,3 +268,14 @@ class SubjectAdminMultiselectItemValue(SubjectAdminItemValueMixin, MultiselectIt
 
 class DepartmentAdminMultiselectItemValue(DepartmentAdminItemValueMixin, MultiselectItemValue):
     selected_item_renderer_class = SelectedItemFullDepartmentAdmin
+
+
+class GroupTargetRenderer(multiselect2.target_renderer.Target):
+    def get_with_items_title(self):
+        return ugettext_lazy('Selected students:')
+
+    def get_submit_button_text(self):
+        return ugettext_lazy('Save')
+
+    def get_without_items_text(self):
+        return ugettext_lazy('No students selected')

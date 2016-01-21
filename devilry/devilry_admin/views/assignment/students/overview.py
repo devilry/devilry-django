@@ -7,9 +7,7 @@ from devilry.devilry_admin.views.assignment.students import groupview_base
 
 class Overview(groupview_base.BaseInfoView):
     filterview_name = 'filter'
-
-    def get_filterlist_template_name(self):
-        return 'devilry_admin/assignment/students/overview.django.html'
+    # template_name = 'devilry_admin/assignment/students/overview.django.html'
 
 
 class App(crapp.App):

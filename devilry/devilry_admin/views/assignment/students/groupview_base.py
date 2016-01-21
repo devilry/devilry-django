@@ -198,3 +198,6 @@ class BaseMultiselectView(GroupViewMixin, multiselect2view.ListbuilderFilterView
             return devilry_listbuilder.assignmentgroup.PeriodAdminMultiselectItemValue
         else:
             raise ValueError('Invalid devilryrole: {}'.format(devilryrole))
+
+    def get_target_renderer_class(self):
+        return devilry_listbuilder.assignmentgroup.GroupTargetRenderer
