@@ -1,5 +1,4 @@
-import datetime
-
+from django.utils import timezone
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -128,7 +127,7 @@ class FeedbackSet(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="created_feedbacksets")
 
     #: The datetime when this FeedbackSet was created.
-    created_datetime = models.DateTimeField(default=datetime.datetime.now)
+    created_datetime = models.DateTimeField(default=timezone.now)
 
     #: The datetime of the deadline.
     #: The first feedbackset in an AssignmentGroup
