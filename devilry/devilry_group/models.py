@@ -22,7 +22,7 @@ class AbstractGroupCommentQuerySet(models.QuerySet):
     def exclude_is_part_of_grading_feedbackset_unpublished(self):
         return self.exclude(
             part_of_grading=True,
-            feedback_set__published_datetime__isnull=True
+            feedback_set__grading_published_datetime__isnull=True
         )
 
 
