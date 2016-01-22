@@ -1,2 +1,26 @@
-.devilry-page-subheader {
+.django-cradmin-page-header-outer {
+  .django-cradmin-page-header-inner {
+    .devilry-page-subheader {
+    }
+  }
+
+  &.devilry-page-header-with-backlink {
+    .django-cradmin-page-header-inner {
+      position: relative;
+      padding-left: 40px;
+      a.devilry-page-header-backlink {
+        font-size: 30px;
+        position: absolute;
+        top: -5px;
+        left: 0;
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        color: @text-color;
+        &:hover {
+          color: @link-color;
+        }
+      }
+    }
+  }
 }

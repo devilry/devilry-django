@@ -6907,6 +6907,31 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
   font-weight: bold;
   border-width: 3px;
   letter-spacing: 1.4px;
+  padding: 4px 12px;
+  margin-bottom: 5px;
+}
+.btn.btn-sm {
+  padding: 3px 10px;
+}
+.btn.btn-lg {
+  padding: 7px 16px;
+}
+.django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner {
+  position: relative;
+  padding-left: 40px;
+}
+.django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner a.devilry-page-header-backlink {
+  font-size: 30px;
+  position: absolute;
+  top: -5px;
+  left: 0;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  color: #333333;
+}
+.django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner a.devilry-page-header-backlink:hover {
+  color: #377CA8;
 }
 h2,
 h3,
@@ -6918,6 +6943,23 @@ h2 {
 }
 h3 {
   font-size: 16px;
+}
+form.devilry-form-inline {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+.devilry-buttonbar {
+  margin-bottom: 7px;
+}
+.devilry-buttonbar .btn {
+  margin-bottom: 5px;
+  display: block;
+}
+@media (min-width: 767px) {
+  .devilry-buttonbar .btn {
+    display: inline-block;
+  }
 }
 .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg h2,
 .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg h3 {
@@ -7191,6 +7233,8 @@ Buttons
   font-weight: bold;
   border-width: 3px;
   letter-spacing: 1.4px;
+  padding: 4px 12px;
+  margin-bottom: 5px;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -7293,6 +7337,12 @@ fieldset[disabled] .button {
 .button.btn-cancel:focus {
   color: #24516e;
 }
+.button.btn-sm {
+  padding: 3px 10px;
+}
+.button.btn-lg {
+  padding: 7px 16px;
+}
 .button:hover,
 .button:focus {
   background: #49c34c;
@@ -7321,6 +7371,8 @@ fieldset[disabled] .button {
   font-weight: bold;
   border-width: 3px;
   letter-spacing: 1.4px;
+  padding: 4px 12px;
+  margin-bottom: 5px;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -7423,6 +7475,12 @@ fieldset[disabled] .button_default {
 .button_default.btn-cancel:focus {
   color: #24516e;
 }
+.button_default.btn-sm {
+  padding: 3px 10px;
+}
+.button_default.btn-lg {
+  padding: 7px 16px;
+}
 .button_default:hover,
 .button_default:focus {
   background: #49c34c;
@@ -7454,6 +7512,8 @@ fieldset[disabled] .button_default {
   font-weight: bold;
   border-width: 3px;
   letter-spacing: 1.4px;
+  padding: 4px 12px;
+  margin-bottom: 5px;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -7557,6 +7617,12 @@ fieldset[disabled] .button_admin {
 .button_admin.btn-cancel:focus {
   color: #24516e;
 }
+.button_admin.btn-sm {
+  padding: 3px 10px;
+}
+.button_admin.btn-lg {
+  padding: 7px 16px;
+}
 .button_admin:hover,
 .button_admin:focus {
   background: #49c34c;
@@ -7588,6 +7654,8 @@ fieldset[disabled] .button_admin {
   font-weight: bold;
   border-width: 3px;
   letter-spacing: 1.4px;
+  padding: 4px 12px;
+  margin-bottom: 5px;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -7691,6 +7759,12 @@ fieldset[disabled] .button_examiner {
 .button_examiner.btn-cancel:focus {
   color: #24516e;
 }
+.button_examiner.btn-sm {
+  padding: 3px 10px;
+}
+.button_examiner.btn-lg {
+  padding: 7px 16px;
+}
 .button_examiner:hover,
 .button_examiner:focus {
   background: #49c34c;
@@ -7722,6 +7796,8 @@ fieldset[disabled] .button_examiner {
   font-weight: bold;
   border-width: 3px;
   letter-spacing: 1.4px;
+  padding: 4px 12px;
+  margin-bottom: 5px;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -7825,6 +7901,12 @@ fieldset[disabled] .button_examiner_grayed {
 .button_examiner_grayed.btn-cancel:focus {
   color: #24516e;
 }
+.button_examiner_grayed.btn-sm {
+  padding: 3px 10px;
+}
+.button_examiner_grayed.btn-lg {
+  padding: 7px 16px;
+}
 .button_examiner_grayed:hover,
 .button_examiner_grayed:focus {
   background: #49c34c;
@@ -7856,6 +7938,8 @@ fieldset[disabled] .button_examiner_grayed {
   font-weight: bold;
   border-width: 3px;
   letter-spacing: 1.4px;
+  padding: 4px 12px;
+  margin-bottom: 5px;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -7958,6 +8042,12 @@ fieldset[disabled] .button_student {
 .button_student.btn-cancel:hover,
 .button_student.btn-cancel:focus {
   color: #24516e;
+}
+.button_student.btn-sm {
+  padding: 3px 10px;
+}
+.button_student.btn-lg {
+  padding: 7px 16px;
 }
 .button_student:hover,
 .button_student:focus {
