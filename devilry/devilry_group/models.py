@@ -74,6 +74,11 @@ class AbstractGroupComment(comment_models.Comment):
     class Meta:
         abstract = True
 
+    def get_published_datetime(self):
+        return self.feedback_set.grading_published_datetime \
+            if self.part_of_grading \
+            else self.published_datetime
+
 
 class FeedbackSet(models.Model):
     """
