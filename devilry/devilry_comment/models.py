@@ -31,7 +31,7 @@ class Comment(models.Model):
     created_datetime = models.DateTimeField(auto_now_add=True)
 
     #: when was the comment published by celery
-    published_datetime = models.DateTimeField(null=True, blank=True)
+    published_datetime = models.DateTimeField(null=False, blank=False, default=timezone.now)
 
     #: Use this as value for :obj:`~.Comment.user_role` if the user
     #: is commenting as a student.
