@@ -36,7 +36,7 @@ class GroupViewMixin(object):
     def add_filterlist_items(self, filterlist):
         filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())
         filterlist.append(devilry_listfilter.assignmentgroup.OrderByNotAnonymous())
-        filterlist.append(devilry_listfilter.assignmentgroup.StatusRadioFilter(view=self))
+        filterlist.append(devilry_listfilter.assignmentgroup.StatusSelectFilter())
         filterlist.append(devilry_listfilter.assignmentgroup.IsPassingGradeFilter())
         filterlist.append(devilry_listfilter.assignmentgroup.PointsFilter())
         filterlist.append(devilry_listfilter.assignmentgroup.ExaminerFilter(view=self))
@@ -95,7 +95,7 @@ class GroupViewMixin(object):
             .distinct()
         return queryset
 
-    def __get_status_filter_value(self):
+    def get_status_filter_value(self):
         status_value = self.get_filterlist().filtershandler.get_cleaned_value_for('status')
         if not status_value:
             status_value = 'all'
@@ -161,7 +161,7 @@ class GroupViewMixin(object):
     def get_context_data(self, **kwargs):
         context = super(GroupViewMixin, self).get_context_data(**kwargs)
         context['assignment'] = self.assignment
-        context['status_filter_value_normalized'] = self.__get_status_filter_value()
+        context['status_filter_value_normalized'] = self.get_status_filter_value()
         total_groupcount = self.__get_total_groupcount()
         context['excluding_filters_other_than_status_is_applied'] = \
             self.__get_excluding_filters_other_than_status_is_applied(

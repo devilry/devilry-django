@@ -24,11 +24,16 @@ class DeleteGroupsView(groupview_base.BaseMultiselectView):
     template_name = 'devilry_admin/assignment/students/delete_groups.django.html'
 
     def add_filterlist_items(self, filterlist):
-        filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())
-        filterlist.append(devilry_listfilter.assignmentgroup.OrderByNotAnonymous())
-        filterlist.append(devilry_listfilter.assignmentgroup.StatusRadioFilter(view=self))
-        filterlist.append(devilry_listfilter.assignmentgroup.ExaminerFilter(view=self))
-        filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
+        if self.has_delete_with_content_permission():
+            super(DeleteGroupsView, self).add_filterlist_items(filterlist=filterlist)
+        else:
+            filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())
+            filterlist.append(devilry_listfilter.assignmentgroup.OrderByNotAnonymous())
+            filterlist.append(devilry_listfilter.assignmentgroup.ExaminerFilter(view=self))
+            filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
+
+    def get_status_filter_value(self):
+        return 'all'
 
     def get_target_renderer_class(self):
         return DeleteGroupsTargetRenderer

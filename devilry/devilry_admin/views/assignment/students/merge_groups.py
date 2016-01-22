@@ -22,7 +22,7 @@ class MergeGroupsView(groupview_base.BaseMultiselectView):
     def add_filterlist_items(self, filterlist):
         filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())
         filterlist.append(devilry_listfilter.assignmentgroup.OrderByNotAnonymous())
-        filterlist.append(devilry_listfilter.assignmentgroup.StatusRadioFilter(view=self))
+        filterlist.append(devilry_listfilter.assignmentgroup.StatusSelectFilter())
         filterlist.append(devilry_listfilter.assignmentgroup.ExaminerFilter(view=self))
         filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
 
