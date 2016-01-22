@@ -96,7 +96,7 @@ class FeedbackSet(models.Model):
     #: Choice for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_FIRST_ATTEMPT = 'first_attempt'
 
-    #: Is not the first feedbackset, but a new try.
+    #: Is not the first feedbackset, but a new attempt.
     #: Choice for :obj:`~.FeedbackSet.feedbackset_type`
     FEEDBACKSET_TYPE_NEW_ATTEMPT = 'new_attempt'
 
