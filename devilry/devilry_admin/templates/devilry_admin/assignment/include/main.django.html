@@ -1,7 +1,8 @@
 {% load i18n %}
 {% load cradmin_tags %}
 
-<div class="col-sm-8" id="devilry_assignment_main">
+
+<div id="devilry_assignment_main">
     <div id="devilry_admin_assignment_meta">
         <h2>{% trans "Students and examiners" %}</h2>
 
@@ -9,7 +10,7 @@
             {% if assignmentgroups_count == candidates_count %}
                 {{ assignmentgroups_count }} {% trans "students" context "Text after number of students on assignment" %}.
             {% else %}
-                {% blocktrans with num_groups=assignmentgroups_count num_candidates=candidates_count context="Text after number of students and project groups" %}
+                {% blocktrans trimmed with num_groups=assignmentgroups_count num_candidates=candidates_count context="Text after number of students and project groups" %}
                     {{ num_groups }} students organized in {{ num_candidates }} project groups
                 {% endblocktrans %}
             {% endif %}
@@ -20,7 +21,7 @@
                 </span>
             {% else %}
                 <span class="devilry-admin-assignment-examiners-exists">
-                    {% blocktrans with examiners_count=examiners_count context="Number examiners configured message" %}
+                    {% blocktrans trimmed with examiners_count=examiners_count context="Number examiners configured message" %}
                         {{ examiners_count }} examiners configured.
                     {% endblocktrans %}
                 </span>
@@ -30,35 +31,26 @@
     </div>
 
 
-    <ul id="devilry_admin_assigments_students_and_examiners" class="devilry-admin-assigments-students-and-examiners">
-        <li>
-            <div id="devilry_admin_assignment_students">
-                <h3>
-                    <a href="{% cradmin_instance_url appname='studentoverview' viewname='INDEX' roleid=assignment.id %}">
-                        {% trans "Students" %}
-                    </a>
-                </h3>
-                <p>
-                    {% trans "View, edit or add students for this assignment" %}
-                </p>
-            </div>
-        </li>
-        <li>
-            <div id="devilry_admin_assignment_examiners">
-                <h3>
-                    <a href="#">{% trans "Examiners" %}</a>
-                </h3>
+    <div id="devilry_admin_assigments_students_and_examiners"
+            class="row devilry-admin-assigments-students-and-examiners">
+        <div id="devilry_admin_assignment_students" class="col-sm-6">
+            <h3>
+                <a href="{% cradmin_instance_url appname='studentoverview' viewname='INDEX' roleid=assignment.id %}">
+                    {% trans "Students" %}
+                </a>
+            </h3>
+            <p>
+                {% trans "View, edit or add students for this assignment" %}
+            </p>
+        </div>
+        <div id="devilry_admin_assignment_examiners" class="col-sm-6">
+            <h3>
+                <a href="#">{% trans "Examiners" %}</a>
+            </h3>
 
-                <p>
-                    {% trans "View, edit or organize examiners for this assignment" %}
-                </p>
-            </div>
-        </li>
-    </ul>
-
-
-</div>
-
-<div class="col-sm-4">
-
+            <p>
+                {% trans "View, edit or organize examiners for this assignment" %}
+            </p>
+        </div>
+    </div>
 </div>

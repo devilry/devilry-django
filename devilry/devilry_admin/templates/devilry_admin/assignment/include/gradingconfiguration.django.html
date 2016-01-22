@@ -1,50 +1,48 @@
 {% load i18n %}
 {% load humanize %}
 {% load cradmin_tags %}
-<div class="col-sm-12">
-    <div id="devilry_admin_assignment_gradingconfiguration">
-        <h2>{% trans "Grading configuration" %}</h2>
+<div id="devilry_admin_assignment_gradingconfiguration">
+    <h2>{% trans "Grading configuration" %}</h2>
 
-        <div id="devilry_admin_assignment_overview_gradingconfiguration_information">
-            <table class="table table-bordered">
-                <caption>
-                    {% blocktrans context "current grading configuration for assignment" %}
-                        Current setup
-                    {% endblocktrans %}
-                </caption>
-                <thead>
-                    <tr>
-                        <td>
-                            {% trans "Description" %}
-                        </td>
-                        <td>
-                            {% trans "Grading" %}
-                        </td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{% trans "Examiner chooses" %}</td>
-                        <td>{{ assignment.get_grading_system_plugin_id_display }}</td>
-                    </tr>
-                    <tr>
-                        <td>{% trans "Students see" %}</td>
-                        <td>{{ assignment.get_points_to_grade_mapper_display }}</td>
-                    </tr>
-                    <tr>
-                        <td>{% trans "Maximum number of points achievable" %}</td>
-                        <td>{{ assignment.max_points }}</td>
-                    </tr>
-                    <tr>
-                        <td>{% trans "Minimum number of points required to pass" %}</td>
-                        <td>{{ assignment.passing_grade_min_points }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div id="devilry_admin_assignment_gradingconfiguration_buttons">
-            <a href="{% cradmin_appurl "update_gradingconfiguration" assignment.id %}" type="button"
-               class="btn btn-default">{% trans "Edit grading configuration" %}</a>
-        </div>
+    <div id="devilry_admin_assignment_overview_gradingconfiguration_information">
+        <table class="table table-bordered">
+{#            <caption>#}
+{#                {% blocktrans trimmed context "current grading configuration for assignment" %}#}
+{#                    Current setup#}
+{#                {% endblocktrans %}#}
+{#            </caption>#}
+{#            <thead class="sr-only">#}
+{#                <tr>#}
+{#                    <td>#}
+{#                        {% trans "Description" %}#}
+{#                    </td>#}
+{#                    <td>#}
+{#                        {% trans "Grading" %}#}
+{#                    </td>#}
+{#                </tr>#}
+{#            </thead>#}
+            <tbody>
+                <tr>
+                    <td>{% trans "Examiner chooses" %}</td>
+                    <td>{{ assignment.get_grading_system_plugin_id_display }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Students see" %}</td>
+                    <td>{{ assignment.get_points_to_grade_mapper_display }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Maximum number of points achievable" %}</td>
+                    <td>{{ assignment.max_points }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Minimum number of points required to pass" %}</td>
+                    <td>{{ assignment.passing_grade_min_points }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="devilry_admin_assignment_gradingconfiguration_buttons">
+        <a href="{% cradmin_appurl "update_gradingconfiguration" assignment.id %}" type="button"
+           class="btn btn-default">{% trans "Edit grading configuration" %}</a>
     </div>
 </div>
