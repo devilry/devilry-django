@@ -6980,7 +6980,7 @@ body {
   margin-right: 0;
 }
 .django-cradmin-page-header-outer .django-cradmin-page-header-inner h1 {
-  font-size: 26px;
+  font-size: 28px;
 }
 .django-cradmin-page-header-outer .django-cradmin-page-header-inner p {
   margin-bottom: 10px;
@@ -7090,4 +7090,26 @@ h3 .devilry-user-verbose-inline small {
 }
 .devilry-core-groupstatus.devilry-core-groupstatus-waiting-for-feedback {
   font-weight: bold;
+}
+.devilry-dashboard-container {
+  background: #fff;
+  margin-bottom: 5px;
+  padding: 15px 15px 5px 15px;
+}
+.devilry-dashboard-container h2,
+.devilry-dashboard-container h3 {
+  margin-bottom: 5px;
+}
+.devilry-dashboard-container h2:first-child,
+.devilry-dashboard-container h3:first-child {
+  margin-top: 0;
+}
+.devilry-dashboard-container.devilry-dashboard-container-focus h2 {
+  font-size: 28px;
+}
+.devilry-dashboard-container.devilry-dashboard-container-focus h3 {
+  font-size: 23px;
+}
+#django_cradmin_bodycontentwrapper {
+  padding-bottom: 15px;
 }
