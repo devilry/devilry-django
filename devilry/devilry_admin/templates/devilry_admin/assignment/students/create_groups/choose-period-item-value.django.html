@@ -6,14 +6,12 @@
     <p>
         <a href="{% cradmin_appurl 'confirm' selected_students='relatedstudents' %}"
                 id="devilry_admin_create_groups_choosemethod_relatedstudents_link"
-                class="btn btn-lg btn-primary">
-            {% blocktrans trimmed with subject=me.period.subject.short_name context "admin create_groups" %}
-                All students on {{ subject }}
-            {% endblocktrans %}
+                class="btn btn-primary">
+            {% trans "All students" %}
         </a>
         <a href="{% cradmin_appurl 'manual-select' %}"
                 id="devilry_admin_create_groups_choosemethod_manualselect_link"
-                class="btn btn-lg btn-default">
+                class="btn btn-default">
             {% trans "Select manually" context "admin create_groups" %}
         </a>
     </p>

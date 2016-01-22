@@ -7,17 +7,13 @@
             class="devilry-admin-create-groups-choosemethod-assignment">
         <a href="{% cradmin_appurl 'confirm' selected_students='all_on_assignment' %}?assignment={{ me.assignment.id }}"
                 id="devilry_admin_create_groups_choosemethod_assignment_{{ me.assignment.id }}_all_link"
-                class="btn btn-default">
-            {% blocktrans trimmed with assignment=me.assignment.short_name context "admin create_groups" %}
-                All students on {{ assignment }}
-            {% endblocktrans %}
+                class="btn btn-primary">
+            {% trans "All students" %}
         </a>
         <a href="{% cradmin_appurl 'confirm' selected_students='passing_grade_on_assignment' %}?assignment={{ me.assignment.id }}"
                 id="devilry_admin_create_groups_choosemethod_assignment_{{ me.assignment.id }}_passing_link"
                 class="btn btn-default">
-            {% blocktrans trimmed with assignment=me.assignment.short_name context "admin create_groups" %}
-                Students with passing grade on {{ assignment }}
-            {% endblocktrans %}
+            {% trans "Students with passing grade" %}
         </a>
     </p>
 {% endblock below-description %}
