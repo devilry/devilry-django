@@ -9,14 +9,21 @@
 {% endblock title %}
 
 {% block pageheader-inner %}
-    <h1>
-        {{ assignment.long_name }}
-    </h1>
-    <p id="devilry_admin_assignment_edit_long_name" class="pull-right">
-        <small><a
-                href="{% cradmin_appurl "update_assignment_short_and_long_name" assignment.id %}">{% trans "Edit name" %}</a>
-        </small>
-    </p>
+    <div class="row">
+        <div class="col-sm-8">
+            <h1>
+                {{ assignment.long_name }}
+            </h1>
+        </div>
+        <div class="col-sm-4">
+            <p id="devilry_admin_assignment_edit_long_name" class="text-right">
+                <a href="{% cradmin_appurl "update_assignment_short_and_long_name" assignment.id %}"
+                        class="btn btn-default btn-sm">
+                    {% trans "Edit name" %}
+                </a>
+            </p>
+        </div>
+    </div>
 {% endblock pageheader-inner %}
 
 {% block content %}

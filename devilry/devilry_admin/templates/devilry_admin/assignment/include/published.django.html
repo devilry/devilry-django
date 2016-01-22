@@ -20,11 +20,11 @@
         <div id="devilry_admin_assignment_published_buttonrow">
             {% if not assignment.is_published %}
                 <form id="devilry_admin_assignment_published_publishnow_form" method="post" action="{% cradmin_appurl 'publish_assignment_now' assignment.id %}">{% csrf_token %}
-                    <input type="submit" value="{% trans "Publish now" %}" class="btn btn-success btn-lg">
+                    <input type="submit" value="{% trans "Publish now" %}" class="btn btn-success">
                 </form>
             {% endif %}
             <a href="{% cradmin_appurl "update_publishing_time" assignment.id %}" type="button"
-               class="btn btn-default btn-lg">{% trans "Edit publishing time" %}</a>
+               class="btn btn-default">{% trans "Edit publishing time" %}</a>
         </div>
 
     </div>
@@ -43,7 +43,7 @@
         </p>
         <div id="devilry_admin_assignment_first_deadline_buttons">
             <a href="{% cradmin_appurl "update_first_deadline" assignment.id %}" type="button"
-               class="btn btn-default btn-lg">{% trans "Edit first deadline" %}</a>
+               class="btn btn-default">{% trans "Edit first deadline" %}</a>
         </div>
     </div>
 </div>
