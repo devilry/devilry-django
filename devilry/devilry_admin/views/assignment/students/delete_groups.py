@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy
 from django_cradmin import crapp
 
+from devilry.apps.core.models import Candidate
 from devilry.devilry_admin.views.assignment.students import groupview_base
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
@@ -47,16 +48,28 @@ class DeleteGroupsView(groupview_base.BaseMultiselectView):
                 .exclude(number_of_imageannotationcomments_from_examiners__gt=0)\
                 .exclude(number_of_published_feedbacksets__gt=0)
 
-    def form_valid(self, form):
-        messages.warning(
-            self.request,
-            'Merge groups is not finished')
-        return redirect(self.request.get_full_path())
-
     def get_context_data(self, **kwargs):
         context = super(DeleteGroupsView, self).get_context_data(**kwargs)
         context['has_delete_with_content_permission'] = self.has_delete_with_content_permission()
         return context
+
+    def get_success_message(self, candidatecount):
+        return ugettext_lazy('Removed %(count)s students from this assignment.') % {
+            'count': candidatecount
+        }
+
+    def __count_candidates_in_assignmentgroups(self, groupqueryset):
+        return Candidate.objects\
+            .filter(assignment_group__in=groupqueryset)\
+            .count()
+
+    def form_valid(self, form):
+        groupqueryset = form.cleaned_data['selected_items']
+        candidatecount = self.__count_candidates_in_assignmentgroups(
+            groupqueryset=groupqueryset)
+        groupqueryset.delete()
+        messages.success(self.request, self.get_success_message(candidatecount=candidatecount))
+        return redirect(self.request.get_full_path())
 
 
 class App(crapp.App):

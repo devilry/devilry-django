@@ -239,7 +239,7 @@ class BaseMultiselectView(GroupViewMixin, multiselect2view.ListbuilderFilterView
     def get_form_invalid_message(self):
         return pgettext_lazy('admin group multiselect submit',
                              'Something went wrong. This may happen if changes was made to the selected '
-                             'students while you where working on them.')
+                             'students while you where working on them. Please try again.')
 
     def form_invalid(self, form):
         messages.error(self.request, self.get_form_invalid_message())

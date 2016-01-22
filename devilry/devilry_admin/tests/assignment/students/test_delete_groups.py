@@ -1,10 +1,11 @@
 import mock
 from django import test
 from django.conf import settings
+from django.contrib import messages
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
-from devilry.apps.core import devilry_core_mommy_factories
+from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_admin.views.assignment.students import delete_groups
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import devilry_group_mommy_factories
@@ -271,3 +272,57 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             1,
             mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_post_ok(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        self.assertEqual(2, AssignmentGroup.objects.count())
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            requestuser=testuser,
+            requestkwargs={
+                'data': {'selected_items': [str(testgroup1.id), str(testgroup2.id)]}
+            })
+        self.assertEqual(0, AssignmentGroup.objects.count())
+
+    def test_post_can_delete_groups_with_content_as_departmentadmin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup, grading_points=1),
+        self.assertEqual(1, AssignmentGroup.objects.count())
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            requestuser=testuser,
+            requestkwargs={
+                'data': {'selected_items': [str(testgroup.id)]}
+            })
+        self.assertEqual(0, AssignmentGroup.objects.count())
+
+    def test_post_can_not_delete_groups_with_content_if_not_departmentadmin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group=testgroup, grading_points=1),
+        self.assertEqual(1, AssignmentGroup.objects.count())
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment,
+            messagesmock=messagesmock,
+            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
+            requestuser=testuser,
+            requestkwargs={
+                'data': {'selected_items': [str(testgroup.id)]}
+            })
+        self.assertEqual(1, AssignmentGroup.objects.count())
+        messagesmock.add.assert_called_once_with(
+            messages.ERROR,
+            'Something went wrong. This may happen if changes was made to the selected '
+            'students while you where working on them. Please try again.',
+            '')
