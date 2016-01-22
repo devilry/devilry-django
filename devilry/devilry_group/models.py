@@ -95,23 +95,23 @@ class FeedbackSet(models.Model):
 
     #: This means the feedbackset is basically the first feedbackset.
     #: Choice for :obj:`~.FeedbackSet.feedbackset_type`.
-    FEEDBACKSET_TYPE_FIRST_ATTEMPT = 'feedbackset_type_first_try'
+    FEEDBACKSET_TYPE_FIRST_ATTEMPT = 'first_attempt'
 
     #: Is not the first feedbackset, but a new try.
     #: Choice for :obj:`~.FeedbackSet.feedbackset_type`
-    FEEDBACKSET_TYPE_NEW_ATTEMPT = 'feedbackset_type_new_try'
+    FEEDBACKSET_TYPE_NEW_ATTEMPT = 'new_attempt'
 
     #: Something went wrong on grading, with this option, a new
     #: deadline should not be given to student. Student should just
     #: get notified that a new feedback was given.
     #: Choice for :obj:`~.FeedbackSet.feedbackset_type`.
-    FEEDBACKSET_TYPE_RE_EDIT = 'feedbackset_type_re_edit'
+    FEEDBACKSET_TYPE_RE_EDIT = 're_edit'
 
     #: Grading status choices for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_CHOICES = [
-        (FEEDBACKSET_TYPE_FIRST_ATTEMPT, 'Feedbackset_type_first_try'),
-        (FEEDBACKSET_TYPE_NEW_ATTEMPT,'feedbackset_type_new_try'),
-        (FEEDBACKSET_TYPE_RE_EDIT, 'feedbackset_type_re_edit'),
+        (FEEDBACKSET_TYPE_FIRST_ATTEMPT, 'first attempt'),
+        (FEEDBACKSET_TYPE_NEW_ATTEMPT,'new attempt'),
+        (FEEDBACKSET_TYPE_RE_EDIT, 're edit'),
     ]
 
     #: Sets the type of the feedbackset.
