@@ -8,10 +8,15 @@ from django_cradmin import crapp
 from django_cradmin.viewhelpers import detail
 
 from devilry.apps.core.models import AssignmentGroup, Examiner, Candidate
+from devilry.devilry_cradmin import devilry_listbuilder
+
+
+class GroupDetailsRenderable(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue):
+    template_name = 'devilry_admin/assignment/students/groupdetails/details-renderable.django.html'
 
 
 class GroupDetailsView(detail.DetailView):
-    template_name = 'devilry_admin/assignment/students/groupdetails.django.html'
+    template_name = 'devilry_admin/assignment/students/groupdetails/view.django.html'
 
     def get_queryset_for_role(self, role):
         assignment = role
@@ -52,15 +57,18 @@ class GroupDetailsView(detail.DetailView):
 
     def dispatch(self, request, *args, **kwargs):
         self.group = self.get_object()
-        assignment = self.request.cradmin_role
-        devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()
-        if assignment.is_fully_anonymous and devilryrole != 'departmentadmin':
+        self.assignment = self.request.cradmin_role
+        self.devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()
+        if self.assignment.is_fully_anonymous and self.devilryrole != 'departmentadmin':
             raise Http404()
         return super(GroupDetailsView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(GroupDetailsView, self).get_context_data(**kwargs)
         context['group'] = self.group
+        context['groupdetails'] = GroupDetailsRenderable(
+            value=self.group,
+            assignment=self.assignment)
         return context
 
 

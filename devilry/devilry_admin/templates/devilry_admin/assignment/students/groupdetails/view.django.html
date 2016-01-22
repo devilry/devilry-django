@@ -23,19 +23,10 @@
         </a>
 
         <h2>
-            {% if candidatecount > 1 %}
-                {% trans "Group members" %}
-            {% else %}
-                {% trans "Student details" %}
-            {% endif %}
+            {% trans "Details" %}
         </h2>
-        <ul id="devilry_admin_assignment_groupdetails_candidatelist"
-                class="list-unstyled">
-            {% for candidate in group.candidates.all %}
-                <li>
-                    {% devilry_user_verbose_inline candidate.relatedstudent.user %}
-                </li>
-            {% endfor %}
-        </ul>
+        <div id="devilry_admin_assignment_groupdetails_details">
+            {% cradmin_render_renderable groupdetails %}
+        </div>
     </div>
 {% endblock content %}
