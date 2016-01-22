@@ -26,7 +26,7 @@ class TestFeedbackfeedModel(TestCase):
 
     def test_feedbackset_feedbackset_type_default_first_try(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet')
-        self.assertEquals(feedbackset.feedbackset_type, FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY)
+        self.assertEquals(feedbackset.feedbackset_type, FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
 
     def test_feedbackset_created_by(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

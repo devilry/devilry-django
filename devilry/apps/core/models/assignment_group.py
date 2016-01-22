@@ -825,10 +825,10 @@ class AssignmentGroupQuerySet(models.QuerySet):
         ) & (
             models.Q(
                 models.Q(feedbackset__deadline_datetime__lt=now),
-                ~models.Q(feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY)
+                ~models.Q(feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
             ) |
             models.Q(
-                feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                 parentnode__first_deadline__lt=now
             )
         )
@@ -857,10 +857,10 @@ class AssignmentGroupQuerySet(models.QuerySet):
         ) & (
             models.Q(
                 models.Q(feedbackset__deadline_datetime__gte=now),
-                ~models.Q(feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY)
+                ~models.Q(feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
             ) |
             models.Q(
-                feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                 parentnode__first_deadline__gte=now
             )
         )

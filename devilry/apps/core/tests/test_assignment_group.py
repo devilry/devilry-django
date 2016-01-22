@@ -1764,7 +1764,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
                    group=testgroup,
                    grading_published_datetime=None,
                    deadline_datetime=timezone.now() + timedelta(days=2),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
                    is_last_in_group=True)
         queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
         self.assertFalse(queryset.first().is_waiting_for_feedback)
@@ -1775,7 +1775,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    grading_published_datetime=None,
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                    is_last_in_group=True)
         queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
         self.assertFalse(queryset.first().is_waiting_for_feedback)
@@ -1786,7 +1786,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
                    group=testgroup,
                    grading_published_datetime=None,
                    deadline_datetime=timezone.now() - timedelta(days=1),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
                    is_last_in_group=True)
         queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
         self.assertTrue(queryset.first().is_waiting_for_feedback)
@@ -1807,13 +1807,13 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    grading_published_datetime=timezone.now() - timedelta(days=1),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                    is_last_in_group=None)
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    grading_published_datetime=None,
                    deadline_datetime=timezone.now() - timedelta(days=1),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
                    is_last_in_group=True)
         queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_feedback()
         self.assertTrue(queryset.first().is_waiting_for_feedback)
@@ -1836,7 +1836,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForDeliveries(TestCase):
                    group=testgroup,
                    grading_published_datetime=None,
                    deadline_datetime=timezone.now() - timedelta(days=2),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
                    is_last_in_group=True)
         queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_deliveries()
         self.assertFalse(queryset.first().is_waiting_for_deliveries)
@@ -1847,7 +1847,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForDeliveries(TestCase):
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    grading_published_datetime=None,
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                    is_last_in_group=True)
         queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_deliveries()
         self.assertFalse(queryset.first().is_waiting_for_deliveries)
@@ -1858,7 +1858,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForDeliveries(TestCase):
                    group=testgroup,
                    grading_published_datetime=None,
                    deadline_datetime=timezone.now() + timedelta(days=1),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
                    is_last_in_group=True)
         queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_deliveries()
         self.assertTrue(queryset.first().is_waiting_for_deliveries)
@@ -1879,13 +1879,13 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForDeliveries(TestCase):
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    grading_published_datetime=timezone.now() - timedelta(days=1),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                    is_last_in_group=None)
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    grading_published_datetime=None,
                    deadline_datetime=timezone.now() + timedelta(days=1),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
                    is_last_in_group=True)
         queryset = AssignmentGroup.objects.all().annotate_with_is_waiting_for_deliveries()
         self.assertTrue(queryset.first().is_waiting_for_deliveries)
@@ -1915,12 +1915,12 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    grading_published_datetime=timezone.now() - timedelta(days=3),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                    is_last_in_group=None)
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    grading_published_datetime=None,
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
                    is_last_in_group=True)
         queryset = AssignmentGroup.objects.all().annotate_with_is_corrected()
         self.assertFalse(queryset.first().is_corrected)
@@ -1930,12 +1930,12 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    grading_published_datetime=timezone.now() - timedelta(days=2),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                    is_last_in_group=None)
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    grading_published_datetime=timezone.now() - timedelta(days=1),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY,
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
                    is_last_in_group=True)
         queryset = AssignmentGroup.objects.all().annotate_with_is_corrected()
         self.assertTrue(queryset.first().is_corrected)

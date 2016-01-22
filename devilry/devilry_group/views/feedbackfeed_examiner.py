@@ -199,10 +199,10 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
     def _determine_deadline(self, feedbackset=None):
         """
         Determines what deadline to use.
-        If the feedbackset has :obj:`~devilry.devilry_group.FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY`,
+        If the feedbackset has :obj:`~devilry.devilry_group.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT`,
         :class:`devilry.apps.core.models.Assignment.first_deadline` is used.
-        If the feedbackset has :obj:`~devilry.devilry_group.FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY`,
-        :obj:`~devilry.devilry_group.FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY` is used.
+        If the feedbackset has :obj:`~devilry.devilry_group.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT`,
+        :obj:`~devilry.devilry_group.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT` is used.
 
         :param feedbackset:
             :obj:`~devilry.devilry_group.FeedbackSet` to publish.
@@ -215,9 +215,9 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
             raise ValueError
 
         current_deadline = None
-        if feedbackset.feedbackset_type == models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY:
+        if feedbackset.feedbackset_type == models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
             current_deadline = feedbackset.deadline_datetime or feedbackset.group.parentnode.first_deadline
-        elif feedbackset.feedbackset_type == models.FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY:
+        elif feedbackset.feedbackset_type == models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT:
             current_deadline = feedbackset.deadline_datetime
         return current_deadline
 

@@ -72,9 +72,9 @@ class BulkFileDownloadBaseView(generic.View):
         :return:
             New attemptcounter and a label like: "attempt1/"
         """
-        if feedbackset.feedbackset_type == feedbackset.FEEDBACKSET_TYPE_FIRST_TRY:
+        if feedbackset.feedbackset_type == feedbackset.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
             attemptcounter = 1
-        elif feedbackset.feedbackset_type == feedbackset.FEEDBACKSET_TYPE_NEW_TRY:
+        elif feedbackset.feedbackset_type == feedbackset.FEEDBACKSET_TYPE_NEW_ATTEMPT:
             attemptcounter += 1
         return attemptcounter, "attempt{}/".format(attemptcounter)
 

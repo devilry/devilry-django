@@ -29,7 +29,7 @@ class FeedbackFeedTimelineBuilder(object):
             # Set the deadline related to the comment, this is the deadline the comments
             # feedback_set uses. If it's the first try, the deadline is the assignments first_deadline
             # else it's the feedback_sets deadline_datetime
-            if comment.feedback_set.feedbackset_type == group_models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY:
+            if comment.feedback_set.feedbackset_type == group_models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
                 comment_related_deadline = comment.feedback_set.group.assignment.first_deadline
             else:
                 comment_related_deadline = comment.feedback_set.deadline_datetime
