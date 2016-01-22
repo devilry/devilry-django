@@ -1,0 +1,44 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load devilry_account_tags %}
+{% load cradmin_icon_tags %}
+
+{% block title %}
+    {{ group.get_unanonymized_long_displayname }}
+{% endblock title %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'studentoverview' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to student overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {{ group.get_unanonymized_long_displayname }}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        <a href="#" class="btn btn-primary">
+            {% trans "View feedback details" %}
+        </a>
+        <a href="#" class="btn btn-default">
+            {% trans "Split group" %}
+        </a>
+
+        <h2>
+            {% trans "Details" %}
+        </h2>
+        <div id="devilry_admin_assignment_groupdetails_details">
+            {% cradmin_render_renderable groupdetails %}
+        </div>
+    </div>
+{% endblock content %}

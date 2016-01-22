@@ -424,12 +424,16 @@ class TestAssignment(TestCase):
     def test_students_must_be_anonymized_for_devilryrole_periodadmin_semi_anonymous_assignment(self):
         assignment = mommy.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        self.assertTrue(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='periodadmin'))
+        with self.assertRaisesMessage(ValueError, 'It is illegal for periodadmins to '
+                                                  'have access to anonymous assignments.'):
+            assignment.students_must_be_anonymized_for_devilryrole(devilryrole='periodadmin')
 
     def test_students_must_be_anonymized_for_devilryrole_periodadmin_fully_anonymous_assignment(self):
         assignment = mommy.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        self.assertTrue(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='periodadmin'))
+        with self.assertRaisesMessage(ValueError, 'It is illegal for periodadmins to '
+                                                  'have access to anonymous assignments.'):
+            assignment.students_must_be_anonymized_for_devilryrole(devilryrole='periodadmin')
 
     def test_students_must_be_anonymized_for_devilryrole_subjectadmin_nonanonymous_assignment(self):
         assignment = mommy.make('core.Assignment',
@@ -499,12 +503,16 @@ class TestAssignment(TestCase):
     def test_examiners_must_be_anonymized_for_devilryrole_periodadmin_semi_anonymous_assignment(self):
         assignment = mommy.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        self.assertTrue(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='periodadmin'))
+        with self.assertRaisesMessage(ValueError, 'It is illegal for periodadmins to '
+                                                  'have access to anonymous assignments.'):
+            assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='periodadmin')
 
     def test_examiners_must_be_anonymized_for_devilryrole_periodadmin_fully_anonymous_assignment(self):
         assignment = mommy.make('core.Assignment',
                                 anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        self.assertTrue(assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='periodadmin'))
+        with self.assertRaisesMessage(ValueError, 'It is illegal for periodadmins to '
+                                                  'have access to anonymous assignments.'):
+            assignment.examiners_must_be_anonymized_for_devilryrole(devilryrole='periodadmin')
 
     def test_examiners_must_be_anonymized_for_devilryrole_subjectadmin_nonanonymous_assignment(self):
         assignment = mommy.make('core.Assignment',

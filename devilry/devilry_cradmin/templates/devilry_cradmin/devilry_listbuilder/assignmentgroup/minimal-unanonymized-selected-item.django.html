@@ -1,0 +1,6 @@
+{% extends "django_cradmin/viewhelpers/multiselect2/selected_item_renderer/selected-item.django.html" %}
+{% load devilry_account_tags %}
+
+{% block title-content %}
+    {% devilry_multiple_users_verbose_inline me.get_all_candidate_users %}
+{% endblock title-content %}

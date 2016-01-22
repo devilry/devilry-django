@@ -2,15 +2,28 @@
 {% load static %}
 {% load i18n %}
 {% load cradmin_tags %}
-
+{% load cradmin_icon_tags %}
 
 {% block title %}
     {{ pagetitle }}
 {% endblock title %}
 
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
 {% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'studentoverview' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to student overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
     <h1>
-        {{ pageheading }}
+        {% blocktrans trimmed with assignmentname=assignment.long_name %}
+            {{ pageheading }}
+        {% endblocktrans %}
     </h1>
     <p>
         {{ page_subheading }}

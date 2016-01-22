@@ -1,6 +1,7 @@
-{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
+{% extends "devilry_admin/assignment/students/groupview_base/base-info-view.django.html" %}
 {% load i18n %}
 {% load cradmin_tags %}
+{% load cradmin_icon_tags %}
 
 {% block title %}
     {% blocktrans trimmed with assignmentname=assignment.long_name %}
@@ -8,7 +9,18 @@
     {% endblocktrans %}
 {% endblock title %}
 
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
 {% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'overview' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to assignment overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
     <h1>
         {% blocktrans trimmed with assignmentname=assignment.long_name %}
             Students on {{ assignmentname }}
@@ -18,46 +30,25 @@
 
 {% block content %}
     <div class="container">
-        <ol id="devilry_admin_assignment_students_overview_choices"
-                class="list-unstyled">
-            <li id="devilry_admin_assignment_students_overview_choice_create_groups">
-                <a href="{% cradmin_instance_appindex_url 'create_groups' %}">
-                    {% trans "Add students" %}
-                </a>
-            </li>
-            <li id="devilry_admin_assignment_students_overview_choice_merge_groups">
-                <a href="#">
-                    {% trans "Organize students in project groups" %}
-                </a>
-            </li>
-            <li id="devilry_admin_assignment_students_overview_choice_delete_groups">
-                <a href="#">
-                    {% trans "Delete students or project groups" %}
-                </a>
-            </li>
-        </ol>
+        <p id="devilry_admin_assignment_students_overview_buttonbar"
+                class="devilry-buttonbar">
+            <a id="devilry_admin_assignment_students_overview_button_create_groups"
+                    class="btn btn-primary"
+                    href="{% cradmin_instance_appindex_url 'create_groups' %}">
+                {% trans "Add students" %}
+            </a>
+            <a id="devilry_admin_assignment_students_overview_button_merge_groups"
+                    class="btn btn-default"
+                    href="{% cradmin_instance_appindex_url 'merge_groups' %}">
+                {% trans "Organize students in project groups" %}
+            </a>
+            <a id="devilry_admin_assignment_students_overview_button_delete_groups"
+                    class="btn btn-default"
+                    href="{% cradmin_instance_appindex_url 'delete_groups' %}">
+                {% trans "Delete students or project groups" %}
+            </a>
+        </p>
     </div>
 
     {{ block.super }}
 {% endblock content %}
-
-
-{% block no-items-wrapper %}
-    {% if excluding_filters_other_than_status_is_applied %}
-        <p class="django-cradmin-listing-no-items-message django-cradmin-listbuilderview-no-items-message">
-            {% trans "No students found matching your filters/search." %}
-        </p>
-    {% else %}
-        <div class="devilry-examiner-grouplist-empty devilry-examiner-grouplist-empty-{{ status_filter_value_normalized }}">
-            {% if status_filter_value_normalized == "waiting-for-feedback" %}
-                {% trans "You have no students waiting for feedback." %}
-            {% elif status_filter_value_normalized == "waiting-for-deliveries" %}
-                {% trans "You are currently not expecting new deliveries from any students." %}
-            {% elif status_filter_value_normalized == "corrected" %}
-                {% trans "Your examiners have not finished correcting any students yet." %}
-            {% elif status_filter_value_normalized == "all" %}
-                {% trans "You have no students for this assignment. Add students using the link above." %}
-            {% endif %}
-        </div>
-    {% endif %}
-{% endblock no-items-wrapper %}

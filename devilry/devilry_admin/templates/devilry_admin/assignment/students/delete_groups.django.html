@@ -1,0 +1,48 @@
+{% extends "devilry_admin/assignment/students/groupview_base/base-multiselect-view.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block title %}
+    {% trans "Delete students" %}
+{% endblock title %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'studentoverview' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to student overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% trans "Delete students" %}
+    </h1>
+    <p>
+        {% trans 'Select one or more students, and select "Delete students".' %}
+
+        {% if not has_delete_with_content_permission %}
+            <span id="devilry_admin_assignment_delete_groups_can_not_delete_content_message">
+                {% trans "You do not have permission to delete students with deliveries and/or feedback, so those students are not available in the list below." %}
+            </span>
+        {% endif %}
+    </p>
+
+{% endblock pageheader-inner %}
+
+
+{% block messages %}
+    <div class="container">
+        {% if has_delete_with_content_permission %}
+            <div id="devilry_admin_assignment_delete_groups_can_delete_content_warning"
+                    class="alert alert-warning">
+                {% trans "You have permission to delete students with deliveries and/or feedback, so be VERY CAREFUL before you click the delete button!" %}
+            </div>
+        {% endif %}
+    </div>
+    {{ block.super }}
+{% endblock messages %}

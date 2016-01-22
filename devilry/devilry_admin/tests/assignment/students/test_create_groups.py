@@ -65,7 +65,7 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
                                     parentnode__parentnode__short_name='testsubject')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
-            'All students on testsubject',
+            'All students',
             mockresponse.selector.one(
                 '#devilry_admin_create_groups_choosemethod_relatedstudents_link').alltext_normalized)
 
@@ -112,11 +112,11 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
-            'All students on otherassignment',
+            'All students',
             mockresponse.selector.one('#devilry_admin_create_groups_choosemethod_assignment_{}_all_link'.format(
                 otherassignment.pk)).alltext_normalized)
         self.assertEqual(
-            'Students with passing grade on otherassignment',
+            'Students with passing grade',
             mockresponse.selector.one('#devilry_admin_create_groups_choosemethod_assignment_{}_passing_link'.format(
                 otherassignment.pk)).alltext_normalized)
 

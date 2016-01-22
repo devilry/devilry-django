@@ -1516,6 +1516,16 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             else:
                 return self.__get_no_candidates_nonanonymous_displayname()
 
+    def get_unanonymized_long_displayname(self):
+        candidates = self.candidates.all()
+        names = [candidate.relatedstudent.user.get_full_name() for candidate in candidates]
+        out = u', '.join(names)
+        if not out:
+            out = self.__get_no_candidates_nonanonymous_displayname()
+        if self.name:
+            out = u'{} ({})'.format(self.name, out)
+        return out
+
     @property
     def long_displayname(self):
         """
@@ -1533,13 +1543,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         if assignment.is_anonymous:
             out = self.get_anonymous_displayname()
         else:
-            candidates = self.candidates.all()
-            names = [candidate.relatedstudent.user.get_full_name() for candidate in candidates]
-            out = u', '.join(names)
-            if not out:
-                out = self.__get_no_candidates_nonanonymous_displayname()
-            if self.name:
-                out = u'{} ({})'.format(self.name, out)
+            out = self.get_unanonymized_long_displayname()
         return out
 
     def __unicode__(self):

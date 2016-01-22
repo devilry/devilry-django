@@ -307,14 +307,14 @@ img {
   height: auto;
 }
 .img-rounded {
-  border-radius: 3px;
+  border-radius: 0;
 }
 .img-thumbnail {
   padding: 4px;
   line-height: 1.42857143;
   background-color: #fff;
   border: 1px solid #ddd;
-  border-radius: 2px;
+  border-radius: 0;
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   display: inline-block;
@@ -688,14 +688,14 @@ code {
   color: #c7254e;
   background-color: #f9f2f4;
   white-space: nowrap;
-  border-radius: 2px;
+  border-radius: 0;
 }
 kbd {
   padding: 2px 4px;
   font-size: 90%;
   color: #fff;
   background-color: #333;
-  border-radius: 3px;
+  border-radius: 0;
   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 pre {
@@ -709,7 +709,7 @@ pre {
   color: #333333;
   background-color: #f5f5f5;
   border: 1px solid #ccc;
-  border-radius: 2px;
+  border-radius: 0;
 }
 pre code {
   padding: 0;
@@ -1689,7 +1689,7 @@ output {
   background-color: #fff;
   background-image: none;
   border: 1px solid #ccc;
-  border-radius: 2px;
+  border-radius: 0;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
@@ -1788,7 +1788,7 @@ fieldset[disabled] .checkbox-inline {
   padding: 5px 10px;
   font-size: 14px;
   line-height: 1.5;
-  border-radius: 3px;
+  border-radius: 0;
 }
 select.input-sm {
   height: 33px;
@@ -1803,7 +1803,7 @@ select[multiple].input-sm {
   padding: 10px 16px;
   font-size: 20px;
   line-height: 1.33;
-  border-radius: 3px;
+  border-radius: 0;
 }
 select.input-lg {
   height: 49px;
@@ -1993,7 +1993,7 @@ select[multiple].input-lg {
   padding: 6px 12px;
   font-size: 16px;
   line-height: 1.42857143;
-  border-radius: 2px;
+  border-radius: 0;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -2008,7 +2008,7 @@ select[multiple].input-lg {
 }
 .btn:hover,
 .btn:focus {
-  color: #377CA8;
+  color: #555;
   text-decoration: none;
 }
 .btn:active,
@@ -2029,18 +2029,18 @@ fieldset[disabled] .btn {
   box-shadow: none;
 }
 .btn-default {
-  color: #377CA8;
+  color: #555;
   background-color: #fff;
-  border-color: #D9D9D9;
+  border-color: #555;
 }
 .btn-default:hover,
 .btn-default:focus,
 .btn-default:active,
 .btn-default.active,
 .open .dropdown-toggle.btn-default {
-  color: #377CA8;
+  color: #555;
   background-color: #ebebeb;
-  border-color: #bababa;
+  border-color: #363636;
 }
 .btn-default:active,
 .btn-default.active,
@@ -2063,25 +2063,25 @@ fieldset[disabled] .btn-default:active,
 .btn-default[disabled].active,
 fieldset[disabled] .btn-default.active {
   background-color: #fff;
-  border-color: #D9D9D9;
+  border-color: #555;
 }
 .btn-default .badge {
   color: #fff;
-  background-color: #377CA8;
+  background-color: #555;
 }
 .btn-primary {
-  color: #fff;
-  background-color: #377CA8;
-  border-color: #224D68;
+  color: #f2f2f2;
+  background-color: #333;
+  border-color: #333;
 }
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active,
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
-  color: #fff;
-  background-color: #2d6589;
-  border-color: #132b3a;
+  color: #f2f2f2;
+  background-color: #1f1f1f;
+  border-color: #141414;
 }
 .btn-primary:active,
 .btn-primary.active,
@@ -2103,12 +2103,12 @@ fieldset[disabled] .btn-primary:active,
 .btn-primary.disabled.active,
 .btn-primary[disabled].active,
 fieldset[disabled] .btn-primary.active {
-  background-color: #377CA8;
-  border-color: #224D68;
+  background-color: #333;
+  border-color: #333;
 }
 .btn-primary .badge {
-  color: #377CA8;
-  background-color: #fff;
+  color: #333;
+  background-color: #f2f2f2;
 }
 .btn-success {
   color: #fff;
@@ -2312,21 +2312,21 @@ fieldset[disabled] .btn-link:focus {
   padding: 10px 16px;
   font-size: 20px;
   line-height: 1.33;
-  border-radius: 3px;
+  border-radius: 0;
 }
 .btn-sm,
 .btn-group-sm > .btn {
   padding: 5px 10px;
   font-size: 14px;
   line-height: 1.5;
-  border-radius: 3px;
+  border-radius: 0;
 }
 .btn-xs,
 .btn-group-xs > .btn {
   padding: 1px 5px;
   font-size: 14px;
   line-height: 1.5;
-  border-radius: 3px;
+  border-radius: 0;
 }
 .btn-block {
   display: block;
@@ -3010,7 +3010,7 @@ input[type="button"].btn-block {
   background-color: #fff;
   border: 1px solid #ccc;
   border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 2px;
+  border-radius: 0;
   -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   background-clip: padding-box;
@@ -3241,12 +3241,12 @@ input[type="button"].btn-block {
   border-radius: 0;
 }
 .btn-group-vertical > .btn:first-child:not(:last-child) {
-  border-top-right-radius: 2px;
+  border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
 .btn-group-vertical > .btn:last-child:not(:first-child) {
-  border-bottom-left-radius: 2px;
+  border-bottom-left-radius: 0;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
 }
@@ -3305,7 +3305,7 @@ input[type="button"].btn-block {
   padding: 10px 16px;
   font-size: 20px;
   line-height: 1.33;
-  border-radius: 3px;
+  border-radius: 0;
 }
 select.input-group-lg > .form-control,
 select.input-group-lg > .input-group-addon,
@@ -3328,7 +3328,7 @@ select[multiple].input-group-lg > .input-group-btn > .btn {
   padding: 5px 10px;
   font-size: 14px;
   line-height: 1.5;
-  border-radius: 3px;
+  border-radius: 0;
 }
 select.input-group-sm > .form-control,
 select.input-group-sm > .input-group-addon,
@@ -3369,17 +3369,17 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   text-align: center;
   background-color: #eeeeee;
   border: 1px solid #ccc;
-  border-radius: 2px;
+  border-radius: 0;
 }
 .input-group-addon.input-sm {
   padding: 5px 10px;
   font-size: 14px;
-  border-radius: 3px;
+  border-radius: 0;
 }
 .input-group-addon.input-lg {
   padding: 10px 16px;
   font-size: 20px;
-  border-radius: 3px;
+  border-radius: 0;
 }
 .input-group-addon input[type="radio"],
 .input-group-addon input[type="checkbox"] {
@@ -3439,7 +3439,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   display: inline-block;
   padding-left: 0;
   margin: 22px 0;
-  border-radius: 2px;
+  border-radius: 0;
 }
 .pagination > li {
   display: inline;
@@ -3459,13 +3459,13 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .pagination > li:first-child > a,
 .pagination > li:first-child > span {
   margin-left: 0;
-  border-bottom-left-radius: 2px;
-  border-top-left-radius: 2px;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
 }
 .pagination > li:last-child > a,
 .pagination > li:last-child > span {
-  border-bottom-right-radius: 2px;
-  border-top-right-radius: 2px;
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
 }
 .pagination > li > a:hover,
 .pagination > li > span:hover,
@@ -3505,13 +3505,13 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .pagination-lg > li:first-child > a,
 .pagination-lg > li:first-child > span {
-  border-bottom-left-radius: 3px;
-  border-top-left-radius: 3px;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
 }
 .pagination-lg > li:last-child > a,
 .pagination-lg > li:last-child > span {
-  border-bottom-right-radius: 3px;
-  border-top-right-radius: 3px;
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
 }
 .pagination-sm > li > a,
 .pagination-sm > li > span {
@@ -3520,13 +3520,13 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .pagination-sm > li:first-child > a,
 .pagination-sm > li:first-child > span {
-  border-bottom-left-radius: 3px;
-  border-top-left-radius: 3px;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
 }
 .pagination-sm > li:last-child > a,
 .pagination-sm > li:last-child > span {
-  border-bottom-right-radius: 3px;
-  border-top-right-radius: 3px;
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
 }
 .pager {
   padding-left: 0;
@@ -3688,7 +3688,7 @@ a.list-group-item.active > .badge,
   font-weight: 200;
 }
 .container .jumbotron {
-  border-radius: 3px;
+  border-radius: 0;
 }
 .jumbotron .container {
   max-width: 100%;
@@ -3714,7 +3714,7 @@ a.list-group-item.active > .badge,
   line-height: 1.42857143;
   background-color: #fff;
   border: 1px solid #ddd;
-  border-radius: 2px;
+  border-radius: 0;
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
 }
@@ -3736,7 +3736,7 @@ a.thumbnail.active {
   padding: 15px;
   margin-bottom: 22px;
   border: 1px solid transparent;
-  border-radius: 2px;
+  border-radius: 0;
 }
 .alert h4 {
   margin-top: 0;
@@ -3762,48 +3762,48 @@ a.thumbnail.active {
   color: inherit;
 }
 .alert-success {
-  background-color: #dff0d8;
-  border-color: #d6e9c6;
-  color: #3c763d;
+  background-color: #5cb85c;
+  border-color: #5cb85c;
+  color: #fff;
 }
 .alert-success hr {
-  border-top-color: #c9e2b3;
+  border-top-color: #4cae4c;
 }
 .alert-success .alert-link {
-  color: #2b542c;
+  color: #e6e6e6;
 }
 .alert-info {
-  background-color: #d9edf7;
-  border-color: #bce8f1;
-  color: #31708f;
+  background-color: #337ab7;
+  border-color: #337ab7;
+  color: #fff;
 }
 .alert-info hr {
-  border-top-color: #a6e1ec;
+  border-top-color: #2e6da4;
 }
 .alert-info .alert-link {
-  color: #245269;
+  color: #e6e6e6;
 }
 .alert-warning {
-  background-color: #fcf8e3;
-  border-color: #faebcc;
-  color: #8a6d3b;
+  background-color: #d9534f;
+  border-color: #d9534f;
+  color: #fff;
 }
 .alert-warning hr {
-  border-top-color: #f7e1b5;
+  border-top-color: #d43f3a;
 }
 .alert-warning .alert-link {
-  color: #66512c;
+  color: #e6e6e6;
 }
 .alert-danger {
-  background-color: #f2dede;
-  border-color: #ebccd1;
-  color: #a94442;
+  background-color: #d9534f;
+  border-color: #d9534f;
+  color: #fff;
 }
 .alert-danger hr {
-  border-top-color: #e4b9c0;
+  border-top-color: #d43f3a;
 }
 .alert-danger .alert-link {
-  color: #843534;
+  color: #e6e6e6;
 }
 @-webkit-keyframes progress-bar-stripes {
   from {
@@ -3826,7 +3826,7 @@ a.thumbnail.active {
   height: 22px;
   margin-bottom: 22px;
   background-color: #f5f5f5;
-  border-radius: 2px;
+  border-radius: 0;
   -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
@@ -3922,13 +3922,13 @@ a.thumbnail.active {
   border: 1px solid #ddd;
 }
 .list-group-item:first-child {
-  border-top-right-radius: 2px;
-  border-top-left-radius: 2px;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
 }
 .list-group-item:last-child {
   margin-bottom: 0;
-  border-bottom-right-radius: 2px;
-  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
 }
 .list-group-item > .badge {
   float: right;
@@ -4065,7 +4065,7 @@ a.list-group-item-danger.active:focus {
   margin-bottom: 22px;
   background-color: #fff;
   border: 1px solid transparent;
-  border-radius: 2px;
+  border-radius: 0;
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
 }
@@ -4075,8 +4075,8 @@ a.list-group-item-danger.active:focus {
 .panel-heading {
   padding: 10px 15px;
   border-bottom: 1px solid transparent;
-  border-top-right-radius: 1px;
-  border-top-left-radius: 1px;
+  border-top-right-radius: -1;
+  border-top-left-radius: -1;
 }
 .panel-heading > .dropdown .dropdown-toggle {
   color: inherit;
@@ -4094,8 +4094,8 @@ a.list-group-item-danger.active:focus {
   padding: 10px 15px;
   background-color: #f5f5f5;
   border-top: 1px solid #ddd;
-  border-bottom-right-radius: 1px;
-  border-bottom-left-radius: 1px;
+  border-bottom-right-radius: -1;
+  border-bottom-left-radius: -1;
 }
 .panel > .list-group {
   margin-bottom: 0;
@@ -4106,13 +4106,13 @@ a.list-group-item-danger.active:focus {
 }
 .panel > .list-group:first-child .list-group-item:first-child {
   border-top: 0;
-  border-top-right-radius: 1px;
-  border-top-left-radius: 1px;
+  border-top-right-radius: -1;
+  border-top-left-radius: -1;
 }
 .panel > .list-group:last-child .list-group-item:last-child {
   border-bottom: 0;
-  border-bottom-right-radius: 1px;
-  border-bottom-left-radius: 1px;
+  border-bottom-right-radius: -1;
+  border-bottom-left-radius: -1;
 }
 .panel-heading + .list-group .list-group-item:first-child {
   border-top-width: 0;
@@ -4123,8 +4123,8 @@ a.list-group-item-danger.active:focus {
 }
 .panel > .table:first-child,
 .panel > .table-responsive:first-child > .table:first-child {
-  border-top-right-radius: 1px;
-  border-top-left-radius: 1px;
+  border-top-right-radius: -1;
+  border-top-left-radius: -1;
 }
 .panel > .table:first-child > thead:first-child > tr:first-child td:first-child,
 .panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:first-child,
@@ -4134,7 +4134,7 @@ a.list-group-item-danger.active:focus {
 .panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:first-child,
 .panel > .table:first-child > tbody:first-child > tr:first-child th:first-child,
 .panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:first-child {
-  border-top-left-radius: 1px;
+  border-top-left-radius: -1;
 }
 .panel > .table:first-child > thead:first-child > tr:first-child td:last-child,
 .panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child td:last-child,
@@ -4144,12 +4144,12 @@ a.list-group-item-danger.active:focus {
 .panel > .table-responsive:first-child > .table:first-child > thead:first-child > tr:first-child th:last-child,
 .panel > .table:first-child > tbody:first-child > tr:first-child th:last-child,
 .panel > .table-responsive:first-child > .table:first-child > tbody:first-child > tr:first-child th:last-child {
-  border-top-right-radius: 1px;
+  border-top-right-radius: -1;
 }
 .panel > .table:last-child,
 .panel > .table-responsive:last-child > .table:last-child {
-  border-bottom-right-radius: 1px;
-  border-bottom-left-radius: 1px;
+  border-bottom-right-radius: -1;
+  border-bottom-left-radius: -1;
 }
 .panel > .table:last-child > tbody:last-child > tr:last-child td:first-child,
 .panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:first-child,
@@ -4159,7 +4159,7 @@ a.list-group-item-danger.active:focus {
 .panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:first-child,
 .panel > .table:last-child > tfoot:last-child > tr:last-child th:first-child,
 .panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:first-child {
-  border-bottom-left-radius: 1px;
+  border-bottom-left-radius: -1;
 }
 .panel > .table:last-child > tbody:last-child > tr:last-child td:last-child,
 .panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child td:last-child,
@@ -4169,7 +4169,7 @@ a.list-group-item-danger.active:focus {
 .panel > .table-responsive:last-child > .table:last-child > tbody:last-child > tr:last-child th:last-child,
 .panel > .table:last-child > tfoot:last-child > tr:last-child th:last-child,
 .panel > .table-responsive:last-child > .table:last-child > tfoot:last-child > tr:last-child th:last-child {
-  border-bottom-right-radius: 1px;
+  border-bottom-right-radius: -1;
 }
 .panel > .panel-body + .table,
 .panel > .panel-body + .table-responsive {
@@ -4240,7 +4240,7 @@ a.list-group-item-danger.active:focus {
 }
 .panel-group .panel {
   margin-bottom: 0;
-  border-radius: 2px;
+  border-radius: 0;
   overflow: hidden;
 }
 .panel-group .panel + .panel {
@@ -4348,7 +4348,7 @@ a.list-group-item-danger.active:focus {
   margin-bottom: 20px;
   background-color: #f5f5f5;
   border: 1px solid #e3e3e3;
-  border-radius: 2px;
+  border-radius: 0;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
@@ -4358,11 +4358,11 @@ a.list-group-item-danger.active:focus {
 }
 .well-lg {
   padding: 24px;
-  border-radius: 3px;
+  border-radius: 0;
 }
 .well-sm {
   padding: 9px;
-  border-radius: 3px;
+  border-radius: 0;
 }
 .close {
   float: right;
@@ -4588,36 +4588,36 @@ a {
   border-bottom: 1px solid #ccc;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-danger {
-  background: #f2dede;
-  border-color: #ebccd1;
-  color: #a94442;
+  background: #d9534f;
+  border-color: #d9534f;
+  color: #fff;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-danger a {
   color: inherit;
   text-decoration: underline;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-warning {
-  background: #fcf8e3;
-  border-color: #faebcc;
-  color: #8a6d3b;
+  background: #d9534f;
+  border-color: #d9534f;
+  color: #fff;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-warning a {
   color: inherit;
   text-decoration: underline;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-info {
-  background: #d9edf7;
-  border-color: #bce8f1;
-  color: #31708f;
+  background: #337ab7;
+  border-color: #337ab7;
+  color: #fff;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-info a {
   color: inherit;
   text-decoration: underline;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-success {
-  background: #dff0d8;
-  border-color: #d6e9c6;
-  color: #3c763d;
+  background: #5cb85c;
+  border-color: #5cb85c;
+  color: #fff;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-success a {
   color: inherit;
@@ -4918,7 +4918,7 @@ table.table.django-cradmin-table tbody td:last-child {
 }
 .btn {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
-  border-radius: 2px;
+  border-radius: 0;
   padding: 6px 12px;
 }
 @media (min-width: 768px) {
@@ -4929,35 +4929,35 @@ table.table.django-cradmin-table tbody td:last-child {
   }
 }
 .btn.btn-xs {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 1px 5px;
 }
 .btn.btn-sm {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 5px 10px;
 }
 .btn.btn-lg {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 10px 16px;
 }
 .btn.btn-default:hover,
 .btn.btn-default:focus {
   background: #fff;
-  border-color: #D9D9D9;
-  color: #377CA8;
+  border-color: #555;
+  color: #555;
 }
 @media (min-width: 768px) {
   .btn.btn-default:hover,
   .btn.btn-default:focus {
-    background: #377CA8;
-    border-color: #377CA8;
+    background: #555;
+    border-color: #555;
     color: #fff;
   }
 }
 .btn.btn-primary:hover,
 .btn.btn-primary:focus {
-  background: #224D68;
-  border-color: #224D68;
+  background: #000;
+  border-color: #000;
   color: #fff;
 }
 .btn.btn-success:hover,
@@ -4995,7 +4995,7 @@ table.table.django-cradmin-table tbody td:last-child {
   font-size: 12px !important;
 }
 .django-cradmin-page-header-outer {
-  padding: 35px 0 25px 0;
+  padding: 25px 0 12px 0;
   background: none;
   color: #333333;
   border: none;
@@ -5244,7 +5244,7 @@ table.table.django-cradmin-table tbody td:last-child {
 .django-cradmin-form .django-cradmin-filewidget .django-cradmin-filewidget-field-and-overlay-wrapper a.django-cradmin-filewidget-fieldoverlay {
   width: 220px;
   height: 40px;
-  border-radius: 2px;
+  border-radius: 0;
   padding: 0;
   line-height: 40px;
   text-overflow: ellipsis;
@@ -5252,13 +5252,13 @@ table.table.django-cradmin-table tbody td:last-child {
 }
 .django-cradmin-form .django-cradmin-filewidget .django-cradmin-filewidget-field-and-overlay-wrapper.django-cradmin-filewidget-field-and-overlay-wrapper-hover a.btn.btn-default {
   background: #fff;
-  border-color: #D9D9D9;
-  color: #377CA8;
+  border-color: #555;
+  color: #555;
 }
 @media (min-width: 768px) {
   .django-cradmin-form .django-cradmin-filewidget .django-cradmin-filewidget-field-and-overlay-wrapper.django-cradmin-filewidget-field-and-overlay-wrapper-hover a.btn.btn-default {
-    background: #377CA8;
-    border-color: #377CA8;
+    background: #555;
+    border-color: #555;
     color: #fff;
   }
 }
@@ -5424,7 +5424,7 @@ table.table.django-cradmin-table tbody td:last-child {
   }
 }
 .django_cradmin_submitrow {
-  background: #333;
+  background: none;
   padding: 8px 15px 0 15px;
 }
 .django_cradmin_submitrow.django_cradmin_submitrow_hidden {
@@ -5591,19 +5591,19 @@ The bulk file upload widget base styles.
   color: #24516e;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover {
-  background: #dff0d8;
-  color: #3c763d;
+  background: #5cb85c;
+  color: #fff;
   border-style: solid;
-  border-color: #d6e9c6;
+  border-color: #5cb85c;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover .django-cradmin-bulkfileupload-dropbox-text p.django-cradmin-bulkfileupload-advanced-fileselectbutton-wrapper {
   display: none;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover-error {
-  background: #f2dede;
-  color: #a94442;
+  background: #d9534f;
+  color: #fff;
   border-style: solid;
-  border-color: #ebccd1;
+  border-color: #d9534f;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover-error .django-cradmin-bulkfileupload-dropbox-invalid-filetype-errormessage {
   display: block;
@@ -5639,8 +5639,8 @@ The bulk file upload widget base styles.
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph,
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph,
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph {
-  background: #f2dede;
-  color: #a94442;
+  background: #d9534f;
+  color: #fff;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton,
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton,
@@ -5649,13 +5649,13 @@ The bulk file upload widget base styles.
   float: right;
   margin-top: -7px;
   margin-right: -7px;
-  color: #a94442;
+  color: #fff;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton:hover,
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton:hover,
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton:hover,
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton:hover {
-  color: #7d3231;
+  color: #e0e0e0;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress {
   background: #fff;
@@ -5672,7 +5672,7 @@ The bulk file upload widget base styles.
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progressbar-progress {
   display: inline-block;
   height: 100%;
-  background: #377CA8;
+  background: #333;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progresspercent {
   position: absolute;
@@ -5685,10 +5685,10 @@ The bulk file upload widget base styles.
   float: right;
   margin-top: -7px;
   margin-right: -7px;
-  color: #a94442;
+  color: #fff;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-bulkfileupload-remove-file-button:hover {
-  color: #7d3231;
+  color: #e0e0e0;
 }
 /**
 ## .django-cradmin-bulkfileupload-form-overlay
@@ -5859,10 +5859,10 @@ child of ``<body>``.
   display: none;
 }
 .django-cradmin-bulkfileupload-overlaywrapper.django-cradmin-bulkfileupload-overlaywrapper-window-dragover .django-cradmin-bulkfileupload-form-overlay .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover {
-  background: #dff0d8;
-  color: #3c763d;
+  background: #5cb85c;
+  color: #fff;
   border-style: solid;
-  border-color: #d6e9c6;
+  border-color: #5cb85c;
 }
 .django-cradmin-focusedpage-wrapper {
   width: 100%;
@@ -5932,7 +5932,7 @@ nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-i
 }
 nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item a {
   display: block;
-  color: #aaa;
+  color: #cccccc;
   padding: 10px 16px 10px 16px;
   transition: color 0.15s ease;
   text-overflow: ellipsis;
@@ -5969,7 +5969,7 @@ nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-m
   border-radius: 0;
   cursor: pointer;
   text-decoration: none;
-  color: #aaa;
+  color: #cccccc;
   background-color: #191919;
 }
 nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle:hover,
@@ -6298,7 +6298,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell {
   margin: 0;
   background: #fff;
-  color: #377CA8;
+  color: #555;
   border: none;
   height: 62.5px;
   position: relative;
@@ -6348,10 +6348,10 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
 }
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-today button {
   background: #E1EDF4;
-  color: #377CA8;
+  color: #555;
 }
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-selected button {
-  background: #2a6082;
+  background: #3b3b3b;
   color: #fff;
 }
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button {
@@ -6387,7 +6387,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-today button:focus,
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-selected button:focus,
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button:focus {
-  background: #377CA8;
+  background: #555;
   color: #fff;
 }
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell:first-child {
@@ -6745,20 +6745,20 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
     left: 50%;
     margin-left: -150px;
     width: 300px;
-    border-radius: 2px;
+    border-radius: 0;
   }
 }
 .django-cradmin-listfilter-target-loading .django-cradmin-listfilter-message.django-cradmin-listfilter-message-loading,
 .django-cradmin-listfilter-target-loaderror .django-cradmin-listfilter-message.django-cradmin-listfilter-message-loading {
-  background: #d9edf7;
-  border: 1px solid #bce8f1;
-  color: #31708f;
+  background: #337ab7;
+  border: 1px solid #337ab7;
+  color: #fff;
 }
 .django-cradmin-listfilter-target-loading .django-cradmin-listfilter-message.django-cradmin-listfilter-message-error,
 .django-cradmin-listfilter-target-loaderror .django-cradmin-listfilter-message.django-cradmin-listfilter-message-error {
-  background: #f2dede;
-  border: 1px solid #ebccd1;
-  color: #a94442;
+  background: #d9534f;
+  border: 1px solid #d9534f;
+  color: #fff;
 }
 .django-cradmin-multiselect2-selected-item {
   display: none;
@@ -6888,7 +6888,86 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
   margin-right: auto;
 }
 .django-cradmin-page-header-outer .django-cradmin-page-header-inner h1 {
-  font-size: 26px;
+  font-size: 28px;
+}
+.django-cradmin-page-header-outer .django-cradmin-page-header-inner p {
+  margin-bottom: 10px;
+}
+.django-cradmin-page-header-outer .django-cradmin-page-header-inner p:last-child {
+  margin-bottom: 0;
+}
+.alert {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.alert strong {
+  font-style: italic;
+}
+.btn {
+  font-weight: bold;
+  border-width: 3px;
+  letter-spacing: 1.4px;
+  padding: 4px 12px;
+  margin-bottom: 5px;
+}
+.btn.btn-sm {
+  padding: 3px 10px;
+}
+.btn.btn-lg {
+  padding: 7px 16px;
+}
+.django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner {
+  position: relative;
+  padding-left: 40px;
+}
+.django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner a.devilry-page-header-backlink {
+  font-size: 30px;
+  position: absolute;
+  top: -5px;
+  left: 0;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  color: #333333;
+}
+.django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner a.devilry-page-header-backlink:hover {
+  color: #377CA8;
+}
+.devilry-cradmin-groupitemvalue h2,
+.devilry-cradmin-groupitemvalue h3 {
+  margin-bottom: 5px;
+}
+.devilry-cradmin-groupitemvalue p.devilry-cradmin-groupitemvalue-examiners {
+  margin-bottom: 1px;
+}
+.devilry-cradmin-groupitemvalue p.devilry-cradmin-groupitemvalue-status {
+  margin-bottom: 1px;
+}
+.devilry-cradmin-groupitemvalue .devilry-cradmin-groupitemvalue-comments {
+  margin-bottom: 1px;
+  font-size: 14px;
+  color: #999999;
+}
+ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-vertical li .django-cradmin-listfilter-radiolist {
+  margin-top: -8px;
+}
+ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-vertical li .django-cradmin-listfilter-radiolist .radio {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 5px;
+}
+@media (min-width: 768px) {
+  ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-vertical li .django-cradmin-listfilter-radiolist .radio {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+}
+ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-vertical li .django-cradmin-listfilter-radiolist .radio .label {
+  border-radius: 10px;
+  float: right;
+  height: 20px;
+  width: 20px;
+  padding-top: 4px;
 }
 h2,
 h3,
@@ -6900,6 +6979,47 @@ h2 {
 }
 h3 {
   font-size: 16px;
+}
+form.devilry-form-inline {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+h2 .devilry-user-verbose-inline small {
+  color: #333333;
+  font-size: 16px;
+}
+h3 .devilry-user-verbose-inline small {
+  color: #333333;
+  font-size: 14px;
+}
+.devilry-core-groupstatus:first-letter {
+  text-transform: uppercase;
+}
+.devilry-core-groupstatus.devilry-core-groupstatus-waiting-for-feedback {
+  font-weight: bold;
+}
+.devilry-dashboard-container {
+  background: #fff;
+  margin-bottom: 5px;
+  padding: 15px 15px 5px 15px;
+}
+.devilry-dashboard-container h2,
+.devilry-dashboard-container h3 {
+  margin-bottom: 5px;
+}
+.devilry-dashboard-container h2:first-child,
+.devilry-dashboard-container h3:first-child {
+  margin-top: 0;
+}
+.devilry-dashboard-container.devilry-dashboard-container-focus h2 {
+  font-size: 28px;
+}
+.devilry-dashboard-container.devilry-dashboard-container-focus h3 {
+  font-size: 23px;
+}
+#django_cradmin_bodycontentwrapper {
+  padding-bottom: 15px;
 }
 .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg h2,
 .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg h3 {
@@ -7168,8 +7288,13 @@ Buttons
   -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
-  border-radius: 2px;
+  border-radius: 0;
   padding: 6px 12px;
+  font-weight: bold;
+  border-width: 3px;
+  letter-spacing: 1.4px;
+  padding: 4px 12px;
+  margin-bottom: 5px;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -7185,7 +7310,7 @@ Buttons
 }
 .button:hover,
 .button:focus {
-  color: #377CA8;
+  color: #555;
   text-decoration: none;
 }
 .button:active,
@@ -7213,35 +7338,35 @@ fieldset[disabled] .button {
   }
 }
 .button.btn-xs {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 1px 5px;
 }
 .button.btn-sm {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 5px 10px;
 }
 .button.btn-lg {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 10px 16px;
 }
 .button.btn-default:hover,
 .button.btn-default:focus {
   background: #fff;
-  border-color: #D9D9D9;
-  color: #377CA8;
+  border-color: #555;
+  color: #555;
 }
 @media (min-width: 768px) {
   .button.btn-default:hover,
   .button.btn-default:focus {
-    background: #377CA8;
-    border-color: #377CA8;
+    background: #555;
+    border-color: #555;
     color: #fff;
   }
 }
 .button.btn-primary:hover,
 .button.btn-primary:focus {
-  background: #224D68;
-  border-color: #224D68;
+  background: #000;
+  border-color: #000;
   color: #fff;
 }
 .button.btn-success:hover,
@@ -7272,6 +7397,12 @@ fieldset[disabled] .button {
 .button.btn-cancel:focus {
   color: #24516e;
 }
+.button.btn-sm {
+  padding: 3px 10px;
+}
+.button.btn-lg {
+  padding: 7px 16px;
+}
 .button:hover,
 .button:focus {
   background: #49c34c;
@@ -7295,8 +7426,13 @@ fieldset[disabled] .button {
   -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
-  border-radius: 2px;
+  border-radius: 0;
   padding: 6px 12px;
+  font-weight: bold;
+  border-width: 3px;
+  letter-spacing: 1.4px;
+  padding: 4px 12px;
+  margin-bottom: 5px;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -7312,7 +7448,7 @@ fieldset[disabled] .button {
 }
 .button_default:hover,
 .button_default:focus {
-  color: #377CA8;
+  color: #555;
   text-decoration: none;
 }
 .button_default:active,
@@ -7340,35 +7476,35 @@ fieldset[disabled] .button_default {
   }
 }
 .button_default.btn-xs {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 1px 5px;
 }
 .button_default.btn-sm {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 5px 10px;
 }
 .button_default.btn-lg {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 10px 16px;
 }
 .button_default.btn-default:hover,
 .button_default.btn-default:focus {
   background: #fff;
-  border-color: #D9D9D9;
-  color: #377CA8;
+  border-color: #555;
+  color: #555;
 }
 @media (min-width: 768px) {
   .button_default.btn-default:hover,
   .button_default.btn-default:focus {
-    background: #377CA8;
-    border-color: #377CA8;
+    background: #555;
+    border-color: #555;
     color: #fff;
   }
 }
 .button_default.btn-primary:hover,
 .button_default.btn-primary:focus {
-  background: #224D68;
-  border-color: #224D68;
+  background: #000;
+  border-color: #000;
   color: #fff;
 }
 .button_default.btn-success:hover,
@@ -7399,6 +7535,12 @@ fieldset[disabled] .button_default {
 .button_default.btn-cancel:focus {
   color: #24516e;
 }
+.button_default.btn-sm {
+  padding: 3px 10px;
+}
+.button_default.btn-lg {
+  padding: 7px 16px;
+}
 .button_default:hover,
 .button_default:focus {
   background: #49c34c;
@@ -7425,8 +7567,13 @@ fieldset[disabled] .button_default {
   -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
-  border-radius: 2px;
+  border-radius: 0;
   padding: 6px 12px;
+  font-weight: bold;
+  border-width: 3px;
+  letter-spacing: 1.4px;
+  padding: 4px 12px;
+  margin-bottom: 5px;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -7443,7 +7590,7 @@ fieldset[disabled] .button_default {
 }
 .button_admin:hover,
 .button_admin:focus {
-  color: #377CA8;
+  color: #555;
   text-decoration: none;
 }
 .button_admin:active,
@@ -7471,35 +7618,35 @@ fieldset[disabled] .button_admin {
   }
 }
 .button_admin.btn-xs {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 1px 5px;
 }
 .button_admin.btn-sm {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 5px 10px;
 }
 .button_admin.btn-lg {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 10px 16px;
 }
 .button_admin.btn-default:hover,
 .button_admin.btn-default:focus {
   background: #fff;
-  border-color: #D9D9D9;
-  color: #377CA8;
+  border-color: #555;
+  color: #555;
 }
 @media (min-width: 768px) {
   .button_admin.btn-default:hover,
   .button_admin.btn-default:focus {
-    background: #377CA8;
-    border-color: #377CA8;
+    background: #555;
+    border-color: #555;
     color: #fff;
   }
 }
 .button_admin.btn-primary:hover,
 .button_admin.btn-primary:focus {
-  background: #224D68;
-  border-color: #224D68;
+  background: #000;
+  border-color: #000;
   color: #fff;
 }
 .button_admin.btn-success:hover,
@@ -7530,6 +7677,12 @@ fieldset[disabled] .button_admin {
 .button_admin.btn-cancel:focus {
   color: #24516e;
 }
+.button_admin.btn-sm {
+  padding: 3px 10px;
+}
+.button_admin.btn-lg {
+  padding: 7px 16px;
+}
 .button_admin:hover,
 .button_admin:focus {
   background: #49c34c;
@@ -7556,8 +7709,13 @@ fieldset[disabled] .button_admin {
   -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
-  border-radius: 2px;
+  border-radius: 0;
   padding: 6px 12px;
+  font-weight: bold;
+  border-width: 3px;
+  letter-spacing: 1.4px;
+  padding: 4px 12px;
+  margin-bottom: 5px;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -7574,7 +7732,7 @@ fieldset[disabled] .button_admin {
 }
 .button_examiner:hover,
 .button_examiner:focus {
-  color: #377CA8;
+  color: #555;
   text-decoration: none;
 }
 .button_examiner:active,
@@ -7602,35 +7760,35 @@ fieldset[disabled] .button_examiner {
   }
 }
 .button_examiner.btn-xs {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 1px 5px;
 }
 .button_examiner.btn-sm {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 5px 10px;
 }
 .button_examiner.btn-lg {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 10px 16px;
 }
 .button_examiner.btn-default:hover,
 .button_examiner.btn-default:focus {
   background: #fff;
-  border-color: #D9D9D9;
-  color: #377CA8;
+  border-color: #555;
+  color: #555;
 }
 @media (min-width: 768px) {
   .button_examiner.btn-default:hover,
   .button_examiner.btn-default:focus {
-    background: #377CA8;
-    border-color: #377CA8;
+    background: #555;
+    border-color: #555;
     color: #fff;
   }
 }
 .button_examiner.btn-primary:hover,
 .button_examiner.btn-primary:focus {
-  background: #224D68;
-  border-color: #224D68;
+  background: #000;
+  border-color: #000;
   color: #fff;
 }
 .button_examiner.btn-success:hover,
@@ -7661,6 +7819,12 @@ fieldset[disabled] .button_examiner {
 .button_examiner.btn-cancel:focus {
   color: #24516e;
 }
+.button_examiner.btn-sm {
+  padding: 3px 10px;
+}
+.button_examiner.btn-lg {
+  padding: 7px 16px;
+}
 .button_examiner:hover,
 .button_examiner:focus {
   background: #49c34c;
@@ -7687,8 +7851,13 @@ fieldset[disabled] .button_examiner {
   -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
-  border-radius: 2px;
+  border-radius: 0;
   padding: 6px 12px;
+  font-weight: bold;
+  border-width: 3px;
+  letter-spacing: 1.4px;
+  padding: 4px 12px;
+  margin-bottom: 5px;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -7705,7 +7874,7 @@ fieldset[disabled] .button_examiner {
 }
 .button_examiner_grayed:hover,
 .button_examiner_grayed:focus {
-  color: #377CA8;
+  color: #555;
   text-decoration: none;
 }
 .button_examiner_grayed:active,
@@ -7733,35 +7902,35 @@ fieldset[disabled] .button_examiner_grayed {
   }
 }
 .button_examiner_grayed.btn-xs {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 1px 5px;
 }
 .button_examiner_grayed.btn-sm {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 5px 10px;
 }
 .button_examiner_grayed.btn-lg {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 10px 16px;
 }
 .button_examiner_grayed.btn-default:hover,
 .button_examiner_grayed.btn-default:focus {
   background: #fff;
-  border-color: #D9D9D9;
-  color: #377CA8;
+  border-color: #555;
+  color: #555;
 }
 @media (min-width: 768px) {
   .button_examiner_grayed.btn-default:hover,
   .button_examiner_grayed.btn-default:focus {
-    background: #377CA8;
-    border-color: #377CA8;
+    background: #555;
+    border-color: #555;
     color: #fff;
   }
 }
 .button_examiner_grayed.btn-primary:hover,
 .button_examiner_grayed.btn-primary:focus {
-  background: #224D68;
-  border-color: #224D68;
+  background: #000;
+  border-color: #000;
   color: #fff;
 }
 .button_examiner_grayed.btn-success:hover,
@@ -7792,6 +7961,12 @@ fieldset[disabled] .button_examiner_grayed {
 .button_examiner_grayed.btn-cancel:focus {
   color: #24516e;
 }
+.button_examiner_grayed.btn-sm {
+  padding: 3px 10px;
+}
+.button_examiner_grayed.btn-lg {
+  padding: 7px 16px;
+}
 .button_examiner_grayed:hover,
 .button_examiner_grayed:focus {
   background: #49c34c;
@@ -7818,8 +7993,13 @@ fieldset[disabled] .button_examiner_grayed {
   -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
-  border-radius: 2px;
+  border-radius: 0;
   padding: 6px 12px;
+  font-weight: bold;
+  border-width: 3px;
+  letter-spacing: 1.4px;
+  padding: 4px 12px;
+  margin-bottom: 5px;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -7836,7 +8016,7 @@ fieldset[disabled] .button_examiner_grayed {
 }
 .button_student:hover,
 .button_student:focus {
-  color: #377CA8;
+  color: #555;
   text-decoration: none;
 }
 .button_student:active,
@@ -7864,35 +8044,35 @@ fieldset[disabled] .button_student {
   }
 }
 .button_student.btn-xs {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 1px 5px;
 }
 .button_student.btn-sm {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 5px 10px;
 }
 .button_student.btn-lg {
-  border-radius: 3px;
+  border-radius: 0;
   padding: 10px 16px;
 }
 .button_student.btn-default:hover,
 .button_student.btn-default:focus {
   background: #fff;
-  border-color: #D9D9D9;
-  color: #377CA8;
+  border-color: #555;
+  color: #555;
 }
 @media (min-width: 768px) {
   .button_student.btn-default:hover,
   .button_student.btn-default:focus {
-    background: #377CA8;
-    border-color: #377CA8;
+    background: #555;
+    border-color: #555;
     color: #fff;
   }
 }
 .button_student.btn-primary:hover,
 .button_student.btn-primary:focus {
-  background: #224D68;
-  border-color: #224D68;
+  background: #000;
+  border-color: #000;
   color: #fff;
 }
 .button_student.btn-success:hover,
@@ -7922,6 +8102,12 @@ fieldset[disabled] .button_student {
 .button_student.btn-cancel:hover,
 .button_student.btn-cancel:focus {
   color: #24516e;
+}
+.button_student.btn-sm {
+  padding: 3px 10px;
+}
+.button_student.btn-lg {
+  padding: 7px 16px;
 }
 .button_student:hover,
 .button_student:focus {
@@ -8022,4 +8208,15 @@ fieldset[disabled] .button_student {
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-feed-uploaded-file-tag.devilry-group-feedbackfeed-feed-uploaded-file-tag-after-deadline {
   color: #971009;
+}
+ul.devilry-admin-assigments-students-and-examiners {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+ul.devilry-admin-assigments-students-and-examiners li h3 {
+  margin-bottom: 5px;
+}
+ul.devilry-admin-assigments-students-and-examiners li p {
+  font-size: 14px;
 }

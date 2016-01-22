@@ -1,0 +1,256 @@
+from datetime import timedelta
+
+import htmls
+import mock
+from django import test
+from django.http import Http404
+from django.utils import timezone
+from django_cradmin import cradmin_testhelpers
+from model_mommy import mommy
+
+from devilry.apps.core import devilry_core_mommy_factories
+from devilry.apps.core.models import Assignment, AssignmentGroup
+from devilry.devilry_admin.views.assignment.students import groupdetails
+from devilry.devilry_group import devilry_group_mommy_factories
+
+
+class TestGroupDetailsRenderable(test.TestCase):
+    def test_name(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(groupdetails.GroupDetailsRenderable(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_name_semi_anonymous_is_not_anonymized(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(groupdetails.GroupDetailsRenderable(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_name_fully_anonymous_is_not_anonymized(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='Test User',
+                   relatedstudent__user__shortname='testuser@example.com')
+        selector = htmls.S(groupdetails.GroupDetailsRenderable(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_examiners(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(groupdetails.GroupDetailsRenderable(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_examiners_semi_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(groupdetails.GroupDetailsRenderable(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_examiners_fully_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user__fullname='Test User',
+                   relatedexaminer__user__shortname='testuser@example.com')
+        selector = htmls.S(groupdetails.GroupDetailsRenderable(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Test User(testuser@example.com)',
+            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+
+    def test_grade_students_can_see_points_false(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=False,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(groupdetails.GroupDetailsRenderable(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+    def test_grade_students_can_see_points_true(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            group__parentnode__students_can_see_points=True,
+            grading_points=1)
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_is_corrected()\
+            .annotate_with_grading_points()\
+            .first()
+        selector = htmls.S(groupdetails.GroupDetailsRenderable(
+            value=testgroup, assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Grade: passed (1/1)',
+            selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+    def test_status_is_corrected(self):
+        devilry_group_mommy_factories.feedbackset_first_try_published(
+            grading_points=1)
+        testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
+                                                               assignment=testgroup.assignment).render())
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-status'))
+
+    def test_status_is_waiting_for_feedback(self):
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+        selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
+                                                               assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Status: waiting for feedback',
+            selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
+
+    def test_status_is_waiting_for_deliveries(self):
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+            group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                                first_deadline=timezone.now() + timedelta(days=2)))
+        testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
+                                                               assignment=testgroup.assignment).render())
+        self.assertEqual(
+            'Status: waiting for deliveries',
+            selector.one('.devilry-cradmin-groupitemvalue-status').alltext_normalized)
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
+
+    def test_grade_not_available_unless_corrected(self):
+        devilry_group_mommy_factories.feedbackset_first_try_unpublished()
+        testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
+                                                               assignment=testgroup.assignment).render())
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
+
+    def test_grade_comment_summary_is_available(self):
+        mommy.make('core.AssignmentGroup')
+        testgroup = AssignmentGroup.objects\
+            .annotate_with_number_of_commentfiles_from_students()\
+            .annotate_with_number_of_groupcomments_from_students()\
+            .annotate_with_number_of_groupcomments_from_examiners()\
+            .annotate_with_number_of_groupcomments_from_admins()\
+            .first()
+
+        selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
+                                                               assignment=testgroup.assignment).render())
+        self.assertTrue(selector.exists('.devilry-cradmin-groupitemvalue-comments'))
+        self.assertEqual(
+            '0 comments from student. 0 files from student. 0 comments from examiner.',
+            selector.one('.devilry-cradmin-groupitemvalue-comments').alltext_normalized)
+
+
+class TestGroupDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = groupdetails.GroupDetailsView
+
+    def __mockinstance_with_devilryrole(self, devilryrole):
+        mockinstance = mock.MagicMock()
+        mockinstance.get_devilryrole_for_requestuser.return_value = devilryrole
+        return mockinstance
+
+    def test_title(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_core_mommy_factories.candidate(group=testgroup,
+                                               fullname='Test User')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
+            viewkwargs={'pk': testgroup.id})
+        self.assertIn(
+            'Test User',
+            mockresponse.selector.one('title').alltext_normalized)
+
+    def test_h1(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_core_mommy_factories.candidate(group=testgroup,
+                                               fullname='Test User')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
+            viewkwargs={'pk': testgroup.id})
+        self.assertEqual(
+            'Test User',
+            mockresponse.selector.one('h1').alltext_normalized)
+
+    def test_title_multiple_candidates(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_core_mommy_factories.candidate(group=testgroup,
+                                               fullname='UserB')
+        devilry_core_mommy_factories.candidate(group=testgroup,
+                                               shortname='usera')
+        devilry_core_mommy_factories.candidate(group=testgroup,
+                                               fullname='UserC')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
+            viewkwargs={'pk': testgroup.id})
+        self.assertIn(
+            'usera, UserB, UserC',
+            mockresponse.selector.one('title').alltext_normalized)
+
+    def test_h1_multiple_candidates(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_core_mommy_factories.candidate(group=testgroup,
+                                               fullname='UserB')
+        devilry_core_mommy_factories.candidate(group=testgroup,
+                                               shortname='usera')
+        devilry_core_mommy_factories.candidate(group=testgroup,
+                                               fullname='UserC')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
+            viewkwargs={'pk': testgroup.id})
+        self.assertEqual(
+            'usera, UserB, UserC',
+            mockresponse.selector.one('h1').alltext_normalized)
+
+    def test_404_fully_anonymous_subjectadmin(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        with self.assertRaises(Http404):
+            self.mock_getrequest(
+                cradmin_role=testgroup.assignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
+                viewkwargs={'pk': testgroup.id})
+
+    def test_not_404_fully_anonymous_departmentadmin(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        self.mock_getrequest(
+            cradmin_role=testgroup.assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'pk': testgroup.id})

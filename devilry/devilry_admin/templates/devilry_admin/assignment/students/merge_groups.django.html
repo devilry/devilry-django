@@ -1,0 +1,29 @@
+{% extends "devilry_admin/assignment/students/groupview_base/base-multiselect-view.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block title %}
+    {% trans "Organize students in project groups" %}
+{% endblock title %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'studentoverview' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to student overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% trans "Organize students in project groups" %}
+    </h1>
+    <p>
+        {% trans 'Select one or more students, and select "Create project group" to create a project group containing the selected students.' %}
+        {% trans "Only put students in a project group if you want those students to cooperate on the assignments. They will deliver together, and all feedback and grading is shared." %}
+    </p>
+{% endblock pageheader-inner %}
