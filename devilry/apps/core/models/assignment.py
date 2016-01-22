@@ -552,14 +552,14 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """
         Returns ``True`` if ``anonymizationmode == "semi_anonymous"``.
         """
-        return self.anonymizationmode != self.ANONYMIZATIONMODE_SEMI_ANONYMOUS
+        return self.anonymizationmode == self.ANONYMIZATIONMODE_SEMI_ANONYMOUS
 
     @property
     def is_fully_anonymous(self):
         """
         Returns ``True`` if ``anonymizationmode == "semi_anonymous"``.
         """
-        return self.anonymizationmode != self.ANONYMIZATIONMODE_FULLY_ANONYMOUS
+        return self.anonymizationmode == self.ANONYMIZATIONMODE_FULLY_ANONYMOUS
 
     @property
     def publishing_time_is_in_future(self):

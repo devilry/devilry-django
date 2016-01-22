@@ -1,0 +1,41 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load devilry_account_tags %}
+
+{% block title %}
+    {{ group.get_unanonymized_long_displayname }}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {{ group.get_unanonymized_long_displayname }}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        <a href="#" class="btn btn-primary">
+            {% trans "View feedback details" %}
+        </a>
+        <a href="#" class="btn btn-default">
+            {% trans "Split group" %}
+        </a>
+
+        <h2>
+            {% if candidatecount > 1 %}
+                {% trans "Group members" %}
+            {% else %}
+                {% trans "Student details" %}
+            {% endif %}
+        </h2>
+        <ul id="devilry_admin_assignment_groupdetails_candidatelist"
+                class="list-unstyled">
+            {% for candidate in group.candidates.all %}
+                <li>
+                    {% devilry_user_verbose_inline candidate.relatedstudent.user %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock content %}

@@ -9,6 +9,7 @@ from devilry.devilry_admin.views.assignment.students import overview as studento
 from devilry.devilry_admin.views.assignment.students import replace_groups
 from devilry.devilry_admin.views.assignment.students import merge_groups
 from devilry.devilry_admin.views.assignment.students import delete_groups
+from devilry.devilry_admin.views.assignment.students import groupdetails
 
 
 class Menu(devilry_crmenu_admin.Menu):
@@ -32,6 +33,7 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
         ('replace_groups', replace_groups.App),
         ('merge_groups', merge_groups.App),
         ('delete_groups', delete_groups.App),
+        ('groupdetails', groupdetails.App),
     ]
     id = 'devilry_admin_assignmentadmin'
     rolefrontpage_appname = 'overview'

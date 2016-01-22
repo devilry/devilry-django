@@ -26,7 +26,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         return mockinstance
 
     def test_title(self):
-        testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
+        testassignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
@@ -35,7 +35,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
+        testassignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
