@@ -161,21 +161,21 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                         '#devilry_admin_assignment_gradingconfiguration h2').alltext_normalized,
                 "Grading configuration")
 
-    def test_gradingconfiguration_row_information_table_caption(self):
-        assignment = mommy.make('core.Assignment')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertEqual(
-                mockresponse.selector.one(
-                        '#devilry_admin_assignment_overview_gradingconfiguration_information table caption').alltext_normalized,
-                "Current setup")
+    # def test_gradingconfiguration_row_information_table_caption(self):
+    #     assignment = mommy.make('core.Assignment')
+    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+    #     self.assertEqual(
+    #             mockresponse.selector.one(
+    #                     '#devilry_admin_assignment_overview_gradingconfiguration_information table caption').alltext_normalized,
+    #             "Current setup")
 
-    def test_gradingconfiguration_row_information_table_head(self):
-        assignment = mommy.make('core.Assignment')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertEqual(
-                mockresponse.selector.one(
-                        '#devilry_admin_assignment_overview_gradingconfiguration_information table thead').alltext_normalized,
-                "Description Grading")
+    # def test_gradingconfiguration_row_information_table_head(self):
+    #     assignment = mommy.make('core.Assignment')
+    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+    #     self.assertEqual(
+    #             mockresponse.selector.one(
+    #                     '#devilry_admin_assignment_overview_gradingconfiguration_information table thead').alltext_normalized,
+    #             "Description Grading")
 
     def test_gradingconfiguration_examiner_chooses(self):
         assignment = mommy.make('core.Assignment')
