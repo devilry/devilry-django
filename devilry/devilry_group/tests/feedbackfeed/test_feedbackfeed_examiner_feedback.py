@@ -4,6 +4,8 @@ from django.test import TestCase
 from django.utils import timezone
 from model_mommy import mommy
 
+from django_cradmin import cradmin_testhelpers
+
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as  group_models
 from devilry.devilry_group.tests.feedbackfeed import test_feedbackfeed_common
@@ -11,7 +13,7 @@ from devilry.devilry_group.views import feedbackfeed_examiner
 from devilry.apps.core import models as core_models
 
 
-class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
+class TestFeedbackfeedExaminerFeedbackRendering(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
     viewclass = feedbackfeed_examiner.ExaminerFeedbackView
 
     def test_get(self):
@@ -161,18 +163,18 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFe
                                                           requestuser=examiner.relatedexaminer.user)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
 
-    def test_feedbackfeed_view_publish_feedback(self):
-        group = mommy.make('core.AssignmentGroup')
-        examiner = mommy.make('core.Examiner',
-                              assignmentgroup=group,
-                              relatedexaminer=mommy.make('core.RelatedExaminer'))
-        mommy.make('devilry_group.GroupComment',
-                   user=examiner.relatedexaminer.user,
-                   user_role='examiner',
-                   visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
-                   part_of_grading=True,
-                   published_datetime=timezone.now(),
-                   feedback_set__group=group)
+    # def test_feedbackfeed_view_publish_feedback(self):
+    #     group = mommy.make('core.AssignmentGroup')
+    #     examiner = mommy.make('core.Examiner',
+    #                           assignmentgroup=group,
+    #                           relatedexaminer=mommy.make('core.RelatedExaminer'))
+    #     mommy.make('devilry_group.GroupComment',
+    #                user=examiner.relatedexaminer.user,
+    #                user_role='examiner',
+    #                visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
+    #                part_of_grading=True,
+    #                published_datetime=timezone.now(),
+    #                feedback_set__group=group)
 
 
     # def test_get_examiner_comment_part_of_grading_private(self):
@@ -193,8 +195,6 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFe
     #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner1.assignmentgroup,
     #                                                       requestuser=examiner1.relatedexaminer)
     #     self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
-
-
 
     def test_post_feedbackset_comment_with_text(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet', )
@@ -229,6 +229,10 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFe
                 }
             })
         self.assertEquals('private', group_models.GroupComment.objects.all()[0].visibility)
+
+
+class TestFeedbackFeedExaminerPublishFeedback(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = feedbackfeed_examiner.ExaminerFeedbackView
 
     def test_post_can_not_publish_with_first_deadline_as_none(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
