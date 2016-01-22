@@ -21,6 +21,9 @@ class FullyAnonymousSubjectAdminItemValueMixin(object):
         return [candidate.relatedstudent.user
                 for candidate in self.group.candidates.all()]
 
+    def get_extra_css_classes_list(self):
+        return ['devilry-cradmin-groupitemvalue']
+
 
 class ItemValueMixin(object):
     valuealias = 'group'
@@ -46,6 +49,9 @@ class ItemValueMixin(object):
 
     def get_examiners(self):
         return self._examiners
+
+    def get_extra_css_classes_list(self):
+        return ['devilry-cradmin-groupitemvalue']
 
 
 class StudentItemValueMixin(ItemValueMixin):
