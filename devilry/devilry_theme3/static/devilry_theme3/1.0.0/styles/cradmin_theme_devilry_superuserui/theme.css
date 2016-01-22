@@ -3786,24 +3786,24 @@ a.thumbnail.active {
 .alert-warning {
   background-color: #d9534f;
   border-color: #d9534f;
-  color: #d9534f;
+  color: #fff;
 }
 .alert-warning hr {
   border-top-color: #d43f3a;
 }
 .alert-warning .alert-link {
-  color: #c9302c;
+  color: #e6e6e6;
 }
 .alert-danger {
   background-color: #d9534f;
   border-color: #d9534f;
-  color: #d9534f;
+  color: #fff;
 }
 .alert-danger hr {
   border-top-color: #d43f3a;
 }
 .alert-danger .alert-link {
-  color: #c9302c;
+  color: #e6e6e6;
 }
 @-webkit-keyframes progress-bar-stripes {
   from {
@@ -4590,7 +4590,7 @@ a {
 .django-cradmin-container-focus.django-cradmin-container-focus-danger {
   background: #d9534f;
   border-color: #d9534f;
-  color: #d9534f;
+  color: #fff;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-danger a {
   color: inherit;
@@ -4599,7 +4599,7 @@ a {
 .django-cradmin-container-focus.django-cradmin-container-focus-warning {
   background: #d9534f;
   border-color: #d9534f;
-  color: #d9534f;
+  color: #fff;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-warning a {
   color: inherit;
@@ -5601,7 +5601,7 @@ The bulk file upload widget base styles.
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover-error {
   background: #d9534f;
-  color: #d9534f;
+  color: #fff;
   border-style: solid;
   border-color: #d9534f;
 }
@@ -5640,7 +5640,7 @@ The bulk file upload widget base styles.
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph,
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph {
   background: #d9534f;
-  color: #d9534f;
+  color: #fff;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton,
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton,
@@ -5649,13 +5649,13 @@ The bulk file upload widget base styles.
   float: right;
   margin-top: -7px;
   margin-right: -7px;
-  color: #d9534f;
+  color: #fff;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton:hover,
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton:hover,
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton:hover,
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton:hover {
-  color: #c12e2a;
+  color: #e0e0e0;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress {
   background: #fff;
@@ -5685,10 +5685,10 @@ The bulk file upload widget base styles.
   float: right;
   margin-top: -7px;
   margin-right: -7px;
-  color: #d9534f;
+  color: #fff;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-bulkfileupload-remove-file-button:hover {
-  color: #c12e2a;
+  color: #e0e0e0;
 }
 /**
 ## .django-cradmin-bulkfileupload-form-overlay
@@ -6758,7 +6758,7 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
 .django-cradmin-listfilter-target-loaderror .django-cradmin-listfilter-message.django-cradmin-listfilter-message-error {
   background: #d9534f;
   border: 1px solid #d9534f;
-  color: #d9534f;
+  color: #fff;
 }
 .django-cradmin-multiselect2-selected-item {
   display: none;
@@ -6981,6 +6981,18 @@ body {
 }
 .django-cradmin-page-header-outer .django-cradmin-page-header-inner h1 {
   font-size: 26px;
+}
+.django-cradmin-page-header-outer .django-cradmin-page-header-inner p {
+  margin-bottom: 10px;
+}
+.django-cradmin-page-header-outer .django-cradmin-page-header-inner p:last-child {
+  margin-bottom: 0;
+}
+.alert {
+  font-weight: bold;
+}
+.alert strong {
+  font-style: italic;
 }
 .btn {
   font-weight: bold;
