@@ -53,6 +53,11 @@ class DeleteGroupsView(groupview_base.BaseMultiselectView):
             'Merge groups is not finished')
         return redirect(self.request.get_full_path())
 
+    def get_context_data(self, **kwargs):
+        context = super(DeleteGroupsView, self).get_context_data(**kwargs)
+        context['has_delete_with_content_permission'] = self.has_delete_with_content_permission()
+        return context
+
 
 class App(crapp.App):
     appurls = [

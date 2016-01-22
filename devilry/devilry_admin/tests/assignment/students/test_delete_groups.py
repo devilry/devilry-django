@@ -42,6 +42,46 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             'Delete students',
             mockresponse.selector.one('h1').alltext_normalized)
 
+    def test_delete_with_content_warning_if_departmentadmin(self):
+        testassignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+        self.assertEqual(
+            'You have permission to delete students with deliveries and/or feedback, so be VERY CAREFUL '
+            'before you click the delete button!',
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_delete_groups_can_delete_content_warning').alltext_normalized)
+
+    def test_no_delete_with_content_warning_if_not_departmentadmin(self):
+        testassignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
+        self.assertFalse(
+            mockresponse.selector.exists(
+                '#devilry_admin_assignment_delete_groups_can_delete_content_warning'))
+
+    def test_can_not_delete_with_content_message_if_subjectadmin(self):
+        testassignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
+        self.assertEqual(
+            'You do not have permission to delete students with deliveries and/or feedback, '
+            'so those students are not available in the list below.',
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_delete_groups_can_not_delete_content_message').alltext_normalized)
+
+    def test_no_can_not_delete_with_content_message_if_departmentadmin(self):
+        testassignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+        self.assertFalse(
+            mockresponse.selector.exists(
+                '#devilry_admin_assignment_delete_groups_can_not_delete_content_message'))
+
     def test_groups_sanity(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')

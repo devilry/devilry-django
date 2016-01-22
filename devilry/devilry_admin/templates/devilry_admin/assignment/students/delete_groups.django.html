@@ -12,13 +12,17 @@
     </h1>
     <p>
         {% trans 'Select one or more students, and select "Delete students".' %}
+
         {% if not has_delete_with_content_permission %}
-            {% trans "You do not have permission to delete students with deliveries and/or feedback, so those students are not available in the list below." %}
+            <span id="devilry_admin_assignment_delete_groups_can_not_delete_content_message">
+                {% trans "You do not have permission to delete students with deliveries and/or feedback, so those students are not available in the list below." %}
+            </span>
         {% endif %}
     </p>
     {% if has_delete_with_content_permission %}
-        <div class="alert alert-warning">
-            {% trans "You have permission to remove students with deliveries and/or feedback, so be careful before you click the delete button!" %}
+        <div id="devilry_admin_assignment_delete_groups_can_delete_content_warning"
+                class="alert alert-warning">
+            {% trans "You have permission to delete students with deliveries and/or feedback, so be VERY CAREFUL before you click the delete button!" %}
         </div>
     {% endif %}
 
