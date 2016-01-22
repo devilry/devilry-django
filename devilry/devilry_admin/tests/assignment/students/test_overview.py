@@ -40,7 +40,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             'Students on Test Assignment',
             mockresponse.selector.one('h1').alltext_normalized)
 
-    def test_choices_sanity(self):
+    def test_buttonbar_sanity(self):
         testassignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -48,9 +48,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             3,
             mockresponse.selector.count(
-                '#devilry_admin_assignment_students_overview_choices li'))
+                '#devilry_admin_assignment_students_overview_buttonbar .btn'))
 
-    def test_choice_create_groups_link(self):
+    def test_buttonbar_create_groups_link(self):
         testassignment = mommy.make('core.Assignment')
         mock_cradmin_instance = self.__mockinstance_with_devilryrole('departmentadmin')
 
@@ -64,9 +64,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             '/create_groups/INDEX',
             mockresponse.selector
-            .one('#devilry_admin_assignment_students_overview_choice_create_groups a')['href'])
+            .one('#devilry_admin_assignment_students_overview_button_create_groups')['href'])
 
-    def test_choice_create_groups_text(self):
+    def test_buttonbar_create_groups_text(self):
         testassignment = mommy.make('core.Assignment',
                                     parentnode__short_name='testperiod',
                                     parentnode__parentnode__short_name='testsubject')
@@ -76,10 +76,10 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'Add students',
             mockresponse.selector
-            .one('#devilry_admin_assignment_students_overview_choice_create_groups a')
+            .one('#devilry_admin_assignment_students_overview_button_create_groups')
             .alltext_normalized)
 
-    def test_choice_merge_groups_link(self):
+    def test_buttonbar_merge_groups_link(self):
         testassignment = mommy.make('core.Assignment')
         mock_cradmin_instance = self.__mockinstance_with_devilryrole('departmentadmin')
 
@@ -93,9 +93,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             '/merge_groups/INDEX',
             mockresponse.selector
-            .one('#devilry_admin_assignment_students_overview_choice_merge_groups a')['href'])
+            .one('#devilry_admin_assignment_students_overview_button_merge_groups')['href'])
 
-    def test_choice_merge_groups_text(self):
+    def test_buttonbar_merge_groups_text(self):
         testassignment = mommy.make('core.Assignment',
                                     parentnode__short_name='testperiod',
                                     parentnode__parentnode__short_name='testsubject')
@@ -105,10 +105,10 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'Organize students in project groups',
             mockresponse.selector
-            .one('#devilry_admin_assignment_students_overview_choice_merge_groups a')
+            .one('#devilry_admin_assignment_students_overview_button_merge_groups')
             .alltext_normalized)
 
-    def test_choice_delete_groups_link(self):
+    def test_buttonbar_delete_groups_link(self):
         testassignment = mommy.make('core.Assignment')
         mock_cradmin_instance = self.__mockinstance_with_devilryrole('departmentadmin')
 
@@ -122,9 +122,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             '/delete_groups/INDEX',
             mockresponse.selector
-            .one('#devilry_admin_assignment_students_overview_choice_delete_groups a')['href'])
+            .one('#devilry_admin_assignment_students_overview_button_delete_groups')['href'])
 
-    def test_choice_delete_groups_text(self):
+    def test_buttonbar_delete_groups_text(self):
         testassignment = mommy.make('core.Assignment',
                                     parentnode__short_name='testperiod',
                                     parentnode__parentnode__short_name='testsubject')
@@ -134,7 +134,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'Delete students or project groups',
             mockresponse.selector
-            .one('#devilry_admin_assignment_students_overview_choice_delete_groups a')
+            .one('#devilry_admin_assignment_students_overview_button_delete_groups')
             .alltext_normalized)
 
     def test_groups_sanity(self):

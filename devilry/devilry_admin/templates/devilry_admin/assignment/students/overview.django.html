@@ -18,24 +18,24 @@
 
 {% block content %}
     <div class="container">
-        <ol id="devilry_admin_assignment_students_overview_choices"
-                class="list-unstyled">
-            <li id="devilry_admin_assignment_students_overview_choice_create_groups">
-                <a href="{% cradmin_instance_appindex_url 'create_groups' %}">
-                    {% trans "Add students" %}
-                </a>
-            </li>
-            <li id="devilry_admin_assignment_students_overview_choice_merge_groups">
-                <a href="{% cradmin_instance_appindex_url 'merge_groups' %}">
-                    {% trans "Organize students in project groups" %}
-                </a>
-            </li>
-            <li id="devilry_admin_assignment_students_overview_choice_delete_groups">
-                <a href="{% cradmin_instance_appindex_url 'delete_groups' %}">
-                    {% trans "Delete students or project groups" %}
-                </a>
-            </li>
-        </ol>
+        <p id="devilry_admin_assignment_students_overview_buttonbar"
+                class="devilry-buttonbar">
+            <a id="devilry_admin_assignment_students_overview_button_create_groups"
+                    class="btn btn-primary"
+                    href="{% cradmin_instance_appindex_url 'create_groups' %}">
+                {% trans "Add students" %}
+            </a>
+            <a id="devilry_admin_assignment_students_overview_button_merge_groups"
+                    class="btn btn-default"
+                    href="{% cradmin_instance_appindex_url 'merge_groups' %}">
+                {% trans "Organize students in project groups" %}
+            </a>
+            <a id="devilry_admin_assignment_students_overview_button_delete_groups"
+                    class="btn btn-default"
+                    href="{% cradmin_instance_appindex_url 'delete_groups' %}">
+                {% trans "Delete students or project groups" %}
+            </a>
+        </p>
     </div>
 
     {{ block.super }}
