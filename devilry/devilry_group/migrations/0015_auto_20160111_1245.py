@@ -18,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='feedbackset',
             name='feedbackset_type',
-            field=models.CharField(default=b'feedbackset_type_first_try', max_length=50, db_index=True, choices=[(b'feedbackset_type_first_try', b'feedbackset_type_first_try'), (b'feedbackset_type_new_try', b'feedbackset_type_new_try'), (b'feedbackset_type_re_edit', b'feedbackset_type_re_edit')]),
+            field=models.CharField(default=b'feedbackset_type_first_attempt', max_length=50, db_index=True, choices=[(b'feedbackset_type_first_attempt', b'feedbackset_type_first_attempt'), (b'feedbackset_type_attempt_attempt', b'feedbackset_type_attempt_attempt'), (b'feedbackset_type_re_edit', b'feedbackset_type_re_edit')]),
         ),
     ]
