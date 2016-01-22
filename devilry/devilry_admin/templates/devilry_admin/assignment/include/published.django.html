@@ -19,7 +19,10 @@
 
         <div id="devilry_admin_assignment_published_buttonrow">
             {% if not assignment.is_published %}
-                <form id="devilry_admin_assignment_published_publishnow_form" method="post" action="{% cradmin_appurl 'publish_assignment_now' assignment.id %}">{% csrf_token %}
+                <form id="devilry_admin_assignment_published_publishnow_form"
+                      method="post"
+                      class="devilry-form-inline"
+                      action="{% cradmin_appurl 'publish_assignment_now' assignment.id %}">{% csrf_token %}
                     <input type="submit" value="{% trans "Publish now" %}" class="btn btn-success">
                 </form>
             {% endif %}
