@@ -161,7 +161,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
 
     def _handle_publish_feedback(self, form, obj):
         """
-        Sets attributes to the feedbackset so that it can be published.
+        Sets attributes to the feedbackset so that it can be saved and published.
 
         :param form:
             Form passed from view.
@@ -173,27 +173,53 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
             The form object.
         """
         feedbackset = obj.feedback_set
-        current_deadline = feedbackset.deadline_datetime
+        current_deadline = self._determine_deadline(feedbackset=feedbackset)
+
         if current_deadline is None:
-            current_deadline = feedbackset.group.parentnode.first_deadline
-        if current_deadline < timezone.now():
-            comment_publish, feedbackset_publish = self._save_unpublished_feedback_comments(
-                    obj.feedback_set
-            )
-            feedbackset.grading_points = form.get_grading_points()
-            obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
-            obj.part_of_grading = False
-            obj.published_datetime = comment_publish
-            feedbackset.grading_published_datetime = feedbackset_publish
-            feedbackset.grading_published_by = obj.user
-            feedbackset.full_clean()
-            feedbackset.save()
-            if len(obj.text) > 0:
-                obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=True)
+            messages.warning(self.request, ugettext_lazy('Cannot publish feedback without a deadline.'))
         else:
-            messages.warning(self.request, ugettext_lazy('The deadline has not expired. '
-                                                         'Feedback was saved, but not published.'))
+            if current_deadline < timezone.now():
+                comment_publish, feedbackset_publish = self._save_unpublished_feedback_comments(
+                        obj.feedback_set
+                )
+                feedbackset.grading_points = form.get_grading_points()
+                obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
+                obj.published_datetime = comment_publish
+                feedbackset.grading_published_datetime = feedbackset_publish
+                feedbackset.grading_published_by = obj.user
+                feedbackset.full_clean()
+                feedbackset.save()
+                if len(obj.text) > 0:
+                    obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=True)
+            else:
+                messages.warning(self.request, ugettext_lazy('The deadline has not expired. '
+                                                             'Feedback was saved, but not published.'))
         return obj
+
+    def _determine_deadline(self, feedbackset=None):
+        """
+        Determines what deadline to use.
+        If the feedbackset has :obj:`~devilry.devilry_group.FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY`,
+        :class:`devilry.apps.core.models.Assignment.first_deadline` is used.
+        If the feedbackset has :obj:`~devilry.devilry_group.FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY`,
+        :obj:`~devilry.devilry_group.FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY` is used.
+
+        :param feedbackset:
+            :obj:`~devilry.devilry_group.FeedbackSet` to publish.
+
+        Returns:
+            A datetime object or None.
+
+        """
+        if feedbackset is None:
+            raise ValueError
+
+        current_deadline = None
+        if feedbackset.feedbackset_type == models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY:
+            current_deadline = feedbackset.deadline_datetime or feedbackset.group.parentnode.first_deadline
+        elif feedbackset.feedbackset_type == models.FeedbackSet.FEEDBACKSET_TYPE_NEW_TRY:
+            current_deadline = feedbackset.deadline_datetime
+        return current_deadline
 
     def _save_unpublished_feedback_comments(self, feedbackset=None):
         """
