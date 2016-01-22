@@ -6990,6 +6990,7 @@ body {
 }
 .alert {
   font-weight: bold;
+  margin-bottom: 10px;
 }
 .alert strong {
   font-style: italic;

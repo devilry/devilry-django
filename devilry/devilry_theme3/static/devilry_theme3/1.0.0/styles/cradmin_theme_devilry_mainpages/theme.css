@@ -6898,6 +6898,7 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
 }
 .alert {
   font-weight: bold;
+  margin-bottom: 10px;
 }
 .alert strong {
   font-style: italic;

@@ -19,11 +19,18 @@
             </span>
         {% endif %}
     </p>
-    {% if has_delete_with_content_permission %}
-        <div id="devilry_admin_assignment_delete_groups_can_delete_content_warning"
-                class="alert alert-warning">
-            {% trans "You have permission to delete students with deliveries and/or feedback, so be VERY CAREFUL before you click the delete button!" %}
-        </div>
-    {% endif %}
 
 {% endblock pageheader-inner %}
+
+
+{% block messages %}
+    <div class="container">
+        {% if has_delete_with_content_permission %}
+            <div id="devilry_admin_assignment_delete_groups_can_delete_content_warning"
+                    class="alert alert-warning">
+                {% trans "You have permission to delete students with deliveries and/or feedback, so be VERY CAREFUL before you click the delete button!" %}
+            </div>
+        {% endif %}
+    </div>
+    {{ block.super }}
+{% endblock messages %}
