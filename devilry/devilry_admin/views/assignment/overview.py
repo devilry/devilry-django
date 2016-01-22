@@ -4,6 +4,7 @@ from django_cradmin import crapp
 from django_cradmin.viewhelpers.detail import DetailRoleView
 
 from devilry.apps.core import models as coremodels
+from devilry.apps.core.models import Examiner
 from devilry.devilry_admin.views.assignment.anonymizationmode import AssignmentAnonymizationmodeUpdateView
 from devilry.devilry_admin.views.assignment.gradingconfiguration import AssignmentGradingConfigurationUpdateView
 from devilry.devilry_admin.views.assignment.long_and_shortname import AssignmentLongAndShortNameUpdateView
@@ -21,10 +22,10 @@ class Overview(DetailRoleView):
         return coremodels.Candidate.objects.filter(assignment_group__parentnode=self.assignment).count()
 
     def get_examiners_count(self):
-        examiners_count = 0
-        for group in self.assignment.assignmentgroups.all():
-            examiners_count += group.examiners.count()
-        return examiners_count
+        assignment = self.request.cradmin_role
+        return Examiner.objects\
+            .filter(assignmentgroup__parentnode=assignment)\
+            .distinct('relatedexaminer__user').count()
 
     def get_assignmentgroups_count(self):
         return self.assignment.assignmentgroups.count()
