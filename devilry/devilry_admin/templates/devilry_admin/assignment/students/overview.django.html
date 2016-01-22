@@ -9,6 +9,13 @@
 {% endblock title %}
 
 {% block pageheader-inner %}
+    <a href="#" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% blocktrans trimmed with assignmentname=assignment.long_name %}
+                Students on {{ assignmentname }}
+            {% endblocktrans %}
+        </span>
+    </a>
     <h1>
         {% blocktrans trimmed with assignmentname=assignment.long_name %}
             Students on {{ assignmentname }}
