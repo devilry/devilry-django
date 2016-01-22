@@ -1,9 +1,9 @@
 //// Cradmin overrides
 @cradmin-menu-border: transparent;
-@cradmin-menu-bg: #232828;
-@cradmin-menu-header-bg: #191D1D;
-@cradmin-menu-color: #aaa;
-@cradmin-menu-hovercolor: #eee;
+@cradmin-menu-bg: @devilry-brand-primary-bg;
+@cradmin-menu-header-bg: @devilry-brand-primary-bg;
+@cradmin-menu-color: darken(@devilry-brand-primary-color, 20%);
+@cradmin-menu-hovercolor: @devilry-brand-primary-color;
 @cradmin-bodycontent-bg: #fff;
 @cradmin-focus-bg: #fff;
 
@@ -13,11 +13,49 @@
 @cradmin-page-header-color: @text-color;
 @cradmin-page-header-bg: none;
 @cradmin-page-header-bg-dark: rgb(230, 230, 230);
-@cradmin-page-header-padding-top: 35px;
-@cradmin-page-header-padding-bottom: 25px;
+@cradmin-page-header-padding-top: 25px;
+@cradmin-page-header-padding-bottom: 12px;
 
 
 //@cradmin-page-header-secondary-bg: @cradmin-page-header-bg;
 //@cradmin-page-header-secondary-color: @cradmin-page-header-color;
 //@cradmin-page-header-secondary-padding-top: @cradmin-page-header-padding-top;
 //@cradmin-page-header-secondary-padding-bottom: @cradmin-page-header-padding-bottom;
+
+
+@btn-default-color: #555;
+@btn-default-bg: #fff;
+@btn-default-border: #555;
+@cradmin-btn-tap-highlight-color: rgba(0, 0, 0, 0.5);
+@cradmin-btn-default-hover-color: #fff;
+@cradmin-btn-default-hover-border: #555;
+@cradmin-btn-default-hover-bg: #555;
+
+@btn-primary-color: darken(@devilry-brand-primary-color, 5%);
+@btn-primary-bg: @devilry-brand-primary-bg;
+@btn-primary-border: @devilry-brand-primary-bg;
+@btn-primary-hover-color: @devilry-brand-primary-color;
+@btn-primary-hover-bg: #000;
+@btn-primary-hover-border: #000;
+
+@alert-warning-bg: @devilry-brand-danger-bg;
+@alert-warning-text: @devilry-brand-danger-color;
+@alert-warning-border: @devilry-brand-danger-bg;
+
+@alert-danger-bg: @devilry-brand-danger-bg;
+@alert-danger-text: @devilry-brand-danger-color;
+@alert-danger-border: @devilry-brand-danger-bg;
+
+@alert-info-bg: @devilry-brand-info-bg;
+@alert-info-text: @devilry-brand-info-color;
+@alert-info-border: @devilry-brand-info-bg;
+
+@alert-success-bg: @devilry-brand-success-bg;
+@alert-success-text: @devilry-brand-success-color;
+@alert-success-border: @devilry-brand-success-bg;
+
+@border-radius-base: 0;
+@border-radius-large: 0;
+@border-radius-small: 0;
+
+@cradmin-submitrow-bg: none;
