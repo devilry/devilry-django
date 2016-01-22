@@ -76,16 +76,16 @@
 <!-- Content -->
     <div class="container">
 
-{#        {% block sidebar %}#}
-{#            {% include "devilry_group/include/sidebar.django.html" %}#}
-{#        {% endblock sidebar %}#}
-
         <div class="row">
-            {# empty space for Sidebar #}
-            <div class="col-md-4 col-md-push-8"></div>
+            {# Sidebar #}
+            <div class="col-sm-4 col-sm-push-8">
+                {% block sidebar %}
+                    {% include "devilry_group/include/sidebar.django.html" %}
+                {% endblock sidebar %}
+            </div>
 
             {# Feedbackfeed #}
-            <div class="col-md-8 col-md-pull-4 devilry-group-feedbackfeed-feed">
+            <div class="col-sm-8 col-sm-pull-4 devilry-group-feedbackfeed-feed">
                 {% block feed %}
                     {% for timestamp, eventlist in timeline.items %}
                         {% for event in eventlist %}

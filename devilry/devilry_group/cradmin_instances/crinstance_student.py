@@ -59,3 +59,14 @@ class StudentCrInstance(crinstance.BaseCrAdminInstance):
     @classmethod
     def matches_urlpath(cls, urlpath):
         return urlpath.startswith('/devilry_group/student')
+
+    def get_devilryrole_for_requestuser(self):
+        """
+        Get the devilryrole for the requesting user on the current
+        assignment (request.cradmin_instance).
+
+        The return values is the same as for
+        :meth:`devilry.devilry_account.models.PeriodPermissionGroupQuerySet.get_devilryrole_for_user_on_period`,
+        exept that this method raises ValueError if it does not find a role.
+        """
+        return 'student'

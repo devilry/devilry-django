@@ -8135,25 +8135,6 @@ fieldset[disabled] .button_student {
   padding: 10px 20px 10px 20px;
   height: 100%;
   margin-bottom: 15px;
-  position: static;
-}
-@media (min-width: 992px) {
-  .devilry-group-feedbackfeed-sidebar {
-    position: absolute;
-    top: 153px;
-    width: 260px;
-    left: 710px;
-    margin-bottom: 0;
-  }
-}
-@media (min-width: 1200px) {
-  .devilry-group-feedbackfeed-sidebar {
-    position: absolute;
-    top: 153px;
-    width: 323px;
-    left: 847px;
-    margin-bottom: 0;
-  }
 }
 .devilry-group-feedbackfeed-sidebar h4 {
   padding: 2px 2px 2px 2px;

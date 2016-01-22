@@ -2,6 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crmenu
 from django_cradmin import crinstance
 
+from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.views import feedbackfeed_admin
 
@@ -37,3 +38,28 @@ class AdminCrInstance(crinstance.BaseCrAdminInstance):
     @classmethod
     def matches_urlpath(cls, urlpath):
         return urlpath.startswith('/devilry_group/admin')
+
+    def __get_devilryrole_for_requestuser(self):
+        assignment = self.request.cradmin_role.assignment
+        devilryrole = PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
+            user=self.request.user,
+            period=assignment.period
+        )
+        if devilryrole is None:
+            raise ValueError('Could not find a devilryrole for request.user. This must be a bug in '
+                             'get_rolequeryset().')
+
+        return devilryrole
+
+    def get_devilryrole_for_requestuser(self):
+        """
+        Get the devilryrole for the requesting user on the current
+        assignment (request.cradmin_instance).
+
+        The return values is the same as for
+        :meth:`devilry.devilry_account.models.PeriodPermissionGroupQuerySet.get_devilryrole_for_user_on_period`,
+        exept that this method raises ValueError if it does not find a role.
+        """
+        if not hasattr(self, '_devilryrole_for_requestuser'):
+            self._devilryrole_for_requestuser = self.__get_devilryrole_for_requestuser()
+        return self._devilryrole_for_requestuser
