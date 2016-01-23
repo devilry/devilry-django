@@ -2071,8 +2071,8 @@ fieldset[disabled] .btn-default.active {
 }
 .btn-primary {
   color: #f2f2f2;
-  background-color: #333;
-  border-color: #333;
+  background-color: #377CA8;
+  border-color: #377CA8;
 }
 .btn-primary:hover,
 .btn-primary:focus,
@@ -2080,8 +2080,8 @@ fieldset[disabled] .btn-default.active {
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
   color: #f2f2f2;
-  background-color: #1f1f1f;
-  border-color: #141414;
+  background-color: #2d6589;
+  border-color: #285a7a;
 }
 .btn-primary:active,
 .btn-primary.active,
@@ -2103,11 +2103,11 @@ fieldset[disabled] .btn-primary:active,
 .btn-primary.disabled.active,
 .btn-primary[disabled].active,
 fieldset[disabled] .btn-primary.active {
-  background-color: #333;
-  border-color: #333;
+  background-color: #377CA8;
+  border-color: #377CA8;
 }
 .btn-primary .badge {
-  color: #333;
+  color: #377CA8;
   background-color: #f2f2f2;
 }
 .btn-success {
@@ -4956,8 +4956,8 @@ table.table.django-cradmin-table tbody td:last-child {
 }
 .btn.btn-primary:hover,
 .btn.btn-primary:focus {
-  background: #000;
-  border-color: #000;
+  background: #24516e;
+  border-color: #24516e;
   color: #fff;
 }
 .btn.btn-success:hover,
@@ -5672,7 +5672,7 @@ The bulk file upload widget base styles.
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progressbar-progress {
   display: inline-block;
   height: 100%;
-  background: #333;
+  background: #377CA8;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progresspercent {
   position: absolute;
@@ -5909,11 +5909,11 @@ child of ``<body>``.
   }
 }
 nav.django-cradmin-menu {
-  background: #333;
+  background: #377CA8;
 }
 nav.django-cradmin-menu .django-cradmin-menu-content {
   display: none;
-  background: #333;
+  background: #377CA8;
 }
 nav.django-cradmin-menu .django-cradmin-menu-content.django-cradmin-menu-content-display {
   display: block;
@@ -5970,12 +5970,12 @@ nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-m
   cursor: pointer;
   text-decoration: none;
   color: #cccccc;
-  background-color: #333;
+  background-color: #377CA8;
 }
 nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle:hover,
 nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle.django-cradmin-menu-mobile-toggle-button-expanded {
   color: #eee;
-  background-color: #262626;
+  background-color: #316e95;
   outline: none;
   text-decoration: none;
 }
@@ -5989,10 +5989,10 @@ nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-m
 }
 @media (min-width: 992px) {
   nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul.django-cradmin-menu-content-header {
-    background: #262626;
+    background: #316e95;
   }
   nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul.django-cradmin-menu-content-footer {
-    background: #262626;
+    background: #316e95;
   }
 }
 nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle {
@@ -6891,7 +6891,7 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
     bottom: 0;
     height: 100%;
     width: 250px;
-    background: #333;
+    background: #377CA8;
   }
 }
 body {

@@ -2071,8 +2071,8 @@ fieldset[disabled] .btn-default.active {
 }
 .btn-primary {
   color: #f2f2f2;
-  background-color: #333;
-  border-color: #333;
+  background-color: #377CA8;
+  border-color: #377CA8;
 }
 .btn-primary:hover,
 .btn-primary:focus,
@@ -2080,8 +2080,8 @@ fieldset[disabled] .btn-default.active {
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
   color: #f2f2f2;
-  background-color: #1f1f1f;
-  border-color: #141414;
+  background-color: #2d6589;
+  border-color: #285a7a;
 }
 .btn-primary:active,
 .btn-primary.active,
@@ -2103,11 +2103,11 @@ fieldset[disabled] .btn-primary:active,
 .btn-primary.disabled.active,
 .btn-primary[disabled].active,
 fieldset[disabled] .btn-primary.active {
-  background-color: #333;
-  border-color: #333;
+  background-color: #377CA8;
+  border-color: #377CA8;
 }
 .btn-primary .badge {
-  color: #333;
+  color: #377CA8;
   background-color: #f2f2f2;
 }
 .btn-success {
@@ -4956,8 +4956,8 @@ table.table.django-cradmin-table tbody td:last-child {
 }
 .btn.btn-primary:hover,
 .btn.btn-primary:focus {
-  background: #000;
-  border-color: #000;
+  background: #24516e;
+  border-color: #24516e;
   color: #fff;
 }
 .btn.btn-success:hover,
@@ -5672,7 +5672,7 @@ The bulk file upload widget base styles.
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progressbar-progress {
   display: inline-block;
   height: 100%;
-  background: #333;
+  background: #377CA8;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progresspercent {
   position: absolute;
@@ -7365,8 +7365,8 @@ fieldset[disabled] .button {
 }
 .button.btn-primary:hover,
 .button.btn-primary:focus {
-  background: #000;
-  border-color: #000;
+  background: #24516e;
+  border-color: #24516e;
   color: #fff;
 }
 .button.btn-success:hover,
@@ -7503,8 +7503,8 @@ fieldset[disabled] .button_default {
 }
 .button_default.btn-primary:hover,
 .button_default.btn-primary:focus {
-  background: #000;
-  border-color: #000;
+  background: #24516e;
+  border-color: #24516e;
   color: #fff;
 }
 .button_default.btn-success:hover,
@@ -7645,8 +7645,8 @@ fieldset[disabled] .button_admin {
 }
 .button_admin.btn-primary:hover,
 .button_admin.btn-primary:focus {
-  background: #000;
-  border-color: #000;
+  background: #24516e;
+  border-color: #24516e;
   color: #fff;
 }
 .button_admin.btn-success:hover,
@@ -7787,8 +7787,8 @@ fieldset[disabled] .button_examiner {
 }
 .button_examiner.btn-primary:hover,
 .button_examiner.btn-primary:focus {
-  background: #000;
-  border-color: #000;
+  background: #24516e;
+  border-color: #24516e;
   color: #fff;
 }
 .button_examiner.btn-success:hover,
@@ -7929,8 +7929,8 @@ fieldset[disabled] .button_examiner_grayed {
 }
 .button_examiner_grayed.btn-primary:hover,
 .button_examiner_grayed.btn-primary:focus {
-  background: #000;
-  border-color: #000;
+  background: #24516e;
+  border-color: #24516e;
   color: #fff;
 }
 .button_examiner_grayed.btn-success:hover,
@@ -8071,8 +8071,8 @@ fieldset[disabled] .button_student {
 }
 .button_student.btn-primary:hover,
 .button_student.btn-primary:focus {
-  background: #000;
-  border-color: #000;
+  background: #24516e;
+  border-color: #24516e;
   color: #fff;
 }
 .button_student.btn-success:hover,
