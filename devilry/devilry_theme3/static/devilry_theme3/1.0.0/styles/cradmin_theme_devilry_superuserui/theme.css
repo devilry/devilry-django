@@ -4845,16 +4845,16 @@ form .alert-block.alert-danger ul li {
 }
 .form-control,
 .cradmin-div-styled-as-textarea {
-  border: 1px solid #ddd;
+  border: 1px solid #555;
   border-radius: 4px;
   outline: none;
   box-shadow: none;
-  background: #FAFAFA;
+  background: #f7f7f7;
 }
 .form-control:focus,
 .cradmin-div-styled-as-textarea:focus {
-  background: #E1EDF4;
-  border-color: #bcd7e6;
+  background: #fff;
+  border-color: #377CA8;
   box-shadow: none;
 }
 .cradmin-div-styled-as-textarea {
@@ -5467,10 +5467,10 @@ table.table.django-cradmin-table tbody td:last-child {
 .cradmin-acemarkdown .ace_editor {
   font-size: 16px;
   height: 400px;
-  background: #FAFAFA;
+  background: #f7f7f7;
 }
 .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea {
-  background: #FAFAFA;
+  background: #f7f7f7;
 }
 .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
   height: 100px;
@@ -5496,10 +5496,10 @@ table.table.django-cradmin-table tbody td:last-child {
   }
 }
 .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea.cradmin-focus {
-  background: #E1EDF4;
+  background: #fff;
 }
 .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea.cradmin-focus .ace_editor {
-  background: #E1EDF4;
+  background: #fff;
 }
 ul.django-cradmin-roleselect-list {
   /**
@@ -6347,7 +6347,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   outline-offset: -2px;
 }
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-today button {
-  background: #E1EDF4;
+  background: #fff;
   color: #555;
 }
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-selected button {
@@ -7008,6 +7008,22 @@ body {
 .btn.btn-lg {
   padding: 7px 16px;
 }
+.form-control,
+.cradmin-div-styled-as-textarea {
+  border-width: 3px;
+  border-radius: 5px;
+}
+h2,
+h3,
+h4 {
+  font-weight: bold;
+}
+h2 {
+  font-size: 23px;
+}
+h3 {
+  font-size: 16px;
+}
 .django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner {
   position: relative;
   padding-left: 40px;
@@ -7060,17 +7076,6 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-ver
   height: 20px;
   width: 20px;
   padding-top: 4px;
-}
-h2,
-h3,
-h4 {
-  font-weight: bold;
-}
-h2 {
-  font-size: 23px;
-}
-h3 {
-  font-size: 16px;
 }
 form.devilry-form-inline {
   display: inline-block;
