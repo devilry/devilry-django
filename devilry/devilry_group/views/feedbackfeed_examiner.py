@@ -183,8 +183,7 @@ class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
 
     def _get_comments_for_group(self, group):
         return models.GroupComment.objects.filter(
-            feedback_set__group=group,
-            part_of_grading=False
+            feedback_set__group=group
         ).exclude_private_comments_from_other_users(
             user=self.request.user
         )
