@@ -6996,6 +6996,15 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-ver
   width: 20px;
   padding-top: 4px;
 }
+.btn.devilry-btn-titledescription strong {
+  display: block;
+}
+.btn.devilry-btn-titledescription small {
+  display: block;
+  font-weight: normal;
+  line-height: 14px;
+  padding-bottom: 5px;
+}
 form.devilry-form-inline {
   display: inline-block;
   margin: 0;
@@ -7033,6 +7042,76 @@ h3 .devilry-user-verbose-inline small {
 }
 .devilry-dashboard-container.devilry-dashboard-container-focus h3 {
   font-size: 23px;
+}
+.devilry-buttonbar {
+  margin-bottom: 7px;
+}
+@media (min-width: 768px) {
+  .devilry-buttonbar {
+    display: flex;
+    flex-direction: row;
+  }
+}
+.devilry-buttonbar .btn {
+  margin-bottom: 5px;
+  display: block;
+  white-space: normal;
+}
+@media (min-width: 768px) {
+  .devilry-buttonbar .btn {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  .devilry-buttonbar .btn:last-child {
+    margin-right: 0;
+  }
+}
+.devilry-dangerzone {
+  border: 3px solid #d9534f;
+  background: #fff;
+  margin-top: 70px;
+  padding: 10px;
+}
+.devilry-dangerzone .devilry-dangerzone-title {
+  margin: 0 0 15px 0;
+  padding: 0;
+  color: #d9534f;
+}
+.devilry-dangerzone ul.devilry-dangerzone-actionlist {
+  margin: 0;
+  list-style: none;
+  padding: 0;
+}
+.devilry-dangerzone ul.devilry-dangerzone-actionlist li {
+  margin-bottom: 15px;
+}
+.devilry-dangerzone ul.devilry-dangerzone-actionlist li:last-child {
+  margin-bottom: 0;
+}
+.devilry-dangerzone ul.devilry-dangerzone-actionlist li a h3 {
+  display: block;
+  color: #d9534f;
+  text-decoration: underline;
+  margin-bottom: 5px;
+}
+.devilry-dangerzone ul.devilry-dangerzone-actionlist li a small {
+  display: block;
+  text-decoration: none;
+  color: #333333;
+}
+.devilry-dangerzone ul.devilry-dangerzone-actionlist li a:hover {
+  text-decoration: none;
+}
+.devilry-dangerzone ul.devilry-dangerzone-actionlist li a:hover h3 {
+  color: #a02622;
+  text-decoration: underline;
+}
+.devilry-dangerzone ul.devilry-dangerzone-actionlist li a:hover small {
+  color: #333333;
+}
+.devilry-listbuilderlist-footer {
+  font-size: 14px;
+  margin-top: 10px;
 }
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;
@@ -7439,6 +7518,15 @@ fieldset[disabled] .button {
 .button.btn-lg {
   padding: 7px 16px;
 }
+.button.devilry-btn-titledescription strong {
+  display: block;
+}
+.button.devilry-btn-titledescription small {
+  display: block;
+  font-weight: normal;
+  line-height: 14px;
+  padding-bottom: 5px;
+}
 .button:hover,
 .button:focus {
   background: #49c34c;
@@ -7576,6 +7664,15 @@ fieldset[disabled] .button_default {
 }
 .button_default.btn-lg {
   padding: 7px 16px;
+}
+.button_default.devilry-btn-titledescription strong {
+  display: block;
+}
+.button_default.devilry-btn-titledescription small {
+  display: block;
+  font-weight: normal;
+  line-height: 14px;
+  padding-bottom: 5px;
 }
 .button_default:hover,
 .button_default:focus {
@@ -7719,6 +7816,15 @@ fieldset[disabled] .button_admin {
 .button_admin.btn-lg {
   padding: 7px 16px;
 }
+.button_admin.devilry-btn-titledescription strong {
+  display: block;
+}
+.button_admin.devilry-btn-titledescription small {
+  display: block;
+  font-weight: normal;
+  line-height: 14px;
+  padding-bottom: 5px;
+}
 .button_admin:hover,
 .button_admin:focus {
   background: #49c34c;
@@ -7860,6 +7966,15 @@ fieldset[disabled] .button_examiner {
 }
 .button_examiner.btn-lg {
   padding: 7px 16px;
+}
+.button_examiner.devilry-btn-titledescription strong {
+  display: block;
+}
+.button_examiner.devilry-btn-titledescription small {
+  display: block;
+  font-weight: normal;
+  line-height: 14px;
+  padding-bottom: 5px;
 }
 .button_examiner:hover,
 .button_examiner:focus {
@@ -8003,6 +8118,15 @@ fieldset[disabled] .button_examiner_grayed {
 .button_examiner_grayed.btn-lg {
   padding: 7px 16px;
 }
+.button_examiner_grayed.devilry-btn-titledescription strong {
+  display: block;
+}
+.button_examiner_grayed.devilry-btn-titledescription small {
+  display: block;
+  font-weight: normal;
+  line-height: 14px;
+  padding-bottom: 5px;
+}
 .button_examiner_grayed:hover,
 .button_examiner_grayed:focus {
   background: #49c34c;
@@ -8144,6 +8268,15 @@ fieldset[disabled] .button_student {
 }
 .button_student.btn-lg {
   padding: 7px 16px;
+}
+.button_student.devilry-btn-titledescription strong {
+  display: block;
+}
+.button_student.devilry-btn-titledescription small {
+  display: block;
+  font-weight: normal;
+  line-height: 14px;
+  padding-bottom: 5px;
 }
 .button_student:hover,
 .button_student:focus {

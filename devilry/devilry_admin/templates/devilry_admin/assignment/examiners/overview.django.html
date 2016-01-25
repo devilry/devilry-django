@@ -60,18 +60,22 @@
     {{ block.super }}
 
     <div class="container">
-        <p>
-            {% trans "Only users registered as examiner for duck1010.spring2016 is available as examiners for assignments." %}
-            <a href="#">{% trans "Add more examiners" %}</a>.
-        </p>
+        <div class="row">
+            <div class="col-sm-8 col-lg-9">
+                <p class="devilry-listbuilderlist-footer">
+                    {% trans "Only users registered as examiner for duck1010.spring2016 is available as examiners for assignments." %}
+                    <a href="#">{% trans "Add more examiners" %}</a>.
+                </p>
+            </div>
+        </div>
 
         <div class="devilry-dangerzone">
             <h2 class="devilry-dangerzone-title">{% trans "Danger zone" %}</h2>
 
             <ul class="devilry-dangerzone-actionlist">
-                <li class="devilry-dangerzone-action">
+                <li>
                     <a href="#">
-                        <strong>{% trans "Un-assign all examiners from all students" %}</strong>
+                        <h3>{% trans "Un-assign all examiners from all students" %}</h3>
                         <small>
                             <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
                                 {% trans "Can be useful if you want to re-organize ALL the examiners." %}

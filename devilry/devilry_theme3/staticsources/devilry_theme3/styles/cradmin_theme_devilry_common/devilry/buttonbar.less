@@ -1,10 +1,19 @@
 .devilry-buttonbar {
   margin-bottom: 7px;
+  @media (min-width: @screen-sm-min) {
+    display: flex;
+    flex-direction: row;
+  }
   .btn {
     margin-bottom: 5px;
     display: block;
-    @media (min-width: @screen-xs-max) {
+    white-space: normal;
+    @media (min-width: @screen-sm-min) {
       display: inline-block;
+      margin-right: 10px;
+      &:last-child {
+        margin-right: 0;
+      }
     }
   }
 }
