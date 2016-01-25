@@ -5,9 +5,15 @@ from model_mommy import mommy
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.feedbackfeed import test_feedbackfeed_common
 from devilry.devilry_group.views import feedbackfeed_student
+from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+
+from django_cradmin import cradmin_testhelpers
 
 
 class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
+    """
+    General testing of what gets rendered to student view.
+    """
     viewclass = feedbackfeed_student.StudentFeedbackFeedView
 
     def test_get(self):
@@ -253,17 +259,71 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             })
         self.assertIsNotNone(group_models.GroupComment.objects.all()[0].published_datetime)
 
-    # def test_post_feedbackset_post_comment_without_text(self):
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet')
-    #     student = mommy.make('core.Candidate', assignment_group=feedbackset.group,
-    #                          # NOTE: The line blow can be removed when relatedstudent field is migrated to null=False
-    #                          relatedstudent=mommy.make('core.RelatedStudent'))
-    #     self.mock_http302_postrequest(
-    #         cradmin_role=student.assignment_group,
-    #         viewkwargs={'pk': feedbackset.group.id},
-    #         requestkwargs={
-    #             'data': {
-    #                 'text': '',
-    #             }
-    #         })
-    #     self.assertEquals(0, len(GroupComment.objects.all()))
+    def test_post_feedbackset_post_comment_without_text(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet')
+        student = mommy.make('core.Candidate', assignment_group=feedbackset.group,
+                             # NOTE: The line blow can be removed when relatedstudent field is migrated to null=False
+                             relatedstudent=mommy.make('core.RelatedStudent'))
+        self.mock_http302_postrequest(
+            cradmin_role=student.assignment_group,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                    'student_add_comment': 'unused value',
+                }
+            })
+        self.assertEquals(0, len(group_models.GroupComment.objects.all()))
+
+
+class TestPublishingStudent(cradmin_testhelpers.TestCaseMixin):
+    """
+    Test what gets rendered and not rendered to student view of elements
+    that belongs to publishing of feedbacksets.
+    """
+    viewclass = feedbackfeed_student.StudentFeedbackFeedView
+
+    def test_get_student_can_not_see_drafted_comments_before_publish_first_attempt(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
+        feedbackset = group_mommy.feedbackset_first_try_unpublished(group__parentnode=assignment)
+        candidate = mommy.make('core.Candidate',
+                             assignment_group=feedbackset.group,
+                             relatedstudent=mommy.make('core.RelatedStudent'))
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=feedbackset.group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='John Doe'),)
+        mommy.make('devilry_group.GroupComment',
+                   text='asd',
+                   part_of_grading=True,
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=feedbackset)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
+                                                          requestuser=candidate.relatedstudent.user)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
+
+    def test_get_student_can_not_see_drafted_comments_before_publish_new_attempt(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=assignment)
+        group_mommy.feedbackset_first_try_published(
+                group=group,
+                is_last_in_group=None)
+        feedbackset_last = group_mommy.feedbackset_new_try_unpublished(
+                group=group,
+                deadline_datetime=timezone.now()+timezone.timedelta(days=1))
+        candidate = mommy.make('core.Candidate',
+                             assignment_group=group,
+                             relatedstudent=mommy.make('core.RelatedStudent'))
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='John Doe'),)
+        mommy.make('devilry_group.GroupComment',
+                   text='asd',
+                   part_of_grading=True,
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=feedbackset_last)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
+                                                          requestuser=candidate.relatedstudent.user)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
