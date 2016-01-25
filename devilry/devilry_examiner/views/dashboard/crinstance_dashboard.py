@@ -16,7 +16,6 @@ class Menu(devilry_crmenu_examiner.Menu):
 
 class CrAdminInstance(crinstance.BaseCrAdminInstance):
     menuclass = Menu
-    roleclass = User
     apps = [
         ('assignmentlist', assignmentlist.App),
     ]
@@ -24,8 +23,11 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
     rolefrontpage_appname = 'assignmentlist'
     flatten_rolefrontpage_url = True
 
-    def get_rolequeryset(self):
-        return get_user_model().objects.filter(id=self.request.user.id)
+    def has_access(self):
+        """
+        We give any user access to this instance as long as they are authenticated.
+        """
+        return self.request.user.is_authenticated()
 
     def get_titletext_for_role(self, role):
         """
@@ -36,5 +38,5 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return re.match('^/devilry_examiner/(\d+.*/)?$', urlpath) or \
-            re.match('^/devilry_examiner/\d+/filter/.*$', urlpath)
+        return re.match('^/devilry_examiner/$', urlpath) or \
+            re.match('^/devilry_examiner/filter/.*$', urlpath)

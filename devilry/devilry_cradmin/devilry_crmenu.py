@@ -1,5 +1,6 @@
-from django.core.urlresolvers import reverse
+from django_cradmin import crapp
 from django_cradmin import crmenu
+from django_cradmin.crinstance import reverse_cradmin_url
 
 
 class BreadcrumbMenuItem(crmenu.MenuItem):
@@ -16,16 +17,19 @@ class Menu(crmenu.Menu):
     template_name = 'devilry_cradmin/devilry_crmenu/menu.django.html'
     devilryrole = None
 
+    def get_frontpage_breadcrumb_is_active(self):
+        return False
+
     def build_menu(self):
         self.add_headeritem_object(BreadcrumbMenuItem(
             label='Devilry',
-            url=reverse('devilry_frontpage')
-            # url=reverse_cradmin_url(
-            #     instanceid='devilry_frontpage',
-            #     appname='overview',
-            #     roleid=self.request.user.id,
-            #     viewname=crapp.INDEXVIEW_NAME
-            # )
+            url=reverse_cradmin_url(
+                instanceid='devilry_frontpage',
+                appname='frontpage',
+                roleid=None,
+                viewname=crapp.INDEXVIEW_NAME
+            ),
+            active=self.get_frontpage_breadcrumb_is_active()
         ))
 
     def render(self, context):

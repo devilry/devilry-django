@@ -1,25 +1,18 @@
 import re
 
-from django.contrib.auth import get_user_model
 from django_cradmin import crinstance
 
-from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
-from devilry.devilry_admin.views.dashboard import overview
-
-
-class Menu(devilry_crmenu_admin.Menu):
-    def build_menu(self):
-        super(Menu, self).build_menu()
-        self.add_role_menuitem_object(active=True)
+from devilry.devilry_frontpage.cradminextensions import devilry_crmenu_frontpage
+from devilry.devilry_frontpage.views import frontpage
 
 
 class CrAdminInstance(crinstance.BaseCrAdminInstance):
-    menuclass = Menu
+    menuclass = devilry_crmenu_frontpage.Menu
     apps = [
-        ('overview', overview.App),
+        ('frontpage', frontpage.App),
     ]
-    id = 'devilry_admin'
-    rolefrontpage_appname = 'overview'
+    id = 'devilry_frontpage'
+    rolefrontpage_appname = 'frontpage'
     flatten_rolefrontpage_url = True
 
     def has_access(self):
@@ -37,4 +30,4 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return re.match('/devilry_admin/$', urlpath)
+        return re.match('^/$', urlpath)

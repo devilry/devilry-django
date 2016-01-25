@@ -489,7 +489,7 @@ cite {
   text-align: justify;
 }
 .text-muted {
-  color: #999999;
+  color: #777;
 }
 .text-primary {
   color: #428bca;
@@ -2071,8 +2071,8 @@ fieldset[disabled] .btn-default.active {
 }
 .btn-primary {
   color: #f2f2f2;
-  background-color: #333;
-  border-color: #333;
+  background-color: #377CA8;
+  border-color: #377CA8;
 }
 .btn-primary:hover,
 .btn-primary:focus,
@@ -2080,8 +2080,8 @@ fieldset[disabled] .btn-default.active {
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
   color: #f2f2f2;
-  background-color: #1f1f1f;
-  border-color: #141414;
+  background-color: #2d6589;
+  border-color: #285a7a;
 }
 .btn-primary:active,
 .btn-primary.active,
@@ -2103,11 +2103,11 @@ fieldset[disabled] .btn-primary:active,
 .btn-primary.disabled.active,
 .btn-primary[disabled].active,
 fieldset[disabled] .btn-primary.active {
-  background-color: #333;
-  border-color: #333;
+  background-color: #377CA8;
+  border-color: #377CA8;
 }
 .btn-primary .badge {
-  color: #333;
+  color: #377CA8;
   background-color: #f2f2f2;
 }
 .btn-success {
@@ -4845,16 +4845,16 @@ form .alert-block.alert-danger ul li {
 }
 .form-control,
 .cradmin-div-styled-as-textarea {
-  border: 1px solid #ddd;
+  border: 1px solid #555;
   border-radius: 4px;
   outline: none;
   box-shadow: none;
-  background: #FAFAFA;
+  background: #f7f7f7;
 }
 .form-control:focus,
 .cradmin-div-styled-as-textarea:focus {
-  background: #E1EDF4;
-  border-color: #bcd7e6;
+  background: #fff;
+  border-color: #377CA8;
   box-shadow: none;
 }
 .cradmin-div-styled-as-textarea {
@@ -4871,7 +4871,7 @@ textarea.cradmin-textarea-small {
   top: 0;
   right: 0;
   display: none;
-  color: #999999;
+  color: #777;
 }
 .django-cradmin-clearable-textinput .django-cradmin-clearable-textinput-button:hover {
   color: #377CA8;
@@ -4956,8 +4956,8 @@ table.table.django-cradmin-table tbody td:last-child {
 }
 .btn.btn-primary:hover,
 .btn.btn-primary:focus {
-  background: #000;
-  border-color: #000;
+  background: #24516e;
+  border-color: #24516e;
   color: #fff;
 }
 .btn.btn-success:hover,
@@ -5467,10 +5467,10 @@ table.table.django-cradmin-table tbody td:last-child {
 .cradmin-acemarkdown .ace_editor {
   font-size: 16px;
   height: 400px;
-  background: #FAFAFA;
+  background: #f7f7f7;
 }
 .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea {
-  background: #FAFAFA;
+  background: #f7f7f7;
 }
 .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
   height: 100px;
@@ -5496,10 +5496,10 @@ table.table.django-cradmin-table tbody td:last-child {
   }
 }
 .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea.cradmin-focus {
-  background: #E1EDF4;
+  background: #fff;
 }
 .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea.cradmin-focus .ace_editor {
-  background: #E1EDF4;
+  background: #fff;
 }
 ul.django-cradmin-roleselect-list {
   /**
@@ -5528,7 +5528,7 @@ ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li a h2.dj
   font-weight: bold;
 }
 ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li a .django-cradmin-roleselect-role-description {
-  color: #999999;
+  color: #777;
   font-size: 14px;
 }
 ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li a .django-cradmin-roleselect-role-description p:last-child {
@@ -5538,7 +5538,7 @@ ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li a:hover
   text-decoration: none;
 }
 ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li a:hover .django-cradmin-roleselect-role-description {
-  color: #808080;
+  color: #5e5e5e;
 }
 ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li:last-child {
   border-bottom: none;
@@ -5672,7 +5672,7 @@ The bulk file upload widget base styles.
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progressbar-progress {
   display: inline-block;
   height: 100%;
-  background: #333;
+  background: #377CA8;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progresspercent {
   position: absolute;
@@ -5909,11 +5909,11 @@ child of ``<body>``.
   }
 }
 nav.django-cradmin-menu {
-  background: #333;
+  background: #377CA8;
 }
 nav.django-cradmin-menu .django-cradmin-menu-content {
   display: none;
-  background: #333;
+  background: #377CA8;
 }
 nav.django-cradmin-menu .django-cradmin-menu-content.django-cradmin-menu-content-display {
   display: block;
@@ -5970,12 +5970,12 @@ nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-m
   cursor: pointer;
   text-decoration: none;
   color: #cccccc;
-  background-color: #333;
+  background-color: #377CA8;
 }
 nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle:hover,
 nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle.django-cradmin-menu-mobile-toggle-button-expanded {
   color: #eee;
-  background-color: #262626;
+  background-color: #316e95;
   outline: none;
   text-decoration: none;
 }
@@ -5989,10 +5989,10 @@ nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-m
 }
 @media (min-width: 992px) {
   nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul.django-cradmin-menu-content-header {
-    background: #262626;
+    background: #316e95;
   }
   nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul.django-cradmin-menu-content-footer {
-    background: #262626;
+    background: #316e95;
   }
 }
 nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle {
@@ -6219,7 +6219,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   top: 0;
   padding: 10px 20px;
   font-size: 20px;
-  color: #999999;
+  color: #777;
 }
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page .django-cradmin-datetime-selector-closebutton:hover,
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page .django-cradmin-datetime-selector-closebutton:active,
@@ -6347,7 +6347,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   outline-offset: -2px;
 }
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-today button {
-  background: #E1EDF4;
+  background: #fff;
   color: #555;
 }
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-selected button {
@@ -6356,7 +6356,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
 }
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button {
   background: #fff;
-  color: #999999;
+  color: #777;
 }
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled button {
   background: #e6e6e6;
@@ -6807,7 +6807,7 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
 }
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-no-items-selected {
   display: none;
-  color: #999999;
+  color: #777;
   font-style: italic;
 }
 .django-cradmin-multiselect2-target.django-cradmin-multiselect2-target-with-items .django-cradmin-multiselect2-target-with-items-content {
@@ -6891,7 +6891,7 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
     bottom: 0;
     height: 100%;
     width: 250px;
-    background: #333;
+    background: #377CA8;
   }
 }
 body {
@@ -7008,6 +7008,33 @@ body {
 .btn.btn-lg {
   padding: 7px 16px;
 }
+.form-control,
+.cradmin-div-styled-as-textarea {
+  border-width: 3px;
+  border-radius: 5px;
+}
+h2,
+h3,
+h4 {
+  font-weight: bold;
+}
+h2 {
+  font-size: 23px;
+}
+h3 {
+  font-size: 16px;
+}
+ol.django-cradmin-listbuilder-list h2,
+ol.django-cradmin-listbuilder-list h3 {
+  font-size: 19px;
+}
+ol.django-cradmin-listbuilder-list h2:first-child,
+ol.django-cradmin-listbuilder-list h3:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-bottom: 5px;
+}
 .django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner {
   position: relative;
   padding-left: 40px;
@@ -7038,7 +7065,7 @@ body {
 .devilry-cradmin-groupitemvalue .devilry-cradmin-groupitemvalue-comments {
   margin-bottom: 1px;
   font-size: 14px;
-  color: #999999;
+  color: #777;
 }
 ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-vertical li .django-cradmin-listfilter-radiolist {
   margin-top: -8px;
@@ -7060,17 +7087,6 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-ver
   height: 20px;
   width: 20px;
   padding-top: 4px;
-}
-h2,
-h3,
-h4 {
-  font-weight: bold;
-}
-h2 {
-  font-size: 23px;
-}
-h3 {
-  font-size: 16px;
 }
 form.devilry-form-inline {
   display: inline-block;

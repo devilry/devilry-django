@@ -4,11 +4,8 @@ nav#django_cradmin_mainmenu.django-cradmin-menu {
     @media (min-width: @screen-md-min) {
       height: @cradmin-topmenu-theme-mainmenu-desktop-height + 6px;
     }
-    &.devilry-django-cradmin-menu-superuser {
-      border-bottom-color: @devilry-superuser-bgcolor;
-    }
     &.devilry-django-cradmin-menu-admin {
-      border-bottom-color: @devilry-admin-bgcolor;
+      border-bottom-color: @devilry-anyadmin-bgcolor;
     }
     &.devilry-django-cradmin-menu-examiner {
       border-bottom-color: @devilry-examiner-bgcolor;
@@ -81,22 +78,12 @@ nav#django_cradmin_mainmenu.django-cradmin-menu {
       }
     }
 
-    &.devilry-django-cradmin-menu-superuser {
-      border-bottom-color: @devilry-superuser-bgcolor;
-      .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem {
-        .django-cradmin-menu-activeitemwrapper > a,
-        & > a {
-          border-bottom-color: @devilry-superuser-bgcolor;
-        }
-      }
-
-    }
     &.devilry-django-cradmin-menu-admin {
-      border-bottom-color: @devilry-admin-bgcolor;
+      border-bottom-color: @devilry-anyadmin-bgcolor;
       .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem {
         .django-cradmin-menu-activeitemwrapper > a,
         & > a {
-          border-bottom-color: @devilry-admin-bgcolor;
+          border-bottom-color: @devilry-anyadmin-bgcolor;
         }
       }
     }

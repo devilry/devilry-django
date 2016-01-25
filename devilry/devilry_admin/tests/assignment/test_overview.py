@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.conf import settings
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
@@ -50,14 +51,15 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                         '0 students'))
 
     def test_assignment_meta_one_examiner_configured(self):
+        # testuser = mommy.make(settings.AUTH_USER_MODEL)
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
-        examiner1 = mommy.make('core.Examiner')
-        assignment_group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        assignment_group.examiners.add(examiner1)
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=assignment.period)
+        mommy.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup__parentnode=assignment)
+        mommy.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertTrue(
-                mockresponse.selector.one('.devilry-admin-assignment-examiners-exists').alltext_normalized.startswith(
-                        '1 examiner'))
+            mockresponse.selector.one('.devilry-admin-assignment-examiners-exists').alltext_normalized.startswith(
+                '1 examiner'))
 
     def test_assignment_meta_no_examiner_configured(self):
         assignment = mommy.make('core.Assignment')
