@@ -6,8 +6,8 @@ from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_admin.views.dashboard import overview
 
 
-class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
-    viewclass = overview.Overview
+class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = overview.OverviewSubjectListView
 
     def test_title(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -24,7 +24,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
     def __minimal_mockrequest_with_user(self, user):
         mockrequest = RequestFactory().get('')
         mockrequest.user = user
-        view = overview.Overview()
+        view = overview.OverviewSubjectListView()
         view.request = mockrequest
         return view
 
@@ -32,7 +32,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockrequest = RequestFactory().get('')
         mockrequest.user = user
         mockrequest.subjectpermissiongroup = subjectpermissiongroup
-        view = overview.Overview()
+        view = overview.OverviewSubjectListView()
         view.request = mockrequest
         return view
 
@@ -40,7 +40,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockrequest = RequestFactory().get('')
         mockrequest.user = user
         mockrequest.periodpermissiongroup = periodpermissiongroup
-        view = overview.Overview()
+        view = overview.OverviewSubjectListView()
         view.request = mockrequest
         return view
 
@@ -50,7 +50,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockrequest.user = user
         mockrequest.subjectpermissiongroup = subjectpermissiongroup
         mockrequest.periodpermissiongroup = periodpermissiongroup
-        view = overview.Overview()
+        view = overview.OverviewSubjectListView()
         view.request = mockrequest
         return view
 
@@ -59,7 +59,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         view = self.__minimal_mockrequest_with_user(user=testuser)
         self.assertEqual(
             [],
-            list(view._Overview__get_all_subjects_where_user_is_subjectadmin()))
+            list(view._OverviewSubjectListView__get_all_subjects_where_user_is_subjectadmin()))
 
     def test__get_all_subjects_where_user_is_subjectadmin_not_subjectadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -70,7 +70,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         view = self.__minimal_mockrequest_with_user(user=testuser)
         self.assertEqual(
             [],
-            list(view._Overview__get_all_subjects_where_user_is_subjectadmin()))
+            list(view._OverviewSubjectListView__get_all_subjects_where_user_is_subjectadmin()))
 
     def test__get_all_subjects_where_user_is_subjectadmin_one_subjectadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -85,7 +85,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             user=testuser, subjectpermissiongroup=subjectpermissiongroup)
         self.assertEqual(
             [testsubject],
-            list(view._Overview__get_all_subjects_where_user_is_subjectadmin()))
+            list(view._OverviewSubjectListView__get_all_subjects_where_user_is_subjectadmin()))
 
     def test__get_all_subjects_where_user_is_subjectadmin_several_subjectadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -105,7 +105,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                 subjectpermissiongroup2])
         self.assertItemsEqual(
             [testsubject2],
-            list(view._Overview__get_all_subjects_where_user_is_subjectadmin()))
+            list(view._OverviewSubjectListView__get_all_subjects_where_user_is_subjectadmin()))
 
     def test__get_all_subjects_where_user_is_subjectadmin_ordered_subjectadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -131,14 +131,14 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                 subjectpermissiongroup3])
         self.assertEqual(
             [testsubject1, testsubject2, testsubject3],
-            list(view._Overview__get_all_subjects_where_user_is_subjectadmin()))
+            list(view._OverviewSubjectListView__get_all_subjects_where_user_is_subjectadmin()))
 
     def test__get_all_periods_where_user_is_subjectadmin_or_periodadmin_none(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         view = self.__minimal_mockrequest_with_user(user=testuser)
         self.assertEqual(
             [],
-              view._Overview__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
+              view._OverviewSubjectListView__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
         )
 
     def test__get_all_periods_where_user_is_subjectadmin_or_periodadmin_not_periodadmin(self):
@@ -150,7 +150,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         view = self.__minimal_mockrequest_with_user(user=testuser)
         self.assertEqual(
             [],
-            view._Overview__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
+            view._OverviewSubjectListView__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
         )
 
     def test_get_all_periods_where_user_is_subjectadmin_or_periodadmin__one_periodadmin(self):
@@ -167,7 +167,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         self.assertEqual(
             [[testperiod]],
-            view._Overview__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
+            view._OverviewSubjectListView__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
         )
 
     def test_get_all_periods_where_user_is_subjectadmin_or_periodadmin__several_periodadmin(self):
@@ -188,7 +188,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         self.assertEqual(
             [[testperiod1]],
-            view._Overview__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
+            view._OverviewSubjectListView__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
         )
 
     def test_get_all_periods_where_user_is_subjectadmin_or_periodadmin__ordered_periodadmin(self):
@@ -214,7 +214,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         self.assertEqual(
             [[testperiod1], [testperiod3], [testperiod2]],
-            view._Overview__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
+            view._OverviewSubjectListView__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
         )
 
     def test_get_all_periods_where_user_is_subjectadmin_or_periodadmin__both(self):
@@ -247,7 +247,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         self.assertItemsEqual(
             [[testperiod2], [testperiod1], [testperiod3]],
-            view._Overview__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
+            view._OverviewSubjectListView__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
         )
 
     def test_get_all_periods_where_user_is_subjectadmin_or_periodadmin__both_ordered(self):
@@ -281,5 +281,34 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         self.assertItemsEqual(
             [[testperiod3, testperiod2], [testperiod1]],
-            view._Overview__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
+            view._OverviewSubjectListView__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
         )
+
+    def test_empty_list(self):
+        mockresponse = self.mock_http200_getrequest_htmls()
+        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listing-no-items-message'))
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-list'))
+
+    def test_nonempty_list(self):
+        mommy.make('core.Subject')
+        mockresponse = self.mock_http200_getrequest_htmls()
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listing-no-items-message'))
+        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-list'))
+
+    def test_default_ordering(self):
+        mommy.make('core.Subject', short_name='A')
+        mommy.make('core.Subject', short_name='B')
+        mommy.make('core.Subject', short_name='C')
+        mockresponse = self.mock_http200_getrequest_htmls()
+        self.assertEqual(
+            'A',
+            mockresponse.selector.one(
+                '.django-cradmin-listbuilder-list li:nth-child(1)').alltext_normalized)
+        self.assertEqual(
+            'B',
+            mockresponse.selector.one(
+                '.django-cradmin-listbuilder-list li:nth-child(2)').alltext_normalized)
+        self.assertEqual(
+            'C',
+            mockresponse.selector.one(
+                '.django-cradmin-listbuilder-list li:nth-child(3)').alltext_normalized)
