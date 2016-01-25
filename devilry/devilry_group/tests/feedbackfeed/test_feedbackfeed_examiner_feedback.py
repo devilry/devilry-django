@@ -259,8 +259,8 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, cradmin_testhelpers.Test
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                        grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset_first = group_mommy.feedbackset_first_try_published(group=group, is_last_in_group=None)
-        feedbackset_last = group_mommy.feedbackset_new_try_unpublished(group=group, deadline_datetime=None)
+        feedbackset_first = group_mommy.feedbackset_first_attempt_published(group=group, is_last_in_group=None)
+        feedbackset_last = group_mommy.feedbackset_new_attempt_unpublished(group=group, deadline_datetime=None)
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=group,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
@@ -368,8 +368,8 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, cradmin_testhelpers.Test
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                        grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset_first = group_mommy.feedbackset_first_try_published(is_last_in_group=None, group=group)
-        feedbackset_last = group_mommy.feedbackset_new_try_unpublished(group=group, deadline_datetime=timezone.now())
+        feedbackset_first = group_mommy.feedbackset_first_attempt_published(is_last_in_group=None, group=group)
+        feedbackset_last = group_mommy.feedbackset_new_attempt_unpublished(group=group, deadline_datetime=timezone.now())
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=group,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))

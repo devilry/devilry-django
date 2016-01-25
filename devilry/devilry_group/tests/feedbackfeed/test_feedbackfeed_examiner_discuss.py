@@ -225,8 +225,8 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_common.TestFee
                               assignmentgroup=group,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
 
-        feedbackset_first = group_mommy.feedbackset_first_try_published(is_last_in_group=None, group=group)
-        feedbackset_last = group_mommy.feedbackset_new_try_unpublished(group=group)
+        feedbackset_first = group_mommy.feedbackset_first_attempt_published(is_last_in_group=None, group=group)
+        feedbackset_last = group_mommy.feedbackset_new_attempt_unpublished(group=group)
         self.mock_http302_postrequest(
             cradmin_role=examiner.assignmentgroup,
             requestuser=examiner.relatedexaminer.user,

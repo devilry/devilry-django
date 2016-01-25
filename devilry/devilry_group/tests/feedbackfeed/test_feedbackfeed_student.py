@@ -276,16 +276,16 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertEquals(0, len(group_models.GroupComment.objects.all()))
 
 
-class TestPublishingStudent(cradmin_testhelpers.TestCaseMixin):
+class TestPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin):
     """
     Test what gets rendered and not rendered to student view of elements
     that belongs to publishing of feedbacksets.
     """
     viewclass = feedbackfeed_student.StudentFeedbackFeedView
 
-    def test_get_student_can_not_see_drafted_comments_before_publish_first_attempt(self):
+    def test_get_student_can_not_see_comments__part_of_grading_before_publish_first_attempt(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
-        feedbackset = group_mommy.feedbackset_first_try_unpublished(group__parentnode=assignment)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=assignment)
         candidate = mommy.make('core.Candidate',
                              assignment_group=feedbackset.group,
                              relatedstudent=mommy.make('core.RelatedStudent'))
@@ -302,14 +302,14 @@ class TestPublishingStudent(cradmin_testhelpers.TestCaseMixin):
                                                           requestuser=candidate.relatedstudent.user)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
 
-    def test_get_student_can_not_see_drafted_comments_before_publish_new_attempt(self):
+    def test_get_student_can_not_see_comments_part_of_grading_before_publish_new_attempt(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup',
                            parentnode=assignment)
-        group_mommy.feedbackset_first_try_published(
+        group_mommy.feedbackset_first_attempt_published(
                 group=group,
                 is_last_in_group=None)
-        feedbackset_last = group_mommy.feedbackset_new_try_unpublished(
+        feedbackset_last = group_mommy.feedbackset_new_attempt_unpublished(
                 group=group,
                 deadline_datetime=timezone.now()+timezone.timedelta(days=1))
         candidate = mommy.make('core.Candidate',
@@ -327,3 +327,29 @@ class TestPublishingStudent(cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
                                                           requestuser=candidate.relatedstudent.user)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
+
+    def test_get_student_can_see_comments_part_of_grading_after_publish_first_attempt(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        feedbackset = group_mommy.feedbackset_first_attempt_published(group__parentnode=assignment)
+        candidate = mommy.make('core.Candidate',
+                             assignment_group=feedbackset.group,
+                             relatedstudent=mommy.make('core.RelatedStudent'))
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=feedbackset.group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='John Doe'),)
+        mommy.make('devilry_group.GroupComment',
+                   text='asd',
+                   part_of_grading=True,
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=feedbackset)
+        mommy.make('devilry_group.GroupComment',
+                   text='asd',
+                   part_of_grading=True,
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=feedbackset)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
+                                                          requestuser=candidate.relatedstudent.user)
+        feedback_comments = mockresponse.selector.list('.devilry-group-feedbackfeed-comment')
+        self.assertEquals(2, len(feedback_comments))
