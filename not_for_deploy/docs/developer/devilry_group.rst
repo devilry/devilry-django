@@ -72,12 +72,12 @@ Example - create a group with two "tries"::
 
     testgroup = mommy.make('core.AssignmentGroup',
                            parentnode__first_deadline=timezone.now() - timedelta(days=10)
-    devilry_group_mommy_factories.feedbackset_first_try_published(
+    devilry_group_mommy_factories.feedbackset_first_attempt_published(
         group=testgroup,
         grading_points=10,
         deadline_datetime=timezone.now() - timedelta(days=10),  # Not required - defaults not timezone.now()
         is_last_in_group=False)
-    devilry_group_mommy_factories.feedbackset_new_try_published(
+    devilry_group_mommy_factories.feedbackset_new_attempt_published(
         group=testgroup,
         grading_points=20,
         is_last_in_group=True)

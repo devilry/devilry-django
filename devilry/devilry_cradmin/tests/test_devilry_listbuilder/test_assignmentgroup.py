@@ -121,7 +121,7 @@ class TestStudentItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_grade_students_can_see_points_false(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=False,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -135,7 +135,7 @@ class TestStudentItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_grade_students_can_see_points_true(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=True,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -236,7 +236,7 @@ class TestExaminerItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_has_unpublished_feedbackdraft_draft_false(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(grading_points=1),
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(grading_points=1),
         testgroup = AssignmentGroup.objects\
             .annotate_with_grading_points()\
             .annotate_with_has_unpublished_feedbackdraft().first()
@@ -245,7 +245,7 @@ class TestExaminerItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-unpublished-feedbackdraft'))
 
     def test_has_unpublished_feedbackdraft_draft_true(self):
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(grading_points=1),
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(grading_points=1),
         testgroup = AssignmentGroup.objects\
             .annotate_with_grading_points()\
             .annotate_with_has_unpublished_feedbackdraft().first()
@@ -256,7 +256,7 @@ class TestExaminerItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-unpublished-feedbackdraft').alltext_normalized)
 
     def test_grade_students_can_see_points_false(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=False,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -270,7 +270,7 @@ class TestExaminerItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_grade_students_can_see_points_true(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=True,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -316,7 +316,7 @@ class TestPeriodAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_grade_students_can_see_points_false(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=False,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -330,7 +330,7 @@ class TestPeriodAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_grade_students_can_see_points_true(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=True,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -402,7 +402,7 @@ class TestSubjectAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_grade_students_can_see_points_false(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=False,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -416,7 +416,7 @@ class TestSubjectAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_grade_students_can_see_points_true(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=True,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -508,7 +508,7 @@ class TestDepartmentAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_grade_students_can_see_points_false(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=False,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -522,7 +522,7 @@ class TestDepartmentAdminItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_grade_students_can_see_points_true(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=True,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -544,14 +544,14 @@ class MockNoMultiselectItemValue(devilry_listbuilder.assignmentgroup.ItemValueMi
 
 class TestItemValue(test.TestCase):
     def test_status_is_corrected(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             grading_points=1)
         testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
         selector = htmls.S(MockNoMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-status'))
 
     def test_status_is_waiting_for_feedback(self):
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
         testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
         selector = htmls.S(MockNoMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
@@ -561,7 +561,7 @@ class TestItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_status_is_waiting_for_deliveries(self):
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                 first_deadline=timezone.now() + timedelta(days=2)))
         testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
@@ -572,7 +572,7 @@ class TestItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_grade_not_available_unless_corrected(self):
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished()
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished()
         testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
         selector = htmls.S(MockNoMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
@@ -833,7 +833,7 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
 
     def test_has_unpublished_feedbackdraft_draft_false(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(grading_points=1),
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(grading_points=1),
         testgroup = AssignmentGroup.objects\
             .annotate_with_grading_points()\
             .annotate_with_has_unpublished_feedbackdraft().first()
@@ -842,7 +842,7 @@ class TestExaminerMultiselectItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-unpublished-feedbackdraft'))
 
     def test_has_unpublished_feedbackdraft_draft_true(self):
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(grading_points=1),
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(grading_points=1),
         testgroup = AssignmentGroup.objects\
             .annotate_with_grading_points()\
             .annotate_with_has_unpublished_feedbackdraft().first()
@@ -857,7 +857,7 @@ class TestExaminerMultiselectItemValue(test.TestCase):
                 for element in selector.list('.devilry-cradmin-groupitemvalue-grade')]
 
     def test_grade_students_can_see_points_false(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=False,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -871,7 +871,7 @@ class TestExaminerMultiselectItemValue(test.TestCase):
             self.__get_both_grades(selector))
 
     def test_grade_students_can_see_points_true(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=True,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -951,7 +951,7 @@ class TestPeriodAdminMultiselectItemValue(test.TestCase):
                 for element in selector.list('.devilry-cradmin-groupitemvalue-grade')]
 
     def test_grade_students_can_see_points_false(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=False,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -965,7 +965,7 @@ class TestPeriodAdminMultiselectItemValue(test.TestCase):
             self.__get_both_grades(selector))
 
     def test_grade_students_can_see_points_true(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=True,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -1101,7 +1101,7 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
                 for element in selector.list('.devilry-cradmin-groupitemvalue-grade')]
 
     def test_grade_students_can_see_points_false(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=False,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -1115,7 +1115,7 @@ class TestSubjectAdminMultiselectItemValue(test.TestCase):
             self.__get_both_grades(selector))
 
     def test_grade_students_can_see_points_true(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=True,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -1252,7 +1252,7 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
                 for element in selector.list('.devilry-cradmin-groupitemvalue-grade')]
 
     def test_grade_students_can_see_points_false(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=False,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -1266,7 +1266,7 @@ class TestDepartmentAdminMultiselectItemValue(test.TestCase):
             self.__get_both_grades(selector))
 
     def test_grade_students_can_see_points_true(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=True,
             grading_points=1)
         testgroup = AssignmentGroup.objects\
@@ -1288,14 +1288,14 @@ class MockMultiselectItemValue(devilry_listbuilder.assignmentgroup.ItemValueMixi
 
 class TestMultiselectItemValue(test.TestCase):
     def test_status_is_corrected(self):
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             grading_points=1)
         testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
         selector = htmls.S(MockMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-status'))
 
     def test_status_is_waiting_for_feedback(self):
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
         testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
         selector = htmls.S(MockMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
@@ -1305,7 +1305,7 @@ class TestMultiselectItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_status_is_waiting_for_deliveries(self):
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                 first_deadline=timezone.now() + timedelta(days=2)))
         testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
@@ -1316,7 +1316,7 @@ class TestMultiselectItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_grade_not_available_unless_corrected(self):
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished()
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished()
         testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
         selector = htmls.S(MockMultiselectItemValue(value=testgroup, assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
