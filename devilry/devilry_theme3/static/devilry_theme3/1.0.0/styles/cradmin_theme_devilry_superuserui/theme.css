@@ -7024,6 +7024,17 @@ h2 {
 h3 {
   font-size: 16px;
 }
+ol.django-cradmin-listbuilder-list h2,
+ol.django-cradmin-listbuilder-list h3 {
+  font-size: 19px;
+}
+ol.django-cradmin-listbuilder-list h2:first-child,
+ol.django-cradmin-listbuilder-list h3:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-bottom: 5px;
+}
 .django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner {
   position: relative;
   padding-left: 40px;

@@ -10,6 +10,10 @@
     <h1>{% trans "Choose your role" %}</h1>
 {% endblock pageheader-inner %}
 
+{% block bodyclass %}
+    devilry-frontpage
+{% endblock bodyclass %}
+
 {% block content %}
     <div class="container">
         {% if roleselect_list.user_has_no_roles %}
@@ -21,12 +25,14 @@
         {% else %}
             {% cradmin_render_renderable roleselect_list %}
             <div class="row">
-                <div class="col-sm-6">
-                    <a href="{{ DEVILRY_LACKING_PERMISSIONS_URL }}" id="devilry_frontpage_lacking_permissions_link">
+                <div class="col-sm-6 devilry-frontpage-more-roles-link-wrapper">
+                    <a href="{{ DEVILRY_LACKING_PERMISSIONS_URL }}"
+                            id="devilry_frontpage_lacking_permissions_link"
+                            class="devilry-frontpage-more-roles-link">
                         {% trans "I should have had more roles" %}
                     </a>
                 </div>
-                <div class="col-sm-6 text-right">
+                <div class="col-sm-6 devilry-frontpage-superuser-link-wrapper">
                     {% if request.user.is_superuser %}
                         <a href="/superuser/" class="devilry-frontpage-superuser-link">
                             {% trans "Superuser UI" %}
