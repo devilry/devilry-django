@@ -6,6 +6,8 @@ from django.views.generic import TemplateView
 from django_cradmin import crapp
 from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import listfilter
+from django_cradmin.viewhelpers import listbuilder
+from devilry.devilry_admin.listbuilder import admindashboard_subject_listbuilder
 from devilry.apps.core import models as coremodels
 
 from devilry.apps.core.models import Period, Subject
@@ -52,8 +54,12 @@ class OrderSubjectFilter(listfilter.django.single.select.AbstractOrderBy):
         ]
 
 
+
 class OverviewSubjectListView(listbuilderview.FilterListMixin, listbuilderview.View):
     model = coremodels.Subject
+
+    def get_value_renderer_class(self):
+        return admindashboard_subject_listbuilder.Value
 
     def get_pageheading(self):
         return ugettext("Administrator dashboard")
