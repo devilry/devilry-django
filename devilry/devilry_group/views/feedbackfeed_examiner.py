@@ -151,111 +151,25 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
 
     def save_object(self, form, commit=True):
         obj = super(ExaminerFeedbackView, self).save_object(form=form)
-        if form.data.get('examiner_add_comment_to_feedback_draft'):
-            obj.visibility = models.GroupComment.VISIBILITY_PRIVATE
-            obj.part_of_grading = True
-            obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=True)
-        elif form.data.get('examiner_publish_feedback'):
-            obj = self._handle_publish_feedback(form, obj)
-        return obj
-
-    def _handle_publish_feedback(self, form, obj):
-        """
-        Sets attributes to the feedbackset so that it can be saved and published.
-
-        :param form:
-            Form passed from view.
-
-        :param obj:
-            The form object.
-
-        Returns:
-            The form object.
-        """
-        feedbackset = obj.feedback_set
-        current_deadline = self._determine_deadline(feedbackset=feedbackset)
-
-        if current_deadline is None:
-            messages.warning(self.request, ugettext_lazy('Cannot publish feedback without a deadline.'))
+        if obj.feedback_set.grading_published_datetime is not None:
+            messages.warning(self.request, ugettext_lazy('Feedback is already published!'))
         else:
-            if current_deadline < timezone.now():
-                comment_publish, feedbackset_publish = self._save_unpublished_feedback_comments(
-                        obj.feedback_set
-                )
-                feedbackset.grading_points = form.get_grading_points()
-                obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
-                obj.published_datetime = comment_publish
-                feedbackset.grading_published_datetime = feedbackset_publish
-                feedbackset.grading_published_by = obj.user
-                feedbackset.full_clean()
-                feedbackset.save()
-                if len(obj.text) > 0:
-                    obj = super(ExaminerBaseFeedbackFeedView, self).save_object(form=form, commit=True)
-            else:
-                messages.warning(self.request, ugettext_lazy('The deadline has not expired. '
-                                                             'Feedback was saved, but not published.'))
+            if form.data.get('examiner_add_comment_to_feedback_draft'):
+                obj.visibility = models.GroupComment.VISIBILITY_PRIVATE
+                obj.part_of_grading = True
+                obj = super(ExaminerFeedbackView, self).save_object(form=form, commit=True)
+            elif form.data.get('examiner_publish_feedback'):
+                result, error_msg = obj.feedback_set.publish(
+                        published_by=obj.user,
+                        grading_points=form.get_grading_points())
+                if result is False:
+                    messages.warning(self.request, ugettext_lazy(error_msg))
+                elif len(obj.text) > 0:
+                    obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
+                    obj.part_of_grading = True
+                    obj.published_datetime = obj.get_published_datetime()
+                    obj = super(ExaminerFeedbackView, self).save_object(form=form, commit=True)
         return obj
-
-    def _determine_deadline(self, feedbackset=None):
-        """
-        Determines what deadline to use.
-        If the feedbackset has :obj:`~devilry.devilry_group.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT`,
-        :class:`devilry.apps.core.models.Assignment.first_deadline` is used.
-        If the feedbackset has :obj:`~devilry.devilry_group.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT`,
-        :obj:`~devilry.devilry_group.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT` is used.
-
-        :param feedbackset:
-            :obj:`~devilry.devilry_group.FeedbackSet` to publish.
-
-        Returns:
-            A datetime object or None.
-
-        """
-        if feedbackset is None:
-            raise ValueError
-
-        current_deadline = None
-        if feedbackset.feedbackset_type == models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
-            current_deadline = feedbackset.deadline_datetime or feedbackset.group.parentnode.first_deadline
-        elif feedbackset.feedbackset_type == models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT:
-            current_deadline = feedbackset.deadline_datetime
-        return current_deadline
-
-    def _save_unpublished_feedback_comments(self, feedbackset=None):
-        """
-        Goes through all drafted comments for this feedbackset, and publishes them by
-        giving the comments a grading published datetime with only microsecond delay. This is to make sure
-        the comments come in correct order. After all the comments get a publishing time and are saved, the
-        publishing time for the posted comment and feedbackset is returned, making sure the comments appear
-        before the grading result.
-
-        :param feedbackset:
-            The comments :class:`devilry.devilry_group.FeedbackSet`. This is used to filter comments
-            that only belongs to this particular feedbackset.
-
-        Returns:
-            Publishing time of the form comment, and publishing time of the feedbackset
-
-        """
-        if feedbackset is None:
-            raise ValueError
-        feedback_comments = models.GroupComment.objects.filter(
-            feedback_set=feedbackset,
-            part_of_grading=True
-        ).exclude_private_comments_from_other_users(
-            user=self.request.user
-        ).order_by('created_datetime')
-
-        now = timezone.now().replace(second=0, microsecond=0)
-        time_accumulator = 0
-        for time_accumulator, comment in enumerate(feedback_comments):
-            comment.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
-            comment.published_datetime = now + timezone.timedelta(microseconds=time_accumulator)
-            comment.full_clean()
-            comment.save()
-        last_comment_publish_time = now + timezone.timedelta(microseconds=time_accumulator+1)
-        feedbackset_publish_time = now + timezone.timedelta(microseconds=time_accumulator+2)
-        return last_comment_publish_time, feedbackset_publish_time
 
     def get_form_invalid_message(self, form):
         return 'Cannot publish feedback until deadline has passed!'
