@@ -1,15 +1,16 @@
 from django_cradmin import crinstance
 
 from devilry.apps.core.models import Assignment
-from devilry.devilry_account.models import SubjectPermissionGroup, PermissionGroup, PeriodPermissionGroup
+from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
 from devilry.devilry_admin.views.assignment import overview
+from devilry.devilry_admin.views.assignment.examiners import overview as examineroverview
 from devilry.devilry_admin.views.assignment.students import create_groups
-from devilry.devilry_admin.views.assignment.students import overview as studentoverview
-from devilry.devilry_admin.views.assignment.students import replace_groups
-from devilry.devilry_admin.views.assignment.students import merge_groups
 from devilry.devilry_admin.views.assignment.students import delete_groups
 from devilry.devilry_admin.views.assignment.students import groupdetails
+from devilry.devilry_admin.views.assignment.students import merge_groups
+from devilry.devilry_admin.views.assignment.students import overview as studentoverview
+from devilry.devilry_admin.views.assignment.students import replace_groups
 
 
 class Menu(devilry_crmenu_admin.Menu):
@@ -34,6 +35,7 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
         ('merge_groups', merge_groups.App),
         ('delete_groups', delete_groups.App),
         ('groupdetails', groupdetails.App),
+        ('examineroverview', examineroverview.App),
     ]
     id = 'devilry_admin_assignmentadmin'
     rolefrontpage_appname = 'overview'

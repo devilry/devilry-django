@@ -45,7 +45,9 @@
         </div>
         <div id="devilry_admin_assignment_examiners" class="col-sm-6">
             <h3>
-                <a href="#">{% trans "Examiners" %}</a>
+                <a href="{% cradmin_instance_url appname='examineroverview' viewname='INDEX' roleid=assignment.id %}">
+                    {% trans "Examiners" %}
+                </a>
             </h3>
 
             <p>
