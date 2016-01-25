@@ -1,4 +1,4 @@
-{% extends "devilry_frontpage/base.django.html" %}
+{% extends "django_cradmin/base.django.html" %}
 {% load i18n %}
 {% load cradmin_tags %}
 
@@ -11,55 +11,32 @@
 {% endblock pageheader-inner %}
 
 {% block content %}
-    <h1 class="sr-only">{% trans "Devilry frontpage" %}</h1>
-
-    <div id="devilry_frontpage_roleselect">
-{#            <p class="devilry-frontpage-roleselect-intro">#}
-{#                {% trans "Each distinct area of responsibilty, or role, in Devilry has its own user interface. Please choose your role." %}#}
-{#            </p>#}
-        <ul id="devilry_frontpage_roleselect_list">
-            {% if user_is_student %}
-                <li id="devilry_frontpage_roleselect_student">
-                    <a href="{% url 'devilry_student' %}">
-                        <strong>{% trans "Student" %}</strong>
-                        {% trans "Students can upload deliveres and browse their own delivery and feedback history." %}
+    <div class="container">
+        {% if roleselect_list.user_has_no_roles %}
+            <div class="alert alert-warning">
+                {% trans "You do not have access to anything in Devilry." %}
+                <a href="{{ DEVILRY_LACKING_PERMISSIONS_URL }}" id="devilry_frontpage_lacking_permissions_link">
+                    {% trans "Click here to learn how to get access to Devilry" %}</a>.
+            </div>
+        {% else %}
+            {% cradmin_render_renderable roleselect_list %}
+            <div class="row">
+                <div class="col-sm-6">
+                    <a href="{{ DEVILRY_LACKING_PERMISSIONS_URL }}" id="devilry_frontpage_lacking_permissions_link">
+                        {% trans "I should have had more roles" %}
                     </a>
-                </li>
-            {% endif %}
-            {% if user_is_examiner %}
-                <li id="devilry_frontpage_roleselect_examiner">
-                    <a href="{% cradmin_url instanceid='devilry_examiner' appname='assignmentlist' roleid=request.user.id viewname='INDEX' %}">
-                        <strong>{% trans "Examiner" %}</strong>
-                        {% trans "Examiners give students feedback on their deliveries." %}
-                    </a>
-                </li>
-            {% endif %}
-            {% if user_is_any_admin or request.user.is_superuser %}
-                <li id="devilry_frontpage_roleselect_admin">
-                    <a href="{% cradmin_url instanceid='devilry_admin' appname='overview' roleid=request.user.id viewname='INDEX' %}">
-                        <strong>{% trans "Administrators" %}</strong>
-                        {% blocktrans trimmed %}
-                            Administrators manage departments, courses, semesters and assignments.
-                        {% endblocktrans %}
-                    </a>
-                </li>
-            {% endif %}
-            {% if request.user.is_superuser %}
-                <li id="devilry_frontpage_roleselect_superuser">
-                    <a href="/superuser/">
-                        <strong>{% trans "Superuser" %}</strong>
-                        {% trans "Superusers have access to all data stored in Devilry." %}
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
-        <a href="{{ DEVILRY_LACKING_PERMISSIONS_URL }}" id="devilry_frontpage_lacking_permissions_link">
-            {% trans "I should have had more roles" %}
-        </a>
+                </div>
+                <div class="col-sm-6 text-right">
+                    {% if request.user.is_superuser %}
+                        <a href="/superuser/" class="devilry-frontpage-superuser-link">
+                            {% trans "Superuser UI" %}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
     </div>
-
 {% endblock content %}
-
 
 {% block body %}
     {% if DEVILRY_FRONTPAGE_HEADER_INCLUDE_TEMPLATE %}

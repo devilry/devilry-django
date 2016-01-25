@@ -6,8 +6,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseBadRequest, HttpResponsePermanentRedirect
 from django_cradmin.superuserui import superuserui_registry
 
-from devilry.devilry_frontpage.views import frontpage
-
+from devilry.devilry_frontpage import crinstance_frontpage
 
 admin.site.login = login_required(admin.site.login)
 
@@ -51,5 +50,5 @@ devilry_urls = (
     #url(r'^devilry_gradingsystemplugin_points/', include('devilry.devilry_gradingsystemplugin_points.urls')),
     #url(r'^devilry_gradingsystemplugin_approved/', include('devilry.devilry_gradingsystemplugin_approved.urls')),
     url(r'^devilry_detektor/', include('devilry.devilry_detektor.urls')),
-    url(r'^$', frontpage, name='devilry_frontpage'),
+    url(r'^', include(crinstance_frontpage.CrAdminInstance.urls())),
 )

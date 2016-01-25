@@ -42,7 +42,7 @@ class EmailSendingDebug(View):
 
         subject = 'Test email from Devilry.'
         body = emailbodytpl.format(username=request.user.shortname,
-                                   frontpageurl=create_absolute_url(reverse('devilry_frontpage')),
+                                   frontpageurl=create_absolute_url('/'),
                                    superuseremail=request.user.useremail_set.first().email)
 
         send_message(subject, body, user)

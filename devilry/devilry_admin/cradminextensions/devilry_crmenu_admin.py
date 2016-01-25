@@ -16,7 +16,7 @@ class Menu(devilry_crmenu.Menu):
             url=reverse_cradmin_url(
                 instanceid='devilry_admin',
                 appname='overview',
-                roleid=self.request.user.id,
+                roleid=None,
                 viewname=crapp.INDEXVIEW_NAME
             ),
             active=active

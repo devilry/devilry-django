@@ -1,72 +1,103 @@
-import unittest
+from django.conf import settings
 from django.test import TestCase
-from django.core.urlresolvers import reverse
+from django_cradmin import cradmin_testhelpers
+from model_mommy import mommy
 
-from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
-from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
-from devilry.project.develop.testhelpers.corebuilder import NodeBuilder
-from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from devilry.project.develop.testhelpers.soupselect import cssFind
-from devilry.project.develop.testhelpers.soupselect import cssGet
-from devilry.project.develop.testhelpers.soupselect import cssExists
-from devilry.project.develop.testhelpers.login import LoginTestCaseMixin
+from devilry.devilry_account.models import PermissionGroup
+from devilry.devilry_frontpage.views import frontpage
 
 
-@unittest.skip('Help wanted to understand how these tests should be fixed!')
-class TestFrontpage(TestCase, LoginTestCaseMixin):
-    def setUp(self):
-        self.url = reverse('devilry_frontpage')
-        self.testuser = UserBuilder('testuser')
+class TestFrontpage(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = frontpage.FrontpageView
 
-    def test_not_authenticated(self):
-        response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 302)
+    def test_title(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertEqual(u'Devilry frontpage',
+                         mockresponse.selector.one('title').alltext_normalized)
 
-    def test_authenticated(self):
-        response = self.get_as(self.testuser.user, self.url)
-        self.assertEquals(response.status_code, 200)
-    
-    def test_roleselect_student(self):
-        PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('week1')\
-            .add_group(students=[self.testuser.user])
-        html = self.get_as(self.testuser.user, self.url).content
-        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect_list a')), 1)
-        self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_student'))
+    def test_h1(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertEqual(u'Choose your role',
+                         mockresponse.selector.one('h1').alltext_normalized)
 
-    def test_roleselect_examiner(self):
-        PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('week1')\
-            .add_group(examiners=[self.testuser.user])
-        html = self.get_as(self.testuser.user, self.url).content
-        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect_list a')), 1)
-        self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_examiner'))
+    def test_user_is_student(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertTrue(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-student'))
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-examiner'))
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin'))
 
-    def test_roleselect_subjectadmin(self):
-        SubjectBuilder.quickadd_ducku_duck1010().add_admins(self.testuser.user)
-        html = self.get_as(self.testuser.user, self.url).content
-        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect_list a')), 1)
-        self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_admin'))
+    def test_user_is_examiner(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-student'))
+        self.assertTrue(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-examiner'))
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin'))
 
-    def test_roleselect_nodeadmin(self):
-        NodeBuilder('univ').add_admins(self.testuser.user)
-        html = self.get_as(self.testuser.user, self.url).content
-        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect_list a')), 1)
-        self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_admin'))
+    def test_user_is_superuser(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-student'))
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-examiner'))
+        self.assertTrue(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-frontpage-superuser-link'))
 
-    def test_roleselect_superuser(self):
-        self.testuser.update(is_superuser=True)
-        html = self.get_as(self.testuser.user, self.url).content
-        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect_list a')), 2)
-        self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_admin'))
-        self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_superuser'))
+    def test_user_is_departmentadmin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=mommy.make(
+                       'devilry_account.SubjectPermissionGroup',
+                       permissiongroup__grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN).permissiongroup)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-student'))
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-examiner'))
+        self.assertTrue(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-frontpage-superuser-link'))
 
-    def test_lacking_permissions_message(self):
-        with self.settings(DEVILRY_LACKING_PERMISSIONS_URL='http://example.com/a/test'):
-            html = self.get_as(self.testuser.user, self.url).content
-            self.assertEquals(
-                cssGet(html, '#devilry_frontpage_lacking_permissions_link')['href'],
-                'http://example.com/a/test')
-            self.assertEquals(
-                cssGet(html, '#devilry_frontpage_lacking_permissions_link').text.strip(),
-                'I should have had more roles')
+    def test_user_is_subjectadmin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=mommy.make(
+                       'devilry_account.SubjectPermissionGroup',
+                       permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN).permissiongroup)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-student'))
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-examiner'))
+        self.assertTrue(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-frontpage-superuser-link'))
+
+    def test_user_is_periodadmin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=mommy.make('devilry_account.PeriodPermissionGroup').permissiongroup)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-student'))
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-examiner'))
+        self.assertTrue(
+            mockresponse.selector.exists('.devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-frontpage-superuser-link'))
