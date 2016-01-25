@@ -1,0 +1,48 @@
+.devilry-dangerzone {
+  border: @devilry-brand-border-width solid @devilry-brand-danger-bg;
+  background: #fff;
+  margin-top: 70px;
+  padding: 10px;
+
+  .devilry-dangerzone-title {
+    margin: 0 0 15px 0;
+    padding: 0;
+    color: @devilry-brand-danger-bg;
+  }
+
+  ul.devilry-dangerzone-actionlist {
+    margin: 0;
+    list-style: none;
+    padding: 0;
+    li {
+      margin-bottom: 15px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      a {
+        h3 {
+          display: block;
+          color: @devilry-brand-danger-bg;
+          text-decoration: underline;
+          margin-bottom: 5px;
+        }
+        small {
+          display: block;
+          text-decoration: none;
+          color: @text-color;
+        }
+
+        &:hover {
+          text-decoration: none;
+          h3 {
+            color: darken(@devilry-brand-danger-bg, 20%);
+            text-decoration: underline;
+          }
+          small {
+            color: @text-color;
+          }
+        }
+      }
+    }
+  }
+}

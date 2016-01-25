@@ -1,0 +1,89 @@
+{% extends "devilry_admin/assignment/students/groupview_base/base-info-view.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block title %}
+    {% blocktrans trimmed with assignmentname=assignment.long_name %}
+        Examiners on {{ assignmentname }}
+    {% endblocktrans %}
+{% endblock title %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'overview' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to assignment overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% blocktrans trimmed with assignmentname=assignment.long_name %}
+            Examiners on {{ assignmentname }}
+        {% endblocktrans %}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        <p id="devilry_admin_assignment_examiners_overview_buttonbar"
+                class="devilry-buttonbar">
+            <a id="devilry_admin_assignment_examiners_overview_button_organize"
+                    class="btn btn-default devilry-btn-titledescription"
+                    href="#">
+{#                    href="{% cradmin_instance_appindex_url 'organize_examiners' %}">#}
+                <strong>{% trans "Organize examiners" %}</strong>
+                <small>
+                    <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
+                        {% trans "Select students and assign one or more examiner" %}
+                    <span class="sr-only">)</span>
+                </small>
+            </a>
+            <a id="devilry_admin_assignment_examiners_overview_button_random"
+                    class="btn btn-default devilry-btn-titledescription"
+                    href="#">
+{#                    href="{% cradmin_instance_appindex_url 'organize_examiners' %}">#}
+                <strong>{% trans "Organize examiners randomly" %}</strong>
+                <small>
+                    <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
+                        {% trans "You choose a set of students and randomly assign some or all your examiners to those students." %}
+                    <span class="sr-only">)</span>
+                </small>
+            </a>
+        </p>
+    </div>
+
+    {{ block.super }}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 col-lg-9">
+                <p class="devilry-listbuilderlist-footer">
+                    {% trans "Only users registered as examiner for duck1010.spring2016 is available as examiners for assignments." %}
+                    <a href="#">{% trans "Add more examiners" %}</a>.
+                </p>
+            </div>
+        </div>
+
+        <div class="devilry-dangerzone">
+            <h2 class="devilry-dangerzone-title">{% trans "Danger zone" %}</h2>
+
+            <ul class="devilry-dangerzone-actionlist">
+                <li>
+                    <a href="#">
+                        <h3>{% trans "Un-assign all examiners from all students" %}</h3>
+                        <small>
+                            <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
+                                {% trans "Can be useful if you want to re-organize ALL the examiners." %}
+                            <span class="sr-only">)</span>
+                        </small>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock content %}
