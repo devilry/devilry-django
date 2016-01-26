@@ -1,0 +1,231 @@
+import mock
+from django import test
+from django.conf import settings
+from django.contrib import messages
+from django_cradmin import cradmin_testhelpers
+from model_mommy import mommy
+
+from devilry.apps.core.models import Examiner
+from devilry.devilry_admin.views.assignment.examiners import organize_manually
+
+
+class TestOrganizeManuallyView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    """
+    NOTE: Much of the functionality for this view is tested in
+    test_groupview_base.test_groupviewmixin.TestGroupViewMixin
+    and test_basemultiselectview.TestBaseMultiselectView.
+    """
+    viewclass = organize_manually.OrganizeManuallyView
+
+    def __mockinstance_with_devilryrole(self, devilryrole):
+        mockinstance = mock.MagicMock()
+        mockinstance.get_devilryrole_for_requestuser.return_value = devilryrole
+        return mockinstance
+
+    def test_title(self):
+        testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period,
+                                     user__fullname='Test User')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'relatedexaminer_id': relatedexaminer.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+        self.assertIn(
+            'Add students to Test User',
+            mockresponse.selector.one('title').alltext_normalized)
+
+    def test_h1(self):
+        testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period,
+                                     user__fullname='Test User')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'relatedexaminer_id': relatedexaminer.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+        self.assertEqual(
+            'Add students to Test User',
+            mockresponse.selector.one('h1').alltext_normalized)
+
+    def test_submit_button_text(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'relatedexaminer_id': relatedexaminer.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+        self.assertEqual(
+            'Add students',
+            mockresponse.selector.one('.django-cradmin-multiselect2-target-footer').alltext_normalized)
+
+    def test_groups_sanity(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        mommy.make('core.AssignmentGroup', parentnode=testassignment, _quantity=3)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'relatedexaminer_id': relatedexaminer.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+        self.assertEqual(
+            3,
+            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_exclude_groups_already_having_examiner(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_with_the_examiner = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner',
+                   assignmentgroup=group_with_the_examiner,
+                   relatedexaminer=relatedexaminer)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'relatedexaminer_id': relatedexaminer.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+        self.assertEqual(
+            1,
+            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_all_students_already_registered_on_examiner(self):
+        pass
+
+    def test_get_querycount(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        mommy.make('core.AssignmentGroup', parentnode=testassignment, _quantity=10)
+        with self.assertNumQueries(7):
+            self.mock_getrequest(
+                cradmin_role=testassignment,
+                viewkwargs={'relatedexaminer_id': relatedexaminer.id},
+                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+
+    def test_post_ok(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        self.assertEqual(0, Examiner.objects.count())
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'relatedexaminer_id': relatedexaminer.id},
+            requestkwargs={
+                'data': {'selected_items': [str(testgroup1.id), str(testgroup2.id)]}
+            })
+        self.assertEqual(2, Examiner.objects.count())
+        self.assertEqual(testgroup1.examiners.first().relatedexaminer, relatedexaminer)
+        self.assertEqual(testgroup2.examiners.first().relatedexaminer, relatedexaminer)
+        self.assertEqual(1, testgroup1.examiners.count())
+        self.assertEqual(1, testgroup2.examiners.count())
+
+    def test_post_no_duplicate_examiner(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup1,
+                   relatedexaminer=relatedexaminer)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+
+        self.assertEqual(1, Examiner.objects.count())
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment,
+            messagesmock=messagesmock,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'relatedexaminer_id': relatedexaminer.id},
+            requestkwargs={
+                'data': {'selected_items': [str(testgroup1.id), str(testgroup2.id)]}
+            })
+        self.assertEqual(1, Examiner.objects.count())
+        messagesmock.add.assert_called_once_with(
+            messages.ERROR,
+            'Something went wrong. This may happen if changes was made to the selected '
+            'students while you where working on them. Please try again.',
+            '')
+
+    def test_post_successmessage_no_projectgroups(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate', assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate', assignment_group=testgroup2)
+
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment,
+            messagesmock=messagesmock,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'relatedexaminer_id': relatedexaminer.id},
+            requestkwargs={
+                'data': {'selected_items': [str(testgroup1.id), str(testgroup2.id)]}
+            })
+        messagesmock.add.assert_called_once_with(
+            messages.SUCCESS,
+            'Added 2 students.',
+            '')
+
+    def test_post_successmessage_with_single_projectgroups(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate', assignment_group=testgroup1)
+        mommy.make('core.Candidate', assignment_group=testgroup1)
+
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment,
+            messagesmock=messagesmock,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'relatedexaminer_id': relatedexaminer.id},
+            requestkwargs={
+                'data': {'selected_items': [str(testgroup1.id)]}
+            })
+        messagesmock.add.assert_called_once_with(
+            messages.SUCCESS,
+            'Added 1 project group with 2 students.',
+            '')
+
+    def test_post_successmessage_with_multiple_projectgroups(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate', assignment_group=testgroup1, _quantity=10)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate', assignment_group=testgroup2, _quantity=8)
+
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment,
+            messagesmock=messagesmock,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'relatedexaminer_id': relatedexaminer.id},
+            requestkwargs={
+                'data': {'selected_items': [str(testgroup1.id), str(testgroup2.id)]}
+            })
+        messagesmock.add.assert_called_once_with(
+            messages.SUCCESS,
+            'Added 2 project groups with 18 students.',
+            '')
+
+    def test_post_querycount(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate', assignment_group=testgroup1, _quantity=10)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate', assignment_group=testgroup2, _quantity=10)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate', assignment_group=testgroup2, _quantity=3)
+        testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate', assignment_group=testgroup2, _quantity=3)
+
+        with self.assertNumQueries(6):
+            self.mock_postrequest(
+                cradmin_role=testassignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+                viewkwargs={'relatedexaminer_id': relatedexaminer.id},
+                requestkwargs={
+                    'data': {'selected_items': [str(testgroup1.id), str(testgroup2.id),
+                                                str(testgroup3.id), str(testgroup4.id)]}
+                })
