@@ -3,20 +3,15 @@ from __future__ import unicode_literals
 from django.http import Http404
 from django.utils.translation import ugettext_lazy
 from django_cradmin import crapp
-from django_cradmin.viewhelpers import listbuilderview
 
 from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedexaminer
 
 
-class RelatedExaminerItemValue(listbuilder_relatedexaminer.ReadOnlyItemValue):
-    pass
-
-
 class Overview(listbuilder_relatedexaminer.ListViewBase):
     filterview_name = 'filter'
     template_name = 'devilry_admin/assignment/examiners/overview.django.html'
-    value_renderer_class = RelatedExaminerItemValue
+    value_renderer_class = listbuilder_relatedexaminer.OnassignmentItemValue
     model = RelatedExaminer
 
     def dispatch(self, request, *args, **kwargs):
@@ -35,9 +30,13 @@ class Overview(listbuilder_relatedexaminer.ListViewBase):
     def get_unfiltered_queryset_for_role(self, role):
         assignment = role
         period = assignment.period
-        return RelatedExaminer.objects\
+        queryset = RelatedExaminer.objects\
             .filter(period=period)\
-            .select_related('user')
+            .select_related('user')\
+            .annotate_with_number_of_groups_on_assignment(assignment=assignment)\
+            .extra_annotate_with_number_of_candidates_on_assignment(assignment=assignment)\
+            .exclude(active=False)
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)

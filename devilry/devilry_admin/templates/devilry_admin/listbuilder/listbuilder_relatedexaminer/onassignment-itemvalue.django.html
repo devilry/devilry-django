@@ -1,0 +1,37 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load devilry_account_tags %}
+
+{% block title-content %}
+    {% devilry_user_verbose_inline me.relatedexaminer.user %}
+{% endblock title-content %}
+
+{% block description %}
+    <p class="django-cradmin-listbuilder-itemvalue-titledescription-description">
+        {% if me.get_number_of_groups == 0 %}
+            {% trans "No students" %}
+        {% else %}
+            {% if me.has_projectgroups %}
+                {% blocktrans trimmed with studentcount=me.get_number_of_candidates count groupcount=me.get_number_of_groups %}
+                    {{ studentcount }} students in {{ groupcount }} project group
+                {% plural %}
+                    {{ studentcount }} students in {{ groupcount }} project groups
+                {% endblocktrans %}
+            {% else %}
+                {% blocktrans trimmed count studentcount=me.get_number_of_candidates %}
+                    {{ studentcount }} student
+                {% plural %}
+                    {{ studentcount }} students
+                {% endblocktrans %}
+            {% endif %}
+        {% endif %}
+    </p>
+{% endblock description %}
+
+{% block below-description %}
+{#    {% if not me.relatedexaminer.active %}#}
+{#        <p class="text-warning">#}
+{#            {% trans "This examiner has been deactivated. " %}#}
+{#        </p>#}
+{#    {% endif %}#}
+{% endblock below-description %}

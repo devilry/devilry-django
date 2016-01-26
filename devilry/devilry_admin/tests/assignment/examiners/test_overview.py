@@ -154,6 +154,16 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one(
                 '#devilry_admin_assignment_examiners_overview_no_relatedexaminers a')['href'])
 
+    def test_exclude_inactive_relatedexaminers(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mommy.make('core.RelatedExaminer', period=testassignment.period, active=False)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            requestuser=testuser)
+        self.assertFalse(mockresponse.selector.exists('#django_cradmin_listbuilderview_listwrapper'))
+
     def test_has_relatedexaminers_sanity(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
