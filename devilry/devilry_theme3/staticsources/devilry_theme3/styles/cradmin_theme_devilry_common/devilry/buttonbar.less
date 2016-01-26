@@ -9,10 +9,18 @@
     display: block;
     white-space: normal;
     @media (min-width: @screen-sm-min) {
-      display: inline-block;
-      margin-right: 10px;
-      &:last-child {
-        margin-right: 0;
+      flex-grow: 0;
+      margin-left: 10px;
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+  }
+
+  &.devilry-buttonbar-fullwidth {
+    .btn {
+      @media (min-width: @screen-sm-min) {
+        flex-grow: 1;
       }
     }
   }

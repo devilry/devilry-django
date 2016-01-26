@@ -7005,6 +7005,20 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-ver
   line-height: 14px;
   padding-bottom: 5px;
 }
+.alert.devilry-alert-with-button .btn {
+  margin-top: 15px;
+}
+.alert.alert-danger .btn.btn-default,
+.alert.alert-warning .btn.btn-default {
+  border-color: #191919;
+  color: #191919;
+}
+.alert.alert-danger .btn.btn-default:hover,
+.alert.alert-warning .btn.btn-default:hover {
+  background: #191919;
+  border-color: #191919;
+  color: #fff;
+}
 form.devilry-form-inline {
   display: inline-block;
   margin: 0;
@@ -7059,11 +7073,16 @@ h3 .devilry-user-verbose-inline small {
 }
 @media (min-width: 768px) {
   .devilry-buttonbar .btn {
-    display: inline-block;
-    margin-right: 10px;
+    flex-grow: 0;
+    margin-left: 10px;
   }
-  .devilry-buttonbar .btn:last-child {
-    margin-right: 0;
+  .devilry-buttonbar .btn:first-child {
+    margin-left: 0;
+  }
+}
+@media (min-width: 768px) {
+  .devilry-buttonbar.devilry-buttonbar-fullwidth .btn {
+    flex-grow: 1;
   }
 }
 .devilry-dangerzone {
