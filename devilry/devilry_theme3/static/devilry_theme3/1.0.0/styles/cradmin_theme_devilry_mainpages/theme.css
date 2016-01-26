@@ -7071,6 +7071,7 @@ h3 .devilry-user-verbose-inline small {
   background: #fff;
   margin-top: 70px;
   padding: 10px;
+  color: #d9534f;
 }
 .devilry-dangerzone .devilry-dangerzone-title {
   margin: 0 0 15px 0;
@@ -7097,7 +7098,7 @@ h3 .devilry-user-verbose-inline small {
 .devilry-dangerzone ul.devilry-dangerzone-actionlist li a small {
   display: block;
   text-decoration: none;
-  color: #333333;
+  color: #777;
 }
 .devilry-dangerzone ul.devilry-dangerzone-actionlist li a:hover {
   text-decoration: none;
@@ -7107,7 +7108,7 @@ h3 .devilry-user-verbose-inline small {
   text-decoration: underline;
 }
 .devilry-dangerzone ul.devilry-dangerzone-actionlist li a:hover small {
-  color: #333333;
+  color: #777;
 }
 .devilry-listbuilderlist-footer {
   font-size: 14px;
