@@ -6,16 +6,16 @@ from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import Examiner
-from devilry.devilry_admin.views.assignment.examiners import add_groups_to_examiner
+from devilry.devilry_admin.views.assignment.examiners import remove_groups_from_examiner
 
 
-class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+class TestRemoveGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     """
     NOTE: Much of the functionality for this view is tested in
     test_groupview_base.test_groupviewmixin.TestGroupViewMixin
     and test_basemultiselectview.TestBaseMultiselectView.
     """
-    viewclass = add_groups_to_examiner.AddGroupsToExaminerView
+    viewclass = remove_groups_from_examiner.RemoveGroupsToExaminerView
 
     def __mockinstance_with_devilryrole(self, devilryrole):
         mockinstance = mock.MagicMock()
@@ -37,60 +37,47 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
         testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period,
                                      user__fullname='Test User')
-        mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup__parentnode=testassignment, relatedexaminer=relatedexaminer)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'relatedexaminer_id': relatedexaminer.id},
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertIn(
-            'Add students to Test User',
+            'Remove students from Test User',
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
         testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period,
                                      user__fullname='Test User')
-        mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup__parentnode=testassignment, relatedexaminer=relatedexaminer)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'relatedexaminer_id': relatedexaminer.id},
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
-            'Add students to Test User',
+            'Remove students from Test User',
             mockresponse.selector.one('h1').alltext_normalized)
 
     def test_submit_button_text(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
-        mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup__parentnode=testassignment, relatedexaminer=relatedexaminer)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'relatedexaminer_id': relatedexaminer.id},
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
-            'Add students',
+            'Remove students',
             mockresponse.selector.one('.django-cradmin-multiselect2-target-footer').alltext_normalized)
 
-    def test_groups_sanity(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
-        mommy.make('core.AssignmentGroup', parentnode=testassignment, _quantity=3)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            viewkwargs={'relatedexaminer_id': relatedexaminer.id},
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        self.assertEqual(
-            3,
-            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
-
-    def test_exclude_groups_already_having_examiner(self):
+    def test_exclude_groups_that_does_not_have_the_examiner(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
         mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.AssignmentGroup', parentnode=testassignment)
         group_with_the_examiner = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Examiner',
-                   assignmentgroup=group_with_the_examiner,
-                   relatedexaminer=relatedexaminer)
+        mommy.make('core.Examiner', assignmentgroup=group_with_the_examiner, relatedexaminer=relatedexaminer)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'relatedexaminer_id': relatedexaminer.id},
@@ -99,13 +86,10 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
             1,
             mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
 
-    def test_all_students_already_registered_on_examiner(self):
+    def test_no_groups_on_examiner(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Examiner',
-                   assignmentgroup=testgroup,
-                   relatedexaminer=relatedexaminer)
+        mommy.make('core.AssignmentGroup', parentnode=testassignment)
         messagesmock = mock.MagicMock()
         self.mock_http302_getrequest(
             cradmin_role=testassignment,
@@ -114,13 +98,15 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         messagesmock.add.assert_called_once_with(
             messages.INFO,
-            'All students registered on this assignment has already been added to this examiner.',
+            'No students to remove.',
             '')
 
     def test_get_querycount(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
         mommy.make('core.AssignmentGroup', parentnode=testassignment, _quantity=10)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer)
         with self.assertNumQueries(8):
             self.mock_getrequest(
                 cradmin_role=testassignment,
@@ -131,53 +117,27 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer=relatedexaminer)
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        self.assertEqual(0, Examiner.objects.count())
-        self.mock_http302_postrequest(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            viewkwargs={'relatedexaminer_id': relatedexaminer.id},
-            requestkwargs={
-                'data': {'selected_items': [str(testgroup1.id), str(testgroup2.id)]}
-            })
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer=relatedexaminer)
         self.assertEqual(2, Examiner.objects.count())
-        self.assertEqual(testgroup1.examiners.first().relatedexaminer, relatedexaminer)
-        self.assertEqual(testgroup2.examiners.first().relatedexaminer, relatedexaminer)
-        self.assertEqual(1, testgroup1.examiners.count())
-        self.assertEqual(1, testgroup2.examiners.count())
-
-    def test_post_no_duplicate_examiner(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Examiner',
-                   assignmentgroup=testgroup1,
-                   relatedexaminer=relatedexaminer)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-
-        self.assertEqual(1, Examiner.objects.count())
-        messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            messagesmock=messagesmock,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'relatedexaminer_id': relatedexaminer.id},
             requestkwargs={
                 'data': {'selected_items': [str(testgroup1.id), str(testgroup2.id)]}
             })
-        self.assertEqual(1, Examiner.objects.count())
-        messagesmock.add.assert_called_once_with(
-            messages.ERROR,
-            'Something went wrong. This may happen if changes was made to the selected '
-            'students while you where working on them. Please try again.',
-            '')
+        self.assertEqual(0, Examiner.objects.count())
 
     def test_post_successmessage_no_projectgroups(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('core.Candidate', assignment_group=testgroup1)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer=relatedexaminer)
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer=relatedexaminer)
         mommy.make('core.Candidate', assignment_group=testgroup2)
 
         messagesmock = mock.MagicMock()
@@ -191,15 +151,16 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
             })
         messagesmock.add.assert_called_once_with(
             messages.SUCCESS,
-            'Added 2 students.',
+            'Removed 2 students.',
             '')
 
     def test_post_successmessage_with_single_projectgroups(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Candidate', assignment_group=testgroup1)
-        mommy.make('core.Candidate', assignment_group=testgroup1)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate', assignment_group=testgroup)
+        mommy.make('core.Candidate', assignment_group=testgroup)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer)
 
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
@@ -208,11 +169,11 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'relatedexaminer_id': relatedexaminer.id},
             requestkwargs={
-                'data': {'selected_items': [str(testgroup1.id)]}
+                'data': {'selected_items': [str(testgroup.id)]}
             })
         messagesmock.add.assert_called_once_with(
             messages.SUCCESS,
-            'Added 1 project group with 2 students.',
+            'Removed 1 project group with 2 students.',
             '')
 
     def test_post_successmessage_with_multiple_projectgroups(self):
@@ -220,8 +181,10 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('core.Candidate', assignment_group=testgroup1, _quantity=10)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer=relatedexaminer)
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('core.Candidate', assignment_group=testgroup2, _quantity=8)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer=relatedexaminer)
 
         messagesmock = mock.MagicMock()
         self.mock_http302_postrequest(
@@ -234,7 +197,7 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
             })
         messagesmock.add.assert_called_once_with(
             messages.SUCCESS,
-            'Added 2 project groups with 18 students.',
+            'Removed 2 project groups with 18 students.',
             '')
 
     def test_post_querycount(self):
@@ -242,12 +205,16 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('core.Candidate', assignment_group=testgroup1, _quantity=10)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer=relatedexaminer)
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('core.Candidate', assignment_group=testgroup2, _quantity=10)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer=relatedexaminer)
         testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('core.Candidate', assignment_group=testgroup3, _quantity=3)
+        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer=relatedexaminer)
         testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('core.Candidate', assignment_group=testgroup4, _quantity=3)
+        mommy.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer=relatedexaminer)
 
         with self.assertNumQueries(6):
             self.mock_postrequest(
