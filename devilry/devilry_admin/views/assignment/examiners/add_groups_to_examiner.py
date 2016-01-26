@@ -20,6 +20,16 @@ class AddGroupsToExaminerView(groupview_base.BaseMultiselectView,
                               base_single_examinerview.SingleExaminerViewMixin):
     template_name = 'devilry_admin/assignment/examiners/add_groups_to_examiner.django.html'
 
+    def get(self, request, *args, **kwargs):
+        response = super(AddGroupsToExaminerView, self).get(request, *args, **kwargs)
+        if self.get_unfiltered_queryset_for_role(role=self.request.cradmin_role).exists():
+            return response
+        else:
+            messages.info(self.request,
+                          ugettext_lazy('All students registered on this assignment has already '
+                                        'been added to this examiner.'))
+            return redirect(self.get_success_url())
+
     def get_target_renderer_class(self):
         return TargetRenderer
 
@@ -67,8 +77,10 @@ class AddGroupsToExaminerView(groupview_base.BaseMultiselectView,
         return groupcount, candidatecount
 
     def get_success_url(self):
-        return self.request.cradmin_instance.reverse_url(appname='examineroverview',
-                                                         viewname=crapp.INDEXVIEW_NAME)
+        return self.request.cradmin_instance.reverse_url(
+            appname='examinerdetails',
+            viewname=crapp.INDEXVIEW_NAME,
+            kwargs={'relatedexaminer_id': self.get_relatedexaminer_id()})
 
     def form_valid(self, form):
         groupqueryset = form.cleaned_data['selected_items']

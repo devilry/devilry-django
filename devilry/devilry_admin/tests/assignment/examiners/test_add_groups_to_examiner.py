@@ -1,6 +1,7 @@
 import mock
 from django import test
 from django.contrib import messages
+from django.http import Http404
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
@@ -21,10 +22,22 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
         mockinstance.get_devilryrole_for_requestuser.return_value = devilryrole
         return mockinstance
 
+    def test_404_if_relatedexaminer_is_inactive(self):
+        testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period,
+                                     active=False)
+        mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        with self.assertRaises(Http404):
+            self.mock_getrequest(
+                cradmin_role=testassignment,
+                viewkwargs={'relatedexaminer_id': relatedexaminer.id},
+                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+
     def test_title(self):
         testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period,
                                      user__fullname='Test User')
+        mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'relatedexaminer_id': relatedexaminer.id},
@@ -37,6 +50,7 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
         testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period,
                                      user__fullname='Test User')
+        mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'relatedexaminer_id': relatedexaminer.id},
@@ -48,6 +62,7 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
     def test_submit_button_text(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'relatedexaminer_id': relatedexaminer.id},
@@ -85,13 +100,28 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
             mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
 
     def test_all_students_already_registered_on_examiner(self):
-        pass
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer=relatedexaminer)
+        messagesmock = mock.MagicMock()
+        self.mock_http302_getrequest(
+            cradmin_role=testassignment,
+            messagesmock=messagesmock,
+            viewkwargs={'relatedexaminer_id': relatedexaminer.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+        messagesmock.add.assert_called_once_with(
+            messages.INFO,
+            'All students registered on this assignment has already been added to this examiner.',
+            '')
 
     def test_get_querycount(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
         mommy.make('core.AssignmentGroup', parentnode=testassignment, _quantity=10)
-        with self.assertNumQueries(7):
+        with self.assertNumQueries(8):
             self.mock_getrequest(
                 cradmin_role=testassignment,
                 viewkwargs={'relatedexaminer_id': relatedexaminer.id},
