@@ -66,12 +66,16 @@ class AddGroupsToExaminerView(groupview_base.BaseMultiselectView,
         Examiner.objects.bulk_create(examiners)
         return groupcount, candidatecount
 
+    def get_success_url(self):
+        return self.request.cradmin_instance.reverse_url(appname='examineroverview',
+                                                         viewname=crapp.INDEXVIEW_NAME)
+
     def form_valid(self, form):
         groupqueryset = form.cleaned_data['selected_items']
         groupcount, candidatecount = self.__create_examiner_objects(groupqueryset=groupqueryset)
         messages.success(self.request, self.get_success_message(
             groupcount=groupcount, candidatecount=candidatecount))
-        return redirect(self.request.get_full_path())
+        return redirect(self.get_success_url())
 
 
 class App(crapp.App):

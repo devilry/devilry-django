@@ -59,7 +59,7 @@ class TestExaminerDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             viewkwargs={'relatedexaminer_id': relatedexaminer.id},
             cradmin_instance=mock_cradmin_instance)
         self.assertEqual(
-            '/add_students_to_examiner/{}/INDEX'.format(relatedexaminer.id),
+            '/add_groups_to_examiner/{}/INDEX'.format(relatedexaminer.id),
             mockresponse.selector
             .one('#devilry_admin_assignment_examinerdetails_button_add_students')['href'])
 

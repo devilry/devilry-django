@@ -3,15 +3,34 @@ from __future__ import unicode_literals
 from django.http import Http404
 from django.utils.translation import ugettext_lazy
 from django_cradmin import crapp
+from django_cradmin.crinstance import reverse_cradmin_url
+from django_cradmin.viewhelpers import listbuilder
 
 from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedexaminer
+
+
+class ExaminerDetailPageLinkFrame(listbuilder.itemframe.Link):
+    valuealias = 'relatedexaminer'
+
+    def get_url(self):
+        return reverse_cradmin_url(
+            instanceid='devilry_admin_assignmentadmin',
+            appname='examinerdetails',
+            roleid=self.kwargs['assignment'].id,
+            viewname=crapp.INDEXVIEW_NAME,
+            kwargs={'relatedexaminer_id': self.relatedexaminer.id}
+        )
+
+    def get_extra_css_classes_list(self):
+        return ['devilry-admin-assignment-students-overview-group-linkframe']
 
 
 class Overview(listbuilder_relatedexaminer.ListViewBase):
     filterview_name = 'filter'
     template_name = 'devilry_admin/assignment/examiners/overview.django.html'
     value_renderer_class = listbuilder_relatedexaminer.OnassignmentItemValue
+    frame_renderer_class = ExaminerDetailPageLinkFrame
     model = RelatedExaminer
 
     def dispatch(self, request, *args, **kwargs):
@@ -37,6 +56,12 @@ class Overview(listbuilder_relatedexaminer.ListViewBase):
             .extra_annotate_with_number_of_candidates_on_assignment(assignment=assignment)\
             .exclude(active=False)
         return queryset
+
+    def get_value_and_frame_renderer_kwargs(self):
+        kwargs = super(Overview, self).get_value_and_frame_renderer_kwargs()
+        assignment = self.request.cradmin_role
+        kwargs['assignment'] = assignment
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)

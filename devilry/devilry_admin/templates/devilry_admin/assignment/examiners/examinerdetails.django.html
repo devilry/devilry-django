@@ -32,10 +32,10 @@
 {% block content %}
     <div class="container">
         <p id="devilry_admin_assignment_examinerdetails_buttonbar"
-                class="devilry-buttonbar devilry-buttonbar-fullwidth">
+                class="devilry-buttonbar">
             <a id="devilry_admin_assignment_examinerdetails_button_add_students"
                     class="btn btn-primary"
-                    href="{% cradmin_instance_appindex_url 'add_students_to_examiner' relatedexaminer_id=relatedexaminer.id %}">
+                    href="{% cradmin_instance_appindex_url 'add_groups_to_examiner' relatedexaminer_id=relatedexaminer.id %}">
                 {% trans "Add students" %}
             </a>
         </p>

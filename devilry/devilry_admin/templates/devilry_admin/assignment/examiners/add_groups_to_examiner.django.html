@@ -15,9 +15,9 @@
 {% endblock %}
 
 {% block pageheader-inner %}
-    <a href="{% cradmin_instance_appindex_url 'examineroverview' %}" class="devilry-page-header-backlink">
+    <a href="{% cradmin_instance_appindex_url 'examinerdetails' relatedexaminer_id=relatedexaminer.id %}" class="devilry-page-header-backlink">
         <span class="sr-only">
-            {% trans "Back to examiner overview" %}
+            {% trans "Back to examiner detail page" %}
         </span>
         <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
     </a>

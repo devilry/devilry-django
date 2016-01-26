@@ -12,6 +12,7 @@ from devilry.devilry_admin.views.assignment.students import overview as studento
 from devilry.devilry_admin.views.assignment.students import replace_groups
 from devilry.devilry_admin.views.assignment.examiners import overview as examineroverview
 from devilry.devilry_admin.views.assignment.examiners import add_groups_to_examiner
+from devilry.devilry_admin.views.assignment.examiners import examinerdetails
 
 
 class Menu(devilry_crmenu_admin.Menu):
@@ -38,6 +39,7 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
         ('groupdetails', groupdetails.App),
         ('examineroverview', examineroverview.App),
         ('add_groups_to_examiner', add_groups_to_examiner.App),
+        ('examinerdetails', examinerdetails.App),
     ]
     id = 'devilry_admin_assignmentadmin'
     rolefrontpage_appname = 'overview'
