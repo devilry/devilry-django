@@ -11,7 +11,7 @@ from devilry.devilry_admin.views.assignment.students import merge_groups
 from devilry.devilry_admin.views.assignment.students import overview as studentoverview
 from devilry.devilry_admin.views.assignment.students import replace_groups
 from devilry.devilry_admin.views.assignment.examiners import overview as examineroverview
-from devilry.devilry_admin.views.assignment.examiners import organize_manually as organize_examiners_manually
+from devilry.devilry_admin.views.assignment.examiners import add_groups_to_examiner
 
 
 class Menu(devilry_crmenu_admin.Menu):
@@ -37,7 +37,7 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
         ('delete_groups', delete_groups.App),
         ('groupdetails', groupdetails.App),
         ('examineroverview', examineroverview.App),
-        ('organize_examiners_manually', organize_examiners_manually.App),
+        ('add_groups_to_examiner', add_groups_to_examiner.App),
     ]
     id = 'devilry_admin_assignmentadmin'
     rolefrontpage_appname = 'overview'

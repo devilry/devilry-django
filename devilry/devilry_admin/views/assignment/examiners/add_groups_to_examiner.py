@@ -6,22 +6,22 @@ from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy, ungettext_lazy
 from django_cradmin import crapp
 
-from devilry.apps.core.models import RelatedExaminer, Candidate, Examiner
+from devilry.apps.core.models import RelatedExaminer, Examiner
 from devilry.devilry_admin.views.assignment.students import groupview_base
 from devilry.devilry_cradmin import devilry_listbuilder
 
 
-class OrganizeManuallyTargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
+class TargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
     def get_submit_button_text(self):
         return ugettext_lazy('Add students')
 
 
-class OrganizeManuallyView(groupview_base.BaseMultiselectView):
-    template_name = 'devilry_admin/assignment/examiners/organize_manually/view.django.html'
+class AddGroupsToExaminerView(groupview_base.BaseMultiselectView):
+    template_name = 'devilry_admin/assignment/examiners/add_groups_to_examiner.django.html'
 
     def dispatch(self, request, *args, **kwargs):
         self.relatedexaminer = self.__get_relatedexaminer()
-        return super(OrganizeManuallyView, self).dispatch(request, *args, **kwargs)
+        return super(AddGroupsToExaminerView, self).dispatch(request, *args, **kwargs)
 
     def __get_relatedexaminer_id(self):
         return self.kwargs['relatedexaminer_id']
@@ -44,7 +44,7 @@ class OrganizeManuallyView(groupview_base.BaseMultiselectView):
             raise Http404()
 
     def get_target_renderer_class(self):
-        return OrganizeManuallyTargetRenderer
+        return TargetRenderer
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
@@ -53,11 +53,11 @@ class OrganizeManuallyView(groupview_base.BaseMultiselectView):
                     'relatedexaminer_id': self.__get_relatedexaminer_id()})
 
     def get_unfiltered_queryset_for_role(self, role):
-        return super(OrganizeManuallyView, self).get_unfiltered_queryset_for_role(role=role)\
+        return super(AddGroupsToExaminerView, self).get_unfiltered_queryset_for_role(role=role)\
             .exclude(examiners__relatedexaminer=self.relatedexaminer)
 
     def get_context_data(self, **kwargs):
-        context = super(OrganizeManuallyView, self).get_context_data(**kwargs)
+        context = super(AddGroupsToExaminerView, self).get_context_data(**kwargs)
         context['relatedexaminer'] = self.relatedexaminer
         return context
 
@@ -100,6 +100,6 @@ class OrganizeManuallyView(groupview_base.BaseMultiselectView):
 class App(crapp.App):
     appurls = [
         crapp.Url(r'^(?P<relatedexaminer_id>\d+)/(?P<filters_string>.+)?$',
-                  OrganizeManuallyView.as_view(),
+                  AddGroupsToExaminerView.as_view(),
                   name='organize-manually'),
     ]

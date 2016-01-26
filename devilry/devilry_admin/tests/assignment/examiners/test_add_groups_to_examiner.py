@@ -6,16 +6,16 @@ from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import Examiner
-from devilry.devilry_admin.views.assignment.examiners import organize_manually
+from devilry.devilry_admin.views.assignment.examiners import add_groups_to_examiner
 
 
-class TestOrganizeManuallyView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     """
     NOTE: Much of the functionality for this view is tested in
     test_groupview_base.test_groupviewmixin.TestGroupViewMixin
     and test_basemultiselectview.TestBaseMultiselectView.
     """
-    viewclass = organize_manually.OrganizeManuallyView
+    viewclass = add_groups_to_examiner.AddGroupsToExaminerView
 
     def __mockinstance_with_devilryrole(self, devilryrole):
         mockinstance = mock.MagicMock()
