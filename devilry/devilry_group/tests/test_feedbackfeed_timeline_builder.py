@@ -417,7 +417,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         mockrequest.user = testuser
         timeline_builder = FeedbackFeedTimelineBuilder(ExaminerBaseFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        feedbackset = group_mommy.feedbackset_first_try_published(
+        feedbackset = group_mommy.feedbackset_first_attempt_published(
                 created_datetime=assignment.publishing_time,
                 group__parentnode=assignment)
         last_deadline, timeline = timeline_builder.build_timeline(feedbackset.group, [feedbackset])
@@ -436,7 +436,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         mockrequest.user = testuser
         timeline_builder = FeedbackFeedTimelineBuilder(StudentFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        feedbackset = group_mommy.feedbackset_first_try_published(
+        feedbackset = group_mommy.feedbackset_first_attempt_published(
                 created_datetime=assignment.publishing_time,
                 group__parentnode=assignment)
         last_deadline, timeline = timeline_builder.build_timeline(feedbackset.group, [feedbackset])
@@ -455,7 +455,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         mockrequest.user = testuser
         timeline_builder = FeedbackFeedTimelineBuilder(AdminFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        feedbackset = group_mommy.feedbackset_first_try_published(
+        feedbackset = group_mommy.feedbackset_first_attempt_published(
                 created_datetime=assignment.publishing_time,
                 group__parentnode=assignment)
         last_deadline, timeline = timeline_builder.build_timeline(feedbackset.group, [feedbackset])
@@ -473,11 +473,11 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         mockrequest.user = testuser
         timeline_builder = FeedbackFeedTimelineBuilder(ExaminerBaseFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        feedbackset1 = group_mommy.feedbackset_first_try_published(
+        feedbackset1 = group_mommy.feedbackset_first_attempt_published(
                 created_datetime=assignment.publishing_time,
                 group__parentnode=assignment,
                 is_last_in_group=False,)
-        feedbackset2 = group_mommy.feedbackset_new_try_published(
+        feedbackset2 = group_mommy.feedbackset_new_attempt_published(
                 created_datetime=timezone.now(),
                 deadline_datetime=timezone.now(),
                 group=feedbackset1.group,
@@ -501,11 +501,11 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         mockrequest.user = testuser
         timeline_builder = FeedbackFeedTimelineBuilder(StudentFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        feedbackset1 = group_mommy.feedbackset_first_try_published(
+        feedbackset1 = group_mommy.feedbackset_first_attempt_published(
                 created_datetime=assignment.publishing_time,
                 group__parentnode=assignment,
                 is_last_in_group=False,)
-        feedbackset2 = group_mommy.feedbackset_new_try_published(
+        feedbackset2 = group_mommy.feedbackset_new_attempt_published(
                 created_datetime=timezone.now(),
                 deadline_datetime=timezone.now(),
                 group=feedbackset1.group,
@@ -529,11 +529,11 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         mockrequest.user = testuser
         timeline_builder = FeedbackFeedTimelineBuilder(AdminFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        feedbackset1 = group_mommy.feedbackset_first_try_published(
+        feedbackset1 = group_mommy.feedbackset_first_attempt_published(
                 created_datetime=assignment.publishing_time,
                 group__parentnode=assignment,
                 is_last_in_group=False,)
-        feedbackset2 = group_mommy.feedbackset_new_try_published(
+        feedbackset2 = group_mommy.feedbackset_new_attempt_published(
                 created_datetime=timezone.now(),
                 deadline_datetime=timezone.now(),
                 group=feedbackset1.group,
@@ -557,7 +557,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         mockrequest.user = testuser
         timeline_builder = FeedbackFeedTimelineBuilder(ExaminerBaseFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        feedbackset = group_mommy.feedbackset_first_try_unpublished(
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
                 created_datetime=assignment.publishing_time,
                 group__parentnode=assignment)
         last_deadline, timeline = timeline_builder.build_timeline(feedbackset.group, [feedbackset])
@@ -575,7 +575,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         mockrequest.user = testuser
         timeline_builder = FeedbackFeedTimelineBuilder(StudentFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        feedbackset = group_mommy.feedbackset_first_try_unpublished(
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
                 created_datetime=assignment.publishing_time,
                 group__parentnode=assignment)
         last_deadline, timeline = timeline_builder.build_timeline(feedbackset.group, [feedbackset])
@@ -593,7 +593,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         mockrequest.user = testuser
         timeline_builder = FeedbackFeedTimelineBuilder(AdminFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        feedbackset = group_mommy.feedbackset_first_try_unpublished(
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
                 created_datetime=assignment.publishing_time,
                 group__parentnode=assignment)
         last_deadline, timeline = timeline_builder.build_timeline(feedbackset.group, [feedbackset])
@@ -611,11 +611,11 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         mockrequest.user = testuser
         timeline_builder = FeedbackFeedTimelineBuilder(ExaminerBaseFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        feedbackset1 = group_mommy.feedbackset_first_try_published(
+        feedbackset1 = group_mommy.feedbackset_first_attempt_published(
                 created_datetime=assignment.publishing_time,
                 group__parentnode=assignment,
                 is_last_in_group=False,)
-        feedbackset2 = group_mommy.feedbackset_new_try_unpublished(
+        feedbackset2 = group_mommy.feedbackset_new_attempt_unpublished(
                 created_datetime=timezone.now(),
                 deadline_datetime=timezone.now(),
                 group=feedbackset1.group,
@@ -638,11 +638,11 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         mockrequest.user = testuser
         timeline_builder = FeedbackFeedTimelineBuilder(StudentFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        feedbackset1 = group_mommy.feedbackset_first_try_published(
+        feedbackset1 = group_mommy.feedbackset_first_attempt_published(
                 created_datetime=assignment.publishing_time,
                 group__parentnode=assignment,
                 is_last_in_group=False,)
-        feedbackset2 = group_mommy.feedbackset_new_try_unpublished(
+        feedbackset2 = group_mommy.feedbackset_new_attempt_unpublished(
                 created_datetime=timezone.now(),
                 deadline_datetime=timezone.now(),
                 group=feedbackset1.group,
@@ -665,11 +665,11 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         mockrequest.user = testuser
         timeline_builder = FeedbackFeedTimelineBuilder(AdminFeedbackFeedView(request=mockrequest))
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        feedbackset1 = group_mommy.feedbackset_first_try_published(
+        feedbackset1 = group_mommy.feedbackset_first_attempt_published(
                 created_datetime=assignment.publishing_time,
                 group__parentnode=assignment,
                 is_last_in_group=False,)
-        feedbackset2 = group_mommy.feedbackset_new_try_unpublished(
+        feedbackset2 = group_mommy.feedbackset_new_attempt_unpublished(
                 created_datetime=timezone.now(),
                 deadline_datetime=timezone.now(),
                 group=feedbackset1.group,

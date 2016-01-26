@@ -36,7 +36,7 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
             Q(visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE),
             visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
             feedback_set__group=group
-        )
+        ).exclude_is_part_of_grading_feedbackset_unpublished()
 
     def get_context_data(self, **kwargs):
         context = super(StudentFeedbackFeedView, self).get_context_data(**kwargs)
@@ -59,7 +59,8 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     def save_object(self, form, commit=True):
         obj = super(StudentFeedbackFeedView, self).save_object(form)
         self._convert_temporary_files_to_comment_files(form, obj)
-        obj = super(StudentFeedbackFeedView, self).save_object(form, commit=True)
+        if len(obj.text) > 0:
+            obj = super(StudentFeedbackFeedView, self).save_object(form, commit=True)
         return obj
 
 

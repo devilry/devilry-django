@@ -269,11 +269,11 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup3, shortname='user3')
 
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1, grading_points=3)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup2, grading_points=10)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup3, grading_points=2)
 
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -295,11 +295,11 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup3, shortname='user3')
 
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1, grading_points=3)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup2, grading_points=10)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup3, grading_points=2)
 
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -452,12 +452,12 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1, grading_points=1)
 
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup2)
 
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -477,12 +477,12 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1, grading_points=1)
 
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup2)
 
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -501,12 +501,12 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1, grading_points=1)
 
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup2)
 
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -526,17 +526,17 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1, grading_points=0)
 
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup2)
 
         testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup3, shortname='user3')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup3, grading_points=1)
 
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -556,17 +556,17 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1, grading_points=0)
 
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup2)
 
         testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup3, shortname='user3')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup3, grading_points=1)
 
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -584,17 +584,17 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1, grading_points=0)
 
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup2)
 
         testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup3, shortname='user3')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup3, grading_points=10)
 
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -612,17 +612,17 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1, grading_points=0)
 
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup2)
 
         testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup3, shortname='user3')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup3, grading_points=10)
 
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -724,7 +724,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         comment = mommy.make(
             'devilry_group.GroupComment',
-            feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup1),
+            feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
             user_role=Comment.USER_ROLE_STUDENT,
             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mommy.make('devilry_comment.CommentFile', comment=comment)
@@ -749,7 +749,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         comment = mommy.make(
             'devilry_group.GroupComment',
-            feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup1),
+            feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
             user_role=Comment.USER_ROLE_STUDENT,
             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mommy.make('devilry_comment.CommentFile', comment=comment)
@@ -773,7 +773,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup1),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -796,7 +796,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup1),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -819,14 +819,14 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup1),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
         mommy.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup2),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup2),
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -849,7 +849,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup1),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -872,7 +872,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup1),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -895,14 +895,14 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup1),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
         mommy.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup2),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup2),
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -925,7 +925,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup1),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
                    user_role=Comment.USER_ROLE_ADMIN,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -948,7 +948,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup1),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
                    user_role=Comment.USER_ROLE_ADMIN,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -970,12 +970,12 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup1, grading_points=1),
 
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup2),
 
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -994,7 +994,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup1),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
                    user=testuser,
                    visibility=GroupComment.VISIBILITY_PRIVATE)
 
@@ -1017,7 +1017,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup1),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
                    user=testuser,
                    visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
 

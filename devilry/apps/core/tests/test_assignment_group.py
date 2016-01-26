@@ -1944,7 +1944,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
 class TestAssignmentGroupQuerySetAnnotateWithGradingPoints(TestCase):
     def test_annotate_with_grading_points_not_published_is_still_counted(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup,
             grading_points=10)
         queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
@@ -1952,7 +1952,7 @@ class TestAssignmentGroupQuerySetAnnotateWithGradingPoints(TestCase):
 
     def test_annotate_with_grading_points(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=10)
         queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
@@ -1960,7 +1960,7 @@ class TestAssignmentGroupQuerySetAnnotateWithGradingPoints(TestCase):
 
     def test_annotate_with_grading_points_zero_is_not_none(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=0)
         queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
@@ -1968,11 +1968,11 @@ class TestAssignmentGroupQuerySetAnnotateWithGradingPoints(TestCase):
 
     def test_annotate_with_grading_points_multiple_last_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=10,
             is_last_in_group=False)
-        devilry_group_mommy_factories.feedbackset_new_try_published(
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
             group=testgroup,
             grading_points=20,
             is_last_in_group=True)
@@ -1981,11 +1981,11 @@ class TestAssignmentGroupQuerySetAnnotateWithGradingPoints(TestCase):
 
     def test_annotate_with_grading_points_multiple_last_unpublished(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=10,
             is_last_in_group=False)
-        devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             grading_points=20,
             is_last_in_group=True)
@@ -1995,10 +1995,10 @@ class TestAssignmentGroupQuerySetAnnotateWithGradingPoints(TestCase):
     def test_annotate_with_grading_points_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
         testgroup2 = mommy.make('core.AssignmentGroup')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1,
             grading_points=10)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup2,
             grading_points=20)
         queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
@@ -2009,7 +2009,7 @@ class TestAssignmentGroupQuerySetAnnotateWithGradingPoints(TestCase):
 class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
     def test_annotate_with_is_passing_grade_false_unpublished(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup,
             grading_points=10)
         queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
@@ -2018,7 +2018,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
     def test_annotate_with_is_passing_grade_false_published(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__passing_grade_min_points=10)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=9)
         queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
@@ -2027,7 +2027,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
     def test_annotate_with_is_passing_grade_true(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__passing_grade_min_points=10)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=20)
         queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
@@ -2036,7 +2036,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
     def test_annotate_with_is_passing_grade_true_gte(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__passing_grade_min_points=10)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=10)
         queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
@@ -2045,11 +2045,11 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
     def test_annotate_with_is_passing_grade_multiple_last_published(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__passing_grade_min_points=10)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=5,
             is_last_in_group=False)
-        devilry_group_mommy_factories.feedbackset_new_try_published(
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
             group=testgroup,
             grading_points=15,
             is_last_in_group=True)
@@ -2059,11 +2059,11 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
     def test_annotate_with_is_passing_grade_multiple_last_unpublished(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__passing_grade_min_points=10)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=5,
             is_last_in_group=False)
-        devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             grading_points=20,
             is_last_in_group=True)
@@ -2077,13 +2077,13 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
                                 parentnode__passing_grade_min_points=30)
         testgroup3 = mommy.make('core.AssignmentGroup',
                                 parentnode__passing_grade_min_points=20)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1,
             grading_points=10)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup2,
             grading_points=20)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup3,
             grading_points=30)
         queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
@@ -2598,7 +2598,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcomments(TestCase):
 
     def test_annotate_with_number_of_groupcomments_only_visible_to_everyone(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
@@ -2614,10 +2614,10 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcomments(TestCase):
 
     def test_annotate_with_number_of_groupcomments_multiple_comments(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             is_last_in_group=False)
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             is_last_in_group=True)
         mommy.make('devilry_group.GroupComment',
@@ -2634,7 +2634,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcomments(TestCase):
 
     def test_annotate_with_number_of_groupcomments_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset1,
@@ -2644,7 +2644,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcomments(TestCase):
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
         testgroup2 = mommy.make('core.AssignmentGroup')
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup2)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset2,
@@ -2667,7 +2667,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromStudents(TestC
 
     def test_annotate_with_number_of_groupcomments_from_students_only_visible_to_everyone(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
@@ -2686,7 +2686,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromStudents(TestC
 
     def test_annotate_with_number_of_groupcomments_from_students_only_from_students(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
@@ -2705,10 +2705,10 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromStudents(TestC
 
     def test_annotate_with_number_of_groupcomments_from_students_multiple_comments(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             is_last_in_group=False)
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             is_last_in_group=True)
         mommy.make('devilry_group.GroupComment',
@@ -2728,7 +2728,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromStudents(TestC
 
     def test_annotate_with_number_of_groupcomments_from_students_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset1,
@@ -2740,7 +2740,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromStudents(TestC
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
         testgroup2 = mommy.make('core.AssignmentGroup')
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup2)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset2,
@@ -2764,7 +2764,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromExaminers(Test
 
     def test_annotate_with_number_of_groupcomments_from_examiners_only_visible_to_everyone(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
@@ -2783,7 +2783,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromExaminers(Test
 
     def test_annotate_with_number_of_groupcomments_from_examiners_only_from_examiners(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
@@ -2802,10 +2802,10 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromExaminers(Test
 
     def test_annotate_with_number_of_groupcomments_from_examiners_multiple_comments(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             is_last_in_group=False)
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             is_last_in_group=True)
         mommy.make('devilry_group.GroupComment',
@@ -2825,7 +2825,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromExaminers(Test
 
     def test_annotate_with_number_of_groupcomments_from_examiners_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset1,
@@ -2837,7 +2837,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromExaminers(Test
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
         testgroup2 = mommy.make('core.AssignmentGroup')
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup2)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset2,
@@ -2861,7 +2861,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromAdmins(TestCas
 
     def test_annotate_with_number_of_groupcomments_from_admins_only_visible_to_everyone(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
@@ -2880,7 +2880,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromAdmins(TestCas
 
     def test_annotate_with_number_of_groupcomments_from_admins_only_from_admins(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
@@ -2899,10 +2899,10 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromAdmins(TestCas
 
     def test_annotate_with_number_of_groupcomments_from_admins_multiple_comments(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             is_last_in_group=False)
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             is_last_in_group=True)
         mommy.make('devilry_group.GroupComment',
@@ -2922,7 +2922,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromAdmins(TestCas
 
     def test_annotate_with_number_of_groupcomments_from_admins_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset1,
@@ -2934,7 +2934,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromAdmins(TestCas
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
         testgroup2 = mommy.make('core.AssignmentGroup')
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup2)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset2,
@@ -2958,7 +2958,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageAnnotationcomments(TestCas
 
     def test_annotate_with_number_of_imageannotationcomments_only_visible_to_everyone(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset,
@@ -2974,10 +2974,10 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageAnnotationcomments(TestCas
 
     def test_annotate_with_number_of_imageannotationcomments_multiple_comments(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             is_last_in_group=False)
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             is_last_in_group=True)
         mommy.make('devilry_group.ImageAnnotationComment',
@@ -2994,7 +2994,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageAnnotationcomments(TestCas
 
     def test_annotate_with_number_of_imageannotationcomments_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset1,
@@ -3004,7 +3004,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageAnnotationcomments(TestCas
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
         testgroup2 = mommy.make('core.AssignmentGroup')
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup2)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset2,
@@ -3027,7 +3027,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromStud
 
     def test_annotate_with_number_of_imageannotationcomments_from_students_only_visible_to_everyone(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset,
@@ -3046,7 +3046,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromStud
 
     def test_annotate_with_number_of_imageannotationcomments_from_students_only_from_students(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset,
@@ -3065,10 +3065,10 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromStud
 
     def test_annotate_with_number_of_imageannotationcomments_from_students_multiple_comments(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             is_last_in_group=False)
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             is_last_in_group=True)
         mommy.make('devilry_group.ImageAnnotationComment',
@@ -3088,7 +3088,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromStud
 
     def test_annotate_with_number_of_imageannotationcomments_from_students_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset1,
@@ -3100,7 +3100,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromStud
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
         testgroup2 = mommy.make('core.AssignmentGroup')
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup2)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset2,
@@ -3124,7 +3124,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromExam
 
     def test_annotate_with_number_of_imageannotationcomments_from_examiners_only_visible_to_everyone(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset,
@@ -3143,7 +3143,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromExam
 
     def test_annotate_with_number_of_imageannotationcomments_from_examiners_only_from_examiners(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset,
@@ -3162,10 +3162,10 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromExam
 
     def test_annotate_with_number_of_imageannotationcomments_from_examiners_multiple_comments(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             is_last_in_group=False)
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             is_last_in_group=True)
         mommy.make('devilry_group.ImageAnnotationComment',
@@ -3185,7 +3185,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromExam
 
     def test_annotate_with_number_of_imageannotationcomments_from_examiners_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset1,
@@ -3197,7 +3197,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromExam
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
         testgroup2 = mommy.make('core.AssignmentGroup')
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup2)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset2,
@@ -3221,7 +3221,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromAdmi
 
     def test_annotate_with_number_of_imageannotationcomments_from_admins_only_visible_to_everyone(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset,
@@ -3240,7 +3240,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromAdmi
 
     def test_annotate_with_number_of_imageannotationcomments_from_admins_only_from_admins(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset,
@@ -3259,10 +3259,10 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromAdmi
 
     def test_annotate_with_number_of_imageannotationcomments_from_admins_multiple_comments(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             is_last_in_group=False)
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             is_last_in_group=True)
         mommy.make('devilry_group.ImageAnnotationComment',
@@ -3282,7 +3282,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromAdmi
 
     def test_annotate_with_number_of_imageannotationcomments_from_admins_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset1,
@@ -3294,7 +3294,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromAdmi
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
         testgroup2 = mommy.make('core.AssignmentGroup')
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup2)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset2,
@@ -3321,7 +3321,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateGroupcommentsFromUser(Te
     def test_only_private(self):
         testgroup = mommy.make('core.AssignmentGroup')
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
@@ -3342,7 +3342,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateGroupcommentsFromUser(Te
     def test_only_from_user(self):
         testgroup = mommy.make('core.AssignmentGroup')
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
@@ -3362,7 +3362,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateGroupcommentsFromUser(Te
     def test_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset1,
@@ -3374,7 +3374,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateGroupcommentsFromUser(Te
                    visibility=GroupComment.VISIBILITY_PRIVATE)
 
         testgroup2 = mommy.make('core.AssignmentGroup')
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup2)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset2,
@@ -3402,7 +3402,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateImageannotationcommentsF
     def test_only_private(self):
         testgroup = mommy.make('core.AssignmentGroup')
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset,
@@ -3423,7 +3423,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateImageannotationcommentsF
     def test_only_from_user(self):
         testgroup = mommy.make('core.AssignmentGroup')
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset,
@@ -3443,7 +3443,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateImageannotationcommentsF
     def test_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset1,
@@ -3455,7 +3455,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateImageannotationcommentsF
                    visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
 
         testgroup2 = mommy.make('core.AssignmentGroup')
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup2)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=feedbackset2,
@@ -3564,21 +3564,21 @@ class AssignmentGroupQuerySetAnnotateWithHasUnpublishedFeedbackset(TestCase):
 
     def test_annotate_with_has_unpublished_feedbackdraft_false_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        devilry_group_mommy_factories.feedbackset_first_try_published(group=testgroup)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
         self.assertFalse(
             AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
             .first().has_unpublished_feedbackdraft)
 
     def test_annotate_with_has_unpublished_feedbackdraft_false_no_grading_points(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
         self.assertFalse(
             AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
             .first().has_unpublished_feedbackdraft)
 
     def test_annotate_with_has_unpublished_feedbackdraft_true(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup, grading_points=1)
         self.assertTrue(
             AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
@@ -3586,9 +3586,9 @@ class AssignmentGroupQuerySetAnnotateWithHasUnpublishedFeedbackset(TestCase):
 
     def test_annotate_with_has_unpublished_feedbackdraft_multiple_feedbacksets(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup, is_last_in_group=None)
-        devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup, is_last_in_group=True, grading_points=1)
         self.assertTrue(
             AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
@@ -3596,10 +3596,10 @@ class AssignmentGroupQuerySetAnnotateWithHasUnpublishedFeedbackset(TestCase):
 
     def test_annotate_with_has_unpublished_feedbackdraft_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
-        devilry_group_mommy_factories.feedbackset_first_try_unpublished(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup1, grading_points=1)
         testgroup2 = mommy.make('core.AssignmentGroup')
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup2, grading_points=1)
         queryset = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft()
         self.assertTrue(queryset.get(id=testgroup1.id).has_unpublished_feedbackdraft)
@@ -3614,7 +3614,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCa
 
     def test_no_commentfiles(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
@@ -3625,7 +3625,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCa
 
     def test_has_commentfile_groupcomment(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         testcomment = mommy.make('devilry_group.GroupComment',
                                  feedback_set=feedbackset,
@@ -3637,7 +3637,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCa
 
     def test_has_commentfile_imageannotationcomment(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         testcomment = mommy.make('devilry_group.ImageAnnotationComment',
                                  feedback_set=feedbackset,
@@ -3649,7 +3649,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCa
 
     def test_commentfile_on_non_public_groupcomment_ignored(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         testcomment = mommy.make('devilry_group.GroupComment',
                                  feedback_set=feedbackset,
@@ -3661,7 +3661,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCa
 
     def test_commentfile_on_non_public_imageannotationcomment_ignored(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         testcomment = mommy.make('devilry_group.ImageAnnotationComment',
                                  feedback_set=feedbackset,
@@ -3673,7 +3673,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCa
 
     def test_commentfile_from_examiner_on_groupcomment_ignored(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         testcomment = mommy.make('devilry_group.GroupComment',
                                  feedback_set=feedbackset,
@@ -3685,7 +3685,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCa
 
     def test_commentfile_from_examiner_on_imageannotationcomment_ignored(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         testcomment = mommy.make('devilry_group.ImageAnnotationComment',
                                  feedback_set=feedbackset,
@@ -3697,7 +3697,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCa
 
     def test_commentfile_from_admin_on_groupcomment_ignored(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         testcomment = mommy.make('devilry_group.GroupComment',
                                  feedback_set=feedbackset,
@@ -3709,7 +3709,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCa
 
     def test_commentfile_from_admin_on_imageannotationcomment_ignored(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         testcomment = mommy.make('devilry_group.ImageAnnotationComment',
                                  feedback_set=feedbackset,
@@ -3722,7 +3722,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCa
     def test_multiple_commentfiles(self):
         testgroup = mommy.make('core.AssignmentGroup')
 
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup, is_last_in_group=None)
         mommy.make('devilry_comment.CommentFile',
                    comment=mommy.make('devilry_group.GroupComment',
@@ -3734,7 +3734,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCa
                                       feedback_set=feedbackset1,
                                       user_role=GroupComment.USER_ROLE_STUDENT,
                                       visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE))
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_try_unpublished(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup)
 
         mommy.make('devilry_comment.CommentFile',
@@ -3747,7 +3747,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCa
 
     def test_multiple_groups(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup1, is_last_in_group=None)
         mommy.make('devilry_comment.CommentFile',
                    comment=mommy.make('devilry_group.GroupComment',
@@ -3761,7 +3761,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCa
                                       visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE))
 
         testgroup2 = mommy.make('core.AssignmentGroup')
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_try_published(
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup2, is_last_in_group=None)
         mommy.make('devilry_comment.CommentFile',
                    comment=mommy.make('devilry_group.GroupComment',

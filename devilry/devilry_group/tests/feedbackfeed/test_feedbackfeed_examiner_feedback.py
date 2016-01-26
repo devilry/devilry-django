@@ -4,6 +4,8 @@ from django.test import TestCase
 from django.utils import timezone
 from model_mommy import mommy
 
+from django_cradmin import cradmin_testhelpers
+
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as  group_models
 from devilry.devilry_group.tests.feedbackfeed import test_feedbackfeed_common
@@ -11,7 +13,7 @@ from devilry.devilry_group.views import feedbackfeed_examiner
 from devilry.apps.core import models as core_models
 
 
-class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
+class TestFeedbackfeedExaminerFeedbackRendering(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
     viewclass = feedbackfeed_examiner.ExaminerFeedbackView
 
     def test_get(self):
@@ -161,18 +163,18 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFe
                                                           requestuser=examiner.relatedexaminer.user)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
 
-    def test_feedbackfeed_view_publish_feedback(self):
-        group = mommy.make('core.AssignmentGroup')
-        examiner = mommy.make('core.Examiner',
-                              assignmentgroup=group,
-                              relatedexaminer=mommy.make('core.RelatedExaminer'))
-        mommy.make('devilry_group.GroupComment',
-                   user=examiner.relatedexaminer.user,
-                   user_role='examiner',
-                   visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
-                   part_of_grading=True,
-                   published_datetime=timezone.now(),
-                   feedback_set__group=group)
+    # def test_feedbackfeed_view_publish_feedback(self):
+    #     group = mommy.make('core.AssignmentGroup')
+    #     examiner = mommy.make('core.Examiner',
+    #                           assignmentgroup=group,
+    #                           relatedexaminer=mommy.make('core.RelatedExaminer'))
+    #     mommy.make('devilry_group.GroupComment',
+    #                user=examiner.relatedexaminer.user,
+    #                user_role='examiner',
+    #                visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
+    #                part_of_grading=True,
+    #                published_datetime=timezone.now(),
+    #                feedback_set__group=group)
 
 
     # def test_get_examiner_comment_part_of_grading_private(self):
@@ -193,8 +195,6 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFe
     #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner1.assignmentgroup,
     #                                                       requestuser=examiner1.relatedexaminer)
     #     self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
-
-
 
     def test_post_feedbackset_comment_with_text(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet', )
@@ -230,6 +230,10 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFe
             })
         self.assertEquals('private', group_models.GroupComment.objects.all()[0].visibility)
 
+
+class TestFeedbackFeedExaminerPublishFeedback(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = feedbackfeed_examiner.ExaminerFeedbackView
+
     def test_post_can_not_publish_with_first_deadline_as_none(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                        grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
@@ -255,8 +259,8 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFe
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                        grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset_first = group_mommy.feedbackset_first_try_published(group=group, is_last_in_group=None)
-        feedbackset_last = group_mommy.feedbackset_new_try_unpublished(group=group, deadline_datetime=None)
+        feedbackset_first = group_mommy.feedbackset_first_attempt_published(group=group, is_last_in_group=None)
+        feedbackset_last = group_mommy.feedbackset_new_attempt_unpublished(group=group, deadline_datetime=None)
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=group,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
@@ -364,8 +368,8 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFe
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                        grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset_first = group_mommy.feedbackset_first_try_published(is_last_in_group=None, group=group)
-        feedbackset_last = group_mommy.feedbackset_new_try_published(group=group, deadline_datetime=timezone.now())
+        feedbackset_first = group_mommy.feedbackset_first_attempt_published(is_last_in_group=None, group=group)
+        feedbackset_last = group_mommy.feedbackset_new_attempt_unpublished(group=group, deadline_datetime=timezone.now())
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=group,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
@@ -376,14 +380,12 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFe
                        text='test text 1',
                        user=examiner.relatedexaminer.user,
                        user_role='examiner',
-                       visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                        part_of_grading=True,
                        feedback_set=feedbackset_first)
         comment2 = mommy.make('devilry_group.GroupComment',
                        text='test text 2',
                        user=examiner.relatedexaminer.user,
                        user_role='examiner',
-                       visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                        part_of_grading=True,
                        feedback_set=feedbackset_last)
         self.mock_http302_postrequest(
@@ -399,6 +401,7 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFe
             })
         feedbacksets = group_models.FeedbackSet.objects.all()
         feedback_comments = group_models.GroupComment.objects.all().filter(feedback_set=feedbacksets[1])
+
         self.assertEquals(2, len(feedback_comments))
         self.assertEquals(feedback_comments[0], comment2)
         self.assertEquals(feedback_comments[1].text, 'post comment')
@@ -415,28 +418,24 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFe
                    text='test text 1',
                    user=examiner.relatedexaminer.user,
                    user_role='examiner',
-                   visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                    part_of_grading=True,
                    feedback_set=feedbackset)
         mommy.make('devilry_group.GroupComment',
                    text='test text 2',
                    user=examiner.relatedexaminer.user,
                    user_role='examiner',
-                   visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                    part_of_grading=True,
                    feedback_set=feedbackset)
         mommy.make('devilry_group.GroupComment',
                    text='test text 3',
                    user=examiner.relatedexaminer.user,
                    user_role='examiner',
-                   visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                    part_of_grading=True,
                    feedback_set=feedbackset)
         mommy.make('devilry_group.GroupComment',
                    text='test text 4',
                    user=examiner.relatedexaminer.user,
                    user_role='examiner',
-                   visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                    part_of_grading=True,
                    feedback_set=feedbackset)
         self.mock_http302_postrequest(
@@ -456,73 +455,51 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_common.TestFe
         self.assertEquals(1, feedbacksets[0].grading_points)
         self.assertEquals(5, len(feedback_comments))
 
-    # def test_post_feedbackset_comment_with_text_published_datetime_is_set(self):
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet', )
-    #     examiner = mommy.make('core.Examiner',
-    #                           assignmentgroup=feedbackset.group,
-    #                           relatedexaminer=mommy.make('core.RelatedExaminer'))
-    #     self.mock_http302_postrequest(
-    #         cradmin_role=examiner.assignmentgroup,
-    #         requestuser=examiner.relatedexaminer.user,
-    #         viewkwargs={'pk': feedbackset.group.id},
-    #         requestkwargs={
-    #             'data': {
-    #                 'text': 'This is a comment',
-    #                 'examiner_add_public_comment': 'unused value'
-    #             }
-    #         })
-    #     self.assertIsNotNone(models.GroupComment.objects.all()[0].published_datetime)
-    #
-    # def test_post_feedbackset_comment_with_text_published_datetime_is_not_set(self):
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet', )
-    #     examiner = mommy.make('core.Examiner',
-    #                           assignmentgroup=feedbackset.group,
-    #                           relatedexaminer=mommy.make('core.RelatedExaminer'))
-    #     self.mock_http302_postrequest(
-    #         cradmin_role=examiner.assignmentgroup,
-    #         requestuser=examiner.relatedexaminer.user,
-    #         viewkwargs={'pk': feedbackset.group.id},
-    #         requestkwargs={
-    #             'data': {
-    #                 'text': 'This is a comment',
-    #                 'examiner_add_comment_to_feedback_draft': 'unused value'
-    #             }
-    #         })
-    #     self.assertIsNone(models.GroupComment.objects.all()[0].published_datetime)
-    #
-    # def test_post_feedbackset_comment_visible_to_everyone(self):
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet', )
-    #     examiner = mommy.make('core.Examiner',
-    #                           assignmentgroup=feedbackset.group,
-    #                           relatedexaminer=mommy.make('core.RelatedExaminer'))
-    #     self.mock_http302_postrequest(
-    #         cradmin_role=examiner.assignmentgroup,
-    #         requestuser=examiner.relatedexaminer.user,
-    #         viewkwargs={'pk': feedbackset.group.id},
-    #         requestkwargs={
-    #             'data': {
-    #                 'text': 'This is a comment',
-    #                 'examiner_add_public_comment': 'unused value'
-    #             }
-    #         })
-    #     self.assertEquals('visible-to-everyone', models.GroupComment.objects.all()[0].visibility)
-    #
-    # def test_post_feedbackset_comment_visible_to_examiner_and_admins(self):
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet', )
-    #     examiner = mommy.make('core.Examiner',
-    #                           assignmentgroup=feedbackset.group,
-    #                           relatedexaminer=mommy.make('core.RelatedExaminer'))
-    #     self.mock_http302_postrequest(
-    #         cradmin_role=examiner.assignmentgroup,
-    #         requestuser=examiner.relatedexaminer.user,
-    #         viewkwargs={'pk': feedbackset.group.id},
-    #         requestkwargs={
-    #             'data': {
-    #                 'text': 'This is a comment',
-    #                 'examiner_add_comment_for_examiners': 'unused value'
-    #             }
-    #         })
-    #     self.assertEquals('visible-to-examiner-and-admins', models.GroupComment.objects.all()[0].visibility)
+    def test_examiner_publishes_without_comment_text(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 group__parentnode=assignment)
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=feedbackset.group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        self.mock_http302_postrequest(
+            cradmin_role=examiner.assignmentgroup,
+            requestuser=examiner.relatedexaminer.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'passed': True,
+                    'text': '',
+                    'examiner_publish_feedback': 'unused value',
+                }
+            })
+        feedbacksets = group_models.FeedbackSet.objects.all()
+        self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
+        self.assertEquals(0, group_models.GroupComment.objects.all().count())
+
+    def test_examiner_publishes_with_comment_text(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 group__parentnode=assignment)
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=feedbackset.group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        self.mock_http302_postrequest(
+            cradmin_role=examiner.assignmentgroup,
+            requestuser=examiner.relatedexaminer.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'passed': True,
+                    'text': 'test',
+                    'examiner_publish_feedback': 'unused value',
+                }
+            })
+        feedbacksets = group_models.FeedbackSet.objects.all()
+        self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
+        self.assertEquals(1, group_models.GroupComment.objects.all().count())
 
     # def test_post_comment_file(self):
     #     feedbackset = mommy.make('devilry_group.FeedbackSet')

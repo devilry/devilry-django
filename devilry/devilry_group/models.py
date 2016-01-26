@@ -1,5 +1,6 @@
-import datetime
+import json
 
+from django.utils import timezone
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -22,7 +23,7 @@ class AbstractGroupCommentQuerySet(models.QuerySet):
     def exclude_is_part_of_grading_feedbackset_unpublished(self):
         return self.exclude(
             part_of_grading=True,
-            feedback_set__published_datetime__isnull=True
+            feedback_set__grading_published_datetime__isnull=True
         )
 
 
@@ -75,6 +76,25 @@ class AbstractGroupComment(comment_models.Comment):
     class Meta:
         abstract = True
 
+    def get_published_datetime(self):
+        """
+        Get the publishing datetime of the comment. Publishing datetime is
+        the publishing time of the FeedbackSet if the comment has
+        :obj:`~devilry.devilry_group.models.AbstractGroupComment.part_of_grading`
+        set to True.
+
+        Returns: Datetime.
+
+        """
+        return self.feedback_set.grading_published_datetime \
+            if self.part_of_grading \
+            else self.published_datetime
+
+    def publish_draft(self):
+        self.published_datetime = self.get_published_datetime()
+        self.full_clean()
+        self.save()
+
 
 class FeedbackSet(models.Model):
     """
@@ -97,7 +117,7 @@ class FeedbackSet(models.Model):
     #: Choice for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_FIRST_ATTEMPT = 'first_attempt'
 
-    #: Is not the first feedbackset, but a new try.
+    #: Is not the first feedbackset, but a new attempt.
     #: Choice for :obj:`~.FeedbackSet.feedbackset_type`
     FEEDBACKSET_TYPE_NEW_ATTEMPT = 'new_attempt'
 
@@ -128,7 +148,7 @@ class FeedbackSet(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="created_feedbacksets")
 
     #: The datetime when this FeedbackSet was created.
-    created_datetime = models.DateTimeField(default=datetime.datetime.now)
+    created_datetime = models.DateTimeField(default=timezone.now)
 
     #: The datetime of the deadline.
     #: The first feedbackset in an AssignmentGroup
@@ -194,22 +214,75 @@ class FeedbackSet(models.Model):
                 'is_last_in_group': 'is_last_in_group can not be false.'
             })
 
-    # @property
-    # def gradeform_data(self):
-    #     if self.gradeform_data_json:
-    #         if not hasattr(self, '_gradeform_data'):
-    #             # Store the decoded gradeform_data to avoid re-decoding the json for
-    #             # each access. We invalidate this cache in the setter.
-    #             self._gradeform_data = json.loads(self.gradeform_data_json)
-    #         return self._gradeform_data
-    #     else:
-    #         return None
-    #
-    # @gradeform_data.setter
-    # def gradeform_data(self, gradeform_data):
-    #     self.gradeform_data_json = json.dumps(gradeform_data)
-    #     if hasattr(self, '_gradeform_data'):
-    #         delattr(self, '_gradeform_data')
+    def publish(self, published_by, grading_points, gradeform_data_json=''):
+        """
+        Publishes this FeedbackSet and comments that belongs to this feedbackset and that are
+        part of the grading.
+
+        :param published_by:
+            Who published the feedbackset.
+
+        :param grading_points:
+            Points give to student(s).
+
+        :param gradeform_data_json:
+            gradeform(coming soon).
+
+        Returns:
+            True or False and an error message.
+
+        """
+        if published_by is None:
+            raise ValueError
+        if grading_points is None:
+            raise ValueError
+
+        current_deadline = None
+        if self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
+            current_deadline = self.deadline_datetime or self.group.parentnode.first_deadline
+        elif self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT:
+            current_deadline = self.deadline_datetime
+
+        if current_deadline is None:
+            return False, 'Cannot publish feedback without a deadline.'
+
+        if current_deadline > timezone.now():
+            return False, 'The deadline has not expired. Feedback was saved, but not published.'
+
+        drafted_comments = GroupComment.objects.filter(
+                feedback_set=self,
+                part_of_grading=True
+        ).exclude_private_comments_from_other_users(
+            user=published_by
+        ).order_by('created_datetime')
+
+        self.grading_points = grading_points
+        self.grading_published_datetime = timezone.now()
+        self.grading_published_by = published_by
+        self.full_clean()
+        self.save()
+
+        for draft in drafted_comments:
+            draft.publish_draft()
+
+        return True, ''
+
+    @property
+    def gradeform_data(self):
+        if self.gradeform_data_json:
+            if not hasattr(self, '_gradeform_data'):
+                # Store the decoded gradeform_data to avoid re-decoding the json for
+                # each access. We invalidate this cache in the setter.
+                self._gradeform_data = json.loads(self.gradeform_data_json)
+            return self._gradeform_data
+        else:
+            return None
+
+    @gradeform_data.setter
+    def gradeform_data(self, gradeform_data):
+        self.gradeform_data_json = json.dumps(gradeform_data)
+        if hasattr(self, '_gradeform_data'):
+            delattr(self, '_gradeform_data')
 
 
 class GroupCommentQuerySet(AbstractGroupCommentQuerySet):

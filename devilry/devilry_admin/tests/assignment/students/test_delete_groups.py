@@ -122,7 +122,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('devilry_group.GroupComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup),
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -138,7 +138,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('devilry_group.GroupComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup),
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -154,7 +154,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('devilry_group.GroupComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup),
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -170,7 +170,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('devilry_group.GroupComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup),
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -186,7 +186,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup),
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -202,7 +202,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup),
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -218,7 +218,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup),
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -234,7 +234,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('devilry_group.ImageAnnotationComment',
-                   feedback_set=devilry_group_mommy_factories.feedbackset_first_try_unpublished(group=testgroup),
+                   feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup),
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -249,7 +249,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup, grading_points=1),
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -263,7 +263,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup, grading_points=1),
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -292,7 +292,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup, grading_points=1),
         self.assertEqual(1, AssignmentGroup.objects.count())
         self.mock_http302_postrequest(
@@ -308,7 +308,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_try_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup, grading_points=1),
         self.assertEqual(1, AssignmentGroup.objects.count())
         messagesmock = mock.MagicMock()
