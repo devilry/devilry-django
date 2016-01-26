@@ -43,7 +43,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
-            2,
+            1,
             mockresponse.selector.count(
                 '#devilry_admin_assignment_examiners_overview_buttonbar .btn'))
 
@@ -60,10 +60,10 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=mock_cradmin_instance)
         self.assertEqual(
-            # '/organize_examiners/INDEX',
+            # '/bulk_organize_examiners/INDEX',
             '#',
             mockresponse.selector
-            .one('#devilry_admin_assignment_examiners_overview_button_organize_examiners')['href'])
+            .one('#devilry_admin_assignment_examiners_overview_button_bulk_organize_examiners')['href'])
 
     def test_buttonbar_organize_examiners_text(self):
         testassignment = mommy.make('core.Assignment')
@@ -72,40 +72,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
-            'Organize examiners( Select students and assign one or more examiner )',
+            'Bulk organize examiners',
             mockresponse.selector
-            .one('#devilry_admin_assignment_examiners_overview_button_organize_examiners')
-            .alltext_normalized)
-
-    def test_buttonbar_random_organize_examiners_link(self):
-        testassignment = mommy.make('core.Assignment')
-        mommy.make('core.RelatedExaminer', period=testassignment.period)
-        mock_cradmin_instance = self.__mockinstance_with_devilryrole('departmentadmin')
-
-        def mock_reverse_url(appname, viewname, **kwargs):
-            return '/{}/{}'.format(appname, viewname)
-
-        mock_cradmin_instance.reverse_url = mock_reverse_url
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=mock_cradmin_instance)
-        self.assertEqual(
-            # '/random_organize_examiners/INDEX',
-            '#',
-            mockresponse.selector
-            .one('#devilry_admin_assignment_examiners_overview_button_random_organize_examiners')['href'])
-
-    def test_buttonbar_random_organize_examiners_text(self):
-        testassignment = mommy.make('core.Assignment')
-        mommy.make('core.RelatedExaminer', period=testassignment.period)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
-        self.assertEqual(
-            'Organize examiners randomly( Select students and randomly assign '
-            'two or more examiners to those students )',
-            mockresponse.selector
-            .one('#devilry_admin_assignment_examiners_overview_button_random_organize_examiners')
+            .one('#devilry_admin_assignment_examiners_overview_button_bulk_organize_examiners')
             .alltext_normalized)
 
     def test_examinerlist_no_relatedexaminers_sanity(self):

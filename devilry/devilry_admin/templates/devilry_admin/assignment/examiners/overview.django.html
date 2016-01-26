@@ -32,29 +32,23 @@
     {% if listbuilder_list.has_items %}
         <div class="container">
             <p id="devilry_admin_assignment_examiners_overview_buttonbar"
-                    class="devilry-buttonbar devilry-buttonbar-fullwidth">
-                <a id="devilry_admin_assignment_examiners_overview_button_organize_examiners"
-                        class="btn btn-default devilry-btn-titledescription"
+                    class="devilry-buttonbar">
+                <a id="devilry_admin_assignment_examiners_overview_button_bulk_organize_examiners"
+                        class="btn btn-default"
                         href="#">
-{#                        href="{% cradmin_instance_appindex_url 'organize_examiners' %}">#}
-                    <strong>{% trans "Organize examiners" %}</strong>
-                    <small>
-                        <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
-                            {% trans "Select students and assign one or more examiner" %}
-                        <span class="sr-only">)</span>
-                    </small>
+{#                        href="{% cradmin_instance_appindex_url 'bulk_organize_examiners' %}">#}
+                    {% trans "Bulk organize examiners" %}
                 </a>
-                <a id="devilry_admin_assignment_examiners_overview_button_random_organize_examiners"
-                        class="btn btn-default devilry-btn-titledescription"
-                        href="#">
+{#                <a id="devilry_admin_assignment_examiners_overview_button_random_organize_examiners"#}
+{#                        class="btn btn-default devilry-btn-titledescription"#}
     {#                    href="{% cradmin_instance_appindex_url 'random_organize_examiners' %}">#}
-                    <strong>{% trans "Organize examiners randomly" %}</strong>
-                    <small>
-                        <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
-                            {% trans "Select students and randomly assign two or more examiners to those students" %}
-                        <span class="sr-only">)</span>
-                    </small>
-                </a>
+{#                    <strong>{% trans "Organize examiners randomly" %}</strong>#}
+{#                    <small>#}
+{#                        <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
+{#                            {% trans "Select students and randomly assign two or more examiners to those students" %}#}
+{#                        <span class="sr-only">)</span>#}
+{#                    </small>#}
+{#                </a>#}
             </p>
         </div>
 
