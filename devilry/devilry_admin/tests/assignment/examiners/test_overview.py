@@ -102,8 +102,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
-            'Organize examiners randomly( You choose a set of students and randomly assign '
-            'some or all your examiners to those students. )',
+            'Organize examiners randomly( Select students and randomly assign '
+            'two or more examiners to those students )',
             mockresponse.selector
             .one('#devilry_admin_assignment_examiners_overview_button_random_organize_examiners')
             .alltext_normalized)
