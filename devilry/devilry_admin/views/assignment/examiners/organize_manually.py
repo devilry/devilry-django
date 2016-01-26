@@ -19,13 +19,6 @@ class OrganizeManuallyTargetRenderer(devilry_listbuilder.assignmentgroup.GroupTa
 class OrganizeManuallyView(groupview_base.BaseMultiselectView):
     template_name = 'devilry_admin/assignment/examiners/organize_manually/view.django.html'
 
-    # def add_filterlist_items(self, filterlist):
-    #     filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())
-    #     filterlist.append(devilry_listfilter.assignmentgroup.OrderByNotAnonymous())
-    #     filterlist.append(devilry_listfilter.assignmentgroup.StatusSelectFilter())
-    #     filterlist.append(devilry_listfilter.assignmentgroup.ExaminerFilter(view=self))
-    #     filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
-
     def dispatch(self, request, *args, **kwargs):
         self.relatedexaminer = self.__get_relatedexaminer()
         return super(OrganizeManuallyView, self).dispatch(request, *args, **kwargs)
