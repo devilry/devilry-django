@@ -25,7 +25,7 @@ class AddGroupsToExaminerView(groupview_base.BaseMultiselectView,
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
-            'add-groups-to-examiner',
+            crapp.INDEXVIEW_NAME,
             kwargs={'filters_string': filters_string,
                     'relatedexaminer_id': self.get_relatedexaminer_id()})
 
@@ -78,5 +78,5 @@ class App(crapp.App):
     appurls = [
         crapp.Url(r'^(?P<relatedexaminer_id>\d+)/(?P<filters_string>.+)?$',
                   AddGroupsToExaminerView.as_view(),
-                  name='add-groups-to-examiner'),
+                  name=crapp.INDEXVIEW_NAME),
     ]

@@ -1,6 +1,5 @@
 import mock
 from django import test
-from django.conf import settings
 from django.contrib import messages
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
