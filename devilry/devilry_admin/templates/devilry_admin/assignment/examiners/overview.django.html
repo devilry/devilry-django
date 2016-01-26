@@ -36,7 +36,7 @@
                 <a id="devilry_admin_assignment_examiners_overview_button_organize_examiners"
                         class="btn btn-default devilry-btn-titledescription"
                         href="#">
-    {#                    href="{% cradmin_instance_appindex_url 'organize_examiners' %}">#}
+{#                        href="{% cradmin_instance_appindex_url 'organize_examiners' %}">#}
                     <strong>{% trans "Organize examiners" %}</strong>
                     <small>
                         <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
@@ -64,8 +64,11 @@
             <div class="row">
                 <div class="col-sm-8 col-lg-9">
                     <p class="devilry-listbuilderlist-footer">
-                        {% trans "Only users registered as examiner for duck1010.spring2016 is available as examiners for assignments." %}
-                        <a href="#">{% trans "Add more examiners" %}</a>.
+                        {% blocktrans trimmed with period=assignment.period.get_path %}
+                            Only users registered as examiner for {{ period }} is available as examiners for assignments.
+                        {% endblocktrans %}
+                        <a href="{% cradmin_url instanceid='devilry_admin_periodadmin' appname='examiners' roleid=assignment.period.id viewname='INDEX' %}">
+                            {% trans "Add more examiners" %}</a>.
                     </p>
                 </div>
             </div>
@@ -93,9 +96,16 @@
             <div id="devilry_admin_assignment_examiners_overview_no_relatedexaminers"
                     class="alert alert-warning devilry-alert-with-button">
                 <p>
-                    {% trans "You have no users registered as examiner for duck1010.spring2016. You need to add users as examiners on the semester page for the course before you can use them as examiners for assignments." %}
+                    {% blocktrans trimmed with period=assignment.period.get_path %}
+                        You have no users registered as examiner for {{ period }}. You need to add users
+                        as examiners on the semester page for the course before you can use them as examiners
+                        for assignments.
+                    {% endblocktrans %}
                 </p>
-                <a href="#" class="btn btn-default">{% trans "Add examiners" %}</a>
+                <a href="{% cradmin_url instanceid='devilry_admin_periodadmin' appname='examiners' roleid=assignment.period.id viewname='INDEX' %}"
+                        class="btn btn-default">
+                    {% trans "Add examiners" %}
+                </a>
             </div>
         </div>
     {% endif %}
