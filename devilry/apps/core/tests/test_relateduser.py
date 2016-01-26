@@ -423,6 +423,16 @@ class RelatedExaminerQuerySetAnnotateWithNumberOfGroupsOnAssignment(TestCase):
         self.assertEqual(
             0, annotated_relatedexaminer.number_of_groups_on_assignment)
 
+    def test_not_within_assignment(self):
+        relatedexaminer = mommy.make('core.RelatedExaminer')
+        testassignment = mommy.make('core.Assignment')
+        mommy.make('core.Examiner', relatedexaminer=relatedexaminer)  # Not within testassignment
+        queryset = RelatedExaminer.objects\
+            .annotate_with_number_of_groups_on_assignment(assignment=testassignment)
+        annotated_relatedexaminer = queryset.get(id=relatedexaminer.id)
+        self.assertEqual(
+            0, annotated_relatedexaminer.number_of_groups_on_assignment)
+
     def test_multiple_groups(self):
         relatedexaminer = mommy.make('core.RelatedExaminer')
         testassignment = mommy.make('core.Assignment')
@@ -459,3 +469,69 @@ class RelatedExaminerQuerySetAnnotateWithNumberOfGroupsOnAssignment(TestCase):
         annotated_relatedexaminer2 = queryset.get(id=relatedexaminer2.id)
         self.assertEqual(
             1, annotated_relatedexaminer2.number_of_groups_on_assignment)
+
+
+class RelatedExaminerQuerySetExtraAnnotateWithNumberOfCandidatesOnAssignment(TestCase):
+    def test_no_groups(self):
+        relatedexaminer = mommy.make('core.RelatedExaminer')
+        testassignment = mommy.make('core.Assignment')
+        queryset = RelatedExaminer.objects\
+            .extra_annotate_with_number_of_candidates_on_assignment(assignment=testassignment)
+        annotated_relatedexaminer = queryset.get(id=relatedexaminer.id)
+        self.assertEqual(
+            0, annotated_relatedexaminer.number_of_candidates_on_assignment)
+
+    def test_only_within_assignment(self):
+        relatedexaminer = mommy.make('core.RelatedExaminer')
+        testassignment = mommy.make('core.Assignment')
+        testgroup = mommy.make('core.AssignmentGroup')  # Not within testassignment
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer=relatedexaminer)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup)
+        queryset = RelatedExaminer.objects\
+            .extra_annotate_with_number_of_candidates_on_assignment(assignment=testassignment)
+        annotated_relatedexaminer = queryset.get(id=relatedexaminer.id)
+        self.assertEqual(
+            0, annotated_relatedexaminer.number_of_candidates_on_assignment)
+
+    def test_multiple_candidates(self):
+        relatedexaminer = mommy.make('core.RelatedExaminer')
+        testassignment = mommy.make('core.Assignment')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer=relatedexaminer)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup)
+        queryset = RelatedExaminer.objects\
+            .extra_annotate_with_number_of_candidates_on_assignment(assignment=testassignment)
+        annotated_relatedexaminer = queryset.get(id=relatedexaminer.id)
+        self.assertEqual(
+            2, annotated_relatedexaminer.number_of_candidates_on_assignment)
+
+    def test_multiple_examiner_objects(self):
+        relatedexaminer = mommy.make('core.RelatedExaminer')
+        testassignment = mommy.make('core.Assignment')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup1,
+                   relatedexaminer=relatedexaminer)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup2,
+                   relatedexaminer=relatedexaminer)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup2)
+        queryset = RelatedExaminer.objects\
+            .extra_annotate_with_number_of_candidates_on_assignment(assignment=testassignment)
+        annotated_relatedexaminer = queryset.get(id=relatedexaminer.id)
+        self.assertEqual(
+            3, annotated_relatedexaminer.number_of_candidates_on_assignment)

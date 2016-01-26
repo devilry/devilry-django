@@ -267,10 +267,13 @@ class RelatedExaminerManager(AbstractRelatedUserManager):
 
 
 class RelatedExaminerQuerySet(models.QuerySet):
+    """
+    QuerySet for :class:`.RelatedExaminer`.
+    """
     def annotate_with_number_of_groups_on_assignment(self, assignment):
         """
         Annotates the queryset with number of :class:`devilry.apps.core.models.AssignmentGroup`
-        objects where they are :class:`devilry.apps.core.models.Examiner` within the given
+        objects where the RelatedExaminer is :class:`devilry.apps.core.models.Examiner` within the given
         assignment.
 
         Args:
@@ -283,6 +286,42 @@ class RelatedExaminerQuerySet(models.QuerySet):
                                 then=1)
                 )
             )
+        )
+
+    def extra_annotate_with_number_of_candidates_on_assignment(self, assignment):
+        """
+        Annotates the queryset with number of :class:`devilry.apps.core.models.Candidate`
+        objects within all :class:`devilry.apps.core.models.AssignmentGroup` objects where
+        the RelatedExaminer is :class:`devilry.apps.core.models.Examiner` within the given
+        assignment.
+
+        Args:
+            assignment: A :class:`devilry.apps.core.models.Assignment` object.
+        """
+        return self.extra(
+            select={
+                'number_of_candidates_on_assignment': """
+                    SELECT
+                        COUNT(core_candidate.id)
+                    FROM core_candidate
+                    INNER JOIN core_assignmentgroup
+                        ON (core_assignmentgroup.id = core_candidate.assignment_group_id)
+                    WHERE
+                        core_assignmentgroup.parentnode_id = %s
+                        AND
+                        core_candidate.assignment_group_id IN (
+                            SELECT core_assignmentgroup_examiners.assignmentgroup_id
+                            FROM core_assignmentgroup_examiners
+                            WHERE
+                                core_assignmentgroup_examiners.relatedexaminer_id = core_relatedexaminer.id
+                                AND
+                                core_assignmentgroup.id = core_assignmentgroup_examiners.assignmentgroup_id
+                        )
+                """
+            },
+            select_params=[
+                assignment.id
+            ]
         )
 
 
