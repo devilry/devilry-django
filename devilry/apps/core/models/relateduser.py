@@ -266,12 +266,32 @@ class RelatedExaminerManager(AbstractRelatedUserManager):
     use_for_related_fields = True
 
 
+class RelatedExaminerQuerySet(models.QuerySet):
+    def annotate_with_number_of_groups_on_assignment(self, assignment):
+        """
+        Annotates the queryset with number of :class:`devilry.apps.core.models.AssignmentGroup`
+        objects where they are :class:`devilry.apps.core.models.Examiner` within the given
+        assignment.
+
+        Args:
+            assignment: A :class:`devilry.apps.core.models.Assignment` object.
+        """
+        return self.annotate(
+            number_of_groups_on_assignment=models.Count(
+                models.Case(
+                    models.When(examiner__assignmentgroup__parentnode=assignment,
+                                then=1)
+                )
+            )
+        )
+
+
 class RelatedExaminer(RelatedUserBase):
     """ Related examiner.
 
     Adds no fields to RelatedUserBase.
     """
-    objects = RelatedExaminerManager()
+    objects = RelatedExaminerManager.from_queryset(RelatedExaminerQuerySet)()
 
     #: Setting this to ``False`` indicates that the examiner is deleted from the course
     #: for this period. All access is removed.

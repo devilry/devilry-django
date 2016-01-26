@@ -411,3 +411,51 @@ class TestRelatedExaminerSyncSystemTag(TestCase):
         with self.assertRaises(IntegrityError):
             mommy.make('core.RelatedExaminerSyncSystemTag', tag='testtag',
                        relatedexaminer=testrelatedexaminer)
+
+
+class RelatedExaminerQuerySetAnnotateWithNumberOfGroupsOnAssignment(TestCase):
+    def test_no_groups(self):
+        relatedexaminer = mommy.make('core.RelatedExaminer')
+        testassignment = mommy.make('core.Assignment')
+        queryset = RelatedExaminer.objects\
+            .annotate_with_number_of_groups_on_assignment(assignment=testassignment)
+        annotated_relatedexaminer = queryset.get(id=relatedexaminer.id)
+        self.assertEqual(
+            0, annotated_relatedexaminer.number_of_groups_on_assignment)
+
+    def test_multiple_groups(self):
+        relatedexaminer = mommy.make('core.RelatedExaminer')
+        testassignment = mommy.make('core.Assignment')
+        mommy.make('core.Examiner',
+                   assignmentgroup__parentnode=testassignment,
+                   relatedexaminer=relatedexaminer)
+        mommy.make('core.Examiner',
+                   assignmentgroup__parentnode=testassignment,
+                   relatedexaminer=relatedexaminer)
+        queryset = RelatedExaminer.objects\
+            .annotate_with_number_of_groups_on_assignment(assignment=testassignment)
+        annotated_relatedexaminer = queryset.get(id=relatedexaminer.id)
+        self.assertEqual(
+            2, annotated_relatedexaminer.number_of_groups_on_assignment)
+
+    def test_multiple_relatedexaminers(self):
+        relatedexaminer1 = mommy.make('core.RelatedExaminer')
+        relatedexaminer2 = mommy.make('core.RelatedExaminer')
+        testassignment = mommy.make('core.Assignment')
+        mommy.make('core.Examiner',
+                   assignmentgroup__parentnode=testassignment,
+                   relatedexaminer=relatedexaminer1)
+        mommy.make('core.Examiner',
+                   assignmentgroup__parentnode=testassignment,
+                   relatedexaminer=relatedexaminer1)
+        mommy.make('core.Examiner',
+                   assignmentgroup__parentnode=testassignment,
+                   relatedexaminer=relatedexaminer2)
+        queryset = RelatedExaminer.objects\
+            .annotate_with_number_of_groups_on_assignment(assignment=testassignment)
+        annotated_relatedexaminer1 = queryset.get(id=relatedexaminer1.id)
+        self.assertEqual(
+            2, annotated_relatedexaminer1.number_of_groups_on_assignment)
+        annotated_relatedexaminer2 = queryset.get(id=relatedexaminer2.id)
+        self.assertEqual(
+            1, annotated_relatedexaminer2.number_of_groups_on_assignment)
