@@ -7035,6 +7035,9 @@ ol.django-cradmin-listbuilder-list h3:first-child {
   padding-bottom: 0;
   margin-bottom: 5px;
 }
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-footer .btn {
+  white-space: normal;
+}
 .django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner {
   position: relative;
   padding-left: 40px;
