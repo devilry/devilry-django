@@ -72,7 +72,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
-            'Bulk organize examiners',
+            'Bulk-organize examiners',
             mockresponse.selector
             .one('#devilry_admin_assignment_examiners_overview_button_bulk_organize_examiners')
             .alltext_normalized)

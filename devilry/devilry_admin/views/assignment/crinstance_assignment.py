@@ -14,6 +14,7 @@ from devilry.devilry_admin.views.assignment.examiners import overview as examine
 from devilry.devilry_admin.views.assignment.examiners import examinerdetails
 from devilry.devilry_admin.views.assignment.examiners import add_groups_to_examiner
 from devilry.devilry_admin.views.assignment.examiners import remove_groups_from_examiner
+from devilry.devilry_admin.views.assignment.examiners import bulk_organize as bulk_organize_examiners
 
 
 class Menu(devilry_crmenu_admin.Menu):
@@ -42,6 +43,7 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
         ('examinerdetails', examinerdetails.App),
         ('add_groups_to_examiner', add_groups_to_examiner.App),
         ('remove_groups_from_examiner', remove_groups_from_examiner.App),
+        ('bulk_organize_examiners', bulk_organize_examiners.App),
     ]
     id = 'devilry_admin_assignmentadmin'
     rolefrontpage_appname = 'overview'
