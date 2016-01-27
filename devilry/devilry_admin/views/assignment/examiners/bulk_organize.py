@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 import math
 import random
 
+from crispy_forms import layout
+from crispy_forms.helper import FormHelper
 from django import forms
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy
@@ -20,16 +22,48 @@ class SelectMethodView(TemplateView):
 
 class RandomOrganizeForm(groupview_base.SelectedGroupsForm):
     selected_relatedexaminers = forms.ModelMultipleChoiceField(
-        queryset=RelatedExaminer.objects.none()
+        queryset=RelatedExaminer.objects.none(),
+        widget=forms.CheckboxSelectMultiple(),
+        label=ugettext_lazy('Select at least two examiners:'),
+        required=False
     )
+
+    def __make_relatedexaminer_choices(self, relatedexaminerqueryset):
+        return [
+            (relatedexaminer.id, relatedexaminer.user.get_full_name())
+            for relatedexaminer in relatedexaminerqueryset]
 
     def __init__(self, *args, **kwargs):
         selectable_relatedexaminers_queryset = kwargs.pop('selectable_relatedexaminers_queryset')
         super(RandomOrganizeForm, self).__init__(*args, **kwargs)
         self.fields['selected_relatedexaminers'].queryset = selectable_relatedexaminers_queryset
+        self.fields['selected_relatedexaminers'].choices = self.__make_relatedexaminer_choices(
+            relatedexaminerqueryset=selectable_relatedexaminers_queryset)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = layout.Layout(
+            'selected_relatedexaminers'
+        )
+
+    def clean(self):
+        cleaned_data = super(RandomOrganizeForm, self).clean()
+        selected_relatedexaminers = cleaned_data.get("selected_relatedexaminers")
+        if selected_relatedexaminers.count() < 2:
+            self.add_error(
+                'selected_relatedexaminers',
+                ugettext_lazy('You must select at least two examiners.'))
 
 
 class RandomOrganizeTargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
+    template_name = 'devilry_admin/assignment/examiners/bulk_organize/random-target.django.html'
+
+    def __init__(self, form, **kwargs):
+        self.form = form
+        super(RandomOrganizeTargetRenderer, self).__init__(**kwargs)
+
+    def get_with_items_title(self):
+        return ugettext_lazy('Select at least two students:')
+
     def get_submit_button_text(self):
         return ugettext_lazy('Randomly assign selected students to selected examiners')
 
@@ -56,6 +90,11 @@ class RandomView(groupview_base.BaseMultiselectView):
     def get_form_kwargs(self):
         kwargs = super(RandomView, self).get_form_kwargs()
         kwargs['selectable_relatedexaminers_queryset'] = self.__get_relatedexaminerqueryset()
+        return kwargs
+
+    def get_target_renderer_kwargs(self):
+        kwargs = super(RandomView, self).get_target_renderer_kwargs()
+        kwargs['form'] = self.get_form()
         return kwargs
 
     # def get_success_message(self, candidatecount):
@@ -96,6 +135,12 @@ class RandomView(groupview_base.BaseMultiselectView):
                                          relatedexaminerqueryset=relatedexaminerqueryset)
         # messages.success(self.request, self.get_success_message(candidatecount=candidatecount))
         return redirect(self.get_success_url())
+
+    def get_form_invalid_message(self, form):
+        if 'selected_relatedexaminers' in form.errors:
+            return form.errors['selected_relatedexaminers'][0]
+        else:
+            return super(RandomView, self).get_form_invalid_message(form=form)
 
 
 class App(crapp.App):

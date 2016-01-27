@@ -236,11 +236,11 @@ class BaseMultiselectView(GroupViewMixin, multiselect2view.ListbuilderFilterView
             role=self.request.cradmin_role)
         return kwargs
 
-    def get_form_invalid_message(self):
+    def get_form_invalid_message(self, form):
         return pgettext_lazy('admin group multiselect submit',
                              'Something went wrong. This may happen if changes was made to the selected '
                              'students while you where working on them. Please try again.')
 
     def form_invalid(self, form):
-        messages.error(self.request, self.get_form_invalid_message())
+        messages.error(self.request, self.get_form_invalid_message(form=form))
         return redirect(self.request.get_full_path())

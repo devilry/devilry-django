@@ -1,5 +1,6 @@
 import mock
 from django import test
+from django.contrib import messages
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
@@ -118,8 +119,61 @@ class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
-            'Selected students:',
+            'Select at least two students:',
             mockresponse.selector.one('.django-cradmin-multiselect2-target-title').alltext_normalized)
+
+    def test_target_examiners_title(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+        self.assertEqual(
+            'Select at least two examiners:',
+            mockresponse.selector.one('#div_id_selected_relatedexaminers .control-label ').alltext_normalized)
+
+    def test_target_examiners_values(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer1 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        relatedexaminer2 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+        values = [element['value']
+                  for element in mockresponse.selector.list('input[name="selected_relatedexaminers"]')]
+        self.assertEqual(
+            {str(relatedexaminer1.id), str(relatedexaminer2.id)},
+            set(values))
+
+    def test_target_examiners_only_from_period(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer1 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        relatedexaminer2 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        mommy.make('core.RelatedExaminer')  # Not in the same period as testassignment
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+        values = [element['value']
+                  for element in mockresponse.selector.list('input[name="selected_relatedexaminers"]')]
+        self.assertEqual(
+            {str(relatedexaminer1.id), str(relatedexaminer2.id)},
+            set(values))
+
+    def test_target_examiners_labels(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mommy.make('core.RelatedExaminer', period=testassignment.period,
+                   user__fullname='Examiner One')
+        mommy.make('core.RelatedExaminer', period=testassignment.period,
+                   user__shortname='examiner2')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+        labels = [
+            element.alltext_normalized
+            for element in mockresponse.selector.list(
+                '#div_id_selected_relatedexaminers label.checkbox')]
+        self.assertEqual(
+            {'Examiner One', 'examiner2'},
+            set(labels))
 
     def test_post_ok(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -176,3 +230,24 @@ class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 (count_examiner1 == 3 and count_examiner2 == 2 and count_examiner3 == 3) or
                 (count_examiner1 == 3 and count_examiner2 == 3 and count_examiner3 == 2)
             )
+
+    def test_post_less_than_two_examiners(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer1 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment,
+            messagesmock=messagesmock,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            requestkwargs={
+                'data': {
+                    'selected_items': [str(testgroup1.id), str(testgroup2.id)],
+                    'selected_relatedexaminers': [str(relatedexaminer1.id)],
+                }
+            })
+        messagesmock.add.assert_called_once_with(
+            messages.ERROR,
+            'You must select at least two examiners.',
+            '')
