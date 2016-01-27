@@ -60,8 +60,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=mock_cradmin_instance)
         self.assertEqual(
-            # '/bulk_organize_examiners/INDEX',
-            '#',
+            '/bulk_organize_examiners/INDEX',
             mockresponse.selector
             .one('#devilry_admin_assignment_examiners_overview_button_bulk_organize_examiners')['href'])
 
