@@ -26,6 +26,9 @@
             Examiners on {{ assignmentname }}
         {% endblocktrans %}
     </h1>
+    <p>
+        {% trans "You can bulk-organize examiners using the button below, or click on an examiner to manually organize students for each examiner." %}
+    </p>
 {% endblock pageheader-inner %}
 
 {% block content %}
@@ -67,22 +70,22 @@
                 </div>
             </div>
 
-            <div class="devilry-dangerzone">
-                <h2 class="devilry-dangerzone-title">{% trans "Danger zone" %}</h2>
-
-                <ul class="devilry-dangerzone-actionlist">
-                    <li>
-                        <a href="#">
-                            <h3>{% trans "Un-assign all examiners from all students" %}</h3>
-                            <small>
-                                <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
-                                    {% trans "Useful if you want to re-organize ALL the examiners." %}
-                                <span class="sr-only">)</span>
-                            </small>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+{#            <div class="devilry-dangerzone">#}
+{#                <h2 class="devilry-dangerzone-title">{% trans "Danger zone" %}</h2>#}
+{##}
+{#                <ul class="devilry-dangerzone-actionlist">#}
+{#                    <li>#}
+{#                        <a href="#">#}
+{#                            <h3>{% trans "Un-assign all examiners from all students" %}</h3>#}
+{#                            <small>#}
+{#                                <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
+{#                                    {% trans "Useful if you want to re-organize ALL the examiners." %}#}
+{#                                <span class="sr-only">)</span>#}
+{#                            </small>#}
+{#                        </a>#}
+{#                    </li>#}
+{#                </ul>#}
+{#            </div>#}
         </div>
 
     {% else %}  {# No RelatedExaminers #}
