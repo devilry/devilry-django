@@ -7035,6 +7035,16 @@ ol.django-cradmin-listbuilder-list h3:first-child {
   padding-bottom: 0;
   margin-bottom: 5px;
 }
+.django-cradmin-multiselect2-target .form-group {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.django-cradmin-multiselect2-target .form-group .control-label {
+  margin-bottom: 0;
+}
+.django-cradmin-multiselect2-target .form-group .controls label.checkbox {
+  font-weight: normal;
+}
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-footer .btn {
   white-space: normal;
 }
