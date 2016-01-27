@@ -38,6 +38,11 @@
                     href="{% cradmin_instance_appindex_url 'add_groups_to_examiner' relatedexaminer_id=relatedexaminer.id %}">
                 {% trans "Add students" %}
             </a>
+            <a id="devilry_admin_assignment_examinerdetails_button_remove_students"
+                    class="btn btn-default"
+                    href="{% cradmin_instance_appindex_url 'remove_groups_from_examiner' relatedexaminer_id=relatedexaminer.id %}">
+                {% trans "Remove some or all students" %}
+            </a>
         </p>
     </div>
 

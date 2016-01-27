@@ -75,6 +75,36 @@ class TestExaminerDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector
             .one('#devilry_admin_assignment_examinerdetails_button_add_students').alltext_normalized)
 
+    def test_buttonbar_remove_students_link(self):
+        testassignment = mommy.make('core.Assignment')
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        mock_cradmin_instance = self.__mockinstance_with_devilryrole('departmentadmin')
+
+        def mock_reverse_url(appname, viewname, args, kwargs):
+            return '/{}/{}/{}'.format(appname, kwargs.get('relatedexaminer_id'), viewname)
+
+        mock_cradmin_instance.reverse_url = mock_reverse_url
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'relatedexaminer_id': relatedexaminer.id},
+            cradmin_instance=mock_cradmin_instance)
+        self.assertEqual(
+            '/remove_groups_from_examiner/{}/INDEX'.format(relatedexaminer.id),
+            mockresponse.selector
+            .one('#devilry_admin_assignment_examinerdetails_button_remove_students')['href'])
+
+    def test_buttonbar_remove_students_text(self):
+        testassignment = mommy.make('core.Assignment')
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'relatedexaminer_id': relatedexaminer.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+        self.assertEqual(
+            'Remove some or all students',
+            mockresponse.selector
+            .one('#devilry_admin_assignment_examinerdetails_button_remove_students').alltext_normalized)
+
     def test_groups_sanity(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
