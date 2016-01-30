@@ -7,3 +7,14 @@
     display: none;
   }
 }
+
+.django-cradmin-loadmorepager-target {
+  opacity: 1;
+  .css3-transition(opacity 0.2s ease-in-out);
+  &.django-cradmin-loadmorepager-target-reloading-page1 {
+    opacity: 0;
+    button, a, input {
+      display: none;
+    }
+  }
+}

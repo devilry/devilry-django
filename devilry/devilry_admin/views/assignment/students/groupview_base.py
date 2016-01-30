@@ -28,11 +28,6 @@ class GroupViewMixin(object):
             self.filterview_name,
             kwargs={'filters_string': filters_string})
 
-    def get_value_and_frame_renderer_kwargs(self):
-        return {
-            'assignment': self.assignment
-        }
-
     def add_filterlist_items(self, filterlist):
         filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())
         filterlist.append(devilry_listfilter.assignmentgroup.OrderByNotAnonymous())
@@ -186,6 +181,11 @@ class BaseInfoView(GroupViewMixin, listbuilderview.FilterListMixin, listbuilderv
         else:
             raise ValueError('Invalid devilryrole: {}'.format(devilryrole))
 
+    def get_value_and_frame_renderer_kwargs(self):
+        return {
+            'assignment': self.assignment
+        }
+
 
 class SelectedGroupsForm(forms.Form):
     """
@@ -197,8 +197,16 @@ class SelectedGroupsForm(forms.Form):
     matches the value returned by ``get_inputfield_name()`` in the
     ``SelectableProductItemValue`` class.
     """
+    invalid_students_selected_message =  pgettext_lazy(
+            'admin group multiselect submit',
+            'Something went wrong. This may happen if changes was made to the selected '
+            'students while you where working on them. Please try again.')
+
     selected_items = forms.ModelMultipleChoiceField(
-        queryset=AssignmentGroup.objects.none()
+        queryset=AssignmentGroup.objects.none(),
+        error_messages={
+            'invalid_choice': invalid_students_selected_message,
+        }
     )
 
     def __init__(self, *args, **kwargs):
@@ -224,6 +232,11 @@ class BaseMultiselectView(GroupViewMixin, multiselect2view.ListbuilderFilterView
         else:
             raise ValueError('Invalid devilryrole: {}'.format(devilryrole))
 
+    def make_value_and_frame_renderer_kwargs(self, value):
+        kwargs = super(BaseMultiselectView, self).make_value_and_frame_renderer_kwargs(value=value)
+        kwargs['assignment'] = self.assignment
+        return kwargs
+
     def get_target_renderer_class(self):
         return devilry_listbuilder.assignmentgroup.GroupTargetRenderer
 
@@ -235,12 +248,3 @@ class BaseMultiselectView(GroupViewMixin, multiselect2view.ListbuilderFilterView
         kwargs['selectable_groups_queryset'] = self.get_unfiltered_queryset_for_role(
             role=self.request.cradmin_role)
         return kwargs
-
-    def get_form_invalid_message(self, form):
-        return pgettext_lazy('admin group multiselect submit',
-                             'Something went wrong. This may happen if changes was made to the selected '
-                             'students while you where working on them. Please try again.')
-
-    def form_invalid(self, form):
-        messages.error(self.request, self.get_form_invalid_message(form=form))
-        return redirect(self.request.get_full_path())

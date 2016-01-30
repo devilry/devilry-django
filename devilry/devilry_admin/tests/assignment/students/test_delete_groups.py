@@ -312,7 +312,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             group=testgroup, grading_points=1),
         self.assertEqual(1, AssignmentGroup.objects.count())
         messagesmock = mock.MagicMock()
-        self.mock_http302_postrequest(
+        self.mock_http200_postrequest_htmls(
             cradmin_role=testassignment,
             messagesmock=messagesmock,
             cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),

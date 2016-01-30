@@ -86,11 +86,6 @@ class RandomView(groupview_base.BaseMultiselectView):
         kwargs['selectable_relatedexaminers_queryset'] = self.__get_relatedexaminerqueryset()
         return kwargs
 
-    def get_target_renderer_kwargs(self):
-        kwargs = super(RandomView, self).get_target_renderer_kwargs()
-        kwargs['form'] = self.get_form()
-        return kwargs
-
     # def get_success_message(self, candidatecount):
     #     return ugettext_lazy('Removed %(count)s students from this assignment.') % {
     #         'count': candidatecount
@@ -129,12 +124,6 @@ class RandomView(groupview_base.BaseMultiselectView):
                                          relatedexaminerqueryset=relatedexaminerqueryset)
         # messages.success(self.request, self.get_success_message(candidatecount=candidatecount))
         return redirect(self.get_success_url())
-
-    def get_form_invalid_message(self, form):
-        if 'selected_relatedexaminers' in form.errors:
-            return form.errors['selected_relatedexaminers'][0]
-        else:
-            return super(RandomView, self).get_form_invalid_message(form=form)
 
 
 class App(crapp.App):

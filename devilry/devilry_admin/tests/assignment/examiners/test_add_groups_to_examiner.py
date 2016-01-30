@@ -157,7 +157,7 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
 
         self.assertEqual(1, Examiner.objects.count())
         messagesmock = mock.MagicMock()
-        self.mock_http302_postrequest(
+        self.mock_http200_postrequest_htmls(
             cradmin_role=testassignment,
             messagesmock=messagesmock,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
@@ -249,7 +249,7 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
         testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('core.Candidate', assignment_group=testgroup4, _quantity=3)
 
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(6):
             self.mock_postrequest(
                 cradmin_role=testassignment,
                 cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
