@@ -1,6 +1,7 @@
 import htmls
 import mock
 from django import test
+from django import forms
 from model_mommy import mommy
 
 from devilry.devilry_admin.cradminextensions.multiselect2 import multiselect2_relatedstudent
@@ -82,13 +83,13 @@ class TestItemValue(test.TestCase):
 
 class TestTarget(test.TestCase):
     def test_with_items_title(self):
-        selector = htmls.S(multiselect2_relatedstudent.Target().render(request=mock.MagicMock()))
+        selector = htmls.S(multiselect2_relatedstudent.Target(form=forms.Form()).render(request=mock.MagicMock()))
         self.assertEqual(
             'Selected students',
             selector.one('.django-cradmin-multiselect2-target-title').alltext_normalized)
 
     def test_without_items_text(self):
-        selector = htmls.S(multiselect2_relatedstudent.Target().render(request=mock.MagicMock()))
+        selector = htmls.S(multiselect2_relatedstudent.Target(form=forms.Form()).render(request=mock.MagicMock()))
         self.assertEqual(
             'No students selected',
             selector.one('.django-cradmin-multiselect2-target-without-items-content').alltext_normalized)
