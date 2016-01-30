@@ -69,7 +69,7 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             'Add students',
-            mockresponse.selector.one('.django-cradmin-multiselect2-target-footer').alltext_normalized)
+            mockresponse.selector.one('.django-cradmin-multiselect2-target-formfields .btn').alltext_normalized)
 
     def test_groups_sanity(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -121,7 +121,7 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
         mommy.make('core.AssignmentGroup', parentnode=testassignment, _quantity=10)
-        with self.assertNumQueries(8):
+        with self.assertNumQueries(9):
             self.mock_getrequest(
                 cradmin_role=testassignment,
                 viewkwargs={'relatedexaminer_id': relatedexaminer.id},
@@ -249,7 +249,7 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
         testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('core.Candidate', assignment_group=testgroup4, _quantity=3)
 
-        with self.assertNumQueries(6):
+        with self.assertNumQueries(9):
             self.mock_postrequest(
                 cradmin_role=testassignment,
                 cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),

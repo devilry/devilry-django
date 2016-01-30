@@ -111,7 +111,7 @@ class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             'Randomly assign selected students to selected examiners',
-            mockresponse.selector.one('.django-cradmin-multiselect2-target-footer').alltext_normalized)
+            mockresponse.selector.one('.django-cradmin-multiselect2-target-formfields .btn').alltext_normalized)
 
     def test_target_with_selected_items_title(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')

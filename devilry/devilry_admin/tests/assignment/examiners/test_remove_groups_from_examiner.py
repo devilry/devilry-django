@@ -69,7 +69,7 @@ class TestRemoveGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCase
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
             'Remove students',
-            mockresponse.selector.one('.django-cradmin-multiselect2-target-footer').alltext_normalized)
+            mockresponse.selector.one('.django-cradmin-multiselect2-target-formfields .btn').alltext_normalized)
 
     def test_exclude_groups_that_does_not_have_the_examiner(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -107,7 +107,7 @@ class TestRemoveGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCase
         mommy.make('core.AssignmentGroup', parentnode=testassignment, _quantity=10)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=relatedexaminer)
-        with self.assertNumQueries(8):
+        with self.assertNumQueries(9):
             self.mock_getrequest(
                 cradmin_role=testassignment,
                 viewkwargs={'relatedexaminer_id': relatedexaminer.id},
@@ -216,7 +216,7 @@ class TestRemoveGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCase
         mommy.make('core.Candidate', assignment_group=testgroup4, _quantity=3)
         mommy.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer=relatedexaminer)
 
-        with self.assertNumQueries(6):
+        with self.assertNumQueries(9):
             self.mock_postrequest(
                 cradmin_role=testassignment,
                 cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),

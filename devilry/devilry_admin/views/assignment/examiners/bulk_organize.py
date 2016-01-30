@@ -39,11 +39,6 @@ class RandomOrganizeForm(groupview_base.SelectedGroupsForm):
         self.fields['selected_relatedexaminers'].queryset = selectable_relatedexaminers_queryset
         self.fields['selected_relatedexaminers'].choices = self.__make_relatedexaminer_choices(
             relatedexaminerqueryset=selectable_relatedexaminers_queryset)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.layout = layout.Layout(
-            'selected_relatedexaminers'
-        )
 
     def clean(self):
         cleaned_data = super(RandomOrganizeForm, self).clean()
@@ -55,17 +50,16 @@ class RandomOrganizeForm(groupview_base.SelectedGroupsForm):
 
 
 class RandomOrganizeTargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
-    template_name = 'devilry_admin/assignment/examiners/bulk_organize/random-target.django.html'
-
-    def __init__(self, form, **kwargs):
-        self.form = form
-        super(RandomOrganizeTargetRenderer, self).__init__(**kwargs)
-
     def get_with_items_title(self):
         return ugettext_lazy('Select at least two students:')
 
     def get_submit_button_text(self):
         return ugettext_lazy('Randomly assign selected students to selected examiners')
+
+    def get_field_layout(self):
+        return [
+            'selected_relatedexaminers'
+        ]
 
 
 class RandomView(groupview_base.BaseMultiselectView):

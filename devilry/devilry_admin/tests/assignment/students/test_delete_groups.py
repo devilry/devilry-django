@@ -104,7 +104,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             'Delete students',
-            mockresponse.selector.one('.django-cradmin-multiselect2-target-footer').alltext_normalized)
+            mockresponse.selector.one('.django-cradmin-multiselect2-target-formfields .btn').alltext_normalized)
 
     def test_target_with_selected_items_title(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

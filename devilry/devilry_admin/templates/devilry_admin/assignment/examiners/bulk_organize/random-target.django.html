@@ -1,9 +1,0 @@
-{% extends "django_cradmin/viewhelpers/multiselect2/target_renderer/target.django.html" %}
-{% load i18n %}
-{% load crispy_forms_tags %}
-
-{% block with-items-footer %}
-    {% crispy me.form me.form.helper %}
-
-    {{ block.super }}
-{% endblock with-items-footer %}
