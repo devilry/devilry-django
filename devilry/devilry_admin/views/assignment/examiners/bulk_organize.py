@@ -3,9 +3,8 @@ from __future__ import unicode_literals
 import math
 import random
 
-from crispy_forms import layout
-from crispy_forms.helper import FormHelper
 from django import forms
+from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy
 from django.views.generic import TemplateView
@@ -21,6 +20,8 @@ class SelectMethodView(TemplateView):
 
 
 class RandomOrganizeForm(groupview_base.SelectedGroupsForm):
+    selected_relatedexaminers_invalid_choice_message = ugettext_lazy(
+            'You must select at least two examiners.')
     selected_relatedexaminers = forms.ModelMultipleChoiceField(
         queryset=RelatedExaminer.objects.none(),
         widget=forms.CheckboxSelectMultiple(),
@@ -46,7 +47,7 @@ class RandomOrganizeForm(groupview_base.SelectedGroupsForm):
         if selected_relatedexaminers.count() < 2:
             self.add_error(
                 'selected_relatedexaminers',
-                ugettext_lazy('You must select at least two examiners.'))
+                self.selected_relatedexaminers_invalid_choice_message)
 
 
 class RandomOrganizeTargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetRenderer):
@@ -115,6 +116,12 @@ class RandomView(groupview_base.BaseMultiselectView):
             examiner_to_create = Examiner(relatedexaminer=relatedexaminer, assignmentgroup=group)
             examiners_to_create.append(examiner_to_create)
         Examiner.objects.bulk_create(examiners_to_create)
+
+    def form_invalid_add_global_errormessages(self, form):
+        super(RandomView, self).form_invalid_add_global_errormessages(form=form)
+        if 'selected_relatedexaminers' in form.errors:
+            for errormessage in form.errors['selected_relatedexaminers']:
+                messages.error(self.request, errormessage)
 
     def form_valid(self, form):
         groupqueryset = form.cleaned_data['selected_items']

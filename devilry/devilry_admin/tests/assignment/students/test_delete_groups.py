@@ -7,6 +7,7 @@ from model_mommy import mommy
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_admin.views.assignment.students import delete_groups
+from devilry.devilry_admin.views.assignment.students.groupview_base import SelectedGroupsForm
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import GroupComment, ImageAnnotationComment
@@ -323,6 +324,5 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(1, AssignmentGroup.objects.count())
         messagesmock.add.assert_called_once_with(
             messages.ERROR,
-            'Something went wrong. This may happen if changes was made to the selected '
-            'students while you where working on them. Please try again.',
+            SelectedGroupsForm.invalid_students_selected_message,
             '')

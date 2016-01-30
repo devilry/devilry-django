@@ -1,10 +1,12 @@
 import mock
 from django import test
+from django.contrib import messages
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import Examiner
 from devilry.devilry_admin.views.assignment.examiners import bulk_organize
+from devilry.devilry_admin.views.assignment.students.groupview_base import SelectedGroupsForm
 
 
 class TestSelectMethodView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -235,8 +237,10 @@ class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         relatedexaminer1 = mommy.make('core.RelatedExaminer', period=testassignment.period)
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        messagesmock = mock.MagicMock()
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testassignment,
+            messagesmock=messagesmock,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestkwargs={
                 'data': {
@@ -245,6 +249,31 @@ class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 }
             })
         self.assertEqual(
-                'You must select at least two examiners.',
+                bulk_organize.RandomOrganizeForm.selected_relatedexaminers_invalid_choice_message,
                 mockresponse.selector.one(
                         '#div_id_selected_relatedexaminers.has-error .help-block').alltext_normalized)
+        messagesmock.add.assert_called_once_with(
+            messages.ERROR,
+            bulk_organize.RandomOrganizeForm.selected_relatedexaminers_invalid_choice_message,
+            '')
+
+    def test_post_invalid_groups(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer1 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        relatedexaminer2 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testgroup1 = mommy.make('core.AssignmentGroup')  # Not within the assignment
+        messagesmock = mock.MagicMock()
+        self.mock_http200_postrequest_htmls(
+            cradmin_role=testassignment,
+            messagesmock=messagesmock,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            requestkwargs={
+                'data': {
+                    'selected_items': [str(testgroup1.id)],
+                    'selected_relatedexaminers': [str(relatedexaminer1.id), str(relatedexaminer2.id)],
+                }
+            })
+        messagesmock.add.assert_called_once_with(
+            messages.ERROR,
+            SelectedGroupsForm.invalid_students_selected_message,
+            '')
