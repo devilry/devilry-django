@@ -37,6 +37,26 @@
                         <span class="sr-only">)</span>
                     </small>
                 </a>
+                <a id="devilry_admin_assignment_examiners_bulk_organize_button_manual_add"
+                        class="btn btn-default devilry-btn-titledescription"
+                        href="{% cradmin_appurl 'manual-add' %}">
+                    <strong>{% trans "Manually add examiners" %}</strong>
+                    <small>
+                        <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
+                            {% trans "Select students and add examiners to those students" %}
+                        <span class="sr-only">)</span>
+                    </small>
+                </a>
+                <a id="devilry_admin_assignment_examiners_bulk_organize_button_manual_replace"
+                        class="btn btn-default devilry-btn-titledescription"
+                        href="{% cradmin_appurl 'manual-replace' %}">
+                    <strong>{% trans "Manually replace examiners" %}</strong>
+                    <small>
+                        <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
+                            {% trans "Select students and replace examiners for those students" %}
+                        <span class="sr-only">)</span>
+                    </small>
+                </a>
             </p>
         </div>
 {% endblock content %}
