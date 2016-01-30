@@ -87,11 +87,6 @@ class RandomView(groupview_base.BaseMultiselectView):
         kwargs['selectable_relatedexaminers_queryset'] = self.__get_relatedexaminerqueryset()
         return kwargs
 
-    # def get_success_message(self, candidatecount):
-    #     return ugettext_lazy('Removed %(count)s students from this assignment.') % {
-    #         'count': candidatecount
-    #     }
-
     def get_success_url(self):
         return self.request.cradmin_instance.reverse_url(
             appname='examineroverview',
@@ -186,9 +181,7 @@ class BaseManualAddOrReplaceView(groupview_base.BaseMultiselectView):
         return kwargs
 
     def get_success_url(self):
-        return self.request.cradmin_instance.reverse_url(
-            appname='examineroverview',
-            viewname=crapp.INDEXVIEW_NAME)
+        return self.request.get_full_path()
 
     def clear_existing_examiners_from_groups(self, groupqueryset):
         raise NotImplementedError()
@@ -211,7 +204,7 @@ class BaseManualAddOrReplaceView(groupview_base.BaseMultiselectView):
                                         relatedexaminer=relatedexaminer)
                     examiners.append(examiner)
         Examiner.objects.bulk_create(examiners)
-        return groupcount, candidatecount
+        return groupcount, candidatecount, relatedexaminers
 
     def form_invalid_add_global_errormessages(self, form):
         super(BaseManualAddOrReplaceView, self).form_invalid_add_global_errormessages(form=form)
@@ -219,14 +212,26 @@ class BaseManualAddOrReplaceView(groupview_base.BaseMultiselectView):
             for errormessage in form.errors['selected_relatedexaminers']:
                 messages.error(self.request, errormessage)
 
+    def get_success_message_formatting_string(self):
+        raise NotImplementedError()
+
+    def get_success_message(self, candidatecount, relatedexaminers):
+        examinernames = [relatedexaminer.user.get_full_name()
+                         for relatedexaminer in relatedexaminers]
+        return self.get_success_message_formatting_string() % {
+            'count': candidatecount,
+            'examinernames': ', '.join(examinernames)
+        }
+
     def form_valid(self, form):
         groupqueryset = form.cleaned_data['selected_items']
         relatedexaminerqueryset = form.cleaned_data['selected_relatedexaminers']
         self.clear_existing_examiners_from_groups(groupqueryset=groupqueryset)
-        groupcount, candidatecount = self.__add_examiners(
+        groupcount, candidatecount, relatedexaminers = self.__add_examiners(
                 groupqueryset=groupqueryset,
                 relatedexaminerqueryset=relatedexaminerqueryset)
-        # messages.success(self.request, self.get_success_message(candidatecount=candidatecount))
+        messages.success(self.request, self.get_success_message(candidatecount=candidatecount,
+                                                                relatedexaminers=relatedexaminers))
         return redirect(self.get_success_url())
 
 
@@ -249,6 +254,9 @@ class ManualAddView(BaseManualAddOrReplaceView):
         # We ignore any examiners currently registered on the group
         return {examiner.relatedexaminer_id for examiner in group.examiners.all()}
 
+    def get_success_message_formatting_string(self):
+        return ugettext_lazy('Added %(count)s students to %(examinernames)s.')
+
 
 class ManualReplaceTargetRenderer(ManualAddOrReplaceTargetRenderer):
     def get_submit_button_text(self):
@@ -270,6 +278,10 @@ class ManualReplaceView(BaseManualAddOrReplaceView):
         # We do not need to ignore any existing examiners - they are removed
         # by :meth:`.clear_existing_examiners_from_groups`
         return {examiner.relatedexaminer_id for examiner in group.examiners.all()}
+
+    def get_success_message_formatting_string(self):
+        return ugettext_lazy('Made %(examinernames)s examiner for %(count)s students, replacing any previous '
+                             'examiners for those students.')
 
 
 class App(crapp.App):
