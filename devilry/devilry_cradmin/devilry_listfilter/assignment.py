@@ -1,9 +1,15 @@
 from django.db.models.functions import Lower, Concat
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin.viewhelpers import listfilter
 
 
 class OrderBy(listfilter.django.single.select.AbstractOrderBy):
+    def get_slug(self):
+        return 'orderby'
+
+    def get_label(self):
+        return pgettext_lazy('orderby', 'Sort')
+
     def get_name_ordering_options(self):
         return [
             ('name_ascending', {

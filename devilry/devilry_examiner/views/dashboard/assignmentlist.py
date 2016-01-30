@@ -77,10 +77,7 @@ class AssignmentListView(listbuilderview.FilterListMixin,
                 'parentnode__parentnode__long_name',
                 'parentnode__parentnode__short_name',
             ]))
-        filterlist.append(devilry_listfilter.assignment.OrderByFullPath(
-            slug='orderby',
-            label=ugettext_lazy('Order by')
-        ))
+        filterlist.append(devilry_listfilter.assignment.OrderByFullPath())
 
     def get_unfiltered_queryset_for_role(self, role):
         return coremodels.Assignment.objects\
