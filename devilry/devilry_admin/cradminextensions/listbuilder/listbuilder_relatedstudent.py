@@ -24,29 +24,6 @@ class ListViewBase(AddFilterListItemsMixin, listbuilderview.FilterListMixin, lis
     paginate_by = 200
 
 
-class HorizontalFilterListView(ListViewBase):
-    """
-    List view for :class:`devilry.apps.core.models.relateduser.RelatedStudent`
-    with filters in a horizontal layout.
-
-    All you have to override this:
-
-    - :meth:`django_cradmin.viewhelpers.listfilter.listfilter_viewmixin.ViewMixin.get_filterlist_url`.
-    - :meth:`django_cradmin.viewhelpers.listfilter.listfilter_viewmixin.ViewMixin.get_unfiltered_queryset_for_role`.
-
-    You will also most likely want to override:
-
-    - :meth:`django_cradmin.viewhelpers.listbuilderview.ViewMixin.get_value_renderer_class`
-    - :meth:`django_cradmin.viewhelpers.listbuilderview.ViewMixin.get_pagetitle`
-    - :meth:`django_cradmin.viewhelpers.listbuilderview.ViewMixin.get_pageheading` (if you do not want it
-      to be the same as ``get_pagetitle``).
-    """
-    filterlist_class = listfilter.lists.Horizontal
-
-    def get_label_is_screenreader_only_by_default(self):
-        return True
-
-
 class VerticalFilterListView(ListViewBase):
     """
     List view for :class:`devilry.apps.core.models.relateduser.RelatedStudent`
