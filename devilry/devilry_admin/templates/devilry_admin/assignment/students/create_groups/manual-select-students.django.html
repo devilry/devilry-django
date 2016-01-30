@@ -1,4 +1,4 @@
-{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-top.django.html" %}
+{% extends "django_cradmin/viewhelpers/multiselect2view/listbuilderfilterview.django.html" %}
 {% load cradmin_tags %}
 {% load cradmin_icon_tags %}
 {% load i18n %}
@@ -17,18 +17,6 @@
     </a>
     {{ block.super }}
 {% endblock pageheader-inner %}
-
-
-{% block list %}
-    <div class="row">
-        <div class="{% block list-column-classes %}col-sm-6{% endblock %}">
-            {{ block.super }}
-        </div>
-        <div class="{% block filterlist-column-classes %}col-sm-6{% endblock %}">
-            {% cradmin_render_renderable multiselect_target %}
-        </div>
-    </div>
-{% endblock list %}
 
 {% block no-items-paragraph-contents %}
     <strong class="devilry-admin-create-groups-manual-select-no-relatedstudents-message">

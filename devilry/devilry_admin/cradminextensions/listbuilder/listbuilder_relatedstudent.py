@@ -7,10 +7,7 @@ from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relatedstudent
 
 
-class ListViewBase(listbuilderview.FilterListMixin, listbuilderview.View):
-    model = RelatedStudent
-    paginate_by = 200
-
+class AddFilterListItemsMixin(object):
     def add_filterlist_items(self, filterlist):
         filterlist.append(listfilter.django.single.textinput.Search(
             slug='search',
@@ -20,6 +17,11 @@ class ListViewBase(listbuilderview.FilterListMixin, listbuilderview.View):
         filterlist.append(listfilter_relatedstudent.OrderRelatedStudentsFilter(
             slug='orderby',
             label=ugettext_lazy('Order by')))
+
+
+class ListViewBase(AddFilterListItemsMixin, listbuilderview.FilterListMixin, listbuilderview.View):
+    model = RelatedStudent
+    paginate_by = 200
 
 
 class HorizontalFilterListView(ListViewBase):
