@@ -25,6 +25,20 @@ class TestSelectMethodView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             'How would you like to bulk-organize your examiners?',
             mockresponse.selector.one('h1').alltext_normalized)
 
+    def test_header_backlink_url(self):
+        testassignment = mommy.make('core.Assignment', long_name='Test Assignment')
+        mock_cradmin_instance = mock.MagicMock()
+
+        def mock_reverse_url(appname, viewname, **kwargs):
+            return '/{}/{}'.format(appname, viewname)
+
+        mock_cradmin_instance.reverse_url = mock_reverse_url
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
+                                                          cradmin_instance=mock_cradmin_instance)
+        self.assertEqual(
+            '/examineroverview/INDEX',
+            mockresponse.selector.one('.devilry-page-header-backlink')['href'])
+
     def test_buttons_sanity(self):
         testassignment = mommy.make('core.Assignment')
         mommy.make('core.RelatedExaminer', period=testassignment.period)
