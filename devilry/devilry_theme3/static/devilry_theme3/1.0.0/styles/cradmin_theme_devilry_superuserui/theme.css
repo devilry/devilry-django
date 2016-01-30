@@ -7059,6 +7059,7 @@ body {
   letter-spacing: 1.4px;
   padding: 4px 12px;
   margin-bottom: 5px;
+  white-space: normal;
 }
 .btn.btn-sm {
   padding: 3px 10px;

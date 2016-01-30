@@ -6967,6 +6967,7 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
   letter-spacing: 1.4px;
   padding: 4px 12px;
   margin-bottom: 5px;
+  white-space: normal;
 }
 .btn.btn-sm {
   padding: 3px 10px;
@@ -7501,6 +7502,7 @@ Buttons
   letter-spacing: 1.4px;
   padding: 4px 12px;
   margin-bottom: 5px;
+  white-space: normal;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -7648,6 +7650,7 @@ fieldset[disabled] .button {
   letter-spacing: 1.4px;
   padding: 4px 12px;
   margin-bottom: 5px;
+  white-space: normal;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -7798,6 +7801,7 @@ fieldset[disabled] .button_default {
   letter-spacing: 1.4px;
   padding: 4px 12px;
   margin-bottom: 5px;
+  white-space: normal;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -7949,6 +7953,7 @@ fieldset[disabled] .button_admin {
   letter-spacing: 1.4px;
   padding: 4px 12px;
   margin-bottom: 5px;
+  white-space: normal;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -8100,6 +8105,7 @@ fieldset[disabled] .button_examiner {
   letter-spacing: 1.4px;
   padding: 4px 12px;
   margin-bottom: 5px;
+  white-space: normal;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
@@ -8251,6 +8257,7 @@ fieldset[disabled] .button_examiner_grayed {
   letter-spacing: 1.4px;
   padding: 4px 12px;
   margin-bottom: 5px;
+  white-space: normal;
   background_color: #444444;
   max_width: 10em;
   font_size: 1.0em;
