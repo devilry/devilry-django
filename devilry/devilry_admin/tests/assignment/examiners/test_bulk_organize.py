@@ -1,6 +1,5 @@
 import mock
 from django import test
-from django.contrib import messages
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
@@ -236,10 +235,8 @@ class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         relatedexaminer1 = mommy.make('core.RelatedExaminer', period=testassignment.period)
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        messagesmock = mock.MagicMock()
-        self.mock_http302_postrequest(
+        mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testassignment,
-            messagesmock=messagesmock,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestkwargs={
                 'data': {
@@ -247,7 +244,7 @@ class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                     'selected_relatedexaminers': [str(relatedexaminer1.id)],
                 }
             })
-        messagesmock.add.assert_called_once_with(
-            messages.ERROR,
-            'You must select at least two examiners.',
-            '')
+        self.assertEqual(
+                'You must select at least two examiners.',
+                mockresponse.selector.one(
+                        '#div_id_selected_relatedexaminers.has-error .help-block').alltext_normalized)

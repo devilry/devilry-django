@@ -216,7 +216,7 @@ class TestRemoveGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCase
         mommy.make('core.Candidate', assignment_group=testgroup4, _quantity=3)
         mommy.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer=relatedexaminer)
 
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(6):
             self.mock_postrequest(
                 cradmin_role=testassignment,
                 cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
