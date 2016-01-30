@@ -22,22 +22,26 @@ class ListViewBase(listbuilderview.FilterListMixin, listbuilderview.View):
             label=ugettext_lazy('Order by')))
 
 
-class ItemValueMixin(object):
+class OnassignmentItemValue(listbuilder.itemvalue.TitleDescription):
+    """
+    RelatedExaminer itemvalue renderer for an examiner on an assignment.
+
+    Requires the RelatedExaminer queryset to be annotated with:
+
+    - ``annotate_with_number_of_groups_on_assignment()``
+    - ``extra_annotate_with_number_of_candidates_on_assignment()``
+    """
+    template_name = 'devilry_admin/listbuilder/listbuilder_relatedexaminer/onassignment-itemvalue.django.html'
     valuealias = 'relatedexaminer'
 
-    def get_title(self):
-        if self.relatedexaminer.user.fullname:
-            return self.relatedexaminer.user.fullname
-        else:
-            return self.relatedexaminer.user.shortname
-
-    def get_description(self):
-        if self.relatedexaminer.user.fullname:
-            return self.relatedexaminer.user.shortname
-        else:
-            return ''
-
-
-class ReadOnlyItemValue(ItemValueMixin, listbuilder.itemvalue.TitleDescription):
     def get_extra_css_classes_list(self):
-        return ['devilry-admin-listbuilder-relatedexaminer-readonlyitemvalue']
+        return ['devilry-admin-listbuilder-relatedexaminer-onassignment']
+
+    def get_number_of_groups(self):
+        return self.relatedexaminer.number_of_groups_on_assignment
+
+    def get_number_of_candidates(self):
+        return self.relatedexaminer.number_of_candidates_on_assignment
+
+    def has_projectgroups(self):
+        return self.get_number_of_candidates() > self.get_number_of_groups()

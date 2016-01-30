@@ -10,8 +10,9 @@ from django.views.generic import TemplateView
 from django_cradmin import crapp
 from django_cradmin.crispylayouts import PrimarySubmit, CradminFormHelper
 from django_cradmin.viewhelpers import listbuilder
+from django_cradmin.viewhelpers import multiselect2view
 
-from devilry.apps.core.models import Candidate, AssignmentGroup
+from devilry.apps.core.models import Candidate, AssignmentGroup, RelatedStudent
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent
 from devilry.devilry_admin.cradminextensions.multiselect2 import multiselect2_relatedstudent
 
@@ -130,7 +131,7 @@ class CreateGroupsViewMixin(object):
             kwargs['data'] = self.request.POST
         return kwargs
 
-    def get_form(self):
+    def get_form(self, form_class=None):
         form_class = self.get_form_class()
         return form_class(**self.get_form_kwargs())
 
@@ -333,13 +334,15 @@ class RelatedStudentMultiselectTarget(multiselect2_relatedstudent.Target):
                              'Add students')
 
 
-class ManualSelectStudentsView(CreateGroupsViewMixin,
-                               listbuilder_relatedstudent.HorizontalFilterListView):
+class ManualSelectStudentsView(listbuilder_relatedstudent.AddFilterListItemsMixin,
+                               CreateGroupsViewMixin,
+                               multiselect2view.ListbuilderFilterView):
     """
     View used to manually select students when creating groups.
     """
     value_renderer_class = multiselect2_relatedstudent.ItemValue
-    multiselect_target_class = RelatedStudentMultiselectTarget
+    template_name = 'devilry_admin/assignment/students/create_groups/manual-select-students.django.html'
+    model = RelatedStudent
 
     def get_pagetitle(self):
         return pgettext_lazy('admin create_groups',
@@ -353,20 +356,20 @@ class ManualSelectStudentsView(CreateGroupsViewMixin,
             'assignment': self.assignment.long_name
         }
 
-    def get_filterlist_template_name(self):
-        return 'devilry_admin/assignment/students/create_groups/manual-select-students.django.html'
-
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
             'manual-select', kwargs={'filters_string': filters_string})
 
-    def __get_multiselect_target(self):
-        return self.multiselect_target_class()
+    def get_target_renderer_class(self):
+        return RelatedStudentMultiselectTarget
 
-    def get_context_data(self, **kwargs):
-        context = super(ManualSelectStudentsView, self).get_context_data(**kwargs)
-        context['multiselect_target'] = self.__get_multiselect_target()
-        return context
+    # def __get_multiselect_target(self):
+    #     return self.multiselect_target_class()
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(ManualSelectStudentsView, self).get_context_data(**kwargs)
+    #     context['multiselect_target'] = self.__get_multiselect_target()
+    #     return context
 
     def get_error_url(self):
         return self.request.cradmin_app.reverse_appurl('manual-select')

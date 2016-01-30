@@ -1,0 +1,50 @@
+{% extends "devilry_admin/assignment/students/groupview_base/base-info-view.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block title %}
+    {% blocktrans trimmed with examiner=relatedexaminer.user.get_full_name %}
+        {{ examiner }} - examiner
+    {% endblocktrans %}
+{% endblock title %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'examineroverview' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to examiner overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% blocktrans trimmed with examiner=relatedexaminer.user.get_full_name %}
+            {{ examiner }}
+        {% endblocktrans %}
+        <small class="text-muted">(examiner)</small>
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        <p id="devilry_admin_assignment_examinerdetails_buttonbar"
+                class="devilry-buttonbar">
+            <a id="devilry_admin_assignment_examinerdetails_button_add_students"
+                    class="btn btn-primary"
+                    href="{% cradmin_instance_appindex_url 'add_groups_to_examiner' relatedexaminer_id=relatedexaminer.id %}">
+                {% trans "Add students" %}
+            </a>
+            <a id="devilry_admin_assignment_examinerdetails_button_remove_students"
+                    class="btn btn-default"
+                    href="{% cradmin_instance_appindex_url 'remove_groups_from_examiner' relatedexaminer_id=relatedexaminer.id %}">
+                {% trans "Remove some or all students" %}
+            </a>
+        </p>
+    </div>
+
+    {{ block.super }}
+{% endblock content %}

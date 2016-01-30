@@ -2,6 +2,7 @@ import datetime
 
 import htmls
 import mock
+from django import forms
 from django.contrib import messages
 from django.http import Http404
 from django.test import TestCase
@@ -599,7 +600,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
 class TestRelatedStudentMultiselectTarget(TestCase):
     def test_with_items_title(self):
-        selector = htmls.S(replace_groups.RelatedStudentMultiselectTarget().render(request=mock.MagicMock()))
+        selector = htmls.S(replace_groups.RelatedStudentMultiselectTarget(
+                form=forms.Form()).render(request=mock.MagicMock()))
         self.assertEqual(
             'Replace students',
             selector.one('button[type="submit"]').alltext_normalized)

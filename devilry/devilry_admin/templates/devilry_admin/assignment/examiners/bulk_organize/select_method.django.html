@@ -1,0 +1,42 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block title %}
+    {% trans "How would you like to bulk-organize your examiners?" %}
+{% endblock title %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'overview' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to assignment overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% trans "How would you like to bulk-organize your examiners?" %}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+        <div class="container">
+            <p id="devilry_admin_assignment_examiners_bulk_organize_buttons">
+                <a id="devilry_admin_assignment_examiners_bulk_organize_button_random"
+                        class="btn btn-default devilry-btn-titledescription"
+                        href="{% cradmin_appurl 'random' %}">
+                    <strong>{% trans "Organize examiners randomly" %}</strong>
+                    <small>
+                        <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
+                            {% trans "Select students and randomly assign two or more examiners to those students" %}
+                        <span class="sr-only">)</span>
+                    </small>
+                </a>
+            </p>
+        </div>
+{% endblock content %}

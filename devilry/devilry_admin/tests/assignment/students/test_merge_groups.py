@@ -59,4 +59,4 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             'Create project group',
-            mockresponse.selector.one('.django-cradmin-multiselect2-target-footer').alltext_normalized)
+            mockresponse.selector.one('.django-cradmin-multiselect2-target-formfields .btn').alltext_normalized)

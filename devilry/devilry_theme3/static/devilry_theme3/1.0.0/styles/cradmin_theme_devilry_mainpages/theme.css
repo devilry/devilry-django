@@ -6943,6 +6943,19 @@ ol.django-cradmin-listbuilder-list h3:first-child {
   padding-bottom: 0;
   margin-bottom: 5px;
 }
+.django-cradmin-multiselect2-target .form-group {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.django-cradmin-multiselect2-target .form-group .control-label {
+  margin-bottom: 0;
+}
+.django-cradmin-multiselect2-target .form-group .controls label.checkbox {
+  font-weight: normal;
+}
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-footer .btn {
+  white-space: normal;
+}
 .django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner {
   position: relative;
   padding-left: 40px;
@@ -7005,6 +7018,20 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-ver
   line-height: 14px;
   padding-bottom: 5px;
 }
+.alert.devilry-alert-with-button .btn {
+  margin-top: 15px;
+}
+.alert.alert-danger .btn.btn-default,
+.alert.alert-warning .btn.btn-default {
+  border-color: #191919;
+  color: #191919;
+}
+.alert.alert-danger .btn.btn-default:hover,
+.alert.alert-warning .btn.btn-default:hover {
+  background: #191919;
+  border-color: #191919;
+  color: #fff;
+}
 form.devilry-form-inline {
   display: inline-block;
   margin: 0;
@@ -7059,11 +7086,16 @@ h3 .devilry-user-verbose-inline small {
 }
 @media (min-width: 768px) {
   .devilry-buttonbar .btn {
-    display: inline-block;
-    margin-right: 10px;
+    flex-grow: 0;
+    margin-left: 10px;
   }
-  .devilry-buttonbar .btn:last-child {
-    margin-right: 0;
+  .devilry-buttonbar .btn:first-child {
+    margin-left: 0;
+  }
+}
+@media (min-width: 768px) {
+  .devilry-buttonbar.devilry-buttonbar-fullwidth .btn {
+    flex-grow: 1;
   }
 }
 .devilry-dangerzone {
@@ -7071,6 +7103,7 @@ h3 .devilry-user-verbose-inline small {
   background: #fff;
   margin-top: 70px;
   padding: 10px;
+  color: #d9534f;
 }
 .devilry-dangerzone .devilry-dangerzone-title {
   margin: 0 0 15px 0;
@@ -7097,7 +7130,7 @@ h3 .devilry-user-verbose-inline small {
 .devilry-dangerzone ul.devilry-dangerzone-actionlist li a small {
   display: block;
   text-decoration: none;
-  color: #333333;
+  color: #777;
 }
 .devilry-dangerzone ul.devilry-dangerzone-actionlist li a:hover {
   text-decoration: none;
@@ -7107,7 +7140,7 @@ h3 .devilry-user-verbose-inline small {
   text-decoration: underline;
 }
 .devilry-dangerzone ul.devilry-dangerzone-actionlist li a:hover small {
-  color: #333333;
+  color: #777;
 }
 .devilry-listbuilderlist-footer {
   font-size: 14px;

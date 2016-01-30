@@ -1,0 +1,29 @@
+{% extends "devilry_admin/assignment/students/groupview_base/base-multiselect-view.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block title %}
+    {% blocktrans trimmed with examiner=relatedexaminer.user.get_full_name %}
+        Add students to {{ examiner }}
+    {% endblocktrans %}
+{% endblock title %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'examinerdetails' relatedexaminer_id=relatedexaminer.id %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to examiner detail page" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% blocktrans trimmed with examiner=relatedexaminer.user.get_full_name %}
+            Add students to {{ examiner }}
+        {% endblocktrans %}
+    </h1>
+{% endblock pageheader-inner %}

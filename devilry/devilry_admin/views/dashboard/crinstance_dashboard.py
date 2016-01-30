@@ -37,4 +37,4 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return re.match('/devilry_admin/$', urlpath)
+        return re.match('/devilry_admin/', urlpath)
