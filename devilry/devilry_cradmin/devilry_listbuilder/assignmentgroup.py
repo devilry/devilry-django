@@ -1,4 +1,3 @@
-from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy
 from django_cradmin.viewhelpers import listbuilder
 from django_cradmin.viewhelpers import multiselect2
