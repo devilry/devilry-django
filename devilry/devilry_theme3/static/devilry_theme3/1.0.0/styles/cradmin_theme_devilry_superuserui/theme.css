@@ -6602,9 +6602,12 @@ Note that the FloatGridList also uses the ``django-cradmin-listbuilder-list`` cl
     clear: left;
   }
 }
+ol.django-cradmin-listbuilder-list {
+  font-size: 14px;
+}
 ol.django-cradmin-listbuilder-list h2,
 ol.django-cradmin-listbuilder-list h3 {
-  font-size: 19px;
+  font-size: 16px;
 }
 ol.django-cradmin-listbuilder-list h2:first-child,
 ol.django-cradmin-listbuilder-list h3:first-child {
@@ -6621,11 +6624,8 @@ ol.django-cradmin-listbuilder-list h3:last-child {
   padding-bottom: 0;
 }
 ol.django-cradmin-listbuilder-list.django-cradmin-listbuilder-rowlist li .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
-  margin-top: 5px;
+  margin-top: 0;
   margin-bottom: 5px;
-}
-ol.django-cradmin-listbuilder-list.django-cradmin-listbuilder-rowlist li:first-child .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
-  margin-top: 5px;
 }
 ol.django-cradmin-listbuilder-list.django-cradmin-listbuilder-rowlist li:last-child .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
   margin-bottom: 0;
@@ -6763,9 +6763,6 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
 .django-cradmin-multiselect2-selected-item {
   display: none;
 }
-.django-cradmin-multiselect2-item-wrapper-selected {
-  display: none;
-}
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-title {
   font-size: 16px;
   font-weight: bold;
@@ -6774,6 +6771,7 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
 @media (min-width: 768px) {
   .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-title {
     margin-top: 0;
+    min-height: 28px;
   }
 }
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items .django-cradmin-multiselect2-target-selected-item {
@@ -6796,8 +6794,33 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items .django-cradmin-multiselect2-target-selected-item .django-cradmin-multiselect2-target-selected-item-deselectbutton {
   margin-top: 10px;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-footer {
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .control-label {
+  margin-bottom: 0;
+}
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls {
+  margin-top: 7px;
+}
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls label.checkbox {
+  font-weight: normal;
   margin-top: 10px;
+  margin-bottom: 10px;
+}
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls label.checkbox:first-child {
+  margin-top: 0;
+}
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls label.checkbox:hover {
+  color: #377CA8;
+  cursor: pointer;
+}
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .btn {
+  white-space: normal;
+}
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .django-cradmin-multiselect2-target-submitbuttons {
+  margin-top: 5px;
 }
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-with-items-content {
   display: none;
@@ -6835,7 +6858,28 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
   display: none;
 }
 .django-cradmin-multiselect2-itemvalue .django-cradmin-multiselect2-itemvalue-buttons {
+  margin-top: 8px;
   margin-bottom: 0;
+}
+.django-cradmin-multiselect2-itemvalue .django-cradmin-multiselect2-itemvalue-selectedsummary {
+  display: none;
+}
+.django-cradmin-multiselect2-item-wrapper-selected .django-cradmin-multiselect2-itemvalue .django-cradmin-multiselect2-itemvalue-selectedsummary {
+  display: block;
+  font-size: 14px;
+  color: #777;
+}
+.django-cradmin-multiselect2-item-wrapper-selected .django-cradmin-multiselect2-itemvalue .django-cradmin-multiselect2-itemvalue-selectedsummary .django-cradmin-multiselect2-itemvalue-selectedsummary-prefix-icon {
+  color: #3c763d;
+}
+.django-cradmin-multiselect2-item-wrapper-selected .django-cradmin-multiselect2-itemvalue .django-cradmin-multiselect2-itemvalue-details {
+  display: none;
+}
+.django-cradmin-multiselect2-item-wrapper-selected .django-cradmin-multiselect2-itemvalue .django-cradmin-multiselect2-itemvalue-buttons {
+  display: none;
+}
+.django-cradmin-multiselect2-columnlayout .django-cradmin-multiselect2-listcolumn-buttons .btn {
+  margin-bottom: 5px;
 }
 .django-cradmin-loadmorepager {
   text-align: center;
@@ -6843,6 +6887,20 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
   padding-bottom: 20px;
 }
 .django-cradmin-loadmorepager.django-cradmin-loadmorepager-hidden {
+  display: none;
+}
+.django-cradmin-loadmorepager-target {
+  opacity: 1;
+  -webkit-transition: opacity 0.2s ease-in-out;
+  -moz-transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out;
+}
+.django-cradmin-loadmorepager-target.django-cradmin-loadmorepager-target-reloading-page1 {
+  opacity: 0;
+}
+.django-cradmin-loadmorepager-target.django-cradmin-loadmorepager-target-reloading-page1 button,
+.django-cradmin-loadmorepager-target.django-cradmin-loadmorepager-target-reloading-page1 a,
+.django-cradmin-loadmorepager-target.django-cradmin-loadmorepager-target-reloading-page1 input {
   display: none;
 }
 @media (min-width: 992px) {
