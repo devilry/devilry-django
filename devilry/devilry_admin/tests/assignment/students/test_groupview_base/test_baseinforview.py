@@ -354,7 +354,7 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mommy.make('core.Candidate',
                        relatedstudent__user__fullname='candidate{}'.format(number),
                        assignment_group=group)
-        with self.assertNumQueries(7):
+        with self.assertNumQueries(8):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
                                                requestuser=testuser)
@@ -391,7 +391,7 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                        assignment_group=group)
             devilry_group_mommy_factories.feedbackset_first_attempt_published(
                 group=group, grading_points=3)
-        with self.assertNumQueries(8):
+        with self.assertNumQueries(9):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
                                                requestuser=testuser)
@@ -410,7 +410,7 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mommy.make('core.Candidate',
                        relatedstudent__user__fullname='candidate{}'.format(number),
                        assignment_group=group)
-        with self.assertNumQueries(7):
+        with self.assertNumQueries(8):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
                                                requestuser=testuser)
