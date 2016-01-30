@@ -109,3 +109,23 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
             'Assignment 2',
             'Assignment 1',
         ], assignmentnames)
+
+    def test_periodlist_only_assignments_in_period(self):
+        testperiod = mommy.make('core.Period')
+        otherperiod = mommy.make('core.Period')
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=testperiod,
+                          long_name='Testperiod Assignment 1')
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=otherperiod,
+                          long_name='Otherperiod Assignment 1')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(
+            1,
+            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue-titledescription-title')
+        )
+        self.assertEqual(
+            'Testperiod Assignment 1',
+            mockresponse.selector.one(
+                    '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized
+        )

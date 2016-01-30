@@ -114,7 +114,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make_recipe('devilry.apps.core.period_active',
                           parentnode=testsubject,
                           long_name='Testsubject Period 1')
-        mommy.make_recipe('devilry.apps.core.period_old',
+        mommy.make_recipe('devilry.apps.core.period_active',
                           parentnode=othersubject,
                           long_name='Othersubject Period 1')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
