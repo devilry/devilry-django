@@ -277,7 +277,7 @@ class ManualReplaceView(BaseManualAddOrReplaceView):
     def get_ignored_relatedexaminerids_for_group(self, group):
         # We do not need to ignore any existing examiners - they are removed
         # by :meth:`.clear_existing_examiners_from_groups`
-        return {examiner.relatedexaminer_id for examiner in group.examiners.all()}
+        return []
 
     def get_success_message_formatting_string(self):
         return ugettext_lazy('Made %(examinernames)s examiner for %(count)s students, replacing any previous '

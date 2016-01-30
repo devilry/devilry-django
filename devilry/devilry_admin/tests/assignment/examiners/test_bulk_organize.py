@@ -713,9 +713,11 @@ class TestManualReplaceView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         relatedexaminer1 = mommy.make('core.RelatedExaminer', period=testassignment.period)
         relatedexaminer2 = mommy.make('core.RelatedExaminer', period=testassignment.period)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', relatedexaminer=relatedexaminer1,
+                   assignmentgroup=testgroup)
         mommy.make('core.Examiner', relatedexaminer=relatedexaminer2,
                    assignmentgroup=testgroup)
-        self.assertEqual(1, Examiner.objects.count())
+        self.assertEqual(2, Examiner.objects.count())
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
