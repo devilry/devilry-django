@@ -35,6 +35,7 @@ class GroupViewMixin(object):
         filterlist.append(devilry_listfilter.assignmentgroup.IsPassingGradeFilter())
         filterlist.append(devilry_listfilter.assignmentgroup.PointsFilter())
         filterlist.append(devilry_listfilter.assignmentgroup.ExaminerFilter(view=self))
+        filterlist.append(devilry_listfilter.assignmentgroup.ExaminerCountFilter(view=self))
         filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
 
     def get_unfiltered_queryset_for_role(self, role):
@@ -87,6 +88,7 @@ class GroupViewMixin(object):
             .annotate_with_has_unpublished_feedbackdraft()\
             .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user)\
             .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)\
+            .annotate_with_number_of_examiners()\
             .distinct()
         return queryset
 
