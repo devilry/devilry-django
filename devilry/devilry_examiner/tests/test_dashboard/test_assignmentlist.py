@@ -251,7 +251,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             for element in selector.list(
                 '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
 
-    def test_render_orderby_default(self):
+    def test_render_orderby_first_deadline_descending(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testperiod1 = mommy.make_recipe('devilry.apps.core.period_active',
                                         parentnode__short_name='testsubject1',
@@ -264,21 +264,21 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    assignmentgroup__parentnode=mommy.make_recipe(
                        'devilry.apps.core.assignment_activeperiod_start',
                        long_name='Assignment 1',
-                       publishing_time=ACTIVE_PERIOD_START + timedelta(days=1),
+                       first_deadline=ACTIVE_PERIOD_START + timedelta(days=1),
                        parentnode=testperiod1))
         mommy.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=mommy.make_recipe(
                        'devilry.apps.core.assignment_activeperiod_start',
                        long_name='Assignment 2',
-                       publishing_time=ACTIVE_PERIOD_START + timedelta(days=3),
+                       first_deadline=ACTIVE_PERIOD_START + timedelta(days=3),
                        parentnode=testperiod1))
         mommy.make('core.Examiner',
                    relatedexaminer__user=testuser,
                    assignmentgroup__parentnode=mommy.make_recipe(
                        'devilry.apps.core.assignment_activeperiod_start',
                        long_name='Assignment 1',
-                       publishing_time=ACTIVE_PERIOD_START + timedelta(days=2),
+                       first_deadline=ACTIVE_PERIOD_START + timedelta(days=2),
                        parentnode=testperiod2))
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testuser,
@@ -288,6 +288,47 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'testsubject1.testperiod - Assignment 2',
                 'testsubject2.testperiod - Assignment 1',
                 'testsubject1.testperiod - Assignment 1',
+            ],
+            self.__get_titles(mockresponse.selector))
+
+    def test_render_orderby_first_deadline_ascending(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod1 = mommy.make_recipe('devilry.apps.core.period_active',
+                                        parentnode__short_name='testsubject1',
+                                        short_name='testperiod')
+        testperiod2 = mommy.make_recipe('devilry.apps.core.period_active',
+                                        parentnode__short_name='testsubject2',
+                                        short_name='testperiod')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup__parentnode=mommy.make_recipe(
+                       'devilry.apps.core.assignment_activeperiod_start',
+                       long_name='Assignment 1',
+                       first_deadline=ACTIVE_PERIOD_START + timedelta(days=1),
+                       parentnode=testperiod1))
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup__parentnode=mommy.make_recipe(
+                       'devilry.apps.core.assignment_activeperiod_start',
+                       long_name='Assignment 2',
+                       first_deadline=ACTIVE_PERIOD_START + timedelta(days=3),
+                       parentnode=testperiod1))
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup__parentnode=mommy.make_recipe(
+                       'devilry.apps.core.assignment_activeperiod_start',
+                       long_name='Assignment 1',
+                       first_deadline=ACTIVE_PERIOD_START + timedelta(days=2),
+                       parentnode=testperiod2))
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testuser,
+                viewkwargs={'filters_string': 'orderby-first_deadline_ascending'},
+                requestuser=testuser)
+        self.assertEqual(
+            [
+                'testsubject1.testperiod - Assignment 1',
+                'testsubject2.testperiod - Assignment 1',
+                'testsubject1.testperiod - Assignment 2',
             ],
             self.__get_titles(mockresponse.selector))
 
@@ -323,6 +364,47 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=testuser,
                 viewkwargs={'filters_string': 'orderby-publishing_time_descending'},
+                requestuser=testuser)
+        self.assertEqual(
+            [
+                'testsubject1.testperiod - Assignment 2',
+                'testsubject2.testperiod - Assignment 1',
+                'testsubject1.testperiod - Assignment 1',
+            ],
+            self.__get_titles(mockresponse.selector))
+
+    def test_render_orderby_publishing_time_ascending(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod1 = mommy.make_recipe('devilry.apps.core.period_active',
+                                        parentnode__short_name='testsubject1',
+                                        short_name='testperiod')
+        testperiod2 = mommy.make_recipe('devilry.apps.core.period_active',
+                                        parentnode__short_name='testsubject2',
+                                        short_name='testperiod')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup__parentnode=mommy.make_recipe(
+                       'devilry.apps.core.assignment_activeperiod_start',
+                       long_name='Assignment 1',
+                       publishing_time=ACTIVE_PERIOD_START + timedelta(days=1),
+                       parentnode=testperiod1))
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup__parentnode=mommy.make_recipe(
+                       'devilry.apps.core.assignment_activeperiod_start',
+                       long_name='Assignment 2',
+                       publishing_time=ACTIVE_PERIOD_START + timedelta(days=3),
+                       parentnode=testperiod1))
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup__parentnode=mommy.make_recipe(
+                       'devilry.apps.core.assignment_activeperiod_start',
+                       long_name='Assignment 1',
+                       publishing_time=ACTIVE_PERIOD_START + timedelta(days=2),
+                       parentnode=testperiod2))
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testuser,
+                viewkwargs={'filters_string': 'orderby-publishing_time_ascending'},
                 requestuser=testuser)
         self.assertEqual(
             [
