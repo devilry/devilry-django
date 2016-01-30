@@ -44,17 +44,7 @@ class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseVie
         return context
 
     def get_buttons(self):
-        return [
-            layout.Submit('examiner_add_comment_for_examiners',
-                _('Add comment for examiners'),
-               css_class='btn btn-default'),
-            layout.Submit('examiner_add_public_comment',
-               _('Add public comment'),
-               css_class='btn btn-primary'),
-            layout.Submit('examiner_add_comment_to_feedback_draft',
-                   _('Add to feedback'),
-                   css_class='btn btn-default')
-        ]
+        return []
 
     def set_automatic_attributes(self, obj):
         super(ExaminerBaseFeedbackFeedView, self).set_automatic_attributes(obj)
@@ -140,14 +130,16 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
             raise ValueError('Unsupported grading_system_plugin_id: {}'.format(assignment.grading_system_plugin_id))
 
     def get_buttons(self):
-        return [
+        buttons = super(ExaminerFeedbackView, self).get_buttons()
+        buttons.extend([
             layout.Submit('examiner_add_comment_to_feedback_draft',
-                   _('Add to feedback'),
-                   css_class='btn btn-default'),
+                          _('Add to feedback'),
+                          css_class='btn btn-default'),
             layout.Submit('examiner_publish_feedback',
-                   _('Publish feedback'),
-                   css_class='btn btn-primary')
-        ]
+                          _('Publish feedback'),
+                          css_class='btn btn-primary')
+        ])
+        return buttons
 
     def save_object(self, form, commit=True):
         obj = super(ExaminerFeedbackView, self).save_object(form=form)
@@ -189,14 +181,16 @@ class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
         )
 
     def get_buttons(self):
-        return [
+        buttons = super(ExaminerDiscussView, self).get_buttons()
+        buttons.extend([
             layout.Submit('examiner_add_comment_for_examiners',
-                _('Add comment for examiners'),
-               css_class='btn btn-default'),
+                          _('Add comment for examiners'),
+                          css_class='btn btn-default'),
             layout.Submit('examiner_add_public_comment',
-               _('Add public comment'),
-               css_class='btn btn-primary'),
-        ]
+                          _('Add public comment'),
+                          css_class='btn btn-primary'),
+        ])
+        return buttons
 
     def save_object(self, form, commit=True):
         obj = super(ExaminerDiscussView, self).save_object(form)
