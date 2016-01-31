@@ -39,12 +39,12 @@
                 {% trans "Only students registered for this semester can be added to assignments within the semester." %}
             </p>
             <p>
-                <a href="{% cradmin_instance_url appname='students' viewname='INDEX' roleid=semester.id %}"
-                        class="btn btn-default">
+                <a href="{% cradmin_instance_url appname='students' viewname='INDEX' %}"
+                        class="btn btn-default btn-sm">
                     {% trans "Add/edit students" %}
                 </a>
-                <a href="{% cradmin_instance_url appname='examiners' viewname='INDEX' roleid=semester.id %}"
-                        class="btn btn-default">
+                <a href="{% cradmin_instance_url appname='examiners' viewname='INDEX' %}"
+                        class="btn btn-default btn-sm">
                     {% trans "Add/edit examiners" %}
                 </a>
             </p>
@@ -55,8 +55,8 @@
                 {% trans "You can add semester administrators. Semester administrators have mostly the same permissions as course administrators except that they do not have access to anonymous assignments." %}
             </p>
             <p>
-                <a href="{% cradmin_instance_url appname='admins' viewname='INDEX' roleid=semester.id %}"
-                        class="btn btn-default">
+                <a href="{% cradmin_instance_url appname='admins' viewname='INDEX' %}"
+                        class="btn btn-default btn-sm">
                     {% trans "Add/edit semester administrators" %}
                 </a>
             </p>
@@ -65,11 +65,11 @@
             <h2>{% trans "Utilities" %}</h2>
             <p>
                 <a href="#" onclick="alert('TODO');"
-                        class="btn btn-default">
+                        class="btn btn-default btn-sm">
                     {% trans "Overview of all results" %}
                 </a>
                 <a href="#" onclick="alert('TODO');"
-                        class="btn btn-default">
+                        class="btn btn-default btn-sm">
                     {% trans "Qualified for final exams" %}
                 </a>
             </p>

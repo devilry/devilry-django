@@ -22,3 +22,21 @@
         </a>
     </p>
 {% endblock listbuilderview_buttons %}
+
+{% block content %}
+    {{ block.super }}
+    <div class="container">
+        <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
+            <h2>{% trans "Course administrators" %}</h2>
+            <p class="text-muted">
+                {% trans "Course administrators have access to do everything within their courses, except delete deliveries from students and published feedback." %}
+            </p>
+            <p>
+                <a href="{% cradmin_instance_url appname='admins' viewname='INDEX' %}"
+                        class="btn btn-default btn-sm">
+                    {% trans "Add/edit course administrators" %}
+                </a>
+            </p>
+        </div>
+    </div>
+{% endblock content %}
