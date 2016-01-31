@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 from django_cradmin.viewhelpers import listbuilderview
-from django_cradmin.viewhelpers import listbuilder
 from django_cradmin.viewhelpers import listfilter
 
 from devilry.apps.core.models import Assignment
@@ -11,7 +10,7 @@ from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
 
 
-class AssignmentItemFrame(listbuilder.itemframe.Link):
+class AssignmentItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
     valuealias = 'assignment'
 
     def get_url(self):
@@ -23,7 +22,9 @@ class AssignmentItemFrame(listbuilder.itemframe.Link):
         )
 
     def get_extra_css_classes_list(self):
-        return ['devilry-admin-period-overview-assignmentitemframe']
+        cssclasses = super(AssignmentItemFrame, self).get_extra_css_classes_list()
+        cssclasses.append('devilry-admin-period-overview-assignmentitemframe')
+        return cssclasses
 
 
 class Overview(listbuilderview.FilterListMixin, listbuilderview.View):
