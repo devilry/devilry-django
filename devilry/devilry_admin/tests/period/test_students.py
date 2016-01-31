@@ -1,11 +1,12 @@
 import unittest
 
-from django.contrib import messages
-from django.contrib.auth import get_user_model
-from django.http import Http404
-from django.test import TestCase, RequestFactory
 import htmls
 import mock
+from django.conf import settings
+from django.contrib import messages
+from django.http import Http404
+from django.test import TestCase, RequestFactory
+from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import RelatedStudent
@@ -115,92 +116,101 @@ class TestListView(TestCase):
         self.assertEqual(['expecteduser'], self.__get_names(selector))
 
 
-class TestRemoveStudentView(TestCase):
-    def __mock_request(self, method, role, requestuser, user_to_remove,
-                       messagesmock=None):
-        request = getattr(RequestFactory(), method)('/')
-        request.user = requestuser
-        request.cradmin_role = role
-        request.cradmin_app = mock.MagicMock()
-        request.cradmin_instance = mock.MagicMock()
-        request.session = mock.MagicMock()
-        if messagesmock:
-            request._messages = messagesmock
-        else:
-            request._messages = mock.MagicMock()
-        admin_to_remove = RelatedStudent.objects.get(user=user_to_remove)
-        response = students.RemoveView.as_view()(request, pk=admin_to_remove.pk)
-        return response
+class TestDeactivateStudentView(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = students.DeactivateView
 
-    def __mock_http200_getrequest_htmls(self, role, requestuser, user_to_remove):
-        response = self.__mock_request(method='get',
-                                       role=role,
-                                       requestuser=requestuser,
-                                       user_to_remove=user_to_remove)
-        self.assertEqual(response.status_code, 200)
-        response.render()
-        selector = htmls.S(response.content)
-        return selector
+    def test_get_title(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period',
+                                parentnode__short_name='testsubject',
+                                short_name='testperiod')
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    period=testperiod,
+                                    user__fullname='Jane Doe')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod,
+                requestuser=requestuser,
+                viewkwargs={'pk': relatedstudent.pk})
+        self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
+                         'Deactivate student: Jane Doe')
 
-    def __mock_postrequest(self, role, requestuser, user_to_remove, messagesmock=None):
-        response = self.__mock_request(method='post',
-                                       role=role,
-                                       requestuser=requestuser,
-                                       user_to_remove=user_to_remove,
-                                       messagesmock=messagesmock)
-        return response
+    def test_get_h1(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period',
+                                parentnode__short_name='testsubject',
+                                short_name='testperiod')
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    period=testperiod,
+                                    user__fullname='Jane Doe')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod,
+                requestuser=requestuser,
+                viewkwargs={'pk': relatedstudent.pk})
+        self.assertEqual(mockresponse.selector.one('h1').alltext_normalized,
+                         'Deactivate student: Jane Doe')
 
-    def test_get(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        periodbuilder = PeriodBuilder.make(short_name='testbasenode') \
-            .add_relatedstudents(requestuser, janedoe)
-        selector = self.__mock_http200_getrequest_htmls(role=periodbuilder.get_object(),
-                                                        requestuser=requestuser,
-                                                        user_to_remove=janedoe)
-        self.assertEqual(selector.one('title').alltext_normalized,
-                         'Remove Jane Doe')
-        self.assertEqual(selector.one('#deleteview-preview').alltext_normalized,
-                         'Are you sure you want to remove Jane Doe '
-                         'as student for {}?'.format(periodbuilder.get_object()))
+    def test_get_preview(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period',
+                                parentnode__short_name='testsubject',
+                                short_name='testperiod')
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    period=testperiod,
+                                    user__fullname='Jane Doe')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod,
+                requestuser=requestuser,
+                viewkwargs={'pk': relatedstudent.pk})
+        self.assertEqual(mockresponse.selector.one('#deleteview-preview').alltext_normalized,
+                         'Are you sure you want to make Jane Doe '
+                         'an inactive student for testsubject.testperiod? Inactive students '
+                         'can not be added to new assignments, but they still have access '
+                         'to assignments that they have already been granted access to. Inactive '
+                         'students are clearly marked with warning messages throughout the student, examiner '
+                         'and admin UI, but students and examiners are not notified in any way when you '
+                         'deactivate a student. You can re-activate a deactivated student at any time.')
 
-    def test_post_remove_yourself_404(self):
-        requestuser = UserBuilder2().user
-        periodbuilder = PeriodBuilder.make() \
-            .add_relatedstudents(requestuser)
+    def test_404_if_not_relatedstudent_on_period(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        otherperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    period=otherperiod)
         with self.assertRaises(Http404):
-            self.__mock_postrequest(role=periodbuilder.get_object(),
-                                    requestuser=requestuser,
-                                    user_to_remove=requestuser)
+            self.mock_getrequest(
+                    cradmin_role=testperiod,
+                    requestuser=requestuser,
+                    viewkwargs={'pk': relatedstudent.pk})
 
-    def test_post_remove_yourself_superuser_ok(self):
-        requestuser = UserBuilder2(is_superuser=True).user
-        periodbuilder = PeriodBuilder.make() \
-            .add_relatedstudents(requestuser)
-        response = self.__mock_postrequest(role=periodbuilder.get_object(),
-                                           requestuser=requestuser,
-                                           user_to_remove=requestuser)
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(get_user_model().objects.filter(pk=requestuser.pk).exists())
-        self.assertFalse(periodbuilder.get_object().relatedstudent_set.filter(pk=requestuser.pk).exists())
+    def test_post_deactivates(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod)
+        self.assertTrue(relatedstudent.active)
+        self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                requestuser=requestuser,
+                viewkwargs={'pk': relatedstudent.pk})
+        updated_relatedstudent = RelatedStudent.objects.get(id=relatedstudent.id)
+        self.assertFalse(updated_relatedstudent.active)
 
-    def test_post_remove_ok(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        periodbuilder = PeriodBuilder.make(short_name='testbasenode') \
-            .add_relatedstudents(requestuser, janedoe)
+    def test_post_success_message(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    period=testperiod,
+                                    user__fullname='Jane Doe')
+        self.assertTrue(relatedstudent.active)
         messagesmock = mock.MagicMock()
-        response = self.__mock_postrequest(role=periodbuilder.get_object(),
-                                           requestuser=requestuser,
-                                           user_to_remove=janedoe,
-                                           messagesmock=messagesmock)
-        self.assertEqual(response.status_code, 302)
+        self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                messagesmock=messagesmock,
+                requestuser=requestuser,
+                viewkwargs={'pk': relatedstudent.pk})
         messagesmock.add.assert_called_once_with(
             messages.SUCCESS,
-            'Jane Doe is no longer student for {}.'.format(periodbuilder.get_object()),
+            'Jane Doe was deactivated.',
             '')
-        self.assertTrue(get_user_model().objects.filter(pk=janedoe.pk).exists())
-        self.assertFalse(periodbuilder.get_object().relatedstudent_set.filter(pk=janedoe.pk).exists())
 
 
 class TestUserSelectView(TestCase):
@@ -252,7 +262,7 @@ class TestAddView(TestCase):
         return response, request
 
     def test_invalid_user(self):
-        requestuser = UserBuilder2().user
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
         periodbuilder = PeriodBuilder.make(short_name='testbasenode')
         response, request = self.__mock_postrequest(role=periodbuilder.get_object(),
                                                     requestuser=requestuser,
@@ -268,7 +278,7 @@ class TestAddView(TestCase):
         # the ID of the User
         UserBuilder2()
         UserBuilder2()
-        requestuser = UserBuilder2().user
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
         periodbuilder = PeriodBuilder.make(short_name='testbasenode') \
             .add_relatedstudents(requestuser)
         response, request = self.__mock_postrequest(role=periodbuilder.get_object(),
@@ -281,7 +291,7 @@ class TestAddView(TestCase):
         request.cradmin_app.reverse_appindexurl.assert_called_once()
 
     def test_adds_user_to_relatedstudents(self):
-        requestuser = UserBuilder2().user
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
         janedoe = UserBuilder2().user
         periodbuilder = PeriodBuilder.make()
         self.assertFalse(periodbuilder.get_object().relatedstudent_set.filter(user=janedoe).exists())
@@ -291,7 +301,7 @@ class TestAddView(TestCase):
         self.assertTrue(periodbuilder.get_object().relatedstudent_set.filter(user=janedoe).exists())
 
     def test_success_message(self):
-        requestuser = UserBuilder2().user
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
         janedoe = UserBuilder2(fullname='Jane Doe').user
         periodbuilder = PeriodBuilder.make(short_name='testbasenode')
         response, request = self.__mock_postrequest(role=periodbuilder.get_object(),
@@ -303,7 +313,7 @@ class TestAddView(TestCase):
             '')
 
     def test_success_redirect_without_next(self):
-        requestuser = UserBuilder2().user
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
         janedoe = UserBuilder2(fullname='Jane Doe').user
         periodbuilder = PeriodBuilder.make(short_name='testbasenode')
         response, request = self.__mock_postrequest(role=periodbuilder.get_object(),
@@ -313,7 +323,7 @@ class TestAddView(TestCase):
         request.cradmin_app.reverse_appindexurl.assert_called_once()
 
     def test_success_redirect_with_next(self):
-        requestuser = UserBuilder2().user
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
         janedoe = UserBuilder2(fullname='Jane Doe').user
         periodbuilder = PeriodBuilder.make(short_name='testbasenode')
         response, request = self.__mock_postrequest(role=periodbuilder.get_object(),

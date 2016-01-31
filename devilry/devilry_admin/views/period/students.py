@@ -1,19 +1,19 @@
+from django import forms
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django import forms
-from django.http import HttpResponseRedirect
-from django.views.generic.edit import BaseFormView
-
-from django_cradmin import crapp
-from django_cradmin.viewhelpers import objecttable
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
+from django.utils.translation import ugettext_lazy
+from django.views.generic.edit import BaseFormView
+from django_cradmin import crapp
 from django_cradmin.viewhelpers import delete
+from django_cradmin.viewhelpers import objecttable
 
 from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import UserEmail
-from devilry.devilry_admin.views.common import userselect_common
 from devilry.devilry_admin.views.common import bulkimport_users_common
+from devilry.devilry_admin.views.common import userselect_common
 
 
 class GetQuerysetForRoleMixin(object):
@@ -31,14 +31,14 @@ class InfoColumn(objecttable.MultiActionColumn):
     template_name = 'devilry_admin/common/user-info-column.django.html'
 
     def get_header(self):
-        return _('Students')
+        return ugettext_lazy('Students')
 
     def get_buttons(self, obj):
         return [
             objecttable.Button(
-                label=_('Remove'),
-                url=self.reverse_appurl('remove', args=[obj.id]),
-                buttonclass="btn btn-danger btn-sm devilry-relatedstudentlist-remove-button"),
+                label=ugettext_lazy('Remove'),
+                url=self.reverse_appurl('deactivate', args=[obj.id]),
+                buttonclass="btn btn-danger btn-sm devilry-relatedstudentlist-deactivate-button"),
         ]
 
     def get_context_data(self, obj):
@@ -55,16 +55,16 @@ class ListView(GetQuerysetForRoleMixin, objecttable.ObjectTableView):
     def get_buttons(self):
         app = self.request.cradmin_app
         return [
-            objecttable.Button(label=_('Add student'),
+            objecttable.Button(label=ugettext_lazy('Add student'),
                                url=app.reverse_appurl('select-user-to-add-as-student'),
                                buttonclass='btn btn-primary'),
-            objecttable.Button(label=_('Bulk import students'),
+            objecttable.Button(label=ugettext_lazy('Bulk import students'),
                                url=app.reverse_appurl('bulkimport'),
                                buttonclass='btn btn-default'),
         ]
 
     def get_pagetitle(self):
-        return _('Students')
+        return ugettext_lazy('Students')
 
     def get_queryset_for_role(self, role):
         return super(ListView, self).get_queryset_for_role(role) \
@@ -77,56 +77,62 @@ class ListView(GetQuerysetForRoleMixin, objecttable.ObjectTableView):
         """
         Get the message to show when there are no items.
         """
-        return _('There is no students registered for %(what)s.') % {
+        return ugettext_lazy('There is no students registered for %(what)s.') % {
             'what': self.request.cradmin_role.get_path()
         }
 
 
-class RemoveView(GetQuerysetForRoleMixin, delete.DeleteView):
+class DeactivateView(GetQuerysetForRoleMixin, delete.DeleteView):
     """
-    View used to remove students from a period.
+    View used to deactivate students from a period.
     """
-
-    def get_queryset_for_role(self, role):
-        queryset = super(RemoveView, self) \
-            .get_queryset_for_role(role=role)
-        if not self.request.user.is_superuser:
-            queryset = queryset.exclude(user=self.request.user)
-        return queryset
-
     def get_object(self, *args, **kwargs):
         if not hasattr(self, '_object'):
-            self._object = super(RemoveView, self).get_object(*args, **kwargs)
+            self._object = super(DeactivateView, self).get_object(*args, **kwargs)
         return self._object
 
     def get_pagetitle(self):
-        return _('Remove %(what)s') % {'what': self.get_object().user.get_full_name()}
+        return ugettext_lazy('Deactivate student: %(user)s') % {'user': self.get_object().user.get_full_name()}
 
     def get_success_message(self, object_preview):
         relatedstudent = self.get_object()
-        period = relatedstudent.period
         user = relatedstudent.user
-        return _('%(user)s is no longer student for %(what)s.') % {
+        return ugettext_lazy('%(user)s was deactivated.') % {
             'user': user.get_full_name(),
-            'what': period.get_path(),
         }
 
     def get_confirm_message(self):
         relatedstudent = self.get_object()
         period = relatedstudent.period
         user = relatedstudent.user
-        return _('Are you sure you want to remove %(user)s as student for %(what)s?') % {
+        return ugettext_lazy(
+                'Are you sure you want to make %(user)s '
+                'an inactive student for %(period)s? Inactive students '
+                'can not be added to new assignments, but they still have access '
+                'to assignments that they have already been granted access to. Inactive '
+                'students are clearly marked with warning messages throughout the student, examiner '
+                'and admin UI, but students and examiners are not notified in any way when you '
+                'deactivate a student. You can re-activate a deactivated student at any time.'
+        ) % {
             'user': user.get_full_name(),
-            'what': period.get_path(),
+            'period': period.get_path(),
         }
 
     def get_action_label(self):
-        return _('Remove')
+        return ugettext_lazy('Deactivate')
+
+    def delete(self, request, *args, **kwargs):
+        object_preview = self.get_object_preview()
+        relatedstudent = self.get_object()
+        relatedstudent.active = False
+        relatedstudent.save()
+        self.add_success_messages(object_preview)
+        return redirect(self.get_success_url())
 
 
 class UserInfoColumn(userselect_common.UserInfoColumn):
     modelfield = 'shortname'
-    select_label = _('Add as student')
+    select_label = ugettext_lazy('Add as student')
 
 
 class UserSelectView(userselect_common.AbstractUserSelectView):
@@ -135,7 +141,7 @@ class UserSelectView(userselect_common.AbstractUserSelectView):
     ]
 
     def get_pagetitle(self):
-        return _('Please select the user you want to add as students for %(what)s') % {
+        return ugettext_lazy('Please select the user you want to add as students for %(what)s') % {
             'what': self.request.cradmin_role.long_name
         }
 
@@ -180,7 +186,7 @@ class AddView(BaseFormView):
         self.__make_user_student(user)
 
         period = self.request.cradmin_role
-        successmessage = _('%(user)s added as student for %(what)s.') % {
+        successmessage = ugettext_lazy('%(user)s added as student for %(what)s.') % {
             'user': user.get_full_name(),
             'what': period,
         }
@@ -194,29 +200,29 @@ class AddView(BaseFormView):
 
     def form_invalid(self, form):
         messages.error(self.request,
-                       _('Error: The user may not exist, or it may already be student.'))
+                       ugettext_lazy('Error: The user may not exist, or it may already be student.'))
         return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
 
 
 class BulkImportView(bulkimport_users_common.AbstractTypeInUsersView):
-    create_button_label = _('Bulk import students')
+    create_button_label = ugettext_lazy('Bulk import students')
 
     def get_pagetitle(self):
-        return _('Bulk import students')
+        return ugettext_lazy('Bulk import students')
 
     def import_users_from_emails(self, emails):
         period = self.request.cradmin_role
         result = RelatedStudent.objects.bulk_create_from_emails(period=period, emails=emails)
         if result.new_relatedusers_was_created():
-            messages.success(self.request, _('Added %(count)s new students to %(period)s.') % {
+            messages.success(self.request, ugettext_lazy('Added %(count)s new students to %(period)s.') % {
                 'count': result.created_relatedusers_queryset.count(),
                 'period': period.get_path()
             })
         else:
-            messages.warning(self.request, _('No new students was added.'))
+            messages.warning(self.request, ugettext_lazy('No new students was added.'))
 
         if result.existing_relateduser_emails_set:
-            messages.info(self.request, _('%(count)s users was already student on %(period)s.') % {
+            messages.info(self.request, ugettext_lazy('%(count)s users was already student on %(period)s.') % {
                 'count': len(result.existing_relateduser_emails_set),
                 'period': period.get_path()
             })
@@ -225,15 +231,15 @@ class BulkImportView(bulkimport_users_common.AbstractTypeInUsersView):
         period = self.request.cradmin_role
         result = RelatedStudent.objects.bulk_create_from_usernames(period=period, usernames=usernames)
         if result.new_relatedusers_was_created():
-            messages.success(self.request, _('Added %(count)s new students to %(period)s.') % {
+            messages.success(self.request, ugettext_lazy('Added %(count)s new students to %(period)s.') % {
                 'count': result.created_relatedusers_queryset.count(),
                 'period': period.get_path()
             })
         else:
-            messages.warning(self.request, _('No new students was added.'))
+            messages.warning(self.request, ugettext_lazy('No new students was added.'))
 
         if result.existing_relateduser_usernames_set:
-            messages.info(self.request, _('%(count)s users was already student on %(period)s.') % {
+            messages.info(self.request, ugettext_lazy('%(count)s users was already student on %(period)s.') % {
                 'count': len(result.existing_relateduser_usernames_set),
                 'period': period.get_path()
             })
@@ -243,9 +249,9 @@ class App(crapp.App):
     appurls = [
         crapp.Url(r'^$', ListView.as_view(), name=crapp.INDEXVIEW_NAME),
         crapp.Url(
-            r'^remove/(?P<pk>\d+)$',
-            RemoveView.as_view(),
-            name="remove"),
+            r'^deactivate/(?P<pk>\d+)$',
+            DeactivateView.as_view(),
+            name="deactivate"),
         crapp.Url(
             r'^select-user-to-add-as-student$',
             UserSelectView.as_view(),
