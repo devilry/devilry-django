@@ -25,3 +25,54 @@
         </a>
     </p>
 {% endblock listbuilderview_buttons %}
+
+
+{% block content %}
+    {{ block.super }}
+
+    <div class="container">
+        <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
+            <h2>
+                {% trans "Students and examiners" %}
+            </h2>
+            <p class="text-muted">
+                {% trans "Only students registered for this semester can be added to assignments within the semester." %}
+            </p>
+            <p>
+                <a href="{% cradmin_instance_url appname='students' viewname='INDEX' roleid=semester.id %}"
+                        class="btn btn-default">
+                    {% trans "Add/edit students" %}
+                </a>
+                <a href="{% cradmin_instance_url appname='examiners' viewname='INDEX' roleid=semester.id %}"
+                        class="btn btn-default">
+                    {% trans "Add/edit examiners" %}
+                </a>
+            </p>
+        </div>
+        <div class="devilry-dashboard-container">
+            <h2>{% trans "Semester administrators" %}</h2>
+            <p class="text-muted">
+                {% trans "You can add semester administrators. Semester administrators have mostly the same permissions as course administrators except that they do not have access to anonymous assignments." %}
+            </p>
+            <p>
+                <a href="{% cradmin_instance_url appname='admins' viewname='INDEX' roleid=semester.id %}"
+                        class="btn btn-default">
+                    {% trans "Add/edit semester administrators" %}
+                </a>
+            </p>
+        </div>
+        <div class="devilry-dashboard-container">
+            <h2>{% trans "Utilities" %}</h2>
+            <p>
+                <a href="#" onclick="alert('TODO');"
+                        class="btn btn-default">
+                    {% trans "Overview of all results" %}
+                </a>
+                <a href="#" onclick="alert('TODO');"
+                        class="btn btn-default">
+                    {% trans "Qualified for final exams" %}
+                </a>
+            </p>
+        </div>
+    </div>
+{% endblock content %}

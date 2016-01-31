@@ -7215,6 +7215,9 @@ h3 .devilry-user-verbose-inline small {
 .devilry-dashboard-container h3:first-child {
   margin-top: 0;
 }
+.devilry-dashboard-container.devilry-dashboard-container-withtopmargin {
+  margin-top: 20px;
+}
 .devilry-dashboard-container.devilry-dashboard-container-focus h2 {
   font-size: 28px;
 }
