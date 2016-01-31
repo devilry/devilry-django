@@ -369,9 +369,13 @@ class TestBulkImportView(TestCase, AbstractTypeInUsersViewTestMixin):
 
     def test_post_valid_with_email_backend_none_added_message(self):
         testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.UserEmail',
+                   user=testuser,
+                   email='test@example.com')
         mommy.make('core.RelatedStudent',
                    period=testperiod,
-                   user=UserBuilder2().add_emails('test@example.com').user)
+                   user=testuser)
         with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
@@ -388,9 +392,13 @@ class TestBulkImportView(TestCase, AbstractTypeInUsersViewTestMixin):
 
     def test_post_valid_with_email_backend_existing_message(self):
         testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.UserEmail',
+                   user=testuser,
+                   email='test@example.com')
         mommy.make('core.RelatedStudent',
                    period=testperiod,
-                   user=UserBuilder2().add_emails('test@example.com').user)
+                   user=testuser)
         with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
@@ -437,9 +445,13 @@ class TestBulkImportView(TestCase, AbstractTypeInUsersViewTestMixin):
 
     def test_post_valid_with_username_backend_none_added_message(self):
         testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.UserName',
+                   user=testuser,
+                   username='test')
         mommy.make('core.RelatedStudent',
                    period=testperiod,
-                   user=UserBuilder2().add_usernames('test').user)
+                   user=testuser)
         with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
@@ -456,9 +468,13 @@ class TestBulkImportView(TestCase, AbstractTypeInUsersViewTestMixin):
 
     def test_post_valid_with_username_backend_existing_message(self):
         testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.UserName',
+                   user=testuser,
+                   username='test')
         mommy.make('core.RelatedStudent',
                    period=testperiod,
-                   user=UserBuilder2().add_usernames('test').user)
+                   user=testuser)
         with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
