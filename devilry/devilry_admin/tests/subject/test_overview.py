@@ -1,3 +1,6 @@
+from __future__ import unicode_literals
+
+import mock
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from django_cradmin import crinstance
@@ -32,13 +35,16 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
                          mockresponse.selector.one(
                              '#devilry_admin_period_createperiod_link').alltext_normalized)
 
-    def test_createperiod_link_url(self):
+    def test_link_urls(self):
         testsubject = mommy.make('core.Subject')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
-        mockresponse.request.cradmin_instance.reverse_url.assert_called_once_with(
-            appname='createperiod',
-            viewname='INDEX',
-            args=(), kwargs={})
+        self.assertEqual(2, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(
+                mock.call(appname=u'createperiod', args=(), viewname=u'INDEX', kwargs={}),
+                mockresponse.request.cradmin_instance.reverse_url.call_args_list[0])
+        self.assertEqual(
+                mock.call(appname=u'admins', args=(), viewname=u'INDEX', kwargs={}),
+                mockresponse.request.cradmin_instance.reverse_url.call_args_list[1])
 
     def test_periodlist_no_periods(self):
         testsubject = mommy.make('core.Subject')

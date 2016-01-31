@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+import mock
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from django_cradmin import crinstance
@@ -34,13 +36,22 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
                          mockresponse.selector.one(
                              '#devilry_admin_period_createassignment_link').alltext_normalized)
 
-    def test_createassignment_link_url(self):
+    def test_link_urls(self):
         testperiod = mommy.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
-        mockresponse.request.cradmin_instance.reverse_url.assert_called_once_with(
-            appname='createassignment',
-            viewname='INDEX',
-            args=(), kwargs={})
+        self.assertEqual(4, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(
+                mock.call(appname='createassignment', args=(), viewname='INDEX', kwargs={}),
+                mockresponse.request.cradmin_instance.reverse_url.call_args_list[0])
+        self.assertEqual(
+                mock.call(appname='students', args=(), viewname='INDEX', kwargs={}),
+                mockresponse.request.cradmin_instance.reverse_url.call_args_list[1])
+        self.assertEqual(
+                mock.call(appname='examiners', args=(), viewname='INDEX', kwargs={}),
+                mockresponse.request.cradmin_instance.reverse_url.call_args_list[2])
+        self.assertEqual(
+                mock.call(appname='admins', args=(), viewname='INDEX', kwargs={}),
+                mockresponse.request.cradmin_instance.reverse_url.call_args_list[3])
 
     def test_assignmentlist_no_assignments(self):
         testperiod = mommy.make('core.Period')
