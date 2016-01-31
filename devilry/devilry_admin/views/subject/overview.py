@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin.viewhelpers import listbuilder
 from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import listfilter
 
@@ -10,7 +9,7 @@ from devilry.apps.core.models import Period
 from devilry.devilry_cradmin import devilry_listbuilder
 
 
-class PeriodItemFrame(listbuilder.itemframe.Link):
+class PeriodItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
     valuealias = 'period'
 
     def get_url(self):

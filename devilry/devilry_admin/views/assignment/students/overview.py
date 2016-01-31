@@ -20,9 +20,7 @@ class NonAnonymousGroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFra
         )
 
     def get_extra_css_classes_list(self):
-        cssclasses = super(NonAnonymousGroupItemFrame, self).get_extra_css_classes_list()
-        cssclasses.append('devilry-admin-assignment-students-overview-group-linkframe')
-        return cssclasses
+        return ['devilry-admin-assignment-students-overview-group-linkframe']
 
 
 class Overview(groupview_base.BaseInfoView):

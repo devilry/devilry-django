@@ -7323,26 +7323,50 @@ nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devi
     text-align: right;
   }
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist .django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe .devilry-frontpage-listbuilder-roleselect-itemvalue {
+.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student .devilry-frontpage-listbuilder-roleselect-itemvalue {
   color: #fff;
-}
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist .django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe .devilry-frontpage-listbuilder-roleselect-itemvalue.devilry-frontpage-listbuilder-roleselect-itemvalue-student {
   background: #5D8C08;
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist .django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe .devilry-frontpage-listbuilder-roleselect-itemvalue.devilry-frontpage-listbuilder-roleselect-itemvalue-student:hover {
-  border-bottom-color: #1d2c02;
+.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+  color: #fff;
+  opacity: 0.3;
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist .django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe .devilry-frontpage-listbuilder-roleselect-itemvalue.devilry-frontpage-listbuilder-roleselect-itemvalue-examiner {
+.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student:hover .devilry-frontpage-listbuilder-roleselect-itemvalue {
+  border-bottom-color: #4d7407;
+  background: #4d7407;
+}
+.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+  opacity: 1;
+}
+.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner .devilry-frontpage-listbuilder-roleselect-itemvalue {
+  color: #fff;
   background: #0673ad;
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist .django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe .devilry-frontpage-listbuilder-roleselect-itemvalue.devilry-frontpage-listbuilder-roleselect-itemvalue-examiner:hover {
-  border-bottom-color: #03314a;
+.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+  color: #fff;
+  opacity: 0.3;
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist .django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe .devilry-frontpage-listbuilder-roleselect-itemvalue.devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin {
+.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner:hover .devilry-frontpage-listbuilder-roleselect-itemvalue {
+  border-bottom-color: #056394;
+  background: #056394;
+}
+.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+  opacity: 1;
+}
+.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin .devilry-frontpage-listbuilder-roleselect-itemvalue {
+  color: #fff;
   background: #ff9000;
 }
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist .django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe .devilry-frontpage-listbuilder-roleselect-itemvalue.devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin:hover {
-  border-bottom-color: #995600;
+.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+  color: #fff;
+  opacity: 0.3;
+}
+.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin:hover .devilry-frontpage-listbuilder-roleselect-itemvalue {
+  border-bottom-color: #e68200;
+  background: #e68200;
+}
+.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+  opacity: 1;
 }
 .comment-form-container {
   background-color: #f2f2f2;

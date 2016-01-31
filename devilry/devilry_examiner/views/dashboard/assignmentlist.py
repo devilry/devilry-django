@@ -9,6 +9,7 @@ from django_cradmin.viewhelpers import listfilter
 
 from devilry.apps.core import models as coremodels
 from devilry.devilry_cradmin import devilry_listfilter
+from devilry.devilry_cradmin import devilry_listbuilder
 
 
 class AssignmentItemValue(listbuilder.itemvalue.TitleDescription):
@@ -34,7 +35,7 @@ class AssignmentItemValue(listbuilder.itemvalue.TitleDescription):
         return css_classes
 
 
-class AssignmentItemFrame(listbuilder.itemframe.Link):
+class AssignmentItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
     valuealias = 'assignment'
 
     def get_url(self):

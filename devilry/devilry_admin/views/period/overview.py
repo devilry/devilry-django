@@ -22,9 +22,7 @@ class AssignmentItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
         )
 
     def get_extra_css_classes_list(self):
-        cssclasses = super(AssignmentItemFrame, self).get_extra_css_classes_list()
-        cssclasses.append('devilry-admin-period-overview-assignmentitemframe')
-        return cssclasses
+        return ['devilry-admin-period-overview-assignmentitemframe']
 
 
 class Overview(listbuilderview.FilterListMixin, listbuilderview.View):

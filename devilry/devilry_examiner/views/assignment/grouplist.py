@@ -4,16 +4,15 @@ from django.db import models
 from django.db.models.functions import Lower, Concat
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin.viewhelpers import listbuilder
 from django_cradmin.viewhelpers import listbuilderview
 
 from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer
-from devilry.devilry_cradmin import devilry_listfilter
 from devilry.devilry_cradmin import devilry_listbuilder
+from devilry.devilry_cradmin import devilry_listfilter
 
 
-class GroupItemFrame(listbuilder.itemframe.Link):
+class GroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
     valuealias = 'group'
 
     def get_url(self):
