@@ -1,117 +1,507 @@
-import unittest
+from __future__ import unicode_literals
 
-from django.test import TestCase
+import mock
+from django import test
+from django.conf import settings
+from django.contrib import messages
+from django.http import Http404
+from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
-from devilry.devilry_admin.tests.common import admins_common_testmixins
+from devilry.devilry_account.models import PermissionGroupUser, PermissionGroup, SubjectPermissionGroup
 from devilry.devilry_admin.views.subject import admins
-from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder, UserBuilder2, NodeBuilder
 
 
-@unittest.skip('Must be updated for devilry_account permission system')
-class TestAdminsListView(TestCase, admins_common_testmixins.AdminsListViewTestMixin):
-    builderclass = SubjectBuilder
-    viewclass = admins.AdminsListView
+class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = admins.Overview
 
-    def test_render_no_inherited_admin_users(self):
-        testuser = UserBuilder2(is_superuser=True).user
-        builder = SubjectBuilder.make()
-        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
-                                                      user=testuser)
-        self.assertFalse(selector.exists('#devilry_admin_listview_inherited_admin_users'))
+    def __get_titles(self, selector):
+        return [element.alltext_normalized
+                for element in selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
 
-    def test_render_inherited_admin_users_does_not_include_current(self):
-        testuser = UserBuilder2(is_superuser=True).user
-        builder = SubjectBuilder.make().add_admins(UserBuilder2().user)
-        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
-                                                      user=testuser)
-        self.assertFalse(selector.exists('#devilry_admin_listview_inherited_admin_users'))
+    def test_title(self):
+        testsubject = mommy.make('core.Subject',
+                                 short_name='testsubject')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
+        self.assertIn('Administrators for testsubject',
+                      mockresponse.selector.one('title').alltext_normalized)
 
-    def test_render_inherited_admin_users_header(self):
-        testuser = mommy.make('devilry_account.User')
-        subject = mommy.make('core.Subject', parentnode__admins=[testuser])
-        selector = self.mock_http200_getrequest_htmls(role=subject,
-                                                      user=testuser)
-        self.assertEqual('Inherited administrators',
-                         selector.one('#devilry_admin_listview_inherited_admin_users h2').alltext_normalized)
-        self.assertEqual('The following administrators is inherited from higher up in the hierarchy.',
-                         selector.one('#devilry_admin_listview_inherited_admin_users p').alltext_normalized)
+    def test_h1(self):
+        testsubject = mommy.make('core.Subject',
+                                 short_name='testsubject')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
+        self.assertEqual('Administrators for testsubject',
+                         mockresponse.selector.one('h1').alltext_normalized)
 
-    def test_render_inherited_admin_users_ordering(self):
-        testuser = UserBuilder2(is_superuser=True).user
-        builder = NodeBuilder.make()\
-            .add_admins(UserBuilder2(shortname='testuserb').user)\
-            .add_childnode()\
-            .add_admins(UserBuilder2(shortname='testusera').user)\
-            .add_childnode()\
-            .add_subject()
+    def test_buttonbar_addbutton_link(self):
+        testsubject = mommy.make('core.Subject')
+        mock_cradmin_app = mock.MagicMock()
 
-        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
-                                                      user=testuser)
-        shortnames = [element.alltext_normalized
-                      for element in selector.list('#devilry_admin_listview_inherited_admin_users '
-                                                   '.devilry-user-verbose-inline-shortname')]
-        self.assertEqual(['testusera', 'testuserb'], shortnames)
+        def mock_reverse_appurl(viewname, **kwargs):
+            return '/{}'.format(viewname)
 
-    def test_render_inherited_admin_users_render_without_primaryemail(self):
-        testuser = UserBuilder2(is_superuser=True).user
-        builder = NodeBuilder.make()\
-            .add_admins(UserBuilder2(shortname='node1admin').user)\
-            .add_subject()
+        mock_cradmin_app.reverse_appurl = mock_reverse_appurl
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject,
+                                                          cradmin_app=mock_cradmin_app)
+        self.assertEqual(
+                '/add',
+                mockresponse.selector.one('#devilry_admin_subject_admins_overview_button_add')['href'])
 
-        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
-                                                      user=testuser)
-        self.assertFalse(selector.exists('.devilry-admin-listview-inherited-admin-user-email'))
+    def test_buttonbar_addbutton_label(self):
+        testsubject = mommy.make('core.Subject')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
+        self.assertEqual(
+                'Add course administrators',
+                mockresponse.selector.one(
+                        '#devilry_admin_subject_admins_overview_button_add').alltext_normalized)
 
-    def test_render_inherited_admin_users_render_with_primaryemail(self):
-        testuser = UserBuilder2(is_superuser=True).user
-        builder = NodeBuilder.make()\
-            .add_admins(UserBuilder2(shortname='node1admin').add_primary_email('node1admin@example.com').user)\
-            .add_subject()
+    def test_no_admins_messages(self):
+        testsubject = mommy.make('core.Subject')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
+        self.assertEqual(
+                'You have no course administrators. Use the button above to add course administrators.',
+                mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
 
-        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
-                                                      user=testuser)
-        self.assertEqual(selector.one('.devilry-admin-listview-inherited-admin-user-email').alltext_normalized,
-                         '(Contact at node1admin@example.com)')
-        self.assertEqual(selector.one('.devilry-admin-listview-inherited-admin-user-email')['href'],
-                         'mailto:node1admin@example.com')
+    def test_default_ordering(self):
+        testsubject = mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            permissiongroup__is_custom_manageable=True,
+                                            subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=subjectpermissiongroup.permissiongroup,
+                   user__shortname='userb')
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=subjectpermissiongroup.permissiongroup,
+                   user__shortname='usera')
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=subjectpermissiongroup.permissiongroup,
+                   user__shortname='userc')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
+        self.assertEqual(['usera', 'userb', 'userc'],
+                         self.__get_titles(mockresponse.selector))
 
-    def test_render_inherited_admin_users_render_without_fullname(self):
-        testuser = UserBuilder2(is_superuser=True).user
-        builder = NodeBuilder.make()\
-            .add_admins(UserBuilder2(shortname='node1admin').user)\
-            .add_subject()
+    def test_only_users_from_the_permissiongroup(self):
+        testsubject = mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            permissiongroup__is_custom_manageable=True,
+                                            subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user__shortname='userb')
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=subjectpermissiongroup.permissiongroup,
+                   user__shortname='usera')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
+        self.assertEqual(['usera'],
+                         self.__get_titles(mockresponse.selector))
 
-        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
-                                                      user=testuser)
-        self.assertFalse(selector.exists('.devilry-user-verbose-inline-fullname'))
+    def test_delete_link_label(self):
+        testsubject = mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            permissiongroup__is_custom_manageable=True,
+                                            subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=subjectpermissiongroup.permissiongroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
+        self.assertEqual(
+                'Remove',
+                mockresponse.selector.one(
+                        '.devilry-admin-subject-admin-delete-link').alltext_normalized)
 
-    def test_render_inherited_admin_users_render_with_fullname(self):
-        testuser = UserBuilder2(is_superuser=True).user
-        builder = NodeBuilder.make()\
-            .add_admins(UserBuilder2(fullname='Node One Admin').user)\
-            .add_subject()
+    def test_delete_arialabel(self):
+        testsubject = mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            permissiongroup__is_custom_manageable=True,
+                                            subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=subjectpermissiongroup.permissiongroup,
+                   user__shortname='testadmin')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
+        self.assertEqual(
+                'Remove testadmin',
+                mockresponse.selector.one(
+                        '.devilry-admin-subject-admin-delete-link')['aria-label'])
 
-        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
-                                                      user=testuser)
-        self.assertEqual(selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized,
-                         'Node One Admin')
+    def test_other_permissiongroups_heading(self):
+        testsubject = mommy.make('core.Subject',
+                                 short_name='testsubject')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
+        self.assertEqual(
+                'Other administrators with access to testsubject',
+                mockresponse.selector.one(
+                        '#devilry_admin_subject_admins_other_admins_container h2').alltext_normalized)
+
+    def test_other_permissiongroups_no_permissiongroups(self):
+        testsubject = mommy.make('core.Subject')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
+        self.assertEqual(
+                'No other administrators than the ones listed above have access.',
+                mockresponse.selector.one(
+                        '#devilry_admin_subject_admins_other_admins_nonemessage').alltext_normalized)
+
+    def test_other_permissiongroups_no_permissiongroups_except_the_custom_manageable(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   permissiongroup__is_custom_manageable=True,
+                   subject=testsubject)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
+        self.assertTrue(
+                mockresponse.selector.exists('#devilry_admin_subject_admins_other_admins_nonemessage'))
+
+    def test_other_permissiongroups_not_permissiongroups_for_other_subjects(self):
+        testsubject = mommy.make('core.Subject')
+        othersubject = mommy.make('core.Subject')
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   subject=othersubject)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
+        self.assertTrue(
+                mockresponse.selector.exists('#devilry_admin_subject_admins_other_admins_nonemessage'))
+
+    def __get_otherpermissiongroups_titles(self, selector):
+        return {
+            element.alltext_normalized
+            for element in selector.list(
+                '.devilry-cradmin-subjectandperiodpermissiongroup-list '
+                '.django-cradmin-listbuilder-itemvalue-titledescription-title')}
+
+    def test_other_permissiongroups(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   subject=testsubject,
+                   permissiongroup__name='Other subjectadmins')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
+        self.assertEqual(
+                {'Other subjectadmins'},
+                self.__get_otherpermissiongroups_titles(mockresponse.selector))
+
+    def test_querycount(self):
+        testsubject = mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            permissiongroup__is_custom_manageable=True,
+                                            subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=subjectpermissiongroup.permissiongroup,
+                   _quantity=10)
+
+        extrasubjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                                 subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=extrasubjectpermissiongroup.permissiongroup,
+                   _quantity=10)
+
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   subject=testsubject, _quantity=10)
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   subject=testsubject, _quantity=10)
+
+        with self.assertNumQueries(6):
+            self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
 
 
-@unittest.skip('Must be updated for devilry_account permission system')
-class TestRemoveAdminView(TestCase, admins_common_testmixins.RemoveAdminViewTestMixin):
-    builderclass = SubjectBuilder
-    viewclass = admins.RemoveAdminView
+class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = admins.AddView
+
+    def test_get_title(self):
+        testsubject = mommy.make('core.Subject',
+                                 short_name='testsubject')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testsubject)
+        self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
+                         'Select the admins you want to add to testsubject')
+
+    def test_get_h1(self):
+        testsubject = mommy.make('core.Subject',
+                                 short_name='testsubject')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testsubject)
+        self.assertEqual(mockresponse.selector.one('h1').alltext_normalized,
+                         'Select the admins you want to add to testsubject')
+
+    def test_render_sanity(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make(settings.AUTH_USER_MODEL,
+                   fullname='Test User',
+                   shortname='test@example.com')
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock(),
+                                                          cradmin_role=testsubject)
+        self.assertEqual(
+                'Test User',
+                mockresponse.selector.one(
+                        '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+        self.assertEqual(
+                'test@example.com',
+                mockresponse.selector.one(
+                        '.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+
+    def __get_titles(self, selector):
+        return [element.alltext_normalized
+                for element in selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+
+    def test_exclude_users_in_subjectpermissiongroup(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make(settings.AUTH_USER_MODEL,
+                   fullname='Not in any permissiongroup')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=subjectpermissiongroup.permissiongroup,
+                   user__shortname='In subject permissiongroup')
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock(),
+                                                          cradmin_role=testsubject)
+        self.assertEqual(
+                {'Not in any permissiongroup'},
+                set(self.__get_titles(mockresponse.selector)))
+
+    def test_include_users_in_other_subjectpermissiongroup(self):
+        testsubject = mommy.make('core.Subject')
+        othersubject = mommy.make('core.Subject')
+        othersubjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                                 subject=othersubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=othersubjectpermissiongroup.permissiongroup,
+                   user__shortname='In other subject permissiongroup')
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock(),
+                                                          cradmin_role=testsubject)
+        self.assertEqual(
+                {'In other subject permissiongroup'},
+                set(self.__get_titles(mockresponse.selector)))
+
+    def test_post_creates_permissiongroup_if_it_does_not_exist(self):
+        testsubject = mommy.make('core.Subject')
+        adminuser = mommy.make(settings.AUTH_USER_MODEL)
+        self.assertEqual(0, PermissionGroup.objects.count())
+        self.mock_http302_postrequest(
+                cradmin_role=testsubject,
+                requestkwargs={
+                    'data': {
+                        'selected_items': [str(adminuser.id)]
+                    }
+                })
+        self.assertEqual(1, PermissionGroup.objects.count())
+        created_permissiongroup = PermissionGroup.objects.first()
+        self.assertEqual('Custom manageable permissiongroup for Subject#{}'.format(testsubject.id),
+                         created_permissiongroup.name)
+        self.assertEqual(PermissionGroup.GROUPTYPE_SUBJECTADMIN, created_permissiongroup.grouptype)
+        self.assertTrue(created_permissiongroup.is_custom_manageable)
+        created_subjectpermissiongroup = SubjectPermissionGroup.objects.first()
+        self.assertEqual(created_permissiongroup, created_subjectpermissiongroup.permissiongroup)
+        self.assertEqual(testsubject, created_subjectpermissiongroup.subject)
+
+    def test_post_creates_permissiongroup_if_non_custom_managable_permissiongroup_exists(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   subject=testsubject,
+                   permissiongroup__is_custom_manageable=False)
+        adminuser = mommy.make(settings.AUTH_USER_MODEL)
+        self.assertEqual(1, PermissionGroup.objects.count())
+        self.mock_http302_postrequest(
+                cradmin_role=testsubject,
+                requestkwargs={
+                    'data': {
+                        'selected_items': [str(adminuser.id)]
+                    }
+                })
+        self.assertEqual(2, PermissionGroup.objects.count())
+
+    def test_post_does_not_create_permissiongroup_if_it_exist(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   subject=testsubject,
+                   permissiongroup__is_custom_manageable=True)
+        adminuser = mommy.make(settings.AUTH_USER_MODEL)
+        self.assertEqual(1, PermissionGroup.objects.count())
+        self.mock_http302_postrequest(
+                cradmin_role=testsubject,
+                requestkwargs={
+                    'data': {
+                        'selected_items': [str(adminuser.id)]
+                    }
+                })
+        self.assertEqual(1, PermissionGroup.objects.count())
+
+    def test_post_creates_permissiongroupuser(self):
+        testsubject = mommy.make('core.Subject')
+        adminuser = mommy.make(settings.AUTH_USER_MODEL)
+        self.assertEqual(0, PermissionGroupUser.objects.count())
+        self.mock_http302_postrequest(
+                cradmin_role=testsubject,
+                requestkwargs={
+                    'data': {
+                        'selected_items': [str(adminuser.id)]
+                    }
+                })
+        self.assertEqual(1, PermissionGroupUser.objects.count())
+        created_permissiongroupuser = PermissionGroupUser.objects.first()
+        self.assertEqual(adminuser, created_permissiongroupuser.user)
+        self.assertEqual(
+                testsubject,
+                created_permissiongroupuser.permissiongroup.subjectpermissiongroup_set.first().subject)
+
+    def test_post_multiple_users(self):
+        testsubject = mommy.make('core.Subject')
+        adminuser1 = mommy.make(settings.AUTH_USER_MODEL)
+        adminuser2 = mommy.make(settings.AUTH_USER_MODEL)
+        adminuser3 = mommy.make(settings.AUTH_USER_MODEL)
+        self.assertEqual(0, PermissionGroupUser.objects.count())
+        self.mock_http302_postrequest(
+                cradmin_role=testsubject,
+                requestkwargs={
+                    'data': {
+                        'selected_items': [str(adminuser1.id),
+                                           str(adminuser2.id),
+                                           str(adminuser3.id)]
+                    }
+                })
+        self.assertEqual(3, PermissionGroupUser.objects.count())
+
+    def test_post_success_message(self):
+        testsubject = mommy.make('core.Subject')
+        adminuser1 = mommy.make(settings.AUTH_USER_MODEL,
+                                shortname='testuser')
+        adminuser2 = mommy.make(settings.AUTH_USER_MODEL,
+                                fullname='Test User')
+        self.assertEqual(0, PermissionGroupUser.objects.count())
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+                cradmin_role=testsubject,
+                messagesmock=messagesmock,
+                requestkwargs={
+                    'data': {
+                        'selected_items': [str(adminuser1.id),
+                                           str(adminuser2.id)]
+                    }
+                })
+        messagesmock.add.assert_called_once_with(
+                messages.SUCCESS,
+                'Added "Test User", "testuser".',
+                '')
 
 
-@unittest.skip('Must be updated for devilry_account permission system')
-class TestAdminUserSelectView(TestCase, admins_common_testmixins.AdminUserSelectViewTestMixin):
-    builderclass = SubjectBuilder
-    viewclass = admins.AdminUserSelectView
+class TestDeleteView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = admins.DeleteView
 
+    def test_get_title(self):
+        testsubject = mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject,
+                                            permissiongroup__is_custom_manageable=True)
+        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+                                         permissiongroup=subjectpermissiongroup.permissiongroup,
+                                         user__fullname='Awesome Doe')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testsubject,
+                viewkwargs={'pk': permissiongroupuser.pk})
+        self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
+                         'Remove course administrator: Awesome Doe?')
 
-@unittest.skip('Must be updated for devilry_account permission system')
-class TestAddAdminView(TestCase, admins_common_testmixins.AddAdminViewTestMixin):
-    builderclass = SubjectBuilder
-    viewclass = admins.AddAdminView
-    cradmin_instance_id = 'devilry_admin_subjectadmin'
+    def test_get_h1(self):
+        testsubject = mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject,
+                                            permissiongroup__is_custom_manageable=True)
+        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+                                         permissiongroup=subjectpermissiongroup.permissiongroup,
+                                         user__fullname='Awesome Doe')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testsubject,
+                viewkwargs={'pk': permissiongroupuser.pk})
+        self.assertEqual(mockresponse.selector.one('h1').alltext_normalized,
+                         'Remove course administrator: Awesome Doe?')
+
+    def test_get_confirm_message(self):
+        testsubject = mommy.make('core.Subject',
+                                 short_name='testsubject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject,
+                                            permissiongroup__is_custom_manageable=True)
+        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+                                         permissiongroup=subjectpermissiongroup.permissiongroup,
+                                         user__fullname='Awesome Doe')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testsubject,
+                viewkwargs={'pk': permissiongroupuser.pk})
+        self.assertEqual(mockresponse.selector.one('.devilry-cradmin-confirmview-message').alltext_normalized,
+                         'Are you sure you want to remove Awesome Doe as course administrator '
+                         'for testsubject? You can re-add a removed administrator at any time.')
+
+    def test_404_if_no_custom_managable_permissiongroup_for_subject(self):
+        testsubject = mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject,
+                                            permissiongroup__is_custom_manageable=False)
+        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+                                         permissiongroup=subjectpermissiongroup.permissiongroup)
+        with self.assertRaisesMessage(
+                Http404,
+                'No custom managable permissiongroup for Subject#{} found.'.format(
+                        testsubject.id)):
+            self.mock_getrequest(
+                    cradmin_role=testsubject,
+                    viewkwargs={'pk': permissiongroupuser.pk})
+
+    def test_404_if_not_in_correct_custom_managable_permissiongroup(self):
+        othersubject = mommy.make('core.Subject')
+        othersubjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                                 subject=othersubject,
+                                                 permissiongroup__is_custom_manageable=True)
+        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+                                         permissiongroup=othersubjectpermissiongroup.permissiongroup)
+        testsubject = mommy.make('core.Subject')
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   subject=testsubject,
+                   permissiongroup__is_custom_manageable=True)
+        with self.assertRaisesMessage(
+                Http404,
+                'No PermissionGroupUser in custom managable '
+                'permissiongroup for Subject#{} found.'.format(testsubject.id)):
+            self.mock_getrequest(
+                    cradmin_role=testsubject,
+                    viewkwargs={'pk': permissiongroupuser.pk})
+
+    def test_404_if_not_in_custom_managable_permissiongroup_for_subject(self):
+        testsubject = mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject,
+                                            permissiongroup__is_custom_manageable=False)
+        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+                                         permissiongroup=subjectpermissiongroup.permissiongroup)
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   subject=testsubject,
+                   permissiongroup__is_custom_manageable=True)
+        with self.assertRaisesMessage(
+                Http404,
+                'No PermissionGroupUser in custom managable '
+                'permissiongroup for Subject#{} found.'.format(testsubject.id)):
+            self.mock_getrequest(
+                    cradmin_role=testsubject,
+                    viewkwargs={'pk': permissiongroupuser.pk})
+
+    def test_post_deletes_permissiongroupuser(self):
+        testsubject = mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject,
+                                            permissiongroup__is_custom_manageable=True)
+        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+                                         permissiongroup=subjectpermissiongroup.permissiongroup)
+        self.mock_http302_postrequest(
+                cradmin_role=testsubject,
+                viewkwargs={'pk': permissiongroupuser.pk})
+        self.assertFalse(PermissionGroupUser.objects.filter(id=permissiongroupuser.id).exists())
+
+    def test_post_success_message(self):
+        testsubject = mommy.make('core.Subject',
+                                 short_name='testsubject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject,
+                                            permissiongroup__is_custom_manageable=True)
+        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+                                         permissiongroup=subjectpermissiongroup.permissiongroup,
+                                         user__fullname='Awesome Doe')
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+                cradmin_role=testsubject,
+                messagesmock=messagesmock,
+                viewkwargs={'pk': permissiongroupuser.pk})
+        messagesmock.add.assert_called_once_with(
+                messages.SUCCESS,
+                'Awesome Doe is no longer course administrator for testsubject.',
+                '')

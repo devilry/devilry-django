@@ -52,7 +52,7 @@ class Overview(GetCustomManagablePermissionGroupMixin, listbuilderview.View):
         else:
             return PermissionGroupUser.objects.none()
 
-    def __prefetc_permissiongroupuser_queryset(self):
+    def __prefetch_permissiongroupuser_queryset(self):
         return PermissionGroupUser.objects\
             .select_related('user')\
             .order_by('user__shortname')
@@ -65,7 +65,7 @@ class Overview(GetCustomManagablePermissionGroupMixin, listbuilderview.View):
             .prefetch_related(
                 models.Prefetch(
                         'permissiongroup__permissiongroupuser_set',
-                        queryset=self.__prefetc_permissiongroupuser_queryset()))
+                        queryset=self.__prefetch_permissiongroupuser_queryset()))
         if self.custom_managable_periodpermissiongroup:
             queryset = queryset.exclude(id=self.custom_managable_periodpermissiongroup.id)
         return queryset
@@ -78,7 +78,7 @@ class Overview(GetCustomManagablePermissionGroupMixin, listbuilderview.View):
             .prefetch_related(
                 models.Prefetch(
                         'permissiongroup__permissiongroupuser_set',
-                        queryset=self.__prefetc_permissiongroupuser_queryset()))
+                        queryset=self.__prefetch_permissiongroupuser_queryset()))
 
     def __make_permissiongroup_listbuilderlist(self):
         listbuilderlist = devilry_listbuilder.permissiongroup.SubjectAndPeriodPermissionGroupList()
