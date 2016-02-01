@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db.models.functions import Lower, Concat
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin.viewhelpers import listfilter
 
 
@@ -41,3 +41,31 @@ class OrderRelatedStudentsFilter(listfilter.django.single.select.AbstractOrderBy
                 'order_by': ['-user__shortname'],
             }),
         ]
+
+    def get_slug(self):
+        return 'orderby'
+
+    def get_label(self):
+        return pgettext_lazy('orderby', 'Sort')
+
+
+class IsActiveFilter(listfilter.django.single.select.Boolean):
+    def get_slug(self):
+        return 'active'
+
+    def get_label(self):
+        return pgettext_lazy('listfilter relateduser', 'Is active?')
+
+
+class Search(listfilter.django.single.textinput.Search):
+    def get_modelfields(self):
+        return [
+            'user__fullname',
+            'user__shortname'
+        ]
+
+    def get_slug(self):
+        return 'search'
+
+    def get_label(self):
+        return ugettext_lazy('Search')

@@ -4,7 +4,7 @@ from django_cradmin.viewhelpers import listbuilder
 from django_cradmin.viewhelpers import listfilter
 
 from devilry.apps.core.models import RelatedStudent
-from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relatedstudent
+from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser
 
 
 class ListViewBase(listbuilderview.FilterListMixin, listbuilderview.View):
@@ -12,14 +12,8 @@ class ListViewBase(listbuilderview.FilterListMixin, listbuilderview.View):
     paginate_by = 200
 
     def add_filterlist_items(self, filterlist):
-        filterlist.append(listfilter.django.single.textinput.Search(
-            slug='search',
-            label_is_screenreader_only=True,
-            label=ugettext_lazy('Search'),
-            modelfields=['user__fullname', 'user__shortname']))
-        filterlist.append(listfilter_relatedstudent.OrderRelatedStudentsFilter(
-            slug='orderby',
-            label=ugettext_lazy('Order by')))
+        filterlist.append(listfilter_relateduser.Search())
+        filterlist.append(listfilter_relateduser.OrderRelatedStudentsFilter())
 
 
 class OnassignmentItemValue(listbuilder.itemvalue.TitleDescription):

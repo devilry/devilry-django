@@ -9,6 +9,7 @@ from django_cradmin.crispylayouts import DangerSubmit
 from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import User
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent
+from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser
 from devilry.devilry_admin.views.common import bulkimport_users_common
 from devilry.devilry_cradmin import devilry_multiselect2
 from devilry.devilry_cradmin.viewhelpers import devilry_confirmview
@@ -31,6 +32,10 @@ class OverviewItemValue(listbuilder_relatedstudent.ReadOnlyItemValue):
 class Overview(listbuilder_relatedstudent.VerticalFilterListView):
     value_renderer_class = OverviewItemValue
     template_name = 'devilry_admin/period/students/overview.django.html'
+
+    def add_filterlist_items(self, filterlist):
+        super(Overview, self).add_filterlist_items(filterlist=filterlist)
+        filterlist.append(listfilter_relateduser.IsActiveFilter())
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
