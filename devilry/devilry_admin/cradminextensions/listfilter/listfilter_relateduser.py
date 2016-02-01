@@ -64,6 +64,9 @@ class Search(listfilter.django.single.textinput.Search):
             'user__shortname'
         ]
 
+    def get_label_is_screenreader_only(self):
+        return True
+
     def get_slug(self):
         return 'search'
 

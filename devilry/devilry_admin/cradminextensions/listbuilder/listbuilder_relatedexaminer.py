@@ -43,7 +43,7 @@ class OnPeriodItemValue(RelatedExaminerItemValueTitleDescriptionMixin,
                         listbuilder.itemvalue.TitleDescription):
 
     def get_extra_css_classes_list(self):
-        cssclasses = ['devilry-admin-relatedexaminer-readonlyitemvalue']
+        cssclasses = ['devilry-admin-relatedexaminer-onperioditemvalue']
         if self.relatedexaminer.active:
             cssclasses.append('devilry-admin-relatedexaminer-itemvalue-active')
         else:

@@ -184,7 +184,7 @@ class CreateGroupsViewMixin(object):
 
 class ConfirmView(CreateGroupsViewMixin,
                   listbuilder_relatedstudent.VerticalFilterListView):
-    value_renderer_class = listbuilder_relatedstudent.OnPeriodItemValue
+    value_renderer_class = listbuilder_relatedstudent.ReadOnlyItemValue
 
     SELECTED_STUDENTS_ALL_ON_ASSIGNMENT = 'all_on_assignment'
     SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT = 'passing_grade_on_assignment'

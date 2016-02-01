@@ -25,7 +25,7 @@ class GetQuerysetForRoleMixin(object):
             .order_by('user__shortname')
 
 
-class OverviewItemValue(listbuilder_relatedstudent.OnPeriodItemValue):
+class OverviewItemValue(listbuilder_relatedstudent.ReadOnlyItemValue):
     template_name = 'devilry_admin/period/students/overview-itemvalue.django.html'
 
 
