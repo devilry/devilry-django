@@ -21,6 +21,10 @@ if profiler_middleware:
     #]
 
 
+INSTALLED_APPS += [
+    'debug_toolbar'
+]
+
 
 ##############################################################
 #

@@ -26,11 +26,7 @@
             Administrators for {{ period }}
         {% endblocktrans %}
     </h1>
-    <p>
-        <strong class="text-warning">TODO:</strong> Information about department, course and semester administrators.
-    </p>
 {% endblock pageheader-inner %}
-
 
 {% block content %}
     <div class="container">
@@ -46,11 +42,25 @@
 
     {{ block.super }}
 
-    <div class="container">
-        <h2>{% trans "Other administrators" %}</h2>
-        <p>
-            <strong class="text-warning">TODO:</strong> List SubjectPermissionGroups with access to this period in a listbuilder view.
-        </p>
+    <div id="devilry_admin_period_admins_help_container" class="container">
+        <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
+            {% include "devilry_admin/common/admins-explained.django.html" with in_period_adminoverview=True %}
+        </div>
+    </div>
+
+    <div id="devilry_admin_period_admins_other_admins_container" class="container">
+        <h2>
+            {% blocktrans trimmed with period=period.get_path %}
+                Other administrators with access to {{ period }}
+            {% endblocktrans %}
+        </h2>
+        {% if other_permissiongroups_listbuilderlist.has_items %}
+            {% cradmin_render_renderable other_permissiongroups_listbuilderlist %}
+        {% else %}
+            <p class="text-muted" id="devilry_admin_period_admins_other_admins_nonemessage">
+                {% trans "No other administrators than the ones listed above have access." %}
+            </p>
+        {% endif %}
     </div>
 {% endblock content %}
 

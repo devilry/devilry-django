@@ -52,12 +52,20 @@ class Overview(GetCustomManagablePermissionGroupMixin, listbuilderview.View):
         else:
             return PermissionGroupUser.objects.none()
 
+    def __prefetc_permissiongroupuser_queryset(self):
+        return PermissionGroupUser.objects\
+            .select_related('user')\
+            .order_by('user__shortname')
+
     def __get_periodpermissiongroups(self):
         period = self.request.cradmin_role
         queryset = PeriodPermissionGroup.objects\
             .filter(period=period)\
-            .select_related('permissiongroup')\
-            .select_related('period')
+            .select_related('period')\
+            .prefetch_related(
+                models.Prefetch(
+                        'permissiongroup__permissiongroupuser_set',
+                        queryset=self.__prefetc_permissiongroupuser_queryset()))
         if self.custom_managable_periodpermissiongroup:
             queryset = queryset.exclude(id=self.custom_managable_periodpermissiongroup.id)
         return queryset
@@ -66,8 +74,11 @@ class Overview(GetCustomManagablePermissionGroupMixin, listbuilderview.View):
         period = self.request.cradmin_role
         return SubjectPermissionGroup.objects\
             .filter(subject=period.subject)\
-            .select_related('permissiongroup')\
-            .select_related('subject')
+            .select_related('subject')\
+            .prefetch_related(
+                models.Prefetch(
+                        'permissiongroup__permissiongroupuser_set',
+                        queryset=self.__prefetc_permissiongroupuser_queryset()))
 
     def __make_permissiongroup_listbuilderlist(self):
         listbuilderlist = devilry_listbuilder.permissiongroup.SubjectAndPeriodPermissionGroupList()

@@ -123,6 +123,70 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.one(
                         '.devilry-admin-period-admin-delete-link')['aria-label'])
 
+    def test_other_permissiongroups_heading(self):
+        testperiod = mommy.make('core.Period',
+                                parentnode__short_name='testsubject',
+                                short_name='testperiod')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(
+                'Other administrators with access to testsubject.testperiod',
+                mockresponse.selector.one(
+                        '#devilry_admin_period_admins_other_admins_container h2').alltext_normalized)
+
+    def test_other_permissiongroups_no_permissiongroups(self):
+        testperiod = mommy.make('core.Period')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(
+                'No other administrators than the ones listed above have access.',
+                mockresponse.selector.one(
+                        '#devilry_admin_period_admins_other_admins_nonemessage').alltext_normalized)
+
+    def test_other_permissiongroups_no_permissiongroups_except_the_custom_manageable(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('devilry_account.PeriodPermissionGroup',
+                   permissiongroup__is_custom_manageable=True,
+                   period=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertTrue(
+                mockresponse.selector.exists('#devilry_admin_period_admins_other_admins_nonemessage'))
+
+    def test_other_permissiongroups_not_permissiongroups_for_other_periods(self):
+        testperiod = mommy.make('core.Period')
+        otherperiod = mommy.make('core.Period')
+        mommy.make('devilry_account.PeriodPermissionGroup',
+                   period=otherperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertTrue(
+                mockresponse.selector.exists('#devilry_admin_period_admins_other_admins_nonemessage'))
+
+    def test_other_permissiongroups_not_permissiongroups_for_other_subjects(self):
+        testperiod = mommy.make('core.Period')
+        othersubject = mommy.make('core.Subject')
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   subject=othersubject)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertTrue(
+                mockresponse.selector.exists('#devilry_admin_period_admins_other_admins_nonemessage'))
+
+    def __get_otherpermissiongroups_titles(self, selector):
+        return {element.alltext_normalized
+                for element in selector.list(
+                    '.devilry-cradmin-subjectandperiodpermissiongroup-list '
+                    '.django-cradmin-listbuilder-itemvalue-titledescription-title')}
+
+    def test_other_permissiongroups(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('devilry_account.PeriodPermissionGroup',
+                   period=testperiod,
+                   permissiongroup__name='Other periodadmins')
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   subject=testperiod.subject,
+                   permissiongroup__name='Other course admins')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(
+                {'Other periodadmins', 'Other course admins'},
+                self.__get_otherpermissiongroups_titles(mockresponse.selector))
+
     def test_querycount(self):
         testperiod = mommy.make('core.Period')
         periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
@@ -131,8 +195,26 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('devilry_account.PermissionGroupUser',
                    permissiongroup=periodpermissiongroup.permissiongroup,
                    _quantity=10)
-        with self.assertNumQueries(3):
-            self.mock_getrequest(cradmin_role=testperiod)
+
+        extraperiodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                                period=testperiod)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=extraperiodpermissiongroup.permissiongroup,
+                   _quantity=10)
+
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testperiod.subject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=subjectpermissiongroup.permissiongroup,
+                   _quantity=10)
+
+        mommy.make('devilry_account.PeriodPermissionGroup',
+                   period=testperiod, _quantity=10)
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   subject=testperiod.subject, _quantity=10)
+
+        with self.assertNumQueries(9):
+            self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
 
 
 class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):

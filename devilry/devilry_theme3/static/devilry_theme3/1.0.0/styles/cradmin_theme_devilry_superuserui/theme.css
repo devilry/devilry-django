@@ -7267,6 +7267,9 @@ h3 .devilry-user-verbose-inline small {
 .devilry-dashboard-container.devilry-dashboard-container-focus h3 {
   font-size: 23px;
 }
+.devilry-dashboard-container dl {
+  margin-bottom: 15px;
+}
 .devilry-buttonbar {
   margin-bottom: 7px;
 }
@@ -7342,6 +7345,12 @@ h3 .devilry-user-verbose-inline small {
 .devilry-listbuilderlist-footer {
   font-size: 14px;
   margin-top: 10px;
+}
+dl.devilry-dl-indented {
+  padding-left: 30px;
+}
+dl.devilry-dl-sm {
+  font-size: 14px;
 }
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;

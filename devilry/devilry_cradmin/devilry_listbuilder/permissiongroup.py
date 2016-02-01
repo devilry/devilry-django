@@ -35,3 +35,21 @@ class PeriodPermissionGroupItemValue(AbstractSubjectOrPeriodPermissionGroupItemV
         cssclasses = super(PeriodPermissionGroupItemValue, self).get_base_css_classes_list()
         cssclasses.append('devilry-cradmin-periodpermissiongroup-itemvalue')
         return cssclasses
+
+
+class SubjectAndPeriodPermissionGroupList(listbuilder.lists.RowList):
+    def get_default_frame_renderer_class(self):
+        return listbuilder.itemframe.DefaultSpacingItemFrame
+
+    def add_periodpermissiongroups(self, periodpermissiongroups):
+        self.extend_with_values(value_iterable=periodpermissiongroups,
+                                value_renderer_class=PeriodPermissionGroupItemValue)
+
+    def add_subjectpermissiongroups(self, subjectpermissiongroups):
+        self.extend_with_values(value_iterable=subjectpermissiongroups,
+                                value_renderer_class=SubjectPermissionGroupItemValue)
+
+    def get_base_css_classes_list(self):
+        cssclasses = super(SubjectAndPeriodPermissionGroupList, self).get_base_css_classes_list()
+        cssclasses.append('devilry-cradmin-subjectandperiodpermissiongroup-list')
+        return cssclasses
