@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.db import models
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy
@@ -11,7 +10,7 @@ from django_cradmin.viewhelpers import delete
 from django_cradmin.viewhelpers import objecttable
 
 from devilry.apps.core.models import RelatedStudent
-from devilry.devilry_account.models import UserEmail
+from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent
 from devilry.devilry_admin.views.common import bulkimport_users_common
 from devilry.devilry_admin.views.common import userselect_common
 
@@ -47,39 +46,25 @@ class InfoColumn(objecttable.MultiActionColumn):
         return context
 
 
-class ListView(GetQuerysetForRoleMixin, objecttable.ObjectTableView):
-    searchfields = ['user__shortname', 'user__fullname']
-    hide_column_headers = True
-    columns = [InfoColumn]
+class Overview(listbuilder_relatedstudent.VerticalFilterListView):
+    value_renderer_class = listbuilder_relatedstudent.ReadOnlyItemValue
+    template_name = 'devilry_admin/period/students/overview.django.html'
 
-    def get_buttons(self):
-        app = self.request.cradmin_app
-        return [
-            objecttable.Button(label=ugettext_lazy('Add student'),
-                               url=app.reverse_appurl('select-user-to-add-as-student'),
-                               buttonclass='btn btn-primary'),
-            objecttable.Button(label=ugettext_lazy('Bulk import students'),
-                               url=app.reverse_appurl('bulkimport'),
-                               buttonclass='btn btn-default'),
-        ]
+    def get_filterlist_url(self, filters_string):
+        return self.request.cradmin_app.reverse_appurl(
+            'filter',
+            kwargs={'filters_string': filters_string})
 
-    def get_pagetitle(self):
-        return ugettext_lazy('Students')
+    def get_unfiltered_queryset_for_role(self, role):
+        period = role
+        return self.model.objects \
+            .filter(period=period)\
+            .select_related('user')
 
-    def get_queryset_for_role(self, role):
-        return super(ListView, self).get_queryset_for_role(role) \
-            .prefetch_related(
-            models.Prefetch('user__useremail_set',
-                            queryset=UserEmail.objects.filter(is_primary=True),
-                            to_attr='primary_useremail_objects'))
-
-    def get_no_items_message(self):
-        """
-        Get the message to show when there are no items.
-        """
-        return ugettext_lazy('There is no students registered for %(what)s.') % {
-            'what': self.request.cradmin_role.get_path()
-        }
+    def get_context_data(self, **kwargs):
+        context = super(Overview, self).get_context_data(**kwargs)
+        context['period'] = self.request.cradmin_role
+        return context
 
 
 class DeactivateView(GetQuerysetForRoleMixin, delete.DeleteView):
@@ -204,7 +189,7 @@ class AddView(BaseFormView):
         return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
 
 
-class BulkImportView(bulkimport_users_common.AbstractTypeInUsersView):
+class ImportStudentsView(bulkimport_users_common.AbstractTypeInUsersView):
     create_button_label = ugettext_lazy('Bulk import students')
 
     def get_pagetitle(self):
@@ -247,21 +232,22 @@ class BulkImportView(bulkimport_users_common.AbstractTypeInUsersView):
 
 class App(crapp.App):
     appurls = [
-        crapp.Url(r'^$', ListView.as_view(), name=crapp.INDEXVIEW_NAME),
-        crapp.Url(
-            r'^deactivate/(?P<pk>\d+)$',
-            DeactivateView.as_view(),
-            name="deactivate"),
-        crapp.Url(
-            r'^select-user-to-add-as-student$',
-            UserSelectView.as_view(),
-            name="select-user-to-add-as-student"),
-        crapp.Url(
-            r'^add',
-            AddView.as_view(),
-            name="add-user-as-student"),
-        crapp.Url(
-            r'^bulkimport',
-            BulkImportView.as_view(),
-            name="bulkimport"),
+        crapp.Url(r'^$',
+                  Overview.as_view(),
+                  name=crapp.INDEXVIEW_NAME),
+        crapp.Url(r'^filter/(?P<filters_string>.+)?$',
+                  Overview.as_view(),
+                  name='filter'),
+        crapp.Url(r'^deactivate/(?P<pk>\d+)$',
+                  DeactivateView.as_view(),
+                  name="deactivate"),
+        crapp.Url(r'^select-user-to-add-as-student$',
+                  UserSelectView.as_view(),
+                  name="select-user-to-add-as-student"),
+        crapp.Url(r'^add',
+                  AddView.as_view(),
+                  name="add-user-as-student"),
+        crapp.Url(r'^importstudents',
+                  ImportStudentsView.as_view(),
+                  name="importstudents"),
     ]

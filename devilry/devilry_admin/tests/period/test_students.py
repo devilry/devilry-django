@@ -1,5 +1,3 @@
-import unittest
-
 import htmls
 import mock
 from django.conf import settings
@@ -15,105 +13,108 @@ from devilry.devilry_admin.views.period import students
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder, UserBuilder2
 
 
-@unittest.skip('Must be updated to listbuilder')
-class TestListView(TestCase):
-    def __mock_get_request(self, role, user):
-        request = RequestFactory().get('/')
-        request.user = user
-        request.cradmin_role = role
-        request.cradmin_app = mock.MagicMock()
-        request.cradmin_instance = mock.MagicMock()
-        request.session = mock.MagicMock()
-        response = students.ListView.as_view()(request)
-        return response
+class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = students.Overview
 
-    def mock_http200_getrequest_htmls(self, role, user):
-        response = self.__mock_get_request(role=role, user=user)
-        self.assertEqual(response.status_code, 200)
-        response.render()
-        selector = htmls.S(response.content)
-        return selector
-
-    def __get_shortnames(self, selector):
+    def __get_titles(self, selector):
         return [element.alltext_normalized
-                for element in selector.list('.devilry-user-verbose-inline-shortname')]
-
-    def __get_names(self, selector):
-        return [element.alltext_normalized
-                for element in selector.list('.devilry-user-verbose-inline')]
+                for element in selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
 
     def test_title(self):
-        testuser = UserBuilder2().user
-        subjectbuilder = PeriodBuilder.make(long_name='The Long Name') \
-            .add_relatedstudents(testuser)
-        selector = self.mock_http200_getrequest_htmls(role=subjectbuilder.get_object(),
-                                                      user=testuser)
-        self.assertEqual(selector.one('title').alltext_normalized,
-                         'Students')
+        testperiod = mommy.make('core.Period',
+                                parentnode__short_name='testsubject',
+                                short_name='testperiod')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertIn('Students on testsubject.testperiod',
+                      mockresponse.selector.one('title').alltext_normalized)
+
+    def test_h1(self):
+        testperiod = mommy.make('core.Period',
+                                parentnode__short_name='testsubject',
+                                short_name='testperiod')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual('Students on testsubject.testperiod',
+                         mockresponse.selector.one('h1').alltext_normalized)
+
+    def test_buttonbar_addbutton_link(self):
+        testperiod = mommy.make('core.Period')
+        mock_cradmin_app = mock.MagicMock()
+
+        def mock_reverse_appurl(viewname, **kwargs):
+            return '/{}'.format(viewname)
+
+        mock_cradmin_app.reverse_appurl = mock_reverse_appurl
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod,
+                                                          cradmin_app=mock_cradmin_app)
+        self.assertEqual(
+            # '/add',
+            '#',
+            mockresponse.selector.one('#devilry_admin_period_students_overview_button_add')['href'])
+
+    def test_buttonbar_addbutton_label(self):
+        testperiod = mommy.make('core.Period')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(
+                'Add students',
+                mockresponse.selector.one(
+                        '#devilry_admin_period_students_overview_button_add').alltext_normalized)
+
+    def test_buttonbar_importbutton_link(self):
+        testperiod = mommy.make('core.Period')
+        mock_cradmin_app = mock.MagicMock()
+
+        def mock_reverse_appurl(viewname, **kwargs):
+            return '/{}'.format(viewname)
+
+        mock_cradmin_app.reverse_appurl = mock_reverse_appurl
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod,
+                                                          cradmin_app=mock_cradmin_app)
+        self.assertEqual(
+            '/importstudents',
+            mockresponse.selector.one('#devilry_admin_period_students_overview_button_importstudents')['href'])
+
+    def test_buttonbar_importbutton_label(self):
+        testperiod = mommy.make('core.Period')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(
+                'Import students',
+                mockresponse.selector.one(
+                        '#devilry_admin_period_students_overview_button_importstudents').alltext_normalized)
 
     def test_no_students_messages(self):
-        testuser = UserBuilder2(is_superuser=True).user
-        periodbuilder = PeriodBuilder.make()
-        selector = self.mock_http200_getrequest_htmls(role=periodbuilder.get_object(),
-                                                      user=testuser)
-        self.assertEqual(selector.one('#objecttableview-no-items-message').alltext_normalized,
-                         'There is no students registered for {}.'.format(
-                             periodbuilder.get_object().get_path()))
+        testperiod = mommy.make('core.Period')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(
+                'You have no students. Use the buttons above to add students.',
+                mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
 
-    def test_ordering(self):
-        testuser = UserBuilder2(is_superuser=True).user
-        periodbuilder = PeriodBuilder.make() \
-            .add_relatedstudents(UserBuilder2(shortname='userb').user,
-                                 UserBuilder2(shortname='usera').user,
-                                 UserBuilder2(shortname='userc').user)
-        selector = self.mock_http200_getrequest_htmls(role=periodbuilder.get_object(),
-                                                      user=testuser)
-        self.assertEqual(['usera', 'userb', 'userc'], self.__get_shortnames(selector))
+    def test_default_ordering(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', period=testperiod,
+                   user__fullname='UserB')
+        mommy.make('core.RelatedStudent', period=testperiod,
+                   user__shortname='usera')
+        mommy.make('core.RelatedStudent', period=testperiod,
+                   user__shortname='userc')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(['usera', 'UserB', 'userc'],
+                         self.__get_titles(mockresponse.selector))
 
-    def test_render_user_with_fullname(self):
-        testuser = UserBuilder2(is_superuser=True).user
-        periodbuilder = PeriodBuilder.make() \
-            .add_relatedstudents(UserBuilder2(shortname='test', fullname='Test User').user)
-        selector = self.mock_http200_getrequest_htmls(role=periodbuilder.get_object(),
-                                                      user=testuser)
-        self.assertEqual(['Test User(test)'], self.__get_names(selector))
+    def test_render_only_users_from_current_period(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', period=testperiod,
+                   user__shortname='usera')
+        mommy.make('core.RelatedStudent',
+                   user__shortname='fromotherperiod')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(['usera'],
+                         self.__get_titles(mockresponse.selector))
 
-    def test_render_user_without_fullname(self):
-        testuser = UserBuilder2(is_superuser=True).user
-        periodbuilder = PeriodBuilder.make() \
-            .add_relatedstudents(UserBuilder2(shortname='test').user)
-        selector = self.mock_http200_getrequest_htmls(role=periodbuilder.get_object(),
-                                                      user=testuser)
-        self.assertEqual(['test'], self.__get_names(selector))
-
-    def test_render_email_has_primary_email(self):
-        testuser = UserBuilder2(is_superuser=True).user
-        periodbuilder = PeriodBuilder.make() \
-            .add_relatedstudents(UserBuilder2(shortname='test').add_primary_email('test@example.com').user)
-        selector = self.mock_http200_getrequest_htmls(role=periodbuilder.get_object(),
-                                                      user=testuser)
-        self.assertEqual(selector.one('.devilry-admin-adminlist-email').alltext_normalized,
-                         'Contact at test@example.com')
-        self.assertEqual(selector.one('.devilry-admin-adminlist-email')['href'],
-                         'mailto:test@example.com')
-
-    def test_render_email_no_primary_email(self):
-        testuser = UserBuilder2(is_superuser=True).user
-        periodbuilder = PeriodBuilder.make() \
-            .add_relatedstudents(UserBuilder2(shortname='test').user)
-        selector = self.mock_http200_getrequest_htmls(role=periodbuilder.get_object(),
-                                                      user=testuser)
-        self.assertFalse(selector.exists('.devilry-admin-adminlist-email')),
-
-    def test_render_only_users_from_current_basenode(self):
-        testuser = UserBuilder2(is_superuser=True).user
-        PeriodBuilder.make() \
-            .add_relatedstudents(UserBuilder2(shortname='otherbasenodeuser').user)
-        periodbuilder = PeriodBuilder.make() \
-            .add_relatedstudents(UserBuilder2(shortname='expecteduser').user)
-        selector = self.mock_http200_getrequest_htmls(role=periodbuilder.get_object(),
-                                                      user=testuser)
-        self.assertEqual(['expecteduser'], self.__get_names(selector))
+    def test_querycount(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', period=testperiod, _quantity=30)
+        with self.assertNumQueries(3):
+            self.mock_getrequest(cradmin_role=testperiod)
 
 
 class TestDeactivateStudentView(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -334,8 +335,8 @@ class TestAddView(TestCase):
         self.assertEqual(response['location'], '/next')
 
 
-class TestBulkImportView(TestCase, AbstractTypeInUsersViewTestMixin):
-    viewclass = students.BulkImportView
+class TestImportStudentsView(TestCase, AbstractTypeInUsersViewTestMixin):
+    viewclass = students.ImportStudentsView
 
     def test_post_valid_with_email_backend_creates_relatedusers(self):
         testperiod = mommy.make('core.Period')

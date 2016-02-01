@@ -30,7 +30,7 @@ class VerticalFilterListView(ListViewBase):
     with filters in a vertical layout.
     """
     def get_filterlist_position(self):
-        return 'left'
+        return 'right'
 
 
 class RelatedStudentItemValueTitleDescriptionMixin(object):
