@@ -865,7 +865,7 @@ class TestSubjectPermissionGroup(TestCase):
             'devilry_account.SubjectPermissionGroup',
             permissiongroup__grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
         with self.assertRaisesMessage(ValidationError,
-                                      'Semesters can only be added to subject and '
+                                      'Courses can only be added to subject and '
                                       'department administrator permission groups.'):
             subjectpermissiongroup.clean()
 

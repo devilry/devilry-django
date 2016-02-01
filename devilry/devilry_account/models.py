@@ -1113,7 +1113,7 @@ class SubjectPermissionGroup(models.Model):
         if self.permissiongroup.grouptype not in [PermissionGroup.GROUPTYPE_SUBJECTADMIN,
                                                   PermissionGroup.GROUPTYPE_DEPARTMENTADMIN]:
             raise ValidationError(_(
-                    'Semesters can only be added to subject and department administrator permission groups.'))
+                    'Courses can only be added to subject and department administrator permission groups.'))
         if self.permissiongroup.is_custom_manageable:
             queryset = SubjectPermissionGroup.objects \
                 .filter(permissiongroup=self.permissiongroup)
