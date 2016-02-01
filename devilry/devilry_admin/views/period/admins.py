@@ -29,7 +29,7 @@ class GetCustomManagablePermissionGroupMixin(object):
             return None
 
 
-class Overview(GetCustomManagablePermissionGroupMixin, listbuilderview.FilterListMixin, listbuilderview.View):
+class Overview(GetCustomManagablePermissionGroupMixin, listbuilderview.View):
     value_renderer_class = OverviewItemValue
     template_name = 'devilry_admin/period/admins/overview.django.html'
     model = PermissionGroupUser
@@ -43,7 +43,7 @@ class Overview(GetCustomManagablePermissionGroupMixin, listbuilderview.FilterLis
             'filter',
             kwargs={'filters_string': filters_string})
 
-    def get_unfiltered_queryset_for_role(self, role):
+    def get_queryset_for_role(self, role):
         if self.custom_managable_periodpermissiongroup:
             return PermissionGroupUser.objects \
                 .filter(permissiongroup=self.custom_managable_periodpermissiongroup.permissiongroup)\
