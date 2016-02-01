@@ -2,11 +2,9 @@ from __future__ import unicode_literals
 
 from django.contrib import messages
 from django.http import Http404
-from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy
 from django_cradmin import crapp
 from django_cradmin.crispylayouts import DangerSubmit
-from django_cradmin.viewhelpers import delete
 
 from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import User

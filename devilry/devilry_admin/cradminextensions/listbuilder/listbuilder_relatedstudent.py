@@ -53,4 +53,9 @@ class ReadOnlyItemValue(RelatedStudentItemValueTitleDescriptionMixin,
                         listbuilder.itemvalue.TitleDescription):
 
     def get_extra_css_classes_list(self):
-        return ['devilry-admin-listbuilder-relatedstudent-readonlyitemvalue']
+        cssclasses = ['devilry-admin-listbuilder-relatedstudent-readonlyitemvalue']
+        if self.relatedstudent.active:
+            cssclasses.append('devilry-admin-listbuilder-relatedstudent-itemvalue-active')
+        else:
+            cssclasses.append('devilry-admin-listbuilder-relatedstudent-itemvalue-inactive')
+        return cssclasses

@@ -98,7 +98,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(['usera', 'UserB', 'userc'],
                          self.__get_titles(mockresponse.selector))
 
-    def test_render_only_users_from_current_period(self):
+    def test_only_users_from_current_period(self):
         testperiod = mommy.make('core.Period')
         mommy.make('core.RelatedStudent', period=testperiod,
                    user__shortname='usera')
@@ -107,6 +107,80 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(['usera'],
                          self.__get_titles(mockresponse.selector))
+
+    def test_inactive_relatedstudent_sanity(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', period=testperiod, active=False)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertFalse(
+                mockresponse.selector.exists('.devilry-admin-listbuilder-relatedstudent-itemvalue-active'))
+        self.assertTrue(
+                mockresponse.selector.exists('.devilry-admin-listbuilder-relatedstudent-itemvalue-inactive'))
+        self.assertFalse(
+                mockresponse.selector.exists('.devilry-admin-period-active-relatedstudent-block'))
+        self.assertTrue(
+                mockresponse.selector.exists('.devilry-admin-period-inactive-relatedstudent-block'))
+
+    def test_inactive_relatedstudent_message(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', period=testperiod, active=False)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(
+                'Inactive student - can not be added to new assignments, and can not be '
+                'marked as qualified for final exams.',
+                mockresponse.selector.one(
+                        '.devilry-admin-period-inactive-relatedstudent-message').alltext_normalized)
+
+    def test_inactive_relatedstudent_link_label(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', period=testperiod, active=False)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(
+                'Re-activate',
+                mockresponse.selector.one(
+                        '.devilry-admin-period-inactive-relatedstudent-link').alltext_normalized)
+
+    def test_inactive_relatedstudent_link_arialabel(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', period=testperiod, active=False,
+                   user__shortname='testuser')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(
+                'Re-activate testuser',
+                mockresponse.selector.one(
+                        '.devilry-admin-period-inactive-relatedstudent-link')['aria-label'])
+
+    def test_active_relatedstudent_sanity(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', period=testperiod, active=True)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertTrue(
+                mockresponse.selector.exists('.devilry-admin-listbuilder-relatedstudent-itemvalue-active'))
+        self.assertFalse(
+                mockresponse.selector.exists('.devilry-admin-listbuilder-relatedstudent-itemvalue-inactive'))
+        self.assertTrue(
+                mockresponse.selector.exists('.devilry-admin-period-active-relatedstudent-block'))
+        self.assertFalse(
+                mockresponse.selector.exists('.devilry-admin-period-inactive-relatedstudent-block'))
+
+    def test_active_relatedstudent_link_label(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', period=testperiod, active=True)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(
+                'Mark as inactive',
+                mockresponse.selector.one(
+                        '.devilry-admin-period-active-relatedstudent-link').alltext_normalized)
+
+    def test_active_relatedstudent_link_arialabel(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', period=testperiod, active=True,
+                   user__shortname='testuser')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(
+                'Mark testuser as inactive',
+                mockresponse.selector.one(
+                        '.devilry-admin-period-active-relatedstudent-link')['aria-label'])
 
     def test_querycount(self):
         testperiod = mommy.make('core.Period')
