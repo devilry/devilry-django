@@ -98,6 +98,9 @@ class DeactivateView(SingleRelatedStudentMixin, devilry_confirmview.View):
     def get_backlink_url(self):
         return self.request.cradmin_app.reverse_appindexurl()
 
+    def get_backlink_label(self):
+        return ugettext_lazy('Back to students on semester overview')
+
     def __get_success_message(self):
         return ugettext_lazy('%(user)s was deactivated.') % {
             'user': self.relatedstudent.user.get_full_name(),
@@ -131,6 +134,9 @@ class ActivateView(SingleRelatedStudentMixin, devilry_confirmview.View):
 
     def get_backlink_url(self):
         return self.request.cradmin_app.reverse_appindexurl()
+
+    def get_backlink_label(self):
+        return ugettext_lazy('Back to students on semester overview')
 
     def get_success_url(self):
         return self.request.cradmin_app.reverse_appindexurl()
@@ -207,6 +213,12 @@ class AddView(devilry_multiselect2.user.BaseMultiselectUsersView):
 
 class ImportStudentsView(bulkimport_users_common.AbstractTypeInUsersView):
     create_button_label = ugettext_lazy('Bulk import students')
+
+    def get_backlink_url(self):
+        return self.request.cradmin_app.reverse_appindexurl()
+
+    def get_backlink_label(self):
+        return ugettext_lazy('Back to students on semester overview')
 
     def get_pagetitle(self):
         return ugettext_lazy('Bulk import students')

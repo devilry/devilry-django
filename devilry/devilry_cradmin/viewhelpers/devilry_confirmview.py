@@ -31,8 +31,12 @@ class View(formbase.FormView):
     def get_backlink_url(self):
         raise NotImplementedError()
 
+    def get_backlink_label(self):
+        raise NotImplementedError()
+
     def get_context_data(self, **kwargs):
         context = super(View, self).get_context_data(**kwargs)
         context['confirm_message'] = self.get_confirm_message()
         context['backlink_url'] = self.get_backlink_url()
+        context['backlink_label'] = self.get_backlink_label()
         return context
