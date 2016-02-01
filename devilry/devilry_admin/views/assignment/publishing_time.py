@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.forms import forms
+from django_cradmin.viewhelpers.crudbase import OnlySaveButtonMixin
 from django_cradmin.viewhelpers.update import UpdateView
 from django.views.generic import RedirectView, FormView
 from django.utils import timezone
@@ -21,7 +22,7 @@ class PublishNowRedirectView(RedirectView):
         return self.request.cradmin_app.reverse_appindexurl()
 
 
-class AssignmentPublishingTimeUpdateView(UpdateView):
+class AssignmentPublishingTimeUpdateView(OnlySaveButtonMixin, UpdateView):
     model = coremodels.Assignment
 
     fields = ['publishing_time']

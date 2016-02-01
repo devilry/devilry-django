@@ -1,11 +1,12 @@
 from __future__ import unicode_literals
 
+from django_cradmin.viewhelpers.crudbase import OnlySaveButtonMixin
 from django_cradmin.viewhelpers.update import UpdateView
 
 from devilry.apps.core import models as coremodels
 
 
-class AssignmentGradingConfigurationUpdateView(UpdateView):
+class AssignmentGradingConfigurationUpdateView(OnlySaveButtonMixin, UpdateView):
     model = coremodels.Assignment
 
     fields = ['grading_system_plugin_id',

@@ -1,12 +1,13 @@
 from __future__ import unicode_literals
 
+from django_cradmin.viewhelpers.crudbase import OnlySaveButtonMixin
 from django_cradmin.viewhelpers.update import UpdateView
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy, ugettext_lazy
 
 from devilry.apps.core import models as coremodels
 
 
-class AssignmentAnonymizationmodeUpdateView(UpdateView):
+class AssignmentAnonymizationmodeUpdateView(OnlySaveButtonMixin, UpdateView):
     model = coremodels.Assignment
 
     fields = ['anonymizationmode']
