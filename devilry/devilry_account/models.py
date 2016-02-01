@@ -950,10 +950,12 @@ class PeriodPermissionGroup(models.Model):
     period = models.ForeignKey('core.Period')
 
     def __unicode__(self):
-        return _('Group %(permissiongroup)s assigned to %(period)s') % {
-            'permissiongroup': self.permissiongroup.name,
-            'period': self.period.get_path(),
-        }
+        if self.permissiongroup.is_custom_manageable:
+            return ugettext_lazy('Semester administrators for %(period)s') % {
+                'period': self.period.get_path(),
+            }
+        else:
+            return self.permissiongroup.name
 
     def clean(self):
         if self.permissiongroup.grouptype != PermissionGroup.GROUPTYPE_PERIODADMIN:
@@ -1100,10 +1102,12 @@ class SubjectPermissionGroup(models.Model):
     subject = models.ForeignKey('core.Subject')
 
     def __unicode__(self):
-        return _('Group %(permissiongroup)s assigned to %(subject)s') % {
-            'permissiongroup': self.permissiongroup.name,
-            'subject': self.subject.get_path(),
-        }
+        if self.permissiongroup.is_custom_manageable:
+            return ugettext_lazy('Course administrators for %(subject)s') % {
+                'subject': self.subject.short_name,
+            }
+        else:
+            return self.permissiongroup.name
 
     def clean(self):
         if self.permissiongroup.grouptype not in [PermissionGroup.GROUPTYPE_SUBJECTADMIN,
