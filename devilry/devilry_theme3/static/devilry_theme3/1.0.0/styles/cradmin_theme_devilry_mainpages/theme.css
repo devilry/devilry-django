@@ -7254,6 +7254,9 @@ h3 .devilry-user-verbose-inline small {
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;
 }
+body.django-cradmin-formview-page .django-cradmin-page-header-outer {
+  text-align: left;
+}
 nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
   border-bottom: 6px solid #000;
 }
