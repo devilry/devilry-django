@@ -1,18 +1,15 @@
-from django import forms
+from __future__ import unicode_literals
 from django.contrib import messages
-from django.contrib.auth import get_user_model
-from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy
-from django.views.generic.edit import BaseFormView
 from django_cradmin import crapp
 from django_cradmin.viewhelpers import delete
-from django_cradmin.viewhelpers import objecttable
 
 from devilry.apps.core.models import RelatedStudent
+from devilry.devilry_account.models import User
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent
 from devilry.devilry_admin.views.common import bulkimport_users_common
-from devilry.devilry_admin.views.common import userselect_common
+from devilry.devilry_cradmin import devilry_multiselect2
 
 
 class GetQuerysetForRoleMixin(object):
@@ -23,27 +20,6 @@ class GetQuerysetForRoleMixin(object):
         return self.model.objects \
             .filter(period=period) \
             .order_by('user__shortname')
-
-
-class InfoColumn(objecttable.MultiActionColumn):
-    modelfield = 'id'
-    template_name = 'devilry_admin/common/user-info-column.django.html'
-
-    def get_header(self):
-        return ugettext_lazy('Students')
-
-    def get_buttons(self, obj):
-        return [
-            objecttable.Button(
-                label=ugettext_lazy('Remove'),
-                url=self.reverse_appurl('deactivate', args=[obj.id]),
-                buttonclass="btn btn-danger btn-sm devilry-relatedstudentlist-deactivate-button"),
-        ]
-
-    def get_context_data(self, obj):
-        context = super(InfoColumn, self).get_context_data(obj=obj)
-        context['relateduser'] = obj.user
-        return context
 
 
 class Overview(listbuilder_relatedstudent.VerticalFilterListView):
@@ -72,7 +48,7 @@ class DeactivateView(GetQuerysetForRoleMixin, delete.DeleteView):
     View used to deactivate students from a period.
     """
     def get_object(self, *args, **kwargs):
-        if not hasattr(self, '_object'):
+        if not hasattr(self, b'_object'):
             self._object = super(DeactivateView, self).get_object(*args, **kwargs)
         return self._object
 
@@ -115,78 +91,136 @@ class DeactivateView(GetQuerysetForRoleMixin, delete.DeleteView):
         return redirect(self.get_success_url())
 
 
-class UserInfoColumn(userselect_common.UserInfoColumn):
-    modelfield = 'shortname'
-    select_label = ugettext_lazy('Add as student')
+# class UserInfoColumn(userselect_common.UserInfoColumn):
+#     modelfield = 'shortname'
+#     select_label = ugettext_lazy('Add as student')
+#
+#
+# class UserSelectView(userselect_common.AbstractUserSelectView):
+#     columns = [
+#         UserInfoColumn,
+#     ]
+#
+#     def get_pagetitle(self):
+#         return ugettext_lazy('Please select the user you want to add as students for %(what)s') % {
+#             'what': self.request.cradmin_role.long_name
+#         }
+#
+#     def get_form_action(self):
+#         return self.request.cradmin_app.reverse_appurl('add-user-as-student')
+#
+#     def get_excluded_user_ids(self):
+#         period = self.request.cradmin_role
+#         return period.relatedstudent_set.values_list('user_id', flat=True)
+#
+#     def get_no_searchresults_message_template_name(self):
+#         return 'devilry_admin/period/students/userselectview-no-searchresults-message.django.html'
+#
+#
+# class AddView(BaseFormView):
+#     """
+#     View used to add a RelatedStudent to a Period.
+#     """
+#     http_method_names = ['post']
+#
+#     model = RelatedStudent
+#
+#     def get_form_class(self):
+#         period = self.request.cradmin_role
+#         userqueryset = get_user_model().objects \
+#             .exclude(pk__in=period.relatedstudent_set.values_list('user_id', flat=True))
+#
+#         class AddAdminForm(forms.Form):
+#             user = forms.ModelChoiceField(
+#                 queryset=userqueryset)
+#             next = forms.CharField(required=False)
+#
+#         return AddAdminForm
+#
+#     def __make_user_student(self, user):
+#         period = self.request.cradmin_role
+#         self.model.objects.create(user=user,
+#                                   period=period)
+#
+#     def form_valid(self, form):
+#         user = form.cleaned_data['user']
+#         self.__make_user_student(user)
+#
+#         period = self.request.cradmin_role
+#         successmessage = ugettext_lazy('%(user)s added as student for %(what)s.') % {
+#             'user': user.get_full_name(),
+#             'what': period,
+#         }
+#         messages.success(self.request, successmessage)
+#
+#         if form.cleaned_data['next']:
+#             nexturl = form.cleaned_data['next']
+#         else:
+#             nexturl = self.request.cradmin_app.reverse_appindexurl()
+#         return HttpResponseRedirect(nexturl)
+#
+#     def form_invalid(self, form):
+#         messages.error(self.request,
+#                        ugettext_lazy('Error: The user may not exist, or it may already be student.'))
+#         return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
 
 
-class UserSelectView(userselect_common.AbstractUserSelectView):
-    columns = [
-        UserInfoColumn,
-    ]
+class AddStudentsTarget(devilry_multiselect2.user.Target):
+    def get_submit_button_text(self):
+        return ugettext_lazy('Add selected students')
 
-    def get_pagetitle(self):
-        return ugettext_lazy('Please select the user you want to add as students for %(what)s') % {
-            'what': self.request.cradmin_role.long_name
+
+class AddView(devilry_multiselect2.user.BaseMultiselectUsersView):
+    value_renderer_class = devilry_multiselect2.user.ItemValue
+    template_name = 'devilry_admin/period/students/add.django.html'
+    model = User
+
+    def get_filterlist_url(self, filters_string):
+        return self.request.cradmin_app.reverse_appurl(
+            'add', kwargs={'filters_string': filters_string})
+
+    def __get_userids_already_relatedstudent_queryset(self):
+        period = self.request.cradmin_role
+        return RelatedStudent.objects.filter(period=period)\
+            .values_list('user_id', flat=True)
+
+    def get_unfiltered_queryset_for_role(self, role):
+        return super(AddView, self).get_unfiltered_queryset_for_role(role=self.request.cradmin_role)\
+            .exclude(id__in=self.__get_userids_already_relatedstudent_queryset())
+
+    def get_target_renderer_class(self):
+        return AddStudentsTarget
+
+    def get_context_data(self, **kwargs):
+        context = super(AddView, self).get_context_data(**kwargs)
+        context['period'] = self.request.cradmin_role
+        return context
+
+    def get_success_url(self):
+        return self.request.cradmin_app.reverse_appindexurl()
+
+    def __get_success_message(self, added_users):
+        added_users_names = ['"{}"'.format(user.get_full_name()) for user in added_users]
+        added_users_names.sort()
+        return ugettext_lazy('Added %(usernames)s.') % {
+            'usernames': ', '.join(added_users_names)
         }
 
-    def get_form_action(self):
-        return self.request.cradmin_app.reverse_appurl('add-user-as-student')
-
-    def get_excluded_user_ids(self):
+    def __create_relatedstudents(self, selected_users):
         period = self.request.cradmin_role
-        return period.relatedstudent_set.values_list('user_id', flat=True)
-
-    def get_no_searchresults_message_template_name(self):
-        return 'devilry_admin/period/students/userselectview-no-searchresults-message.django.html'
-
-
-class AddView(BaseFormView):
-    """
-    View used to add a RelatedStudent to a Period.
-    """
-    http_method_names = ['post']
-
-    model = RelatedStudent
-
-    def get_form_class(self):
-        period = self.request.cradmin_role
-        userqueryset = get_user_model().objects \
-            .exclude(pk__in=period.relatedstudent_set.values_list('user_id', flat=True))
-
-        class AddAdminForm(forms.Form):
-            user = forms.ModelChoiceField(
-                queryset=userqueryset)
-            next = forms.CharField(required=False)
-
-        return AddAdminForm
-
-    def __make_user_student(self, user):
-        period = self.request.cradmin_role
-        self.model.objects.create(user=user,
-                                  period=period)
+        relatedstudents = []
+        for user in selected_users:
+            relatedstudent = RelatedStudent(
+                    period=period,
+                    user=user)
+            relatedstudents.append(relatedstudent)
+        RelatedStudent.objects.bulk_create(relatedstudents)
 
     def form_valid(self, form):
-        user = form.cleaned_data['user']
-        self.__make_user_student(user)
-
-        period = self.request.cradmin_role
-        successmessage = ugettext_lazy('%(user)s added as student for %(what)s.') % {
-            'user': user.get_full_name(),
-            'what': period,
-        }
-        messages.success(self.request, successmessage)
-
-        if form.cleaned_data['next']:
-            nexturl = form.cleaned_data['next']
-        else:
-            nexturl = self.request.cradmin_app.reverse_appindexurl()
-        return HttpResponseRedirect(nexturl)
-
-    def form_invalid(self, form):
-        messages.error(self.request,
-                       ugettext_lazy('Error: The user may not exist, or it may already be student.'))
-        return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+        selected_users = list(form.cleaned_data['selected_items'])
+        self.__create_relatedstudents(selected_users=selected_users)
+        messages.success(self.request, self.__get_success_message(added_users=selected_users))
+        return super(AddView, self).form_valid(form=form)
 
 
 class ImportStudentsView(bulkimport_users_common.AbstractTypeInUsersView):
@@ -241,12 +275,15 @@ class App(crapp.App):
         crapp.Url(r'^deactivate/(?P<pk>\d+)$',
                   DeactivateView.as_view(),
                   name="deactivate"),
-        crapp.Url(r'^select-user-to-add-as-student$',
-                  UserSelectView.as_view(),
-                  name="select-user-to-add-as-student"),
-        crapp.Url(r'^add',
+        # crapp.Url(r'^select-user-to-add-as-student$',
+        #           UserSelectView.as_view(),
+        #           name="select-user-to-add-as-student"),
+        # crapp.Url(r'^add',
+        #           AddView.as_view(),
+        #           name="add-user-as-student"),
+        crapp.Url(r'^add/(?P<filters_string>.+)?$',
                   AddView.as_view(),
-                  name="add-user-as-student"),
+                  name="add"),
         crapp.Url(r'^importstudents',
                   ImportStudentsView.as_view(),
                   name="importstudents"),

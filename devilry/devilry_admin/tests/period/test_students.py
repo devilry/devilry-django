@@ -1,19 +1,18 @@
-import htmls
+from __future__ import unicode_literals
 import mock
+from django import test
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404
-from django.test import TestCase, RequestFactory
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_admin.tests.common.test_bulkimport_users_common import AbstractTypeInUsersViewTestMixin
 from devilry.devilry_admin.views.period import students
-from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder, UserBuilder2
 
 
-class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
+class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = students.Overview
 
     def __get_titles(self, selector):
@@ -47,8 +46,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod,
                                                           cradmin_app=mock_cradmin_app)
         self.assertEqual(
-            # '/add',
-            '#',
+            '/add',
             mockresponse.selector.one('#devilry_admin_period_students_overview_button_add')['href'])
 
     def test_buttonbar_addbutton_label(self):
@@ -117,7 +115,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
             self.mock_getrequest(cradmin_role=testperiod)
 
 
-class TestDeactivateStudentView(TestCase, cradmin_testhelpers.TestCaseMixin):
+class TestDeactivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = students.DeactivateView
 
     def test_get_title(self):
@@ -214,128 +212,242 @@ class TestDeactivateStudentView(TestCase, cradmin_testhelpers.TestCaseMixin):
             '')
 
 
-class TestUserSelectView(TestCase):
-    def __mock_get_request(self, role, user):
-        request = RequestFactory().get('/')
-        request.user = user
-        request.cradmin_role = role
-        request.cradmin_app = mock.MagicMock()
-        request.cradmin_instance = mock.MagicMock()
-        request.session = mock.MagicMock()
-        response = students.UserSelectView.as_view()(request)
-        return response
+class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = students.AddView
 
-    def mock_http200_getrequest_htmls(self, role, user):
-        response = self.__mock_get_request(role=role, user=user)
-        self.assertEqual(response.status_code, 200)
-        response.render()
-        selector = htmls.S(response.content)
-        return selector
+    def test_get_title(self):
+        testperiod = mommy.make('core.Period',
+                                parentnode__short_name='testsubject',
+                                short_name='testperiod')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod)
+        self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
+                         'Select the students you want to add to testsubject.testperiod')
 
-    def test_render(self):
-        testuser = UserBuilder2().user
-        periodbuilder = PeriodBuilder.make() \
-            .add_relatedstudents(testuser)  # testuser should be excluded since it is already student
-        UserBuilder2(shortname='Jane Doe')
-        selector = self.mock_http200_getrequest_htmls(role=periodbuilder.get_object(),
-                                                      user=testuser)
-        self.assertTrue(selector.exists(
-            '#objecttableview-table tbody .devilry-admin-userselect-select-button'))
+    def test_get_h1(self):
+        testperiod = mommy.make('core.Period',
+                                parentnode__short_name='testsubject',
+                                short_name='testperiod')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod)
+        self.assertEqual(mockresponse.selector.one('h1').alltext_normalized,
+                         'Select the students you want to add to testsubject.testperiod')
+
+    def test_render_sanity(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make(settings.AUTH_USER_MODEL,
+                   fullname='Test User',
+                   shortname='test@example.com')
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock(),
+                                                          cradmin_role=testperiod)
         self.assertEqual(
-            selector.one('#objecttableview-table tbody '
-                         '.devilry-admin-userselect-select-button').alltext_normalized,
-            'Add as student')
+            'Test User',
+            mockresponse.selector.one(
+                    '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+        self.assertEqual(
+            'test@example.com',
+            mockresponse.selector.one(
+                    '.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
+    def __get_titles(self, selector):
+        return [element.alltext_normalized
+                for element in selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
 
-class TestAddView(TestCase):
-    def __mock_postrequest(self, role, requestuser, data, messagesmock=None):
-        request = RequestFactory().post('/', data=data)
-        request.user = requestuser
-        request.cradmin_role = role
-        request.cradmin_app = mock.MagicMock()
-        request.cradmin_instance = mock.MagicMock()
-        request.session = mock.MagicMock()
-        if messagesmock:
-            request._messages = messagesmock
-        else:
-            request._messages = mock.MagicMock()
-        response = students.AddView.as_view()(request)
-        return response, request
+    def test_do_not_include_users_already_relatedstudent(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make(settings.AUTH_USER_MODEL,
+                   fullname='Not in any period')
+        mommy.make('core.RelatedStudent',
+                   period=testperiod,
+                   user__fullname='Already in period')
+        mommy.make('core.RelatedStudent',
+                   user__fullname='In other period')
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock(),
+                                                          cradmin_role=testperiod)
+        self.assertEqual(
+                {'Not in any period', 'In other period'},
+                set(self.__get_titles(mockresponse.selector)))
 
-    def test_invalid_user(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        periodbuilder = PeriodBuilder.make(short_name='testbasenode')
-        response, request = self.__mock_postrequest(role=periodbuilder.get_object(),
-                                                    requestuser=requestuser,
-                                                    data={'user': 10000000001})
-        self.assertEqual(response.status_code, 302)
-        request._messages.add.assert_called_once_with(
-            messages.ERROR,
-            'Error: The user may not exist, or it may already be student.', '')
-        request.cradmin_app.reverse_appindexurl.assert_called_once()
+    def test_post_creates_relatedstudents(self):
+        testperiod = mommy.make('core.Period')
+        studentuser = mommy.make(settings.AUTH_USER_MODEL)
+        self.assertEqual(0, RelatedStudent.objects.count())
+        self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                requestkwargs={
+                    'data': {
+                        'selected_items': [str(studentuser.id)]
+                    }
+                })
+        self.assertEqual(1, RelatedStudent.objects.count())
+        created_relatedstudent = RelatedStudent.objects.first()
+        self.assertEqual(studentuser, created_relatedstudent.user)
+        self.assertEqual(testperiod, created_relatedstudent.period)
+        self.assertTrue(created_relatedstudent.active)
 
-    def test_user_already_student(self):
-        # Just to ensure the ID of the RelatedStudent does not match
-        # the ID of the User
-        UserBuilder2()
-        UserBuilder2()
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        periodbuilder = PeriodBuilder.make(short_name='testbasenode') \
-            .add_relatedstudents(requestuser)
-        response, request = self.__mock_postrequest(role=periodbuilder.get_object(),
-                                                    requestuser=requestuser,
-                                                    data={'user': requestuser.id})
-        self.assertEqual(response.status_code, 302)
-        request._messages.add.assert_called_once_with(
-            messages.ERROR,
-            'Error: The user may not exist, or it may already be student.', '')
-        request.cradmin_app.reverse_appindexurl.assert_called_once()
+    def test_post_multiple_users(self):
+        testperiod = mommy.make('core.Period')
+        studentuser1 = mommy.make(settings.AUTH_USER_MODEL)
+        studentuser2 = mommy.make(settings.AUTH_USER_MODEL)
+        studentuser3 = mommy.make(settings.AUTH_USER_MODEL)
+        self.assertEqual(0, RelatedStudent.objects.count())
+        self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                requestkwargs={
+                    'data': {
+                        'selected_items': [str(studentuser1.id),
+                                           str(studentuser2.id),
+                                           str(studentuser3.id)]
+                    }
+                })
+        self.assertEqual(3, RelatedStudent.objects.count())
 
-    def test_adds_user_to_relatedstudents(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        janedoe = UserBuilder2().user
-        periodbuilder = PeriodBuilder.make()
-        self.assertFalse(periodbuilder.get_object().relatedstudent_set.filter(user=janedoe).exists())
-        self.__mock_postrequest(role=periodbuilder.get_object(),
-                                requestuser=requestuser,
-                                data={'user': janedoe.id})
-        self.assertTrue(periodbuilder.get_object().relatedstudent_set.filter(user=janedoe).exists())
-
-    def test_success_message(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        periodbuilder = PeriodBuilder.make(short_name='testbasenode')
-        response, request = self.__mock_postrequest(role=periodbuilder.get_object(),
-                                                    requestuser=requestuser,
-                                                    data={'user': janedoe.id})
-        request._messages.add.assert_called_once_with(
+    def test_post_success_message(self):
+        testperiod = mommy.make('core.Period',
+                                parentnode__short_name='testsubject',
+                                short_name='testperiod')
+        studentuser1 = mommy.make(settings.AUTH_USER_MODEL,
+                                  shortname='testuser')
+        studentuser2 = mommy.make(settings.AUTH_USER_MODEL,
+                                  fullname='Test User')
+        self.assertEqual(0, RelatedStudent.objects.count())
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                messagesmock=messagesmock,
+                requestkwargs={
+                    'data': {
+                        'selected_items': [str(studentuser1.id),
+                                           str(studentuser2.id)]
+                    }
+                })
+        messagesmock.add.assert_called_once_with(
             messages.SUCCESS,
-            'Jane Doe added as student for {}.'.format(periodbuilder.get_object()),
+            'Added "Test User", "testuser".',
             '')
 
-    def test_success_redirect_without_next(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        periodbuilder = PeriodBuilder.make(short_name='testbasenode')
-        response, request = self.__mock_postrequest(role=periodbuilder.get_object(),
-                                                    requestuser=requestuser,
-                                                    data={'user': janedoe.id})
-        self.assertEqual(response.status_code, 302)
-        request.cradmin_app.reverse_appindexurl.assert_called_once()
+# class TestUserSelectView(test.TestCase):
+#     def __mock_get_request(self, role, user):
+#         request = RequestFactory().get('/')
+#         request.user = user
+#         request.cradmin_role = role
+#         request.cradmin_app = mock.MagicMock()
+#         request.cradmin_instance = mock.MagicMock()
+#         request.session = mock.MagicMock()
+#         response = students.UserSelectView.as_view()(request)
+#         return response
+#
+#     def mock_http200_getrequest_htmls(self, role, user):
+#         response = self.__mock_get_request(role=role, user=user)
+#         self.assertEqual(response.status_code, 200)
+#         response.render()
+#         selector = htmls.S(response.content)
+#         return selector
+#
+#     def test_render(self):
+#         testuser = UserBuilder2().user
+#         periodbuilder = PeriodBuilder.make() \
+#             .add_relatedstudents(testuser)  # testuser should be excluded since it is already student
+#         UserBuilder2(shortname='Jane Doe')
+#         selector = self.mock_http200_getrequest_htmls(role=periodbuilder.get_object(),
+#                                                       user=testuser)
+#         self.assertTrue(selector.exists(
+#             '#objecttableview-table tbody .devilry-admin-userselect-select-button'))
+#         self.assertEqual(
+#             selector.one('#objecttableview-table tbody '
+#                          '.devilry-admin-userselect-select-button').alltext_normalized,
+#             'Add as student')
+#
+#
+# class TestAddView(test.TestCase):
+#     def __mock_postrequest(self, role, requestuser, data, messagesmock=None):
+#         request = RequestFactory().post('/', data=data)
+#         request.user = requestuser
+#         request.cradmin_role = role
+#         request.cradmin_app = mock.MagicMock()
+#         request.cradmin_instance = mock.MagicMock()
+#         request.session = mock.MagicMock()
+#         if messagesmock:
+#             request._messages = messagesmock
+#         else:
+#             request._messages = mock.MagicMock()
+#         response = students.AddView.as_view()(request)
+#         return response, request
+#
+#     def test_invalid_user(self):
+#         requestuser = mommy.make(settings.AUTH_USER_MODEL)
+#         periodbuilder = PeriodBuilder.make(short_name='testbasenode')
+#         response, request = self.__mock_postrequest(role=periodbuilder.get_object(),
+#                                                     requestuser=requestuser,
+#                                                     data={'user': 10000000001})
+#         self.assertEqual(response.status_code, 302)
+#         request._messages.add.assert_called_once_with(
+#             messages.ERROR,
+#             'Error: The user may not exist, or it may already be student.', '')
+#         request.cradmin_app.reverse_appindexurl.assert_called_once()
+#
+#     def test_user_already_student(self):
+#         # Just to ensure the ID of the RelatedStudent does not match
+#         # the ID of the User
+#         UserBuilder2()
+#         UserBuilder2()
+#         requestuser = mommy.make(settings.AUTH_USER_MODEL)
+#         periodbuilder = PeriodBuilder.make(short_name='testbasenode') \
+#             .add_relatedstudents(requestuser)
+#         response, request = self.__mock_postrequest(role=periodbuilder.get_object(),
+#                                                     requestuser=requestuser,
+#                                                     data={'user': requestuser.id})
+#         self.assertEqual(response.status_code, 302)
+#         request._messages.add.assert_called_once_with(
+#             messages.ERROR,
+#             'Error: The user may not exist, or it may already be student.', '')
+#         request.cradmin_app.reverse_appindexurl.assert_called_once()
+#
+#     def test_adds_user_to_relatedstudents(self):
+#         requestuser = mommy.make(settings.AUTH_USER_MODEL)
+#         janedoe = UserBuilder2().user
+#         periodbuilder = PeriodBuilder.make()
+#         self.assertFalse(periodbuilder.get_object().relatedstudent_set.filter(user=janedoe).exists())
+#         self.__mock_postrequest(role=periodbuilder.get_object(),
+#                                 requestuser=requestuser,
+#                                 data={'user': janedoe.id})
+#         self.assertTrue(periodbuilder.get_object().relatedstudent_set.filter(user=janedoe).exists())
+#
+#     def test_success_message(self):
+#         requestuser = mommy.make(settings.AUTH_USER_MODEL)
+#         janedoe = UserBuilder2(fullname='Jane Doe').user
+#         periodbuilder = PeriodBuilder.make(short_name='testbasenode')
+#         response, request = self.__mock_postrequest(role=periodbuilder.get_object(),
+#                                                     requestuser=requestuser,
+#                                                     data={'user': janedoe.id})
+#         request._messages.add.assert_called_once_with(
+#             messages.SUCCESS,
+#             'Jane Doe added as student for {}.'.format(periodbuilder.get_object()),
+#             '')
+#
+#     def test_success_redirect_without_next(self):
+#         requestuser = mommy.make(settings.AUTH_USER_MODEL)
+#         janedoe = UserBuilder2(fullname='Jane Doe').user
+#         periodbuilder = PeriodBuilder.make(short_name='testbasenode')
+#         response, request = self.__mock_postrequest(role=periodbuilder.get_object(),
+#                                                     requestuser=requestuser,
+#                                                     data={'user': janedoe.id})
+#         self.assertEqual(response.status_code, 302)
+#         request.cradmin_app.reverse_appindexurl.assert_called_once()
+#
+#     def test_success_redirect_with_next(self):
+#         requestuser = mommy.make(settings.AUTH_USER_MODEL)
+#         janedoe = UserBuilder2(fullname='Jane Doe').user
+#         periodbuilder = PeriodBuilder.make(short_name='testbasenode')
+#         response, request = self.__mock_postrequest(role=periodbuilder.get_object(),
+#                                                     requestuser=requestuser,
+#                                                     data={'user': janedoe.id,
+#                                                           'next': '/next'})
+#         self.assertEqual(response.status_code, 302)
+#         self.assertEqual(response['location'], '/next')
 
-    def test_success_redirect_with_next(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        periodbuilder = PeriodBuilder.make(short_name='testbasenode')
-        response, request = self.__mock_postrequest(role=periodbuilder.get_object(),
-                                                    requestuser=requestuser,
-                                                    data={'user': janedoe.id,
-                                                          'next': '/next'})
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/next')
 
-
-class TestImportStudentsView(TestCase, AbstractTypeInUsersViewTestMixin):
+class TestImportStudentsView(test.TestCase, AbstractTypeInUsersViewTestMixin):
     viewclass = students.ImportStudentsView
 
     def test_post_valid_with_email_backend_creates_relatedusers(self):
