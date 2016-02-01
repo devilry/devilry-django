@@ -73,8 +73,16 @@ class AbstractTypeInUsersViewTestMixin(cradmin_testhelpers.TestCaseMixin):
                              mockresponse.selector.one('#error_1_id_users_blob').alltext_normalized)
 
 
+class MockTypeInUsersView(AbstractTypeInUsersView):
+    def get_backlink_label(self):
+        return 'Back'
+
+    def get_backlink_url(self):
+        return '/back'
+
+
 class TestAbstractTypeInUsersView(TestCase, AbstractTypeInUsersViewTestMixin):
-    viewclass = AbstractTypeInUsersView
+    viewclass = MockTypeInUsersView
 
     def test_split_users_blob_empty(self):
         self.assertEqual(
