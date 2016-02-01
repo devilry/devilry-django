@@ -3,6 +3,7 @@ import mock
 from django import test
 from django import forms
 from django.conf import settings
+from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.devilry_cradmin import devilry_multiselect2
@@ -94,3 +95,100 @@ class TestTarget(test.TestCase):
         self.assertEqual(
                 'No users selected',
                 selector.one('.django-cradmin-multiselect2-target-without-items-content').alltext_normalized)
+
+
+class MockMultiselectUsersView(devilry_multiselect2.user.BaseMultiselectUsersView):
+    def get_filterlist_url(self, filters_string):
+        return '/{}'.format(filters_string)
+
+
+class TestBaseMultiselectUsersView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = MockMultiselectUsersView
+
+    def test_render_sanity(self):
+        # Only a sanity test - we do not repeat all the tests from TestItemValue
+        mommy.make(settings.AUTH_USER_MODEL,
+                   fullname='Test User',
+                   shortname='test@example.com')
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock())
+        self.assertEqual(
+            'Test User',
+            mockresponse.selector.one(
+                    '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+        self.assertEqual(
+            'test@example.com',
+            mockresponse.selector.one(
+                    '.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+
+    def __get_titles(self, selector):
+        return [element.alltext_normalized
+                for element in selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+
+    def test_ordering(self):
+        mommy.make(settings.AUTH_USER_MODEL,
+                   shortname='userb')
+        mommy.make(settings.AUTH_USER_MODEL,
+                   shortname='usera')
+        mommy.make(settings.AUTH_USER_MODEL,
+                   shortname='userc')
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock())
+        self.assertEqual(
+                ['usera', 'userb', 'userc'],
+                self.__get_titles(mockresponse.selector))
+
+    def test_selectall_not_available(self):
+        mommy.make(settings.AUTH_USER_MODEL)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=mock.MagicMock())
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-multiselect2-listcolumn-buttons .btn'))
+
+    def test_search_shortname(self):
+        mommy.make(settings.AUTH_USER_MODEL,
+                   shortname='userb')
+        mommy.make(settings.AUTH_USER_MODEL,
+                   shortname='usera')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                requestuser=mock.MagicMock(),
+                viewkwargs={'filters_string': 'search-usera'})
+        self.assertEqual(
+                {'usera'},
+                set(self.__get_titles(mockresponse.selector)))
+
+    def test_search_fullname(self):
+        mommy.make(settings.AUTH_USER_MODEL,
+                   fullname='Userb')
+        mommy.make(settings.AUTH_USER_MODEL,
+                   fullname='Usera')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                requestuser=mock.MagicMock(),
+                viewkwargs={'filters_string': 'search-usera'})
+        self.assertEqual(
+                {'Usera'},
+                set(self.__get_titles(mockresponse.selector)))
+
+    def test_search_username(self):
+        mommy.make('devilry_account.UserName',
+                   user__fullname='Test User 1',
+                   username='testuser1')
+        mommy.make('devilry_account.UserName',
+                   user__fullname='Test User 2',
+                   username='testuser2')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                requestuser=mock.MagicMock(),
+                viewkwargs={'filters_string': 'search-testuser1'})
+        self.assertEqual(
+                {'Test User 1'},
+                set(self.__get_titles(mockresponse.selector)))
+
+    def test_search_useremail(self):
+        mommy.make('devilry_account.UserEmail',
+                   user__fullname='Test User 1',
+                   email='testuser1@example.com')
+        mommy.make('devilry_account.UserEmail',
+                   user__fullname='Test User 2',
+                   email='testuser2@example.com')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                requestuser=mock.MagicMock(),
+                viewkwargs={'filters_string': 'search-testuser1'})
+        self.assertEqual(
+                {'Test User 1'},
+                set(self.__get_titles(mockresponse.selector)))
