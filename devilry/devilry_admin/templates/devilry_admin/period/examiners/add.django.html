@@ -1,0 +1,29 @@
+{% extends "django_cradmin/viewhelpers/multiselect2view/listbuilderfilterview.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block title %}
+    {% blocktrans trimmed with period=period.get_path %}
+        Select the examiners you want to add to {{ period }}
+    {% endblocktrans %}
+{% endblock title %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_appindex_url %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to examiners on semester overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% blocktrans trimmed with period=period.get_path %}
+            Select the examiners you want to add to {{ period }}
+        {% endblocktrans %}
+    </h1>
+{% endblock pageheader-inner %}

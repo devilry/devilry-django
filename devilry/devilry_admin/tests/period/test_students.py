@@ -113,9 +113,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedStudent', period=testperiod, active=False)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertFalse(
-                mockresponse.selector.exists('.devilry-admin-listbuilder-relatedstudent-itemvalue-active'))
+                mockresponse.selector.exists('.devilry-admin-relatedstudent-itemvalue-active'))
         self.assertTrue(
-                mockresponse.selector.exists('.devilry-admin-listbuilder-relatedstudent-itemvalue-inactive'))
+                mockresponse.selector.exists('.devilry-admin-relatedstudent-itemvalue-inactive'))
         self.assertFalse(
                 mockresponse.selector.exists('.devilry-admin-period-active-relatedstudent-block'))
         self.assertTrue(
@@ -155,9 +155,9 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedStudent', period=testperiod, active=True)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertTrue(
-                mockresponse.selector.exists('.devilry-admin-listbuilder-relatedstudent-itemvalue-active'))
+                mockresponse.selector.exists('.devilry-admin-relatedstudent-itemvalue-active'))
         self.assertFalse(
-                mockresponse.selector.exists('.devilry-admin-listbuilder-relatedstudent-itemvalue-inactive'))
+                mockresponse.selector.exists('.devilry-admin-relatedstudent-itemvalue-inactive'))
         self.assertTrue(
                 mockresponse.selector.exists('.devilry-admin-period-active-relatedstudent-block'))
         self.assertFalse(
