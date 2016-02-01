@@ -8,8 +8,7 @@ from django_cradmin import crapp
 from django_cradmin.crispylayouts import DangerSubmit
 from django_cradmin.viewhelpers import listbuilderview
 
-from devilry.apps.core.models import RelatedExaminer
-from devilry.devilry_account.models import PermissionGroupUser, PeriodPermissionGroup, PermissionGroup, User, \
+from devilry.devilry_account.models import PermissionGroupUser, PeriodPermissionGroup, PermissionGroup, \
     SubjectPermissionGroup
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_multiselect2
@@ -17,8 +16,7 @@ from devilry.devilry_cradmin.viewhelpers import devilry_confirmview
 
 
 class OverviewItemValue(devilry_listbuilder.permissiongroupuser.ItemValue):
-    # template_name = 'devilry_admin/period/admins/overview-itemvalue.django.html'
-    pass
+    template_name = 'devilry_admin/period/admins/overview-itemvalue.django.html'
 
 
 class GetCustomManagablePermissionGroupMixin(object):
@@ -35,9 +33,6 @@ class Overview(GetCustomManagablePermissionGroupMixin, listbuilderview.FilterLis
     value_renderer_class = OverviewItemValue
     template_name = 'devilry_admin/period/admins/overview.django.html'
     model = PermissionGroupUser
-
-    # def add_filterlist_items(self, filterlist):
-    #     pass
 
     def dispatch(self, request, *args, **kwargs):
         self.custom_managable_periodpermissiongroup = self.get_custom_managable_periodpermissiongroup()
@@ -196,7 +191,7 @@ class DeleteView(GetCustomManagablePermissionGroupMixin, devilry_confirmview.Vie
         }
 
     def get_submit_button_label(self):
-        return ugettext_lazy('Deactivate')
+        return ugettext_lazy('Remove')
 
     def get_submit_button_class(self):
         return DangerSubmit

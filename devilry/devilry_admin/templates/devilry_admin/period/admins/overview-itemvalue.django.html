@@ -1,0 +1,13 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block end-of-content %}
+    <p>
+        <a href="{% cradmin_appurl 'delete' pk=me.permissiongroupuser.pk %}"
+                class="btn btn-danger btn-xs devilry-admin-period-admin-delete-link"
+                aria-label="{% blocktrans with user=me.permissiongroupuser.user.get_full_name %}Remove {{ user }}{% endblocktrans %}">
+            {% trans "Remove" %}
+        </a>
+    </p>
+{% endblock end-of-content %}

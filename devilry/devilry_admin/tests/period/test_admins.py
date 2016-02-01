@@ -96,6 +96,33 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(['usera'],
                          self.__get_titles(mockresponse.selector))
 
+    def test_delete_link_label(self):
+        testperiod = mommy.make('core.Period')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           permissiongroup__is_custom_manageable=True,
+                                           period=testperiod)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=periodpermissiongroup.permissiongroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(
+                'Remove',
+                mockresponse.selector.one(
+                        '.devilry-admin-period-admin-delete-link').alltext_normalized)
+
+    def test_delete_arialabel(self):
+        testperiod = mommy.make('core.Period')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           permissiongroup__is_custom_manageable=True,
+                                           period=testperiod)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=periodpermissiongroup.permissiongroup,
+                   user__shortname='testadmin')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(
+                'Remove testadmin',
+                mockresponse.selector.one(
+                        '.devilry-admin-period-admin-delete-link')['aria-label'])
+
     def test_querycount(self):
         testperiod = mommy.make('core.Period')
         periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
