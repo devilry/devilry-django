@@ -6963,8 +6963,8 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
 }
 .django-cradmin-listing-no-items-message {
   padding: 10px 15px;
-  background: #337ab7;
-  color: #fff;
+  background: #fff;
+  color: #333333;
 }
 .btn {
   font-weight: bold;
