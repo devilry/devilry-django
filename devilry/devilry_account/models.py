@@ -904,6 +904,30 @@ class PeriodPermissionGroupQuerySet(models.QuerySet):
         else:
             return None
 
+    def get_custom_managable_periodpermissiongroup_for_period(self, period):
+        """
+        Get the PeriodPermissionGroup where :obj:`.PermissionGroup.is_custom_manageable` is ``True``
+        for the given ``period``.
+
+        Each :class:`devilry.apps.core.models.Period` has exactly one custom managable
+        :class:`.PermissionGroup`, which is the permission group where admins added
+        by non-superusers via the admin UI are added.
+
+        .. note:: The queryset used does ``select_related('permissiongroup')``, so looking
+            up permissiongroup for the returned PeriodPermissionGroup does not require
+            an extra database query.
+
+        Args:
+            period: A :class:`devilry.apps.core.models.Period` object.
+
+        Raises:
+            PeriodPermissionGroup.DoesNotExist: If no custom managable PermissionGroup exists for
+                the given period.
+        """
+        return self.filter(period=period, permissiongroup__is_custom_manageable=True)\
+            .select_related('permissiongroup')\
+            .get()
+
 
 class PeriodPermissionGroup(models.Model):
     """
@@ -1029,6 +1053,30 @@ class SubjectPermissionGroupQuerySet(models.QuerySet):
             return 'subjectadmin'
         else:
             return None
+
+    def get_custom_managable_subjectpermissiongroup_for_subject(self, subject):
+        """
+        Get the SubjectPermissionGroup where :obj:`.PermissionGroup.is_custom_manageable` is ``True``
+        for the given ``subject``.
+
+        Each :class:`devilry.apps.core.models.Subject` has exactly one custom managable
+        :class:`.PermissionGroup`, which is the permission group where admins added
+        by non-superusers via the admin UI are added.
+
+        .. note:: The queryset used does ``select_related('permissiongroup')``, so looking
+            up permissiongroup for the returned SubjectPermissionGroup does not require
+            an extra database query.
+
+        Args:
+            subject: A :class:`devilry.apps.core.models.Subject` object.
+
+        Raises:
+            SubjectPermissionGroup.DoesNotExist: If no custom managable PermissionGroup exists for
+                the given subject.
+        """
+        return self.filter(subject=subject, permissiongroup__is_custom_manageable=True)\
+            .select_related('permissiongroup')\
+            .get()
 
 
 class SubjectPermissionGroup(models.Model):

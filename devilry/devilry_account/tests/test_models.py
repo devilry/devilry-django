@@ -632,6 +632,43 @@ class TestPeriodPermissionGroupQuerySet(TestCase):
             PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
                 period=testperiod, user=testuser))
 
+    def test_get_custom_managable_periodpermissiongroup_for_period_only_custom_managable(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('devilry_account.PeriodPermissionGroup',
+                   permissiongroup__is_custom_manageable=False,
+                   period=testperiod)
+        with self.assertRaises(PeriodPermissionGroup.DoesNotExist):
+            PeriodPermissionGroup.objects.get_custom_managable_periodpermissiongroup_for_period(
+                    period=testperiod)
+
+    def test_get_custom_managable_periodpermissiongroup_for_period_only_in_period(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('devilry_account.PeriodPermissionGroup',
+                   permissiongroup__is_custom_manageable=True)
+        with self.assertRaises(PeriodPermissionGroup.DoesNotExist):
+            PeriodPermissionGroup.objects.get_custom_managable_periodpermissiongroup_for_period(
+                    period=testperiod)
+
+    def test_get_custom_managable_periodpermissiongroup_for_period(self):
+        testperiod = mommy.make('core.Period')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           permissiongroup__is_custom_manageable=True,
+                                           period=testperiod)
+        self.assertEqual(
+            periodpermissiongroup,
+            PeriodPermissionGroup.objects.get_custom_managable_periodpermissiongroup_for_period(
+                    period=testperiod))
+
+    def test_get_custom_managable_periodpermissiongroup_for_period_selectrelated_permissiongroup(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('devilry_account.PeriodPermissionGroup',
+                   permissiongroup__is_custom_manageable=True,
+                   period=testperiod)
+        periodpermissiongroup = PeriodPermissionGroup.objects.get_custom_managable_periodpermissiongroup_for_period(
+            period=testperiod)
+        with self.assertNumQueries(0):
+            str(periodpermissiongroup.permissiongroup)
+
 
 class TestPeriodPermissionGroup(TestCase):
     def test_grouptype_must_be_periodadmin(self):
@@ -783,6 +820,43 @@ class TestSubjectPermissionGroupQuerySet(TestCase):
             'subjectadmin',
             SubjectPermissionGroup.objects.get_devilryrole_for_user_on_subject(
                 subject=testsubject, user=testuser))
+
+    def test_get_custom_managable_periodpermissiongroup_for_subject_only_custom_managable(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   permissiongroup__is_custom_manageable=False,
+                   subject=testsubject)
+        with self.assertRaises(SubjectPermissionGroup.DoesNotExist):
+            SubjectPermissionGroup.objects.get_custom_managable_subjectpermissiongroup_for_subject(
+                    subject=testsubject)
+
+    def test_get_custom_managable_subjectpermissiongroup_for_subject_only_in_subject(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   permissiongroup__is_custom_manageable=True)
+        with self.assertRaises(SubjectPermissionGroup.DoesNotExist):
+            SubjectPermissionGroup.objects.get_custom_managable_subjectpermissiongroup_for_subject(
+                    subject=testsubject)
+
+    def test_get_custom_managable_subjectpermissiongroup_for_subject(self):
+        testsubject = mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                           permissiongroup__is_custom_manageable=True,
+                                           subject=testsubject)
+        self.assertEqual(
+            subjectpermissiongroup,
+            SubjectPermissionGroup.objects.get_custom_managable_subjectpermissiongroup_for_subject(
+                    subject=testsubject))
+
+    def test_get_custom_managable_subjectpermissiongroup_for_subject_selectrelated_permissiongroup(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   permissiongroup__is_custom_manageable=True,
+                   subject=testsubject)
+        subjectpermissiongroup = SubjectPermissionGroup.objects.get_custom_managable_subjectpermissiongroup_for_subject(
+            subject=testsubject)
+        with self.assertNumQueries(0):
+            str(subjectpermissiongroup.permissiongroup)
 
 
 class TestSubjectPermissionGroup(TestCase):
