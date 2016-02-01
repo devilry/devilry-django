@@ -61,7 +61,8 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testperiod = mommy.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(
-                'You have no semester administrators. Use the button above to add semester administrators.',
+                'No manually added semester administrators for this semester. '
+                'You can add administrators using the button above.',
                 mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
 
     def test_default_ordering(self):
