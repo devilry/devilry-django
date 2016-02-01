@@ -1,0 +1,24 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block end-of-content %}
+    {% if me.relatedstudent.active %}
+        <p>
+            <a href="{% cradmin_appurl 'deactivate' pk=me.relatedstudent.pk %}"
+                    class="btn btn-danger btn-xs"
+                    aria-label="{% blocktrans with user=me.relatedstudent.user.get_full_name %}Mark {{ user }} as inactive{% endblocktrans %}">
+                {% trans "Mark as inactive" %}
+            </a>
+        </p>
+    {% else %}
+        <p class="text-warning">
+            {% trans "Inactive student - can not be added to new assignments, and can not be marked as qualified for final exams." %}
+            <a href="{% cradmin_appurl 'activate' pk=me.relatedstudent.pk %}"
+                    aria-label='{% blocktrans with user=me.relatedstudent.user.get_full_name %}Re-activate {{ user }}{% endblocktrans %}'>
+
+                {% trans "Re-activate" %}.
+            </a>
+        </p>
+        {% endif %}
+{% endblock end-of-content %}

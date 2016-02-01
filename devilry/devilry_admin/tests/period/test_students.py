@@ -131,7 +131,7 @@ class TestDeactivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin
                 requestuser=requestuser,
                 viewkwargs={'pk': relatedstudent.pk})
         self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
-                         'Deactivate student: Jane Doe')
+                         'Deactivate student: Jane Doe?')
 
     def test_get_h1(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -146,9 +146,9 @@ class TestDeactivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin
                 requestuser=requestuser,
                 viewkwargs={'pk': relatedstudent.pk})
         self.assertEqual(mockresponse.selector.one('h1').alltext_normalized,
-                         'Deactivate student: Jane Doe')
+                         'Deactivate student: Jane Doe?')
 
-    def test_get_preview(self):
+    def test_get_confirm_message(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
         testperiod = mommy.make('core.Period',
                                 parentnode__short_name='testsubject',
@@ -160,7 +160,7 @@ class TestDeactivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin
                 cradmin_role=testperiod,
                 requestuser=requestuser,
                 viewkwargs={'pk': relatedstudent.pk})
-        self.assertEqual(mockresponse.selector.one('#deleteview-preview').alltext_normalized,
+        self.assertEqual(mockresponse.selector.one('.devilry-cradmin-confirmview-message').alltext_normalized,
                          'Are you sure you want to make Jane Doe '
                          'an inactive student for testsubject.testperiod? Inactive students '
                          'can not be added to new assignments, but they still have access '
@@ -209,6 +209,97 @@ class TestDeactivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin
         messagesmock.add.assert_called_once_with(
             messages.SUCCESS,
             'Jane Doe was deactivated.',
+            '')
+
+
+class TestActivateStudentView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = students.ActivateView
+
+    def test_get_title(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period',
+                                parentnode__short_name='testsubject',
+                                short_name='testperiod')
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    period=testperiod,
+                                    user__fullname='Jane Doe')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod,
+                requestuser=requestuser,
+                viewkwargs={'pk': relatedstudent.pk})
+        self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
+                         'Re-activate student: Jane Doe?')
+
+    def test_get_h1(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period',
+                                parentnode__short_name='testsubject',
+                                short_name='testperiod')
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    period=testperiod,
+                                    user__fullname='Jane Doe')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod,
+                requestuser=requestuser,
+                viewkwargs={'pk': relatedstudent.pk})
+        self.assertEqual(mockresponse.selector.one('h1').alltext_normalized,
+                         'Re-activate student: Jane Doe?')
+
+    def test_get_confirm_message(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period',
+                                parentnode__short_name='testsubject',
+                                short_name='testperiod')
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    period=testperiod,
+                                    user__fullname='Jane Doe')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod,
+                requestuser=requestuser,
+                viewkwargs={'pk': relatedstudent.pk})
+        self.assertEqual(mockresponse.selector.one('.devilry-cradmin-confirmview-message').alltext_normalized,
+                         'Please confirm that you want to re-activate Jane Doe.')
+
+    def test_404_if_not_relatedstudent_on_period(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        otherperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    period=otherperiod)
+        with self.assertRaises(Http404):
+            self.mock_getrequest(
+                    cradmin_role=testperiod,
+                    requestuser=requestuser,
+                    viewkwargs={'pk': relatedstudent.pk})
+
+    def test_post_activates(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, active=False)
+        self.assertFalse(relatedstudent.active)
+        self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                requestuser=requestuser,
+                viewkwargs={'pk': relatedstudent.pk})
+        updated_relatedstudent = RelatedStudent.objects.get(id=relatedstudent.id)
+        self.assertTrue(updated_relatedstudent.active)
+
+    def test_post_success_message(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    period=testperiod,
+                                    user__fullname='Jane Doe')
+        self.assertTrue(relatedstudent.active)
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                messagesmock=messagesmock,
+                requestuser=requestuser,
+                viewkwargs={'pk': relatedstudent.pk})
+        messagesmock.add.assert_called_once_with(
+            messages.SUCCESS,
+            'Jane Doe was re-activated.',
             '')
 
 

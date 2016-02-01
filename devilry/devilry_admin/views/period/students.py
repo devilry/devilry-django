@@ -1,8 +1,11 @@
 from __future__ import unicode_literals
+
 from django.contrib import messages
+from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy
 from django_cradmin import crapp
+from django_cradmin.crispylayouts import DangerSubmit
 from django_cradmin.viewhelpers import delete
 
 from devilry.apps.core.models import RelatedStudent
@@ -10,6 +13,7 @@ from devilry.devilry_account.models import User
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent
 from devilry.devilry_admin.views.common import bulkimport_users_common
 from devilry.devilry_cradmin import devilry_multiselect2
+from devilry.devilry_cradmin.viewhelpers import devilry_confirmview
 
 
 class GetQuerysetForRoleMixin(object):
@@ -22,8 +26,12 @@ class GetQuerysetForRoleMixin(object):
             .order_by('user__shortname')
 
 
+class OverviewItemValue(listbuilder_relatedstudent.ReadOnlyItemValue):
+    template_name = 'devilry_admin/period/students/overview-itemvalue.django.html'
+
+
 class Overview(listbuilder_relatedstudent.VerticalFilterListView):
-    value_renderer_class = listbuilder_relatedstudent.ReadOnlyItemValue
+    value_renderer_class = OverviewItemValue
     template_name = 'devilry_admin/period/students/overview.django.html'
 
     def get_filterlist_url(self, filters_string):
@@ -43,29 +51,28 @@ class Overview(listbuilder_relatedstudent.VerticalFilterListView):
         return context
 
 
-class DeactivateView(GetQuerysetForRoleMixin, delete.DeleteView):
+class SingleRelatedStudentMixin(GetQuerysetForRoleMixin):
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            self.relatedstudent = self.get_queryset_for_role(role=self.request.cradmin_role)\
+                .select_related('user')\
+                .get(id=kwargs['pk'])
+        except RelatedStudent.DoesNotExist:
+            raise Http404()
+        return super(SingleRelatedStudentMixin, self).dispatch(request, *args, **kwargs)
+
+
+class DeactivateView(SingleRelatedStudentMixin, devilry_confirmview.View):
     """
     View used to deactivate students from a period.
     """
-    def get_object(self, *args, **kwargs):
-        if not hasattr(self, b'_object'):
-            self._object = super(DeactivateView, self).get_object(*args, **kwargs)
-        return self._object
-
     def get_pagetitle(self):
-        return ugettext_lazy('Deactivate student: %(user)s') % {'user': self.get_object().user.get_full_name()}
-
-    def get_success_message(self, object_preview):
-        relatedstudent = self.get_object()
-        user = relatedstudent.user
-        return ugettext_lazy('%(user)s was deactivated.') % {
-            'user': user.get_full_name(),
+        return ugettext_lazy('Deactivate student: %(user)s?') % {
+            'user': self.relatedstudent.user.get_full_name(),
         }
 
     def get_confirm_message(self):
-        relatedstudent = self.get_object()
-        period = relatedstudent.period
-        user = relatedstudent.user
+        period = self.request.cradmin_role
         return ugettext_lazy(
                 'Are you sure you want to make %(user)s '
                 'an inactive student for %(period)s? Inactive students '
@@ -75,94 +82,66 @@ class DeactivateView(GetQuerysetForRoleMixin, delete.DeleteView):
                 'and admin UI, but students and examiners are not notified in any way when you '
                 'deactivate a student. You can re-activate a deactivated student at any time.'
         ) % {
-            'user': user.get_full_name(),
+            'user': self.relatedstudent.user.get_full_name(),
             'period': period.get_path(),
         }
 
-    def get_action_label(self):
+    def get_submit_button_label(self):
         return ugettext_lazy('Deactivate')
 
-    def delete(self, request, *args, **kwargs):
-        object_preview = self.get_object_preview()
-        relatedstudent = self.get_object()
-        relatedstudent.active = False
-        relatedstudent.save()
-        self.add_success_messages(object_preview)
-        return redirect(self.get_success_url())
+    def get_submit_button_class(self):
+        return DangerSubmit
+
+    def get_backlink_url(self):
+        return self.request.cradmin_app.reverse_appindexurl()
+
+    def __get_success_message(self):
+        return ugettext_lazy('%(user)s was deactivated.') % {
+            'user': self.relatedstudent.user.get_full_name(),
+        }
+
+    def form_valid(self, form):
+        self.relatedstudent.active = False
+        self.relatedstudent.save()
+        messages.success(self.request, self.__get_success_message())
+        return super(DeactivateView, self).form_valid(form=form)
 
 
-# class UserInfoColumn(userselect_common.UserInfoColumn):
-#     modelfield = 'shortname'
-#     select_label = ugettext_lazy('Add as student')
-#
-#
-# class UserSelectView(userselect_common.AbstractUserSelectView):
-#     columns = [
-#         UserInfoColumn,
-#     ]
-#
-#     def get_pagetitle(self):
-#         return ugettext_lazy('Please select the user you want to add as students for %(what)s') % {
-#             'what': self.request.cradmin_role.long_name
-#         }
-#
-#     def get_form_action(self):
-#         return self.request.cradmin_app.reverse_appurl('add-user-as-student')
-#
-#     def get_excluded_user_ids(self):
-#         period = self.request.cradmin_role
-#         return period.relatedstudent_set.values_list('user_id', flat=True)
-#
-#     def get_no_searchresults_message_template_name(self):
-#         return 'devilry_admin/period/students/userselectview-no-searchresults-message.django.html'
-#
-#
-# class AddView(BaseFormView):
-#     """
-#     View used to add a RelatedStudent to a Period.
-#     """
-#     http_method_names = ['post']
-#
-#     model = RelatedStudent
-#
-#     def get_form_class(self):
-#         period = self.request.cradmin_role
-#         userqueryset = get_user_model().objects \
-#             .exclude(pk__in=period.relatedstudent_set.values_list('user_id', flat=True))
-#
-#         class AddAdminForm(forms.Form):
-#             user = forms.ModelChoiceField(
-#                 queryset=userqueryset)
-#             next = forms.CharField(required=False)
-#
-#         return AddAdminForm
-#
-#     def __make_user_student(self, user):
-#         period = self.request.cradmin_role
-#         self.model.objects.create(user=user,
-#                                   period=period)
-#
-#     def form_valid(self, form):
-#         user = form.cleaned_data['user']
-#         self.__make_user_student(user)
-#
-#         period = self.request.cradmin_role
-#         successmessage = ugettext_lazy('%(user)s added as student for %(what)s.') % {
-#             'user': user.get_full_name(),
-#             'what': period,
-#         }
-#         messages.success(self.request, successmessage)
-#
-#         if form.cleaned_data['next']:
-#             nexturl = form.cleaned_data['next']
-#         else:
-#             nexturl = self.request.cradmin_app.reverse_appindexurl()
-#         return HttpResponseRedirect(nexturl)
-#
-#     def form_invalid(self, form):
-#         messages.error(self.request,
-#                        ugettext_lazy('Error: The user may not exist, or it may already be student.'))
-#         return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+class ActivateView(SingleRelatedStudentMixin, devilry_confirmview.View):
+    def get_context_data(self, **kwargs):
+        context = super(ActivateView, self).get_context_data(**kwargs)
+        context['period'] = self.request.cradmin_role
+        return context
+
+    def get_pagetitle(self):
+        return ugettext_lazy('Re-activate student: %(user)s?') % {
+            'user': self.relatedstudent.user.get_full_name()
+        }
+
+    def get_submit_button_label(self):
+        return ugettext_lazy('Re-activate')
+
+    def get_confirm_message(self):
+        return ugettext_lazy('Please confirm that you want to re-activate %(user)s.') % {
+            'user': self.relatedstudent.user.get_full_name()
+        }
+
+    def get_backlink_url(self):
+        return self.request.cradmin_app.reverse_appindexurl()
+
+    def get_success_url(self):
+        return self.request.cradmin_app.reverse_appindexurl()
+
+    def __get_success_message(self):
+        return ugettext_lazy('%(user)s was re-activated.') % {
+            'user': self.relatedstudent.user.get_full_name()
+        }
+
+    def form_valid(self, form):
+        self.relatedstudent.active = True
+        self.relatedstudent.save()
+        messages.success(self.request, self.__get_success_message())
+        return super(ActivateView, self).form_valid(form=form)
 
 
 class AddStudentsTarget(devilry_multiselect2.user.Target):
@@ -275,12 +254,9 @@ class App(crapp.App):
         crapp.Url(r'^deactivate/(?P<pk>\d+)$',
                   DeactivateView.as_view(),
                   name="deactivate"),
-        # crapp.Url(r'^select-user-to-add-as-student$',
-        #           UserSelectView.as_view(),
-        #           name="select-user-to-add-as-student"),
-        # crapp.Url(r'^add',
-        #           AddView.as_view(),
-        #           name="add-user-as-student"),
+        crapp.Url(r'^activate/(?P<pk>\d+)$',
+                  ActivateView.as_view(),
+                  name="activate"),
         crapp.Url(r'^add/(?P<filters_string>.+)?$',
                   AddView.as_view(),
                   name="add"),
