@@ -4,6 +4,7 @@ import mock
 from django import test
 from django.conf import settings
 from django.contrib import messages
+from django.http import Http404
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
@@ -314,4 +315,137 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         messagesmock.add.assert_called_once_with(
                 messages.SUCCESS,
                 'Added "Test User", "testuser".',
+                '')
+
+
+class TestDeleteView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = admins.DeleteView
+
+    def test_get_title(self):
+        testperiod = mommy.make('core.Period')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testperiod,
+                                           permissiongroup__is_custom_manageable=True)
+        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+                                         permissiongroup=periodpermissiongroup.permissiongroup,
+                                         user__fullname='Awesome Doe')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod,
+                viewkwargs={'pk': permissiongroupuser.pk})
+        self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
+                         'Remove semester administrator: Awesome Doe?')
+
+    def test_get_h1(self):
+        testperiod = mommy.make('core.Period')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testperiod,
+                                           permissiongroup__is_custom_manageable=True)
+        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+                                         permissiongroup=periodpermissiongroup.permissiongroup,
+                                         user__fullname='Awesome Doe')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod,
+                viewkwargs={'pk': permissiongroupuser.pk})
+        self.assertEqual(mockresponse.selector.one('h1').alltext_normalized,
+                         'Remove semester administrator: Awesome Doe?')
+
+    def test_get_confirm_message(self):
+        testperiod = mommy.make('core.Period',
+                                parentnode__short_name='testsubject',
+                                short_name='testperiod')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testperiod,
+                                           permissiongroup__is_custom_manageable=True)
+        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+                                         permissiongroup=periodpermissiongroup.permissiongroup,
+                                         user__fullname='Awesome Doe')
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod,
+                viewkwargs={'pk': permissiongroupuser.pk})
+        self.assertEqual(mockresponse.selector.one('.devilry-cradmin-confirmview-message').alltext_normalized,
+                         'Are you sure you want to remove Awesome Doe as semester administrator '
+                         'for testsubject.testperiod? You can re-add a removed administrator at any time.')
+
+    def test_404_if_no_custom_managable_permissiongroup_for_period(self):
+        testperiod = mommy.make('core.Period')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testperiod,
+                                           permissiongroup__is_custom_manageable=False)
+        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+                                         permissiongroup=periodpermissiongroup.permissiongroup)
+        with self.assertRaisesMessage(
+                Http404,
+                'No custom managable permissiongroup for Period#{} found.'.format(
+                        testperiod.id)):
+            self.mock_getrequest(
+                    cradmin_role=testperiod,
+                    viewkwargs={'pk': permissiongroupuser.pk})
+
+    def test_404_if_not_in_correct_custom_managable_permissiongroup(self):
+        otherperiod = mommy.make('core.Period')
+        otherperiodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                                period=otherperiod,
+                                                permissiongroup__is_custom_manageable=True)
+        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+                                         permissiongroup=otherperiodpermissiongroup.permissiongroup)
+        testperiod = mommy.make('core.Period')
+        mommy.make('devilry_account.PeriodPermissionGroup',
+                   period=testperiod,
+                   permissiongroup__is_custom_manageable=True)
+        with self.assertRaisesMessage(
+                Http404,
+                'No PermissionGroupUser in custom managable '
+                'permissiongroup for Period#{} found.'.format(testperiod.id)):
+            self.mock_getrequest(
+                    cradmin_role=testperiod,
+                    viewkwargs={'pk': permissiongroupuser.pk})
+
+    def test_404_if_not_in_custom_managable_permissiongroup_for_period(self):
+        testperiod = mommy.make('core.Period')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testperiod,
+                                           permissiongroup__is_custom_manageable=False)
+        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+                                         permissiongroup=periodpermissiongroup.permissiongroup)
+        mommy.make('devilry_account.PeriodPermissionGroup',
+                   period=testperiod,
+                   permissiongroup__is_custom_manageable=True)
+        with self.assertRaisesMessage(
+                Http404,
+                'No PermissionGroupUser in custom managable '
+                'permissiongroup for Period#{} found.'.format(testperiod.id)):
+            self.mock_getrequest(
+                    cradmin_role=testperiod,
+                    viewkwargs={'pk': permissiongroupuser.pk})
+
+    def test_post_deletes_permissiongroupuser(self):
+        testperiod = mommy.make('core.Period')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testperiod,
+                                           permissiongroup__is_custom_manageable=True)
+        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+                                         permissiongroup=periodpermissiongroup.permissiongroup)
+        self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                viewkwargs={'pk': permissiongroupuser.pk})
+        self.assertFalse(PermissionGroupUser.objects.filter(id=permissiongroupuser.id).exists())
+
+    def test_post_success_message(self):
+        testperiod = mommy.make('core.Period',
+                                parentnode__short_name='testsubject',
+                                short_name='testperiod')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testperiod,
+                                           permissiongroup__is_custom_manageable=True)
+        permissiongroupuser = mommy.make('devilry_account.PermissionGroupUser',
+                                         permissiongroup=periodpermissiongroup.permissiongroup,
+                                         user__fullname='Awesome Doe')
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                messagesmock=messagesmock,
+                viewkwargs={'pk': permissiongroupuser.pk})
+        messagesmock.add.assert_called_once_with(
+                messages.SUCCESS,
+                'Awesome Doe is no longer semester administrator for testsubject.testperiod.',
                 '')

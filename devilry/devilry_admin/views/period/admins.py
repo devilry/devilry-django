@@ -2,8 +2,10 @@ from __future__ import unicode_literals
 
 from django.contrib import messages
 from django.db import models
+from django.http import Http404
 from django.utils.translation import ugettext_lazy
 from django_cradmin import crapp
+from django_cradmin.crispylayouts import DangerSubmit
 from django_cradmin.viewhelpers import listbuilderview
 
 from devilry.apps.core.models import RelatedExaminer
@@ -11,6 +13,7 @@ from devilry.devilry_account.models import PermissionGroupUser, PeriodPermission
     SubjectPermissionGroup
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_multiselect2
+from devilry.devilry_cradmin.viewhelpers import devilry_confirmview
 
 
 class OverviewItemValue(devilry_listbuilder.permissiongroupuser.ItemValue):
@@ -153,10 +156,77 @@ class AddView(GetCustomManagablePermissionGroupMixin,
         return super(AddView, self).form_valid(form=form)
 
 
+class DeleteView(GetCustomManagablePermissionGroupMixin, devilry_confirmview.View):
+    """
+    View used to deactivate examiners from a period.
+    """
+    def __get_permissiongroupuser(self, permissiongroup):
+        period = self.request.cradmin_role
+        try:
+            return permissiongroup.permissiongroupuser_set.get(pk=self.kwargs['pk'])
+        except PermissionGroupUser.DoesNotExist:
+            raise Http404(
+                    'No PermissionGroupUser in custom managable '
+                    'permissiongroup for Period#{} found.'.format(
+                            period.id))
+
+    def dispatch(self, request, *args, **kwargs):
+        period = self.request.cradmin_role
+        self.custom_managable_periodpermissiongroup = self.get_custom_managable_periodpermissiongroup()
+        if self.custom_managable_periodpermissiongroup is None:
+            raise Http404('No custom managable permissiongroup for Period#{} found.'.format(
+                period.id))
+        self.permissiongroupuser = self.__get_permissiongroupuser(
+            permissiongroup=self.custom_managable_periodpermissiongroup.permissiongroup)
+        return super(DeleteView, self).dispatch(request, *args, **kwargs)
+
+    def get_pagetitle(self):
+        return ugettext_lazy('Remove semester administrator: %(user)s?') % {
+            'user': self.permissiongroupuser.user.get_full_name(),
+        }
+
+    def get_confirm_message(self):
+        period = self.request.cradmin_role
+        return ugettext_lazy(
+                'Are you sure you want to remove %(user)s as semester administrator '
+                'for %(period)s? You can re-add a removed administrator at any time.'
+        ) % {
+            'user': self.permissiongroupuser.user.get_full_name(),
+            'period': period.get_path(),
+        }
+
+    def get_submit_button_label(self):
+        return ugettext_lazy('Deactivate')
+
+    def get_submit_button_class(self):
+        return DangerSubmit
+
+    def get_backlink_url(self):
+        return self.request.cradmin_app.reverse_appindexurl()
+
+    def get_backlink_label(self):
+        return ugettext_lazy('Back to admins on semester overview')
+
+    def __get_success_message(self):
+        period = self.request.cradmin_role
+        return ugettext_lazy('%(user)s is no longer semester administrator for %(period)s.') % {
+            'user': self.permissiongroupuser.user.get_full_name(),
+            'period': period.get_path(),
+        }
+
+    def form_valid(self, form):
+        self.permissiongroupuser.delete()
+        messages.success(self.request, self.__get_success_message())
+        return super(DeleteView, self).form_valid(form=form)
+
+
 class App(crapp.App):
     appurls = [
         crapp.Url(r'^$', Overview.as_view(), name=crapp.INDEXVIEW_NAME),
         crapp.Url(r'^add/(?P<filters_string>.+)?$',
                   AddView.as_view(),
                   name="add"),
+        crapp.Url(r'^delete/(?P<pk>\d+)$',
+                  DeleteView.as_view(),
+                  name="delete"),
     ]
