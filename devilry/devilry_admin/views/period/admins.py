@@ -52,9 +52,35 @@ class Overview(GetCustomManagablePermissionGroupMixin, listbuilderview.View):
         else:
             return PermissionGroupUser.objects.none()
 
+    def __get_periodpermissiongroups(self):
+        period = self.request.cradmin_role
+        queryset = PeriodPermissionGroup.objects\
+            .filter(period=period)\
+            .select_related('permissiongroup')\
+            .select_related('period')
+        if self.custom_managable_periodpermissiongroup:
+            queryset = queryset.exclude(id=self.custom_managable_periodpermissiongroup.id)
+        return queryset
+
+    def __get_subjectpermissiongroups(self):
+        period = self.request.cradmin_role
+        return SubjectPermissionGroup.objects\
+            .filter(subject=period.subject)\
+            .select_related('permissiongroup')\
+            .select_related('subject')
+
+    def __make_permissiongroup_listbuilderlist(self):
+        listbuilderlist = devilry_listbuilder.permissiongroup.SubjectAndPeriodPermissionGroupList()
+        listbuilderlist.add_periodpermissiongroups(
+            periodpermissiongroups=self.__get_periodpermissiongroups())
+        listbuilderlist.add_subjectpermissiongroups(
+            subjectpermissiongroups=self.__get_subjectpermissiongroups())
+        return listbuilderlist
+
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
         context['period'] = self.request.cradmin_role
+        context['other_permissiongroups_listbuilderlist'] = self.__make_permissiongroup_listbuilderlist()
         return context
 
 
