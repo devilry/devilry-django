@@ -1,3 +1,4 @@
+from . import user  # noqa
 from . import common  # noqa
 from . import period  # noqa
 from . import assignment  # noqa
