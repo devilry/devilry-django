@@ -9,17 +9,32 @@
 {% endblock title %}
 
 {% block pageheader-inner %}
-    <h1>
-        {{ request.cradmin_role.long_name }}
-        &mdash;
-        {{ request.cradmin_role.subject.long_name }}
-    </h1>
+    <div class="row">
+        <div class="col-sm-9">
+            <h1>
+                <h1>
+                    {{ request.cradmin_role.long_name }}
+                    &mdash;
+                    {{ request.cradmin_role.subject.long_name }}
+                </h1>
+
+            </h1>
+        </div>
+        <div class="col-sm-3">
+            <p id="devilry_admin_period_edit" class="text-right">
+                <a href="{% cradmin_instance_appindex_url "edit" %}"
+                        class="btn btn-default btn-sm">
+                    {% trans "Edit" %}
+                </a>
+            </p>
+        </div>
+    </div>
 {% endblock pageheader-inner %}
 
 {% block listbuilderview_buttons %}
     <p class="devilry-buttonbar">
         <a id="devilry_admin_period_createassignment_link"
-                class="btn btn-default"
+                class="btn btn-primary"
                 href="{% cradmin_instance_url 'createassignment' 'INDEX'  %}">
             {% trans "Create new assignment" %}
         </a>
