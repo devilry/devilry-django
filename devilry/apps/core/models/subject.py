@@ -82,7 +82,8 @@ class SubjectQuerySet(models.QuerySet):
 
             Work with the queryset::
 
-                oldest_active_period = queryset.first().active_periodobjects[0]
+                for period in queryset.first().active_periodobjects:
+                    print(period.short_name)
 
             Get the last active period for a subject (see :meth:`.Subject.last_active_period`)::
 
