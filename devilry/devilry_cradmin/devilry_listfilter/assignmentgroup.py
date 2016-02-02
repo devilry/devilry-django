@@ -404,7 +404,7 @@ class ExaminerCountFilter(abstractselect.AbstractSelectFilter):
     def __get_choices_cached(self):
         if not hasattr(self, '_choices'):
             self._choices = [(str(index), str(index))
-                             for index in range(1, len(self.view.get_distinct_relatedexaminers()) + 1)]
+                             for index in range(0, len(self.view.get_distinct_relatedexaminers()) + 1)]
         return self._choices
 
     def __get_valid_values(self):
