@@ -42,6 +42,35 @@ class SubjectQuerySet(models.QuerySet):
                 )
         )
 
+    def prefetch_active_periodobjects(self):
+        """
+        Prefetch active periods in the ``active_periodobjects`` attribute.
+
+        The ``active_periodobjects`` attribute is a ``list`` of
+        :class:`devilry.apps.core.models.Period` objects ordered by
+        ``start_time`` in ascending order.
+
+        Examples:
+
+            Make a queryset using with active peridods prefetched::
+
+                from devilry.apps.core.models import Period
+                queryset = Period.objects.prefetch_active_periodobjects()
+
+            Work with the queryset::
+
+                oldest_active_period = queryset.first().active_periodobjects[0]
+
+            Get the last active period for a subject (see :meth:`.Subject.last_active_period`)::
+
+                last_active_period = queryset.first().last_active_period
+        """
+        from devilry.apps.core.models import Period
+        return self.prefetch_related(
+                models.Prefetch('periods',
+                                queryset=Period.objects.filter_active().order_by('start_time'),
+                                to_attr='active_period_objects'))
+
 
 class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """
@@ -92,3 +121,18 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
         """ Only returns :attr:`short_name` for subject since it is
         guaranteed to be unique. """
         return self.short_name
+
+    @property
+    def last_active_period(self):
+        """
+        Get the last active :class:`devilry.apps.core.models.Period`.
+
+        Only works if the queryset used to fetch the Subject is
+        uses :meth:`SubjectQuerySet.prefetch_active_periodobjects`
+        """
+        if not hasattr(self, 'active_period_objects'):
+            raise AttributeError('')
+        if self.active_period_objects:
+            return self.active_period_objects[-1]
+        else:
+            return None
