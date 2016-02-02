@@ -1517,7 +1517,7 @@ CREATE TABLE devilry_comment_comment (
     id integer NOT NULL,
     text text NOT NULL,
     created_datetime timestamp with time zone NOT NULL,
-    published_datetime timestamp with time zone,
+    published_datetime timestamp with time zone NOT NULL,
     user_role character varying(42) NOT NULL,
     comment_type character varying(42) NOT NULL,
     parent_id integer,
@@ -3104,6 +3104,10 @@ SELECT pg_catalog.setval('core_node_id_seq', 1, false);
 
 COPY core_period (id, short_name, long_name, start_time, end_time, etag, parentnode_id) FROM stdin;
 1	springaaaa	Spring AAAA	2015-01-01 00:00:00+01	2080-12-31 23:59:00+01	2015-12-26 21:31:34.148678+01	1
+2	springoooo	Spring OOOO	2000-01-01 00:05:00+01	2010-12-31 23:59:00+01	2016-02-02 12:41:49.921204+01	1
+3	springffff	Spring FFFF	2050-01-01 01:35:00+01	2144-12-31 20:10:00+01	2016-02-02 12:43:03.846893+01	1
+4	springaaaa0	Spring AAAA0	2012-01-01 12:00:00+01	2049-12-31 23:59:00+01	2016-02-02 12:44:54.478439+01	2
+5	springaaaa	Spring AAAA	2015-01-01 12:45:00+01	2055-07-31 12:45:00+02	2016-02-02 12:45:37.331893+01	2
 \.
 
 
@@ -3126,7 +3130,7 @@ SELECT pg_catalog.setval('core_period_admins_id_seq', 1, false);
 -- Name: core_period_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_period_id_seq', 1, true);
+SELECT pg_catalog.setval('core_period_id_seq', 5, true);
 
 
 --
@@ -3455,9 +3459,9 @@ COPY devilry_account_user (id, password, last_login, is_superuser, shortname, fu
 16	md5$IwVKSAdD2ueB$5e32c9a5bfa4092cdb4b4bda8a0e122e	\N	f	scrooge@example.com	Scrooge McDuck	McDuck	2016-01-03 00:03:59.432752+01	\N		
 17	md5$VNqEOHzoWJLP$742f1d1b4d56fb6f51cdb76efc2105fa	\N	f	noname@example.com			2016-01-04 15:08:14.258809+01	\N		
 18	md5$smoA02BvKYtp$17bc79166daf9d1c3de87d695e9708f9	\N	f	missingname@example.com			2016-01-04 15:25:10.473858+01	\N		
-1	md5$wqtfXF0fIxXj$894c06ca065b6dfa906004e40da2e9a4	2016-01-20 04:16:53.964445+01	t	grandma@example.com			2015-12-21 18:01:21.212212+01	\N		
 12	md5$tT0zXYv0Zsuo$2b9bfb86f295cfd461b0ce2bb6ea2096	2016-01-20 04:29:30.662494+01	f	loki@example.com	Trickster and god of Mischief	Mischief	2016-01-03 00:01:23.945768+01	\N		
 14	md5$ot0qeIMptbS0$736743011a752ac3929d119435424766	2016-01-20 04:29:49.250064+01	f	odin@example.com	The "All Father"	Father"	2016-01-03 00:01:23.951457+01	\N		
+1	md5$wqtfXF0fIxXj$894c06ca065b6dfa906004e40da2e9a4	2016-02-02 12:40:17.940186+01	t	grandma@example.com			2015-12-21 18:01:21.212212+01	\N		
 \.
 
 
@@ -3923,6 +3927,10 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 72	devilry_group	0014_feedbackset_grading_status	2016-01-20 04:16:36.387384+01
 73	devilry_group	0015_auto_20160111_1245	2016-01-20 04:16:36.615454+01
 74	devilry_group	0016_auto_20160114_2202	2016-01-20 04:16:36.940232+01
+75	devilry_account	0006_auto_20160120_0424	2016-02-02 12:40:04.478957+01
+76	devilry_comment	0005_auto_20160122_1709	2016-02-02 12:40:04.57152+01
+77	devilry_group	0017_auto_20160122_1518	2016-02-02 12:40:04.783329+01
+78	devilry_group	0018_auto_20160122_1712	2016-02-02 12:40:04.889591+01
 \.
 
 
@@ -3930,7 +3938,7 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('django_migrations_id_seq', 74, true);
+SELECT pg_catalog.setval('django_migrations_id_seq', 78, true);
 
 
 --
@@ -3943,6 +3951,7 @@ j0jnngoym8g5pm6rmx0mckp9n36qtd78	YzU4YTcxNTM2MzJjNDU3MzJiNzJjZGQ0ODBmY2Y4MDVhNTE
 2nzg0111f2w6vke3qqqmflhw9gn4wq6a	NDJiYzE0MzEyNjdjM2E0NGQ0ODY3OWUzZGQ2MzkyNjIxZjljNTFjZDp7Il9hdXRoX3VzZXJfaGFzaCI6IjViMjA4NzZkYjI5ZGY2ZmJlNDE4N2U1YjE1ZTAzZTIyMGRiYjBiN2QiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSJ9	2016-02-03 04:16:53.965856+01
 qwoxswhsr9bc739dsaz7n3z6sd7qli0x	NDc0YWYzYzRmOTJhNzJhZDczYjM5NjA4ZmUyNWM5NmE3OWU2NjRmMjp7Il9hdXRoX3VzZXJfaGFzaCI6IjkzZWZkMGU4YjA1ZjNmYmU2ZGUwYzY2OTUxNDY3MmM4MzA0ZDRjMjQiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMTIifQ==	2016-02-03 04:29:30.663964+01
 nptdszmzzip61o80paabkskynqzn7xsg	YjZiOTUzMzEwOGYyNDlkNWZmZDdkOGFlMTEwZGI2ZGE4MGIwNDZlNDp7Il9hdXRoX3VzZXJfaGFzaCI6IjI1OWE4ODA1YTUyOGU1NTExMzc0ZTk2YjBlYTdmZTRiMzQwMTI3ZGIiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMTQifQ==	2016-02-03 04:29:49.251302+01
+r52h3rqcsuj4x8qil0yiq701rzx660rw	NDJiYzE0MzEyNjdjM2E0NGQ0ODY3OWUzZGQ2MzkyNjIxZjljNTFjZDp7Il9hdXRoX3VzZXJfaGFzaCI6IjViMjA4NzZkYjI5ZGY2ZmJlNDE4N2U1YjE1ZTAzZTIyMGRiYjBiN2QiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSJ9	2016-02-16 12:40:17.945791+01
 \.
 
 
