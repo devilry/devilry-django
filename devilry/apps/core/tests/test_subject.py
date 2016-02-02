@@ -8,20 +8,20 @@ from devilry.apps.core.models import Subject
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START
 
 
-class TestSubjectQuerySetPermission(test.TestCase):
-    def test_filter_user_is_admin_is_not_admin_on_anything(self):
+class TestSubjectQuerySetFilterUserIsAdmin(test.TestCase):
+    def test_is_not_admin_on_anything(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Subject')
         self.assertFalse(Subject.objects.filter_user_is_admin(user=testuser).exists())
 
-    def test_filter_user_is_admin_superuser(self):
+    def test_superuser(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
         testsubject = mommy.make('core.Subject')
         self.assertEqual(
             {testsubject},
             set(Subject.objects.filter_user_is_admin(user=testuser)))
 
-    def test_filter_user_is_admin_ignore_subjects_where_not_in_group(self):
+    def test_ignore_subjects_where_not_in_group(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testsubject = mommy.make('core.Subject')
         mommy.make('core.Subject')
@@ -40,7 +40,7 @@ class TestSubjectQuerySetPermission(test.TestCase):
             {testsubject},
             set(Subject.objects.filter_user_is_admin(user=testuser)))
 
-    def test_filter_user_is_admin_distinct(self):
+    def test_distinct(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testsubject = mommy.make('core.Subject')
         subjectpermissiongroup1 = mommy.make('devilry_account.SubjectPermissionGroup',
@@ -54,6 +54,112 @@ class TestSubjectQuerySetPermission(test.TestCase):
         self.assertEqual(
             {testsubject},
             set(Subject.objects.filter_user_is_admin(user=testuser)))
+
+
+class TestSubjectQuerySetFilterUserIsAdminForAnyPeriodsWithinSubject(test.TestCase):
+    def test_is_not_admin_on_anything(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Subject')
+        self.assertEqual(
+                [],
+                list(Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=testuser)))
+
+    def test_superuser(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        testsubject1 = mommy.make('core.Subject')
+        testsubject2 = mommy.make('core.Subject')
+        self.assertEqual(
+                {testsubject1, testsubject2},
+                set(Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=testuser)))
+
+    def test_admin_on_subject(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=subjectpermissiongroup.permissiongroup,
+                   user=testuser)
+        self.assertEqual(
+                [testsubject],
+                list(Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=testuser)))
+
+    def test_admin_on_other_subject(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        othersubject = mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=othersubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=subjectpermissiongroup.permissiongroup,
+                   user=testuser)
+        self.assertEqual(
+                [othersubject],
+                list(Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=testuser)))
+
+    def test_admin_on_period(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        testperiod = mommy.make('core.Period', parentnode=testsubject)
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testperiod)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=periodpermissiongroup.permissiongroup,
+                   user=testuser)
+        self.assertEqual(
+                [testsubject],
+                list(Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=testuser)))
+
+    def test_admin_on_other_period(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        mommy.make('core.Period', parentnode=testsubject)
+        otherperiod = mommy.make('core.Period')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=otherperiod)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=periodpermissiongroup.permissiongroup,
+                   user=testuser)
+        self.assertEqual(
+                [otherperiod.subject],
+                list(Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=testuser)))
+
+    def test_admin_on_multiple_periods(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        testperiod1 = mommy.make('core.Period', parentnode=testsubject)
+        periodpermissiongroup1 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            period=testperiod1)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=periodpermissiongroup1.permissiongroup,
+                   user=testuser)
+        testperiod2 = mommy.make('core.Period', parentnode=testsubject)
+        periodpermissiongroup2 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            period=testperiod2)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=periodpermissiongroup2.permissiongroup,
+                   user=testuser)
+        self.assertEqual(
+                [testsubject],
+                list(Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=testuser)))
+
+    def test_admin_on_subject_and_period_distinct(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        testperiod = mommy.make('core.Period', parentnode=testsubject)
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testperiod)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=periodpermissiongroup.permissiongroup,
+                   user=testuser)
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=subjectpermissiongroup.permissiongroup,
+                   user=testuser)
+        self.assertEqual(
+                [testsubject],
+                list(Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=testuser)))
 
 
 class TestSubjectQuerySetAnnotateWithHasActivePeriod(test.TestCase):
