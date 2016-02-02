@@ -77,37 +77,7 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
     admins = models.ManyToManyField(User, blank=True)
     etag = models.DateTimeField(auto_now_add=True)
 
-    @classmethod
-    def q_is_admin(cls, user_obj):
-        return \
-            Q(admins__pk=user_obj.pk) | \
-            Q(parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
-
     def get_path(self):
         """ Only returns :attr:`short_name` for subject since it is
         guaranteed to be unique. """
         return self.short_name
-
-    @classmethod
-    def q_published(cls, old=True, active=True):
-        now = datetime.now()
-        q = Q(periods__assignments__publishing_time__lt=now)
-        if not active:
-            q &= ~Q(periods__end_time__gte=now)
-        if not old:
-            q &= ~Q(periods__end_time__lt=now)
-        return q
-
-    @classmethod
-    def q_is_examiner(cls, user_obj):
-        return Q(periods__assignments__assignmentgroups__examiners__user=user_obj)
-
-    @classmethod
-    def q_is_candidate(cls, user_obj):
-        return Q(periods__assignments__assignmentgroups__candidates__student=user_obj)
-
-    def is_empty(self):
-        """
-        Returns ``True`` if this Subject does not contain any periods.
-        """
-        return self.periods.count() == 0
