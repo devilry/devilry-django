@@ -1,0 +1,81 @@
+###########################
+What is new in Devilry 3.0?
+###########################
+
+
+.. warning::
+
+    Devilry 3.0 is not released yet. This document is a work in progress.
+
+.. contents:: Jump to
+    :depth: 1
+    :local:
+    :backlinks: none
+
+
+****************
+New for everyone
+****************
+TODO:
+
+    - Mobile optimized.
+    - Aria
+
+
+****************
+New for students
+****************
+TODO:
+
+    - Feebackfeed, communication.
+
+
+*****************
+New for examiners
+*****************
+TODO:
+
+    - New UI, same workflow, but more streamlined.
+    - Feedbackfeed, communication.
+
+
+**********************
+New for administrators
+**********************
+TODO:
+
+    - New UI. Mostly the same workflow, but more streamlined.
+    - Unified admin UI for all administrators. The only difference is that
+      higher permission levels gain you a few extra views.
+    - New group based permission system.
+    - Node is removed - replaced by a tag system.
+
+    Department administrator:
+
+    - Can add new courses.
+    - Much shorter path to most common operations.
+
+    Semester within a course:
+
+    - Can add (import) students that does not have a devilry user.
+    - Automatically add new students added to the semester to all assignments
+      (can be disabled)
+
+    Assigment:
+
+    - No assignment administrator - explain how period admin works.
+    - Automatically setup assignments like the previous assignment.
+    - Can add (import) students that does not have a devilry user.
+    - Can invite students via share URL.
+    - Much easier to re-organize students.
+    - Assign students to examiners by tags --> copy from another
+      assignment + ability to filter on sync system tag. You setup one
+      assignment, and use that as a template for other assignments.
+      If you have the same setup for the entire semester, new assignments
+      will automatically be configured with this setup.
+    - Much more streamlined assignment configuration and setup.
+    - Huge performance optimizations (show some numbers from Heroku).
+    - New anonymizationmode - fully anonymized - for exams.
+    - Separation of student and examiner administration pages:
+        - Provides a much more user friendly experience when setting
+          up students and examiners.
