@@ -428,7 +428,7 @@ class RelatedUserSyncSystemTag(models.Model):
 
 class RelatedExaminerSyncSystemTag(RelatedUserSyncSystemTag):
     """
-    A tag for a :class:`.RelatedStudent`.
+    A tag for a :class:`.RelatedExaminer`.
 
     Used by a third-party sync system to organize students.
 
