@@ -61,7 +61,8 @@ class Search(listfilter.django.single.textinput.Search):
     def get_modelfields(self):
         return [
             'user__fullname',
-            'user__shortname'
+            'user__shortname',
+            'relatedstudentsyncsystemtag__tag',
         ]
 
     def get_label_is_screenreader_only(self):
