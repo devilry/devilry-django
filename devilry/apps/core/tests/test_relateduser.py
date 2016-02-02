@@ -4,6 +4,7 @@ from django.test import TestCase
 from model_mommy import mommy
 
 from devilry.apps.core.models import RelatedExaminer, RelatedStudent
+from devilry.apps.core.models.relateduser import RelatedStudentSyncSystemTag
 from devilry.devilry_account.exceptions import IllegalOperationError
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder2
 
@@ -433,6 +434,16 @@ class TestRelatedStudentSyncSystemTag(TestCase):
         with self.assertRaises(IntegrityError):
             mommy.make('core.RelatedStudentSyncSystemTag', tag='testtag',
                        relatedstudent=testrelatedstudent)
+
+    def test_get_all_distinct_tags_in_period(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudentSyncSystemTag', tag='c', relatedstudent__period=testperiod)
+        mommy.make('core.RelatedStudentSyncSystemTag', tag='a', relatedstudent__period=testperiod)
+        mommy.make('core.RelatedStudentSyncSystemTag', tag='a', relatedstudent__period=testperiod)
+        mommy.make('core.RelatedStudentSyncSystemTag', tag='b', relatedstudent__period=testperiod)
+        self.assertEqual(
+            ['a', 'b', 'c'],
+            list(RelatedStudentSyncSystemTag.objects.get_all_distinct_tags_in_period(testperiod)))
 
 
 class TestRelatedExaminerSyncSystemTag(TestCase):

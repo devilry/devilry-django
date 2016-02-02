@@ -462,6 +462,21 @@ class RelatedExaminerSyncSystemTag(RelatedUserSyncSystemTag):
     relatedexaminer = models.ForeignKey(RelatedExaminer)
 
 
+class RelatedStudentSyncSystemTagQuerySet(models.QuerySet):
+    """
+    QuerySet for :class:`.RelatedStudentSyncSystemTag`.
+    """
+    def get_all_distinct_tags_in_period(self, period):
+        """
+        Get a ValuesListQuerySet of all distinct tag (strings) within
+        the given period.
+        """
+        return self.filter(relatedstudent__period=period)\
+            .order_by('tag')\
+            .values_list('tag', flat=True)\
+            .distinct()
+
+
 class RelatedStudentSyncSystemTag(RelatedUserSyncSystemTag):
     """
     A tag for a :class:`.RelatedStudent`.
@@ -472,6 +487,7 @@ class RelatedStudentSyncSystemTag(RelatedUserSyncSystemTag):
     to students (match :class:`.RelatedExaminerSyncSystemTag` to
     :class:`.RelatedExaminerSyncSystemTag`).
     """
+    objects = RelatedStudentSyncSystemTagQuerySet.as_manager()
 
     class Meta:
         unique_together = [
