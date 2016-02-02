@@ -1,15 +1,14 @@
-from django.utils.translation import ugettext_lazy as _
-from django_cradmin import crmenu
 from django_cradmin import crinstance
 
 from devilry.apps.core.models import Period
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
-from devilry.devilry_admin.views.period import overview
-from devilry.devilry_admin.views.period import students
-from devilry.devilry_admin.views.period import examiners
 from devilry.devilry_admin.views.period import admins
 from devilry.devilry_admin.views.period import createassignment
+from devilry.devilry_admin.views.period import examiners
+from devilry.devilry_admin.views.period import overview
+from devilry.devilry_admin.views.period import students
+from devilry.devilry_admin.views.period import edit
 # from devilry.devilry_admin.views.period import qualifiedforfinalexams
 
 
@@ -31,6 +30,7 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
         ('examiners', examiners.App),
         ('admins', admins.App),
         ('createassignment', createassignment.App),
+        ('edit', edit.App),
         # ('qualifiedforfinalexams', qualifiedforfinalexams.App),
     ]
     id = 'devilry_admin_periodadmin'

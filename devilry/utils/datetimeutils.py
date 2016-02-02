@@ -42,6 +42,15 @@ def isoformat_noseconds(datetimeobject):
     return datetimeobject.isoformat(' ').split('.')[0].rsplit(':', 1)[0]
 
 
+def isoformat_withseconds(datetimeobject):
+    """
+    Format the given ``datetime.datetime`` object as ``YYYY-MM-DD hh:mm``.
+    """
+    # We use isoformat because strftime does not support times before
+    # year 1900.
+    return datetimeobject.isoformat(' ').split('.')[0]
+
+
 def datetime_with_same_day_of_week_and_time(weekdayandtimesource_datetime, target_datetime):
     """
     Returns a new datetime object with the same time and day of week as
