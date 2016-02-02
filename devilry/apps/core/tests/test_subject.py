@@ -243,6 +243,13 @@ class TestSubjectQuerySetPrefetchActivePeriodobjects(test.TestCase):
             str(annotated_subject.active_period_objects[1].short_name)
             str(annotated_subject.active_period_objects[2].short_name)
 
+    def test_last_active_period_not_using_prefetch_active_periodobjects(self):
+        testsubject = mommy.make('core.Subject')
+        with self.assertRaisesMessage(AttributeError,
+                                      'The last_active_period property requires '
+                                      'SubjectQuerySet.prefetch_active_periodobjects()'):
+            str(testsubject.last_active_period)
+
     def test_last_active_period(self):
         testsubject = mommy.make('core.Subject')
         mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject)

@@ -152,10 +152,11 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
         Get the last active :class:`devilry.apps.core.models.Period`.
 
         Only works if the queryset used to fetch the Subject is
-        uses :meth:`SubjectQuerySet.prefetch_active_periodobjects`
+        uses :meth:`.SubjectQuerySet.prefetch_active_periodobjects`
         """
         if not hasattr(self, 'active_period_objects'):
-            raise AttributeError('')
+            raise AttributeError('The last_active_period property requires '
+                                 'SubjectQuerySet.prefetch_active_periodobjects()')
         if self.active_period_objects:
             return self.active_period_objects[-1]
         else:

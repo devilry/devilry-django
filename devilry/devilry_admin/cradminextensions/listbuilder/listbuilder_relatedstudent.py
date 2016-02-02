@@ -28,13 +28,14 @@ class VerticalFilterListView(ListViewBase):
 class RelatedStudentItemValueTitleDescriptionMixin(object):
     valuealias = 'relatedstudent'
 
-    def get_title(self):
-        if self.relatedstudent.user.fullname:
-            return self.relatedstudent.user.fullname
-        else:
-            return self.relatedstudent.user.shortname
+    # def get_title(self):
+    #     if self.relatedstudent.user.fullname:
+    #         return self.relatedstudent.user.fullname
+    #     else:
+    #         return self.relatedstudent.user.shortname
 
     def get_description(self):
+
         if self.relatedstudent.user.fullname:
             return self.relatedstudent.user.shortname
         else:
@@ -43,6 +44,7 @@ class RelatedStudentItemValueTitleDescriptionMixin(object):
 
 class ReadOnlyItemValue(RelatedStudentItemValueTitleDescriptionMixin,
                         listbuilder.itemvalue.TitleDescription):
+    template_name = 'listbuilder/listbuilder_relatedstudent/readonly-itemvalue.django.html'
 
     def get_extra_css_classes_list(self):
         cssclasses = ['devilry-admin-listbuilder-relatedstudent-readonlyitemvalue']
