@@ -1,9 +1,5 @@
-from __future__ import print_function
-
-from datetime import datetime
-
 from django.db import models
-from django.db.models import Q
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from abstract_is_candidate import AbstractIsCandidate
@@ -11,6 +7,7 @@ from abstract_is_examiner import AbstractIsExaminer
 from basenode import BaseNode
 from custom_db_fields import ShortNameField, LongNameField
 from devilry.devilry_account.models import User, SubjectPermissionGroup
+from devilry.utils import devilry_djangoaggregate_functions
 from model_utils import Etag
 from node import Node
 
@@ -30,6 +27,20 @@ class SubjectQuerySet(models.QuerySet):
             subjectids_where_is_admin_queryset = SubjectPermissionGroup.objects \
                 .filter(permissiongroup__users=user).values_list('subject_id', flat=True)
             return self.filter(id__in=subjectids_where_is_admin_queryset)
+
+    def annotate_with_has_active_period(self):
+        """
+        Annotate with ``has_active_period`` - ``True`` if the subject contains
+        any active periods.
+        """
+        now = timezone.now()
+        whenquery = models.Q(periods__start_time__lt=now, periods__end_time__gt=now)
+        return self.annotate(
+                has_active_period=devilry_djangoaggregate_functions.BooleanCount(
+                        models.Case(
+                                models.When(whenquery, then=1))
+                )
+        )
 
 
 class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
