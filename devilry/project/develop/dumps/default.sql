@@ -3184,6 +3184,8 @@ SELECT pg_catalog.setval('core_pointtogrademap_id_seq', 1, false);
 
 COPY core_relatedexaminer (id, tags, period_id, user_id, automatic_anonymous_id, active) FROM stdin;
 1		1	1		t
+2	\N	1	12		t
+3	\N	1	13		t
 \.
 
 
@@ -3191,7 +3193,7 @@ COPY core_relatedexaminer (id, tags, period_id, user_id, automatic_anonymous_id,
 -- Name: core_relatedexaminer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_relatedexaminer_id_seq', 1, true);
+SELECT pg_catalog.setval('core_relatedexaminer_id_seq', 3, true);
 
 
 --
@@ -3252,6 +3254,14 @@ SELECT pg_catalog.setval('core_relatedstudentkeyvalue_id_seq', 1, false);
 --
 
 COPY core_relatedstudentsyncsystemtag (id, tag, relatedstudent_id) FROM stdin;
+1	group1	1
+2	duck	1
+3	group2	2
+4	duck	2
+5	god	6
+6	group1	6
+7	group2	3
+8	duck	3
 \.
 
 
@@ -3259,7 +3269,7 @@ COPY core_relatedstudentsyncsystemtag (id, tag, relatedstudent_id) FROM stdin;
 -- Name: core_relatedstudentsyncsystemtag_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_relatedstudentsyncsystemtag_id_seq', 1, false);
+SELECT pg_catalog.setval('core_relatedstudentsyncsystemtag_id_seq', 8, true);
 
 
 --
