@@ -2,6 +2,7 @@ import htmls
 from django import test
 from model_mommy import mommy
 
+from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent
 
 
@@ -10,6 +11,7 @@ class TestOnPeriodItemValue(test.TestCase):
         relatedstudent = mommy.make('core.RelatedStudent',
                                     user__shortname='test@example.com',
                                     user__fullname='')
+        relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(listbuilder_relatedstudent.ReadOnlyItemValue(value=relatedstudent).render())
         self.assertEqual(
             'test@example.com',
@@ -19,24 +21,25 @@ class TestOnPeriodItemValue(test.TestCase):
         relatedstudent = mommy.make('core.RelatedStudent',
                                     user__fullname='Test User',
                                     user__shortname='test@example.com')
+        relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(listbuilder_relatedstudent.ReadOnlyItemValue(value=relatedstudent).render())
         self.assertEqual(
-            'Test User',
+            'Test User(test@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
-    def test_description_without_fullname(self):
-        relatedstudent = mommy.make('core.RelatedStudent',
-                                    user__shortname='test@example.com',
-                                    user__fullname='')
+    def test_description_without_tags(self):
+        relatedstudent = mommy.make('core.RelatedStudent')
+        relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(listbuilder_relatedstudent.ReadOnlyItemValue(value=relatedstudent).render())
         self.assertFalse(
             selector.exists('.django-cradmin-listbuilder-itemvalue-titledescription-description'))
 
-    def test_description_with_fullname(self):
-        relatedstudent = mommy.make('core.RelatedStudent',
-                                    user__fullname='Test User',
-                                    user__shortname='test@example.com')
+    def test_description_with_tags(self):
+        relatedstudent = mommy.make('core.RelatedStudent')
+        mommy.make('core.RelatedStudentSyncSystemTag', tag='a', relatedstudent=relatedstudent)
+        mommy.make('core.RelatedStudentSyncSystemTag', tag='b', relatedstudent=relatedstudent)
+        relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(listbuilder_relatedstudent.ReadOnlyItemValue(value=relatedstudent).render())
         self.assertEqual(
-            'test@example.com',
+            'a, b',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)

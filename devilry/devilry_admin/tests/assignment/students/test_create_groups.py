@@ -626,18 +626,20 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         # devilry.devilry_admin.cradminextensions.multiselect2.multiselect2_relatedstudent.ItemValue
         testperiod = mommy.make('core.Period')
         mommy.make('core.RelatedStudent',
+                   user__shortname='testuser',
                    user__fullname='Test User',
                    period=testperiod)
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
-            'Test User',
+            'Test User(testuser)',
             mockresponse.selector.one(
                 '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_render_search(self):
         testperiod = mommy.make('core.Period')
         mommy.make('core.RelatedStudent',
+                   user__shortname='testuser',
                    user__fullname='Match User',
                    period=testperiod)
         mommy.make('core.RelatedStudent',
@@ -652,20 +654,21 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             1,
             mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
         self.assertEqual(
-            'Match User',
+            'Match User(testuser)',
             mockresponse.selector.one(
                 '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_render_orderby_default(self):
         testperiod = mommy.make('core.Period')
         mommy.make('core.RelatedStudent',
-                   user__fullname='userb@example.com',
+                   user__shortname='userb@example.com',
                    period=testperiod)
         mommy.make('core.RelatedStudent',
+                   user__shortname='x',
                    user__fullname='UserA',
                    period=testperiod)
         mommy.make('core.RelatedStudent',
-                   user__fullname='userc',
+                   user__shortname='userc',
                    period=testperiod)
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -674,7 +677,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
                   for element in mockresponse.selector.list(
                       '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(
-            ['UserA', 'userb@example.com', 'userc'],
+            ['UserA(x)', 'userb@example.com', 'userc'],
             titles)
 
     def test_render_orderby_name_descending(self):
@@ -683,10 +686,11 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
                    user__shortname='userb@example.com',
                    period=testperiod)
         mommy.make('core.RelatedStudent',
+                   user__shortname='x',
                    user__fullname='UserA',
                    period=testperiod)
         mommy.make('core.RelatedStudent',
-                   user__fullname='userc',
+                   user__shortname='userc',
                    period=testperiod)
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -696,7 +700,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
                   for element in mockresponse.selector.list(
                       '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(
-            ['userc', 'userb@example.com', 'UserA'],
+            ['userc', 'userb@example.com', 'UserA(x)'],
             titles)
 
     def test_render_orderby_lastname_ascending(self):
@@ -705,10 +709,12 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
                    user__shortname='userb@example.com',
                    period=testperiod)
         mommy.make('core.RelatedStudent',
+                   user__shortname='x',
                    user__fullname='User Aaa',
                    user__lastname='Aaa',
                    period=testperiod)
         mommy.make('core.RelatedStudent',
+                   user__shortname='y',
                    user__fullname='User ccc',
                    user__lastname='ccc',
                    period=testperiod)
@@ -720,7 +726,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
                   for element in mockresponse.selector.list(
                       '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(
-            ['userb@example.com', 'User Aaa', 'User ccc'],
+            ['userb@example.com', 'User Aaa(x)', 'User ccc(y)'],
             titles)
 
     def test_render_orderby_lastname_descending(self):
@@ -729,10 +735,12 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
                    user__shortname='userb@example.com',
                    period=testperiod)
         mommy.make('core.RelatedStudent',
+                   user__shortname='x',
                    user__fullname='User Aaa',
                    user__lastname='Aaa',
                    period=testperiod)
         mommy.make('core.RelatedStudent',
+                   user__shortname='y',
                    user__fullname='User ccc',
                    user__lastname='ccc',
                    period=testperiod)
@@ -744,7 +752,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
                   for element in mockresponse.selector.list(
                       '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual(
-            ['User ccc', 'User Aaa', 'userb@example.com'],
+            ['User ccc(y)', 'User Aaa(x)', 'userb@example.com'],
             titles)
 
     def test_render_orderby_shortname_ascending(self):

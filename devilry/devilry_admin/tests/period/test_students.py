@@ -89,13 +89,14 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_default_ordering(self):
         testperiod = mommy.make('core.Period')
         mommy.make('core.RelatedStudent', period=testperiod,
+                   user__shortname='b',
                    user__fullname='UserB')
         mommy.make('core.RelatedStudent', period=testperiod,
                    user__shortname='usera')
         mommy.make('core.RelatedStudent', period=testperiod,
                    user__shortname='userc')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
-        self.assertEqual(['usera', 'UserB', 'userc'],
+        self.assertEqual(['usera', 'UserB(b)', 'userc'],
                          self.__get_titles(mockresponse.selector))
 
     def test_only_users_from_current_period(self):
@@ -185,7 +186,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_querycount(self):
         testperiod = mommy.make('core.Period')
         mommy.make('core.RelatedStudent', period=testperiod, _quantity=30)
-        with self.assertNumQueries(3):
+        with self.assertNumQueries(4):
             self.mock_getrequest(cradmin_role=testperiod)
 
 

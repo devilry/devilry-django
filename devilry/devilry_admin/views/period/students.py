@@ -46,6 +46,7 @@ class Overview(listbuilder_relatedstudent.VerticalFilterListView):
         period = role
         return self.model.objects \
             .filter(period=period)\
+            .prefetch_syncsystemtag_objects()\
             .select_related('user')
 
     def get_context_data(self, **kwargs):

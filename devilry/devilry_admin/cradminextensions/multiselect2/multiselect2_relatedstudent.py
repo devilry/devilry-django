@@ -6,23 +6,15 @@ from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent
 
 
-class SelectedItem(multiselect2.selected_item_renderer.SelectedItem):
-    def get_title(self):
-        if self.value.user.fullname:
-            return self.value.user.fullname
-        else:
-            return self.value.user.shortname
-
-    def get_description(self):
-        if self.value.user.fullname:
-            return self.value.user.shortname
-        else:
-            return ''
+class SelectedItem(listbuilder_relatedstudent.RelatedStudentItemValueTitleDescriptionMixin,
+                   multiselect2.selected_item_renderer.SelectedItem):
+    template_name = 'devilry_admin/multiselect2/multiselect2_relatedstudent/selecteditem.django.html'
 
 
 class ItemValue(listbuilder_relatedstudent.RelatedStudentItemValueTitleDescriptionMixin,
                 multiselect2.listbuilder_itemvalues.ItemValue):
     selected_item_renderer_class = SelectedItem
+    template_name = 'devilry_admin/multiselect2/multiselect2_relatedstudent/itemvalue.django.html'
 
 
 class Target(multiselect2.target_renderer.Target):

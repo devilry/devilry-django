@@ -1,0 +1,7 @@
+{% extends "django_cradmin/viewhelpers/multiselect2/listbuilder_itemvalues/itemvalue.django.html" %}
+{% load i18n %}
+{% load devilry_account_tags %}
+
+{% block title-content %}
+    {% devilry_user_verbose_inline me.relatedstudent.user %}
+{% endblock title-content %}
