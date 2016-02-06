@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from django_cradmin import crinstance
 
 from devilry.devilry_student.views.cradmin_group.projectgroupapp import GroupInviteRespondView
-from devilry.devilry_student.views.cradmin_student import cradmin_student
+from devilry.devilry_student.views.dashboard import cradmin_student
 from devilry.devilry_student.views.cradmin_period import cradmin_period
 
 @login_required
