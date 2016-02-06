@@ -1,0 +1,28 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load devilry_account_tags %}
+
+
+{% block title %}
+    <h3 class="django-cradmin-listbuilder-itemvalue-titledescription-title">
+        {% block title-content %}
+            {{ me.get_title }}
+        {% endblock title-content %}
+    </h3>
+{% endblock title %}
+
+{% block description %}
+    <p class="django-cradmin-listbuilder-itemvalue-titledescription-description">
+        {% block description-content %}
+            {% with users=me.get_users %}
+                {% if users %}
+                    {% devilry_multiple_users_verbose_inline users %}
+                {% else %}
+                    <span class="text-warning devilry-cradmin-subjectorperiodpermissiongroup-nouserswarning">
+                        {% trans "No users in permission group" %}
+                    </span>
+                {% endif %}
+            {% endwith %}
+        {% endblock description-content %}
+    </p>
+{% endblock description %}

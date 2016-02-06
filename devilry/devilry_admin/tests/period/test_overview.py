@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+import mock
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from django_cradmin import crinstance
@@ -8,7 +10,7 @@ from devilry.devilry_admin.views.period import overview
 from devilry.utils import datetimeutils
 
 
-class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
+class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = overview.Overview
 
     def test_title(self):
@@ -34,13 +36,25 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                          mockresponse.selector.one(
                              '#devilry_admin_period_createassignment_link').alltext_normalized)
 
-    def test_createassignment_link_url(self):
+    def test_link_urls(self):
         testperiod = mommy.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
-        mockresponse.request.cradmin_instance.reverse_url.assert_called_once_with(
-            appname='createassignment',
-            viewname='INDEX',
-            args=(), kwargs={})
+        self.assertEqual(5, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(
+                mock.call(appname='edit', args=(), viewname='INDEX', kwargs={}),
+                mockresponse.request.cradmin_instance.reverse_url.call_args_list[0])
+        self.assertEqual(
+                mock.call(appname='createassignment', args=(), viewname='INDEX', kwargs={}),
+                mockresponse.request.cradmin_instance.reverse_url.call_args_list[1])
+        self.assertEqual(
+                mock.call(appname='students', args=(), viewname='INDEX', kwargs={}),
+                mockresponse.request.cradmin_instance.reverse_url.call_args_list[2])
+        self.assertEqual(
+                mock.call(appname='examiners', args=(), viewname='INDEX', kwargs={}),
+                mockresponse.request.cradmin_instance.reverse_url.call_args_list[3])
+        self.assertEqual(
+                mock.call(appname='admins', args=(), viewname='INDEX', kwargs={}),
+                mockresponse.request.cradmin_instance.reverse_url.call_args_list[4])
 
     def test_assignmentlist_no_assignments(self):
         testperiod = mommy.make('core.Period')
@@ -55,7 +69,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual('Test Assignment',
                          mockresponse.selector.one(
-                             '.devilry-admin-period-overview-assignment-link').alltext_normalized)
+                             '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_assignmentlist_itemrendering_url(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -67,7 +81,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                                                         appname='overview',
                                                         roleid=testassignment.id),
                          mockresponse.selector.one(
-                             '.devilry-admin-period-overview-assignment-link')['href'])
+                             '.devilry-admin-period-overview-assignmentitemframe')['href'])
 
     def test_assignmentlist_itemrendering_first_deadline(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -76,7 +90,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(datetimeutils.isoformat_noseconds(ASSIGNMENT_ACTIVEPERIOD_START_FIRST_DEADLINE),
                          mockresponse.selector.one(
-                             '.devilry-admin-period-overview-assignment-first_deadline-value').alltext_normalized)
+                             '.devilry-admin-period-overview-assignment-first-deadline-value').alltext_normalized)
 
     def test_assignmentlist_itemrendering_publishing_time(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -86,7 +100,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEqual(datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_START),
                          mockresponse.selector.one(
-                             '.devilry-admin-period-overview-assignment-publishing_time-value').alltext_normalized)
+                             '.devilry-admin-period-overview-assignment-publishing-time-value').alltext_normalized)
 
     def test_assignmentlist_ordering(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -100,10 +114,32 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                           parentnode=testperiod,
                           long_name='Assignment 3')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
-        assignmentnames = [element.alltext_normalized
-                           for element in mockresponse.selector.list('.devilry-admin-period-overview-assignment-link')]
+        assignmentnames = [
+            element.alltext_normalized
+            for element in mockresponse.selector.list(
+                    '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
         self.assertEqual([
             'Assignment 3',
             'Assignment 2',
             'Assignment 1',
         ], assignmentnames)
+
+    def test_periodlist_only_assignments_in_period(self):
+        testperiod = mommy.make('core.Period')
+        otherperiod = mommy.make('core.Period')
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=testperiod,
+                          long_name='Testperiod Assignment 1')
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=otherperiod,
+                          long_name='Otherperiod Assignment 1')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(
+            1,
+            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue-titledescription-title')
+        )
+        self.assertEqual(
+            'Testperiod Assignment 1',
+            mockresponse.selector.one(
+                    '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized
+        )

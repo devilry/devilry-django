@@ -115,6 +115,7 @@ class CreateGroupsViewMixin(object):
 
     def get_unfiltered_queryset_for_role(self, role):
         queryset = self.period.relatedstudent_set\
+            .prefetch_syncsystemtag_objects()\
             .select_related('user')
         if not self.replace_groups:
             queryset = queryset.exclude(pk__in=self.__get_relatedstudents_in_group_on_assignment())
@@ -194,6 +195,9 @@ class ConfirmView(CreateGroupsViewMixin,
         SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT: ugettext_lazy('Students with passing grade on %(assignment)s'),
         SELECTED_STUDENTS_RELATEDSTUDENTS: ugettext_lazy('All students on %(period)s'),
     }
+
+    def get_period(self):
+        return self.assignment.period
 
     def dispatch(self, request, *args, **kwargs):
         self.from_assignment = None
@@ -340,9 +344,13 @@ class ManualSelectStudentsView(listbuilder_relatedstudent.AddFilterListItemsMixi
     """
     View used to manually select students when creating groups.
     """
+
     value_renderer_class = multiselect2_relatedstudent.ItemValue
     template_name = 'devilry_admin/assignment/students/create_groups/manual-select-students.django.html'
     model = RelatedStudent
+
+    def get_period(self):
+        return self.assignment.period
 
     def get_pagetitle(self):
         return pgettext_lazy('admin create_groups',

@@ -1,0 +1,25 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block end-of-content %}
+    {% if me.relatedexaminer.active %}
+        <p class="devilry-admin-period-active-relatedexaminer-block">
+            <a href="{% cradmin_appurl 'deactivate' pk=me.relatedexaminer.pk %}"
+                    class="btn btn-danger btn-xs devilry-admin-period-active-relatedexaminer-link"
+                    aria-label="{% blocktrans with user=me.relatedexaminer.user.get_full_name %}Mark {{ user }} as inactive{% endblocktrans %}">
+                {% trans "Mark as inactive" %}
+            </a>
+        </p>
+    {% else %}
+        <p class="text-warning devilry-admin-period-inactive-relatedexaminer-block">
+            <span class="devilry-admin-period-inactive-relatedexaminer-message">
+                {% trans "Inactive examiner - has no access to any assignments within the semester." %}
+            </span>
+            <a href="{% cradmin_appurl 'activate' pk=me.relatedexaminer.pk %}"
+                    aria-label='{% blocktrans with user=me.relatedexaminer.user.get_full_name %}Re-activate {{ user }}{% endblocktrans %}'
+                    class="devilry-admin-period-inactive-relatedexaminer-link">
+                {% trans "Re-activate" %}</a>.
+        </p>
+    {% endif %}
+{% endblock end-of-content %}

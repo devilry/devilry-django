@@ -1257,23 +1257,61 @@ class TestAssignmentGroupManager(TestCase):
         self.assertEquals(qry.count(), 1)
         self.assertEquals(qry[0], currentgroupbuilder.group)
 
-    def test_filter_examiner_has_access(self):
-        examiner1 = UserBuilder('examiner1').user
-        otherexaminer = UserBuilder('otherexaminer').user
-        duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
-        activeassignmentbuilder = duck1010builder.add_6month_active_period().add_assignment('week1')
-        currentgroupbuilder = activeassignmentbuilder.add_group().add_examiners(examiner1)
 
-        # Add inactive groups and a group with another examiner to make sure we get no false positives
-        duck1010builder.add_6month_lastyear_period().add_assignment('week1')\
-            .add_group().add_examiners(examiner1)
-        duck1010builder.add_6month_nextyear_period().add_assignment('week1')\
-            .add_group().add_examiners(examiner1)
-        activeassignmentbuilder.add_group().add_examiners(otherexaminer)
+class TestAssignmentGroupQuerySetFilterExaminerHasAccess(TestCase):
+    def test_not_examiner_for_any_groups(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        self.assertEqual(
+                0,
+                AssignmentGroup.objects.filter_examiner_has_access(user=testuser).count())
 
-        qry = AssignmentGroup.objects.filter_examiner_has_access(examiner1)
-        self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], currentgroupbuilder.group)
+    def test_examiner_for_group_but_not_active(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user=testuser,
+                   relatedexaminer__active=False)
+        self.assertEqual(
+                0,
+                AssignmentGroup.objects.filter_examiner_has_access(user=testuser).count())
+
+    def test_examiner_for_group_and_active_but_in_old_period(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_oldperiod_end'))
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user=testuser,
+                   relatedexaminer__active=True)
+        self.assertEqual(
+                0,
+                AssignmentGroup.objects.filter_examiner_has_access(user=testuser).count())
+
+    def test_examiner_for_group_and_active_but_in_future_period(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_futureperiod_start'))
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user=testuser,
+                   relatedexaminer__active=True)
+        self.assertEqual(
+                0,
+                AssignmentGroup.objects.filter_examiner_has_access(user=testuser).count())
+
+    def test_examiner_for_group_and_active(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user=testuser,
+                   relatedexaminer__active=True)
+        self.assertEqual(
+                1,
+                AssignmentGroup.objects.filter_examiner_has_access(user=testuser).count())
 
 
 class TestAssignmentGroupQuerySetExtraOrdering(TestCase):
@@ -2590,7 +2628,7 @@ class TestAssignmentGroupQuerySetFilterUserIsAdmin(TestCase):
                 set(AssignmentGroup.objects.filter_user_is_admin(user=testuser)))
 
 
-class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcomments(TestCase):
+class TestAssignmentGroupQuerySetAnnotateWithNumberOfGroupcomments(TestCase):
     def test_annotate_with_number_of_groupcomments_zero(self):
         mommy.make('core.AssignmentGroup')
         queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments()
@@ -2659,7 +2697,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcomments(TestCase):
             queryset.get(id=testgroup2.id).number_of_groupcomments)
 
 
-class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromStudents(TestCase):
+class TestAssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromStudents(TestCase):
     def test_annotate_with_number_of_groupcomments_from_students_zero(self):
         mommy.make('core.AssignmentGroup')
         queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_students()
@@ -2756,7 +2794,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromStudents(TestC
             queryset.get(id=testgroup2.id).number_of_groupcomments_from_students)
 
 
-class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromExaminers(TestCase):
+class TestAssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromExaminers(TestCase):
     def test_annotate_with_number_of_groupcomments_from_examiners_zero(self):
         mommy.make('core.AssignmentGroup')
         queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_examiners()
@@ -2853,7 +2891,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromExaminers(Test
             queryset.get(id=testgroup2.id).number_of_groupcomments_from_examiners)
 
 
-class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromAdmins(TestCase):
+class TestAssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromAdmins(TestCase):
     def test_annotate_with_number_of_groupcomments_from_admins_zero(self):
         mommy.make('core.AssignmentGroup')
         queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_admins()
@@ -2950,7 +2988,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromAdmins(TestCas
             queryset.get(id=testgroup2.id).number_of_groupcomments_from_admins)
 
 
-class AssignmentGroupQuerySetAnnotateWithNumberOfImageAnnotationcomments(TestCase):
+class TestAssignmentGroupQuerySetAnnotateWithNumberOfImageAnnotationcomments(TestCase):
     def test_annotate_with_number_of_imageannotationcomments_zero(self):
         mommy.make('core.AssignmentGroup')
         queryset = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments()
@@ -3019,7 +3057,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageAnnotationcomments(TestCas
             queryset.get(id=testgroup2.id).number_of_imageannotationcomments)
 
 
-class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromStudents(TestCase):
+class TestAssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromStudents(TestCase):
     def test_annotate_with_number_of_imageannotationcomments_from_students_zero(self):
         mommy.make('core.AssignmentGroup')
         queryset = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_students()
@@ -3116,7 +3154,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromStud
             queryset.get(id=testgroup2.id).number_of_imageannotationcomments_from_students)
 
 
-class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromExaminers(TestCase):
+class TestAssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromExaminers(TestCase):
     def test_annotate_with_number_of_imageannotationcomments_from_examiners_zero(self):
         mommy.make('core.AssignmentGroup')
         queryset = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_examiners()
@@ -3213,7 +3251,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromExam
             queryset.get(id=testgroup2.id).number_of_imageannotationcomments_from_examiners)
 
 
-class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromAdmins(TestCase):
+class TestAssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromAdmins(TestCase):
     def test_annotate_with_number_of_imageannotationcomments_from_admins_zero(self):
         mommy.make('core.AssignmentGroup')
         queryset = AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments_from_admins()
@@ -3310,7 +3348,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfImageannotationcommentsFromAdmi
             queryset.get(id=testgroup2.id).number_of_imageannotationcomments_from_admins)
 
 
-class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateGroupcommentsFromUser(TestCase):
+class TestAssignmentGroupQuerySetAnnotateWithNumberOfPrivateGroupcommentsFromUser(TestCase):
     def test_zero(self):
         mommy.make('core.AssignmentGroup')
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -3391,7 +3429,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateGroupcommentsFromUser(Te
             queryset.get(id=testgroup2.id).number_of_private_groupcomments_from_user)
 
 
-class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateImageannotationcommentsFromUser(TestCase):
+class TestAssignmentGroupQuerySetAnnotateWithNumberOfPrivateImageannotationcommentsFromUser(TestCase):
     def test_zero(self):
         mommy.make('core.AssignmentGroup')
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -3472,7 +3510,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPrivateImageannotationcommentsF
             queryset.get(id=testgroup2.id).number_of_imageannotationcomments_from_user)
 
 
-class AssignmentGroupQuerySetAnnotateWithNumberOfPublishedFeedbacksets(TestCase):
+class TestAssignmentGroupQuerySetAnnotateWithNumberOfPublishedFeedbacksets(TestCase):
     def test_annotate_with_number_of_published_feedbacksets_zero(self):
         mommy.make('core.AssignmentGroup')
         self.assertEqual(
@@ -3528,7 +3566,7 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfPublishedFeedbacksets(TestCase)
         self.assertEqual(2, queryset[1].number_of_published_feedbacksets)
 
 
-class AssignmentGroupQuerySetFilterWithPublishedFeedbackOrComments(TestCase):
+class TestAssignmentGroupQuerySetFilterWithPublishedFeedbackOrComments(TestCase):
     def test_filter_with_published_feedback_or_comments(self):
         testgroup_with_published_feedback = mommy.make('core.AssignmentGroup')
         testgroup_with_unpublished_feedback = mommy.make('core.AssignmentGroup')
@@ -3555,7 +3593,7 @@ class AssignmentGroupQuerySetFilterWithPublishedFeedbackOrComments(TestCase):
             set(queryset))
 
 
-class AssignmentGroupQuerySetAnnotateWithHasUnpublishedFeedbackset(TestCase):
+class TestAssignmentGroupQuerySetAnnotateWithHasUnpublishedFeedbackset(TestCase):
     def test_annotate_with_has_unpublished_feedbackdraft_no_feedbackset(self):
         mommy.make('core.AssignmentGroup')
         self.assertFalse(
@@ -3606,7 +3644,7 @@ class AssignmentGroupQuerySetAnnotateWithHasUnpublishedFeedbackset(TestCase):
         self.assertFalse(queryset.get(id=testgroup2.id).has_unpublished_feedbackdraft)
 
 
-class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCase):
+class TestAssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCase):
     def test_no_comments(self):
         mommy.make('core.AssignmentGroup')
         annotated_group = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
@@ -3771,3 +3809,26 @@ class AssignmentGroupQuerySetAnnotateWithNumberOfCommentfilesFromStudents(TestCa
         queryset = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students()
         self.assertEqual(2, queryset.get(id=testgroup1.id).number_of_commentfiles_from_students)
         self.assertEqual(1, queryset.get(id=testgroup2.id).number_of_commentfiles_from_students)
+
+
+class TestAssignmentGroupQuerySetAnnotateWithNumberOfExaminers(TestCase):
+    def test_no_examiners(self):
+        mommy.make('core.AssignmentGroup')
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_examiners().first()
+        self.assertEqual(0, annotated_group.number_of_examiners)
+
+    def test_has_examiners(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Examiner', assignmentgroup=testgroup, _quantity=5)
+        annotated_group = AssignmentGroup.objects.annotate_with_number_of_examiners().first()
+        self.assertEqual(5, annotated_group.number_of_examiners)
+
+    def test_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, _quantity=5)
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, _quantity=7)
+        annotated_group1 = AssignmentGroup.objects.annotate_with_number_of_examiners().get(id=testgroup1.id)
+        self.assertEqual(5, annotated_group1.number_of_examiners)
+        annotated_group2 = AssignmentGroup.objects.annotate_with_number_of_examiners().get(id=testgroup2.id)
+        self.assertEqual(7, annotated_group2.number_of_examiners)

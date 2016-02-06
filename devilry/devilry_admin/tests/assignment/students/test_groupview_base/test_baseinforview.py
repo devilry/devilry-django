@@ -45,61 +45,6 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             'No students found matching your filters/search.',
             mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
 
-    def test_filter_waiting_for_feedback_empty(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
-            first_deadline=timezone.now() - timedelta(days=2))
-        mommy.make('core.AssignmentGroup', parentnode=testassignment)
-
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            viewkwargs={'filters_string': 'status-waiting-for-feedback'},
-            requestuser=testuser)
-        self.assertEqual(
-            'You have no students waiting for feedback.',
-            mockresponse.selector.one('.devilry-admin-grouplist-empty').alltext_normalized)
-        self.assertTrue(
-            mockresponse.selector.one('.devilry-admin-grouplist-empty').hasclass(
-                'devilry-admin-grouplist-empty-waiting-for-feedback'))
-
-    def test_filter_waiting_for_deliveries_empty(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe(
-            'devilry.apps.core.assignment_activeperiod_start',
-            first_deadline=timezone.now() + timedelta(days=2))
-        mommy.make('core.AssignmentGroup', parentnode=testassignment)
-
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            viewkwargs={'filters_string': 'status-waiting-for-deliveries'},
-            requestuser=testuser)
-        self.assertEqual(
-            'You are currently not expecting new deliveries from any students.',
-            mockresponse.selector.one('.devilry-admin-grouplist-empty').alltext_normalized)
-        self.assertTrue(
-            mockresponse.selector.one('.devilry-admin-grouplist-empty').hasclass(
-                'devilry-admin-grouplist-empty-waiting-for-deliveries'))
-
-    def test_filter_corrected_empty(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        mommy.make('core.AssignmentGroup', parentnode=testassignment)
-
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            viewkwargs={'filters_string': 'status-corrected'},
-            requestuser=testuser)
-        self.assertEqual(
-            'Your examiners have not finished correcting any students yet.',
-            mockresponse.selector.one('.devilry-admin-grouplist-empty').alltext_normalized)
-        self.assertTrue(
-            mockresponse.selector.one('.devilry-admin-grouplist-empty').hasclass(
-                'devilry-admin-grouplist-empty-corrected'))
-
     def test_filter_all_empty(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -109,11 +54,8 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser)
         self.assertEqual(
-            'There is no students registered for this assignment.',
-            mockresponse.selector.one('.devilry-admin-grouplist-empty').alltext_normalized)
-        self.assertTrue(
-            mockresponse.selector.one('.devilry-admin-grouplist-empty').hasclass(
-                'devilry-admin-grouplist-empty-all'))
+            'No students.',
+            mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
 
     def test_group_render_title_name_order(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -354,7 +296,7 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mommy.make('core.Candidate',
                        relatedstudent__user__fullname='candidate{}'.format(number),
                        assignment_group=group)
-        with self.assertNumQueries(7):
+        with self.assertNumQueries(8):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
                                                requestuser=testuser)
@@ -391,7 +333,7 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                        assignment_group=group)
             devilry_group_mommy_factories.feedbackset_first_attempt_published(
                 group=group, grading_points=3)
-        with self.assertNumQueries(8):
+        with self.assertNumQueries(9):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
                                                requestuser=testuser)
@@ -410,7 +352,7 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mommy.make('core.Candidate',
                        relatedstudent__user__fullname='candidate{}'.format(number),
                        assignment_group=group)
-        with self.assertNumQueries(7):
+        with self.assertNumQueries(8):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
                                                requestuser=testuser)

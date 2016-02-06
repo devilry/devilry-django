@@ -5,6 +5,8 @@ from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 from django_cradmin.viewhelpers import listbuilder
 
+from devilry.devilry_cradmin import devilry_listbuilder
+
 
 class AbstractRoleItemValue(listbuilder.itemvalue.TitleDescription):
     valuealias = 'user'
@@ -64,7 +66,7 @@ class AnyAdminRoleItemValue(AbstractRoleItemValue):
                              'Administrators manage departments, courses, semesters and assignments.')
 
 
-class AbstractRoleItemFrame(listbuilder.itemframe.Link):
+class AbstractRoleItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
     valuealias = 'user'
 
     def get_url(self):
@@ -88,7 +90,11 @@ class StudentRoleItemFrame(AbstractRoleItemFrame):
         return 'student'
 
     def get_url(self):
-        return reverse('devilry_student')
+        return reverse_cradmin_url(
+            instanceid='devilry_student',
+            appname='dashboard',
+            roleid=None,
+            viewname=crapp.INDEXVIEW_NAME)
 
 
 class ExaminerRoleItemFrame(AbstractRoleItemFrame):

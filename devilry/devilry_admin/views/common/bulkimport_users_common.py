@@ -6,14 +6,21 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.http import HttpResponseRedirect
+from django.utils.translation import ugettext_lazy
 from django_cradmin.crispylayouts import PrimarySubmit
 from django_cradmin.viewhelpers import formbase
-from django.utils.translation import ugettext_lazy as _
 
 
 class AbstractTypeInUsersView(formbase.FormView):
     users_blob_split_pattern = re.compile(r'[,;\s]+')
-    create_button_label = _('Save')
+    create_button_label = ugettext_lazy('Save')
+    template_name = 'devilry_admin/common/abstract-type-in-users.django.html'
+
+    def get_backlink_url(self):
+        raise NotImplementedError()
+
+    def get_backlink_label(self):
+        raise NotImplementedError()
 
     @classmethod
     def split_users_blob(cls, users_blob):
@@ -33,17 +40,17 @@ class AbstractTypeInUsersView(formbase.FormView):
 
     def __get_users_blob_help_text(self):
         if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
-            return _('Type or paste in email addresses separated '
+            return ugettext_lazy('Type or paste in email addresses separated '
                      'by comma (","), space or one user on each line.')
         else:
-            return _('Type or paste in usernames separated '
+            return ugettext_lazy('Type or paste in usernames separated '
                      'by comma (","), space or one user on each line.')
 
     def __get_users_blob_placeholder(self):
         if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
-            return _('jane@example.com\njohn@example.com')
+            return ugettext_lazy('jane@example.com\njohn@example.com')
         else:
-            return _('jane\njohn')
+            return ugettext_lazy('jane\njohn')
 
     def get_form_class(self):
         users_blob_help_text = self.__get_users_blob_help_text()
@@ -65,7 +72,7 @@ class AbstractTypeInUsersView(formbase.FormView):
                 if invalid_emails:
                     self.add_error(
                         'users_blob',
-                        _('Invalid email addresses: %(emails)s') % {
+                        ugettext_lazy('Invalid email addresses: %(emails)s') % {
                             'emails': ', '.join(sorted(invalid_emails))
                         }
                     )
@@ -80,7 +87,7 @@ class AbstractTypeInUsersView(formbase.FormView):
                 if invalid_usernames:
                     self.add_error(
                         'users_blob',
-                        _('Invalid usernames: %(usernames)s') % {
+                        ugettext_lazy('Invalid usernames: %(usernames)s') % {
                             'usernames': ', '.join(sorted(invalid_usernames))
                         }
                     )
@@ -125,3 +132,9 @@ class AbstractTypeInUsersView(formbase.FormView):
         else:
             self.import_users_from_usernames(usernames=form.cleaned_users_set)
         return HttpResponseRedirect(self.get_success_url())
+
+    def get_context_data(self, **kwargs):
+        context = super(AbstractTypeInUsersView, self).get_context_data(**kwargs)
+        context['backlink_url'] = self.get_backlink_url()
+        context['backlink_label'] = self.get_backlink_label()
+        return context

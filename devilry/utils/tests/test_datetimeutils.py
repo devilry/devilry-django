@@ -11,7 +11,7 @@ class TestIsoformatNoseconds(TestCase):
             '2015-12-24 17:42',
             datetimeutils.isoformat_noseconds(datetime(2015, 12, 24, 17, 42)))
 
-    def test_no_secnds(self):
+    def test_no_seconds(self):
         self.assertEqual(
             '2015-12-24 17:42',
             datetimeutils.isoformat_noseconds(datetime(2015, 12, 24, 17, 42, 41)))
@@ -20,6 +20,18 @@ class TestIsoformatNoseconds(TestCase):
         self.assertEqual(
             '0030-12-24 14:30',
             datetimeutils.isoformat_noseconds(datetime(30, 12, 24, 14, 30)))
+
+
+class TestIsoformatWithseconds(TestCase):
+    def test_sanity(self):
+        self.assertEqual(
+            '2015-12-24 17:42:12',
+            datetimeutils.isoformat_withseconds(datetime(2015, 12, 24, 17, 42, 12)))
+
+    def test_before_year_1900(self):
+        self.assertEqual(
+            '0030-12-24 14:30:12',
+            datetimeutils.isoformat_withseconds(datetime(30, 12, 24, 14, 30, 12)))
 
 
 class TestDatetimeWithSameDayOfWeekAndTime(TestCase):

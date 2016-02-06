@@ -13,9 +13,9 @@
 {% endblock %}
 
 {% block pageheader-inner %}
-    <a href="{% cradmin_instance_appindex_url 'overview' %}" class="devilry-page-header-backlink">
+    <a href="{% cradmin_instance_appindex_url 'examineroverview' %}" class="devilry-page-header-backlink">
         <span class="sr-only">
-            {% trans "Back to assignment overview" %}
+            {% trans "Back to examiner overview" %}
         </span>
         <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
     </a>
@@ -26,17 +26,52 @@
 
 {% block content %}
         <div class="container">
-            <p id="devilry_admin_assignment_examiners_bulk_organize_buttons">
-                <a id="devilry_admin_assignment_examiners_bulk_organize_button_random"
-                        class="btn btn-default devilry-btn-titledescription"
-                        href="{% cradmin_appurl 'random' %}">
-                    <strong>{% trans "Organize examiners randomly" %}</strong>
-                    <small>
-                        <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
-                            {% trans "Select students and randomly assign two or more examiners to those students" %}
-                        <span class="sr-only">)</span>
-                    </small>
-                </a>
-            </p>
+            <div class="row">
+                <div class="col-md-8" id="devilry_admin_assignment_examiners_bulk_organize_buttons">
+                    <p>
+                        <a id="devilry_admin_assignment_examiners_bulk_organize_button_random"
+                                class="btn btn-default btn-block devilry-btn-titledescription"
+                                href="{% cradmin_appurl 'random' %}">
+                            <strong>{% trans "Organize examiners randomly" %}</strong>
+                            <small>
+                                <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
+                                    {% trans "Select students and randomly assign two or more examiners to those students" %}
+                                <span class="sr-only">)</span>
+                            </small>
+                        </a>
+                    </p>
+                    <p>
+                        <a id="devilry_admin_assignment_examiners_bulk_organize_button_manual_add"
+                                class="btn btn-default btn-block devilry-btn-titledescription"
+                                href="{% cradmin_appurl 'manual-add' %}">
+                            <strong>{% trans "Manually add examiners" %}</strong>
+                            <small>
+                                <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
+                                    {% trans "Select students and add examiners to those students" %}
+                                <span class="sr-only">)</span>
+                            </small>
+                        </a>
+                    </p>
+                    <p>
+                        <a id="devilry_admin_assignment_examiners_bulk_organize_button_manual_replace"
+                                class="btn btn-default btn-block devilry-btn-titledescription"
+                                href="{% cradmin_appurl 'manual-replace' %}">
+                            <strong>{% trans "Manually replace examiners" %}</strong>
+                            <small>
+                                <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
+                                    {% trans "Select students and replace examiners for those students" %}
+                                <span class="sr-only">)</span>
+                            </small>
+                        </a>
+                    </p>
+                </div>
+
+                <div class="col-md-4">
+                    <p>
+                        <strong>{% trans "Tip:" %}</strong>
+                        {% trans "Go back to the examiner overview and select an examiner if you want to edit students for a single examiner in a more controlled manner." %}
+                    </p>
+                </div>
+            </div>
         </div>
 {% endblock content %}

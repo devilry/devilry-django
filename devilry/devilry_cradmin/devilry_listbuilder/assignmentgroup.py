@@ -1,4 +1,3 @@
-from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy
 from django_cradmin.viewhelpers import listbuilder
 from django_cradmin.viewhelpers import multiselect2
@@ -36,7 +35,6 @@ class ItemValueMixin(object):
                 in the ``"assignment"`` key.
         """
         super(ItemValueMixin, self).__init__(*args, **kwargs)
-        self._examiners = list(self.group.examiners.all())
 
     def get_devilryrole(self):
         raise NotImplementedError()
@@ -48,6 +46,8 @@ class ItemValueMixin(object):
         return self.kwargs['assignment']
 
     def get_examiners(self):
+        if not hasattr(self, '_examiners'):
+            self._examiners = list(self.group.examiners.all())
         return self._examiners
 
     def get_extra_css_classes_list(self):
@@ -57,6 +57,19 @@ class ItemValueMixin(object):
 class StudentItemValueMixin(ItemValueMixin):
     def get_devilryrole(self):
         return 'student'
+
+    def get_assignment(self):
+        # When listing for students, we always query for AssignmentGroup,
+        # not for Assignment, so it is not an optimization to send the
+        # assignment as kwarg as we do for admins and examiners
+        # (we use select_related instead)
+        return self.group.assignment
+
+    def should_include_examiners(self):
+        return False
+
+    def should_include_periodpath(self):
+        return self.kwargs.get('include_periodpath', True)
 
 
 class ExaminerItemValueMixin(ItemValueMixin):
@@ -127,7 +140,7 @@ class NoMultiselectItemValue(listbuilder.itemvalue.TitleDescription):
 
 
 class StudentItemValue(StudentItemValueMixin, NoMultiselectItemValue):
-    pass
+    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/student-item-value.django.html'
 
 
 class ExaminerItemValue(ExaminerItemValueMixin, NoMultiselectItemValue):

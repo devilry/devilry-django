@@ -9,6 +9,7 @@ from django_cradmin.viewhelpers import listfilter
 
 from devilry.apps.core import models as coremodels
 from devilry.devilry_cradmin import devilry_listfilter
+from devilry.devilry_cradmin import devilry_listbuilder
 
 
 class AssignmentItemValue(listbuilder.itemvalue.TitleDescription):
@@ -34,7 +35,7 @@ class AssignmentItemValue(listbuilder.itemvalue.TitleDescription):
         return css_classes
 
 
-class AssignmentItemFrame(listbuilder.itemframe.Link):
+class AssignmentItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
     valuealias = 'assignment'
 
     def get_url(self):
@@ -77,15 +78,13 @@ class AssignmentListView(listbuilderview.FilterListMixin,
                 'parentnode__parentnode__long_name',
                 'parentnode__parentnode__short_name',
             ]))
-        filterlist.append(devilry_listfilter.assignment.OrderByFullPath(
-            slug='orderby',
-            label=ugettext_lazy('Order by')
-        ))
+        filterlist.append(devilry_listfilter.assignment.OrderByFullPath())
 
     def get_unfiltered_queryset_for_role(self, role):
         return coremodels.Assignment.objects\
             .filter_examiner_has_access(user=self.request.user)\
-            .annotate_with_waiting_for_feedback_count()
+            .annotate_with_waiting_for_feedback_count()\
+            .select_related('parentnode', 'parentnode__parentnode')
 
 
 class App(crapp.App):

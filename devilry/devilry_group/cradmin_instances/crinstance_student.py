@@ -6,7 +6,7 @@ from django_cradmin import crinstance
 
 from devilry.apps.core.models import AssignmentGroup, Candidate
 from devilry.devilry_group.views import feedbackfeed_student
-from devilry.devilry_student.cradmin_group import projectgroupapp
+from devilry.devilry_student.views.group import projectgroupapp
 
 
 class Menu(crmenu.Menu):

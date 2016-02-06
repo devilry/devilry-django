@@ -1,0 +1,25 @@
+{% extends "devilry_admin/listbuilder/listbuilder_relatedstudent/readonly-itemvalue.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block end-of-content %}
+    {% if me.relatedstudent.active %}
+        <p class="devilry-admin-period-active-relatedstudent-block">
+            <a href="{% cradmin_appurl 'deactivate' pk=me.relatedstudent.pk %}"
+                    class="btn btn-danger btn-xs devilry-admin-period-active-relatedstudent-link"
+                    aria-label="{% blocktrans with user=me.relatedstudent.user.get_full_name %}Mark {{ user }} as inactive{% endblocktrans %}">
+                {% trans "Mark as inactive" %}
+            </a>
+        </p>
+    {% else %}
+        <p class="text-warning devilry-admin-period-inactive-relatedstudent-block">
+            <span class="devilry-admin-period-inactive-relatedstudent-message">
+                {% trans "Inactive student - can not be added to new assignments, and can not be marked as qualified for final exams." %}
+            </span>
+            <a href="{% cradmin_appurl 'activate' pk=me.relatedstudent.pk %}"
+                    aria-label='{% blocktrans with user=me.relatedstudent.user.get_full_name %}Re-activate {{ user }}{% endblocktrans %}'
+                    class="devilry-admin-period-inactive-relatedstudent-link">
+                {% trans "Re-activate" %}</a>.
+        </p>
+    {% endif %}
+{% endblock end-of-content %}

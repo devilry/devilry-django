@@ -1,0 +1,9 @@
+{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
+{% load i18n %}
+
+{% block pageheader-inner %}
+    {{ block.super }}
+    <p class="devilry-page-subheader">
+        {% trans "Welcome! Please select an assignment below to add deliveries, view feedback or communicate with you examiner." %}
+    </p>
+{% endblock pageheader-inner %}

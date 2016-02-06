@@ -1,0 +1,5 @@
+{% load i18n %}
+{% trans "First deadline" %}:
+<span class="devilry-admin-period-overview-assignment-first-deadline-value">{{ me.assignment.first_deadline|date:"DATETIME_FORMAT" }}</span>,
+{% trans "Publishing time" %}:
+<span class="devilry-admin-period-overview-assignment-publishing-time-value">{{ me.assignment.publishing_time|date:"DATETIME_FORMAT" }}</span>

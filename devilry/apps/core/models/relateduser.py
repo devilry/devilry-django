@@ -1,17 +1,16 @@
 import re
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy
-from devilry.devilry_account.models import User
 
-from period import Period
-from node import Node
-from abstract_is_admin import AbstractIsAdmin
 from abstract_applicationkeyvalue import AbstractApplicationKeyValue
+from abstract_is_admin import AbstractIsAdmin
+from devilry.devilry_account.models import User
+from node import Node
+from period import Period
 
 
 class BulkCreateFromEmailsResult(object):
@@ -352,7 +351,7 @@ class RelatedExaminer(RelatedUserBase):
             return ugettext_lazy('Anonymous ID missing')
 
 
-class RelatedStudentQueryset(models.QuerySet):
+class RelatedStudentQuerySet(models.QuerySet):
     """
     QuerySet for :class:`.RelatedStudent`.
     """
@@ -363,6 +362,20 @@ class RelatedStudentQueryset(models.QuerySet):
         queryset = self.exclude(models.Q(candidate_id='') | models.Q(candidate_id=None))
         return dict(queryset.values_list('user_id', 'candidate_id'))
 
+    def prefetch_syncsystemtag_objects(self):
+        """
+        Prefetch :class:`.RelatedStudentSyncSystemTag` objects in the
+        ``syncsystemtag_objects`` attribute.
+
+        The ``syncsystemtag_objects`` attribute is a ``list`` of
+        :class:`.RelatedStudentSyncSystemTag` objects ordered by
+        ``tag`` in ascending order.
+        """
+        return self.prefetch_related(
+                models.Prefetch('relatedstudentsyncsystemtag_set',
+                                queryset=RelatedStudentSyncSystemTag.objects.order_by('tag'),
+                                to_attr='syncsystemtag_objects'))
+
 
 class RelatedStudentManager(AbstractRelatedUserManager):
     """
@@ -370,21 +383,12 @@ class RelatedStudentManager(AbstractRelatedUserManager):
     """
     use_for_related_fields = True
 
-    def get_queryset(self):
-        return RelatedStudentQueryset(self.model, using=self._db)
-
-    def get_userid_to_candidateid_map(self):
-        """
-        See :meth:`.RelatedStudentQueryset.get_userid_to_candidateid_map`.
-        """
-        return self.get_queryset().get_userid_to_candidateid_map()
-
 
 class RelatedStudent(RelatedUserBase):
     """
     Related student.
     """
-    objects = RelatedStudentManager()
+    objects = RelatedStudentManager.from_queryset(RelatedStudentQuerySet)()
 
     #: Setting this to ``False`` indicates that the student has dropped out
     #: or been kicked out of the course for this period.
@@ -411,6 +415,18 @@ class RelatedStudent(RelatedUserBase):
         else:
             return ugettext_lazy('Anonymous ID missing')
 
+    @property
+    def syncsystemtag_stringlist(self):
+        """
+        A shortcut for getting a list of tag strings from the
+        ``syncsystemtag_objects`` list when the queryset uses
+        :meth:`.RelatedStudentQuerySet.prefetch_syncsystemtag_objects`.
+        """
+        if not hasattr(self, 'syncsystemtag_objects'):
+            raise AttributeError('The syncsystemtag_stringlist property requires '
+                                 'RelatedStudentQuerySet.prefetch_syncsystemtag_objects().')
+        return [syncsystemtag.tag for syncsystemtag in self.syncsystemtag_objects]
+
 
 class RelatedUserSyncSystemTag(models.Model):
     """
@@ -428,7 +444,7 @@ class RelatedUserSyncSystemTag(models.Model):
 
 class RelatedExaminerSyncSystemTag(RelatedUserSyncSystemTag):
     """
-    A tag for a :class:`.RelatedStudent`.
+    A tag for a :class:`.RelatedExaminer`.
 
     Used by a third-party sync system to organize students.
 
@@ -446,6 +462,21 @@ class RelatedExaminerSyncSystemTag(RelatedUserSyncSystemTag):
     relatedexaminer = models.ForeignKey(RelatedExaminer)
 
 
+class RelatedStudentSyncSystemTagQuerySet(models.QuerySet):
+    """
+    QuerySet for :class:`.RelatedStudentSyncSystemTag`.
+    """
+    def get_all_distinct_tags_in_period(self, period):
+        """
+        Get a ValuesListQuerySet of all distinct tag (strings) within
+        the given period.
+        """
+        return self.filter(relatedstudent__period=period)\
+            .order_by('tag')\
+            .values_list('tag', flat=True)\
+            .distinct()
+
+
 class RelatedStudentSyncSystemTag(RelatedUserSyncSystemTag):
     """
     A tag for a :class:`.RelatedStudent`.
@@ -456,6 +487,7 @@ class RelatedStudentSyncSystemTag(RelatedUserSyncSystemTag):
     to students (match :class:`.RelatedExaminerSyncSystemTag` to
     :class:`.RelatedExaminerSyncSystemTag`).
     """
+    objects = RelatedStudentSyncSystemTagQuerySet.as_manager()
 
     class Meta:
         unique_together = [
@@ -464,6 +496,9 @@ class RelatedStudentSyncSystemTag(RelatedUserSyncSystemTag):
 
     #: Foreignkey to the :class:`.RelatedStudent` this tag is for.
     relatedstudent = models.ForeignKey(RelatedStudent)
+
+    def __unicode__(self):
+        return u'{}: {}'.format(self.tag, self.relatedstudent)
 
 
 class RelatedStudentKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):

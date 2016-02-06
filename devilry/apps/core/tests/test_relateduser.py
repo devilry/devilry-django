@@ -4,6 +4,7 @@ from django.test import TestCase
 from model_mommy import mommy
 
 from devilry.apps.core.models import RelatedExaminer, RelatedStudent
+from devilry.apps.core.models.relateduser import RelatedStudentSyncSystemTag
 from devilry.devilry_account.exceptions import IllegalOperationError
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder2
 
@@ -351,7 +352,7 @@ class TestRelatedStudentManager(TestCase):
             self.assertEqual(set(), result.existing_relateduser_usernames_set)
 
 
-class TestRelatedStudentQueryset(TestCase):
+class TestRelatedStudentQuerySet(TestCase):
     def test_get_userid_to_candidateid_map_no_relatedstudents(self):
         testperiod = mommy.make('core.Period')
         self.assertEqual(dict(),
@@ -393,6 +394,38 @@ class TestRelatedStudentQueryset(TestCase):
             testperiod.relatedstudent_set.get_userid_to_candidateid_map())
 
 
+class TestRelatedStudentQuerySetPrefetchSyncsystemtags(TestCase):
+    def test_none(self):
+        relatedstudent = mommy.make('core.RelatedStudent')
+        prefetched_relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects()\
+            .get(id=relatedstudent.id)
+        self.assertEqual([], prefetched_relatedstudent.syncsystemtag_objects)
+
+    def test_ordering(self):
+        relatedstudent = mommy.make('core.RelatedStudent')
+        tagb = mommy.make('core.RelatedStudentSyncSystemTag', tag='b', relatedstudent=relatedstudent)
+        taga = mommy.make('core.RelatedStudentSyncSystemTag', tag='a', relatedstudent=relatedstudent)
+        tagc = mommy.make('core.RelatedStudentSyncSystemTag', tag='c', relatedstudent=relatedstudent)
+        prefetched_relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects()\
+            .get(id=relatedstudent.id)
+        self.assertEqual([taga, tagb, tagc], prefetched_relatedstudent.syncsystemtag_objects)
+
+    def test_syncsystemtag_stringlist_not_using_prefetch_syncsystemtag_objects(self):
+        relatedstudent = mommy.make('core.RelatedStudent')
+        with self.assertRaisesMessage(AttributeError,
+                                      'The syncsystemtag_stringlist property requires '
+                                      'RelatedStudentQuerySet.prefetch_syncsystemtag_objects().'):
+            str(relatedstudent.syncsystemtag_stringlist)
+
+    def test_syncsystemtag_stringlist(self):
+        relatedstudent = mommy.make('core.RelatedStudent')
+        mommy.make('core.RelatedStudentSyncSystemTag', tag='a', relatedstudent=relatedstudent)
+        mommy.make('core.RelatedStudentSyncSystemTag', tag='b', relatedstudent=relatedstudent)
+        prefetched_relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects()\
+            .get(id=relatedstudent.id)
+        self.assertEqual(['a', 'b'], prefetched_relatedstudent.syncsystemtag_stringlist)
+
+
 class TestRelatedStudentSyncSystemTag(TestCase):
     def test_tag_unique_for_relatedstudent(self):
         testrelatedstudent = mommy.make('core.RelatedStudent')
@@ -401,6 +434,16 @@ class TestRelatedStudentSyncSystemTag(TestCase):
         with self.assertRaises(IntegrityError):
             mommy.make('core.RelatedStudentSyncSystemTag', tag='testtag',
                        relatedstudent=testrelatedstudent)
+
+    def test_get_all_distinct_tags_in_period(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudentSyncSystemTag', tag='c', relatedstudent__period=testperiod)
+        mommy.make('core.RelatedStudentSyncSystemTag', tag='a', relatedstudent__period=testperiod)
+        mommy.make('core.RelatedStudentSyncSystemTag', tag='a', relatedstudent__period=testperiod)
+        mommy.make('core.RelatedStudentSyncSystemTag', tag='b', relatedstudent__period=testperiod)
+        self.assertEqual(
+            ['a', 'b', 'c'],
+            list(RelatedStudentSyncSystemTag.objects.get_all_distinct_tags_in_period(testperiod)))
 
 
 class TestRelatedExaminerSyncSystemTag(TestCase):

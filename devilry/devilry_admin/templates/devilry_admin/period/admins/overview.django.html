@@ -1,0 +1,70 @@
+{% extends "django_cradmin/viewhelpers/listbuilderview/default.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block title %}
+    {% blocktrans trimmed with period=period.get_path %}
+        Administrators for {{ period }}
+    {% endblocktrans %}
+{% endblock title %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'overview' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to semester overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% blocktrans trimmed with period=period.get_path %}
+            Administrators for {{ period }}
+        {% endblocktrans %}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        <p id="devilry_admin_period_admins_overview_buttonbar"
+                class="devilry-buttonbar">
+            <a id="devilry_admin_period_admins_overview_button_add"
+                    class="btn btn-primary"
+                    href="{% cradmin_appurl 'add' %}">
+                {% trans "Add semester administrators" %}
+            </a>
+        </p>
+    </div>
+
+    {{ block.super }}
+
+    <div id="devilry_admin_period_admins_help_container" class="container">
+        <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
+            {% include "devilry_admin/common/admins-explained.django.html" with in_period_adminoverview=True %}
+        </div>
+    </div>
+
+    <div id="devilry_admin_period_admins_other_admins_container" class="container">
+        <h2>
+            {% blocktrans trimmed with period=period.get_path %}
+                Other administrators with access to {{ period }}
+            {% endblocktrans %}
+        </h2>
+        {% if other_permissiongroups_listbuilderlist.has_items %}
+            {% cradmin_render_renderable other_permissiongroups_listbuilderlist %}
+        {% else %}
+            <p class="text-muted" id="devilry_admin_period_admins_other_admins_nonemessage">
+                {% trans "No other administrators than the ones listed above have access." %}
+            </p>
+        {% endif %}
+    </div>
+{% endblock content %}
+
+
+{% block no-items-paragraph-contents %}
+    {% trans "No manually added semester administrators for this semester. You can add administrators using the button above." %}
+{% endblock no-items-paragraph-contents %}

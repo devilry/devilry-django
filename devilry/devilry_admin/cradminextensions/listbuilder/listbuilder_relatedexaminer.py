@@ -1,25 +1,54 @@
-from django.utils.translation import ugettext_lazy
-from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import listbuilder
-from django_cradmin.viewhelpers import listfilter
+from django_cradmin.viewhelpers import listbuilderview
 
-from devilry.apps.core.models import RelatedStudent
-from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relatedstudent
+from devilry.apps.core.models import RelatedExaminer
+from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser
 
 
 class ListViewBase(listbuilderview.FilterListMixin, listbuilderview.View):
-    model = RelatedStudent
+    model = RelatedExaminer
     paginate_by = 200
 
     def add_filterlist_items(self, filterlist):
-        filterlist.append(listfilter.django.single.textinput.Search(
-            slug='search',
-            label_is_screenreader_only=True,
-            label=ugettext_lazy('Search'),
-            modelfields=['user__fullname', 'user__shortname']))
-        filterlist.append(listfilter_relatedstudent.OrderRelatedStudentsFilter(
-            slug='orderby',
-            label=ugettext_lazy('Order by')))
+        filterlist.append(listfilter_relateduser.Search())
+        filterlist.append(listfilter_relateduser.OrderRelatedStudentsFilter())
+
+
+class VerticalFilterListView(ListViewBase):
+    """
+    List view for :class:`devilry.apps.core.models.relateduser.RelatedExaminer`
+    with filters in a vertical layout.
+    """
+    def get_filterlist_position(self):
+        return 'right'
+
+
+class RelatedExaminerItemValueTitleDescriptionMixin(object):
+    valuealias = 'relatedexaminer'
+
+    def get_title(self):
+        if self.relatedexaminer.user.fullname:
+            return self.relatedexaminer.user.fullname
+        else:
+            return self.relatedexaminer.user.shortname
+
+    def get_description(self):
+        if self.relatedexaminer.user.fullname:
+            return self.relatedexaminer.user.shortname
+        else:
+            return ''
+
+
+class OnPeriodItemValue(RelatedExaminerItemValueTitleDescriptionMixin,
+                        listbuilder.itemvalue.TitleDescription):
+
+    def get_extra_css_classes_list(self):
+        cssclasses = ['devilry-admin-relatedexaminer-onperioditemvalue']
+        if self.relatedexaminer.active:
+            cssclasses.append('devilry-admin-relatedexaminer-itemvalue-active')
+        else:
+            cssclasses.append('devilry-admin-relatedexaminer-itemvalue-inactive')
+        return cssclasses
 
 
 class OnassignmentItemValue(listbuilder.itemvalue.TitleDescription):

@@ -1,0 +1,12 @@
+{% extends "devilry_cradmin/devilry_listbuilder/assignmentgroup/item-value.django.html" %}
+{% load i18n %}
+{% load devilry_core_tags %}
+
+{% block title-content %}
+    {% with assignment=me.get_assignment  %}
+        {% if me.should_include_periodpath %}
+            {{ assignment.period.get_path }} -
+        {% endif %}
+        {{ assignment.long_name }}
+    {% endwith %}
+{% endblock title-content %}

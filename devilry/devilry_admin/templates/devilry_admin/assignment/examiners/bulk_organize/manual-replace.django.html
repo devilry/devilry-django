@@ -1,0 +1,34 @@
+{% extends "devilry_admin/assignment/students/groupview_base/base-multiselect-view.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block title %}
+    {% trans "Manually replace examiners" %}
+{% endblock title %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_appindex_url %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to bulk-organize examiners overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% trans "Manually replace examiners" %}
+    </h1>
+    <p>
+        {% trans 'Select one or more students and select the examiners you want to set as the new examiners for the selected students.' %}
+    </p>
+    <p>
+        <strong>
+            <span class="text-warning">{% trans "Warning:" %}</span>
+            {% trans 'This will replace any examiners currently assigned to the selected students.' %}
+        </strong>
+    </p>
+{% endblock pageheader-inner %}

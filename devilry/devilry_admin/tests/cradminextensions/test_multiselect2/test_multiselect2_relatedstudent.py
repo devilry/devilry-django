@@ -4,6 +4,7 @@ from django import test
 from django import forms
 from model_mommy import mommy
 
+from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_admin.cradminextensions.multiselect2 import multiselect2_relatedstudent
 
 
@@ -12,6 +13,7 @@ class TestSelectedItem(test.TestCase):
         relatedstudent = mommy.make('core.RelatedStudent',
                                     user__shortname='test@example.com',
                                     user__fullname='')
+        relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(multiselect2_relatedstudent.SelectedItem(value=relatedstudent).render())
         self.assertEqual(
             'test@example.com',
@@ -21,26 +23,27 @@ class TestSelectedItem(test.TestCase):
         relatedstudent = mommy.make('core.RelatedStudent',
                                     user__fullname='Test User',
                                     user__shortname='test@example.com')
+        relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(multiselect2_relatedstudent.SelectedItem(value=relatedstudent).render())
         self.assertEqual(
-            'Test User',
+            'Test User(test@example.com)',
             selector.one('.django-cradmin-multiselect2-target-selected-item-title').alltext_normalized)
 
-    def test_description_without_fullname(self):
-        relatedstudent = mommy.make('core.RelatedStudent',
-                                    user__shortname='test@example.com',
-                                    user__fullname='')
+    def test_description_without_tags(self):
+        relatedstudent = mommy.make('core.RelatedStudent')
+        relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(multiselect2_relatedstudent.SelectedItem(value=relatedstudent).render())
         self.assertFalse(
             selector.exists('.django-cradmin-multiselect2-target-selected-item-description'))
 
-    def test_description_with_fullname(self):
-        relatedstudent = mommy.make('core.RelatedStudent',
-                                    user__fullname='Test User',
-                                    user__shortname='test@example.com')
+    def test_description_with_tags(self):
+        relatedstudent = mommy.make('core.RelatedStudent')
+        mommy.make('core.RelatedStudentSyncSystemTag', tag='a', relatedstudent=relatedstudent)
+        mommy.make('core.RelatedStudentSyncSystemTag', tag='b', relatedstudent=relatedstudent)
+        relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(multiselect2_relatedstudent.SelectedItem(value=relatedstudent).render())
         self.assertEqual(
-            'test@example.com',
+            'a, b',
             selector.one('.django-cradmin-multiselect2-target-selected-item-description').alltext_normalized)
 
 
@@ -49,6 +52,7 @@ class TestItemValue(test.TestCase):
         relatedstudent = mommy.make('core.RelatedStudent',
                                     user__shortname='test@example.com',
                                     user__fullname='')
+        relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(multiselect2_relatedstudent.ItemValue(value=relatedstudent).render())
         self.assertEqual(
             'test@example.com',
@@ -58,26 +62,27 @@ class TestItemValue(test.TestCase):
         relatedstudent = mommy.make('core.RelatedStudent',
                                     user__fullname='Test User',
                                     user__shortname='test@example.com')
+        relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(multiselect2_relatedstudent.ItemValue(value=relatedstudent).render())
         self.assertEqual(
-            'Test User',
+            'Test User(test@example.com)',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
-    def test_description_without_fullname(self):
-        relatedstudent = mommy.make('core.RelatedStudent',
-                                    user__shortname='test@example.com',
-                                    user__fullname='')
+    def test_description_without_tags(self):
+        relatedstudent = mommy.make('core.RelatedStudent')
+        relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(multiselect2_relatedstudent.ItemValue(value=relatedstudent).render())
         self.assertFalse(
             selector.exists('.django-cradmin-listbuilder-itemvalue-titledescription-description'))
 
-    def test_description_with_fullname(self):
-        relatedstudent = mommy.make('core.RelatedStudent',
-                                    user__fullname='Test User',
-                                    user__shortname='test@example.com')
+    def test_description_with_tags(self):
+        relatedstudent = mommy.make('core.RelatedStudent')
+        mommy.make('core.RelatedStudentSyncSystemTag', tag='a', relatedstudent=relatedstudent)
+        mommy.make('core.RelatedStudentSyncSystemTag', tag='b', relatedstudent=relatedstudent)
+        relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(multiselect2_relatedstudent.ItemValue(value=relatedstudent).render())
         self.assertEqual(
-            'test@example.com',
+            'a, b',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
 

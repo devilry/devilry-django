@@ -1,0 +1,100 @@
+{% load i18n %}
+
+<h2>
+    {% trans "How the administrator permission system works" %}
+</h2>
+<p>
+    {% blocktrans trimmed %}
+        Administrators are organized in permission groups.
+        There is three types of permission groups:
+    {% endblocktrans %}
+</p>
+<p>
+</p>
+<dl class="devilry-dl-indented devilry-dl-sm">
+    <dt>
+        {% trans "Department administrator" %}:
+    </dt>
+    <dd>
+        <p>
+            {% blocktrans trimmed %}
+                Department administrator permission groups is the highest level of permission
+                except for superusers (which have access to everything). These permission groups
+                is added to multiple courses, typically all courses within a department.
+            {% endblocktrans %}
+        </p>
+        <p>
+            {% blocktrans trimmed %}
+                Users within a department administrator permission group have access to everything,
+                including some data and operations that is unavailable to course administrators. The
+                extra permissions include access to grades on fully anonymous assignments, and the ability
+                to delete students with deliveries or feedback from an assignment.
+            {% endblocktrans %}
+        </p>
+    </dd>
+    <dt>
+        {% trans "Course administrator" %}:
+    </dt>
+    <dd>
+        <p>
+            {% blocktrans trimmed %}
+                Course administrator permission groups work just like department permission groups,
+                except that they have a bit fewer permissions (detailed in the "department administrator" section above).
+                Course administrator permission groups are typically only added to one course, or perhaps a couple
+                of courses if the courses share the same course administrators.
+            {% endblocktrans %}
+        </p>
+        <p>
+            {% blocktrans trimmed %}
+                Each course has exactly one special permission group where department and
+                course administrators can add extra administrators.
+            {% endblocktrans %}
+            {% if in_subject_adminoverview %}
+                <em class="devilry-adminpermissions-explained-in-subject-adminoverview">
+                    You add admins to this special permission group using the "Add course administrators" button
+                    above.
+                </em>
+            {% endif %}
+        </p>
+    </dd>
+    <dt>
+        {% trans "Semester administrator" %}:
+    </dt>
+    <dd>
+        <p>
+            {% blocktrans trimmed %}
+                Semester administrator permission groups is the lowest level of permission for administrators.
+                Semester administrator permission groups are typically only added to one semester, or perhaps a couple
+                of semesters if the they share the same administrators.
+            {% endblocktrans %}
+        </p>
+        <p>
+            {% blocktrans trimmed %}
+                Users in a semester administrator permission group do not have access to anonymous assignments.
+                The primary use case for semester administrators is for teaching assistents and other administrators
+                that should only have access to normal non-anonymous assignments.
+            {% endblocktrans %}
+        </p>
+        <p>
+            {% blocktrans trimmed %}
+                Each semester has exactly one special permission group where department, course and
+                semester administrators can add extra administrators.
+            {% endblocktrans %}
+            {% if in_period_adminoverview %}
+                <em class="devilry-adminpermissions-explained-in-period-adminoverview">
+                    You add users to this special permission group using the "Add semester administrators" button
+                    above.
+                </em>
+            {% endif %}
+        </p>
+    </dd>
+</dl>
+
+<p>
+    {% blocktrans trimmed %}
+        A user is always given the highest level of permission available.
+        This means that if a user is both in a department administrator
+        permission group and a course administrator permission group for a course,
+        they will have department administrator permissions for that course.
+    {% endblocktrans %}
+</p>

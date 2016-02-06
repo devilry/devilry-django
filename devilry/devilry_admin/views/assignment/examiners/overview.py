@@ -4,13 +4,13 @@ from django.http import Http404
 from django.utils.translation import ugettext_lazy
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin.viewhelpers import listbuilder
 
 from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedexaminer
+from devilry.devilry_cradmin import devilry_listbuilder
 
 
-class ExaminerDetailPageLinkFrame(listbuilder.itemframe.Link):
+class ExaminerDetailPageLinkFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
     valuealias = 'relatedexaminer'
 
     def get_url(self):

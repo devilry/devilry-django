@@ -1,49 +1,42 @@
-{% extends "django_cradmin/viewhelpers/objecttable/objecttable.django.html" %}
+{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
 {% load static %}
 {% load i18n %}
 {% load cradmin_tags %}
 
-
 {% block title %}
-    {{ subject.short_name }}
+    {{ request.cradmin_role.short_name }}
 {% endblock title %}
 
 {% block pageheader-inner %}
     <h1>
-        {{ subject.long_name }}
+        {{ request.cradmin_role.long_name }}
     </h1>
 {% endblock pageheader-inner %}
 
+{% block listbuilderview_buttons %}
+    <p class="devilry-buttonbar">
+        <a id="devilry_admin_period_createperiod_link"
+                class="btn btn-primary"
+                href="{% cradmin_instance_url 'createperiod' 'INDEX' %}">
+            {% trans "Create new semester" %}
+        </a>
+    </p>
+{% endblock listbuilderview_buttons %}
+
 {% block content %}
+    {{ block.super }}
     <div class="container">
-        <p>
-            <a id="devilry_admin_period_createperiod_link"
-                    href="{% cradmin_instance_url 'createperiod' 'INDEX'  %}">
-                {% trans "Create new semester" %}
-            </a>
-        </p>
-        {% if periods %}
-            <ul id="devilry_admin_period_overview_periodlist">
-                {% for period in periods %}
-                    <li>
-                        <p>
-                            <a href="{% cradmin_url instanceid='devilry_admin_periodadmin' appname='overview' roleid=period.id viewname='INDEX' %}"
-                                    class="devilry-admin-period-overview-period-link">
-                                {{ period.long_name }}
-                            </a>
-                        </p>
-                        <p class="devilry-admin-period-overview-period-timespan">
-                            <span class="devilry-admin-period-overview-period-start_time-value">
-                                {{ period.start_time|date:"DATETIME_FORMAT" }}
-                            </span>
-                            &mdash;
-                            <span class="devilry-admin-period-overview-period-end_time-value">
-                                {{ period.end_time|date:"DATETIME_FORMAT" }}
-                            </span>
-                        </p>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+        <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
+            <h2>{% trans "Course administrators" %}</h2>
+            <p class="text-muted">
+                {% trans "Course administrators have access to do everything within their courses, except delete deliveries from students and published feedback." %}
+            </p>
+            <p>
+                <a href="{% cradmin_instance_url appname='admins' viewname='INDEX' %}"
+                        class="btn btn-default btn-sm">
+                    {% trans "Add/edit course administrators" %}
+                </a>
+            </p>
+        </div>
     </div>
 {% endblock content %}

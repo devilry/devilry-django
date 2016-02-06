@@ -2,12 +2,12 @@ from __future__ import unicode_literals
 
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin.viewhelpers import listbuilder
 
 from devilry.devilry_admin.views.assignment.students import groupview_base
+from devilry.devilry_cradmin import devilry_listbuilder
 
 
-class NonAnonymousGroupItemFrame(listbuilder.itemframe.Link):
+class NonAnonymousGroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
     valuealias = 'group'
 
     def get_url(self):

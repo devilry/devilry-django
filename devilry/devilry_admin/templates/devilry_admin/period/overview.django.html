@@ -1,4 +1,4 @@
-{% extends "django_cradmin/base.django.html" %}
+{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
 {% load static %}
 {% load i18n %}
 {% load cradmin_tags %}
@@ -9,50 +9,82 @@
 {% endblock title %}
 
 {% block pageheader-inner %}
-    <h1>
-        {{ request.cradmin_role.long_name }}
-        &mdash;
-        {{ request.cradmin_role.subject.long_name }}
-    </h1>
+    <div class="row">
+        <div class="col-sm-9">
+            <h1>
+                {{ request.cradmin_role.long_name }}
+                &mdash;
+                {{ request.cradmin_role.subject.long_name }}
+            </h1>
+        </div>
+        <div class="col-sm-3">
+            <p id="devilry_admin_period_edit" class="text-right">
+                <a href="{% cradmin_instance_appindex_url "edit" %}"
+                        class="btn btn-default btn-sm">
+                    {% trans "Edit" %}
+                </a>
+            </p>
+        </div>
+    </div>
 {% endblock pageheader-inner %}
 
+{% block listbuilderview_buttons %}
+    <p class="devilry-buttonbar">
+        <a id="devilry_admin_period_createassignment_link"
+                class="btn btn-primary"
+                href="{% cradmin_instance_url 'createassignment' 'INDEX'  %}">
+            {% trans "Create new assignment" %}
+        </a>
+    </p>
+{% endblock listbuilderview_buttons %}
+
+
 {% block content %}
+    {{ block.super }}
+
     <div class="container">
-        <p>
-            <a id="devilry_admin_period_createassignment_link"
-                    href="{% cradmin_instance_url 'createassignment' 'INDEX'  %}">
-                {% trans "Create new assignment" %}
-            </a>
-        </p>
-        {% if assignments %}
-            <ul id="devilry_admin_period_overview_assignmentlist">
-                {% for assignment in assignments %}
-                    <li>
-                        <p>
-                            <a href="{% cradmin_url instanceid='devilry_admin_assignmentadmin' appname='overview' roleid=assignment.id viewname='INDEX' %}"
-                                    class="devilry-admin-period-overview-assignment-link">
-                                {{ assignment.long_name }}
-                            </a>
-                        </p>
-                        <p class="devilry-admin-period-overview-assignment-first_deadline">
-                            <span class="devilry-admin-period-overview-assignment-first_deadline-label">
-                                {% trans "First deadline" %}:
-                            </span>
-                            <span class="devilry-admin-period-overview-assignment-first_deadline-value">
-                                {{ assignment.first_deadline|date:"DATETIME_FORMAT" }}
-                            </span>
-                        </p>
-                        <p class="devilry-admin-period-overview-assignment-publishing_time">
-                            <span class="devilry-admin-period-overview-assignment-publishing_time-label">
-                                {% trans "Publishing time" %}:
-                            </span>
-                            <span class="devilry-admin-period-overview-assignment-publishing_time-value">
-                                {{ assignment.publishing_time|date:"DATETIME_FORMAT" }}
-                            </span>
-                        </p>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+        <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
+            <h2>
+                {% trans "Students and examiners" %}
+            </h2>
+            <p class="text-muted">
+                {% trans "Only students registered for this semester can be added to assignments within the semester." %}
+            </p>
+            <p>
+                <a href="{% cradmin_instance_url appname='students' viewname='INDEX' %}"
+                        class="btn btn-default btn-sm">
+                    {% trans "Add/edit students" %}
+                </a>
+                <a href="{% cradmin_instance_url appname='examiners' viewname='INDEX' %}"
+                        class="btn btn-default btn-sm">
+                    {% trans "Add/edit examiners" %}
+                </a>
+            </p>
+        </div>
+        <div class="devilry-dashboard-container">
+            <h2>{% trans "Semester administrators" %}</h2>
+            <p class="text-muted">
+                {% trans "You can add semester administrators. Semester administrators have mostly the same permissions as course administrators except that they do not have access to anonymous assignments." %}
+            </p>
+            <p>
+                <a href="{% cradmin_instance_url appname='admins' viewname='INDEX' %}"
+                        class="btn btn-default btn-sm">
+                    {% trans "Add/edit semester administrators" %}
+                </a>
+            </p>
+        </div>
+        <div class="devilry-dashboard-container">
+            <h2>{% trans "Utilities" %}</h2>
+            <p>
+                <a href="#" onclick="alert('TODO');"
+                        class="btn btn-default btn-sm">
+                    {% trans "Overview of all results" %}
+                </a>
+                <a href="#" onclick="alert('TODO');"
+                        class="btn btn-default btn-sm">
+                    {% trans "Qualified for final exams" %}
+                </a>
+            </p>
+        </div>
     </div>
 {% endblock content %}

@@ -1,0 +1,22 @@
+a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward {
+  position: relative;
+  .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+    color: #ddd;
+    font-size: 50px;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    .css3-transform(translateY(-26px));
+    .css3-transition(all @cradmin-btn-transition-duration ease-in-out);
+  }
+  &:hover {
+    .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+      color: @link-color;
+    }
+  }
+  .django-cradmin-listbuilder-itemvalue {
+    &.django-cradmin-listbuilder-itemvalue-focusbox {
+      padding-right: 55px;  // Make room for the icon
+    }
+  }
+}

@@ -904,6 +904,30 @@ class PeriodPermissionGroupQuerySet(models.QuerySet):
         else:
             return None
 
+    def get_custom_managable_periodpermissiongroup_for_period(self, period):
+        """
+        Get the PeriodPermissionGroup where :obj:`.PermissionGroup.is_custom_manageable` is ``True``
+        for the given ``period``.
+
+        Each :class:`devilry.apps.core.models.Period` has exactly one custom managable
+        :class:`.PermissionGroup`, which is the permission group where admins added
+        by non-superusers via the admin UI are added.
+
+        .. note:: The queryset used does ``select_related('permissiongroup')``, so looking
+            up permissiongroup for the returned PeriodPermissionGroup does not require
+            an extra database query.
+
+        Args:
+            period: A :class:`devilry.apps.core.models.Period` object.
+
+        Raises:
+            PeriodPermissionGroup.DoesNotExist: If no custom managable PermissionGroup exists for
+                the given period.
+        """
+        return self.filter(period=period, permissiongroup__is_custom_manageable=True)\
+            .select_related('permissiongroup')\
+            .get()
+
 
 class PeriodPermissionGroup(models.Model):
     """
@@ -926,10 +950,12 @@ class PeriodPermissionGroup(models.Model):
     period = models.ForeignKey('core.Period')
 
     def __unicode__(self):
-        return _('Group %(permissiongroup)s assigned to %(period)s') % {
-            'permissiongroup': self.permissiongroup.name,
-            'period': self.period.get_path(),
-        }
+        if self.permissiongroup.is_custom_manageable:
+            return ugettext_lazy('Semester administrators for %(period)s') % {
+                'period': self.period.get_path(),
+            }
+        else:
+            return self.permissiongroup.name
 
     def clean(self):
         if self.permissiongroup.grouptype != PermissionGroup.GROUPTYPE_PERIODADMIN:
@@ -1030,6 +1056,30 @@ class SubjectPermissionGroupQuerySet(models.QuerySet):
         else:
             return None
 
+    def get_custom_managable_subjectpermissiongroup_for_subject(self, subject):
+        """
+        Get the SubjectPermissionGroup where :obj:`.PermissionGroup.is_custom_manageable` is ``True``
+        for the given ``subject``.
+
+        Each :class:`devilry.apps.core.models.Subject` has exactly one custom managable
+        :class:`.PermissionGroup`, which is the permission group where admins added
+        by non-superusers via the admin UI are added.
+
+        .. note:: The queryset used does ``select_related('permissiongroup')``, so looking
+            up permissiongroup for the returned SubjectPermissionGroup does not require
+            an extra database query.
+
+        Args:
+            subject: A :class:`devilry.apps.core.models.Subject` object.
+
+        Raises:
+            SubjectPermissionGroup.DoesNotExist: If no custom managable PermissionGroup exists for
+                the given subject.
+        """
+        return self.filter(subject=subject, permissiongroup__is_custom_manageable=True)\
+            .select_related('permissiongroup')\
+            .get()
+
 
 class SubjectPermissionGroup(models.Model):
     """
@@ -1052,16 +1102,18 @@ class SubjectPermissionGroup(models.Model):
     subject = models.ForeignKey('core.Subject')
 
     def __unicode__(self):
-        return _('Group %(permissiongroup)s assigned to %(subject)s') % {
-            'permissiongroup': self.permissiongroup.name,
-            'subject': self.subject.get_path(),
-        }
+        if self.permissiongroup.is_custom_manageable:
+            return ugettext_lazy('Course administrators for %(subject)s') % {
+                'subject': self.subject.short_name,
+            }
+        else:
+            return self.permissiongroup.name
 
     def clean(self):
         if self.permissiongroup.grouptype not in [PermissionGroup.GROUPTYPE_SUBJECTADMIN,
                                                   PermissionGroup.GROUPTYPE_DEPARTMENTADMIN]:
             raise ValidationError(_(
-                    'Semesters can only be added to subject and department administrator permission groups.'))
+                    'Courses can only be added to subject and department administrator permission groups.'))
         if self.permissiongroup.is_custom_manageable:
             queryset = SubjectPermissionGroup.objects \
                 .filter(permissiongroup=self.permissiongroup)

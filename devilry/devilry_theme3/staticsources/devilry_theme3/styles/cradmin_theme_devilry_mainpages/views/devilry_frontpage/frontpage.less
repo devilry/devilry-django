@@ -15,28 +15,38 @@
   }
 }
 
-.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist {
-  .django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe {
+.devilry-frontpage-rolelink(@background) {
+  .devilry-frontpage-listbuilder-roleselect-itemvalue {
+    color: #fff;
+    background: @background;
+  }
+  .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+    //color: darken(@background, 20%);
+    color: #fff;
+    opacity: 0.3;
+  }
+  &:hover {
     .devilry-frontpage-listbuilder-roleselect-itemvalue {
-      color: #fff;
-      &.devilry-frontpage-listbuilder-roleselect-itemvalue-student {
-        background: @devilry-student-bgcolor;
-        &:hover {
-          border-bottom-color: darken(@devilry-student-bgcolor, 20%);
-        }
-      }
-      &.devilry-frontpage-listbuilder-roleselect-itemvalue-examiner {
-        background: @devilry-examiner-bgcolor;
-        &:hover {
-          border-bottom-color: darken(@devilry-examiner-bgcolor, 20%);
-        }
-      }
-      &.devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin {
-        background: @devilry-anyadmin-bgcolor;
-        &:hover {
-          border-bottom-color: darken(@devilry-anyadmin-bgcolor, 20%);
-        }
-      }
+      //border-bottom-color: darken(@background, 20%);
+      border-bottom-color: darken(@background, 5%);
+      background: darken(@background, 5%);
+    }
+    .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+      opacity: 1;
+    }
+  }
+}
+
+.django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist {
+  a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe {
+    &.devilry-frontpage-listbuilder-roleselect-itemframe-student {
+      .devilry-frontpage-rolelink(@devilry-student-bgcolor);
+    }
+    &.devilry-frontpage-listbuilder-roleselect-itemframe-examiner {
+      .devilry-frontpage-rolelink(@devilry-examiner-bgcolor);
+    }
+    &.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin {
+      .devilry-frontpage-rolelink(@devilry-anyadmin-bgcolor);
     }
   }
 }

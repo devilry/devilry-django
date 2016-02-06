@@ -7053,12 +7053,18 @@ body {
 .alert strong {
   font-style: italic;
 }
+.django-cradmin-listing-no-items-message {
+  padding: 10px 15px;
+  background: #fff;
+  color: #333333;
+}
 .btn {
   font-weight: bold;
   border-width: 3px;
   letter-spacing: 1.4px;
   padding: 4px 12px;
   margin-bottom: 5px;
+  white-space: normal;
 }
 .btn.btn-sm {
   padding: 3px 10px;
@@ -7111,9 +7117,9 @@ ol.django-cradmin-listbuilder-list h3:first-child {
   padding-left: 40px;
 }
 .django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner a.devilry-page-header-backlink {
-  font-size: 30px;
+  font-size: 50px;
   position: absolute;
-  top: -5px;
+  top: -22px;
   left: 0;
   display: inline-block;
   width: 30px;
@@ -7182,6 +7188,44 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-ver
   border-color: #191919;
   color: #fff;
 }
+a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward {
+  position: relative;
+}
+a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+  color: #ddd;
+  font-size: 50px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  -webkit-transform: translateY(-26px);
+  -moz-transform: translateY(-26px);
+  transform: translateY(-26px);
+  -webkit-transition: all 0.15s ease-in-out;
+  -moz-transition: all 0.15s ease-in-out;
+  transition: all 0.15s ease-in-out;
+}
+a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+  color: #377CA8;
+}
+a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+  padding-right: 55px;
+}
+a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning .django-cradmin-listbuilder-itemvalue-titledescription-description,
+.django-cradmin-listbuilder-itemvalue-titledescription-description.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning .django-cradmin-listbuilder-itemvalue-titledescription-description {
+  color: #8a6d3b;
+}
+a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-muted .django-cradmin-listbuilder-itemvalue-titledescription-description,
+.django-cradmin-listbuilder-itemvalue-titledescription-description.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-muted .django-cradmin-listbuilder-itemvalue-titledescription-description {
+  color: #777;
+}
+.django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg h2,
+.django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg h3 {
+  font-size: 22px;
+}
+.django-cradmin-form-wrapper.devilry-django-cradmin-form-wrapper-top-bottom-spacing {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
 form.devilry-form-inline {
   display: inline-block;
   margin: 0;
@@ -7214,11 +7258,17 @@ h3 .devilry-user-verbose-inline small {
 .devilry-dashboard-container h3:first-child {
   margin-top: 0;
 }
+.devilry-dashboard-container.devilry-dashboard-container-withtopmargin {
+  margin-top: 20px;
+}
 .devilry-dashboard-container.devilry-dashboard-container-focus h2 {
   font-size: 28px;
 }
 .devilry-dashboard-container.devilry-dashboard-container-focus h3 {
   font-size: 23px;
+}
+.devilry-dashboard-container dl {
+  margin-bottom: 15px;
 }
 .devilry-buttonbar {
   margin-bottom: 7px;
@@ -7295,6 +7345,12 @@ h3 .devilry-user-verbose-inline small {
 .devilry-listbuilderlist-footer {
   font-size: 14px;
   margin-top: 10px;
+}
+dl.devilry-dl-indented {
+  padding-left: 30px;
+}
+dl.devilry-dl-sm {
+  font-size: 14px;
 }
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;

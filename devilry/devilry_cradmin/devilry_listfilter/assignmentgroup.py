@@ -354,7 +354,7 @@ class ExaminerFilter(abstractselect.AbstractSelectFilter):
         return self._choices
 
     def __get_valid_values(self):
-        return {int(choice[0])
+        return {str(choice[0])
                 for choice in self.__get_choices_cached()}
 
     def get_choices(self):
@@ -367,19 +367,72 @@ class ExaminerFilter(abstractselect.AbstractSelectFilter):
     def get_cleaned_value(self):
         cleaned_value = super(ExaminerFilter, self).get_cleaned_value()
         if cleaned_value:
-            try:
-                cleaned_value = int(cleaned_value)
-            except ValueError:
-                pass
-            else:
-                if cleaned_value in self.__get_valid_values():
-                    return cleaned_value
+            if cleaned_value in self.__get_valid_values():
+                return cleaned_value
         return None
+
+    def apply_filter(self, queryobject, cleaned_value):
+        queryobject = queryobject.filter(examiners__relatedexaminer_id=cleaned_value)
+        return queryobject
 
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value()
         if cleaned_value is not None:
-            queryobject = queryobject.filter(examiners__relatedexaminer_id=cleaned_value)
+            queryobject = self.apply_filter(queryobject=queryobject, cleaned_value=cleaned_value)
+        return queryobject
+
+
+class ExaminerCountFilter(abstractselect.AbstractSelectFilter):
+    def __init__(self, **kwargs):
+        self.view = kwargs.pop('view', None)
+        super(ExaminerCountFilter, self).__init__(**kwargs)
+
+    def copy(self):
+        copy = super(ExaminerCountFilter, self).copy()
+        copy.view = self.view
+        return copy
+
+    def get_slug(self):
+        return 'examinercount'
+
+    def get_label(self):
+        return pgettext_lazy('group examiner filter', 'Number of examiners')
+
+    def __get_examiner_name(self, relatedexaminer):
+        return relatedexaminer.user.get_full_name()
+
+    def __get_choices_cached(self):
+        if not hasattr(self, '_choices'):
+            self._choices = [(str(index), str(index))
+                             for index in range(0, len(self.view.get_distinct_relatedexaminers()) + 1)]
+        return self._choices
+
+    def __get_valid_values(self):
+        return {str(choice[0])
+                for choice in self.__get_choices_cached()}
+
+    def get_choices(self):
+        choices = [
+            ('', '')
+        ]
+        choices.extend(self.__get_choices_cached())
+        return choices
+
+    def get_cleaned_value(self):
+        cleaned_value = super(ExaminerCountFilter, self).get_cleaned_value()
+        if cleaned_value:
+            if cleaned_value in self.__get_valid_values():
+                return cleaned_value
+        return None
+
+    def apply_filter(self, queryobject, cleaned_value):
+        queryobject = queryobject.filter(number_of_examiners=int(cleaned_value))
+        return queryobject
+
+    def filter(self, queryobject):
+        cleaned_value = self.get_cleaned_value()
+        if cleaned_value is not None:
+            queryobject = self.apply_filter(queryobject=queryobject, cleaned_value=cleaned_value)
         return queryobject
 
 

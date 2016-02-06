@@ -35,6 +35,7 @@ class GroupViewMixin(object):
         filterlist.append(devilry_listfilter.assignmentgroup.IsPassingGradeFilter())
         filterlist.append(devilry_listfilter.assignmentgroup.PointsFilter())
         filterlist.append(devilry_listfilter.assignmentgroup.ExaminerFilter(view=self))
+        filterlist.append(devilry_listfilter.assignmentgroup.ExaminerCountFilter(view=self))
         filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
 
     def get_unfiltered_queryset_for_role(self, role):
@@ -87,6 +88,7 @@ class GroupViewMixin(object):
             .annotate_with_has_unpublished_feedbackdraft()\
             .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user)\
             .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)\
+            .annotate_with_number_of_examiners()\
             .distinct()
         return queryset
 
@@ -105,10 +107,9 @@ class GroupViewMixin(object):
     # def __get_filtered_groupcount(self):
     #     return self.get_queryset().count()
 
-    def __get_excluding_filters_other_than_status_is_applied(self, total_groupcount):
+    def __get_excluding_filters_is_applied(self, total_groupcount):
         return self.get_filterlist().filter(
-            queryobject=self.__get_unfiltered_queryset_for_role(),
-            exclude={'status'}
+            queryobject=self.__get_unfiltered_queryset_for_role()
         ).count() < total_groupcount
 
     def get_filtered_all_students_count(self):
@@ -158,8 +159,8 @@ class GroupViewMixin(object):
         context['assignment'] = self.assignment
         context['status_filter_value_normalized'] = self.get_status_filter_value()
         total_groupcount = self.__get_total_groupcount()
-        context['excluding_filters_other_than_status_is_applied'] = \
-            self.__get_excluding_filters_other_than_status_is_applied(
+        context['excluding_filters_is_applied'] = \
+            self.__get_excluding_filters_is_applied(
                 total_groupcount=total_groupcount)
         return context
 

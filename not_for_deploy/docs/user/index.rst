@@ -66,3 +66,12 @@ Node/Department admin
    nodeadmin
    nodeadmin-finditems
    nodeadmin_qualifiesforexam
+
+
+What is new?
+------------
+.. toctree::
+    :maxdepth: 1
+    :glob:
+
+    whatsnew/*

@@ -46,79 +46,41 @@ class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
 
 
 class TestStudentItemValue(test.TestCase):
-    def test_name(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__fullname='Test User',
-                   relatedstudent__user__shortname='testuser@example.com')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
-            value=testgroup, assignment=testgroup.assignment).render())
-        self.assertEqual(
-            'Test User(testuser@example.com)',
-            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
-
-    def test_name_semi_anonymous_is_not_anonymized(self):
+    def test_title_default(self):
         testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+                               parentnode__parentnode__parentnode__short_name='testsubject',
+                               parentnode__parentnode__short_name='testperiod',
+                               parentnode__long_name='Test Assignment')
         mommy.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__fullname='Test User',
-                   relatedstudent__user__shortname='testuser@example.com')
+                   assignment_group=testgroup)
         selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
-            value=testgroup, assignment=testgroup.assignment).render())
+            value=testgroup).render())
         self.assertEqual(
-            'Test User(testuser@example.com)',
+            'testsubject.testperiod - Test Assignment',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
-    def test_name_fully_anonymous_is_not_anonymized(self):
+    def test_title_include_periodpath_false(self):
         testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+                               parentnode__long_name='Test Assignment')
         mommy.make('core.Candidate',
-                   assignment_group=testgroup,
-                   relatedstudent__user__fullname='Test User',
-                   relatedstudent__user__shortname='testuser@example.com')
+                   assignment_group=testgroup)
         selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
-            value=testgroup, assignment=testgroup.assignment).render())
+            value=testgroup,
+            include_periodpath=False).render())
         self.assertEqual(
-            'Test User(testuser@example.com)',
+            'Test Assignment',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
-    def test_examiners(self):
+    def test_examiners_not_included(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('core.Examiner',
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
         selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
-            value=testgroup, assignment=testgroup.assignment).render())
-        self.assertEqual(
-            'Test User(testuser@example.com)',
-            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
-
-    def test_examiners_semi_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        mommy.make('core.Examiner',
-                   assignmentgroup=testgroup,
-                   relatedexaminer__automatic_anonymous_id='MyAnonymousID')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
-            value=testgroup, assignment=testgroup.assignment).render())
-        self.assertEqual(
-            'MyAnonymousID',
-            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
-
-    def test_examiners_fully_anonymous(self):
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        mommy.make('core.Examiner',
-                   assignmentgroup=testgroup,
-                   relatedexaminer__automatic_anonymous_id='MyAnonymousID')
-        selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
-            value=testgroup, assignment=testgroup.assignment).render())
-        self.assertEqual(
-            'MyAnonymousID',
-            selector.one('.devilry-cradmin-groupitemvalue-examiners-names').alltext_normalized)
+            value=testgroup).render())
+        self.assertFalse(
+            selector.exists('.devilry-cradmin-groupitemvalue-examiners-names'))
 
     def test_grade_students_can_see_points_false(self):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
@@ -129,7 +91,7 @@ class TestStudentItemValue(test.TestCase):
             .annotate_with_grading_points()\
             .first()
         selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
-            value=testgroup, assignment=testgroup.assignment).render())
+            value=testgroup).render())
         self.assertEqual(
             'Grade: passed',
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
@@ -143,7 +105,7 @@ class TestStudentItemValue(test.TestCase):
             .annotate_with_grading_points()\
             .first()
         selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
-            value=testgroup, assignment=testgroup.assignment).render())
+            value=testgroup).render())
         self.assertEqual(
             'Grade: passed (1/1)',
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)

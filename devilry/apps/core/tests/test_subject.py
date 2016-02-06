@@ -1,108 +1,27 @@
-import unittest
-from datetime import datetime, timedelta
+from datetime import timedelta
 
+from django import test
 from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.db import IntegrityError
-from django.test import TestCase
 from model_mommy import mommy
 
-from ..models import Node, Subject
-from ..models.model_utils import EtagMismatchException
-from ..testhelper import TestHelper
+from devilry.apps.core.models import Subject
+from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START
 
 
-@unittest.skip('Rewrite or delete these old tests???')
-class TestSubject(TestCase, TestHelper):
-    def setUp(self):
-        self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
-                 subjects=["inf1060:admin(teacher1)", "inf1100"],
-                 periods=["autumn10:begins(-1)", "spring9:begins(-1)"],
-                 assignments=["assignment1", "assignment2"],
-                 assignmentgroups=["g1:examiner(examiner1)", "g2:examiner(examiner2)"])
-
-    def test_unique(self):
-        s = Subject(parentnode=Node.objects.get(short_name='ifi'),
-                    short_name='inf1060', long_name='INF1060')
-        self.assertRaises(IntegrityError, s.save)
-
-    def test_unique2(self):
-        s = Subject(parentnode=Node.objects.get(short_name='uio'),
-                    short_name='inf1060', long_name='INF1060')
-        self.assertRaises(IntegrityError, s.save)
-
-    def test_etag_update(self):
-        etag = datetime.now()
-        obj = self.inf1100
-        obj.long_name = "Test"
-        self.assertRaises(EtagMismatchException, obj.etag_update, etag)
-        try:
-            obj.etag_update(etag)
-        except EtagMismatchException as e:
-            # Should not raise exception
-            obj.etag_update(e.etag)
-        obj2 = Subject.objects.get(id=obj.id)
-        self.assertEquals(obj2.long_name, "Test")
-
-    def test_get_path(self):
-        self.assertEquals(self.inf1100.get_path(), 'inf1100')
-
-    def test_where_is_examiner(self):
-        examiner1 = get_user_model().objects.get(shortname='examiner1')
-        q = Subject.where_is_examiner(examiner1)
-        self.assertEquals(q.count(), 2)
-        self.assertEquals(q[0].short_name, 'inf1060')
-        self.assertEquals(q[1].short_name, 'inf1100')
-
-        self.add_to_path('uio.ifi;inf1010.spring10.oblig1.group1')
-        self.inf1010_spring10_oblig1_group1.examiners.create(user=examiner1)
-        self.inf1010_spring10_oblig1.save()
-        q = Subject.where_is_examiner(examiner1).order_by('short_name')
-        self.assertEquals(q.count(), 3)
-        self.assertEquals(q[0].short_name, 'inf1010')
-        self.assertEquals(q[1].short_name, 'inf1060')
-
-    def test_published_where_is_examiner(self):
-        examiner1 = get_user_model().objects.get(shortname='examiner1')
-        q = Subject.published_where_is_examiner(examiner1).order_by('short_name')
-        self.assertEquals(q.count(), 2)
-        self.assertEquals(q[0].short_name, 'inf1060')
-        self.assertEquals(q[1].short_name, 'inf1100')
-
-        self.add_to_path('uio.ifi;inf1010.spring10:begins(-1).oblig1.group1')
-        self.inf1010_spring10_oblig1_group1.examiners.create(user=examiner1)
-        self.inf1010_spring10_oblig1_group1.save()
-        q = Subject.published_where_is_examiner(examiner1).order_by('short_name')
-        self.assertEquals(q.count(), 3)
-        self.assertEquals(q[0].short_name, 'inf1010')
-        self.assertEquals(q[1].short_name, 'inf1060')
-
-        assignment1010 = self.inf1010_spring10_oblig1_group1.parentnode
-        assignment1010.publishing_time = datetime.now() + timedelta(10)
-        assignment1010.save()
-        q = Subject.published_where_is_examiner(examiner1)
-        self.assertEquals(q.count(), 2)
-
-    def test_is_empty(self):
-        self.assertFalse(self.inf1060.is_empty())
-        self.add(nodes="uio.ifi", subjects=['duck9000'])
-        self.assertTrue(self.duck9000.is_empty())
-
-
-class TestSubjectQuerySetPermission(TestCase):
-    def test_filter_user_is_admin_is_not_admin_on_anything(self):
+class TestSubjectQuerySetFilterUserIsAdmin(test.TestCase):
+    def test_is_not_admin_on_anything(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Subject')
         self.assertFalse(Subject.objects.filter_user_is_admin(user=testuser).exists())
 
-    def test_filter_user_is_admin_superuser(self):
+    def test_superuser(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
         testsubject = mommy.make('core.Subject')
         self.assertEqual(
             {testsubject},
             set(Subject.objects.filter_user_is_admin(user=testuser)))
 
-    def test_filter_user_is_admin_ignore_subjects_where_not_in_group(self):
+    def test_ignore_subjects_where_not_in_group(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testsubject = mommy.make('core.Subject')
         mommy.make('core.Subject')
@@ -121,7 +40,7 @@ class TestSubjectQuerySetPermission(TestCase):
             {testsubject},
             set(Subject.objects.filter_user_is_admin(user=testuser)))
 
-    def test_filter_user_is_admin_distinct(self):
+    def test_distinct(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testsubject = mommy.make('core.Subject')
         subjectpermissiongroup1 = mommy.make('devilry_account.SubjectPermissionGroup',
@@ -135,3 +54,208 @@ class TestSubjectQuerySetPermission(TestCase):
         self.assertEqual(
             {testsubject},
             set(Subject.objects.filter_user_is_admin(user=testuser)))
+
+
+class TestSubjectQuerySetFilterUserIsAdminForAnyPeriodsWithinSubject(test.TestCase):
+    def test_is_not_admin_on_anything(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Subject')
+        self.assertEqual(
+                [],
+                list(Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=testuser)))
+
+    def test_superuser(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        testsubject1 = mommy.make('core.Subject')
+        testsubject2 = mommy.make('core.Subject')
+        self.assertEqual(
+                {testsubject1, testsubject2},
+                set(Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=testuser)))
+
+    def test_admin_on_subject(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=subjectpermissiongroup.permissiongroup,
+                   user=testuser)
+        self.assertEqual(
+                [testsubject],
+                list(Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=testuser)))
+
+    def test_admin_on_other_subject(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        othersubject = mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=othersubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=subjectpermissiongroup.permissiongroup,
+                   user=testuser)
+        self.assertEqual(
+                [othersubject],
+                list(Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=testuser)))
+
+    def test_admin_on_period(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        testperiod = mommy.make('core.Period', parentnode=testsubject)
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testperiod)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=periodpermissiongroup.permissiongroup,
+                   user=testuser)
+        self.assertEqual(
+                [testsubject],
+                list(Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=testuser)))
+
+    def test_admin_on_other_period(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        mommy.make('core.Period', parentnode=testsubject)
+        otherperiod = mommy.make('core.Period')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=otherperiod)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=periodpermissiongroup.permissiongroup,
+                   user=testuser)
+        self.assertEqual(
+                [otherperiod.subject],
+                list(Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=testuser)))
+
+    def test_admin_on_multiple_periods(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        testperiod1 = mommy.make('core.Period', parentnode=testsubject)
+        periodpermissiongroup1 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            period=testperiod1)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=periodpermissiongroup1.permissiongroup,
+                   user=testuser)
+        testperiod2 = mommy.make('core.Period', parentnode=testsubject)
+        periodpermissiongroup2 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            period=testperiod2)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=periodpermissiongroup2.permissiongroup,
+                   user=testuser)
+        self.assertEqual(
+                [testsubject],
+                list(Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=testuser)))
+
+    def test_admin_on_subject_and_period_distinct(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        testperiod = mommy.make('core.Period', parentnode=testsubject)
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testperiod)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=periodpermissiongroup.permissiongroup,
+                   user=testuser)
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   permissiongroup=subjectpermissiongroup.permissiongroup,
+                   user=testuser)
+        self.assertEqual(
+                [testsubject],
+                list(Subject.objects.filter_user_is_admin_for_any_periods_within_subject(user=testuser)))
+
+
+class TestSubjectQuerySetAnnotateWithHasActivePeriod(test.TestCase):
+    def test_no_periods(self):
+        mommy.make('core.Subject')
+        annotated_subject = Subject.objects.annotate_with_has_active_period().first()
+        self.assertFalse(annotated_subject.has_active_period)
+
+    def test_only_old_periods(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make_recipe('devilry.apps.core.period_old', parentnode=testsubject)
+        annotated_subject = Subject.objects.annotate_with_has_active_period().first()
+        self.assertFalse(annotated_subject.has_active_period)
+
+    def test_only_future_periods(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make_recipe('devilry.apps.core.period_future', parentnode=testsubject)
+        annotated_subject = Subject.objects.annotate_with_has_active_period().first()
+        self.assertFalse(annotated_subject.has_active_period)
+
+    def test_has_active_period(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject)
+        annotated_subject = Subject.objects.annotate_with_has_active_period().first()
+        self.assertTrue(annotated_subject.has_active_period)
+
+    def test_has_multiple_active_period(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject)
+        mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject)
+        annotated_subject = Subject.objects.annotate_with_has_active_period().first()
+        self.assertTrue(annotated_subject.has_active_period)
+
+
+class TestSubjectQuerySetPrefetchActivePeriodobjects(test.TestCase):
+    def test_no_periods(self):
+        mommy.make('core.Subject')
+        annotated_subject = Subject.objects.prefetch_active_periodobjects().first()
+        self.assertEqual([], annotated_subject.active_period_objects)
+
+    def test_only_old_periods(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make_recipe('devilry.apps.core.period_old', parentnode=testsubject)
+        annotated_subject = Subject.objects.prefetch_active_periodobjects().first()
+        self.assertEqual([], annotated_subject.active_period_objects)
+
+    def test_only_future_periods(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make_recipe('devilry.apps.core.period_future', parentnode=testsubject)
+        annotated_subject = Subject.objects.prefetch_active_periodobjects().first()
+        self.assertEqual([], annotated_subject.active_period_objects)
+
+    def test_has_active_period(self):
+        testsubject = mommy.make('core.Subject')
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject)
+        annotated_subject = Subject.objects.prefetch_active_periodobjects().first()
+        self.assertEqual([testperiod],
+                         annotated_subject.active_period_objects)
+
+    def test_has_multiple_active_periods_ordering(self):
+        testsubject = mommy.make('core.Subject')
+        testperiod1 = mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject)
+        testperiod3 = mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject,
+                                        start_time=ACTIVE_PERIOD_START + timedelta(days=60))
+        testperiod2 = mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject,
+                                        start_time=ACTIVE_PERIOD_START + timedelta(days=30))
+        annotated_subject = Subject.objects.prefetch_active_periodobjects().first()
+        self.assertEqual([testperiod1, testperiod2, testperiod3],
+                         annotated_subject.active_period_objects)
+
+    def test_querycount(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject)
+        mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject,
+                          start_time=ACTIVE_PERIOD_START + timedelta(days=30))
+        mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject,
+                          start_time=ACTIVE_PERIOD_START + timedelta(days=60))
+        with self.assertNumQueries(2):
+            annotated_subject = Subject.objects.prefetch_active_periodobjects().first()
+            str(annotated_subject.active_period_objects[0].short_name)
+            str(annotated_subject.active_period_objects[1].short_name)
+            str(annotated_subject.active_period_objects[2].short_name)
+
+    def test_last_active_period_not_using_prefetch_active_periodobjects(self):
+        testsubject = mommy.make('core.Subject')
+        with self.assertRaisesMessage(AttributeError,
+                                      'The last_active_period property requires '
+                                      'SubjectQuerySet.prefetch_active_periodobjects()'):
+            str(testsubject.last_active_period)
+
+    def test_last_active_period(self):
+        testsubject = mommy.make('core.Subject')
+        mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject)
+        testperiod3 = mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject,
+                                        start_time=ACTIVE_PERIOD_START + timedelta(days=60))
+        mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject,
+                          start_time=ACTIVE_PERIOD_START + timedelta(days=30))
+        annotated_subject = Subject.objects.prefetch_active_periodobjects().first()
+        self.assertEqual(testperiod3, annotated_subject.last_active_period)

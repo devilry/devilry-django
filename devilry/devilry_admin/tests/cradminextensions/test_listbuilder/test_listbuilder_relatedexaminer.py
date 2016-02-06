@@ -6,6 +6,43 @@ from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedexaminer
 
 
+class TestOnPeriodItemValue(test.TestCase):
+    def test_title_without_fullname(self):
+        relatedstudent = mommy.make('core.RelatedExaminer',
+                                    user__shortname='test@example.com',
+                                    user__fullname='')
+        selector = htmls.S(listbuilder_relatedexaminer.OnPeriodItemValue(value=relatedstudent).render())
+        self.assertEqual(
+            'test@example.com',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_title_with_fullname(self):
+        relatedstudent = mommy.make('core.RelatedExaminer',
+                                    user__fullname='Test User',
+                                    user__shortname='test@example.com')
+        selector = htmls.S(listbuilder_relatedexaminer.OnPeriodItemValue(value=relatedstudent).render())
+        self.assertEqual(
+            'Test User',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_description_without_fullname(self):
+        relatedstudent = mommy.make('core.RelatedExaminer',
+                                    user__shortname='test@example.com',
+                                    user__fullname='')
+        selector = htmls.S(listbuilder_relatedexaminer.OnPeriodItemValue(value=relatedstudent).render())
+        self.assertFalse(
+            selector.exists('.django-cradmin-listbuilder-itemvalue-titledescription-description'))
+
+    def test_description_with_fullname(self):
+        relatedstudent = mommy.make('core.RelatedExaminer',
+                                    user__fullname='Test User',
+                                    user__shortname='test@example.com')
+        selector = htmls.S(listbuilder_relatedexaminer.OnPeriodItemValue(value=relatedstudent).render())
+        self.assertEqual(
+            'test@example.com',
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+
+
 class TestOnassignmentItemValue(test.TestCase):
     def __annotate_relatedexaminer(self, relatedexaminer, assignment):
         return RelatedExaminer.objects\
