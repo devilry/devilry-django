@@ -1,7 +1,6 @@
 from django import test
 from django.conf import settings
 from django_cradmin import cradmin_testhelpers
-from django_cradmin.crinstance import reverse_cradmin_url
 from model_mommy import mommy
 
 from devilry.devilry_student.views.dashboard import allperiods
@@ -66,42 +65,6 @@ class TestAllPeriodsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 1,
                 self.__get_period_count(selector=mockresponse.selector))
 
-
-    # def test_not_student_on_anything(self):
-    #     PeriodBuilder.quickadd_ducku_duck1010_active()
-    #     response = self._get_as('testuser')
-    #     self.assertEquals(response.status_code, 200)
-    #     selector = htmls.S(response.content)
-    #     self.assertEquals(selector.count('#objecttableview-table tbody tr'), 0)
-    #
-    # def test_is_relatedstudent(self):
-    #     PeriodBuilder.quickadd_ducku_duck1010_active()\
-    #         .add_relatedstudents(self.testuser)
-    #     response = self._get_as('testuser')
-    #     self.assertEquals(response.status_code, 200)
-    #     selector = htmls.S(response.content)
-    #     self.assertEquals(selector.count('#objecttableview-table tbody tr'), 1)
-    #
-    # def test_render(self):
-    #     periodbuilder = NodeBuilder.quickadd_ducku()\
-    #         .add_subject(short_name='atestcourse', long_name='A Test Course')\
-    #         .add_6month_active_period(short_name='testperiod', long_name='Test Period')\
-    #         .add_relatedstudents(self.testuser)
-    #     response = self._get_as('testuser')
-    #     self.assertEquals(response.status_code, 200)
-    #     selector = htmls.S(response.content)
-    #     self.assertEquals(selector.count('#objecttableview-table tbody tr'), 1)
-    #
-    #     self.assertEquals(
-    #         selector.one('#objecttableview-table tbody tr td:nth-child(1)').alltext_normalized,
-    #         'A Test Course - Test Period')
-    #     self.assertEquals(
-    #         selector.one('#objecttableview-table tbody tr td:nth-child(1) a')['href'],
-    #         crinstance.reverse_cradmin_url(
-    #             instanceid='devilry_student_period',
-    #             appname='assignments',
-    #             roleid=periodbuilder.period.id))
-    #
     # def test_qualifies_for_final_exam_qualified(self):
     #     periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
     #         .add_relatedstudents(self.testuser)

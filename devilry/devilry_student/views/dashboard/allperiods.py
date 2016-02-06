@@ -6,47 +6,6 @@ from django_cradmin.viewhelpers import listfilter
 from devilry.apps.core import models as coremodels
 
 
-# class PeriodInfoColumn(objecttable.SingleActionColumn):
-#     """
-#     Period info column used for tablets and desktop devices.
-#     """
-#     modelfield = 'id'
-#     normalcells_css_classes = ['objecttable-cell-flat-paragraphs']
-#     template_name = 'devilry_student/cradmin_student/allperiodsapp/periodinfo-column.django.html'
-#     context_object_name = 'period'
-#
-#     def get_orderby_args(self, order_ascending):
-#         if order_ascending:
-#             return ['parentnode__long_name', 'long_name']
-#         else:
-#             return ['-parentnode__long_name', '-long_name']
-#
-#     def is_sortable(self):
-#         return True
-#
-#     def get_context_data(self, obj):
-#         context = super(PeriodInfoColumn, self).get_context_data(obj=obj)
-#         context['is_active'] = obj.is_active()
-#         return context
-#
-#     def get_default_order_is_ascending(self):
-#         return None
-#
-#     def get_header(self):
-#         return _('Course')
-#
-#     def render_value(self, period):
-#         return u'{} - {}'.format(
-#             period.subject.long_name,
-#             period.long_name)
-#
-#     def get_actionurl(self, period):
-#         return crinstance.reverse_cradmin_url(
-#             instanceid='devilry_student_period',
-#             appname='assignments',
-#             roleid=period.id)
-
-
 class AllPeriodsView(listbuilderview.FilterListMixin, listbuilderview.View):
     model = coremodels.Period
     template_name = 'devilry_student/cradmin_student/allperiods/allperiods.django.html'
