@@ -22,8 +22,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_title(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Candidate', relatedstudent__user=testuser)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testuser,
-                                                          requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertIn(
                 'Student dashboard',
                 mockresponse.selector.one('title').alltext_normalized)
@@ -31,8 +30,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_h1(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Candidate', relatedstudent__user=testuser)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testuser,
-                                                          requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 'Student dashboard',
                 mockresponse.selector.one('h1').alltext_normalized)
@@ -40,8 +38,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_page_subheader(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Candidate', relatedstudent__user=testuser)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testuser,
-                                                          requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 'Welcome! Please select an assignment below to add deliveries, '
                 'view feedback or communicate with you examiner.',
@@ -53,8 +50,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_not_assignments_where_not_student(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testuser,
-                                                          requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 0,
                 self.__test_assignment_count(selector=mockresponse.selector))
@@ -64,8 +60,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Candidate',
                    relatedstudent__user=testuser,
                    assignment_group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_futureperiod_start'))
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testuser,
-                                                          requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 0,
                 self.__test_assignment_count(selector=mockresponse.selector))
@@ -75,8 +70,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Candidate',
                    relatedstudent__user=testuser,
                    assignment_group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_oldperiod_end'))
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testuser,
-                                                          requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 0,
                 self.__test_assignment_count(selector=mockresponse.selector))
@@ -85,8 +79,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Candidate', relatedstudent__user=testuser,
                    assignment_group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testuser,
-                                                          requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 1,
                 self.__test_assignment_count(selector=mockresponse.selector))
@@ -96,8 +89,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testcandidate = mommy.make('core.Candidate', relatedstudent__user=testuser,
                                    assignment_group__parentnode=testassignment)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testuser,
-                                                          requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 reverse_cradmin_url(
                         instanceid='devilry_group_student',
@@ -114,7 +106,6 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    assignment_group__parentnode=mommy.make_recipe(
                            'devilry.apps.core.assignment_activeperiod_start'))
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testuser,
                 viewkwargs={'filters_string': 'search-nomatch'},
                 requestuser=testuser)
         self.assertEqual(
@@ -129,7 +120,6 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                            'devilry.apps.core.assignment_activeperiod_start',
                            parentnode__parentnode__short_name='testsubject'))
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testuser,
                 viewkwargs={'filters_string': 'search-testsubject'},
                 requestuser=testuser)
         self.assertEqual(
@@ -144,7 +134,6 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                            'devilry.apps.core.assignment_activeperiod_start',
                            parentnode__parentnode__long_name='Testsubject'))
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testuser,
                 viewkwargs={'filters_string': 'search-Testsubject'},
                 requestuser=testuser)
         self.assertEqual(
@@ -159,7 +148,6 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                            'devilry.apps.core.assignment_activeperiod_start',
                            parentnode__short_name='testperiod'))
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testuser,
                 viewkwargs={'filters_string': 'search-testperiod'},
                 requestuser=testuser)
         self.assertEqual(
@@ -174,7 +162,6 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                            'devilry.apps.core.assignment_activeperiod_start',
                            parentnode__long_name='Testperiod'))
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testuser,
                 viewkwargs={'filters_string': 'search-Testperiod'},
                 requestuser=testuser)
         self.assertEqual(
@@ -189,7 +176,6 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                            'devilry.apps.core.assignment_activeperiod_start',
                            short_name='testassignment'))
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testuser,
                 viewkwargs={'filters_string': 'search-testassignment'},
                 requestuser=testuser)
         self.assertEqual(
@@ -204,7 +190,6 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                            'devilry.apps.core.assignment_activeperiod_start',
                            long_name='Testassignment'))
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testuser,
                 viewkwargs={'filters_string': 'search-Testassignment'},
                 requestuser=testuser)
         self.assertEqual(
@@ -246,7 +231,6 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                            first_deadline=ACTIVE_PERIOD_START + timedelta(days=2),
                            parentnode=testperiod2))
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_role=testuser,
                 requestuser=testuser)
         self.assertEqual(
                 [
@@ -412,8 +396,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             devilry_group_mommy_factories.feedbackset_first_attempt_published(
                 group=group, grading_points=1)
         with self.assertNumQueries(1):
-            self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                               requestuser=testuser)
+            self.mock_http200_getrequest_htmls(requestuser=testuser)
 
     def test_querycount_points_to_grade_mapper_custom_table(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL,
@@ -447,5 +430,4 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             devilry_group_mommy_factories.feedbackset_first_attempt_published(
                 group=group, grading_points=3)
         with self.assertNumQueries(1):
-            self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
-                                               requestuser=testuser)
+            self.mock_http200_getrequest_htmls(requestuser=testuser)
