@@ -1,8 +1,10 @@
-from django.contrib.auth import get_user_model
+import re
+
 from django_cradmin import crmenu
 
-from devilry.devilry_student.views.dashboard import allperiodsapp
 from devilry.devilry_student.cradminextensions import studentcrinstance
+from devilry.devilry_student.views.dashboard import dashboard
+from devilry.devilry_student.views.dashboard import allperiodsapp
 
 
 class Menu(crmenu.Menu):
@@ -29,23 +31,28 @@ class Menu(crmenu.Menu):
 class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     id = 'devilry_student'
     menuclass = Menu
-    roleclass = get_user_model()
-    rolefrontpage_appname = 'waitingfordeliveries'
+    rolefrontpage_appname = 'dashboard'
+    flatten_rolefrontpage_url = True
 
     apps = [
+        ('dashboard', dashboard.App),
         ('allperiods', allperiodsapp.App),
     ]
 
-    def get_rolequeryset(self):
-        return get_user_model().objects.filter(id=self.request.user.id)
+    def has_access(self):
+        """
+        We give any user access to this instance, including unauthenticated users.
+        """
+        return self.request.user.is_authenticated()
 
     def get_titletext_for_role(self, role):
         """
         Get a short title briefly describing the given ``role``.
         Remember that the role is a User.
         """
-        return str(role.id)
+        return str(role)
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return urlpath.startswith('/devilry_student/')
+        return re.match('^/devilry_student/$', urlpath) or \
+            re.match('^/devilry_student/filter/.*$', urlpath)
