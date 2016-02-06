@@ -26,17 +26,24 @@ class PeriodQuerySet(models.QuerySet):
 
     def filter_user_is_relatedstudent(self, user):
         """
-        See :meth:`.PeriodManager.filter_user_is_relatedstudent`.
+        Filter only periods where the given user is relatedstudent.
         """
         queryset = self.filter(relatedstudent__user=user)
         return queryset.distinct()
 
     def filter_active(self):
         """
-        See :meth:`.PeriodManager.filter_active`.
+        Filter only active periods.
         """
         now = datetime.now()
         return self.filter(start_time__lt=now, end_time__gt=now)
+
+    def filter_has_started(self):
+        """
+        Filter only started periods.
+        """
+        now = datetime.now()
+        return self.filter(start_time__lt=now)
 
     def filter_user_is_admin(self, user):
         """

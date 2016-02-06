@@ -17,15 +17,24 @@ from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 
 
-class TestPeriodManager(TestCase):
+class TestPeriodQuerySetFilterActive(TestCase):
     def test_filter_active(self):
-        subjectbuilder = SubjectBuilder.quickadd_ducku_duck1010()
-        active = subjectbuilder.add_6month_active_period().period
-        subjectbuilder.add_6month_lastyear_period()
-        subjectbuilder.add_6month_nextyear_period()
+        mommy.make_recipe('devilry.apps.core.period_old')
+        active_period = mommy.make_recipe('devilry.apps.core.period_active')
+        mommy.make_recipe('devilry.apps.core.period_future')
         self.assertEquals(
-            list(Period.objects.filter_active()),
-            [active])
+                set(Period.objects.filter_active()),
+                {active_period})
+
+
+class TestPeriodQuerySetFilterHasStarted(TestCase):
+    def test_filter_active(self):
+        old_period = mommy.make_recipe('devilry.apps.core.period_old')
+        active_period = mommy.make_recipe('devilry.apps.core.period_active')
+        mommy.make_recipe('devilry.apps.core.period_future')
+        self.assertEquals(
+                set(Period.objects.filter_has_started()),
+                {old_period, active_period})
 
 
 class TestPeriodManagerQualifiesForExam(TestCase):
