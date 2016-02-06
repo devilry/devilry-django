@@ -144,4 +144,3 @@ class TestFeedbackfeedExaminerDiscuss(test_feedbackfeed_examiner.TestFeedbackfee
         self.assertEquals(len(comments), 1)
         self.assertNotEquals(feedbackset_first, comments[0].feedback_set)
         self.assertEquals(feedbackset_last, comments[0].feedback_set)
-
