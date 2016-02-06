@@ -1,5 +1,6 @@
 {% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
 {% load i18n %}
+{% load cradmin_tags %}
 
 {% block pageheader-inner %}
     {{ block.super }}
@@ -7,3 +8,15 @@
         {% trans "Welcome! Please select an assignment below to add deliveries, view feedback or communicate with you examiner." %}
     </p>
 {% endblock pageheader-inner %}
+
+
+{% block content %}
+    {{ block.super }}
+    <div class="container">
+        <a href="{% cradmin_instance_url appname='allperiods' viewname='INDEX' %}"
+                id="devilry_student_dashboard_allperiods_link"
+                class="btn btn-default">
+            {% trans "Browse all assignments and courses" %}
+        </a>
+    </div>
+{% endblock content %}

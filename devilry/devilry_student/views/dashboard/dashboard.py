@@ -70,11 +70,13 @@ class DashboardView(listbuilderview.FilterListMixin,
             .annotate_with_number_of_imageannotationcomments_from_students()\
             .annotate_with_number_of_imageannotationcomments_from_examiners()\
             .distinct()\
-            .order_by('-parentnode__first_deadline', '-parentnode__publishing_time')\
+            .order_by('-parentnode__first_deadline', '-parentnode__publishing_time')
 
     def get_no_items_message(self):
         return pgettext_lazy('student dashboard',
-                             'You have no active assignments. Use the button below to browse inactive assignments and courses')
+                             'You have no active assignments. Use the button below to '
+                             'browse inactive assignments and courses')
+
 
 class App(crapp.App):
     appurls = [

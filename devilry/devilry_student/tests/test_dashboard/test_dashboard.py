@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from datetime import timedelta
 
+import mock
 from django import test
 from django.conf import settings
 from django.utils import timezone
@@ -391,6 +392,33 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.one(
                         '.devilry-cradmin-groupitemvalue '
                         '.devilry-cradmin-groupitemvalue-comments').alltext_normalized)
+
+    def test_allperiods_link_label(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                requestuser=testuser)
+        self.assertEqual(
+                'Browse all assignments and courses',
+                mockresponse.selector.one('#devilry_student_dashboard_allperiods_link').alltext_normalized)
+
+    def test_link_urls(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                requestuser=testuser)
+        self.assertEqual(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(
+                mock.call(appname='allperiods', args=(), viewname='INDEX', kwargs={}),
+                mockresponse.request.cradmin_instance.reverse_url.call_args_list[0])
 
     def test_querycount(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
