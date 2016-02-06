@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from django_cradmin import crinstance
 
 from devilry.devilry_student.views.group.projectgroupapp import GroupInviteRespondView
-from devilry.devilry_student.views.dashboard import crinstance_dashboaard
+from devilry.devilry_student.views.dashboard import crinstance_dashboard
 from devilry.devilry_student.views.period import cradmin_period
 
 @login_required
@@ -27,5 +27,5 @@ urlpatterns = patterns(
         name='devilry_student_show_delivery'),
 
     url(r'^period/', include(cradmin_period.CrAdminInstance.urls())),
-    url(r'^', include(crinstance_dashboaard.CrAdminInstance.urls()))
+    url(r'^', include(crinstance_dashboard.CrAdminInstance.urls()))
 )
