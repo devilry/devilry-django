@@ -83,7 +83,8 @@ class AssignmentListView(listbuilderview.FilterListMixin,
     def get_unfiltered_queryset_for_role(self, role):
         return coremodels.Assignment.objects\
             .filter_examiner_has_access(user=self.request.user)\
-            .annotate_with_waiting_for_feedback_count()
+            .annotate_with_waiting_for_feedback_count()\
+            .select_related('parentnode', 'parentnode__parentnode')
 
 
 class App(crapp.App):
