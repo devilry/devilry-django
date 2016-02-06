@@ -1,9 +1,7 @@
 import re
 
-from django.contrib.auth import get_user_model
 from django_cradmin import crinstance
 
-from devilry.devilry_account.models import User
 from devilry.devilry_examiner.cradminextensions import devilry_crmenu_examiner
 from devilry.devilry_examiner.views.dashboard import assignmentlist
 
