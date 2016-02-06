@@ -5,7 +5,7 @@
 {% block pageheader-inner %}
     {{ block.super }}
     <p class="devilry-page-subheader">
-        {% trans "Welcome! Please select an assignment below to add deliveries, view feedback or communicate with you examiner." %}
+        {% trans "Welcome! Please select an assignment below to add deliveries, view feedback or communicate with you examiner." context "student dashboard" %}
     </p>
 {% endblock pageheader-inner %}
 
@@ -16,7 +16,7 @@
         <a href="{% cradmin_instance_url appname='allperiods' viewname='INDEX' %}"
                 id="devilry_student_dashboard_allperiods_link"
                 class="btn btn-default">
-            {% trans "Browse all assignments and courses" %}
+            {% trans "Browse all assignments and courses" context "student dashboard" %}
         </a>
     </div>
 {% endblock content %}
