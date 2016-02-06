@@ -5,7 +5,7 @@ from django_cradmin import crinstance
 
 from devilry.devilry_student.views.group.projectgroupapp import GroupInviteRespondView
 from devilry.devilry_student.views.dashboard import crinstance_dashboard
-from devilry.devilry_student.views.period import cradmin_period
+from devilry.devilry_student.views.period import crinstance_period
 
 @login_required
 def redirect_to_student_frontpage_view(request):
@@ -26,6 +26,6 @@ urlpatterns = patterns(
     url(r'^show_delivery/(?P<delivery_id>\d+)$', 'views.show_delivery.show_delivery',
         name='devilry_student_show_delivery'),
 
-    url(r'^period/', include(cradmin_period.CrAdminInstance.urls())),
+    url(r'^period/', include(crinstance_period.CrAdminInstance.urls())),
     url(r'^', include(crinstance_dashboard.CrAdminInstance.urls()))
 )
