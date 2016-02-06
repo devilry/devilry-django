@@ -15,7 +15,7 @@ class TestAllPeriods(TestCase):
     def _get_as(self, username):
         self.client.login(username=username, password='test')
         return self.client.get(reverse_cradmin_url(
-            'devilry_student', 'allperiods', roleid=self.testuser.id))
+            'devilry_student', 'allperiods'))
 
     def test_not_student_on_anything(self):
         PeriodBuilder.quickadd_ducku_duck1010_active()

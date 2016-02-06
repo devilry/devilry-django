@@ -10,14 +10,15 @@ from devilry.devilry_student.cradminextensions import studentcrinstance
 
 class Menu(crmenu.Menu):
     def build_menu(self):
-        self.add_headeritem(
-            label=_('Browse all'),
-            url=reverse_cradmin_url(
-                'devilry_student', 'allperiods', roleid=self.request.user.id),)
-        self.add(
-            label=_('Assignments'),
-            url=self.appindex_url('assignments'),
-            active=self.request.cradmin_app.appname == 'assignments')
+        # self.add_headeritem(
+        #     label=_('Browse all'),
+        #     url=reverse_cradmin_url(
+        #         'devilry_student', 'allperiods', roleid=self.request.user.id),)
+        # self.add(
+        #     label=_('Assignments'),
+        #     url=self.appindex_url('assignments'),
+        #     active=self.request.cradmin_app.appname == 'assignments')
+        pass
 
 
 def does_not_exist_view(request):

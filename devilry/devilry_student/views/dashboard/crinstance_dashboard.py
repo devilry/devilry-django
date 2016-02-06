@@ -55,4 +55,5 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     @classmethod
     def matches_urlpath(cls, urlpath):
         return re.match('^/devilry_student/$', urlpath) or \
+            re.match('^/devilry_student/allperiods/$', urlpath) or \
             re.match('^/devilry_student/filter/.*$', urlpath)
