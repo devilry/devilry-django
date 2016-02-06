@@ -58,7 +58,6 @@ def feedbackset_first_attempt_unpublished(**kwargs):
     using ``mommy.make('devilry_group.FeedbackSet)``.
 
     Args:
-        grading_published_datetime: The ``grading_published_datetime`` of the feedbackset.
         kwargs: Other attributes for FeedbackSet.
 
     Returns:
@@ -75,7 +74,6 @@ def feedbackset_new_attempt_unpublished(**kwargs):
     using ``mommy.make('devilry_group.FeedbackSet)``.
 
     Args:
-        grading_published_datetime: The ``grading_published_datetime`` of the feedbackset.
         kwargs: Other attributes for FeedbackSet.
 
     Returns:
