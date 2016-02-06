@@ -2,12 +2,17 @@ from datetime import timedelta
 
 from django import test
 from django.conf import settings
+from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 from model_mommy import mommy
 
+from devilry.apps.core.models import Assignment
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START
+from devilry.devilry_comment.models import Comment
+from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group.models import GroupComment
 from devilry.devilry_student.views.dashboard import dashboard
 
 
@@ -250,3 +255,197 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                     'testsubject1.testperiod - Assignment 1',
                 ],
                 self.__get_assignment_titles(mockresponse.selector))
+
+    def test_grouplist_title_sanity(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                       'devilry.apps.core.assignment_activeperiod_start',
+                                       parentnode__parentnode__short_name='testsubject',
+                                       parentnode__short_name='testperiod',
+                                       long_name='Test Assignment'))
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                requestuser=testuser)
+        self.assertEqual(
+            'testsubject.testperiod - Test Assignment',
+            mockresponse.selector.one(
+                    '.devilry-cradmin-groupitemvalue '
+                    '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized
+        )
+
+    def test_grouplist_no_examiners(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group=testgroup)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                requestuser=testuser)
+        self.assertTrue(
+            mockresponse.selector.exists('.devilry-cradmin-groupitemvalue'))
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-cradmin-groupitemvalue-examiners'))
+
+    def test_grouplist_status_waiting_for_deliveries_sanity(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group=testgroup)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup, grading_points=3, is_last_in_group=False)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup, is_last_in_group=True,
+            deadline_datetime=timezone.now() + timedelta(days=2))
+        mockresponse = self.mock_http200_getrequest_htmls(
+                requestuser=testuser)
+        self.assertFalse(
+                mockresponse.selector.exists(
+                        '.devilry-cradmin-groupitemvalue '
+                        '.devilry-cradmin-groupitemvalue-grade'))
+        self.assertEqual(
+                'Status: waiting for deliveries',
+                mockresponse.selector.one(
+                        '.devilry-cradmin-groupitemvalue '
+                        '.devilry-cradmin-groupitemvalue-status').alltext_normalized)
+
+    def test_grouplist_status_waiting_for_feedback_sanity(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group=testgroup)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup, grading_points=3, is_last_in_group=False)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup, is_last_in_group=True,
+            deadline_datetime=timezone.now() - timedelta(days=2))
+        mockresponse = self.mock_http200_getrequest_htmls(
+                requestuser=testuser)
+        self.assertFalse(
+                mockresponse.selector.exists(
+                        '.devilry-cradmin-groupitemvalue '
+                        '.devilry-cradmin-groupitemvalue-grade'))
+        self.assertEqual(
+                'Status: waiting for feedback',
+                mockresponse.selector.one(
+                        '.devilry-cradmin-groupitemvalue '
+                        '.devilry-cradmin-groupitemvalue-status').alltext_normalized)
+
+    def test_grouplist_status_corrected_show_grade_sanity(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group=testgroup)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup, grading_points=3, is_last_in_group=False)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=testgroup, is_last_in_group=True, grading_points=2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                requestuser=testuser)
+        self.assertFalse(
+                mockresponse.selector.exists(
+                        '.devilry-cradmin-groupitemvalue '
+                        '.devilry-cradmin-groupitemvalue-status'))
+        self.assertEqual(
+                'Grade: passed',
+                mockresponse.selector.one(
+                        '.devilry-cradmin-groupitemvalue '
+                        '.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+    def test_grouplist_comments_sanity(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group=testgroup)
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   _quantity=2)
+        mommy.make('devilry_comment.CommentFile',
+                   comment=mommy.make('devilry_group.GroupComment',
+                                      feedback_set=feedbackset,
+                                      visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                                      user_role=Comment.USER_ROLE_STUDENT))
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   _quantity=5)
+        mommy.make('devilry_group.GroupComment',  # Should not be part of count
+                   feedback_set=feedbackset,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                   user_role=Comment.USER_ROLE_EXAMINER)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                requestuser=testuser)
+        self.assertEqual(
+                '3 comments from student. 1 file from student. 5 comments from examiner.',
+                mockresponse.selector.one(
+                        '.devilry-cradmin-groupitemvalue '
+                        '.devilry-cradmin-groupitemvalue-comments').alltext_normalized)
+
+    def test_querycount(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        for number in range(30):
+            group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            mommy.make('core.Examiner',
+                       assignmentgroup=group)
+            mommy.make('core.Candidate',
+                       relatedstudent__user=testuser,
+                       assignment_group=group)
+            devilry_group_mommy_factories.feedbackset_first_attempt_published(
+                group=group, grading_points=1)
+        with self.assertNumQueries(1):
+            self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
+                                               requestuser=testuser)
+
+    def test_querycount_points_to_grade_mapper_custom_table(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL,
+                              fullname='testuser')
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
+        point_to_grade_map = mommy.make('core.PointToGradeMap',
+                                        assignment=testassignment, invalid=False)
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=0,
+                   maximum_points=10,
+                   grade='Bad')
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=11,
+                   maximum_points=70,
+                   grade='Ok')
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=71,
+                   maximum_points=100,
+                   grade='Best')
+        for number in range(30):
+            group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            mommy.make('core.Examiner',
+                       assignmentgroup=group)
+            mommy.make('core.Candidate',
+                       relatedstudent__user__fullname='candidate{}'.format(number),
+                       assignment_group=group)
+            devilry_group_mommy_factories.feedbackset_first_attempt_published(
+                group=group, grading_points=3)
+        with self.assertNumQueries(1):
+            self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
+                                               requestuser=testuser)

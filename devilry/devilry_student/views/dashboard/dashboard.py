@@ -63,8 +63,18 @@ class DashboardView(listbuilderview.FilterListMixin,
         return coremodels.AssignmentGroup.objects\
             .filter_student_has_access(user=self.request.user)\
             .filter_is_active()\
-            .select_related('parentnode', 'parentnode__parentnode')\
-            .order_by('-parentnode__first_deadline', '-parentnode__publishing_time')
+            .select_related('parentnode__parentnode__parentnode')\
+            .annotate_with_grading_points()\
+            .annotate_with_is_waiting_for_feedback()\
+            .annotate_with_is_waiting_for_deliveries()\
+            .annotate_with_is_corrected()\
+            .annotate_with_number_of_commentfiles_from_students()\
+            .annotate_with_number_of_groupcomments_from_students()\
+            .annotate_with_number_of_groupcomments_from_examiners()\
+            .annotate_with_number_of_imageannotationcomments_from_students()\
+            .annotate_with_number_of_imageannotationcomments_from_examiners()\
+            .distinct()\
+            .order_by('-parentnode__first_deadline', '-parentnode__publishing_time')\
 
 
 class App(crapp.App):
