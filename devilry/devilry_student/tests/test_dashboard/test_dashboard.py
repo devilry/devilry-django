@@ -1,6 +1,5 @@
 from datetime import timedelta
 
-import htmls
 from django import test
 from django.conf import settings
 from django_cradmin import cradmin_testhelpers
@@ -10,44 +9,6 @@ from model_mommy import mommy
 
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START
 from devilry.devilry_student.views.dashboard import dashboard
-
-
-class TestGroupItemValue(test.TestCase):
-    def test_title(self):
-        assignment = mommy.make('core.Assignment',
-                                parentnode__parentnode__short_name='testsubject',
-                                parentnode__short_name='testperiod',
-                                long_name='Assignment One')
-        mommy.make('core.AssignmentGroup', parentnode=assignment)
-        assignment.waiting_for_feedback_count = 0
-        selector = htmls.S(dashboard.GroupItemValue(value=assignment).render())
-        self.assertEqual(
-                'testsubject.testperiod - Assignment One',
-                selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
-
-    # def test_description_none_waiting_for_feedback(self):
-    #     assignment = mommy.make('core.Assignment')
-    #     assignment.waiting_for_feedback_count = 0
-    #     selector = htmls.S(dashboard.GroupItemValue(value=assignment).render())
-    #     self.assertEqual(
-    #             'Nobody waiting for feedback',
-    #             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
-    #     self.assertTrue(
-    #             selector.exists('.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-muted'))
-    #     self.assertFalse(
-    #             selector.exists('.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning'))
-    #
-    # def test_description_waiting_for_feedback(self):
-    #     assignment = mommy.make('core.Assignment')
-    #     assignment.waiting_for_feedback_count = 11
-    #     selector = htmls.S(dashboard.GroupItemValue(value=assignment).render())
-    #     self.assertEqual(
-    #             '11 waiting for feedback',
-    #             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
-    #     self.assertTrue(
-    #             selector.exists('.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning'))
-    #     self.assertFalse(
-    #             selector.exists('.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-muted'))
 
 
 class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -82,7 +43,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.one('.devilry-page-subheader').alltext_normalized)
 
     def __test_assignment_count(self, selector):
-        return selector.count('.devilry-student-listbuilder-grouplist-itemvalue')
+        return selector.count('.devilry-cradmin-groupitemvalue')
 
     def test_not_assignments_where_not_student(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -247,7 +208,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def __get_assignment_titles(self, selector):
         return [element.alltext_normalized
-                for element in selector.list('.devilry-student-listbuilder-grouplist-itemvalue '
+                for element in selector.list('.devilry-cradmin-groupitemvalue '
                                              '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
 
     def test_grouplist_orderby(self):

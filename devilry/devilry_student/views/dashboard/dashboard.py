@@ -12,30 +12,6 @@ from devilry.devilry_cradmin import devilry_listfilter
 from devilry.devilry_cradmin import devilry_listbuilder
 
 
-class GroupItemValue(listbuilder.itemvalue.TitleDescription):
-    valuealias = 'group'
-
-    def get_title(self):
-        return u'{} - {}'.format(self.group.period.get_path(), self.group.assignment.long_name)
-
-    def get_description(self):
-        pass
-        # if self.group.waiting_for_feedback_count > 0:
-        #     return ugettext_lazy('%(waiting_for_feedback_count)s waiting for feedback') % {
-        #         'waiting_for_feedback_count': self.group.waiting_for_feedback_count
-        #     }
-        # else:
-        #     return ugettext_lazy('Nobody waiting for feedback')
-
-    def get_extra_css_classes_list(self):
-        css_classes = ['devilry-student-listbuilder-grouplist-itemvalue']
-        # if self.group.waiting_for_feedback_count > 0:
-        #     css_classes.append('devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning')
-        # else:
-        #     css_classes.append('devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-muted')
-        return css_classes
-
-
 class GroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
     valuealias = 'group'
 
@@ -54,7 +30,7 @@ class GroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
 class DashboardView(listbuilderview.FilterListMixin,
                     listbuilderview.View):
     model = coremodels.Assignment
-    value_renderer_class = GroupItemValue
+    value_renderer_class = devilry_listbuilder.assignmentgroup.StudentItemValue
     frame_renderer_class = GroupItemFrame
 
     def get_filterlist_template_name(self):
