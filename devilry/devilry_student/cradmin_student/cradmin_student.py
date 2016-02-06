@@ -1,32 +1,29 @@
 from django.contrib.auth import get_user_model
-from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crmenu
 
-from devilry.devilry_student.cradminextensions import studentcrinstance
-from devilry.devilry_student.cradmin_student import waitingfordeliveriesapp
-from devilry.devilry_student.cradmin_student import recentdeliveriesapp
-from devilry.devilry_student.cradmin_student import recentfeedbacksapp
 from devilry.devilry_student.cradmin_student import allperiodsapp
+from devilry.devilry_student.cradminextensions import studentcrinstance
 
 
 class Menu(crmenu.Menu):
     def build_menu(self):
-        self.add(
-            label=_('Add delivery'),
-            url=self.appindex_url('waitingfordeliveries'),
-            active=self.request.cradmin_app.appname == 'waitingfordeliveries')
-        self.add(
-            label=_('Recent deliveries'),
-            url=self.appindex_url('recentdeliveries'),
-            active=self.request.cradmin_app.appname == 'recentdeliveries')
-        self.add(
-            label=_('Recent feedbacks'),
-            url=self.appindex_url('recentfeedbacks'),
-            active=self.request.cradmin_app.appname == 'recentfeedbacks')
-        self.add(
-            label=_('Browse all'),
-            url=self.appindex_url('allperiods'),
-            active=self.request.cradmin_app.appname == 'allperiods')
+        # self.add(
+        #     label=_('Add delivery'),
+        #     url=self.appindex_url('waitingfordeliveries'),
+        #     active=self.request.cradmin_app.appname == 'waitingfordeliveries')
+        # self.add(
+        #     label=_('Recent deliveries'),
+        #     url=self.appindex_url('recentdeliveries'),
+        #     active=self.request.cradmin_app.appname == 'recentdeliveries')
+        # self.add(
+        #     label=_('Recent feedbacks'),
+        #     url=self.appindex_url('recentfeedbacks'),
+        #     active=self.request.cradmin_app.appname == 'recentfeedbacks')
+        # self.add(
+        #     label=_('Browse all'),
+        #     url=self.appindex_url('allperiods'),
+        #     active=self.request.cradmin_app.appname == 'allperiods')
+        pass
 
 
 class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
@@ -36,9 +33,6 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     rolefrontpage_appname = 'waitingfordeliveries'
 
     apps = [
-        ('waitingfordeliveries', waitingfordeliveriesapp.App),
-        ('recentdeliveries', recentdeliveriesapp.App),
-        ('recentfeedbacks', recentfeedbacksapp.App),
         ('allperiods', allperiodsapp.App),
     ]
 
