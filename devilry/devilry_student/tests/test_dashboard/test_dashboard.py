@@ -44,7 +44,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'view feedback or communicate with you examiner.',
                 mockresponse.selector.one('.devilry-page-subheader').alltext_normalized)
 
-    def __test_assignment_count(self, selector):
+    def __get_assignment_count(self, selector):
         return selector.count('.devilry-cradmin-groupitemvalue')
 
     def test_not_assignments_where_not_student(self):
@@ -53,7 +53,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 0,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_not_future_periods(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -63,7 +63,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 0,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_not_old_periods(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -73,7 +73,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 0,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_include_active_periods(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -82,7 +82,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 1,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_assignment_url(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -110,7 +110,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
                 0,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_subject_short_name(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -124,7 +124,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
                 1,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_subject_long_name(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -138,7 +138,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
                 1,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_period_short_name(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -152,7 +152,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
                 1,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_period_long_name(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -166,7 +166,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
                 1,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_assignment_short_name(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -180,7 +180,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
                 1,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_assignment_long_name(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -194,7 +194,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
                 1,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def __get_assignment_titles(self, selector):
         return [element.alltext_normalized
