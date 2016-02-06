@@ -18,10 +18,11 @@ class LongNameColumn(objecttable.SingleActionColumn):
         return group.parentnode.long_name
 
     def get_actionurl(self, group):
-        return crinstance.reverse_cradmin_url(
-            instanceid='devilry_student_group',
-            appname='overview',
-            roleid=group.id)
+        # return crinstance.reverse_cradmin_url(
+        #     instanceid='devilry_student_group',
+        #     appname='overview',
+        #     roleid=group.id)
+        return '#'
 
     def is_sortable(self):
         return False

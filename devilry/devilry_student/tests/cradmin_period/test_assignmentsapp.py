@@ -48,12 +48,12 @@ class TestAssignmentGroupListView(TestCase):
         self.assertEquals(
             selector.one('#objecttableview-table tbody tr td:nth-child(1)').alltext_normalized,
             'Test Assignment')
-        self.assertEquals(
-            selector.one('#objecttableview-table tbody tr td:nth-child(1) a')['href'],
-            crinstance.reverse_cradmin_url(
-                instanceid='devilry_student_group',
-                appname='overview',
-                roleid=groupbuilder.group.id))
+        # self.assertEquals(
+        #     selector.one('#objecttableview-table tbody tr td:nth-child(1) a')['href'],
+        #     crinstance.reverse_cradmin_url(
+        #         instanceid='devilry_student_group',
+        #         appname='overview',
+        #         roleid=groupbuilder.group.id))
         # self.assertEquals(
         #     selector.one('#objecttableview-table tbody tr td:nth-child(2)').alltext_normalized,
         #     defaultfilters.date(deadline.deadline, 'SHORT_DATETIME_FORMAT'))

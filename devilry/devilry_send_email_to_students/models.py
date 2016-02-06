@@ -1,9 +1,9 @@
-from django.db.models.signals import post_save
+# from django.db.models.signals import post_save
 from django.core.urlresolvers import reverse
 from django.template.defaultfilters import filesizeformat
 
 from devilry.apps.core.models import StaticFeedback
-from devilry.devilry_student.cradmin_group.deliveriesapp import successful_delivery_signal
+# from devilry.devilry_student.cradmin_group.deliveriesapp import successful_delivery_signal
 from devilry.utils.devilry_email import send_message
 from devilry.defaults.encoding import CHARSET
 from devilry.utils.create_absolute_url import create_absolute_url
@@ -50,8 +50,8 @@ def on_new_staticfeedback(sender, **kwargs):
                                     **unicode_kw))
     send_message(email_subject, email_message, *user_list)
 
-post_save.connect(on_new_staticfeedback,
-                  sender=StaticFeedback, dispatch_uid='send_email_to_students_new_staticfeedback')
+# post_save.connect(on_new_staticfeedback,
+#                   sender=StaticFeedback, dispatch_uid='send_email_to_students_new_staticfeedback')
 
 
 def on_new_successful_delivery(sender, delivery, **kwargs):
@@ -88,4 +88,4 @@ def on_new_successful_delivery(sender, delivery, **kwargs):
                                      url = url))
     send_message(email_subject, email_message, *user_list)
 
-successful_delivery_signal.connect(on_new_successful_delivery, dispatch_uid='send_email_to_students_new_delivery')
+# successful_delivery_signal.connect(on_new_successful_delivery, dispatch_uid='send_email_to_students_new_delivery')
