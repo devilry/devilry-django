@@ -3,12 +3,10 @@ from __future__ import unicode_literals
 from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
-from django_cradmin.viewhelpers import listbuilder
 from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import listfilter
 
 from devilry.apps.core import models as coremodels
-from devilry.devilry_cradmin import devilry_listfilter
 from devilry.devilry_cradmin import devilry_listbuilder
 
 
@@ -32,9 +30,7 @@ class DashboardView(listbuilderview.FilterListMixin,
     model = coremodels.Assignment
     value_renderer_class = devilry_listbuilder.assignmentgroup.StudentItemValue
     frame_renderer_class = GroupItemFrame
-
-    def get_filterlist_template_name(self):
-        return 'devilry_student/dashboard/dashboard.django.html'
+    template_name = 'devilry_student/dashboard/dashboard.django.html'
 
     def get_pagetitle(self):
         return pgettext_lazy('student dashboard',
