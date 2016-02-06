@@ -3,9 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django_cradmin import crinstance
 
-from devilry.devilry_student.cradmin_group.projectgroupapp import GroupInviteRespondView
-from devilry.devilry_student.cradmin_student import cradmin_student
-from devilry.devilry_student.cradmin_period import cradmin_period
+from devilry.devilry_student.views.cradmin_group.projectgroupapp import GroupInviteRespondView
+from devilry.devilry_student.views.cradmin_student import cradmin_student
+from devilry.devilry_student.views.cradmin_period import cradmin_period
 
 @login_required
 def redirect_to_student_frontpage_view(request):

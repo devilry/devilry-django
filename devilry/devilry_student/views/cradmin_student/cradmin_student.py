@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django_cradmin import crmenu
 
-from devilry.devilry_student.cradmin_student import allperiodsapp
+from devilry.devilry_student.views.cradmin_student import allperiodsapp
 from devilry.devilry_student.cradminextensions import studentcrinstance
 
 
