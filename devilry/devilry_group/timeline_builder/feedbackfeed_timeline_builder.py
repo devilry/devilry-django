@@ -27,7 +27,7 @@ class FeedbackFeedTimelineBuilder(object):
                 timeline[comment.published_datetime] = []
 
             # Set the deadline related to the comment, this is the deadline the comments
-            # feedback_set uses. If it's the first try, the deadline is the assignments first_deadline
+            # feedback_set uses. If it's the first attempt, the deadline is the assignments first_deadline
             # else it's the feedback_sets deadline_datetime
             if comment.feedback_set.feedbackset_type == group_models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
                 comment_related_deadline = comment.feedback_set.group.assignment.first_deadline
@@ -39,6 +39,7 @@ class FeedbackFeedTimelineBuilder(object):
                 "obj": comment,
                 "related_deadline": comment_related_deadline
             })
+
         return timeline
 
     def add_announcements_to_timeline(self, group, feedbacksets, timeline):
@@ -74,7 +75,8 @@ class FeedbackFeedTimelineBuilder(object):
 
             if deadline_datetime is not None and deadline_datetime <= timezone.now():
                 timeline[deadline_datetime].append({
-                    "type": "deadline_expired"
+                    "type": "deadline_expired",
+                    "obj": deadline_datetime
                 })
 
             if feedbackset.created_datetime not in timeline.keys():

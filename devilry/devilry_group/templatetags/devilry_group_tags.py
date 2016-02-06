@@ -76,6 +76,10 @@ def devilry_verbosenumber(value, number):
         }[n]
 
 
+@register.filter("devilry_group_comment_published")
+def devilry_group_comment_published(comment):
+    return comment.get_published_datetime()
+
 @register.filter("devilry_group_markdown")
 def devilry_group_markdown(value):
     return parse_markdown.markdown_full(value)

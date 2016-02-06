@@ -90,8 +90,8 @@ class AbstractGroupComment(comment_models.Comment):
             if self.part_of_grading \
             else self.published_datetime
 
-    def publish_draft(self):
-        self.published_datetime = self.get_published_datetime()
+    def publish_draft(self, time):
+        self.published_datetime = time + timezone.timedelta(milliseconds=1)
         self.full_clean()
         self.save()
 
@@ -256,14 +256,17 @@ class FeedbackSet(models.Model):
             user=published_by
         ).order_by('created_datetime')
 
+        now = timezone.now()
+        now_without_seconds = now.replace(second=0, microsecond=0)
+        for modifier, draft in enumerate(drafted_comments):
+            draft.publish_draft(now_without_seconds+timezone.timedelta(milliseconds=modifier))
+
         self.grading_points = grading_points
-        self.grading_published_datetime = timezone.now()
+        self.grading_published_datetime = now_without_seconds + \
+                                          timezone.timedelta(milliseconds=drafted_comments.count()+1)
         self.grading_published_by = published_by
         self.full_clean()
         self.save()
-
-        for draft in drafted_comments:
-            draft.publish_draft()
 
         return True, ''
 

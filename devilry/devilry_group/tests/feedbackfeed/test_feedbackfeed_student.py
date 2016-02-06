@@ -136,23 +136,6 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertTrue(mockresponse.selector.one('.after-deadline-badge'))
         self.assertEquals(johndoe.relatedstudent.user.fullname, name)
 
-    # def test_get_feedbackfeed_student_can_see_admin_comment(self):
-    #     assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-    #     group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-    #     examiner = mommy.make('core.Examiner', assignmentgroup=group, user__fullname='Examiner')
-    #     candidate = mommy.make('core.Candidate', assignment_group=group, student__fullname='Student')
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet', group=group)
-    #     comment = mommy.make('devilry_group.GroupComment',
-    #                          user=examiner.user,
-    #                          user_role='examiner',
-    #                          instant_publish=True,
-    #                          visible_for_students=True,
-    #                          published_datetime=timezone.now(),
-    #                          feedback_set=feedbackset)
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-    #                                                       requestuser=candidate.student)
-    #     self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
-
     def test_get_feedbackfeed_student_can_see_examiner_visibility_visible_to_everyone(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         candidate = mommy.make('core.Candidate',
@@ -276,7 +259,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertEquals(0, len(group_models.GroupComment.objects.all()))
 
 
-class TestPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin):
+class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin):
     """
     Test what gets rendered and not rendered to student view of elements
     that belongs to publishing of feedbacksets.
