@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django_cradmin import crinstance
 
-from devilry.devilry_student.views.cradmin_group.projectgroupapp import GroupInviteRespondView
+from devilry.devilry_student.views.group.projectgroupapp import GroupInviteRespondView
 from devilry.devilry_student.views.dashboard import cradmin_student
 from devilry.devilry_student.views.period import cradmin_period
 
