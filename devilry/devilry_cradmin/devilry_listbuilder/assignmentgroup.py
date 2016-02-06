@@ -35,7 +35,6 @@ class ItemValueMixin(object):
                 in the ``"assignment"`` key.
         """
         super(ItemValueMixin, self).__init__(*args, **kwargs)
-        self._examiners = list(self.group.examiners.all())
 
     def get_devilryrole(self):
         raise NotImplementedError()
@@ -47,6 +46,8 @@ class ItemValueMixin(object):
         return self.kwargs['assignment']
 
     def get_examiners(self):
+        if not hasattr(self, '_examiners'):
+            self._examiners = list(self.group.examiners.all())
         return self._examiners
 
     def get_extra_css_classes_list(self):
