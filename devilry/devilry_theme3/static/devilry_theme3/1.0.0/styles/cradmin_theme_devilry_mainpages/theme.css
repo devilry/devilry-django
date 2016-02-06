@@ -6996,6 +6996,9 @@ h2 {
 h3 {
   font-size: 16px;
 }
+ol.django-cradmin-listbuilder-list {
+  margin-bottom: 15px;
+}
 ol.django-cradmin-listbuilder-list h2,
 ol.django-cradmin-listbuilder-list h3 {
   font-size: 19px;
