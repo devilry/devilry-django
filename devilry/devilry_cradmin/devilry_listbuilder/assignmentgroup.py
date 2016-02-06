@@ -57,6 +57,19 @@ class StudentItemValueMixin(ItemValueMixin):
     def get_devilryrole(self):
         return 'student'
 
+    def get_assignment(self):
+        # When listing for students, we always query for AssignmentGroup,
+        # not for Assignment, so it is not an optimization to send the
+        # assignment as kwarg as we do for admins and examiners
+        # (we use select_related instead)
+        return self.group.assignment
+
+    def should_include_examiners(self):
+        return False
+
+    def should_include_periodpath(self):
+        return self.kwargs.get('include_periodpath', True)
+
 
 class ExaminerItemValueMixin(ItemValueMixin):
     def get_devilryrole(self):
@@ -126,7 +139,7 @@ class NoMultiselectItemValue(listbuilder.itemvalue.TitleDescription):
 
 
 class StudentItemValue(StudentItemValueMixin, NoMultiselectItemValue):
-    pass
+    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/student-item-value.django.html'
 
 
 class ExaminerItemValue(ExaminerItemValueMixin, NoMultiselectItemValue):
