@@ -1257,23 +1257,61 @@ class TestAssignmentGroupManager(TestCase):
         self.assertEquals(qry.count(), 1)
         self.assertEquals(qry[0], currentgroupbuilder.group)
 
-    def test_filter_examiner_has_access(self):
-        examiner1 = UserBuilder('examiner1').user
-        otherexaminer = UserBuilder('otherexaminer').user
-        duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
-        activeassignmentbuilder = duck1010builder.add_6month_active_period().add_assignment('week1')
-        currentgroupbuilder = activeassignmentbuilder.add_group().add_examiners(examiner1)
 
-        # Add inactive groups and a group with another examiner to make sure we get no false positives
-        duck1010builder.add_6month_lastyear_period().add_assignment('week1')\
-            .add_group().add_examiners(examiner1)
-        duck1010builder.add_6month_nextyear_period().add_assignment('week1')\
-            .add_group().add_examiners(examiner1)
-        activeassignmentbuilder.add_group().add_examiners(otherexaminer)
+class TestAssignmentGroupQuerySetFilterExaminerHasAccess(TestCase):
+    def test_not_examiner_for_any_groups(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        self.assertEqual(
+                0,
+                AssignmentGroup.objects.filter_examiner_has_access(user=testuser).count())
 
-        qry = AssignmentGroup.objects.filter_examiner_has_access(examiner1)
-        self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], currentgroupbuilder.group)
+    def test_examiner_for_group_but_not_active(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user=testuser,
+                   relatedexaminer__active=False)
+        self.assertEqual(
+                0,
+                AssignmentGroup.objects.filter_examiner_has_access(user=testuser).count())
+
+    def test_examiner_for_group_and_active_but_in_old_period(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_oldperiod_end'))
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user=testuser,
+                   relatedexaminer__active=True)
+        self.assertEqual(
+                0,
+                AssignmentGroup.objects.filter_examiner_has_access(user=testuser).count())
+
+    def test_examiner_for_group_and_active_but_in_future_period(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_futureperiod_start'))
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user=testuser,
+                   relatedexaminer__active=True)
+        self.assertEqual(
+                0,
+                AssignmentGroup.objects.filter_examiner_has_access(user=testuser).count())
+
+    def test_examiner_for_group_and_active(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user=testuser,
+                   relatedexaminer__active=True)
+        self.assertEqual(
+                1,
+                AssignmentGroup.objects.filter_examiner_has_access(user=testuser).count())
 
 
 class TestAssignmentGroupQuerySetExtraOrdering(TestCase):

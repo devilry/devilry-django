@@ -1,28 +1,21 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
+
 from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.utils import timezone
-
-from mock import patch
 from django.test import TestCase
-from django.db import IntegrityError
-from django.core.exceptions import ValidationError
-from django.db.models import Q
+from django.utils import timezone
+from mock import patch
 from model_mommy import mommy
-from devilry.apps.core.models.assignment import AssignmentHasGroupsError
-from devilry.devilry_group.models import FeedbackSet
 
-from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from devilry.project.develop.testhelpers.corebuilder import NodeBuilder
-from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
-from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
-from devilry.apps.core.models import Period, Examiner, AssignmentGroup, RelatedStudent
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Candidate
+from devilry.apps.core.models import Examiner, AssignmentGroup
 from devilry.apps.core.models import PointToGradeMap
-from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
+from devilry.apps.core.models.assignment import AssignmentHasGroupsError
 from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
-from ..testhelper import TestHelper
+from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
+from devilry.devilry_group.models import FeedbackSet
+from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
+from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 
 
 class TestAssignment(TestCase):
@@ -604,6 +597,62 @@ class TestAssignmentQuerySet(TestCase):
                         parentnode=assignment))
         queryset = Assignment.objects.filter_student_has_access(user_not_set_as_candidate)
         self.assertEquals(queryset.count(), 0)
+
+
+class TestAssignmentQuerySetFilterExaminerHasAccess(TestCase):
+    def test_not_examiner_for_any_groups(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        self.assertEqual(
+                0,
+                Assignment.objects.filter_examiner_has_access(user=testuser).count())
+
+    def test_examiner_for_group_but_not_active(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user=testuser,
+                   relatedexaminer__active=False)
+        self.assertEqual(
+                0,
+                Assignment.objects.filter_examiner_has_access(user=testuser).count())
+
+    def test_examiner_for_group_and_active_but_in_old_period(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_oldperiod_end'))
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user=testuser,
+                   relatedexaminer__active=True)
+        self.assertEqual(
+                0,
+                Assignment.objects.filter_examiner_has_access(user=testuser).count())
+
+    def test_examiner_for_group_and_active_but_in_future_period(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_futureperiod_start'))
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user=testuser,
+                   relatedexaminer__active=True)
+        self.assertEqual(
+                0,
+                Assignment.objects.filter_examiner_has_access(user=testuser).count())
+
+    def test_examiner_for_group_and_active(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup,
+                   relatedexaminer__user=testuser,
+                   relatedexaminer__active=True)
+        self.assertEqual(
+                1,
+                Assignment.objects.filter_examiner_has_access(user=testuser).count())
 
 
 class TestAssignmentQuerySetAnnotateWithWaitingForFeedback(TestCase):

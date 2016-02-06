@@ -222,6 +222,9 @@ class AssignmentGroupQuerySet(models.QuerySet):
         Filter all :class:`.AssignmentGroup` objects where the given
         user is examiner.
 
+        .. warning:: **Do not** use this to filter groups where an
+            examiner has access. Use :meth:`.filter_examiner_has_access`.
+
         Args:
             user: A :class:`devilry.devilry_account.models.User` object.
         """
@@ -260,7 +263,9 @@ class AssignmentGroupQuerySet(models.QuerySet):
         Filter all :class:`.AssignmentGroup` objects where the given
         ``user`` has access as examiner.
         """
-        return self.filter_is_active().filter_user_is_examiner(user)
+        return self.filter_is_active()\
+            .filter(examiners__relatedexaminer__user=user,
+                    examiners__relatedexaminer__active=True).distinct()
 
     def filter_student_has_access(self, user):
         """
