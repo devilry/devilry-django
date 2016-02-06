@@ -186,7 +186,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_querycount(self):
         testperiod = mommy.make('core.Period')
         mommy.make('core.RelatedStudent', period=testperiod, _quantity=30)
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(5):
             self.mock_getrequest(cradmin_role=testperiod)
 
 
