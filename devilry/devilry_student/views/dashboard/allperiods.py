@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.utils.translation import pgettext_lazy, ugettext_lazy
 from django_cradmin import crapp
 from django_cradmin.viewhelpers import listbuilderview

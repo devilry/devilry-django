@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from datetime import timedelta
 
 from django import test
@@ -83,6 +84,14 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 1,
                 self.__get_assignment_count(selector=mockresponse.selector))
+
+    def test_no_active_assignments_message(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertEqual(
+                'You have no active assignments. Use the button below to browse '
+                'inactive assignments and courses',
+                mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
 
     def test_assignment_url(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
