@@ -18,30 +18,8 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     Handles what should be rendered for a student
     on the FeedbackFeed.
     """
-
-    def _get_comments_for_group(self, group):
-        """
-        Filters the comments a student should have access to.
-        A student should only be able to see comments
-        with :obj:`devilry.devilry_group.models.AbstractGroupComment.visibility` set to :obj:`devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`.
-
-        :param group:
-            The :class:`devilry.apps.core.models.AssignmentGroup` the user belongs to.
-
-        Returns:
-            List of :class:`devilry.devilry_group.models.GroupComment` objects.
-        """
-        return models.GroupComment.objects.filter(
-            Q(feedback_set__grading_published_datetime__isnull=False) |
-            Q(visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE),
-            visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-            feedback_set__group=group
-        ).exclude_is_part_of_grading_feedbackset_unpublished()
-
-    def get_context_data(self, **kwargs):
-        context = super(StudentFeedbackFeedView, self).get_context_data(**kwargs)
-        context['devilry_ui_role'] = 'student'
-        return context
+    def get_devilryrole(self):
+        return 'student'
 
     def get_buttons(self):
         return [

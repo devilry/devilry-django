@@ -1,5 +1,7 @@
+from django.conf import settings
 from model_mommy import mommy
 
+from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models
 from devilry.devilry_group.tests.feedbackfeed import test_feedbackfeed_examiner
@@ -144,3 +146,27 @@ class TestFeedbackfeedExaminerDiscuss(test_feedbackfeed_examiner.TestFeedbackfee
         self.assertEquals(len(comments), 1)
         self.assertNotEquals(feedbackset_first, comments[0].feedback_set)
         self.assertEquals(feedbackset_last, comments[0].feedback_set)
+
+    def test_get_num_queries(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        feedbackset = mommy.make('devilry_group.FeedbackSet', is_last_in_group=False)
+        feedbackset2 = mommy.make('devilry_group.FeedbackSet', group=feedbackset.group)
+
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=feedbackset.group,
+                              relatedexaminer__user=requestuser)
+
+        mommy.make('devilry_group.GroupComment',
+                   user=requestuser,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   feedback_set=feedbackset,
+                   _quantity=20)
+        mommy.make('devilry_group.GroupComment',
+                   user=requestuser,
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   feedback_set=feedbackset2,
+                   _quantity=20)
+
+        with self.assertNumQueries(4):
+            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
+                                                              requestuser=requestuser)

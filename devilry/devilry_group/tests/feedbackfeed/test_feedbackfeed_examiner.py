@@ -24,8 +24,8 @@ class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFe
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         examiner = mommy.make('core.Examiner',
-                               assignmentgroup=group,
-                               relatedexaminer=mommy.make('core.RelatedExaminer'))
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
                                                           requestuser=examiner.relatedexaminer.user)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-feedback-button'))
@@ -51,11 +51,11 @@ class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFe
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         request_examiner = mommy.make('core.Examiner',
-                             assignmentgroup=group,
-                             relatedexaminer=mommy.make('core.RelatedExaminer'))
+                                      assignmentgroup=group,
+                                      relatedexaminer=mommy.make('core.RelatedExaminer'))
         comment_examiner = mommy.make('core.Examiner',
-                             assignmentgroup=group,
-                             relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='Jane Doe'))
+                                      assignmentgroup=group,
+                                      relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='Jane Doe'))
         mommy.make('devilry_group.GroupComment',
                    user=comment_examiner.relatedexaminer.user,
                    user_role='examiner',
@@ -71,11 +71,11 @@ class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFe
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         request_examiner = mommy.make('core.Examiner',
-                             assignmentgroup=group,
-                             relatedexaminer=mommy.make('core.RelatedExaminer'))
+                                      assignmentgroup=group,
+                                      relatedexaminer=mommy.make('core.RelatedExaminer'))
         comment_examiner = mommy.make('core.Examiner',
-                             assignmentgroup=group,
-                             relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='Jane Doe'))
+                                      assignmentgroup=group,
+                                      relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='Jane Doe'))
         mommy.make('devilry_group.GroupComment',
                    user=comment_examiner.relatedexaminer.user,
                    user_role='examiner',
@@ -91,11 +91,11 @@ class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFe
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         requestexaminer = mommy.make('core.Examiner',
-                             assignmentgroup=group,
-                             relatedexaminer=mommy.make('core.RelatedExaminer'))
+                                     assignmentgroup=group,
+                                     relatedexaminer=mommy.make('core.RelatedExaminer'))
         comment_post_examiner = mommy.make('core.Examiner',
-                             assignmentgroup=group,
-                             relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='Jane Doe'))
+                                           assignmentgroup=group,
+                                           relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='Jane Doe'))
         mommy.make('devilry_group.GroupComment',
                    user=comment_post_examiner.relatedexaminer.user,
                    user_role='examiner',
@@ -111,8 +111,8 @@ class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFe
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         examiner = mommy.make('core.Examiner',
-                             assignmentgroup=group,
-                             relatedexaminer=mommy.make('core.RelatedExaminer'))
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
         mommy.make('devilry_group.GroupComment',
                    user=examiner.relatedexaminer.user,
                    user_role='examiner',
@@ -127,11 +127,11 @@ class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFe
     def test_get_examiner_can_not_see_other_examiner_comment_part_of_grading_private(self):
         group = mommy.make('core.AssignmentGroup')
         request_examiner = mommy.make('core.Examiner',
-                               assignmentgroup=group,
-                               relatedexaminer=mommy.make('core.RelatedExaminer'),)
+                                      assignmentgroup=group,
+                                      relatedexaminer=mommy.make('core.RelatedExaminer'),)
         comment_examiner = mommy.make('core.Examiner',
-                               assignmentgroup=group,
-                               relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='Jane Doe'),)
+                                      assignmentgroup=group,
+                                      relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='Jane Doe'),)
         mommy.make('devilry_group.GroupComment',
                    user=comment_examiner.relatedexaminer.user,
                    user_role='examiner',
@@ -142,7 +142,6 @@ class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFe
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=request_examiner.assignmentgroup,
                                                           requestuser=request_examiner.relatedexaminer.user)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
-
 
     # def test_post_comment_file(self):
     #     feedbackset = mommy.make('devilry_group.FeedbackSet')

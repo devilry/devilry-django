@@ -1,131 +1,231 @@
 import collections
 import datetime
 
+from django.db import models
 from django.utils import timezone
 
+from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group import models as group_models
 
 
 class FeedbackFeedTimelineBuilder(object):
+    """
 
-    def __init__(self, view):
-        self.viewclass = view
+    """
+    def __init__(self, group, requestuser, devilryrole):
+        self.requestuser = requestuser
+        self.devilryrole = devilryrole
+        self.group = group
+        self.feedbacksets = list(self.__get_feedbackset_queryset())
+        self.timeline = {}
 
-    def get_feedbacksets_for_group(self, group):
+    def __get_feedbackset_queryset(self):
         """
-        TODO: document
+        Retrieves the comments a user has access to.
+        This function must be implemented by subclasses of :class:`~.FeedbackFeedBaseView`
 
         :param group:
-        :return:
+            The :class:`devilry.apps.core.models.AssignmentGroup` the user belongs to.
+
+        Returns:
+            List of :class:`devilry.devilry_group.models.GroupComment` objects.
+
         """
-        return group_models.FeedbackSet.objects.filter(group=group)
+        commentfile_queryset = CommentFile.objects\
+            .select_related('comment__user')\
+            .order_by('filename')
+        groupcomment_queryset = group_models.GroupComment.objects\
+            .filter(feedback_set__group=self.group)\
+            .exclude_private_comments_from_other_users(user=self.requestuser)\
+            .select_related(
+                'user',
+                'feedback_set__created_by',
+                'feedback_set__grading_published_by')\
+            .prefetch_related(models.Prefetch('commentfile_set', queryset=commentfile_queryset))
+        if self.devilryrole == 'student':
+            groupcomment_queryset = groupcomment_queryset\
+                .filter(visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)\
+                .exclude_is_part_of_grading_feedbackset_unpublished()
+        return group_models.FeedbackSet.objects\
+            .prefetch_related(models.Prefetch('groupcomment_set', queryset=groupcomment_queryset))\
+            .order_by('created_datetime')
 
-    def add_comments_to_timeline(self, group, timeline):
-        comments = self.viewclass._get_comments_for_group(group)
-        for comment in comments:
-            if comment.published_datetime not in timeline.keys():
-                timeline[comment.published_datetime] = []
+    def get_last_feedbackset(self):
+        """
 
-            # Set the deadline related to the comment, this is the deadline the comments
-            # feedback_set uses. If it's the first attempt, the deadline is the assignments first_deadline
-            # else it's the feedback_sets deadline_datetime
-            if comment.feedback_set.feedbackset_type == group_models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
-                comment_related_deadline = comment.feedback_set.group.assignment.first_deadline
+        Returns:
+
+        """
+        if self.feedbacksets:
+            return self.feedbacksets[-1]
+        else:
+            return None
+
+    def __get_first_feedbackset(self):
+        """
+
+        Returns:
+
+        """
+        if self.feedbacksets:
+            return self.feedbacksets[0]
+        else:
+            return None
+
+    def get_last_deadline(self):
+        """
+
+        Returns:
+
+        """
+        last_feedbackset = self.get_last_feedbackset()
+        if last_feedbackset:
+            return self.__get_deadline_for_feedbackset(feedbackset=last_feedbackset)
+        else:
+            return None
+
+    def __get_deadline_for_feedbackset(self, feedbackset):
+        """
+
+        Args:
+            index:
+            feedbackset:
+
+        Returns:
+
+        """
+        if feedbackset.feedbackset_type == group_models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
+            if self.group.parentnode.first_deadline is not None:
+                # first feedback set should use assignments first_deadline
+                return self.group.parentnode.first_deadline
             else:
-                comment_related_deadline = comment.feedback_set.deadline_datetime
+                # if assignment has no first_deadline, fall back to the deadline
+                # of the feedbackset (this shouldn't happen)
+                return feedbackset.deadline_datetime
+        else:
+            return feedbackset.deadline_datetime
 
-            timeline[comment.published_datetime].append({
-                "type": "comment",
-                "obj": comment,
-                "related_deadline": comment_related_deadline
-            })
-
-        return timeline
-
-    def add_announcements_to_timeline(self, group, feedbacksets, timeline):
+    def __add_event_item_to_timeline(self, datetime, event_dict):
         """
-        TODO: document
+        General function for adding an event to the timeline.
+        An event item is everything that occurs on the feedbackfeed that can
+        be sorted; a comment, deadline created, deadline expired and grading.
 
-        :param group:
-        :param feedbacksets:
-        :param timeline:
-        :return:
+        Args:
+            datetime: The time the event is sorted on
+            event_dict: The event object.
         """
-        if len(feedbacksets) == 0:
-            return group.parentnode.first_deadline, timeline
+        if datetime is None:
+            return
+        if datetime not in self.timeline:
+            self.timeline[datetime] = []
+        self.timeline[datetime].append(event_dict)
 
-        last_deadline = None
+    def __add_deadline_created_to_timeline(self, feedbackset):
+        """
 
-        for index, feedbackset in enumerate(feedbacksets):
-            if index == 0:
-                if group.parentnode.first_deadline is not None:
-                    # first feedback set should use assignments first_deadline
-                    deadline_datetime = group.parentnode.first_deadline
-                    last_deadline = group.parentnode.first_deadline
-                else:
-                    # if assignment has no first_deadline, fall back to the deadline
-                    # of the feedbackset (this shouldn't happen)
-                    deadline_datetime = feedbackset.deadline_datetime
-            else:
-                deadline_datetime = feedbackset.deadline_datetime
-                last_deadline = feedbackset.deadline_datetime
+        Args:
+            feedbackset:
 
-            if deadline_datetime not in timeline.keys():
-                timeline[deadline_datetime] = []
+        Returns:
 
-            if deadline_datetime is not None and deadline_datetime <= timezone.now():
-                timeline[deadline_datetime].append({
-                    "type": "deadline_expired",
-                    "obj": deadline_datetime
-                })
-
-            if feedbackset.created_datetime not in timeline.keys():
-                timeline[feedbackset.created_datetime] = []
-
-            # Add available first_deadline, either assignment.first_deadline(if index is 0)
-            # or
-            # feedbackset.deadline_datetime
-            if group.parentnode.first_deadline is not None and index == 0:
-                if deadline_datetime <= group.parentnode.first_deadline:
-                    timeline[feedbackset.created_datetime].append({
-                        "type": "deadline_created",
-                        "obj": group.parentnode.first_deadline,
-                        "user": feedbackset.created_by
-                    })
-            elif feedbackset.deadline_datetime is not None:
-                if deadline_datetime <= feedbackset.deadline_datetime:
-                    timeline[feedbackset.created_datetime].append({
-                        "type": "deadline_created",
-                        "obj": feedbackset.deadline_datetime,
-                        "user": feedbackset.created_by
-                    })
-            elif feedbackset is not feedbacksets[0]:
-                timeline[feedbackset.created_datetime].append({
+        """
+        if feedbackset.feedbackset_type == group_models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
+            return
+        current_deadline = self.__get_deadline_for_feedbackset(feedbackset=feedbackset)
+        self.__add_event_item_to_timeline(
+                datetime=feedbackset.created_datetime,
+                event_dict={
                     "type": "deadline_created",
-                    "obj": deadline_datetime,
+                    "obj": current_deadline,
                     "user": feedbackset.created_by
                 })
 
-            if deadline_datetime is None or last_deadline is None:
-                pass
-            elif deadline_datetime > last_deadline:
-                last_deadline = deadline_datetime
-
-            if feedbackset.grading_published_datetime is not None:
-                if feedbackset.grading_published_datetime not in timeline.keys():
-                    timeline[feedbackset.grading_published_datetime] = []
-                timeline[feedbackset.grading_published_datetime].append({
-                    "type": "grade",
-                    "obj": feedbackset.grading_points
-                })
-        return last_deadline, timeline
-
-    def sort_timeline(self, timeline):
+    def __add_deadline_expired_if_needed(self, feedbackset):
         """
-        TODO: document
 
-        :param timeline:
-        :return:
+        Args:
+            feedbackset:
+
+        Returns:
+
+        """
+        current_deadline = self.__get_deadline_for_feedbackset(feedbackset=feedbackset)
+        if current_deadline is None:
+            return
+        if current_deadline <= timezone.now():
+            self.__add_event_item_to_timeline(
+                    datetime=current_deadline,
+                    event_dict={
+                        "type": "deadline_expired",
+                        "obj": current_deadline
+                    })
+
+    def __add_grade_to_timeline_if_published(self, feedbackset):
+        """
+
+        Args:
+            deadline_datetime:
+            feedbackset:
+
+        Returns:
+
+        """
+        self.__add_event_item_to_timeline(
+            datetime=feedbackset.grading_published_datetime,
+            event_dict={
+                "type": "grade",
+                "obj": feedbackset.grading_points
+            }
+        )
+
+    def __add_comment_to_timeline(self, group_comment, feedbackset):
+        """
+
+        Args:
+            group_comment:
+            feedbackset:
+
+        Returns:
+
+        """
+        self.__add_event_item_to_timeline(
+            datetime=group_comment.published_datetime,
+            event_dict={
+                "type": "comment",
+                "obj": group_comment,
+                "related_deadline": self.__get_deadline_for_feedbackset(feedbackset=feedbackset)
+            }
+        )
+
+    def __add_comments_to_timeline(self, feedbackset):
+        """
+
+        Args:
+            feedbackset:
+
+        Returns:
+
+        """
+        for group_comment in feedbackset.groupcomment_set.all():
+            self.__add_comment_to_timeline(group_comment=group_comment, feedbackset=feedbackset)
+
+    def __add_feedbackset_to_timeline(self, feedbackset):
+        """
+
+        Args:
+            feedbackset:
+
+        Returns:
+
+        """
+        self.__add_deadline_created_to_timeline(feedbackset=feedbackset)
+        self.__add_deadline_expired_if_needed(feedbackset=feedbackset)
+        self.__add_grade_to_timeline_if_published(feedbackset=feedbackset)
+        self.__add_comments_to_timeline(feedbackset=feedbackset)
+
+    def __sort_timeline(self):
+        """
         """
         def compare_timeline_items(a, b):
             datetime_a = a[0]
@@ -135,21 +235,12 @@ class FeedbackFeedTimelineBuilder(object):
             if datetime_b is None:
                 datetime_b = datetime.datetime(1970, 1, 1)
             return cmp(datetime_a, datetime_b)
+        self.timeline = collections.OrderedDict(sorted(self.timeline.items(), compare_timeline_items))
 
-        sorted_timeline = collections.OrderedDict(sorted(timeline.items(), compare_timeline_items))
-        return sorted_timeline
-
-    def build_timeline(self, group, feedbacksets):
+    def build(self):
         """
-        TODO: document
 
-        :param group:
-        :param feedbacksets:
-        :return:
         """
-        timeline = {}
-        timeline = self.add_comments_to_timeline(group, timeline)
-        last_deadline, timeline = self.add_announcements_to_timeline(group, feedbacksets, timeline)
-        timeline = self.sort_timeline(timeline)
-
-        return last_deadline, timeline
+        for feedbackset in self.feedbacksets:
+            self.__add_feedbackset_to_timeline(feedbackset=feedbackset)
+        self.__sort_timeline()

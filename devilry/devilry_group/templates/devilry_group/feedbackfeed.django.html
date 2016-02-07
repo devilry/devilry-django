@@ -119,7 +119,7 @@
                                                 {% blocktrans with text=comment.text|devilry_group_markdown|safe %} {{text}} {% endblocktrans %}
                                             </div>
                                             {% for file in comment.commentfile_set.all %}
-                                                <a href="{% url 'devilry-feedbackfeed-file-download' comment.feedback_set.id file.id %}">
+                                                <a href="{% url 'devilry-feedbackfeed-file-download' comment.feedback_set_id file.id %}">
                                                     <i class="fa fa-file fa-3x" tooltip="{{ file.filename }}"></i>
                                                 </a>
                                             {% endfor %}
@@ -166,13 +166,13 @@
                                 Handle the deadline events
                                 -->
                                 {% elif event.type == "deadline_created" %}
-{#                                    {% if event.obj != None %}#}
+                                    {% with deadline=event.obj%}
                                         <div class="devilry-group-feedbackfeed-event-message-deadline-created">
                                             <p>
-                                                {{ timestamp }}: {{ event.user }} {%  trans "created a new deadline" %}: <strong>{{ event.obj }}</strong>
+                                                {{ timestamp }}: {{ event.user }} {%  trans "created a new deadline" %}: <strong>{{ deadline|date:'DATETIME_FORMAT' }}</strong>
                                             </p>
                                         </div>
-{#                                    {% endif %}#}
+                                    {% endwith %}
                                 {% elif event.type == "deadline_expired" %}
                                     {% if timestamp != None %}
                                         <div class="devilry-group-feedbackfeed-event-message-deadline-expired">
