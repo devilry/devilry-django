@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from django.db import models
 from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
@@ -7,6 +8,7 @@ from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import listfilter
 
 from devilry.apps.core import models as coremodels
+from devilry.apps.core.models import Assignment
 from devilry.devilry_cradmin import devilry_listbuilder
 
 
@@ -27,7 +29,7 @@ class GroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
 
 class DashboardView(listbuilderview.FilterListMixin,
                     listbuilderview.View):
-    model = coremodels.Assignment
+    model = coremodels.AssignmentGroup
     value_renderer_class = devilry_listbuilder.assignmentgroup.StudentItemValue
     frame_renderer_class = GroupItemFrame
     paginate_by = 15
@@ -70,6 +72,7 @@ class DashboardView(listbuilderview.FilterListMixin,
             .annotate_with_number_of_groupcomments_from_examiners()\
             .annotate_with_number_of_imageannotationcomments_from_students()\
             .annotate_with_number_of_imageannotationcomments_from_examiners()\
+            .prefetch_assignment_with_points_to_grade_map()\
             .distinct()\
             .order_by('-parentnode__first_deadline', '-parentnode__publishing_time')
 

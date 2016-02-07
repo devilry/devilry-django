@@ -59,11 +59,8 @@ class StudentItemValueMixin(ItemValueMixin):
         return 'student'
 
     def get_assignment(self):
-        # When listing for students, we always query for AssignmentGroup,
-        # not for Assignment, so it is not an optimization to send the
-        # assignment as kwarg as we do for admins and examiners
-        # (we use select_related instead)
-        return self.group.assignment
+        # Requires devilry.apps.core.models.AssignmentGroupQuerySet.prefetch_assignment_with_points_to_grade_map
+        return self.group.prefetched_assignment
 
     def should_include_examiners(self):
         return False
