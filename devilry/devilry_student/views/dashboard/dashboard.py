@@ -30,6 +30,7 @@ class DashboardView(listbuilderview.FilterListMixin,
     model = coremodels.Assignment
     value_renderer_class = devilry_listbuilder.assignmentgroup.StudentItemValue
     frame_renderer_class = GroupItemFrame
+    paginate_by = 15
     template_name = 'devilry_student/dashboard/dashboard.django.html'
 
     def get_pagetitle(self):
