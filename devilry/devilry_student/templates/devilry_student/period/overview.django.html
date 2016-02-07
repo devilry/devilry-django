@@ -1,0 +1,18 @@
+{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
+{% load i18n %}
+
+{% block title %}
+    {{ period.subject.long_name }} - {{ period.long_name }}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {{ period.subject.long_name }} - {{ period.long_name }}
+    </h1>
+{% endblock pageheader-inner %}
+
+
+{% block content %}
+    {{ block.super }}
+    {# TODO: Point summary footer #}
+{% endblock content %}
