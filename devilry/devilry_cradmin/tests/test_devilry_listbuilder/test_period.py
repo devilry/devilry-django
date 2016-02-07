@@ -111,7 +111,7 @@ class TestStudentItemValue(test.TestCase):
         testperiod = mommy.make('core.Period')
         relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
         status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
-                            status=Status.ALMOSTREADY)
+                            status=Status.READY)
         mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    relatedstudent=relatedstudent,
                    status=status,
@@ -131,7 +131,7 @@ class TestStudentItemValue(test.TestCase):
         testperiod = mommy.make('core.Period')
         relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
         status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
-                            status=Status.ALMOSTREADY)
+                            status=Status.READY)
         mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    relatedstudent=relatedstudent,
                    status=status,
