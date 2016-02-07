@@ -4,7 +4,7 @@ import datetime
 from django.db import models
 from django.utils import timezone
 
-from devilry.devilry_comment.models import CommentFile
+from devilry.devilry_comment.models import CommentFile, Comment
 from devilry.devilry_group import models as group_models
 
 
@@ -17,6 +17,8 @@ class FeedbackFeedTimelineBuilder(object):
         self.devilryrole = devilryrole
         self.group = group
         self.feedbacksets = list(self.__get_feedbackset_queryset())
+        self.__candidatemap = self.__make_candidatemap()
+        self.__examinermap = self.__make_examinermap()
         self.timeline = {}
 
     def __get_feedbackset_queryset(self):
@@ -49,6 +51,24 @@ class FeedbackFeedTimelineBuilder(object):
         return group_models.FeedbackSet.objects\
             .prefetch_related(models.Prefetch('groupcomment_set', queryset=groupcomment_queryset))\
             .order_by('created_datetime')
+
+    def __make_candidatemap(self):
+        candidatemap = {}
+        for candidate in self.group.candidates.all():
+            candidatemap[candidate.relatedstudent.user_id] = candidate
+        return candidatemap
+
+    def __make_examinermap(self):
+        examinermap = {}
+        for examiner in self.group.examiners.all():
+            examinermap[examiner.relatedexaminer.user_id] = examiner
+        return examinermap
+
+    def __get_candidate_from_user(self, user):
+        return self.__candidatemap.get(user.id, None)
+
+    def __get_examiner_from_user(self, user):
+        return self.__examinermap.get(user.id, None)
 
     def get_last_feedbackset(self):
         """
@@ -189,13 +209,18 @@ class FeedbackFeedTimelineBuilder(object):
         Returns:
 
         """
+        event_dict = {
+            "type": "comment",
+            "obj": group_comment,
+            "related_deadline": self.__get_deadline_for_feedbackset(feedbackset=feedbackset),
+        }
+        if group_comment.user_role == Comment.USER_ROLE_STUDENT:
+            event_dict['candidate'] = self.__get_candidate_from_user(user=group_comment.user)
+        elif group_comment.user_role == Comment.USER_ROLE_EXAMINER:
+            event_dict['examiner'] = self.__get_examiner_from_user(user=group_comment.user)
         self.__add_event_item_to_timeline(
             datetime=group_comment.published_datetime,
-            event_dict={
-                "type": "comment",
-                "obj": group_comment,
-                "related_deadline": self.__get_deadline_for_feedbackset(feedbackset=feedbackset)
-            }
+            event_dict=event_dict
         )
 
     def __add_comments_to_timeline(self, feedbackset):
