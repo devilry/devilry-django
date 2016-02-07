@@ -5,6 +5,8 @@ from datetime import timedelta
 from django import test
 from django.conf import settings
 from django_cradmin import cradmin_testhelpers
+from django_cradmin.crinstance import reverse_cradmin_url
+from django_cradmin import crapp
 from model_mommy import mommy
 
 from devilry.apps.core.mommy_recipes import OLD_PERIOD_START, ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
@@ -156,13 +158,12 @@ class TestAllPeriodsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedStudent', period=testperiod, user=requestuser)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
         self.assertEqual(
-                '#',
-                # reverse_cradmin_url(
-                #         instanceid='devilry_student_period',
-                #         appname='overview',
-                #         roleid=testperiod.id,
-                #         viewname=crapp.INDEXVIEW_NAME,
-                # ),
+                reverse_cradmin_url(
+                        instanceid='devilry_student_period',
+                        appname='overview',
+                        roleid=testperiod.id,
+                        viewname=crapp.INDEXVIEW_NAME,
+                ),
                 mockresponse.selector.one('a.devilry-student-listbuilder-period-itemframe')['href'])
 
     def test_assignmentcount_sanity(self):
@@ -182,6 +183,27 @@ class TestAllPeriodsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 '2 assignments',
                 mockresponse.selector.one(
                         '.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+
+    def test_assignmentcount_multiple_periods(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod1 = mommy.make_recipe('devilry.apps.core.period_active')
+        relatedstudent1 = mommy.make('core.RelatedStudent', user=requestuser, period=testperiod1)
+        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod1)
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=testassignment1,
+                   relatedstudent=relatedstudent1)
+
+        testperiod2 = mommy.make_recipe('devilry.apps.core.period_active')
+        mommy.make('core.RelatedStudent', user=requestuser, period=testperiod2)
+
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
+        assignmentcounts = {
+            element.alltext_normalized
+            for element in mockresponse.selector.list(
+                    '.django-cradmin-listbuilder-itemvalue-titledescription-description')}
+        self.assertEqual(
+                {'1 assignment', '0 assignments'},
+                assignmentcounts)
 
     def test_qualified_for_final_exam_sanity_no_status(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)

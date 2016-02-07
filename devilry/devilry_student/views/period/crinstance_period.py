@@ -30,7 +30,7 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     rolefrontpage_appname = 'overview'
 
     apps = [
-        ('assignments', overview.App),
+        ('overview', overview.App),
     ]
 
     def get_rolequeryset(self):
