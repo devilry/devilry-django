@@ -1,21 +1,35 @@
-from django.template.loader import render_to_string
 from django_cradmin.viewhelpers import listbuilder
 
 
-class ItemValueMixin(object):
+class AdminItemValueMixin(object):
     valuealias = 'period'
+    template_name = 'devilry_cradmin/devilry_listbuilder/period/admin-itemvalue.django.html'
 
     def get_title(self):
         return self.period.long_name
 
     def get_description(self):
-        return render_to_string('devilry_cradmin/devilry_listbuilder/period/description.django.html',
-                                self.get_context_data())
+        return True  # Return True to get the description-content block to render.
 
 
-class ItemValue(ItemValueMixin, listbuilder.itemvalue.TitleDescription):
+class AdminItemValue(AdminItemValueMixin, listbuilder.itemvalue.TitleDescription):
     """
-    ItemValue renderer for a single period.
+    ItemValue renderer for a single period for admins.
+    """
 
-    This is a base class that does not contain any role specific data.
+
+class StudentItemValueMixin(object):
+    valuealias = 'period'
+    template_name = 'devilry_cradmin/devilry_listbuilder/period/student-itemvalue.django.html'
+
+    def get_title(self):
+        return self.period.long_name
+
+    def get_description(self):
+        return True  # Return True to get the description-content block to render.
+
+
+class StudentItemValue(StudentItemValueMixin, listbuilder.itemvalue.TitleDescription):
+    """
+    ItemValue renderer for a single period for students.
     """

@@ -1,0 +1,12 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load devilry_core_tags %}
+
+{% block title-content %}
+    {{ me.period.subject.long_name }} - {{ me.period.long_name }}
+{% endblock title-content %}
+
+{% block description-content %}
+    {# TODO: Metadata #}
+{% endblock description-content %}
+
