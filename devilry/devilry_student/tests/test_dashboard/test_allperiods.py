@@ -7,7 +7,8 @@ from django.conf import settings
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
-from devilry.apps.core.mommy_recipes import OLD_PERIOD_START, ACTIVE_PERIOD_START
+from devilry.apps.core.mommy_recipes import OLD_PERIOD_START, ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
+from devilry.devilry_qualifiesforexam.models import Status
 from devilry.devilry_student.views.dashboard import allperiods
 
 
@@ -164,79 +165,87 @@ class TestAllPeriodsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 # ),
                 mockresponse.selector.one('a.devilry-student-listbuilder-period-itemframe')['href'])
 
-    # def test_qualifies_for_final_exam_qualified(self):
-    #     periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-    #         .add_relatedstudents(self.requestuser)
-    #     status = Status.objects.create(period=periodbuilder.period,
-    #                                    user=UserBuilder('testadmin').user,
-    #                                    status=Status.READY)
-    #     status.students.create(
-    #         relatedstudent=periodbuilder.period.relatedstudent_set.get(user=self.requestuser),
-    #         qualifies=True)
-    #
-    #     response = self._get_as('requestuser')
-    #     self.assertEquals(response.status_code, 200)
-    #     selector = htmls.S(response.content)
-    #     self.assertTrue(
-    #         selector.exists('#objecttableview-table tbody tr td:nth-child(1) '
-    #                         '.devilry-student-allperiodsapp-qualified-for-final-exam-wrapper'))
-    #     self.assertEquals(
-    #         selector.one('#objecttableview-table tbody tr td:nth-child(1) '
-    #                      '.devilry-student-allperiodsapp-qualified-for-final-exam').alltext_normalized,
-    #         'Qualified for final exam')
-    #     self.assertTrue(
-    #         selector.exists('#objecttableview-table tbody tr td:nth-child(1) .label-success'))
-    #
-    # def test_qualifies_for_final_exam_not_qualified(self):
-    #     periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-    #         .add_relatedstudents(self.requestuser)
-    #     status = Status.objects.create(period=periodbuilder.period,
-    #                                    user=UserBuilder('testadmin').user,
-    #                                    status=Status.READY)
-    #     status.students.create(
-    #         relatedstudent=periodbuilder.period.relatedstudent_set.get(user=self.requestuser),
-    #         qualifies=False)
-    #
-    #     response = self._get_as('requestuser')
-    #     self.assertEquals(response.status_code, 200)
-    #     selector = htmls.S(response.content)
-    #     self.assertTrue(
-    #         selector.exists('#objecttableview-table tbody tr td:nth-child(1) '
-    #                         '.devilry-student-allperiodsapp-qualified-for-final-exam-wrapper'))
-    #     self.assertEquals(
-    #         selector.one('#objecttableview-table tbody tr td:nth-child(1) '
-    #                      '.devilry-student-allperiodsapp-not-qualified-for-final-exam').alltext_normalized,
-    #         'Not qualified for final exam')
-    #     self.assertTrue(
-    #         selector.exists('#objecttableview-table tbody tr td:nth-child(1) .label-warning'))
-    #
-    # def test_qualifies_for_final_exam_not_set(self):
-    #     PeriodBuilder.quickadd_ducku_duck1010_active()\
-    #         .add_relatedstudents(self.requestuser)
-    #     response = self._get_as('requestuser')
-    #     self.assertEquals(response.status_code, 200)
-    #     selector = htmls.S(response.content)
-    #     self.assertFalse(
-    #         selector.exists('#objecttableview-table tbody tr td:nth-child(1) '
-    #                         '.devilry-student-allperiodsapp-qualified-for-final-exam-wrapper'))
-    #
-    # def test_is_active(self):
-    #     PeriodBuilder.quickadd_ducku_duck1010_active()\
-    #         .add_relatedstudents(self.requestuser)
-    #     response = self._get_as('requestuser')
-    #     self.assertEquals(response.status_code, 200)
-    #     selector = htmls.S(response.content)
-    #     self.assertTrue(
-    #         selector.exists('#objecttableview-table tbody tr td:nth-child(1) '
-    #                         'strong.devilry-student-allperiodsapp-isactive'))
-    #
-    # def test_is_not_active(self):
-    #     SubjectBuilder.quickadd_ducku_duck1010()\
-    #         .add_6month_lastyear_period()\
-    #         .add_relatedstudents(self.requestuser)
-    #     response = self._get_as('requestuser')
-    #     self.assertEquals(response.status_code, 200)
-    #     selector = htmls.S(response.content)
-    #     self.assertFalse(
-    #         selector.exists('#objecttableview-table tbody tr td:nth-child(1) '
-    #                         'strong.devilry-student-allperiodsapp-isactive'))
+    def test_assignmentcount_sanity(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        relatedstudent = mommy.make('core.RelatedStudent', user=requestuser, period=testperiod)
+        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod)
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=testassignment1,
+                   relatedstudent=relatedstudent)
+        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod)
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=testassignment2,
+                   relatedstudent=relatedstudent)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
+        self.assertEqual(
+                '2 assignments',
+                mockresponse.selector.one(
+                        '.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
+
+    def test_qualified_for_final_exam_sanity_no_status(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        mommy.make('core.RelatedStudent', period=testperiod, user=requestuser)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
+        self.assertFalse(mockresponse.selector.exists('.devilry-cradmin-perioditemvalue-student-qualifedforexam'))
+
+    def test_qualified_for_final_exam_sanity_qualified(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=requestuser)
+        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+                            status=Status.READY)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=relatedstudent,
+                   status=status,
+                   qualifies=True)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
+        self.assertTrue(mockresponse.selector.exists(
+                '.devilry-cradmin-perioditemvalue-student-qualifedforexam'
+                '.devilry-cradmin-perioditemvalue-student-qualifedforexam-yes'))
+
+    def test_qualified_for_final_exam_sanity_not_qualified(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=requestuser)
+        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+                            status=Status.READY)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=relatedstudent,
+                   status=status,
+                   qualifies=False)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
+        self.assertTrue(mockresponse.selector.exists(
+                '.devilry-cradmin-perioditemvalue-student-qualifedforexam'
+                '.devilry-cradmin-perioditemvalue-student-qualifedforexam-no'))
+
+    def test_no_pagination(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.RelatedStudent',
+                   period__start_time=ACTIVE_PERIOD_START,
+                   period__end_time=ACTIVE_PERIOD_END,
+                   user=requestuser,
+                   _quantity=allperiods.AllPeriodsView.paginate_by)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-loadmorepager'))
+
+    def test_pagination(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.RelatedStudent',
+                   period__start_time=ACTIVE_PERIOD_START,
+                   period__end_time=ACTIVE_PERIOD_END,
+                   user=requestuser,
+                   _quantity=allperiods.AllPeriodsView.paginate_by + 1)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
+        self.assertTrue(mockresponse.selector.exists('.django-cradmin-loadmorepager'))
+
+    def test_querycount(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.RelatedStudent',
+                   period__start_time=ACTIVE_PERIOD_START,
+                   period__end_time=ACTIVE_PERIOD_END,
+                   user=requestuser,
+                   _quantity=10)
+        with self.assertNumQueries(2):
+            self.mock_http200_getrequest_htmls(requestuser=requestuser)

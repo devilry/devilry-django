@@ -27,6 +27,7 @@ class PeriodItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
 
 class AllPeriodsView(listbuilderview.FilterListMixin, listbuilderview.View):
     model = coremodels.Period
+    paginate_by = 30
     template_name = 'devilry_student/cradmin_student/allperiods/allperiods.django.html'
     value_renderer_class = devilry_listbuilder.period.StudentItemValue
     frame_renderer_class = PeriodItemFrame
@@ -55,6 +56,7 @@ class AllPeriodsView(listbuilderview.FilterListMixin, listbuilderview.View):
         return coremodels.Period.objects\
             .filter_user_is_relatedstudent(user=self.request.user)\
             .filter_has_started()\
+            .extra_annotate_with_assignmentcount_for_studentuser(user=self.request.user)\
             .extra_annotate_with_user_qualifies_for_final_exam(user=self.request.user)\
             .select_related('parentnode')\
             .order_by('-start_time', 'parentnode__long_name')
