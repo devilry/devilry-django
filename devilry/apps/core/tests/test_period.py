@@ -93,6 +93,25 @@ class TestPeriodQuerySetExtraAnnotateWithAssignmentcountForStudentuser(TestCase)
             .get(id=testperiod.id)
         self.assertEqual(3, annotated_period.assignmentcount_for_studentuser)
 
+    def test_multiple_periods(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod1 = mommy.make('core.Period')
+        relatedstudent1 = mommy.make('core.RelatedStudent', user=testuser, period=testperiod1)
+        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod1)
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=testassignment1,
+                   relatedstudent=relatedstudent1)
+        testperiod2 = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', user=testuser, period=testperiod2)
+        annotated_period1 = Period.objects\
+            .extra_annotate_with_assignmentcount_for_studentuser(user=testuser)\
+            .get(id=testperiod1.id)
+        annotated_period2 = Period.objects\
+            .extra_annotate_with_assignmentcount_for_studentuser(user=testuser)\
+            .get(id=testperiod2.id)
+        self.assertEqual(1, annotated_period1.assignmentcount_for_studentuser)
+        self.assertEqual(0, annotated_period2.assignmentcount_for_studentuser)
+
 
 class TestPeriodQuerySetExtraAnnotateWithUserQualifiesForFinalExam(TestCase):
     def test_not_set(self):
