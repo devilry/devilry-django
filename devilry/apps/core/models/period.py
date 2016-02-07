@@ -106,6 +106,34 @@ class PeriodQuerySet(models.QuerySet):
                 ]
         )
 
+    def extra_annotate_with_assignmentcount_for_studentuser(self, user):
+        """
+        Annotate with ``assignmentcount_for_studentuser`` - the number of assignments
+        within each Period in the queryset where the given ``user`` is candidate.
+
+        Args:
+            user: A User object.
+        """
+        return self.extra(
+                select={
+                    'assignmentcount_for_studentuser': """
+                        SELECT
+                          COUNT(core_assignment.id)
+                        FROM core_assignment
+                        LEFT OUTER JOIN core_assignmentgroup
+                          ON (core_assignmentgroup.parentnode_id = core_assignment.id)
+                        INNER JOIN core_candidate
+                          ON (core_candidate.assignment_group_id = core_assignmentgroup.id)
+                        INNER JOIN core_relatedstudent
+                          ON (core_relatedstudent.id = core_candidate.relatedstudent_id)
+                        WHERE core_relatedstudent.user_id = %s
+                    """
+                },
+                select_params=[
+                    user.id,
+                ]
+        )
+
 
 class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """

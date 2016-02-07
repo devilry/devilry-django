@@ -37,6 +37,62 @@ class TestPeriodQuerySetFilterHasStarted(TestCase):
                 {old_period, active_period})
 
 
+class TestPeriodQuerySetExtraAnnotateWithAssignmentcountForStudentuser(TestCase):
+    def test_no_assignments(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        annotated_period = Period.objects\
+            .extra_annotate_with_assignmentcount_for_studentuser(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertEqual(0, annotated_period.assignmentcount_for_studentuser)
+
+    def test_no__assignments_where_candidate(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mommy.make('core.Candidate',  # Not testuser Candidate
+                   assignment_group__parentnode=testassignment,
+                   relatedstudent__period=testperiod)
+        annotated_period = Period.objects\
+            .extra_annotate_with_assignmentcount_for_studentuser(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertEqual(0, annotated_period.assignmentcount_for_studentuser)
+
+    def test_single_assignment(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=testassignment,
+                   relatedstudent__user=testuser,
+                   relatedstudent__period=testperiod)
+        annotated_period = Period.objects\
+            .extra_annotate_with_assignmentcount_for_studentuser(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertEqual(1, annotated_period.assignmentcount_for_studentuser)
+
+    def test_multiple_assignments(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent', user=testuser, period=testperiod)
+        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod)
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=testassignment1,
+                   relatedstudent=relatedstudent)
+        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod)
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=testassignment2,
+                   relatedstudent=relatedstudent)
+        testassignment3 = mommy.make('core.Assignment', parentnode=testperiod)
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=testassignment3,
+                   relatedstudent=relatedstudent)
+        annotated_period = Period.objects\
+            .extra_annotate_with_assignmentcount_for_studentuser(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertEqual(3, annotated_period.assignmentcount_for_studentuser)
+
+
 class TestPeriodManagerQualifiesForExam(TestCase):
     def setUp(self):
         self.testuser = UserBuilder('testuser').user
