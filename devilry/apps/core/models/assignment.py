@@ -164,6 +164,28 @@ class AssignmentQuerySet(models.QuerySet):
             )
         )
 
+    def prefetch_point_to_grade_map(self):
+        """
+        Prefetches the :class:`devilry.apps.core.models.PointToGradeMap` for each
+        assignment in the queryset.
+
+        Adds the ``prefetched_point_to_grade_map`` attribute to each assignment
+        in the queryset:
+
+            If there is no PointToGradeMap for the assignment,
+            the attribute will be ``None``.
+
+            If there is a PointToGradeMap for the assignment,
+            the attribute will be a :class:`devilry.apps.core.models.PointToGradeMap`
+            object. This object will have class:`devilry.apps.core.models.PointRangeToGrade`
+            prefetched and ordered.
+        """
+        from .pointrange_to_grade import PointToGradeMap
+        return self.prefetch_related(
+                models.Prefetch('pointtogrademap',
+                                queryset=PointToGradeMap.objects.prefetch_pointrange_to_grade(),
+                                to_attr='prefetched_point_to_grade_map'))
+
 
 class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
     """
@@ -800,15 +822,12 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def get_point_to_grade_map(self):
         """
         Get the :class:`~devilry.apps.core.models.PointToGradeMap` for this assinment,
-        creating if first if it does not exist.
+        or ``None`` if there is no PointToGradeMap for this assignment.
         """
-        from .pointrange_to_grade import PointToGradeMap
-        try:
-            return self.pointtogrademap
-        except ObjectDoesNotExist:
-            self.pointtogrademap = PointToGradeMap.objects.create(
-                assignment=self)
-            return self.pointtogrademap
+        if not hasattr(self, 'prefetched_point_to_grade_map'):
+            raise AttributeError('get_point_to_grade_map() requires '
+                                 'AssignmentQuerySet.prefetch_point_to_grade_map().')
+        return self.prefetched_point_to_grade_map
 
     def get_points_to_grade_map_as_cached_dict(self):
         """
