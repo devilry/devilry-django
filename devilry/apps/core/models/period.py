@@ -68,36 +68,38 @@ class PeriodQuerySet(models.QuerySet):
                 models.Q(parentnode_id__in=subjectids_where_is_admin_queryset)
             )
 
-    def annotate_with_user_qualifies_for_final_exam(self, user):
+    def extra_annotate_with_user_qualifies_for_final_exam(self, user):
         """
-        See :meth:`.PeriodManager.annotate_with_user_qualifies_for_final_exam`.
+        Annotate the queryset with ``user_qualifies_for_final_exam`` - ``True`` if the user
+        qualifies for final exams, ``False`` if the user does not qualify for final exams,
+        and ``None`` if qualifies for final exam has not been determined yet.
         """
         from devilry.devilry_qualifiesforexam.models import Status
         return self.extra(
                 select={
                     'user_qualifies_for_final_exam': """
-                    SELECT
-                        CASE
-                            WHEN
-                                devilry_qualifiesforexam_status.status = %s
-                            THEN
-                                NULL
-                            ELSE
-                                devilry_qualifiesforexam_qualifiesforfinalexam.qualifies
-                        END
-                    FROM devilry_qualifiesforexam_status
-                    INNER JOIN core_relatedstudent ON
-                      core_relatedstudent.period_id = core_period.id
-                      AND
-                      core_relatedstudent.user_id = %s
-                    LEFT JOIN devilry_qualifiesforexam_qualifiesforfinalexam ON
-                      devilry_qualifiesforexam_qualifiesforfinalexam.status_id = devilry_qualifiesforexam_status.id
-                      AND
-                      devilry_qualifiesforexam_qualifiesforfinalexam.relatedstudent_id = core_relatedstudent.id
-                    WHERE
-                      core_period.id = devilry_qualifiesforexam_status.period_id
-                    ORDER BY devilry_qualifiesforexam_status.createtime DESC
-                    LIMIT 1
+                        SELECT
+                            CASE
+                                WHEN
+                                    devilry_qualifiesforexam_status.status = %s
+                                THEN
+                                    NULL
+                                ELSE
+                                    devilry_qualifiesforexam_qualifiesforfinalexam.qualifies
+                            END
+                        FROM devilry_qualifiesforexam_status
+                        INNER JOIN core_relatedstudent ON
+                          core_relatedstudent.period_id = core_period.id
+                          AND
+                          core_relatedstudent.user_id = %s
+                        LEFT JOIN devilry_qualifiesforexam_qualifiesforfinalexam ON
+                          devilry_qualifiesforexam_qualifiesforfinalexam.status_id = devilry_qualifiesforexam_status.id
+                          AND
+                          devilry_qualifiesforexam_qualifiesforfinalexam.relatedstudent_id = core_relatedstudent.id
+                        WHERE
+                          core_period.id = devilry_qualifiesforexam_status.period_id
+                        ORDER BY devilry_qualifiesforexam_status.createtime DESC
+                        LIMIT 1
                 """
                 },
                 select_params=[

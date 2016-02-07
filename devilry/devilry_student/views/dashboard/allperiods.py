@@ -55,7 +55,7 @@ class AllPeriodsView(listbuilderview.FilterListMixin, listbuilderview.View):
         return coremodels.Period.objects\
             .filter_user_is_relatedstudent(user=self.request.user)\
             .filter_has_started()\
-            .annotate_with_user_qualifies_for_final_exam(user=self.request.user)\
+            .extra_annotate_with_user_qualifies_for_final_exam(user=self.request.user)\
             .select_related('parentnode')\
             .order_by('-start_time', 'parentnode__long_name')
 
