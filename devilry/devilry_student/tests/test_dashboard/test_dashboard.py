@@ -438,54 +438,61 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_querycount(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        for number in range(dashboard.DashboardView.paginate_by):
-            group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-            mommy.make('core.Examiner',
-                       assignmentgroup=group)
-            mommy.make('core.Candidate',
-                       relatedstudent__user=testuser,
-                       assignment_group=group)
+        testassignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment2 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        loops = dashboard.DashboardView.paginate_by / 2
+        for number in range(loops):
+            group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+            mommy.make('core.Examiner', assignmentgroup=group1)
+            mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group1)
             devilry_group_mommy_factories.feedbackset_first_attempt_published(
-                group=group, grading_points=1)
-        with self.assertNumQueries(2):
+                group=group1, grading_points=1)
+
+            group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+            mommy.make('core.Examiner', assignmentgroup=group2)
+            mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group2)
+            devilry_group_mommy_factories.feedbackset_first_attempt_published(
+                group=group2, grading_points=1)
+        with self.assertNumQueries(5):
             mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
-                dashboard.DashboardView.paginate_by,
+                loops * 2,
                 self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_querycount_points_to_grade_mapper_custom_table(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL,
                               fullname='testuser')
-        testassignment = mommy.make_recipe(
+        testassignment1 = mommy.make_recipe(
                 'devilry.apps.core.assignment_activeperiod_start',
                 points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
-        point_to_grade_map = mommy.make('core.PointToGradeMap',
-                                        assignment=testassignment, invalid=False)
-        mommy.make('core.PointRangeToGrade',
-                   point_to_grade_map=point_to_grade_map,
-                   minimum_points=0,
-                   maximum_points=10,
-                   grade='Bad')
-        mommy.make('core.PointRangeToGrade',
-                   point_to_grade_map=point_to_grade_map,
-                   minimum_points=11,
-                   maximum_points=70,
-                   grade='Ok')
-        mommy.make('core.PointRangeToGrade',
-                   point_to_grade_map=point_to_grade_map,
-                   minimum_points=71,
-                   maximum_points=100,
-                   grade='Best')
-        for number in range(dashboard.DashboardView.paginate_by):
-            group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-            mommy.make('core.Candidate',
-                       relatedstudent__user=testuser,
-                       assignment_group=group)
+        point_to_grade_map1 = mommy.make('core.PointToGradeMap',
+                                         assignment=testassignment1, invalid=False)
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map1,
+                   minimum_points=0, maximum_points=1)
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map1,
+                   minimum_points=2, maximum_points=3)
+        testassignment2 = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
+        point_to_grade_map2 = mommy.make('core.PointToGradeMap',
+                                         assignment=testassignment2, invalid=False)
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map2,
+                   minimum_points=0, maximum_points=1)
+
+        loops = dashboard.DashboardView.paginate_by / 2
+        for number in range(loops):
+            group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+            mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group1)
             devilry_group_mommy_factories.feedbackset_first_attempt_published(
-                group=group, grading_points=3)
-        with self.assertNumQueries(32):  # TODO: Get this down to 2
+                group=group1, grading_points=1)
+
+            group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+            mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group2)
+            devilry_group_mommy_factories.feedbackset_first_attempt_published(
+                group=group2, grading_points=1)
+        with self.assertNumQueries(7):
             mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
-                dashboard.DashboardView.paginate_by,
+                loops * 2,
                 self.__get_assignment_count(selector=mockresponse.selector))

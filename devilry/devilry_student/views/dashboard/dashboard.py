@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-from django.db import models
 from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
@@ -62,7 +61,6 @@ class DashboardView(listbuilderview.FilterListMixin,
         return coremodels.AssignmentGroup.objects\
             .filter_student_has_access(user=self.request.user)\
             .filter_is_active()\
-            .select_related('parentnode__parentnode__parentnode')\
             .annotate_with_grading_points()\
             .annotate_with_is_waiting_for_feedback()\
             .annotate_with_is_waiting_for_deliveries()\
@@ -72,9 +70,10 @@ class DashboardView(listbuilderview.FilterListMixin,
             .annotate_with_number_of_groupcomments_from_examiners()\
             .annotate_with_number_of_imageannotationcomments_from_students()\
             .annotate_with_number_of_imageannotationcomments_from_examiners()\
-            .prefetch_assignment_with_points_to_grade_map()\
             .distinct()\
-            .order_by('-parentnode__first_deadline', '-parentnode__publishing_time')
+            .order_by('-parentnode__first_deadline', '-parentnode__publishing_time')\
+            .prefetch_assignment_with_points_to_grade_map(
+                assignmentqueryset=Assignment.objects.select_related('parentnode__parentnode'))
 
     def get_no_items_message(self):
         return pgettext_lazy('student dashboard',
