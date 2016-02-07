@@ -75,7 +75,7 @@ class DashboardView(listbuilderview.FilterListMixin,
     def get_no_items_message(self):
         return pgettext_lazy('student dashboard',
                              'You have no active assignments. Use the button below to '
-                             'browse inactive assignments and courses')
+                             'browse inactive assignments and courses.')
 
 
 class App(crapp.App):

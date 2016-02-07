@@ -91,7 +91,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 'You have no active assignments. Use the button below to browse '
-                'inactive assignments and courses',
+                'inactive assignments and courses.',
                 mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
 
     def test_assignment_url(self):
