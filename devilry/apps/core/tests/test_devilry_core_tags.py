@@ -869,10 +869,11 @@ class TestDevilryGradeShort(test.TestCase):
                    minimum_points=11,
                    maximum_points=100,
                    grade='Good')
+        prefetched_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/grade-short.django.html',
-                devilry_core_tags.devilry_grade_short(testassignment, 10)))
+                devilry_core_tags.devilry_grade_short(prefetched_assignment, 10)))
         self.assertTrue(selector.exists(
             '.devilry-core-grade-short.devilry-core-grade.devilry-core-grade-mapper-custom-table'))
         self.assertEqual(
@@ -964,10 +965,11 @@ class TestDevilryGradeFull(test.TestCase):
                    minimum_points=11,
                    maximum_points=100,
                    grade='Good')
+        prefetched_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/grade-full.django.html',
-                devilry_core_tags.devilry_grade_full(testassignment, 10, "student")))
+                devilry_core_tags.devilry_grade_full(prefetched_assignment, 10, "student")))
         self.assertTrue(selector.exists(
             '.devilry-core-grade-full.devilry-core-grade.devilry-core-grade-mapper-custom-table'))
         self.assertEqual(
@@ -1106,10 +1108,11 @@ class TestDevilryGradeFull(test.TestCase):
                    minimum_points=0,
                    maximum_points=10,
                    grade='Bad')
+        prefetched_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/grade-full.django.html',
-                devilry_core_tags.devilry_grade_full(testassignment, 5, "student")))
+                devilry_core_tags.devilry_grade_full(prefetched_assignment, 5, "student")))
         self.assertTrue(selector.exists(
             '.devilry-core-grade-full.devilry-core-grade.devilry-core-grade-mapper-custom-table'))
         self.assertEqual(
@@ -1160,10 +1163,11 @@ class TestDevilryGradeFull(test.TestCase):
                    minimum_points=0,
                    maximum_points=10,
                    grade='Bad')
+        prefetched_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/grade-full.django.html',
-                devilry_core_tags.devilry_grade_full(testassignment, 5, "student")))
+                devilry_core_tags.devilry_grade_full(prefetched_assignment, 5, "student")))
         self.assertTrue(selector.exists(
             '.devilry-core-grade-full.devilry-core-grade.devilry-core-grade-mapper-custom-table'))
         self.assertEqual(
@@ -1214,10 +1218,11 @@ class TestDevilryGradeFull(test.TestCase):
                    minimum_points=0,
                    maximum_points=10,
                    grade='Bad')
+        prefetched_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/grade-full.django.html',
-                devilry_core_tags.devilry_grade_full(testassignment, 5, "examiner")))
+                devilry_core_tags.devilry_grade_full(prefetched_assignment, 5, "examiner")))
         self.assertTrue(selector.exists(
             '.devilry-core-grade-full.devilry-core-grade.devilry-core-grade-mapper-custom-table'))
         self.assertEqual(

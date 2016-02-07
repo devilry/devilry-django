@@ -26,7 +26,10 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
     flatten_rolefrontpage_url = True
 
     def get_rolequeryset(self):
-        return Assignment.objects.filter_examiner_has_access(self.request.user)
+        return Assignment.objects\
+            .filter_examiner_has_access(self.request.user)\
+            .prefetch_point_to_grade_map()\
+            .distinct()
 
     def get_titletext_for_role(self, role):
         """

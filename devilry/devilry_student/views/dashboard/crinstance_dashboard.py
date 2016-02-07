@@ -4,7 +4,7 @@ from django_cradmin import crmenu
 
 from devilry.devilry_student.cradminextensions import studentcrinstance
 from devilry.devilry_student.views.dashboard import dashboard
-from devilry.devilry_student.views.dashboard import allperiodsapp
+from devilry.devilry_student.views.dashboard import allperiods
 
 
 class Menu(crmenu.Menu):
@@ -36,7 +36,7 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
 
     apps = [
         ('dashboard', dashboard.App),
-        ('allperiods', allperiodsapp.App),
+        ('allperiods', allperiods.App),
     ]
 
     def has_access(self):
@@ -55,5 +55,5 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     @classmethod
     def matches_urlpath(cls, urlpath):
         return re.match('^/devilry_student/$', urlpath) or \
-            re.match('^/devilry_student/allperiods/$', urlpath) or \
+            re.match('^/devilry_student/allperiods/.*$', urlpath) or \
             re.match('^/devilry_student/filter/.*$', urlpath)

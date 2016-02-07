@@ -53,8 +53,10 @@ class TestStudentItemValue(test.TestCase):
                                parentnode__long_name='Test Assignment')
         mommy.make('core.Candidate',
                    assignment_group=testgroup)
+        annotated_group = AssignmentGroup.objects\
+            .prefetch_assignment_with_points_to_grade_map().get(id=testgroup.id)
         selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
-            value=testgroup).render())
+            value=annotated_group).render())
         self.assertEqual(
             'testsubject.testperiod - Test Assignment',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
@@ -64,8 +66,10 @@ class TestStudentItemValue(test.TestCase):
                                parentnode__long_name='Test Assignment')
         mommy.make('core.Candidate',
                    assignment_group=testgroup)
+        annotated_group = AssignmentGroup.objects\
+            .prefetch_assignment_with_points_to_grade_map().get(id=testgroup.id)
         selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
-            value=testgroup,
+            value=annotated_group,
             include_periodpath=False).render())
         self.assertEqual(
             'Test Assignment',
@@ -77,8 +81,10 @@ class TestStudentItemValue(test.TestCase):
                    assignmentgroup=testgroup,
                    relatedexaminer__user__fullname='Test User',
                    relatedexaminer__user__shortname='testuser@example.com')
+        annotated_group = AssignmentGroup.objects\
+            .prefetch_assignment_with_points_to_grade_map().get(id=testgroup.id)
         selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
-            value=testgroup).render())
+            value=annotated_group).render())
         self.assertFalse(
             selector.exists('.devilry-cradmin-groupitemvalue-examiners-names'))
 
@@ -86,12 +92,13 @@ class TestStudentItemValue(test.TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=False,
             grading_points=1)
-        testgroup = AssignmentGroup.objects\
+        annotated_group = AssignmentGroup.objects\
             .annotate_with_is_corrected()\
             .annotate_with_grading_points()\
+            .prefetch_assignment_with_points_to_grade_map()\
             .first()
         selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
-            value=testgroup).render())
+            value=annotated_group).render())
         self.assertEqual(
             'Grade: passed',
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
@@ -100,12 +107,13 @@ class TestStudentItemValue(test.TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=True,
             grading_points=1)
-        testgroup = AssignmentGroup.objects\
+        annotated_group = AssignmentGroup.objects\
             .annotate_with_is_corrected()\
             .annotate_with_grading_points()\
+            .prefetch_assignment_with_points_to_grade_map()\
             .first()
         selector = htmls.S(devilry_listbuilder.assignmentgroup.StudentItemValue(
-            value=testgroup).render())
+            value=annotated_group).render())
         self.assertEqual(
             'Grade: passed (1/1)',
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)

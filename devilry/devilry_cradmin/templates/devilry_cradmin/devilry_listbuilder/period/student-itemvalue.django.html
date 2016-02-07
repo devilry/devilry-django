@@ -1,0 +1,35 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load devilry_core_tags %}
+
+{% block title-content %}
+    {{ me.period.subject.long_name }} - {{ me.period.long_name }}
+{% endblock title-content %}
+
+{% block description-content %}
+    {% blocktrans trimmed count assignmentcount=me.period.assignmentcount_for_studentuser %}
+        {{ assignmentcount }} assignment
+    {% plural %}
+        {{ assignmentcount }} assignments
+    {% endblocktrans %}
+{% endblock description-content %}
+
+
+{% block below-description %}
+    {% if me.period.user_qualifies_for_final_exam != None %}
+        <p class="devilry-cradmin-perioditemvalue-student-qualifedforexam
+                    {% if me.period.user_qualifies_for_final_exam %}
+                        devilry-cradmin-perioditemvalue-student-qualifedforexam-yes
+                        text-success
+                    {% else %}
+                        devilry-cradmin-perioditemvalue-student-qualifedforexam-no
+                        text-danger
+                    {% endif %}">
+            {% if me.period.user_qualifies_for_final_exam %}
+                {% trans "Qualified for final exam" %}
+            {% else %}
+                {% trans "NOT qualified for final exam" %}
+            {% endif %}
+        </p>
+    {% endif %}
+{% endblock below-description %}

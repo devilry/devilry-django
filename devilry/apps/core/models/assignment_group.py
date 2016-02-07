@@ -1137,6 +1137,25 @@ class AssignmentGroupQuerySet(models.QuerySet):
         """
         return self.annotate(number_of_examiners=models.Count('examiners'))
 
+    def prefetch_assignment_with_points_to_grade_map(self, assignmentqueryset=None):
+        """
+        Prefetches the assignment in the ``prefetched_assignment`` attribute.
+        The prefetched assignment uses
+        :meth:`devilry.apps.core.models.AssignmentQuerySet.prefetch_point_to_grade_map`, which
+        means that each group in the queryset has an attribute named ``prefetched_assignment``,
+        and that attribute is an Assignment object with the PointToGradeMap prefetched.
+
+        Args:
+            assignmentqueryset: The base assignment queryset. Defaults to ``Assignment.objects.all()``.
+                Can be used to do further queries on the assignment queryset.
+        """
+        if not assignmentqueryset:
+            assignmentqueryset = Assignment.objects.all()
+        assignmentqueryset = assignmentqueryset.prefetch_point_to_grade_map()
+        return self.prefetch_related(models.Prefetch('parentnode',
+                                                     queryset=assignmentqueryset,
+                                                     to_attr='prefetched_assignment'))
+
 
 class AssignmentGroupManager(models.Manager):
     """

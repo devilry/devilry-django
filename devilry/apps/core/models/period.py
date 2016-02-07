@@ -26,17 +26,24 @@ class PeriodQuerySet(models.QuerySet):
 
     def filter_user_is_relatedstudent(self, user):
         """
-        See :meth:`.PeriodManager.filter_user_is_relatedstudent`.
+        Filter only periods where the given user is relatedstudent.
         """
         queryset = self.filter(relatedstudent__user=user)
         return queryset.distinct()
 
     def filter_active(self):
         """
-        See :meth:`.PeriodManager.filter_active`.
+        Filter only active periods.
         """
         now = datetime.now()
         return self.filter(start_time__lt=now, end_time__gt=now)
+
+    def filter_has_started(self):
+        """
+        Filter only started periods.
+        """
+        now = datetime.now()
+        return self.filter(start_time__lt=now)
 
     def filter_user_is_admin(self, user):
         """
@@ -61,40 +68,70 @@ class PeriodQuerySet(models.QuerySet):
                 models.Q(parentnode_id__in=subjectids_where_is_admin_queryset)
             )
 
-    def annotate_with_user_qualifies_for_final_exam(self, user):
+    def extra_annotate_with_user_qualifies_for_final_exam(self, user):
         """
-        See :meth:`.PeriodManager.annotate_with_user_qualifies_for_final_exam`.
+        Annotate the queryset with ``user_qualifies_for_final_exam`` - ``True`` if the user
+        qualifies for final exams, ``False`` if the user does not qualify for final exams,
+        and ``None`` if qualifies for final exam has not been determined yet.
         """
         from devilry.devilry_qualifiesforexam.models import Status
         return self.extra(
                 select={
                     'user_qualifies_for_final_exam': """
-                    SELECT
-                        CASE
-                            WHEN
-                                devilry_qualifiesforexam_status.status = %s
-                            THEN
-                                NULL
-                            ELSE
-                                devilry_qualifiesforexam_qualifiesforfinalexam.qualifies
-                        END
-                    FROM devilry_qualifiesforexam_status
-                    INNER JOIN core_relatedstudent ON
-                      core_relatedstudent.period_id = core_period.id
-                      AND
-                      core_relatedstudent.user_id = %s
-                    LEFT JOIN devilry_qualifiesforexam_qualifiesforfinalexam ON
-                      devilry_qualifiesforexam_qualifiesforfinalexam.status_id = devilry_qualifiesforexam_status.id
-                      AND
-                      devilry_qualifiesforexam_qualifiesforfinalexam.relatedstudent_id = core_relatedstudent.id
-                    WHERE
-                      core_period.id = devilry_qualifiesforexam_status.period_id
-                    ORDER BY devilry_qualifiesforexam_status.createtime DESC
-                    LIMIT 1
+                        SELECT
+                            CASE
+                                WHEN
+                                    devilry_qualifiesforexam_status.status = %s
+                                THEN
+                                    NULL
+                                ELSE
+                                    devilry_qualifiesforexam_qualifiesforfinalexam.qualifies
+                            END
+                        FROM devilry_qualifiesforexam_status
+                        INNER JOIN core_relatedstudent ON
+                          core_relatedstudent.period_id = core_period.id
+                          AND
+                          core_relatedstudent.user_id = %s
+                        LEFT JOIN devilry_qualifiesforexam_qualifiesforfinalexam ON
+                          devilry_qualifiesforexam_qualifiesforfinalexam.status_id = devilry_qualifiesforexam_status.id
+                          AND
+                          devilry_qualifiesforexam_qualifiesforfinalexam.relatedstudent_id = core_relatedstudent.id
+                        WHERE
+                          core_period.id = devilry_qualifiesforexam_status.period_id
+                        ORDER BY devilry_qualifiesforexam_status.createtime DESC
+                        LIMIT 1
                 """
                 },
                 select_params=[
                     Status.NOTREADY,
+                    user.id,
+                ]
+        )
+
+    def extra_annotate_with_assignmentcount_for_studentuser(self, user):
+        """
+        Annotate with ``assignmentcount_for_studentuser`` - the number of assignments
+        within each Period in the queryset where the given ``user`` is candidate.
+
+        Args:
+            user: A User object.
+        """
+        return self.extra(
+                select={
+                    'assignmentcount_for_studentuser': """
+                        SELECT
+                          COUNT(core_assignment.id)
+                        FROM core_assignment
+                        LEFT OUTER JOIN core_assignmentgroup
+                          ON (core_assignmentgroup.parentnode_id = core_assignment.id)
+                        INNER JOIN core_candidate
+                          ON (core_candidate.assignment_group_id = core_assignmentgroup.id)
+                        INNER JOIN core_relatedstudent
+                          ON (core_relatedstudent.id = core_candidate.relatedstudent_id)
+                        WHERE core_relatedstudent.user_id = %s
+                    """
+                },
+                select_params=[
                     user.id,
                 ]
         )

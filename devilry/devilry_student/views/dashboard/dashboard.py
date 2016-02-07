@@ -7,6 +7,7 @@ from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import listfilter
 
 from devilry.apps.core import models as coremodels
+from devilry.apps.core.models import Assignment
 from devilry.devilry_cradmin import devilry_listbuilder
 
 
@@ -27,9 +28,10 @@ class GroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
 
 class DashboardView(listbuilderview.FilterListMixin,
                     listbuilderview.View):
-    model = coremodels.Assignment
+    model = coremodels.AssignmentGroup
     value_renderer_class = devilry_listbuilder.assignmentgroup.StudentItemValue
     frame_renderer_class = GroupItemFrame
+    paginate_by = 15
     template_name = 'devilry_student/dashboard/dashboard.django.html'
 
     def get_pagetitle(self):
@@ -59,7 +61,6 @@ class DashboardView(listbuilderview.FilterListMixin,
         return coremodels.AssignmentGroup.objects\
             .filter_student_has_access(user=self.request.user)\
             .filter_is_active()\
-            .select_related('parentnode__parentnode__parentnode')\
             .annotate_with_grading_points()\
             .annotate_with_is_waiting_for_feedback()\
             .annotate_with_is_waiting_for_deliveries()\
@@ -71,6 +72,13 @@ class DashboardView(listbuilderview.FilterListMixin,
             .annotate_with_number_of_imageannotationcomments_from_examiners()\
             .distinct()\
             .order_by('-parentnode__first_deadline', '-parentnode__publishing_time')\
+            .prefetch_assignment_with_points_to_grade_map(
+                assignmentqueryset=Assignment.objects.select_related('parentnode__parentnode'))
+
+    def get_no_items_message(self):
+        return pgettext_lazy('student dashboard',
+                             'You have no active assignments. Use the button below to '
+                             'browse inactive assignments and courses.')
 
 
 class App(crapp.App):

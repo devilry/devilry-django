@@ -43,21 +43,20 @@ class TestAssignment(TestCase):
         self.assertEquals(assignment1.points_to_grade(10), '10/10')
 
     def test_points_to_grade_custom_table(self):
-        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment(
-                'assignment1',
-                points_to_grade_mapper='custom-table',
-                max_points=10).assignment
-        pointtogrademap = PointToGradeMap.objects.create(
-            assignment=assignment1)
-        pointtogrademap.pointrangetograde_set.create(
-            minimum_points=0,
-            maximum_points=10,
-            grade='Ok'
-        )
-        pointtogrademap.clean()
-        pointtogrademap.save()
-        self.assertEquals(assignment1.points_to_grade(5), 'Ok')
+        testassignment = mommy.make(
+                'core.Assignment',
+                max_points=10,
+                points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
+        point_to_grade_map = mommy.make(
+                'core.PointToGradeMap',
+                assignment=testassignment)
+        mommy.make('core.PointRangeToGrade',
+                   point_to_grade_map=point_to_grade_map,
+                   minimum_points=0,
+                   maximum_points=10,
+                   grade='Ok')
+        prefetched_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
+        self.assertEquals(prefetched_assignment.points_to_grade(5), 'Ok')
 
     def test_has_valid_grading_setup_valid_by_default(self):
         assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -930,3 +929,16 @@ class TestAssignmentQuerySetFilterIsAdmin(TestCase):
         self.assertEqual(
             {testassignment},
             set(Assignment.objects.filter_user_is_admin(user=testuser)))
+
+
+class TestAssignmentQuerySetPrefetchGradeToPointMap(TestCase):
+    def test_no_pointtogrademap(self):
+        testassignment = mommy.make('core.Assignment')
+        annotated_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
+        self.assertIsNone(annotated_assignment.prefetched_point_to_grade_map)
+
+    def test_has_pointtogrademap(self):
+        testassignment = mommy.make('core.Assignment')
+        point_to_grade_map = mommy.make('core.PointToGradeMap', assignment=testassignment)
+        annotated_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
+        self.assertEqual(point_to_grade_map, annotated_assignment.prefetched_point_to_grade_map)

@@ -1,0 +1,14 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load devilry_core_tags %}
+
+{% block title-content %}
+    {{ me.period.long_name }}
+{% endblock title-content %}
+
+{% block description-content %}
+    <span class="devilry-cradmin-perioditemvalue-start-time-value">{{ me.period.start_time|date:"DATETIME_FORMAT" }}</span>
+    &mdash;
+    <span class="devilry-cradmin-perioditemvalue-end-time-value">{{ me.period.end_time|date:"DATETIME_FORMAT" }}</span>
+{% endblock description-content %}
+

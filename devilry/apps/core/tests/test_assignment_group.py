@@ -3832,3 +3832,19 @@ class TestAssignmentGroupQuerySetAnnotateWithNumberOfExaminers(TestCase):
         self.assertEqual(5, annotated_group1.number_of_examiners)
         annotated_group2 = AssignmentGroup.objects.annotate_with_number_of_examiners().get(id=testgroup2.id)
         self.assertEqual(7, annotated_group2.number_of_examiners)
+
+
+class TestAssignmentGroupQuerySetPrefetchAssignmentWithPointsToGradeMap(TestCase):
+    def test_no_pointtogrademap(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        annotated_group = AssignmentGroup.objects\
+            .prefetch_assignment_with_points_to_grade_map().get(id=testgroup.id)
+        self.assertIsNone(annotated_group.prefetched_assignment.prefetched_point_to_grade_map)
+
+    def test_has_pointtogrademap(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        point_to_grade_map = mommy.make('core.PointToGradeMap', assignment=testgroup.assignment)
+        annotated_group = AssignmentGroup.objects\
+            .prefetch_assignment_with_points_to_grade_map().get(id=testgroup.id)
+        self.assertEqual(point_to_grade_map,
+                         annotated_group.prefetched_assignment.prefetched_point_to_grade_map)

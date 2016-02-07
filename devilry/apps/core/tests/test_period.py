@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.test import TestCase
+from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.apps.core.models import Period, Subject
@@ -17,97 +18,270 @@ from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 
 
-class TestPeriodManager(TestCase):
+class TestPeriodQuerySetFilterActive(TestCase):
     def test_filter_active(self):
-        subjectbuilder = SubjectBuilder.quickadd_ducku_duck1010()
-        active = subjectbuilder.add_6month_active_period().period
-        subjectbuilder.add_6month_lastyear_period()
-        subjectbuilder.add_6month_nextyear_period()
+        mommy.make_recipe('devilry.apps.core.period_old')
+        active_period = mommy.make_recipe('devilry.apps.core.period_active')
+        mommy.make_recipe('devilry.apps.core.period_future')
         self.assertEquals(
-            list(Period.objects.filter_active()),
-            [active])
+                set(Period.objects.filter_active()),
+                {active_period})
 
 
-class TestPeriodManagerQualifiesForExam(TestCase):
-    def setUp(self):
-        self.testuser = UserBuilder('testuser').user
-        self.testadmin = UserBuilder('testadmin').user
-        self.subjectbuilder = SubjectBuilder.quickadd_ducku_duck1010()
-        self.periodbuilder = self.subjectbuilder.add_6month_active_period() \
-            .add_relatedstudents(self.testuser)
-        self.relatedstudent = self.periodbuilder.period.relatedstudent_set.get(user=self.testuser)
+class TestPeriodQuerySetFilterHasStarted(TestCase):
+    def test_filter_active(self):
+        old_period = mommy.make_recipe('devilry.apps.core.period_old')
+        active_period = mommy.make_recipe('devilry.apps.core.period_active')
+        mommy.make_recipe('devilry.apps.core.period_future')
+        self.assertEquals(
+                set(Period.objects.filter_has_started()),
+                {old_period, active_period})
 
-    def __create_status(self, status):
-        return Status.objects.create(period=self.periodbuilder.period,
-                                     user=self.testadmin,
-                                     status=status)
 
-    def test_qualfied(self):
-        status = self.__create_status(Status.READY)
-        status.students.create(relatedstudent=self.relatedstudent, qualifies=True)
-        self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
-        self.assertTrue(
-            Period.objects.annotate_with_user_qualifies_for_final_exam(
-                self.testuser).first().user_qualifies_for_final_exam)
+class TestPeriodQuerySetExtraAnnotateWithAssignmentcountForStudentuser(TestCase):
+    def test_no_assignments(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        annotated_period = Period.objects\
+            .extra_annotate_with_assignmentcount_for_studentuser(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertEqual(0, annotated_period.assignmentcount_for_studentuser)
 
-    def test_not_qualfied(self):
-        status = self.__create_status(Status.READY)
-        status.students.create(relatedstudent=self.relatedstudent, qualifies=False)
-        self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
-        self.assertFalse(
-            Period.objects.annotate_with_user_qualifies_for_final_exam(
-                self.testuser).first().user_qualifies_for_final_exam)
+    def test_no__assignments_where_candidate(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mommy.make('core.Candidate',  # Not testuser Candidate
+                   assignment_group__parentnode=testassignment,
+                   relatedstudent__period=testperiod)
+        annotated_period = Period.objects\
+            .extra_annotate_with_assignmentcount_for_studentuser(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertEqual(0, annotated_period.assignmentcount_for_studentuser)
 
+    def test_single_assignment(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=testassignment,
+                   relatedstudent__user=testuser,
+                   relatedstudent__period=testperiod)
+        annotated_period = Period.objects\
+            .extra_annotate_with_assignmentcount_for_studentuser(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertEqual(1, annotated_period.assignmentcount_for_studentuser)
+
+    def test_multiple_assignments(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent', user=testuser, period=testperiod)
+        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod)
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=testassignment1,
+                   relatedstudent=relatedstudent)
+        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod)
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=testassignment2,
+                   relatedstudent=relatedstudent)
+        testassignment3 = mommy.make('core.Assignment', parentnode=testperiod)
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=testassignment3,
+                   relatedstudent=relatedstudent)
+        annotated_period = Period.objects\
+            .extra_annotate_with_assignmentcount_for_studentuser(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertEqual(3, annotated_period.assignmentcount_for_studentuser)
+
+
+class TestPeriodQuerySetExtraAnnotateWithUserQualifiesForFinalExam(TestCase):
     def test_not_set(self):
-        self.__create_status(Status.READY)
-        self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
-        self.assertIsNone(
-            Period.objects.annotate_with_user_qualifies_for_final_exam(
-                self.testuser).first().user_qualifies_for_final_exam)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+                   status=Status.READY)
+        annotated_period = Period.objects\
+            .extra_annotate_with_user_qualifies_for_final_exam(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
 
     def test_no_status(self):
-        self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
-        self.assertIsNone(
-            Period.objects.annotate_with_user_qualifies_for_final_exam(
-                self.testuser).first().user_qualifies_for_final_exam)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        annotated_period = Period.objects\
+            .extra_annotate_with_user_qualifies_for_final_exam(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
 
-    def test_not_ready(self):
-        status = self.__create_status(Status.NOTREADY)
-        status.students.create(relatedstudent=self.relatedstudent, qualifies=True)
-        self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
-        self.assertIsNone(
-            Period.objects.annotate_with_user_qualifies_for_final_exam(
-                self.testuser).first().user_qualifies_for_final_exam)
+    def test_not_ready_qualified(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+                            status=Status.NOTREADY)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=relatedstudent,
+                   status=status,
+                   qualifies=True)
+        annotated_period = Period.objects\
+            .extra_annotate_with_user_qualifies_for_final_exam(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
 
-    def test_almostready(self):
-        status = self.__create_status(Status.ALMOSTREADY)
-        status.students.create(relatedstudent=self.relatedstudent, qualifies=True)
-        self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
-        self.assertTrue(
-            Period.objects.annotate_with_user_qualifies_for_final_exam(
-                self.testuser).first().user_qualifies_for_final_exam)
+    def test_not_ready_not_qualified(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+                            status=Status.NOTREADY)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=relatedstudent,
+                   status=status,
+                   qualifies=False)
+        annotated_period = Period.objects\
+            .extra_annotate_with_user_qualifies_for_final_exam(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
+
+    def test_not_ready_qualifies_none(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+                            status=Status.NOTREADY)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=relatedstudent,
+                   status=status,
+                   qualifies=None)
+        annotated_period = Period.objects\
+            .extra_annotate_with_user_qualifies_for_final_exam(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
+
+    def test_ready_qualified(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+                            status=Status.READY)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=relatedstudent,
+                   status=status,
+                   qualifies=True)
+        annotated_period = Period.objects\
+            .extra_annotate_with_user_qualifies_for_final_exam(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertTrue(annotated_period.user_qualifies_for_final_exam)
+
+    def test_ready_not_qualified(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+                            status=Status.READY)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=relatedstudent,
+                   status=status,
+                   qualifies=False)
+        annotated_period = Period.objects\
+            .extra_annotate_with_user_qualifies_for_final_exam(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertFalse(annotated_period.user_qualifies_for_final_exam)
+
+    def test_ready_qualifies_none(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+                            status=Status.READY)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=relatedstudent,
+                   status=status,
+                   qualifies=None)
+        annotated_period = Period.objects\
+            .extra_annotate_with_user_qualifies_for_final_exam(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
+
+    def test_almostready_qualified(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+                            status=Status.ALMOSTREADY)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=relatedstudent,
+                   status=status,
+                   qualifies=True)
+        annotated_period = Period.objects\
+            .extra_annotate_with_user_qualifies_for_final_exam(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertTrue(annotated_period.user_qualifies_for_final_exam)
+
+    def test_almostready_not_qualified(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+                            status=Status.ALMOSTREADY)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=relatedstudent,
+                   status=status,
+                   qualifies=False)
+        annotated_period = Period.objects\
+            .extra_annotate_with_user_qualifies_for_final_exam(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertFalse(annotated_period.user_qualifies_for_final_exam)
+
+    def test_almostready_qualifies_none(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
+        status = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+                            status=Status.ALMOSTREADY)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=relatedstudent,
+                   status=status,
+                   qualifies=None)
+        annotated_period = Period.objects\
+            .extra_annotate_with_user_qualifies_for_final_exam(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
 
     def test_multiple_statuses_use_last(self):
-        status = self.__create_status(Status.READY)
-        self.__create_status(Status.NOTREADY)
-        status.students.create(relatedstudent=self.relatedstudent, qualifies=True)
-        self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
-        self.assertIsNone(
-            Period.objects.annotate_with_user_qualifies_for_final_exam(
-                self.testuser).first().user_qualifies_for_final_exam)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
+        oldstatus = mommy.make('devilry_qualifiesforexam.Status', period=testperiod,
+                               status=Status.READY,
+                               createtime=timezone.now() - timedelta(days=2))
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=relatedstudent,
+                   status=oldstatus,
+                   qualifies=True)
+        mommy.make('devilry_qualifiesforexam.Status', period=testperiod,  # The last status
+                   status=Status.NOTREADY,
+                   createtime=timezone.now())
+        annotated_period = Period.objects\
+            .extra_annotate_with_user_qualifies_for_final_exam(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
 
     def test_use_correct_period(self):
-        otherperiodbuilder = self.subjectbuilder.add_6month_lastyear_period() \
-            .add_relatedstudents(self.testuser)
-        status = Status.objects.create(period=otherperiodbuilder.period,
-                                       user=self.testadmin,
-                                       status=Status.READY)
-        status.students.create(
-            relatedstudent=otherperiodbuilder.period.relatedstudent_set.get(user=self.testuser),
-            qualifies=True)
-        self.assertIsNone(
-            Period.objects.annotate_with_user_qualifies_for_final_exam(
-                self.testuser).get(id=self.periodbuilder.period.id).user_qualifies_for_final_exam)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        otherperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent', period=otherperiod, user=testuser)
+        status = mommy.make('devilry_qualifiesforexam.Status', period=otherperiod,
+                            status=Status.READY)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=relatedstudent,
+                   status=status,
+                   qualifies=True)
+        testperiod = mommy.make('core.Period')
+        annotated_period = Period.objects\
+            .extra_annotate_with_user_qualifies_for_final_exam(user=testuser)\
+            .get(id=testperiod.id)
+        self.assertIsNone(annotated_period.user_qualifies_for_final_exam)
 
 
 class TestPeriodQuerySetPermission(TestCase):

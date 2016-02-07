@@ -80,7 +80,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
         self.assertEqual(datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_START),
                          mockresponse.selector.one(
-                             '.devilry-admin-period-overview-period-start-time-value').alltext_normalized)
+                             '.devilry-cradmin-perioditemvalue-start-time-value').alltext_normalized)
 
     def test_periodlist_itemrendering_end_time(self):
         testsubject = mommy.make('core.Subject')
@@ -90,7 +90,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
         self.assertEqual(datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
                          mockresponse.selector.one(
-                             '.devilry-admin-period-overview-period-end-time-value').alltext_normalized)
+                             '.devilry-cradmin-perioditemvalue-end-time-value').alltext_normalized)
 
     def test_periodlist_ordering(self):
         testsubject = mommy.make('core.Subject')

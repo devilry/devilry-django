@@ -1,5 +1,7 @@
+from __future__ import unicode_literals
 from datetime import timedelta
 
+import mock
 from django import test
 from django.conf import settings
 from django.utils import timezone
@@ -9,7 +11,7 @@ from django_cradmin.crinstance import reverse_cradmin_url
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
-from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START
+from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import GroupComment
@@ -44,7 +46,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'view feedback or communicate with you examiner.',
                 mockresponse.selector.one('.devilry-page-subheader').alltext_normalized)
 
-    def __test_assignment_count(self, selector):
+    def __get_assignment_count(self, selector):
         return selector.count('.devilry-cradmin-groupitemvalue')
 
     def test_not_assignments_where_not_student(self):
@@ -53,7 +55,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 0,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_not_future_periods(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -63,7 +65,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 0,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_not_old_periods(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -73,7 +75,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 0,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_include_active_periods(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -82,7 +84,15 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 1,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
+
+    def test_no_active_assignments_message(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertEqual(
+                'You have no active assignments. Use the button below to browse '
+                'inactive assignments and courses.',
+                mockresponse.selector.one('.django-cradmin-listing-no-items-message').alltext_normalized)
 
     def test_assignment_url(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -110,7 +120,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
                 0,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_subject_short_name(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -124,7 +134,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
                 1,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_subject_long_name(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -138,7 +148,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
                 1,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_period_short_name(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -152,7 +162,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
                 1,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_period_long_name(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -166,7 +176,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
                 1,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_assignment_short_name(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -180,7 +190,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
                 1,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_grouplist_search_match_assignment_long_name(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -194,7 +204,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestuser=testuser)
         self.assertEqual(
                 1,
-                self.__test_assignment_count(selector=mockresponse.selector))
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def __get_assignment_titles(self, selector):
         return [element.alltext_normalized
@@ -383,51 +393,106 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '.devilry-cradmin-groupitemvalue '
                         '.devilry-cradmin-groupitemvalue-comments').alltext_normalized)
 
+    def test_allperiods_link_label(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertEqual(
+                'Browse all assignments and courses',
+                mockresponse.selector.one('#devilry_student_dashboard_allperiods_link').alltext_normalized)
+
+    def test_link_urls(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertEqual(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(
+                mock.call(appname='allperiods', args=(), viewname='INDEX', kwargs={}),
+                mockresponse.request.cradmin_instance.reverse_url.call_args_list[0])
+
+    def test_no_pagination(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Candidate', relatedstudent__user=testuser,
+                   assignment_group__parentnode__parentnode__start_time=ACTIVE_PERIOD_START,
+                   assignment_group__parentnode__parentnode__end_time=ACTIVE_PERIOD_END,
+                   _quantity=dashboard.DashboardView.paginate_by)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-loadmorepager'))
+
+    def test_pagination(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Candidate', relatedstudent__user=testuser,
+                   assignment_group__parentnode__parentnode__start_time=ACTIVE_PERIOD_START,
+                   assignment_group__parentnode__parentnode__end_time=ACTIVE_PERIOD_END,
+                   _quantity=dashboard.DashboardView.paginate_by + 1)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertTrue(mockresponse.selector.exists('.django-cradmin-loadmorepager'))
+
     def test_querycount(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        for number in range(30):
-            group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-            mommy.make('core.Examiner',
-                       assignmentgroup=group)
-            mommy.make('core.Candidate',
-                       relatedstudent__user=testuser,
-                       assignment_group=group)
+        testassignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment2 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        loops = dashboard.DashboardView.paginate_by / 2
+        for number in range(loops):
+            group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+            mommy.make('core.Examiner', assignmentgroup=group1)
+            mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group1)
             devilry_group_mommy_factories.feedbackset_first_attempt_published(
-                group=group, grading_points=1)
-        with self.assertNumQueries(1):
-            self.mock_http200_getrequest_htmls(requestuser=testuser)
+                group=group1, grading_points=1)
+
+            group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+            mommy.make('core.Examiner', assignmentgroup=group2)
+            mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group2)
+            devilry_group_mommy_factories.feedbackset_first_attempt_published(
+                group=group2, grading_points=1)
+        with self.assertNumQueries(5):
+            mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertEqual(
+                loops * 2,
+                self.__get_assignment_count(selector=mockresponse.selector))
 
     def test_querycount_points_to_grade_mapper_custom_table(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL,
                               fullname='testuser')
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
-        point_to_grade_map = mommy.make('core.PointToGradeMap',
-                                        assignment=testassignment, invalid=False)
-        mommy.make('core.PointRangeToGrade',
-                   point_to_grade_map=point_to_grade_map,
-                   minimum_points=0,
-                   maximum_points=10,
-                   grade='Bad')
-        mommy.make('core.PointRangeToGrade',
-                   point_to_grade_map=point_to_grade_map,
-                   minimum_points=11,
-                   maximum_points=70,
-                   grade='Ok')
-        mommy.make('core.PointRangeToGrade',
-                   point_to_grade_map=point_to_grade_map,
-                   minimum_points=71,
-                   maximum_points=100,
-                   grade='Best')
-        for number in range(30):
-            group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-            mommy.make('core.Examiner',
-                       assignmentgroup=group)
-            mommy.make('core.Candidate',
-                       relatedstudent__user__fullname='candidate{}'.format(number),
-                       assignment_group=group)
+        testassignment1 = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
+        point_to_grade_map1 = mommy.make('core.PointToGradeMap',
+                                         assignment=testassignment1, invalid=False)
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map1,
+                   minimum_points=0, maximum_points=1)
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map1,
+                   minimum_points=2, maximum_points=3)
+        testassignment2 = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
+        point_to_grade_map2 = mommy.make('core.PointToGradeMap',
+                                         assignment=testassignment2, invalid=False)
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map2,
+                   minimum_points=0, maximum_points=1)
+
+        loops = dashboard.DashboardView.paginate_by / 2
+        for number in range(loops):
+            group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+            mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group1)
             devilry_group_mommy_factories.feedbackset_first_attempt_published(
-                group=group, grading_points=3)
-        with self.assertNumQueries(1):
-            self.mock_http200_getrequest_htmls(requestuser=testuser)
+                group=group1, grading_points=1)
+
+            group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+            mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group2)
+            devilry_group_mommy_factories.feedbackset_first_attempt_published(
+                group=group2, grading_points=1)
+        with self.assertNumQueries(7):
+            mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertEqual(
+                loops * 2,
+                self.__get_assignment_count(selector=mockresponse.selector))

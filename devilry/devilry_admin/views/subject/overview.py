@@ -28,7 +28,7 @@ class Overview(listbuilderview.FilterListMixin, listbuilderview.View):
     template_name = 'devilry_admin/subject/overview.django.html'
     model = Period
     frame_renderer_class = PeriodItemFrame
-    value_renderer_class = devilry_listbuilder.period.ItemValue
+    value_renderer_class = devilry_listbuilder.period.AdminItemValue
 
     def add_filterlist_items(self, filterlist):
         filterlist.append(listfilter.django.single.textinput.Search(

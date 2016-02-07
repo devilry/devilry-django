@@ -24,6 +24,26 @@ class DuplicateGradeError(Exception):
     pass
 
 
+class PointToGradeMapQuerySet(models.QuerySet):
+    def prefetch_pointrange_to_grade(self):
+        """
+        Prefetch all :class:`.PointRangeToGrade` objects
+        for each PointToGradeMap objects in the queryset,
+        and stores the result in the ``prefetched_pointrangetograde_objects``.
+
+        The PointRangeToGrade objects in ``prefetched_pointrangetograde_objects``
+        is ordered by ``minimum_points`` ascending.
+
+        You should use the :meth:`.PointToGradeMap.prefetched_pointrangetogrades`
+        property ``prefetched_pointrangetograde_objects``, because that shows a
+        good error message when you forget to use this method on the queryset.
+        """
+        return self.prefetch_related(
+                models.Prefetch('pointrangetograde_set',
+                                queryset=PointRangeToGrade.objects.order_by('minimum_points'),
+                                to_attr='prefetched_pointrangetograde_objects'))
+
+
 class PointToGradeMap(models.Model):
     """
     Data structure to store the mapping from a point ranges to grades
@@ -44,6 +64,8 @@ class PointToGradeMap(models.Model):
         changes to :attr:`devilry.apps.core.models.Assignment.max_points`,
         or when the map has been created, but it is empty.
     """
+    objects = PointToGradeMapQuerySet.as_manager()
+
     assignment = models.OneToOneField(Assignment)
     invalid = models.BooleanField(default=True)
 
@@ -121,15 +143,32 @@ class PointToGradeMap(models.Model):
         django ChoiceField and TypedChoiceField with coerce set to ``int``.
         """
         return [(pointrange.minimum_points, pointrange.grade)
-                for pointrange in self.pointrangetograde_set.all()]
+                for pointrange in self.prefetched_pointrangetogrades]
+
+    @property
+    def prefetched_pointrangetogrades(self):
+        """
+        Get a list of the :class:`.PointRangeToGrade` objects within this
+        PointToGradeMap. The list is ordered by ``minimum_points``.
+
+        This only works if the queryset used to get the PointToGradeMap
+        uses :class:`.PointToGradeMapQuerySet.prefetch_pointrange_to_grade`.
+        """
+        if not hasattr(self, 'prefetched_pointrangetograde_objects'):
+            raise AttributeError('The prefetched_pointrangetogrades property requires '
+                                 'PointToGradeMap.prefetch_pointrange_to_grade()')
+        return self.prefetched_pointrangetograde_objects
 
     def as_flat_dict(self):
         """
         Get a dict where the possible points in the PointToGradeMap
         are keys mapping to the grade for that amount of points.
+
+        Assumes the queryset for PointRangeToGrade is already ordered by ``minimum_points``,
+        which it will be if you use
         """
         points_to_grade_dict = {}
-        for pointrange_to_grade in self.pointrangetograde_set.order_by('minimum_points'):
+        for pointrange_to_grade in self.prefetched_pointrangetogrades:
             for points in range(pointrange_to_grade.minimum_points,
                                 pointrange_to_grade.maximum_points + 1):
                 points_to_grade_dict[points] = pointrange_to_grade.grade
