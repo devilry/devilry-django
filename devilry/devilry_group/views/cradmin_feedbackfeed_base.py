@@ -1,5 +1,6 @@
 # Django imports
 from django import forms
+from django.db import models
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
@@ -9,6 +10,7 @@ import json
 import datetime
 
 # Devilry/cradmin imports
+from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_group.timeline_builder import feedbackfeed_timeline_builder
@@ -46,6 +48,16 @@ class FeedbackFeedBaseView(create.CreateView):
         'django-cradmin-bulkfileupload-form': ''
     }
 
+    submit_use_label = _('Post comment')
+
+    def get_devilryrole(self):
+        """
+
+        Returns:
+
+        """
+        raise NotImplementedError('Must be implemented in subclass')
+
     def get_form_class(self):
         return GroupCommentForm
 
@@ -55,19 +67,13 @@ class FeedbackFeedBaseView(create.CreateView):
         kwargs['group'] = group
         return kwargs
 
-    def _get_comments_for_group(self, group):
-        """
-        Retrieves the comments a user has access to.
-        This function must be implemented by subclasses of :class:`~.FeedbackFeedBaseView`
-
-        :param group:
-            The :class:`devilry.apps.core.models.AssignmentGroup` the user belongs to.
-
-        Returns:
-            List of :class:`devilry.devilry_group.models.GroupComment` objects.
-
-        """
-        raise NotImplementedError("Subclasses must implement _get_queryset_for_group!")
+    def __build_timeline(self):
+        timeline_builder = feedbackfeed_timeline_builder.FeedbackFeedTimelineBuilder(
+                group=self.request.cradmin_role,
+                requestuser=self.request.user,
+                devilryrole=self.get_devilryrole())
+        timeline_builder.build()
+        return timeline_builder
 
     def get_context_data(self, **kwargs):
         """
@@ -80,22 +86,19 @@ class FeedbackFeedBaseView(create.CreateView):
             The context data dictionary.
         """
         context = super(FeedbackFeedBaseView, self).get_context_data(**kwargs)
-        timelime_builder = feedbackfeed_timeline_builder.FeedbackFeedTimelineBuilder(self)
+
+        context['devilry_ui_role'] = self.get_devilryrole()
         context['subject'] = self.request.cradmin_role.assignment.period.subject
         context['assignment'] = self.request.cradmin_role.assignment
         context['period'] = self.request.cradmin_role.assignment.period
-        feedbacksets = timelime_builder.get_feedbacksets_for_group(self.request.cradmin_role)
-        context['last_deadline'], context['timeline'] = timelime_builder.build_timeline(self.request.cradmin_role, feedbacksets)
-        context['feedbacksets'] = feedbacksets
-        try:
-            context['last_feedbackset'] = feedbacksets[0]
-        except IndexError:
-            pass
+        built_timeline = self.__build_timeline()
+        context['last_deadline'] = built_timeline.get_last_deadline()
+        context['timeline'] = built_timeline.timeline
+        context['feedbacksets'] = built_timeline.feedbacksets
+        context['last_feedbackset'] = built_timeline.get_last_feedbackset()
         context['current_date'] = datetime.datetime.now()
 
         return context
-
-    submit_use_label = _('Post comment')
 
     def get_button_layout(self):
         """

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
 from model_mommy import mommy
@@ -18,7 +19,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
 
     def test_get(self):
         candidate = mommy.make('core.Candidate',
-                             relatedstudent=mommy.make('core.RelatedStudent'))
+                               relatedstudent=mommy.make('core.RelatedStudent'))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
                                                           requestuser=candidate.relatedstudent.user)
         self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
@@ -37,7 +38,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
 
     def test_get_feedbackfeed_student_add_comment_to_feedbackset_without_deadline(self):
         candidate = mommy.make('core.Candidate',
-                             relatedstudent=mommy.make('core.RelatedStudent'))
+                               relatedstudent=mommy.make('core.RelatedStudent'))
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='student',
                              published_datetime=timezone.now(),
@@ -66,18 +67,22 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         candidate = mommy.make('core.Candidate',
                                assignment_group=group,
                                relatedstudent=mommy.make('core.RelatedStudent'))
-        feedbackset1 = mommy.make('devilry_group.FeedbackSet', group=group, is_last_in_group=False)
-        feedbackset2 = mommy.make('devilry_group.FeedbackSet', group=group, deadline_datetime=timezone.now()+timezone.timedelta(days=1))
+        feedbackset1 = mommy.make('devilry_group.FeedbackSet',
+                                  group=group,
+                                  is_last_in_group=False)
+        feedbackset2 = mommy.make('devilry_group.FeedbackSet',
+                                  group=group,
+                                  deadline_datetime=timezone.now()+timezone.timedelta(days=1))
         mommy.make('devilry_group.GroupComment',
-                             user=candidate.relatedstudent.user,
-                             user_role='student',
-                             published_datetime=timezone.now(),
-                             feedback_set=feedbackset1)
+                   user=candidate.relatedstudent.user,
+                   user_role='student',
+                   published_datetime=timezone.now(),
+                   feedback_set=feedbackset1)
         mommy.make('devilry_group.GroupComment',
-                             user=candidate.relatedstudent.user,
-                             user_role='student',
-                             published_datetime=timezone.now(),
-                             feedback_set=feedbackset2)
+                   user=candidate.relatedstudent.user,
+                   user_role='student',
+                   published_datetime=timezone.now(),
+                   feedback_set=feedbackset2)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group,
                                                           requestuser=candidate.relatedstudent.user)
         self.assertTrue(mockresponse.selector.exists('.after-deadline-badge'))
@@ -139,8 +144,8 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
     def test_get_feedbackfeed_student_can_see_examiner_visibility_visible_to_everyone(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         candidate = mommy.make('core.Candidate',
-                             assignment_group__assignment=assignment,
-                             relatedstudent=mommy.make('core.RelatedStudent'))
+                               assignment_group__assignment=assignment,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=candidate.assignment_group,
                               relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='John Doe'))
@@ -158,8 +163,8 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
     def test_get_feedbackfeed_student_can_see_examiner_visibility_visible_to_everyone_after_deadline(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         candidate = mommy.make('core.Candidate',
-                             assignment_group__assignment=assignment,
-                             relatedstudent=mommy.make('core.RelatedStudent'))
+                               assignment_group__assignment=assignment,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=candidate.assignment_group,
                               relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='John Doe'),)
@@ -175,27 +180,30 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertEquals(examiner.relatedexaminer.user.fullname, name)
 
     def test_get_feedbackfeed_student_can_not_see_examiner_comment_visibility_visible_to_examiner_and_admins(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         candidate = mommy.make('core.Candidate',
-                             assignment_group__assignment=assignment,
-                             relatedstudent=mommy.make('core.RelatedStudent'))
-        examiner = mommy.make('core.Examiner', assignmentgroup=candidate.assignment_group,
-                              relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='John Doe'),)
+                               assignment_group=group,
+                               relatedstudent__user=requestuser)
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer__user=mommy.make(settings.AUTH_USER_MODEL))
         mommy.make('devilry_group.GroupComment',
                    user=examiner.relatedexaminer.user,
                    user_role='examiner',
                    visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
                    published_datetime=timezone.now() - timezone.timedelta(days=1),
-                   feedback_set__group=examiner.assignmentgroup)
+                   feedback_set__group=group)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-created-by-role'))
+                                                          requestuser=requestuser)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
 
     def test_get_student_cannot_see_comment_visibility_private(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         candidate = mommy.make('core.Candidate',
-                             assignment_group__assignment=assignment,
-                             relatedstudent=mommy.make('core.RelatedStudent'))
+                               assignment_group__assignment=assignment,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
         examiner = mommy.make('core.Examiner', assignmentgroup=candidate.assignment_group,
                               relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='John Doe'),)
         mommy.make('devilry_group.GroupComment',
@@ -211,8 +219,8 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
     def test_post_feedbackset_comment_with_text(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet')
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group,
-                             # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
-                             relatedstudent=mommy.make('core.RelatedStudent'))
+                               # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
+                               relatedstudent=mommy.make('core.RelatedStudent'))
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
@@ -228,8 +236,8 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
     def test_post_feedbackset_comment_with_text_published_datetime_is_set(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet')
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group,
-                             # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
-                             relatedstudent=mommy.make('core.RelatedStudent'))
+                               # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
+                               relatedstudent=mommy.make('core.RelatedStudent'))
         self.mock_http302_postrequest(
             cradmin_role=candidate.assignment_group,
             requestuser=candidate.relatedstudent.user,
@@ -267,14 +275,15 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
     viewclass = feedbackfeed_student.StudentFeedbackFeedView
 
     def test_get_student_can_not_see_comments__part_of_grading_before_publish_first_attempt(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=assignment)
         candidate = mommy.make('core.Candidate',
-                             assignment_group=feedbackset.group,
-                             relatedstudent=mommy.make('core.RelatedStudent'))
+                               assignment_group=feedbackset.group,
+                               relatedstudent__user=requestuser)
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=feedbackset.group,
-                              relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='John Doe'),)
+                              relatedexaminer__user=mommy.make(settings.AUTH_USER_MODEL))
         mommy.make('devilry_group.GroupComment',
                    text='asd',
                    part_of_grading=True,
@@ -282,7 +291,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
                    user_role='examiner',
                    feedback_set=feedbackset)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=candidate.relatedstudent.user)
+                                                          requestuser=requestuser)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
 
     def test_get_student_can_not_see_comments_part_of_grading_before_publish_new_attempt(self):
@@ -296,8 +305,8 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
                 group=group,
                 deadline_datetime=timezone.now()+timezone.timedelta(days=1))
         candidate = mommy.make('core.Candidate',
-                             assignment_group=group,
-                             relatedstudent=mommy.make('core.RelatedStudent'))
+                               assignment_group=group,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=group,
                               relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='John Doe'),)
@@ -315,8 +324,8 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         feedbackset = group_mommy.feedbackset_first_attempt_published(group__parentnode=assignment)
         candidate = mommy.make('core.Candidate',
-                             assignment_group=feedbackset.group,
-                             relatedstudent=mommy.make('core.RelatedStudent'))
+                               assignment_group=feedbackset.group,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=feedbackset.group,
                               relatedexaminer=mommy.make('core.RelatedExaminer', user__fullname='John Doe'),)

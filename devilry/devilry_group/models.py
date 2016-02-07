@@ -259,11 +259,11 @@ class FeedbackSet(models.Model):
         now = timezone.now()
         now_without_seconds = now.replace(second=0, microsecond=0)
         for modifier, draft in enumerate(drafted_comments):
-            draft.publish_draft(now_without_seconds+timezone.timedelta(milliseconds=modifier))
+            draft.publish_draft(now_without_seconds + timezone.timedelta(milliseconds=modifier))
 
         self.grading_points = grading_points
-        self.grading_published_datetime = now_without_seconds + \
-                                          timezone.timedelta(milliseconds=drafted_comments.count()+1)
+        self.grading_published_datetime = now_without_seconds + timezone.timedelta(
+                milliseconds=drafted_comments.count() + 1)
         self.grading_published_by = published_by
         self.full_clean()
         self.save()
