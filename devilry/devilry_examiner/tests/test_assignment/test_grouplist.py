@@ -199,8 +199,9 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                        assignment_group=group)
             devilry_group_mommy_factories.feedbackset_first_attempt_published(
                 group=group, grading_points=3)
-        with self.assertNumQueries(12):
-            self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
+        prefetched_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
+        with self.assertNumQueries(11):
+            self.mock_http200_getrequest_htmls(cradmin_role=prefetched_assignment,
                                                requestuser=testuser)
 
     def test_group_render_title_name_order(self):
