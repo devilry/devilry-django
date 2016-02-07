@@ -106,3 +106,13 @@ class TestCrAdminInstance(TestCase):
         request.cradmin_role = testassignment
         instance = crinstance_assignment.CrAdminInstance(request=request)
         self.assertEqual('periodadmin', instance.get_devilryrole_for_requestuser())
+
+    def test_get_rolequeryset_uses_prefetch_point_to_grade_map(self):
+        testassignment = mommy.make('core.Assignment')
+        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        request = RequestFactory().get('/test')
+        request.user = testuser
+        request.cradmin_role = testassignment
+        instance = crinstance_assignment.CrAdminInstance(request=request)
+        assignment = instance.get_rolequeryset().first()
+        self.assertTrue(hasattr(assignment, 'prefetched_point_to_grade_map'))

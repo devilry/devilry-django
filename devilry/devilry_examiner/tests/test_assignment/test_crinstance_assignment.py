@@ -50,3 +50,29 @@ class TestCradminInstanceAssignment(test.TestCase):
         mockrequest.user = testuser
         crinstance = crinstance_assignment.CrAdminInstance(request=mockrequest)
         self.assertEqual(1, crinstance.get_rolequeryset().count())
+
+    def test_get_rolequeryset_distinct(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup__parentnode=testassignment)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup__parentnode=testassignment)
+        mockrequest = mock.MagicMock()
+        mockrequest.user = testuser
+        crinstance = crinstance_assignment.CrAdminInstance(request=mockrequest)
+        self.assertEqual(1, crinstance.get_rolequeryset().count())
+
+    def test_get_rolequeryset_uses_prefetch_point_to_grade_map(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup__parentnode=testassignment)
+        mockrequest = mock.MagicMock()
+        mockrequest.user = testuser
+        crinstance = crinstance_assignment.CrAdminInstance(request=mockrequest)
+        assignment = crinstance.get_rolequeryset().first()
+        self.assertTrue(hasattr(assignment, 'prefetched_point_to_grade_map'))

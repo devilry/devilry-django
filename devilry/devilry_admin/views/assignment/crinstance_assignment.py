@@ -51,7 +51,8 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
     def get_rolequeryset(self):
         return Assignment.objects.filter_user_is_admin(user=self.request.user)\
             .select_related('parentnode', 'parentnode__parentnode')\
-            .order_by('-publishing_time')
+            .order_by('-publishing_time')\
+            .prefetch_point_to_grade_map()
 
     def get_titletext_for_role(self, role):
         """
