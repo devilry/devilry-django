@@ -7,6 +7,10 @@
 {% endblock title-content %}
 
 {% block description-content %}
-    {# TODO: Metadata #}
+    {% blocktrans trimmed count assignmentcount=me.period.assignmentcount_for_studentuser %}
+        {{ assignmentcount }} assignment
+    {% plural %}
+        {{ assignmentcount }} assignments
+    {% endblocktrans %}
 {% endblock description-content %}
 
