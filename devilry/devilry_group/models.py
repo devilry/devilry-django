@@ -196,7 +196,7 @@ class FeedbackSet(models.Model):
         unique_together = ('group', 'is_last_in_group')
 
     def __unicode__(self):
-        return u"{} - {} - {}".format(self.group.assignment, self.group, self.deadline_datetime)
+        return u"{} - {} - {} - deadline: {}".format(self.group.assignment, self.feedbackset_type, self.group.long_displayname, self.deadline_datetime)
 
     def clean(self):
         if self.grading_published_datetime is not None and self.grading_published_by is None:
@@ -213,6 +213,12 @@ class FeedbackSet(models.Model):
             raise ValidationError({
                 'is_last_in_group': 'is_last_in_group can not be false.'
             })
+
+    @property
+    def current_deadline(self):
+        if self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
+            return self.group.parentnode.first_deadline or self.deadline_datetime
+        return self.deadline_datetime
 
     def publish(self, published_by, grading_points, gradeform_data_json=''):
         """
@@ -237,11 +243,11 @@ class FeedbackSet(models.Model):
         if grading_points is None:
             raise ValueError
 
-        current_deadline = None
-        if self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
-            current_deadline = self.deadline_datetime or self.group.parentnode.first_deadline
-        elif self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT:
-            current_deadline = self.deadline_datetime
+        current_deadline = self.current_deadline
+        # if self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
+        #     current_deadline = self.deadline_datetime or self.group.parentnode.first_deadline
+        # elif self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT:
+        #     current_deadline = self.deadline_datetime
 
         if current_deadline is None:
             return False, 'Cannot publish feedback without a deadline.'
