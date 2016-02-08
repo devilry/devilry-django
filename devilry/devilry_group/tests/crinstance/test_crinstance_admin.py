@@ -71,7 +71,6 @@ class TestCrinstanceAdmin(test.TestCase):
         instance = crinstance_admin.AdminCrInstance(request=request)
         self.assertNotEquals([testgroup_another], list(instance.get_rolequeryset()))
 
-
     def test_getrolequeryset_admin_on_subject(self):
         testassignment = mommy.make('core.Assignment')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)

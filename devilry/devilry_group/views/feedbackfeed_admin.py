@@ -23,7 +23,7 @@ class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         )
 
     def get_devilryrole(self):
-        return 'subjectadmin'
+        return self.request.cradmin_instance.get_devilryrole_for_requestuser()
 
     def get_context_data(self, **kwargs):
         context = super(AdminFeedbackFeedView, self).get_context_data(**kwargs)
