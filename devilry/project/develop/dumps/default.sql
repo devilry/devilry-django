@@ -2927,6 +2927,7 @@ COPY core_assignmentgroup (id, name, is_open, etag, delivery_status, created_dat
 9		t	2016-02-06 14:29:23.917938+01	\N	2016-02-06 14:29:23.917324+01	\N	\N	\N	1	2
 10		t	2016-02-06 15:10:23.046051+01	\N	2016-02-06 15:10:23.045796+01	\N	\N	\N	2	3
 11		t	2016-02-06 15:10:32.178895+01	\N	2016-02-06 15:10:32.178657+01	\N	\N	\N	4	4
+12		t	2016-02-08 11:42:11.577236+01	\N	2016-02-08 11:42:11.576999+01	\N	\N	\N	3	5
 \.
 
 
@@ -2935,12 +2936,14 @@ COPY core_assignmentgroup (id, name, is_open, etag, delivery_status, created_dat
 --
 
 COPY core_assignmentgroup_examiners (id, assignmentgroup_id, old_reference_not_in_use_user_id, relatedexaminer_id) FROM stdin;
-9	3	\N	3
-10	4	\N	3
-11	5	\N	3
-12	6	\N	2
-13	7	\N	1
-14	8	\N	1
+17	3	\N	3
+18	4	\N	3
+19	7	\N	3
+20	9	\N	3
+21	5	\N	2
+22	6	\N	2
+23	8	\N	2
+24	12	\N	3
 \.
 
 
@@ -2948,14 +2951,14 @@ COPY core_assignmentgroup_examiners (id, assignmentgroup_id, old_reference_not_i
 -- Name: core_assignmentgroup_examiners_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_assignmentgroup_examiners_id_seq', 14, true);
+SELECT pg_catalog.setval('core_assignmentgroup_examiners_id_seq', 24, true);
 
 
 --
 -- Name: core_assignmentgroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_assignmentgroup_id_seq', 11, true);
+SELECT pg_catalog.setval('core_assignmentgroup_id_seq', 12, true);
 
 
 --
@@ -2987,6 +2990,7 @@ COPY core_candidate (id, candidate_id, assignment_group_id, old_reference_not_in
 9	\N	9	\N	1
 10	\N	10	\N	1
 11	\N	11	\N	1
+12	\N	12	\N	1
 \.
 
 
@@ -2994,7 +2998,7 @@ COPY core_candidate (id, candidate_id, assignment_group_id, old_reference_not_in
 -- Name: core_candidate_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_candidate_id_seq', 11, true);
+SELECT pg_catalog.setval('core_candidate_id_seq', 12, true);
 
 
 --
@@ -3556,7 +3560,7 @@ SELECT pg_catalog.setval('devilry_account_username_id_seq', 1, false);
 
 COPY devilry_comment_comment (id, text, created_datetime, published_datetime, user_role, comment_type, parent_id, user_id, draft_text) FROM stdin;
 1	Here is my delivery :)	2016-02-08 11:26:30.912519+01	2016-02-08 11:25:23.021072+01	student	groupcomment	\N	5	
-2	Very good work.	2016-02-08 11:28:23.712892+01	2016-02-08 11:27:11.75299+01	examiner	groupcomment	\N	1	
+2	Very good work.	2016-02-08 11:28:23.712892+01	2016-02-08 11:27:11.75299+01	examiner	groupcomment	\N	13	
 \.
 
 
@@ -3701,7 +3705,8 @@ COPY devilry_group_feedbackset (id, grading_points, created_datetime, grading_pu
 8	\N	2016-01-20 11:17:01.702574+01	\N	\N	1	8	\N		t	feedbackset_type_first_try
 10	\N	2016-02-06 15:10:23.06143+01	\N	\N	1	10	\N		t	first_attempt
 11	\N	2016-02-06 15:10:32.192129+01	\N	\N	1	11	\N		t	first_attempt
-9	1	2016-02-06 14:29:23.932176+01	2016-02-08 11:28:00+01	\N	1	9	1		t	first_attempt
+9	1	2016-02-06 14:29:23.932176+01	2016-02-08 11:28:00+01	\N	1	9	13		t	first_attempt
+12	80	2016-02-08 11:42:11.589679+01	2016-02-08 11:44:00+01	\N	1	12	13		t	first_attempt
 \.
 
 
@@ -3709,7 +3714,7 @@ COPY devilry_group_feedbackset (id, grading_points, created_datetime, grading_pu
 -- Name: devilry_group_feedbackset_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_group_feedbackset_id_seq', 11, true);
+SELECT pg_catalog.setval('devilry_group_feedbackset_id_seq', 12, true);
 
 
 --
@@ -4002,6 +4007,7 @@ COPY ievv_batchframework_batchoperation (id, created_datetime, started_running_d
 2	2016-02-06 14:29:23.908585+01	2016-02-06 14:29:23.900239+01	2016-02-06 14:29:23.938409+01	1	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
 3	2016-02-06 15:10:23.040357+01	2016-02-06 15:10:23.03399+01	2016-02-06 15:10:23.067831+01	2	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
 4	2016-02-06 15:10:32.172524+01	2016-02-06 15:10:32.172383+01	2016-02-06 15:10:32.197123+01	4	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
+5	2016-02-08 11:42:11.57229+01	2016-02-08 11:42:11.565759+01	2016-02-08 11:42:11.594385+01	3	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
 \.
 
 
@@ -4009,7 +4015,7 @@ COPY ievv_batchframework_batchoperation (id, created_datetime, started_running_d
 -- Name: ievv_batchframework_batchoperation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('ievv_batchframework_batchoperation_id_seq', 4, true);
+SELECT pg_catalog.setval('ievv_batchframework_batchoperation_id_seq', 5, true);
 
 
 --
