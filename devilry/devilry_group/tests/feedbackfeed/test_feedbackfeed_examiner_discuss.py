@@ -167,6 +167,6 @@ class TestFeedbackfeedExaminerDiscuss(test_feedbackfeed_examiner.TestFeedbackfee
                    feedback_set=feedbackset2,
                    _quantity=20)
 
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(7):
             mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
                                                               requestuser=requestuser)

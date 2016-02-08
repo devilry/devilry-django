@@ -3,7 +3,7 @@ from django.db.models.functions import Lower, Concat
 from django_cradmin import crinstance
 from django_cradmin import crmenu
 
-from devilry.apps.core.models import AssignmentGroup, Candidate
+from devilry.apps.core.models import AssignmentGroup, Candidate, Examiner
 from devilry.devilry_examiner.cradminextensions import devilry_crmenu_examiner
 from devilry.devilry_group.views import feedbackfeed_examiner
 
@@ -32,14 +32,20 @@ class ExaminerCrInstance(crinstance.BaseCrAdminInstance):
             .order_by(
                 Lower(Concat('relatedstudent__user__fullname',
                              'relatedstudent__user__shortname')))
+        examinerqueryset = Examiner.objects\
+            .select_related('relatedexaminer')\
+            .order_by(
+                Lower(Concat('relatedexaminer__user__fullname',
+                             'relatedexaminer__user__shortname')))
         return AssignmentGroup.objects\
             .filter_examiner_has_access(self.request.user)\
-            .select_related('parentnode',
-                            'parentnode__parentnode',
-                            'parentnode__parentnode__parentnode')\
+            .select_related('parentnode__parentnode__parentnode')\
             .prefetch_related(
                 models.Prefetch('candidates',
-                                queryset=candidatequeryset))
+                                queryset=candidatequeryset))\
+            .prefetch_related(
+                models.Prefetch('examiners',
+                                queryset=examinerqueryset))
 
     def get_titletext_for_role(self, role):
         """

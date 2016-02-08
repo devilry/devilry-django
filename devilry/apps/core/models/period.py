@@ -120,15 +120,18 @@ class PeriodQuerySet(models.QuerySet):
                 select={
                     'assignmentcount_for_studentuser': """
                         SELECT
-                          COUNT(core_assignment.id)
+                            COUNT(core_assignment.id)
                         FROM core_assignment
                         LEFT OUTER JOIN core_assignmentgroup
-                          ON (core_assignmentgroup.parentnode_id = core_assignment.id)
+                            ON (core_assignmentgroup.parentnode_id = core_assignment.id)
                         INNER JOIN core_candidate
-                          ON (core_candidate.assignment_group_id = core_assignmentgroup.id)
+                            ON (core_candidate.assignment_group_id = core_assignmentgroup.id)
                         INNER JOIN core_relatedstudent
-                          ON (core_relatedstudent.id = core_candidate.relatedstudent_id)
-                        WHERE core_relatedstudent.user_id = %s
+                            ON (core_relatedstudent.id = core_candidate.relatedstudent_id)
+                        WHERE
+                            core_relatedstudent.user_id = %s
+                            AND
+                            core_assignment.parentnode_id = core_period.id
                     """
                 },
                 select_params=[

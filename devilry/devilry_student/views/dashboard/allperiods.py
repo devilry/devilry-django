@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.utils.translation import pgettext_lazy, ugettext_lazy
 from django_cradmin import crapp
+from django_cradmin.crinstance import reverse_cradmin_url
 from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import listfilter
 
@@ -13,13 +14,12 @@ class PeriodItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
     valuealias = 'period'
 
     def get_url(self):
-        return '#'
-        # return reverse_cradmin_url(
-        #     instanceid='devilry_student_period',
-        #     appname='feedbackfeed',
-        #     roleid=self.group.id,
-        #     viewname=crapp.INDEXVIEW_NAME,
-        # )
+        return reverse_cradmin_url(
+            instanceid='devilry_student_period',
+            appname='overview',
+            roleid=self.period.id,
+            viewname=crapp.INDEXVIEW_NAME,
+        )
 
     def get_extra_css_classes_list(self):
         return ['devilry-student-listbuilder-period-itemframe']

@@ -1,11 +1,9 @@
 from django.http import Http404
-from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crmenu
-from django_cradmin.crinstance import reverse_cradmin_url
 
 from devilry.apps.core.models import Period
-from devilry.devilry_student.views.period import assignmentsapp
 from devilry.devilry_student.cradminextensions import studentcrinstance
+from devilry.devilry_student.views.period import overview
 
 
 class Menu(crmenu.Menu):
@@ -29,14 +27,16 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     id = 'devilry_student_period'
     menuclass = Menu
     roleclass = Period
-    rolefrontpage_appname = 'assignments'
+    rolefrontpage_appname = 'overview'
 
     apps = [
-        ('assignments', assignmentsapp.App),
+        ('overview', overview.App),
     ]
 
     def get_rolequeryset(self):
-        return Period.objects.filter_user_is_relatedstudent(user=self.request.user)
+        return Period.objects\
+            .filter_user_is_relatedstudent(user=self.request.user)\
+            .select_related('parentnode')
 
     def get_titletext_for_role(self, role):
         """
