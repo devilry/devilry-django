@@ -2888,6 +2888,7 @@ COPY core_assignment (id, short_name, long_name, publishing_time, deprecated_fie
 2	assignment2	Assignment 2	2016-01-03 04:41:40.730958+01	f	t	0	0	100	2040-02-14 12:30:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1	\N	off	f
 4	fully-anonymous-exam	Fully anonymous exam	2016-01-20 00:20:00+01	f	f	0	0	100	2040-03-15 23:59:00+01	100	30	custom-table	devilry_gradingsystemplugin_points	f	\N		1		fully_anonymous	f
 3	semi-anonymous-exam	Semi anonymous exam	2016-01-19 12:30:00+01	f	f	0	0	100	2040-03-02 15:30:00+01	100	38	raw-points	devilry_gradingsystemplugin_points	f	\N		1		semi_anonymous	f
+5	assignment0	Assignment 0	2016-02-08 20:58:20.423164+01	f	f	0	0	100	2016-02-08 20:00:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1	\N	off	f
 \.
 
 
@@ -2910,7 +2911,7 @@ SELECT pg_catalog.setval('core_assignment_admins_id_seq', 1, false);
 -- Name: core_assignment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_assignment_id_seq', 4, true);
+SELECT pg_catalog.setval('core_assignment_id_seq', 5, true);
 
 
 --
@@ -2928,6 +2929,18 @@ COPY core_assignmentgroup (id, name, is_open, etag, delivery_status, created_dat
 10		t	2016-02-06 15:10:23.046051+01	\N	2016-02-06 15:10:23.045796+01	\N	\N	\N	2	3
 11		t	2016-02-06 15:10:32.178895+01	\N	2016-02-06 15:10:32.178657+01	\N	\N	\N	4	4
 12		t	2016-02-08 11:42:11.577236+01	\N	2016-02-08 11:42:11.576999+01	\N	\N	\N	3	5
+14		t	2016-02-08 20:55:47.52143+01	\N	2016-02-08 20:55:47.520825+01	\N	\N	\N	5	6
+15		t	2016-02-08 20:55:47.521462+01	\N	2016-02-08 20:55:47.520881+01	\N	\N	\N	5	6
+16		t	2016-02-08 20:55:47.521482+01	\N	2016-02-08 20:55:47.520927+01	\N	\N	\N	5	6
+17		t	2016-02-08 20:55:47.521501+01	\N	2016-02-08 20:55:47.520961+01	\N	\N	\N	5	6
+18		t	2016-02-08 20:55:47.521521+01	\N	2016-02-08 20:55:47.520993+01	\N	\N	\N	5	6
+19		t	2016-02-08 20:55:47.52154+01	\N	2016-02-08 20:55:47.521024+01	\N	\N	\N	5	6
+20		t	2016-02-08 20:55:47.521559+01	\N	2016-02-08 20:55:47.521055+01	\N	\N	\N	5	6
+21		t	2016-02-08 20:55:47.521578+01	\N	2016-02-08 20:55:47.521085+01	\N	\N	\N	5	6
+22		t	2016-02-08 20:55:47.521597+01	\N	2016-02-08 20:55:47.521115+01	\N	\N	\N	5	6
+23		t	2016-02-08 20:55:47.521616+01	\N	2016-02-08 20:55:47.521146+01	\N	\N	\N	5	6
+24		t	2016-02-08 20:55:47.521635+01	\N	2016-02-08 20:55:47.521176+01	\N	\N	\N	5	6
+25		t	2016-02-08 21:02:42.625796+01	\N	2016-02-08 21:02:42.625394+01	\N	\N	\N	5	7
 \.
 
 
@@ -2944,6 +2957,17 @@ COPY core_assignmentgroup_examiners (id, assignmentgroup_id, old_reference_not_i
 22	6	\N	2
 23	8	\N	2
 24	12	\N	3
+26	14	\N	3
+27	15	\N	3
+28	16	\N	3
+29	17	\N	3
+30	18	\N	3
+31	19	\N	3
+32	20	\N	3
+33	21	\N	3
+34	22	\N	3
+35	23	\N	3
+36	24	\N	3
 \.
 
 
@@ -2951,14 +2975,14 @@ COPY core_assignmentgroup_examiners (id, assignmentgroup_id, old_reference_not_i
 -- Name: core_assignmentgroup_examiners_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_assignmentgroup_examiners_id_seq', 24, true);
+SELECT pg_catalog.setval('core_assignmentgroup_examiners_id_seq', 36, true);
 
 
 --
 -- Name: core_assignmentgroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_assignmentgroup_id_seq', 12, true);
+SELECT pg_catalog.setval('core_assignmentgroup_id_seq', 25, true);
 
 
 --
@@ -2991,6 +3015,18 @@ COPY core_candidate (id, candidate_id, assignment_group_id, old_reference_not_in
 10	\N	10	\N	1
 11	\N	11	\N	1
 12	\N	12	\N	1
+14	\N	14	\N	2
+15	\N	15	\N	12
+16	\N	16	\N	3
+17	\N	17	\N	4
+18	\N	18	\N	6
+19	\N	19	\N	10
+20	\N	20	\N	11
+21	\N	21	\N	9
+22	\N	22	\N	8
+23	\N	23	\N	7
+24	\N	24	\N	5
+25	\N	25	\N	1
 \.
 
 
@@ -2998,7 +3034,7 @@ COPY core_candidate (id, candidate_id, assignment_group_id, old_reference_not_in
 -- Name: core_candidate_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_candidate_id_seq', 12, true);
+SELECT pg_catalog.setval('core_candidate_id_seq', 25, true);
 
 
 --
@@ -3487,15 +3523,15 @@ COPY devilry_account_user (id, password, last_login, is_superuser, shortname, fu
 9	md5$b0e7QxZQhDjm$0a0c289438bb10acd7791166f22c9302	\N	f	freyja@example.com	Goddess of Love	Love	2016-01-03 00:01:23.937304+01	\N		
 10	md5$jGBsBCPiCfD4$721eefd1556ba7a2dccba060f243263e	\N	f	freyr@example.com	God of Fertility	Fertility	2016-01-03 00:01:23.939944+01	\N		
 11	md5$jTwxxR6ybeuX$7de276d388672758ce0e1991f92ee2da	\N	f	kvasir@example.com	God of Inspiration	Inspiration	2016-01-03 00:01:23.942802+01	\N		
-13	md5$BVeSKhUc4Gkg$c5cfb847e6ef2a84bf2a0a3ab0424e8d	\N	f	thor@example.com	God of thunder and Battle	Battle	2016-01-03 00:01:23.948728+01	\N		
 15	md5$FQJM96zqt39y$49c4ad86e2d8bc053addcab6431db38d	\N	f	donald@example.com	Donald Duck	Duck	2016-01-03 00:03:43.101396+01	\N		
 16	md5$IwVKSAdD2ueB$5e32c9a5bfa4092cdb4b4bda8a0e122e	\N	f	scrooge@example.com	Scrooge McDuck	McDuck	2016-01-03 00:03:59.432752+01	\N		
 17	md5$VNqEOHzoWJLP$742f1d1b4d56fb6f51cdb76efc2105fa	\N	f	noname@example.com			2016-01-04 15:08:14.258809+01	\N		
 18	md5$smoA02BvKYtp$17bc79166daf9d1c3de87d695e9708f9	\N	f	missingname@example.com			2016-01-04 15:25:10.473858+01	\N		
 14	md5$ot0qeIMptbS0$736743011a752ac3929d119435424766	2016-01-20 04:29:49.250064+01	f	odin@example.com	The "All Father"	Father"	2016-01-03 00:01:23.951457+01	\N		
-1	md5$wqtfXF0fIxXj$894c06ca065b6dfa906004e40da2e9a4	2016-02-02 12:40:17.940186+01	t	grandma@example.com			2015-12-21 18:01:21.212212+01	\N		
-5	md5$t9KMIxJyNWXg$7136c7c30e463d0c9525f4744ef624b4	2016-02-06 14:28:33.701083+01	f	april@example.com	April Duck	Duck	2016-01-03 00:01:23.92689+01	\N		
 12	md5$tT0zXYv0Zsuo$2b9bfb86f295cfd461b0ce2bb6ea2096	2016-02-06 18:04:02.493233+01	f	loki@example.com	Trickster and god of Mischief	Mischief	2016-01-03 00:01:23.945768+01	\N		
+5	md5$t9KMIxJyNWXg$7136c7c30e463d0c9525f4744ef624b4	2016-02-08 20:20:46.753706+01	f	april@example.com	April Duck	Duck	2016-01-03 00:01:23.92689+01	\N		
+13	md5$BVeSKhUc4Gkg$c5cfb847e6ef2a84bf2a0a3ab0424e8d	2016-02-08 20:21:32.438362+01	f	thor@example.com	God of thunder and Battle	Battle	2016-01-03 00:01:23.948728+01	\N		
+1	md5$wqtfXF0fIxXj$894c06ca065b6dfa906004e40da2e9a4	2016-02-08 20:24:20.870273+01	t	grandma@example.com			2015-12-21 18:01:21.212212+01	\N		
 \.
 
 
@@ -3697,16 +3733,28 @@ SELECT pg_catalog.setval('devilry_gradingsystem_feedbackdraftfile_id_seq', 1, fa
 --
 
 COPY devilry_group_feedbackset (id, grading_points, created_datetime, grading_published_datetime, deadline_datetime, created_by_id, group_id, grading_published_by_id, gradeform_data_json, is_last_in_group, feedbackset_type) FROM stdin;
-3	\N	2016-01-20 11:17:01.702364+01	\N	\N	1	3	\N		t	feedbackset_type_first_try
-4	\N	2016-01-20 11:17:01.702407+01	\N	\N	1	4	\N		t	feedbackset_type_first_try
-5	\N	2016-01-20 11:17:01.702449+01	\N	\N	1	5	\N		t	feedbackset_type_first_try
-6	\N	2016-01-20 11:17:01.702492+01	\N	\N	1	6	\N		t	feedbackset_type_first_try
-7	\N	2016-01-20 11:17:01.702533+01	\N	\N	1	7	\N		t	feedbackset_type_first_try
-8	\N	2016-01-20 11:17:01.702574+01	\N	\N	1	8	\N		t	feedbackset_type_first_try
 10	\N	2016-02-06 15:10:23.06143+01	\N	\N	1	10	\N		t	first_attempt
 11	\N	2016-02-06 15:10:32.192129+01	\N	\N	1	11	\N		t	first_attempt
 9	1	2016-02-06 14:29:23.932176+01	2016-02-08 11:28:00+01	\N	1	9	13		t	first_attempt
 12	80	2016-02-08 11:42:11.589679+01	2016-02-08 11:44:00+01	\N	1	12	13		t	first_attempt
+3	\N	2016-01-20 11:17:01.702364+01	\N	\N	1	3	\N		t	first_attempt
+4	\N	2016-01-20 11:17:01.702407+01	\N	\N	1	4	\N		t	first_attempt
+5	\N	2016-01-20 11:17:01.702449+01	\N	\N	1	5	\N		t	first_attempt
+6	\N	2016-01-20 11:17:01.702492+01	\N	\N	1	6	\N		t	first_attempt
+7	\N	2016-01-20 11:17:01.702533+01	\N	\N	1	7	\N		t	first_attempt
+8	\N	2016-01-20 11:17:01.702574+01	\N	\N	1	8	\N		t	first_attempt
+13	\N	2016-02-08 20:55:47.543902+01	\N	\N	1	14	\N		t	first_attempt
+14	\N	2016-02-08 20:55:47.544012+01	\N	\N	1	15	\N		t	first_attempt
+15	\N	2016-02-08 20:55:47.544065+01	\N	\N	1	16	\N		t	first_attempt
+16	\N	2016-02-08 20:55:47.544145+01	\N	\N	1	17	\N		t	first_attempt
+17	\N	2016-02-08 20:55:47.544193+01	\N	\N	1	18	\N		t	first_attempt
+18	\N	2016-02-08 20:55:47.544262+01	\N	\N	1	19	\N		t	first_attempt
+19	\N	2016-02-08 20:55:47.544383+01	\N	\N	1	20	\N		t	first_attempt
+20	\N	2016-02-08 20:55:47.544461+01	\N	\N	1	21	\N		t	first_attempt
+21	\N	2016-02-08 20:55:47.544541+01	\N	\N	1	22	\N		t	first_attempt
+22	\N	2016-02-08 20:55:47.544574+01	\N	\N	1	23	\N		t	first_attempt
+23	\N	2016-02-08 20:55:47.544612+01	\N	\N	1	24	\N		t	first_attempt
+24	\N	2016-02-08 21:02:42.643666+01	\N	\N	1	25	\N		t	first_attempt
 \.
 
 
@@ -3714,7 +3762,7 @@ COPY devilry_group_feedbackset (id, grading_points, created_datetime, grading_pu
 -- Name: devilry_group_feedbackset_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_group_feedbackset_id_seq', 12, true);
+SELECT pg_catalog.setval('devilry_group_feedbackset_id_seq', 24, true);
 
 
 --
@@ -3995,6 +4043,9 @@ nptdszmzzip61o80paabkskynqzn7xsg	YjZiOTUzMzEwOGYyNDlkNWZmZDdkOGFlMTEwZGI2ZGE4MGI
 r52h3rqcsuj4x8qil0yiq701rzx660rw	NDJiYzE0MzEyNjdjM2E0NGQ0ODY3OWUzZGQ2MzkyNjIxZjljNTFjZDp7Il9hdXRoX3VzZXJfaGFzaCI6IjViMjA4NzZkYjI5ZGY2ZmJlNDE4N2U1YjE1ZTAzZTIyMGRiYjBiN2QiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSJ9	2016-02-16 12:40:17.945791+01
 3q3ee45capchabq9iioxrhosyrsg6vtx	YWVlMWMzY2UwODBjYmZiOTRhNDRmZDVmNTRhNTI3OTFiMjQ1NGQ0Yjp7Il9hdXRoX3VzZXJfaGFzaCI6ImQwODJmYTFjOTgxNzI3NmU2ODg3MDkzM2NiNDgzN2VmMjczMzdjMmMiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiNSJ9	2016-02-20 14:28:33.710084+01
 p95ggs9ihvz07g7qur3sp8pgeor2ji21	NDc0YWYzYzRmOTJhNzJhZDczYjM5NjA4ZmUyNWM5NmE3OWU2NjRmMjp7Il9hdXRoX3VzZXJfaGFzaCI6IjkzZWZkMGU4YjA1ZjNmYmU2ZGUwYzY2OTUxNDY3MmM4MzA0ZDRjMjQiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMTIifQ==	2016-02-20 18:04:02.497419+01
+b7f56fzonivzzldphn6dzbk84lnqwzz1	YWVlMWMzY2UwODBjYmZiOTRhNDRmZDVmNTRhNTI3OTFiMjQ1NGQ0Yjp7Il9hdXRoX3VzZXJfaGFzaCI6ImQwODJmYTFjOTgxNzI3NmU2ODg3MDkzM2NiNDgzN2VmMjczMzdjMmMiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiNSJ9	2016-02-22 20:20:46.760111+01
+i2m531v3ae0tk0bc8iqt3shjekhipet7	NGZmOGZlZWUzMTAyN2RhODYyNmZmNTIyZmVjMmEwYmFlOWY5ZmM2Mjp7Il9hdXRoX3VzZXJfaGFzaCI6ImMzYmE2MTgxYWExNjc4YmI0YzhiMDZiMzc3NDNiNWRmOTJhNTFkZTYiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMTMifQ==	2016-02-22 20:21:32.441645+01
+njzxgphcbque9ci5jvpdwqi1btswmeor	NDJiYzE0MzEyNjdjM2E0NGQ0ODY3OWUzZGQ2MzkyNjIxZjljNTFjZDp7Il9hdXRoX3VzZXJfaGFzaCI6IjViMjA4NzZkYjI5ZGY2ZmJlNDE4N2U1YjE1ZTAzZTIyMGRiYjBiN2QiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSJ9	2016-02-22 20:24:20.873582+01
 \.
 
 
@@ -4008,6 +4059,8 @@ COPY ievv_batchframework_batchoperation (id, created_datetime, started_running_d
 3	2016-02-06 15:10:23.040357+01	2016-02-06 15:10:23.03399+01	2016-02-06 15:10:23.067831+01	2	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
 4	2016-02-06 15:10:32.172524+01	2016-02-06 15:10:32.172383+01	2016-02-06 15:10:32.197123+01	4	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
 5	2016-02-08 11:42:11.57229+01	2016-02-08 11:42:11.565759+01	2016-02-08 11:42:11.594385+01	3	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
+6	2016-02-08 20:55:47.514322+01	2016-02-08 20:55:47.500494+01	2016-02-08 20:55:47.556552+01	5	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
+7	2016-02-08 21:02:42.62018+01	2016-02-08 21:02:42.620075+01	2016-02-08 21:02:42.648642+01	5	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
 \.
 
 
@@ -4015,7 +4068,7 @@ COPY ievv_batchframework_batchoperation (id, created_datetime, started_running_d
 -- Name: ievv_batchframework_batchoperation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('ievv_batchframework_batchoperation_id_seq', 5, true);
+SELECT pg_catalog.setval('ievv_batchframework_batchoperation_id_seq', 7, true);
 
 
 --
