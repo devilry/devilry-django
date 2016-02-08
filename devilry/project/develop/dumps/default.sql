@@ -2885,9 +2885,9 @@ SELECT pg_catalog.setval('auth_permission_id_seq', 168, true);
 
 COPY core_assignment (id, short_name, long_name, publishing_time, deprecated_field_anonymous, students_can_see_points, delivery_types, deadline_handling, scale_points_percent, first_deadline, max_points, passing_grade_min_points, points_to_grade_mapper, grading_system_plugin_id, students_can_create_groups, students_can_not_create_groups_after, feedback_workflow, parentnode_id, gradeform_setup_json, anonymizationmode, uses_custom_candidate_ids) FROM stdin;
 1	assignment1	Assignment 1	2015-12-27 03:35:27.525662+01	f	t	0	0	100	2040-01-31 12:30:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1	\N	off	f
-3	semi-anonymous-exam	Semi anonymous exam	2016-01-19 12:30:00+01	f	f	0	0	100	2040-03-02 15:30:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1		semi_anonymous	f
-4	fully-anonymous-exam	Fully anonymous exam	2016-01-20 00:20:00+01	f	f	0	0	100	2040-03-15 23:59:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1		fully_anonymous	f
 2	assignment2	Assignment 2	2016-01-03 04:41:40.730958+01	f	t	0	0	100	2040-02-14 12:30:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1	\N	off	f
+4	fully-anonymous-exam	Fully anonymous exam	2016-01-20 00:20:00+01	f	f	0	0	100	2040-03-15 23:59:00+01	100	30	custom-table	devilry_gradingsystemplugin_points	f	\N		1		fully_anonymous	f
+3	semi-anonymous-exam	Semi anonymous exam	2016-01-19 12:30:00+01	f	f	0	0	100	2040-03-02 15:30:00+01	100	38	raw-points	devilry_gradingsystemplugin_points	f	\N		1		semi_anonymous	f
 \.
 
 
@@ -2918,14 +2918,15 @@ SELECT pg_catalog.setval('core_assignment_id_seq', 4, true);
 --
 
 COPY core_assignmentgroup (id, name, is_open, etag, delivery_status, created_datetime, copied_from_id, feedback_id, last_deadline_id, parentnode_id, batchoperation_id) FROM stdin;
-1		t	2016-01-20 11:17:01.6896+01	\N	2016-01-20 11:17:01.689048+01	\N	\N	\N	1	1
-2		t	2016-01-20 11:17:01.689643+01	\N	2016-01-20 11:17:01.689109+01	\N	\N	\N	1	1
 3		t	2016-01-20 11:17:01.689683+01	\N	2016-01-20 11:17:01.689159+01	\N	\N	\N	1	1
 4		t	2016-01-20 11:17:01.689714+01	\N	2016-01-20 11:17:01.689207+01	\N	\N	\N	1	1
 5		t	2016-01-20 11:17:01.689744+01	\N	2016-01-20 11:17:01.689254+01	\N	\N	\N	1	1
 6		t	2016-01-20 11:17:01.689774+01	\N	2016-01-20 11:17:01.689303+01	\N	\N	\N	1	1
 7		t	2016-01-20 11:17:01.689804+01	\N	2016-01-20 11:17:01.689349+01	\N	\N	\N	1	1
 8		t	2016-01-20 11:17:01.689833+01	\N	2016-01-20 11:17:01.689396+01	\N	\N	\N	1	1
+9		t	2016-02-06 14:29:23.917938+01	\N	2016-02-06 14:29:23.917324+01	\N	\N	\N	1	2
+10		t	2016-02-06 15:10:23.046051+01	\N	2016-02-06 15:10:23.045796+01	\N	\N	\N	2	3
+11		t	2016-02-06 15:10:32.178895+01	\N	2016-02-06 15:10:32.178657+01	\N	\N	\N	4	4
 \.
 
 
@@ -2934,10 +2935,12 @@ COPY core_assignmentgroup (id, name, is_open, etag, delivery_status, created_dat
 --
 
 COPY core_assignmentgroup_examiners (id, assignmentgroup_id, old_reference_not_in_use_user_id, relatedexaminer_id) FROM stdin;
-1	1	\N	1
-2	2	\N	1
-3	4	\N	1
-4	7	\N	1
+9	3	\N	3
+10	4	\N	3
+11	5	\N	3
+12	6	\N	2
+13	7	\N	1
+14	8	\N	1
 \.
 
 
@@ -2945,14 +2948,14 @@ COPY core_assignmentgroup_examiners (id, assignmentgroup_id, old_reference_not_i
 -- Name: core_assignmentgroup_examiners_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_assignmentgroup_examiners_id_seq', 4, true);
+SELECT pg_catalog.setval('core_assignmentgroup_examiners_id_seq', 14, true);
 
 
 --
 -- Name: core_assignmentgroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_assignmentgroup_id_seq', 8, true);
+SELECT pg_catalog.setval('core_assignmentgroup_id_seq', 11, true);
 
 
 --
@@ -2975,14 +2978,15 @@ SELECT pg_catalog.setval('core_assignmentgrouptag_id_seq', 1, false);
 --
 
 COPY core_candidate (id, candidate_id, assignment_group_id, old_reference_not_in_use_student_id, relatedstudent_id) FROM stdin;
-1	\N	1	\N	1
-2	\N	2	\N	2
 3	\N	3	\N	3
 4	\N	4	\N	4
 5	\N	5	\N	5
 6	\N	6	\N	6
 7	\N	7	\N	7
 8	\N	8	\N	8
+9	\N	9	\N	1
+10	\N	10	\N	1
+11	\N	11	\N	1
 \.
 
 
@@ -2990,7 +2994,7 @@ COPY core_candidate (id, candidate_id, assignment_group_id, old_reference_not_in
 -- Name: core_candidate_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_candidate_id_seq', 8, true);
+SELECT pg_catalog.setval('core_candidate_id_seq', 11, true);
 
 
 --
@@ -3153,6 +3157,12 @@ SELECT pg_catalog.setval('core_periodapplicationkeyvalue_id_seq', 1, false);
 --
 
 COPY core_pointrangetograde (id, minimum_points, maximum_points, grade, point_to_grade_map_id) FROM stdin;
+1	0	30	F	1
+2	31	45	E	1
+3	46	60	D	1
+4	61	80	C	1
+6	91	100	A	1
+5	81	90	B	1
 \.
 
 
@@ -3160,7 +3170,7 @@ COPY core_pointrangetograde (id, minimum_points, maximum_points, grade, point_to
 -- Name: core_pointrangetograde_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_pointrangetograde_id_seq', 1, false);
+SELECT pg_catalog.setval('core_pointrangetograde_id_seq', 6, true);
 
 
 --
@@ -3168,6 +3178,7 @@ SELECT pg_catalog.setval('core_pointrangetograde_id_seq', 1, false);
 --
 
 COPY core_pointtogrademap (id, invalid, assignment_id) FROM stdin;
+1	t	4
 \.
 
 
@@ -3175,7 +3186,7 @@ COPY core_pointtogrademap (id, invalid, assignment_id) FROM stdin;
 -- Name: core_pointtogrademap_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_pointtogrademap_id_seq', 1, false);
+SELECT pg_catalog.setval('core_pointtogrademap_id_seq', 1, true);
 
 
 --
@@ -3220,10 +3231,16 @@ COPY core_relatedstudent (id, tags, candidate_id, automatic_anonymous_id, period
 2				1	2	t
 3				1	6	t
 4				1	7	t
-5				1	13	t
 6				1	8	t
 7				1	17	t
 8				1	16	t
+5				1	13	f
+9	\N	\N		1	15	t
+10	\N	\N		1	9	t
+11	\N	\N		1	10	t
+12	\N	\N		1	4	t
+13	\N	\N		3	5	t
+14	\N	\N		2	5	t
 \.
 
 
@@ -3231,7 +3248,7 @@ COPY core_relatedstudent (id, tags, candidate_id, automatic_anonymous_id, period
 -- Name: core_relatedstudent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_relatedstudent_id_seq', 8, true);
+SELECT pg_catalog.setval('core_relatedstudent_id_seq', 14, true);
 
 
 --
@@ -3385,6 +3402,7 @@ SELECT pg_catalog.setval('cradmin_temporaryfileuploadstore_temporaryfilecollecti
 
 COPY devilry_account_periodpermissiongroup (id, period_id, permissiongroup_id) FROM stdin;
 1	1	2
+2	1	4
 \.
 
 
@@ -3392,7 +3410,7 @@ COPY devilry_account_periodpermissiongroup (id, period_id, permissiongroup_id) F
 -- Name: devilry_account_periodpermissiongroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_account_periodpermissiongroup_id_seq', 1, true);
+SELECT pg_catalog.setval('devilry_account_periodpermissiongroup_id_seq', 2, true);
 
 
 --
@@ -3403,6 +3421,7 @@ COPY devilry_account_permissiongroup (id, name, created_datetime, updated_dateti
 1	The grandmas	2015-12-22 20:28:12.198719+01	2015-12-29 18:36:56.731725+01	\N	departmentadmin	f
 2	duck1010.springaaaa admins	2016-01-20 04:17:30.493374+01	2016-01-20 04:18:08.798354+01	\N	periodadmin	f
 3	duck1010 administrators	2016-01-20 04:19:42.353192+01	2016-01-20 04:19:42.353219+01	\N	subjectadmin	f
+4	Custom manageable permissiongroup for Period#1	2016-02-03 17:56:01.40892+01	2016-02-03 17:56:01.408938+01	\N	periodadmin	t
 \.
 
 
@@ -3410,7 +3429,7 @@ COPY devilry_account_permissiongroup (id, name, created_datetime, updated_dateti
 -- Name: devilry_account_permissiongroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_account_permissiongroup_id_seq', 3, true);
+SELECT pg_catalog.setval('devilry_account_permissiongroup_id_seq', 4, true);
 
 
 --
@@ -3421,6 +3440,7 @@ COPY devilry_account_permissiongroupuser (id, permissiongroup_id, user_id) FROM 
 1	1	1
 2	2	12
 3	3	14
+4	4	10
 \.
 
 
@@ -3428,7 +3448,7 @@ COPY devilry_account_permissiongroupuser (id, permissiongroup_id, user_id) FROM 
 -- Name: devilry_account_permissiongroupuser_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_account_permissiongroupuser_id_seq', 3, true);
+SELECT pg_catalog.setval('devilry_account_permissiongroupuser_id_seq', 4, true);
 
 
 --
@@ -3457,7 +3477,6 @@ COPY devilry_account_user (id, password, last_login, is_superuser, shortname, fu
 2	md5$3KRT0BYBVYuO$94583357915e72f337fcd49100121ffe	\N	f	dewey@example.com	Dewey Duck	Duck	2016-01-03 00:01:23.904395+01	\N		
 3	md5$4kh8cjMMXX2M$7ebf58c36489254b715d79608c022101	\N	f	louie@example.com	Louie Duck	Duck	2016-01-03 00:01:23.920971+01	\N		
 4	md5$EC1N1bbdDH1I$f178f7136b3691e18906166ee0efe5ca	\N	f	huey@example.com	Huey Duck	Duck	2016-01-03 00:01:23.924138+01	\N		
-5	md5$t9KMIxJyNWXg$7136c7c30e463d0c9525f4744ef624b4	\N	f	april@example.com	April Duck	Duck	2016-01-03 00:01:23.92689+01	\N		
 6	md5$23r9I32HRrRt$a5d639300faf27693592f4fbe6d4a219	\N	f	june@example.com	June Duck	Duck	2016-01-03 00:01:23.929449+01	\N		
 7	md5$sYwPNZrUONMA$ece17aeedb49985694e73ccfb673762d	\N	f	july@example.com	July Duck	Duck	2016-01-03 00:01:23.932129+01	\N		
 8	md5$bl0XFjiSsbGA$7e0f3030e8bfd0d54b91ca7843f001a3	\N	f	baldr@example.com	God of Beauty	Beauty	2016-01-03 00:01:23.934793+01	\N		
@@ -3469,9 +3488,10 @@ COPY devilry_account_user (id, password, last_login, is_superuser, shortname, fu
 16	md5$IwVKSAdD2ueB$5e32c9a5bfa4092cdb4b4bda8a0e122e	\N	f	scrooge@example.com	Scrooge McDuck	McDuck	2016-01-03 00:03:59.432752+01	\N		
 17	md5$VNqEOHzoWJLP$742f1d1b4d56fb6f51cdb76efc2105fa	\N	f	noname@example.com			2016-01-04 15:08:14.258809+01	\N		
 18	md5$smoA02BvKYtp$17bc79166daf9d1c3de87d695e9708f9	\N	f	missingname@example.com			2016-01-04 15:25:10.473858+01	\N		
-12	md5$tT0zXYv0Zsuo$2b9bfb86f295cfd461b0ce2bb6ea2096	2016-01-20 04:29:30.662494+01	f	loki@example.com	Trickster and god of Mischief	Mischief	2016-01-03 00:01:23.945768+01	\N		
 14	md5$ot0qeIMptbS0$736743011a752ac3929d119435424766	2016-01-20 04:29:49.250064+01	f	odin@example.com	The "All Father"	Father"	2016-01-03 00:01:23.951457+01	\N		
 1	md5$wqtfXF0fIxXj$894c06ca065b6dfa906004e40da2e9a4	2016-02-02 12:40:17.940186+01	t	grandma@example.com			2015-12-21 18:01:21.212212+01	\N		
+5	md5$t9KMIxJyNWXg$7136c7c30e463d0c9525f4744ef624b4	2016-02-06 14:28:33.701083+01	f	april@example.com	April Duck	Duck	2016-01-03 00:01:23.92689+01	\N		
+12	md5$tT0zXYv0Zsuo$2b9bfb86f295cfd461b0ce2bb6ea2096	2016-02-06 18:04:02.493233+01	f	loki@example.com	Trickster and god of Mischief	Mischief	2016-01-03 00:01:23.945768+01	\N		
 \.
 
 
@@ -3535,6 +3555,8 @@ SELECT pg_catalog.setval('devilry_account_username_id_seq', 1, false);
 --
 
 COPY devilry_comment_comment (id, text, created_datetime, published_datetime, user_role, comment_type, parent_id, user_id, draft_text) FROM stdin;
+1	Here is my delivery :)	2016-02-08 11:26:30.912519+01	2016-02-08 11:25:23.021072+01	student	groupcomment	\N	5	
+2	Very good work.	2016-02-08 11:28:23.712892+01	2016-02-08 11:27:11.75299+01	examiner	groupcomment	\N	1	
 \.
 
 
@@ -3542,7 +3564,7 @@ COPY devilry_comment_comment (id, text, created_datetime, published_datetime, us
 -- Name: devilry_comment_comment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_comment_comment_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_comment_comment_id_seq', 2, true);
 
 
 --
@@ -3595,6 +3617,7 @@ SELECT pg_catalog.setval('devilry_detektor_comparetwocacheitem_id_seq', 1, false
 --
 
 COPY devilry_detektor_detektorassignment (id, status, processing_started_datetime, assignment_id, processing_started_by_id) FROM stdin;
+1	unprocessed	\N	1	\N
 \.
 
 
@@ -3602,7 +3625,7 @@ COPY devilry_detektor_detektorassignment (id, status, processing_started_datetim
 -- Name: devilry_detektor_detektorassignment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_detektor_detektorassignment_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_detektor_detektorassignment_id_seq', 1, true);
 
 
 --
@@ -3670,14 +3693,15 @@ SELECT pg_catalog.setval('devilry_gradingsystem_feedbackdraftfile_id_seq', 1, fa
 --
 
 COPY devilry_group_feedbackset (id, grading_points, created_datetime, grading_published_datetime, deadline_datetime, created_by_id, group_id, grading_published_by_id, gradeform_data_json, is_last_in_group, feedbackset_type) FROM stdin;
-1	\N	2016-01-20 11:17:01.702251+01	\N	\N	1	1	\N		t	feedbackset_type_first_try
-2	\N	2016-01-20 11:17:01.702318+01	\N	\N	1	2	\N		t	feedbackset_type_first_try
 3	\N	2016-01-20 11:17:01.702364+01	\N	\N	1	3	\N		t	feedbackset_type_first_try
 4	\N	2016-01-20 11:17:01.702407+01	\N	\N	1	4	\N		t	feedbackset_type_first_try
 5	\N	2016-01-20 11:17:01.702449+01	\N	\N	1	5	\N		t	feedbackset_type_first_try
 6	\N	2016-01-20 11:17:01.702492+01	\N	\N	1	6	\N		t	feedbackset_type_first_try
 7	\N	2016-01-20 11:17:01.702533+01	\N	\N	1	7	\N		t	feedbackset_type_first_try
 8	\N	2016-01-20 11:17:01.702574+01	\N	\N	1	8	\N		t	feedbackset_type_first_try
+10	\N	2016-02-06 15:10:23.06143+01	\N	\N	1	10	\N		t	first_attempt
+11	\N	2016-02-06 15:10:32.192129+01	\N	\N	1	11	\N		t	first_attempt
+9	1	2016-02-06 14:29:23.932176+01	2016-02-08 11:28:00+01	\N	1	9	1		t	first_attempt
 \.
 
 
@@ -3685,7 +3709,7 @@ COPY devilry_group_feedbackset (id, grading_points, created_datetime, grading_pu
 -- Name: devilry_group_feedbackset_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_group_feedbackset_id_seq', 8, true);
+SELECT pg_catalog.setval('devilry_group_feedbackset_id_seq', 11, true);
 
 
 --
@@ -3693,6 +3717,8 @@ SELECT pg_catalog.setval('devilry_group_feedbackset_id_seq', 8, true);
 --
 
 COPY devilry_group_groupcomment (comment_ptr_id, feedback_set_id, part_of_grading, visibility) FROM stdin;
+1	9	f	visible-to-everyone
+2	9	t	visible-to-everyone
 \.
 
 
@@ -3962,6 +3988,8 @@ j0jnngoym8g5pm6rmx0mckp9n36qtd78	YzU4YTcxNTM2MzJjNDU3MzJiNzJjZGQ0ODBmY2Y4MDVhNTE
 qwoxswhsr9bc739dsaz7n3z6sd7qli0x	NDc0YWYzYzRmOTJhNzJhZDczYjM5NjA4ZmUyNWM5NmE3OWU2NjRmMjp7Il9hdXRoX3VzZXJfaGFzaCI6IjkzZWZkMGU4YjA1ZjNmYmU2ZGUwYzY2OTUxNDY3MmM4MzA0ZDRjMjQiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMTIifQ==	2016-02-03 04:29:30.663964+01
 nptdszmzzip61o80paabkskynqzn7xsg	YjZiOTUzMzEwOGYyNDlkNWZmZDdkOGFlMTEwZGI2ZGE4MGIwNDZlNDp7Il9hdXRoX3VzZXJfaGFzaCI6IjI1OWE4ODA1YTUyOGU1NTExMzc0ZTk2YjBlYTdmZTRiMzQwMTI3ZGIiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMTQifQ==	2016-02-03 04:29:49.251302+01
 r52h3rqcsuj4x8qil0yiq701rzx660rw	NDJiYzE0MzEyNjdjM2E0NGQ0ODY3OWUzZGQ2MzkyNjIxZjljNTFjZDp7Il9hdXRoX3VzZXJfaGFzaCI6IjViMjA4NzZkYjI5ZGY2ZmJlNDE4N2U1YjE1ZTAzZTIyMGRiYjBiN2QiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSJ9	2016-02-16 12:40:17.945791+01
+3q3ee45capchabq9iioxrhosyrsg6vtx	YWVlMWMzY2UwODBjYmZiOTRhNDRmZDVmNTRhNTI3OTFiMjQ1NGQ0Yjp7Il9hdXRoX3VzZXJfaGFzaCI6ImQwODJmYTFjOTgxNzI3NmU2ODg3MDkzM2NiNDgzN2VmMjczMzdjMmMiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiNSJ9	2016-02-20 14:28:33.710084+01
+p95ggs9ihvz07g7qur3sp8pgeor2ji21	NDc0YWYzYzRmOTJhNzJhZDczYjM5NjA4ZmUyNWM5NmE3OWU2NjRmMjp7Il9hdXRoX3VzZXJfaGFzaCI6IjkzZWZkMGU4YjA1ZjNmYmU2ZGUwYzY2OTUxNDY3MmM4MzA0ZDRjMjQiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMTIifQ==	2016-02-20 18:04:02.497419+01
 \.
 
 
@@ -3971,6 +3999,9 @@ r52h3rqcsuj4x8qil0yiq701rzx660rw	NDJiYzE0MzEyNjdjM2E0NGQ0ODY3OWUzZGQ2MzkyNjIxZjl
 
 COPY ievv_batchframework_batchoperation (id, created_datetime, started_running_datetime, finished_datetime, context_object_id, operationtype, status, result, input_data_json, output_data_json, context_content_type_id, started_by_id) FROM stdin;
 1	2016-01-20 11:17:01.683541+01	2016-01-20 11:17:01.681915+01	2016-01-20 11:17:01.708512+01	1	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
+2	2016-02-06 14:29:23.908585+01	2016-02-06 14:29:23.900239+01	2016-02-06 14:29:23.938409+01	1	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
+3	2016-02-06 15:10:23.040357+01	2016-02-06 15:10:23.03399+01	2016-02-06 15:10:23.067831+01	2	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
+4	2016-02-06 15:10:32.172524+01	2016-02-06 15:10:32.172383+01	2016-02-06 15:10:32.197123+01	4	create-groups-with-candidate-and-feedbackset	running	successful			18	\N
 \.
 
 
@@ -3978,7 +4009,7 @@ COPY ievv_batchframework_batchoperation (id, created_datetime, started_running_d
 -- Name: ievv_batchframework_batchoperation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('ievv_batchframework_batchoperation_id_seq', 1, true);
+SELECT pg_catalog.setval('ievv_batchframework_batchoperation_id_seq', 4, true);
 
 
 --
