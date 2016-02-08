@@ -10,7 +10,11 @@ import json
 import datetime
 
 # Devilry/cradmin imports
-from devilry.devilry_comment.models import CommentFile
+from django_cradmin.viewhelpers import listbuilder
+
+from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed as feedbackfeed_listbuilder
+
+from devilry.devilry_comment.models import CommentFile, Comment
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_group.timeline_builder import feedbackfeed_timeline_builder
@@ -68,6 +72,11 @@ class FeedbackFeedBaseView(create.CreateView):
         return kwargs
 
     def __build_timeline(self):
+        """
+
+        Returns:
+
+        """
         timeline_builder = feedbackfeed_timeline_builder.FeedbackFeedTimelineBuilder(
                 group=self.request.cradmin_role,
                 requestuser=self.request.user,
@@ -97,6 +106,13 @@ class FeedbackFeedBaseView(create.CreateView):
         context['feedbacksets'] = built_timeline.feedbacksets
         context['last_feedbackset'] = built_timeline.get_last_feedbackset()
         context['current_date'] = datetime.datetime.now()
+        context['listbuilder_list'] = feedbackfeed_listbuilder.TimelineListBuilderList.from_built_timeline(
+            built_timeline,
+            devilryrole=self.get_devilryrole()
+        )
+        # context['listbuilder_list'] = TimelineListBuilderList.from_built_timeline(
+        #         built_timeline,
+        #         devilryrole=self.get_devilryrole())
 
         return context
 

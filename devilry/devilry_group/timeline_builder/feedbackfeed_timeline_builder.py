@@ -139,6 +139,7 @@ class FeedbackFeedTimelineBuilder(object):
             return
         if datetime not in self.timeline:
             self.timeline[datetime] = []
+        event_dict['ordering_datetime'] = datetime
         self.timeline[datetime].append(event_dict)
 
     def __add_deadline_created_to_timeline(self, feedbackset):
@@ -269,3 +270,15 @@ class FeedbackFeedTimelineBuilder(object):
         for feedbackset in self.feedbacksets:
             self.__add_feedbackset_to_timeline(feedbackset=feedbackset)
         self.__sort_timeline()
+
+    def get_as_list(self):
+        """
+
+        Returns:
+
+        """
+        timeline_list = []
+        for datetime in sorted(self.timeline.keys()):
+            for event_dict in self.timeline[datetime]:
+                timeline_list.append(event_dict)
+        return timeline_list
