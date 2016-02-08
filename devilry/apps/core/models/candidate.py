@@ -100,5 +100,5 @@ class Candidate(models.Model):
     def __unicode__(self):
         return 'Candiate id={id}, student={student}, group={group}'.format(
             id=self.id,
-            student=self.student,
+            student=self.relatedstudent,
             group=self.assignment_group)
