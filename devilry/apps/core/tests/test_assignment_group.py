@@ -2043,6 +2043,30 @@ class TestAssignmentGroupQuerySetAnnotateWithGradingPoints(TestCase):
         self.assertEqual(10, queryset.get(id=testgroup1.id).grading_points)
         self.assertEqual(20, queryset.get(id=testgroup2.id).grading_points)
 
+    def test_annotate_with_grading_points_multiple_comments(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup,
+            grading_points=2)
+        mommy.make('devilry_group.GroupComment', feedback_set=feedbackset, _quantity=5)
+        queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
+        self.assertEqual(2, queryset.get(id=testgroup.id).grading_points)
+
+    def test_annotate_with_grading_points_multiple_groups_multiple_comments(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup1,
+            grading_points=1)
+        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup2,
+            grading_points=2)
+        mommy.make('devilry_group.GroupComment', feedback_set=feedbackset1, _quantity=5)
+        mommy.make('devilry_group.GroupComment', feedback_set=feedbackset2, _quantity=6)
+        queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
+        self.assertEqual(1, queryset.get(id=testgroup1.id).grading_points)
+        self.assertEqual(2, queryset.get(id=testgroup2.id).grading_points)
+
 
 class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
     def test_annotate_with_is_passing_grade_false_unpublished(self):
