@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from django import test
 from django.conf import settings
 from django.db import connection
@@ -17,6 +17,8 @@ def _run_sql(sql):
 
 def _remove_triggers():
     _run_sql("""
+        DROP TRIGGER IF EXISTS devilry_dbcache_on_assignmentgroup_insert_trigger
+            ON core_assignmentgroup;
         DROP TRIGGER IF EXISTS devilry_dbcache_on_feedbackset_insert_or_update_trigger
             ON devilry_group_feedbackset;
     """)
@@ -96,7 +98,6 @@ def _create_triggers():
             var_first_feedbackset_id integer;
             var_last_feedbackset_id integer;
             var_last_published_feedbackset_id integer;
-            var_other_feedbacksets_exist boolean;
             var_cached_data_exists boolean;
             var_cached_data record;
         BEGIN
@@ -191,17 +192,46 @@ def _create_triggers():
             AFTER INSERT OR UPDATE ON devilry_group_feedbackset
             FOR EACH ROW
                 EXECUTE PROCEDURE devilry_dbcache_on_feedbackset_insert_or_update();
+
+
+        /*
+        Autocreate first FeedbackSet when creating an AssignmentGroup.
+        */
+        CREATE OR REPLACE FUNCTION devilry_dbcache_on_assignmentgroup_insert() RETURNS TRIGGER AS $$
+        BEGIN
+            INSERT INTO devilry_group_feedbackset (
+                group_id,
+                created_datetime,
+                feedbackset_type,
+                gradeform_data_json)
+            VALUES (
+                NEW.id,
+                now(),
+                'first_attempt',
+                '');
+            RETURN NEW;
+        END
+        $$ LANGUAGE plpgsql;
+
+        DROP TRIGGER IF EXISTS devilry_dbcache_on_assignmentgroup_insert_trigger
+            ON core_assignmentgroup;
+        CREATE TRIGGER devilry_dbcache_on_assignmentgroup_insert_trigger
+            AFTER INSERT ON core_assignmentgroup
+            FOR EACH ROW
+                EXECUTE PROCEDURE devilry_dbcache_on_assignmentgroup_insert();
     """)
 
 
-class TestTriggers(test.TestCase):
+class TestFeedbackSetTriggers(test.TestCase):
     def setUp(self):
         _create_triggers()
 
     def test_create_feedbackset_sanity(self):
-        feedbackset = mommy.make('devilry_group.FeedbackSet')
+        group = mommy.make('core.AssignmentGroup')
+        autocreated_feedbackset = group.feedbackset_set.first()
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group=group)
         cached_data = AssignmentGroupCachedData.objects.get(group=feedbackset.group)
-        self.assertEqual(feedbackset, cached_data.first_feedbackset)
+        self.assertEqual(autocreated_feedbackset, cached_data.first_feedbackset)
         self.assertEqual(feedbackset, cached_data.last_feedbackset)
         self.assertIsNone(cached_data.last_published_feedbackset)
 
@@ -226,6 +256,28 @@ class TestTriggers(test.TestCase):
         self.assertIsNone(cached_data.last_published_feedbackset)
 
 
+class TestAssignmentGroupTriggers(test.TestCase):
+    def setUp(self):
+        _create_triggers()
+
+    def test_create_group_creates_feedbackset_sanity(self):
+        group = mommy.make('core.AssignmentGroup')
+        autocreated_feedbackset = group.feedbackset_set.first()
+        self.assertIsNotNone(autocreated_feedbackset)
+        self.assertEqual(FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT, autocreated_feedbackset.feedbackset_type)
+
+    def test_create_group_creates_feedbackset_created_datetime_in_correct_timezone(self):
+        # NOTE: We add 60 sec to before and after, because Django and postgres servers
+        #       can be a bit out of sync with each other, and the important thing here
+        #       is that the timestamp is somewhat correct (not in the wrong timezone).
+        before = timezone.now() - timedelta(seconds=60)
+        group = mommy.make('core.AssignmentGroup')
+        after = timezone.now() + timedelta(seconds=60)
+        autocreated_feedbackset = group.feedbackset_set.first()
+        self.assertTrue(autocreated_feedbackset.created_datetime >= before)
+        self.assertTrue(autocreated_feedbackset.created_datetime <= after)
+
+
 class TimeExecution(object):
     def __init__(self, label):
         self.start_time = None
@@ -242,7 +294,7 @@ class TimeExecution(object):
         print
 
 
-class TestBenchMarkTriggers(test.TestCase):
+class TestBenchMarkFeedbackSetTrigger(test.TestCase):
     def setUp(self):
         _remove_triggers()
 
@@ -265,11 +317,11 @@ class TestBenchMarkTriggers(test.TestCase):
             FeedbackSet.objects.bulk_create(feedbacksets)
 
     def test_create_feedbacksets_in_distinct_groups_without_triggers(self):
-        self.__create_in_distinct_groups_feedbacksets('distinct groups: no triggers')
+        self.__create_in_distinct_groups_feedbacksets('feedbacksets distinct groups: no triggers')
 
     def test_create_feedbacksets_in_distinct_groups_with_triggers(self):
         _create_triggers()
-        self.__create_in_distinct_groups_feedbacksets('distinct groups: with triggers')
+        self.__create_in_distinct_groups_feedbacksets('feedbacksets distinct groups: with triggers')
 
     def __create_in_same_group_feedbacksets(self, label):
         count = 1000
@@ -286,10 +338,32 @@ class TestBenchMarkTriggers(test.TestCase):
             FeedbackSet.objects.bulk_create(feedbacksets)
 
     def test_create_feedbacksets_in_same_group_without_triggers(self):
-        self.__create_in_same_group_feedbacksets('same group: no triggers')
+        self.__create_in_same_group_feedbacksets('feedbacksets same group: no triggers')
 
     def test_create_feedbacksets_in_same_group_with_triggers(self):
         _create_triggers()
         # This should have some overhead because we need to UPDATE the AssignmentGroupCachedData
         # for each INSERT
-        self.__create_in_same_group_feedbacksets('same group: with triggers')
+        self.__create_in_same_group_feedbacksets('feedbacksets same group: with triggers')
+
+
+class TestBenchMarkAssignmentGroupTrigger(test.TestCase):
+    def setUp(self):
+        _remove_triggers()
+
+    def __create_distinct_groups(self, label):
+        count = 10000
+        assignment = mommy.make('core.Assignment')
+        groups = []
+        for x in range(count):
+            groups.append(mommy.prepare('core.AssignmentGroup', parentnode=assignment))
+
+        with TimeExecution('{} ({})'.format(label, count)):
+            AssignmentGroup.objects.bulk_create(groups)
+
+    def test_create_in_distinct_groups_without_triggers(self):
+        self.__create_distinct_groups('groups: no triggers')
+
+    def test_create_in_distinct_groups_with_triggers(self):
+        _create_triggers()
+        self.__create_distinct_groups('groups: with triggers')
