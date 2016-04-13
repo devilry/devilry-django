@@ -13,3 +13,6 @@ class AssignmentGroupCachedData(models.Model):
                                          null=True, blank=True)
     last_published_feedbackset = models.ForeignKey(FeedbackSet, related_name='+',
                                                    null=True, blank=True)
+
+    # TODO: Add comment count fields
+    # TODO: Add feedbackset count field
