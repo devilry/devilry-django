@@ -194,6 +194,9 @@ class FeedbackSet(models.Model):
 
     class Meta:
         unique_together = ('group', 'is_last_in_group')
+        # index_together = (
+        #     'id', 'created_datetime'
+        # )
 
     def __unicode__(self):
         return u"{} - {} - {} - deadline: {}".format(self.group.assignment, self.feedbackset_type, self.group.long_displayname, self.deadline_datetime)
