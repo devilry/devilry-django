@@ -111,6 +111,7 @@ class FeedbackSet(models.Model):
     group = models.ForeignKey(assignment_group.AssignmentGroup)
 
     #: Is the last feedbackset for :obj:`~.FeedbackSet.group`? Must be None or True.
+    #: TODO: Remove this field - functionality is in AssignmentGroupCachedData
     is_last_in_group = models.NullBooleanField(default=True)
 
     #: This means the feedbackset is basically the first feedbackset.
@@ -136,6 +137,8 @@ class FeedbackSet(models.Model):
 
     #: Sets the type of the feedbackset.
     #: Defaults to :obj:`~.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT`.
+    #: TODO: Remove this field? We only need the re_edit type. We can choose between keeping it, but defaulting to blank,
+    #:       or replace it with an is_reedit field.
     feedbackset_type = models.CharField(
         max_length=50,
         db_index=True,
