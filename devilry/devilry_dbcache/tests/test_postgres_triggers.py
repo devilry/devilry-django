@@ -219,6 +219,51 @@ def _create_triggers():
             AFTER INSERT ON core_assignmentgroup
             FOR EACH ROW
                 EXECUTE PROCEDURE devilry_dbcache_on_assignmentgroup_insert();
+
+
+        /*
+        Autoupdate AssignmentGroupCachedData.*_comment_count fields automatically.
+        */
+        /*
+        CREATE OR REPLACE FUNCTION devilry_dbcache_on_group_or_imageannotationcomment_change() RETURNS TRIGGER AS $$
+        DECLARE
+            var_basecomment record;
+        BEGIN
+            SELECT user_role
+            FROM devilry_comment.comment WHERE id = NEW.id
+            INTO var_basecomment;
+
+            IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+                IF TG_OP = 'INSERT' THEN
+                    IF NEW.visibility = 'important' THEN
+                        UPDATE devilry_dbcache_assignmentgroupcacheddata
+                        SET public_total_comment_count = public_total_comment_count + 1
+                        WHERE id = NEW.group_id;
+                    ELSEIF  NEW.vote_type = 'unimportant' THEN
+                    END IF;
+                END IF;
+            ELSEIF TG_OP = 'DELETE' THEN
+
+            END IF;
+
+            RETURN NEW;
+        END
+        $$ LANGUAGE plpgsql;
+
+        DROP TRIGGER IF EXISTS devilry_dbcache_on_group_change_trigger
+            ON devilry_group_groupcomment;
+        CREATE TRIGGER devilry_dbcache_on_group_change_trigger
+            AFTER INSERT UPDATE OR OR DELETE ON devilry_group_groupcomment
+            FOR EACH ROW
+                EXECUTE PROCEDURE devilry_dbcache_on_group_or_imageannotationcomment_change();
+
+        DROP TRIGGER IF EXISTS devilry_dbcache_on_group_imageannotationcomment_trigger
+            ON devilry_group_imageannotationcomment;
+        CREATE TRIGGER devilry_dbcache_on_group_imageannotationcomment_trigger
+            AFTER INSERT OR UPDATE OR DELETE ON devilry_group_imageannotationcomment
+            FOR EACH ROW
+                EXECUTE PROCEDURE devilry_dbcache_on_group_or_imageannotationcomment_change();
+        */
     """)
 
 

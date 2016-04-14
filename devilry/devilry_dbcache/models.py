@@ -13,6 +13,8 @@ class AssignmentGroupCachedData(models.Model):
                                          null=True, blank=True)
     last_published_feedbackset = models.ForeignKey(FeedbackSet, related_name='+',
                                                    null=True, blank=True)
-
-    # TODO: Add comment count fields
+    # public_total_comment_count = models.PositiveIntegerField()
+    # public_student_comment_count = models.PositiveIntegerField()
+    # public_examiner_comment_count = models.PositiveIntegerField()
+    # public_admin_comment_count = models.PositiveIntegerField()
     # TODO: Add feedbackset count field
