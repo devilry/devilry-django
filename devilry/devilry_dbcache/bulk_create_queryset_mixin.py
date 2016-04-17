@@ -1,11 +1,10 @@
 from __future__ import unicode_literals
 
 import itertools
+
 from django.db import connections
-from django.db.models import AutoField
-from django.db.models.sql import InsertQuery
-from django.utils.functional import partition
 from django.db import transaction
+from django.db.models import AutoField
 
 
 class BulkInsertSQLBuilder(object):
