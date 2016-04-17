@@ -11,6 +11,7 @@ from ievv_opensource.ievv_batchframework.models import BatchOperation
 from devilry.apps.core.models import Subject
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_comment.models import Comment
+from devilry.devilry_dbcache.bulk_create_queryset_mixin import BulkCreateQuerySetMixin
 from devilry.utils import devilry_djangoaggregate_functions
 from .node import Node
 from .abstract_is_admin import AbstractIsAdmin
@@ -40,7 +41,7 @@ class GroupPopNotCandiateError(GroupPopValueError):
     """
 
 
-class AssignmentGroupQuerySet(models.QuerySet):
+class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
     """
     QuerySet for :class:`.AssignmentGroup`
     """
