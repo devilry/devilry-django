@@ -79,11 +79,12 @@ class PostgresBulkInsert(object):
 
     def execute(self):
         ids = []
+        cursor = self.connection.cursor()
         for sql, params in self.sql_list:
-            cursor = self.connection.cursor()
             cursor.execute(sql, params)
             resultrows = cursor.fetchall()
             ids.extend(resultrow[0] for resultrow in resultrows)
+        cursor.close()
         return ids
 
     def execute_and_return_objects(self):
