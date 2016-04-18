@@ -7,12 +7,12 @@ from devilry.devilry_dbcache.devilry_dbcache_testapp.models import Person
 
 class TestBulkCreateQuerySetMixin(test.TestCase):
     def test_sanity(self):
-        bulk_operation = Person.objects.posgres_bulk_create([
+        bulk_operation = Person.objects.postgres_bulk_create([
             Person(name='test1'),
             Person(name='test2'),
             Person(name='test3'),
         ])
-        # print bulk_operation.explain(compact=False)
+        print bulk_operation.explain(compact=False)
         ids = bulk_operation.execute()
         self.assertEqual(len(ids), 3)
         self.assertTrue(Person.objects.filter(name='test1').exists())
@@ -20,7 +20,7 @@ class TestBulkCreateQuerySetMixin(test.TestCase):
         self.assertTrue(Person.objects.filter(name='test3').exists())
 
     def test_works_with_defaults(self):
-        bulk_operation = Person.objects.posgres_bulk_create([
+        bulk_operation = Person.objects.postgres_bulk_create([
             Person(name='test1'),
         ])
         bulk_operation.execute()
@@ -28,7 +28,7 @@ class TestBulkCreateQuerySetMixin(test.TestCase):
         self.assertEqual(20, created_person.age)
 
     def test_batch_size(self):
-        bulk_operation = Person.objects.posgres_bulk_create([
+        bulk_operation = Person.objects.postgres_bulk_create([
             Person(name='test1'),
             Person(name='test2'),
             Person(name='test3'),
@@ -44,7 +44,7 @@ class TestBulkCreateQuerySetMixin(test.TestCase):
         self.assertTrue(Person.objects.filter(name='test5').exists())
 
     def test_return_objects(self):
-        bulk_operation = Person.objects.posgres_bulk_create([
+        bulk_operation = Person.objects.postgres_bulk_create([
             Person(name='test1'),
             Person(name='test2'),
             Person(name='test3'),
@@ -57,6 +57,6 @@ class TestBulkCreateQuerySetMixin(test.TestCase):
 
     # def test_performance(self):
     #     people = [Person(name='test{}'.format(x)) for x in range(10000)]
-    #     bulk_operation = Person.objects.posgres_bulk_create(people)
+    #     bulk_operation = Person.objects.postgres_bulk_create(people)
     #     bulk_operation.execute()
     #     self.assertEqual(10000, Person.objects.count())

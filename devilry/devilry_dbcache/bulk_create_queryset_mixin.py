@@ -125,7 +125,7 @@ class PostgresBulkInsert(object):
 
 
 class BulkCreateQuerySetMixin(object):
-    def posgres_bulk_create(self, objs, batch_size=None):
+    def postgres_bulk_create(self, objs, batch_size=None):
         assert batch_size is None or batch_size > 0
         if self.model._meta.parents:
             raise ValueError("Can't bulk create an inherited model")
