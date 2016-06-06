@@ -1,17 +1,12 @@
-from django.test import TestCase
 from django.utils import timezone
 from model_mommy import mommy
 
-from devilry.apps.core import models as core_models
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.models import GroupComment
-from devilry.devilry_group.tests.feedbackfeed import test_feedbackfeed_common
-from devilry.devilry_group.views import feedbackfeed_examiner
+from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
 
 
-class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
-    # General tests for the examiner baseview
-    viewclass = feedbackfeed_examiner.ExaminerBaseFeedbackFeedView
+class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMixin):
 
     def test_get(self):
         examiner = mommy.make('core.Examiner')

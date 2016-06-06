@@ -1,0 +1,13 @@
+{% extends 'django_cradmin/viewhelpers/listbuilder/base/itemvalue.django.html' %}
+
+{% load devilry_account_tags %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block content %}
+    <p>
+        {{ me.get_timeline_datetime|date:'SHORT_DATETIME_FORMAT' }}:
+        {% block details %}
+        {% endblock details %}
+    </p>
+{% endblock content %}

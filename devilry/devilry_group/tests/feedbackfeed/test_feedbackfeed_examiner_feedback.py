@@ -1,21 +1,28 @@
-import htmls
-import mock
 from django.test import TestCase
 from django.utils import timezone
+from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
-from django_cradmin import cradmin_testhelpers
-
+from devilry.apps.core import models as core_models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as  group_models
-from devilry.devilry_group.tests.feedbackfeed import test_feedbackfeed_examiner
+from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_examiner
 from devilry.devilry_group.views import feedbackfeed_examiner
-from devilry.apps.core import models as core_models
 
 
-class TestFeedbackfeedExaminerFeedbackRendering(test_feedbackfeed_examiner.TestFeedbackfeedExaminer):
-    # Override viewclass for this specific view.
+class TestFeedbackfeedExaminerFeedbackRendering(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
     viewclass = feedbackfeed_examiner.ExaminerFeedbackView
+
+    def test_get_feedbackfeed_examiner_can_see_feedback_and_discuss_in_header(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
+                                                          requestuser=examiner.relatedexaminer.user)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-feedback-button'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-discuss-button'))
 
     def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choise_add_comment_for_examiners_and_admins_button(self):
         examiner = mommy.make('core.Examiner')

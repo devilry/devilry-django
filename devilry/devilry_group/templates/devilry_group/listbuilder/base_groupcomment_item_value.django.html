@@ -6,7 +6,6 @@
 {% load i18n %}
 
 {% block content %}
-
     <div class="devilry-group-feedbackfeed-comment-content">
         <div class="devilry-group-comment-meta">
             <div class="devilry-group-comment-created-by">
@@ -27,41 +26,11 @@
                 <i class="fa fa-file fa-3x" tooltip="{{ file.filename }}"></i>
             </a>
         {% endfor %}
+
     </div>
 
-    {% if me.group_comment.user_role == "examiner" %}
-        <!--
-        Handles published and unpublished comment styles
-        -->
-        {% if me.group_comment.part_of_grading == True %}
-            {% if me.group_comment.get_published_datetime == None %}
-                <!--
-                Comment is part of grading, but not published.
-                -->
-                <div class="devilry-group-feedbackfeed-right-badge-field not-published-badge">
-                    <p class="badge-text-new">{% trans "NOT PUBLISHED" %}</p>
-                </div>
-            {% else %}
-                <!--
-                Comment is published as part of the feedback.
-                -->
-                <div class="devilry-group-feedbackfeed-right-badge-field not-published-badge">
-                    <p class="badge-text-new">{% trans "PART OF FEEDBACK" %}</p>
-                </div>
-            {% endif %}
-        {% endif %}
-    {% elif me.group_comment.user_role == "student" %}
-        <!--
-        Check if comment is posted after the its related deadline
-        -->
-        {% if me.group_comment.published_datetime > event.related_deadline %}
-            <div class="devilry-group-feedbackfeed-right-badge-field after-deadline-badge">
-                <p class="devilry-group-feedbackfeed-badge-text">{% trans "Not part of delivery" %}</p>
-    {#                                                    <p class="badge-text-new">{% trans "NOT PART OF DELIVERY" %}</p>#}
-            </div>
-        {% endif %}
-
-    {% endif %}
+    {% block details %}
+    {% endblock details %}
 
 {% endblock content %}
 

@@ -11,6 +11,7 @@ from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 
 
 class TestFeedbackFeedHeaderMixin(cradmin_testhelpers.TestCaseMixin):
+
     def test_get_feedbackfeed_header(self):
         # check that header exists
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=mommy.make('devilry_group.FeedbackSet').group)
@@ -137,23 +138,20 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         feedbackset = group_mommy.feedbackset_first_attempt_published(group__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
-        mockresponse.selector.prettyprint()
+        # mockresponse.selector.prettyprint()
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
 
     def test_get_feedbackset_second_created_deadline_event(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         feedbackset = group_mommy.feedbackset_first_attempt_published(
-                group__parentnode=assignment,
-                is_last_in_group=None)
+            group__parentnode=assignment,
+            is_last_in_group=None)
         group_mommy.feedbackset_new_attempt_published(group=feedbackset.group)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
-        mockresponse.selector.prettyprint()
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
 
     def test_get_feedbackfeed_comment(self):
         comment = mommy.make('devilry_group.GroupComment',
-                             # instant_publish=True,
-                             # visible_for_students=True
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
@@ -237,11 +235,11 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
 
-    # def test_get_feedbackfeed_event_with_assignment_first_deadline_created(self):
-    #     assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode=assignment)
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
-    #     self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
+    def test_get_feedbackfeed_event_with_assignment_first_deadline_created(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
 
     def test_get_feedbackfeed_event_with_assignment_first_deadline_expired(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -284,15 +282,15 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
         mommy.make('devilry_group.FeedbackSet',
                    group=group,
                    is_last_in_group=None,
-                   deadline_datetime=timezone.now() + timezone.timedelta(days=3))
+                   created_datetime=timezone.now() - timezone.timedelta(days=2),
+                   deadline_datetime=timezone.now() - timezone.timedelta(days=1))
         mommy.make('devilry_group.FeedbackSet',
                    group=group,
                    # created_datetime=timezone.now() + timezone.timedelta(days=4),
                    feedbackset_type=models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
                    deadline_datetime=timezone.now() + timezone.timedelta(days=6))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
-        created = mockresponse.selector.list('.devilry-group-feedbackfeed-event-message-deadline-created')
-        self.assertEqual(1, len(created))
+        self.assertEqual(1, mockresponse.selector.count('.devilry-group-feedbackfeed-event-message-deadline-created'))
 
     def test_get_feedbackfeed_event_two_feedbacksets_deadlines_expired(self):
         # test that two deadlines expired events are rendered to view
@@ -301,13 +299,16 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
         mommy.make('devilry_group.FeedbackSet',
                    group=group,
                    is_last_in_group=None,
+                   created_datetime=timezone.now() - timezone.timedelta(days=4),
                    deadline_datetime=timezone.now() - timezone.timedelta(days=3))
         mommy.make('devilry_group.FeedbackSet',
                    group=group,
-                   created_datetime=timezone.now() - timezone.timedelta(days=6),
-                   deadline_datetime=timezone.now() - timezone.timedelta(days=4))
+                   created_datetime=timezone.now() - timezone.timedelta(days=2),
+                   deadline_datetime=timezone.now() - timezone.timedelta(days=1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
         expired = mockresponse.selector.list('.devilry-group-feedbackfeed-event-message-deadline-expired')
+        # print mockresponse.selector.count('.devilry-group-feedbackfeed-event-message-deadline-expired')
+        mockresponse.selector.prettyprint()
         self.assertEqual(2, len(expired))
 
     def test_get_feedbackfeed_event_two_feedbacksets_deadlines_created_assignment_firstdeadline(self):
@@ -350,7 +351,7 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
                                  deadline_datetime=timezone.now(),
                                  grading_points=7)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-passed'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-passed'))
 
     def test_get_feedbackfeed_event_delivery_failed(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet',
@@ -359,65 +360,65 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
                                  grading_published_datetime=timezone.now(),
                                  grading_points=3)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-failed'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-failed'))
 
-    # def test_post_302(self):
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet')
-    #     mockresponse = self.mock_http302_postrequest(
-    #         cradmin_role=feedbackset.group,
-    #         viewkwargs={'pk': feedbackset.group.id},
-    #         requestkwargs={
-    #             'data': {
-    #                 'text': 'asd',
-    #             }
-    #         })
-    #     self.assertEquals(mockresponse.response.status_code, 302)
-    #
-    # # def test_post_comment_blank(self):
-    # #     feedbackset = mommy.make('devilry_group.FeedbackSet')
-    # #     self.mock_http302_postrequest(
-    # #         cradmin_role=feedbackset.group,
-    # #         viewkwargs={'pk': feedbackset.group.id},
-    # #         requestkwargs={
-    # #             'data': {
-    # #                 'text': '',
-    # #             }
-    # #         })
-    # #     comments = models.GroupComment.objects.all()
-    # #     self.assertEquals(0, len(comments))
-    #
-    # def test_post_comment(self):
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet')
-    #     self.mock_http302_postrequest(
-    #         cradmin_role=feedbackset.group,
-    #         viewkwargs={'pk': feedbackset.group.id},
-    #         requestkwargs={
-    #             'data': {
-    #                 'text': 'This is a comment',
-    #             }
-    #         })
-    #     comments = models.GroupComment.objects.all()
-    #     self.assertEquals(1, len(comments))
-    #
-    # # def test_post_comment_file(self):
-    # #     feedbackset = mommy.make('devilry_group.FeedbackSet')
-    # #     filecollection = mommy.make(
-    # #         'cradmin_temporaryfileuploadstore.TemporaryFileCollection',
-    # #     )
-    # #     test_file = mommy.make(
-    # #         'cradmin_temporaryfileuploadstore.TemporaryFile',
-    # #         filename='test.txt',
-    # #         collection=filecollection
-    # #     )
-    # #     test_file.file.save('test.txt', ContentFile('test'))
-    # #     self.mock_http302_postrequest(
-    # #         cradmin_role=feedbackset.group,
-    # #         viewkwargs={'pk': feedbackset.group.id},
-    # #         requestkwargs={
-    # #             'data': {
-    # #                 'text': 'This is a comment',
-    # #                 'temporary_file_collection_id': filecollection.id,
-    # #             }
-    # #         })
-    # #     comment_files = comment_models.CommentFile.objects.all()
-    # #     self.assertEquals(1, len(comment_files))
+        # def test_post_302(self):
+        #     feedbackset = mommy.make('devilry_group.FeedbackSet')
+        #     mockresponse = self.mock_http302_postrequest(
+        #         cradmin_role=feedbackset.group,
+        #         viewkwargs={'pk': feedbackset.group.id},
+        #         requestkwargs={
+        #             'data': {
+        #                 'text': 'asd',
+        #             }
+        #         })
+        #     self.assertEquals(mockresponse.response.status_code, 302)
+        #
+        # # def test_post_comment_blank(self):
+        # #     feedbackset = mommy.make('devilry_group.FeedbackSet')
+        # #     self.mock_http302_postrequest(
+        # #         cradmin_role=feedbackset.group,
+        # #         viewkwargs={'pk': feedbackset.group.id},
+        # #         requestkwargs={
+        # #             'data': {
+        # #                 'text': '',
+        # #             }
+        # #         })
+        # #     comments = models.GroupComment.objects.all()
+        # #     self.assertEquals(0, len(comments))
+        #
+        # def test_post_comment(self):
+        #     feedbackset = mommy.make('devilry_group.FeedbackSet')
+        #     self.mock_http302_postrequest(
+        #         cradmin_role=feedbackset.group,
+        #         viewkwargs={'pk': feedbackset.group.id},
+        #         requestkwargs={
+        #             'data': {
+        #                 'text': 'This is a comment',
+        #             }
+        #         })
+        #     comments = models.GroupComment.objects.all()
+        #     self.assertEquals(1, len(comments))
+        #
+        # # def test_post_comment_file(self):
+        # #     feedbackset = mommy.make('devilry_group.FeedbackSet')
+        # #     filecollection = mommy.make(
+        # #         'cradmin_temporaryfileuploadstore.TemporaryFileCollection',
+        # #     )
+        # #     test_file = mommy.make(
+        # #         'cradmin_temporaryfileuploadstore.TemporaryFile',
+        # #         filename='test.txt',
+        # #         collection=filecollection
+        # #     )
+        # #     test_file.file.save('test.txt', ContentFile('test'))
+        # #     self.mock_http302_postrequest(
+        # #         cradmin_role=feedbackset.group,
+        # #         viewkwargs={'pk': feedbackset.group.id},
+        # #         requestkwargs={
+        # #             'data': {
+        # #                 'text': 'This is a comment',
+        # #                 'temporary_file_collection_id': filecollection.id,
+        # #             }
+        # #         })
+        # #     comment_files = comment_models.CommentFile.objects.all()
+        # #     self.assertEquals(1, len(comment_files))

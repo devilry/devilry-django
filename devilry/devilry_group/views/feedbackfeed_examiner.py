@@ -7,6 +7,8 @@ from django_cradmin import crapp
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy, pgettext_lazy
 
 # Devilry/cradmin imports
+from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
+
 from devilry.apps.core import models as core_models
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
@@ -33,7 +35,6 @@ class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseVie
 
 
 class AbstractFeedbackForm(GroupCommentForm):
-
     def get_grading_points(self):
         raise NotImplementedError()
 
@@ -93,6 +94,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
     This is the view where examiner corrects the delivery made by a student
     and is only able to create drafted comments, or publish grading.
     """
+    template_name = 'devilry_group/feedbackfeed_examiner_feedback.django.html'
 
     def get_form_class(self):
         """
@@ -113,12 +115,10 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
     def get_buttons(self):
         buttons = super(ExaminerFeedbackView, self).get_buttons()
         buttons.extend([
-            layout.Submit('examiner_add_comment_to_feedback_draft',
-                          _('Add to feedback'),
-                          css_class='btn btn-default'),
-            layout.Submit('examiner_publish_feedback',
-                          _('Publish feedback'),
-                          css_class='btn btn-primary')
+            DefaultSubmit('examiner_add_comment_to_feedback_draft',
+                          _('Save draft and preview')),
+            PrimarySubmit('examiner_publish_feedback',
+                          _('Publish feedback'))
         ])
         return buttons
 
@@ -128,6 +128,8 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
             messages.warning(self.request, ugettext_lazy('Feedback is already published!'))
         else:
             if form.data.get('examiner_add_comment_to_feedback_draft'):
+                # If comment is part of a draft, the comment should only be visible to
+                # the examiner until draft-publication.
                 obj.visibility = group_models.GroupComment.VISIBILITY_PRIVATE
                 obj.part_of_grading = True
                 obj = super(ExaminerFeedbackView, self).save_object(form=form, commit=True)
@@ -138,6 +140,8 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
                 if result is False:
                     messages.warning(self.request, ugettext_lazy(error_msg))
                 elif len(obj.text) > 0:
+                    # Don't make comment visible to others unless it actaully
+                    # contains any text
                     obj.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
                     obj.part_of_grading = True
                     obj.published_datetime = obj.get_published_datetime()
@@ -153,13 +157,7 @@ class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
     The examiner discussview.
     This is the view examiner uses for communicating with students and admins in the feedbackfeed.
     """
-
-    # def _get_comments_for_group(self, group):
-    #     return group_models.GroupComment.objects.filter(
-    #         feedback_set__group=group
-    #     ).exclude_private_comments_from_other_users(
-    #         user=self.request.user
-    #     )
+    template_name = 'devilry_group/feedbackfeed_examiner_discuss.django.html'
 
     def get_buttons(self):
         buttons = super(ExaminerDiscussView, self).get_buttons()
@@ -193,7 +191,7 @@ class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
 class App(crapp.App):
     appurls = [
         crapp.Url(
-            r'^feedback$',
+            r'^$',
             ExaminerFeedbackView.as_view(),
             name=crapp.INDEXVIEW_NAME),
         crapp.Url(

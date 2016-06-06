@@ -196,7 +196,12 @@ class FeedbackSet(models.Model):
         unique_together = ('group', 'is_last_in_group')
 
     def __unicode__(self):
-        return u"{} - {} - {} - deadline: {}".format(self.group.assignment, self.feedbackset_type, self.group.long_displayname, self.deadline_datetime)
+        return u"{} - {} - {} - deadline: {} - points: {}".format(
+                self.group.assignment,
+                self.feedbackset_type,
+                self.group.get_unanonymized_long_displayname(),
+                self.deadline_datetime,
+                self.grading_points)
 
     def clean(self):
         if self.grading_published_datetime is not None and self.grading_published_by is None:
@@ -229,7 +234,7 @@ class FeedbackSet(models.Model):
             Who published the feedbackset.
 
         :param grading_points:
-            Points give to student(s).
+            Points to give to student(s).
 
         :param gradeform_data_json:
             gradeform(coming soon).

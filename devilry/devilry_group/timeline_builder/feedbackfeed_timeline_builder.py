@@ -37,7 +37,6 @@ class FeedbackFeedTimelineBuilder(object):
             .select_related('comment__user')\
             .order_by('filename')
         groupcomment_queryset = group_models.GroupComment.objects\
-            .filter(feedback_set__group=self.group)\
             .exclude_private_comments_from_other_users(user=self.requestuser)\
             .select_related(
                 'user',
@@ -49,6 +48,7 @@ class FeedbackFeedTimelineBuilder(object):
                 .filter(visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)\
                 .exclude_is_part_of_grading_feedbackset_unpublished()
         return group_models.FeedbackSet.objects\
+            .filter(group=self.group)\
             .prefetch_related(models.Prefetch('groupcomment_set', queryset=groupcomment_queryset))\
             .order_by('created_datetime')
 
@@ -158,8 +158,7 @@ class FeedbackFeedTimelineBuilder(object):
                 datetime=feedbackset.created_datetime,
                 event_dict={
                     "type": "deadline_created",
-                    "obj": current_deadline,
-                    "user": feedbackset.created_by
+                    "feedbackset": feedbackset
                 })
 
     def __add_deadline_expired_if_needed(self, feedbackset):
@@ -179,7 +178,7 @@ class FeedbackFeedTimelineBuilder(object):
                     datetime=current_deadline,
                     event_dict={
                         "type": "deadline_expired",
-                        "obj": current_deadline
+                        "deadline_datetime": current_deadline
                     })
 
     def __add_grade_to_timeline_if_published(self, feedbackset):
@@ -196,7 +195,7 @@ class FeedbackFeedTimelineBuilder(object):
             datetime=feedbackset.grading_published_datetime,
             event_dict={
                 "type": "grade",
-                "obj": feedbackset.grading_points
+                "feedbackset": feedbackset
             }
         )
 

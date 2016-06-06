@@ -108,6 +108,7 @@ class FeedbackFeedBaseView(create.CreateView):
         context['current_date'] = datetime.datetime.now()
         context['listbuilder_list'] = feedbackfeed_listbuilder.TimelineListBuilderList.from_built_timeline(
             built_timeline,
+            group=self.request.cradmin_role,
             devilryrole=self.get_devilryrole()
         )
         # context['listbuilder_list'] = TimelineListBuilderList.from_built_timeline(

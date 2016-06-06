@@ -1,14 +1,13 @@
 from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
+from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
-from devilry.devilry_group import models as group_models
-from devilry.devilry_group.tests.feedbackfeed import test_feedbackfeed_common
-from devilry.devilry_group.views import feedbackfeed_student
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
-
-from django_cradmin import cradmin_testhelpers
+from devilry.devilry_group import models as group_models
+from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
+from devilry.devilry_group.views import feedbackfeed_student
 
 
 class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
@@ -274,7 +273,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
     """
     viewclass = feedbackfeed_student.StudentFeedbackFeedView
 
-    def test_get_student_can_not_see_comments__part_of_grading_before_publish_first_attempt(self):
+    def test_get_student_can_not_see_comments_part_of_grading_before_publish_first_attempt(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=assignment)

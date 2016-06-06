@@ -1,0 +1,28 @@
+{% extends 'devilry_group/listbuilder/base_groupcomment_item_value.django.html' %}
+
+{% load i18n %}
+
+{% block details %}
+
+    <!--
+    Handles published and unpublished comment styles
+    -->
+    {% if me.group_comment.part_of_grading == True %}
+        {% if me.group_comment.get_published_datetime == None %}
+            <!--
+            Comment is part of grading, but not published.
+            -->
+            <div class="devilry-group-feedbackfeed-right-badge-field not-published-badge">
+                <p class="badge-text-new">{% trans "not published" context 'devilry_group feedbackfeed' %}</p>
+            </div>
+        {% else %}
+            <!--
+            Comment is published as part of the feedback.
+            -->
+            <div class="devilry-group-feedbackfeed-right-badge-field not-published-badge">
+                <p class="badge-text-new">{% trans "part of feedback" context 'devilry_group feedbackfeed' %}</p>
+            </div>
+        {% endif %}
+    {% endif %}
+
+{% endblock details %}

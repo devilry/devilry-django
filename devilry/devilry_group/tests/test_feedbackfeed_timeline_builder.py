@@ -163,3 +163,26 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         timelinebuilder_student.build()
         self.assertEquals(3, len(timelinebuilder_student.feedbacksets[0].groupcomment_set.all()))
         self.assertEquals(4, len(timelinebuilder_student.timeline))
+
+    def test_get_one_group(self):
+        assignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment2 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment1)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment2)
+        relatedstudent = mommy.make('core.RelatedStudent')
+        mommy.make('core.Candidate',
+                   assignment_group=group1,
+                   relatedstudent=relatedstudent)
+        mommy.make('core.Candidate',
+                   assignment_group=group2,
+                   relatedstudent=relatedstudent)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group1)
+        group_mommy.feedbackset_first_attempt_unpublished(group=group2)
+
+        timelinebuilder = FeedbackFeedTimelineBuilder(
+            group=group1,
+            requestuser=relatedstudent.user,
+            devilryrole='student'
+        )
+        self.assertEquals(1, len(timelinebuilder.feedbacksets))
+        self.assertEquals(feedbackset, timelinebuilder.feedbacksets[0])

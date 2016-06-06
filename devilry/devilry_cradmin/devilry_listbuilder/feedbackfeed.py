@@ -24,8 +24,9 @@ class TimelineListBuilderList(listbuilder.base.List):
             listbuilder_list.append_eventdict(event_dict)
         return listbuilder_list
 
-    def __init__(self, devilryrole):
+    def __init__(self, devilryrole, group):
         self.devilryrole = devilryrole
+        self.group = group
         super(TimelineListBuilderList, self).__init__()
 
     def append_eventdict(self, event_dict):
@@ -41,10 +42,28 @@ class TimelineListBuilderList(listbuilder.base.List):
         self.append(renderable=valuerenderer)
 
     def __get_item_value(self, event_dict):
+        """
+
+        Args:
+            event_dict:
+
+        Returns:
+
+        """
         if event_dict['type'] == 'comment':
-            return GroupCommentItemValue(value=event_dict['obj'], devilryrole=self.devilryrole)
-        else:
-            return listbuilder.base.ItemValueRenderer(value=event_dict)
+            group_comment = event_dict['obj']
+            if group_comment.user_role == comment_models.Comment.USER_ROLE_STUDENT:
+                return StudentGroupCommentItemValue(value=group_comment, devilryrole=self.devilryrole)
+            elif group_comment.user_role == comment_models.Comment.USER_ROLE_EXAMINER:
+                return ExaminerGroupCommentItemValue(value=group_comment, devilryrole=self.devilryrole)
+            elif group_comment.user_role == comment_models.Comment.USER_ROLE_ADMIN:
+                return AdminGroupCommentItemValue(value=group_comment, devilryrole=self.devilryrole)
+        elif event_dict['type'] == 'deadline_created':
+            return DeadlineCreatedItemValue(value=event_dict['feedbackset'], devilryrole=self.devilryrole)
+        elif event_dict['type'] == 'deadline_expired':
+            return DeadlineExpiredItemValue(value=event_dict['deadline_datetime'], devilryrole=self.devilryrole)
+        elif event_dict['type'] == 'grade':
+            return GradeItemValue(value=event_dict['feedbackset'], devilryrole=self.devilryrole, group=self.group)
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(TimelineListBuilderList, self).get_extra_css_classes_list()
@@ -52,13 +71,10 @@ class TimelineListBuilderList(listbuilder.base.List):
         return css_classes_list
 
 
-class GroupCommentItemValue(listbuilder.base.ItemValueRenderer):
+class BaseItemValue(listbuilder.base.ItemValueRenderer):
     """
 
     """
-    valuealias = 'group_comment'
-    template_name = 'devilry_group/listbuilder/base_groupcomment_item_value.django.html'
-
     @property
     def devilryrole(self):
         """
@@ -68,18 +84,118 @@ class GroupCommentItemValue(listbuilder.base.ItemValueRenderer):
         """
         return self.kwargs['devilryrole']
 
+
+class BaseEventItemValue(BaseItemValue):
+    """
+
+    """
+    def get_timeline_datetime(self):
+        """
+
+        Returns:
+
+        """
+        raise NotImplementedError('Must be implemented')
+
+
+class BaseGroupCommentItemValue(BaseItemValue):
+    """
+
+    """
+    valuealias = 'group_comment'
+    template_name = 'devilry_group/listbuilder/base_groupcomment_item_value.django.html'
+
     def get_extra_css_classes_list(self):
         """
 
         Returns:
 
         """
-        css_classes_list = super(GroupCommentItemValue, self).get_extra_css_classes_list()
+        css_classes_list = super(BaseGroupCommentItemValue, self).get_extra_css_classes_list()
         css_classes_list.append('devilry-group-feedbackfeed-comment')
-        if self.group_comment.user_role == comment_models.Comment.USER_ROLE_STUDENT:
-            css_classes_list.append('devilry-group-feedbackfeed-comment-student')
-        elif self.group_comment.user_role == comment_models.Comment.USER_ROLE_EXAMINER:
-            css_classes_list.append('devilry-group-feedbackfeed-comment-examiner')
-        elif self.group_comment.user_role == comment_models.Comment.USER_ROLE_ADMIN:
-            css_classes_list.append('devilry-group-feedbackfeed-comment-admin')
+        return css_classes_list
+
+
+class StudentGroupCommentItemValue(BaseGroupCommentItemValue):
+    valuealias = 'group_comment'
+    template_name = 'devilry_group/listbuilder/student_groupcomment_item_value.django.html'
+
+    def get_extra_css_classes_list(self):
+        """
+        """
+        css_classes_list = super(StudentGroupCommentItemValue, self).get_extra_css_classes_list()
+        css_classes_list.append('devilry-group-feedbackfeed-comment-student')
+        return css_classes_list
+
+
+class ExaminerGroupCommentItemValue(BaseGroupCommentItemValue):
+    valuealias = 'group_comment'
+    template_name = 'devilry_group/listbuilder/examiner_groupcomment_item_value.django.html'
+
+    def get_extra_css_classes_list(self):
+        """
+        """
+        css_classes_list = super(ExaminerGroupCommentItemValue, self).get_extra_css_classes_list()
+        css_classes_list.append('devilry-group-feedbackfeed-comment-examiner')
+        return css_classes_list
+
+
+class AdminGroupCommentItemValue(BaseGroupCommentItemValue):
+    valuealias = 'group_comment'
+    template_name = 'devilry_group/listbuilder/admin_groupcomment_item_value.django.html'
+
+    def get_extra_css_classes_list(self):
+        """
+        """
+        css_classes_list = super(AdminGroupCommentItemValue, self).get_extra_css_classes_list()
+        css_classes_list.append('devilry-group-feedbackfeed-comment-admin')
+        return css_classes_list
+
+
+class DeadlineCreatedItemValue(BaseEventItemValue):
+    """
+
+    """
+    valuealias = 'feedbackset'
+    template_name = 'devilry_group/listbuilder/deadline_created_item_value.django.html'
+
+    def get_timeline_datetime(self):
+        return self.feedbackset.created_datetime
+
+    def get_extra_css_classes_list(self):
+        css_classes_list = super(DeadlineCreatedItemValue, self).get_extra_css_classes_list()
+        css_classes_list.append('devilry-group-feedbackfeed-event-message-deadline-created')
+        return css_classes_list
+
+
+class DeadlineExpiredItemValue(BaseEventItemValue):
+    """
+
+    """
+    valuealias = 'deadline_datetime'
+    template_name = 'devilry_group/listbuilder/deadline_expired_item_value.django.html'
+
+    def get_timeline_datetime(self):
+        return self.deadline_datetime
+
+    def get_extra_css_classes_list(self):
+        css_classes_list = super(DeadlineExpiredItemValue, self).get_extra_css_classes_list()
+        css_classes_list.append('devilry-group-feedbackfeed-event-message-deadline-expired')
+        return css_classes_list
+
+
+class GradeItemValue(BaseEventItemValue):
+    valuealias = 'feedbackset'
+    template_name = 'devilry_group/listbuilder/grading_item_value.django.html'
+
+    @property
+    def group(self):
+        return self.kwargs['group']
+
+    def get_timeline_datetime(self):
+        return self.feedbackset.grading_published_datetime
+
+    def get_extra_css_classes_list(self):
+        css_classes_list = super(GradeItemValue, self).get_extra_css_classes_list()
+        css_classes_list.append('devilry-group-feedbackfeed-event-message-grade')
         return css_classes_list
