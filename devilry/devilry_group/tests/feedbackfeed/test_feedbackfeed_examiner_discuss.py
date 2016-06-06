@@ -71,23 +71,6 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
             })
         self.assertIsNotNone(models.GroupComment.objects.all()[0].published_datetime)
 
-    # def test_post_feedbackset_comment_with_text_published_datetime_is_not_set(self):
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet', )
-    #     examiner = mommy.make('core.Examiner',
-    #                           assignmentgroup=feedbackset.group,
-    #                           relatedexaminer=mommy.make('core.RelatedExaminer'))
-    #     self.mock_http302_postrequest(
-    #         cradmin_role=examiner.assignmentgroup,
-    #         requestuser=examiner.relatedexaminer.user,
-    #         viewkwargs={'pk': feedbackset.group.id},
-    #         requestkwargs={
-    #             'data': {
-    #                 'text': 'This is a comment',
-    #                 'examiner_add_comment_to_feedback_draft': 'unused value'
-    #             }
-    #         })
-    #     self.assertIsNone(models.GroupComment.objects.all()[0].published_datetime)
-
     def test_post_feedbackset_comment_visible_to_everyone(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet', )
         examiner = mommy.make('core.Examiner',
