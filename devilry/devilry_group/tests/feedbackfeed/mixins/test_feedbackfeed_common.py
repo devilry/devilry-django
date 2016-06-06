@@ -138,7 +138,6 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         feedbackset = group_mommy.feedbackset_first_attempt_published(group__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
-        # mockresponse.selector.prettyprint()
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
 
     def test_get_feedbackset_second_created_deadline_event(self):
@@ -308,7 +307,6 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
         expired = mockresponse.selector.list('.devilry-group-feedbackfeed-event-message-deadline-expired')
         # print mockresponse.selector.count('.devilry-group-feedbackfeed-event-message-deadline-expired')
-        mockresponse.selector.prettyprint()
         self.assertEqual(2, len(expired))
 
     def test_get_feedbackfeed_event_two_feedbacksets_deadlines_created_assignment_firstdeadline(self):
