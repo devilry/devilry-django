@@ -44,21 +44,30 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         now = timezone.now()
         group_mommy.feedbackset_first_attempt_published(
+                group=group,
                 is_last_in_group=None,
+                created_datetime=now - timezone.timedelta(days=20),
+                grading_published_datetime=now-timezone.timedelta(days=19))
+        group_mommy.feedbackset_new_attempt_published(
+                group=group,
+                is_last_in_group=None,
+                created_datetime=now - timezone.timedelta(days=18),
+                deadline_datetime=now-timezone.timedelta(days=17),
+                grading_published_datetime=now-timezone.timedelta(days=16))
+        group_mommy.feedbackset_new_attempt_published(
+                group=group,
+                is_last_in_group=None,
+                created_datetime=now - timezone.timedelta(days=15),
+                deadline_datetime=now-timezone.timedelta(days=14),
+                grading_published_datetime=now-timezone.timedelta(days=13))
+        group_mommy.feedbackset_new_attempt_published(
+                group=group,
+                created_datetime=now - timezone.timedelta(days=12),
+                deadline_datetime=now-timezone.timedelta(days=11),
                 grading_published_datetime=now-timezone.timedelta(days=10))
-        group_mommy.feedbackset_new_attempt_published(
-                deadline_datetime=now-timezone.timedelta(days=9),
-                is_last_in_group=None,
-                grading_published_datetime=now-timezone.timedelta(days=8))
-        group_mommy.feedbackset_new_attempt_published(
-                is_last_in_group=None,
-                deadline_datetime=now-timezone.timedelta(days=7),
-                grading_published_datetime=now-timezone.timedelta(days=6))
-        group_mommy.feedbackset_new_attempt_published(
-                deadline_datetime=now-timezone.timedelta(days=5),
-                grading_published_datetime=now-timezone.timedelta(days=4))
         timelinebuilder = FeedbackFeedTimelineBuilder(group=group, requestuser=testuser, devilryrole='unused')
         timelinebuilder.build()
+
         self.assertEquals(11, len(timelinebuilder.timeline))
 
     def test_get_last_feedbackset(self):
@@ -67,11 +76,13 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         now = timezone.now()
         group_mommy.feedbackset_first_attempt_published(
+                group=group,
                 is_last_in_group=None,
                 grading_published_datetime=now-timezone.timedelta(days=10))
         feedbackset_last = group_mommy.feedbackset_new_attempt_published(
+                group=group,
                 deadline_datetime=now-timezone.timedelta(days=9),
-                is_last_in_group=None,
+                # is_last_in_group=None,
                 grading_published_datetime=now-timezone.timedelta(days=8))
         timelinebuilder = FeedbackFeedTimelineBuilder(group=group, requestuser=testuser, devilryrole='unused')
         timelinebuilder.build()
@@ -83,11 +94,13 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         now = timezone.now()
         group_mommy.feedbackset_first_attempt_published(
+                group=group,
                 is_last_in_group=None,
                 grading_published_datetime=now-timezone.timedelta(days=10))
         feedbackset_last = group_mommy.feedbackset_new_attempt_published(
+                group=group,
                 deadline_datetime=now-timezone.timedelta(days=9),
-                is_last_in_group=None,
+                # is_last_in_group=None,
                 grading_published_datetime=now-timezone.timedelta(days=8))
         timelinebuilder = FeedbackFeedTimelineBuilder(group=group, requestuser=testuser, devilryrole='unused')
         timelinebuilder.build()
