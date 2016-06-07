@@ -249,10 +249,6 @@ class FeedbackSet(models.Model):
             raise ValueError
 
         current_deadline = self.current_deadline
-        # if self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
-        #     current_deadline = self.deadline_datetime or self.group.parentnode.first_deadline
-        # elif self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT:
-        #     current_deadline = self.deadline_datetime
 
         if current_deadline is None:
             return False, 'Cannot publish feedback without a deadline.'
