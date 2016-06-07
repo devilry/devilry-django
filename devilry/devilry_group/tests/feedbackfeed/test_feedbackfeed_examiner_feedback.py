@@ -10,7 +10,7 @@ from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_ex
 from devilry.devilry_group.views import feedbackfeed_examiner
 
 
-class TestFeedbackfeedExaminerFeedbackRendering(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
+class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
     viewclass = feedbackfeed_examiner.ExaminerFeedbackView
 
     def test_get_feedbackfeed_examiner_can_see_feedback_and_discuss_in_header(self):
