@@ -71,33 +71,18 @@ class FeedbackFeedTimelineBuilder(object):
         return self.__examinermap.get(user.id, None)
 
     def get_last_feedbackset(self):
-        """
-
-        Returns:
-
-        """
         if self.feedbacksets:
             return self.feedbacksets[-1]
         else:
             return None
 
     def __get_first_feedbackset(self):
-        """
-
-        Returns:
-
-        """
         if self.feedbacksets:
             return self.feedbacksets[0]
         else:
             return None
 
     def get_last_deadline(self):
-        """
-
-        Returns:
-
-        """
         last_feedbackset = self.get_last_feedbackset()
         if last_feedbackset:
             return self.__get_deadline_for_feedbackset(feedbackset=last_feedbackset)
