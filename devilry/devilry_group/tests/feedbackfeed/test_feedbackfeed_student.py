@@ -198,6 +198,25 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                                                           requestuser=requestuser)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
 
+    def test_get_feedbackfeed_student_can_not_see_admin_comment_visibility_visible_to_examiner_and_admins(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        admin = mommy.make('devilry_account.User', shortname='subjectadmin')
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode__admins=[admin])
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=group,
+                               relatedstudent__user=requestuser)
+
+        mommy.make('devilry_group.GroupComment',
+                   user=admin,
+                   user_role='admin',
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                   feedback_set__group=group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
+                                                          requestuser=requestuser)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
+
     def test_get_student_cannot_see_comment_visibility_private(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         candidate = mommy.make('core.Candidate',
