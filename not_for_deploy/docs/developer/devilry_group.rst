@@ -22,12 +22,12 @@ for delivering assignments and recieiving feedback on those deliveries.
   a comment is posted, a deadline ends and the status of the grading. You will also have direct access
   to download the files delivered.
 
-
-*****************************
-How does the feedbackset work
-*****************************
-asd
-
+**********************
+What is a FeedbackSet?
+**********************
+The FeedbackSet has a foreignkey to an AssignmentGroup and groups all information about a specific deadline for
+the Assignment the AssignmentGroup is associated with. A new FeedbackSet is created for each deadline e.g. regarding new
+attempts if the student failed on the first delivery. See the model API below.
 
 *************
 Datamodel API
