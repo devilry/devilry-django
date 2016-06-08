@@ -35,14 +35,53 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
 
     def test_get_feedbackfeed_admin_wysiwyg_get_comment_choise_add_comment_for_examiners_and_admins_button(self):
-        # examiner = mommy.make('core.Examiner')
-        group = mommy.make('devilry_group.FeedbackSet')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group.group)
+        feedbackset = mommy.make('devilry_group.FeedbackSet')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
         self.assertTrue(mockresponse.selector.exists('#submit-id-administrator_add_comment_for_examiners'))
 
     def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choise_add_comment_public_button(self):
-        examiner = mommy.make('core.Examiner')
-        feedbackset = mommy.make('devilry_group.FeedbackSet', group=examiner.assignmentgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
-                                                          requestuser=examiner.relatedexaminer.user)
+        feedbackset = mommy.make('devilry_group.FeedbackSet')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
         self.assertTrue(mockresponse.selector.exists('#submit-id-administrator_add_public_comment'))
+
+    def test_post_feedbackset_comment_visible_to_everyone(self):
+        admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor')
+        period = mommy.make_recipe('devilry.apps.core.period_active',
+                                   admins=[admin])
+        group = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group=group)
+        self.mock_http302_postrequest(
+            cradmin_role=group,
+            requestuser=admin,
+            viewkwargs={'pk': group.id},
+            requestkwargs={
+                'data': {
+                    'text': 'This is a comment',
+                    'admin_add_public_comment': 'unused value'
+                }
+            })
+        comments = models.GroupComment.objects.all()
+        self.assertEquals(1, len(comments))
+        self.assertEquals('visible-to-everyone', comments[0].visibility)
+        self.assertEquals('periodadmin', comments[0].user.shortname)
+
+    def test_post_feedbackset_comment_visible_to_examiner_and_admins(self):
+        admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor')
+        period = mommy.make_recipe('devilry.apps.core.period_active',
+                                   admins=[admin])
+        group = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group=group)
+        self.mock_http302_postrequest(
+            cradmin_role=group,
+            requestuser=admin,
+            viewkwargs={'pk': group.id},
+            requestkwargs={
+                'data': {
+                    'text': 'This is a comment',
+                    'admin_add_comment_for_examiners': 'unused value'
+                }
+            })
+        comments = models.GroupComment.objects.all()
+        self.assertEquals(1, len(comments))
+        self.assertEquals('visible-to-examiner-and-admins', comments[0].visibility)
+        self.assertEquals('periodadmin', comments[0].user.shortname)
