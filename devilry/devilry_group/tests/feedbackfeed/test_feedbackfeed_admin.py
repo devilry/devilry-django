@@ -64,6 +64,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         self.assertEquals(1, len(comments))
         self.assertEquals('visible-to-everyone', comments[0].visibility)
         self.assertEquals('periodadmin', comments[0].user.shortname)
+        self.assertEquals(feedbackset.id, comments[0].feedback_set.id)
 
     def test_post_feedbackset_comment_visible_to_examiner_and_admins(self):
         admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor')
@@ -85,3 +86,4 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         self.assertEquals(1, len(comments))
         self.assertEquals('visible-to-examiner-and-admins', comments[0].visibility)
         self.assertEquals('periodadmin', comments[0].user.shortname)
+        self.assertEquals(feedbackset.id, comments[0].feedback_set.id)

@@ -95,7 +95,6 @@ class FeedbackFeedBaseView(create.CreateView):
             The context data dictionary.
         """
         context = super(FeedbackFeedBaseView, self).get_context_data(**kwargs)
-
         context['devilry_ui_role'] = self.get_devilryrole()
         context['subject'] = self.request.cradmin_role.assignment.period.subject
         context['assignment'] = self.request.cradmin_role.assignment
@@ -111,9 +110,6 @@ class FeedbackFeedBaseView(create.CreateView):
             group=self.request.cradmin_role,
             devilryrole=self.get_devilryrole()
         )
-        # context['listbuilder_list'] = TimelineListBuilderList.from_built_timeline(
-        #         built_timeline,
-        #         devilryrole=self.get_devilryrole())
 
         return context
 
