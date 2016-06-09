@@ -8527,16 +8527,18 @@ fieldset[disabled] .button_student {
   margin-top: 4.0em;
   margin-bottom: 4.0em;
   font-size: 1.0em;
-  color: #5d8c08;
-  border-bottom: 1px solid #999999;
+}
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-grade {
+  margin-left: 3.0em;
+  margin-top: 4.0em;
+  margin-bottom: 4.0em;
+  font-size: 1.0em;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-failed {
   margin-left: 3.0em;
   margin-top: 4.0em;
   margin-bottom: 4.0em;
   font-size: 1.0em;
-  color: #9b0d28;
-  border-bottom: 1px solid #999999;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-feed-uploaded-file-tag {
   display: inline-block;
