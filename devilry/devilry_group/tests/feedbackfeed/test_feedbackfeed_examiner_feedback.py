@@ -1,17 +1,54 @@
+from datetime import datetime
 from django.test import TestCase
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
+from devilry.utils import datetimeutils
 from devilry.apps.core import models as core_models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
-from devilry.devilry_group import models as  group_models
+from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_examiner
 from devilry.devilry_group.views import feedbackfeed_examiner
 
 
 class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
     viewclass = feedbackfeed_examiner.ExaminerFeedbackView
+
+    def test_no_redirect_on_last_feedbackset_unpublished(self):
+        group = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        group_mommy.feedbackset_first_attempt_unpublished(group=examiner.assignmentgroup)
+        mockresponse = self.mock_getrequest(cradmin_role=examiner.assignmentgroup,
+                                            requestuser=examiner.relatedexaminer.user)
+        self.assertEquals(mockresponse.response.status_code, 200)
+
+    def test_redirect_on_last_feedbackset_published(self):
+        group = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        group_mommy.feedbackset_first_attempt_published(group=examiner.assignmentgroup)
+        mockresponse = self.mock_getrequest(cradmin_role=examiner.assignmentgroup,
+                                            requestuser=examiner.relatedexaminer.user)
+        self.assertEquals(mockresponse.response.status_code, 302)
+
+    def test_get_feedbackset_first_no_created_deadline_event(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
+
+    def test_get_feedbackset_second_created_deadline_event(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode=assignment,
+            is_last_in_group=None)
+        group_mommy.feedbackset_new_attempt_unpublished(group=feedbackset.group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
 
     def test_get_feedbackfeed_examiner_can_see_feedback_and_discuss_in_header(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -420,3 +457,135 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, cradmin_testhelpers.Test
     #         })
     #     comment_files = comment_models.CommentFile.objects.all()
     #     self.assertEquals(1, len(comment_files))
+
+
+class TestExaminerCreateNewFeedbackSet(TestCase, cradmin_testhelpers.TestCaseMixin):
+    """
+
+    """
+    viewclass = feedbackfeed_examiner.ExaminerFeedbackCreateFeedbackSetView
+
+    def test_get_feedbackset_first_no_created_deadline_event(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        feedbackset = group_mommy.feedbackset_first_attempt_published(group__parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
+
+    def test_get_feedbackset_second_created_deadline_event(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        feedbackset = group_mommy.feedbackset_first_attempt_published(
+            group__parentnode=assignment,
+            is_last_in_group=None)
+        group_mommy.feedbackset_new_attempt_published(group=feedbackset.group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
+
+    def test_no_redirect_on_last_feedbackset_published(self):
+        group = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        group_mommy.feedbackset_first_attempt_published(group=examiner.assignmentgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
+                                                          requestuser=examiner.relatedexaminer.user)
+        self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
+                          examiner.assignmentgroup.assignment.get_path())
+
+    def test_redirect_on_last_feedbackset_unpublished(self):
+        group = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        group_mommy.feedbackset_first_attempt_unpublished(group=examiner.assignmentgroup)
+        mockresponse = self.mock_getrequest(cradmin_role=examiner.assignmentgroup)
+        self.assertEquals(302, mockresponse.response.status_code)
+
+    def test_redirect_on_last_feedbackset_unpublished_multiple_feedbacksets(self):
+        group = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        group_mommy.feedbackset_first_attempt_published(group=examiner.assignmentgroup, is_last_in_group=None)
+        group_mommy.feedbackset_new_attempt_published(group=examiner.assignmentgroup, is_last_in_group=None)
+        group_mommy.feedbackset_new_attempt_unpublished(group=examiner.assignmentgroup)
+        mockresponse = self.mock_getrequest(cradmin_role=examiner.assignmentgroup)
+        self.assertEquals(302, mockresponse.response.status_code)
+
+    def test_get_feedbackfeed_event_delivery_passed(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 group__parentnode__max_points=10,
+                                 group__parentnode__passing_grade_min_points=5,
+                                 grading_published_datetime=timezone.now(),
+                                 deadline_datetime=timezone.now(),
+                                 grading_points=7)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-passed'))
+
+    def test_get_feedbackfeed_event_delivery_failed(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 group__parentnode__max_points=10,
+                                 group__parentnode__passing_grade_min_points=5,
+                                 grading_published_datetime=timezone.now(),
+                                 grading_points=3)
+
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-failed'))
+
+    def test_feedbackset_created_with_published_feedbackset_without_comment(self):
+        group = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        group_mommy.feedbackset_first_attempt_published(group=examiner.assignmentgroup)
+
+        timestr = (datetimeutils.get_current_datetime() + timezone.timedelta(days=2)).strftime('%Y-%m-%d %H:%M')
+
+        self.mock_http302_postrequest(
+            cradmin_role=examiner.assignmentgroup,
+            requestuser=examiner.relatedexaminer.user,
+            viewkwargs={'pk': examiner.assignmentgroup.id},
+            requestkwargs={
+                'data': {
+                    'deadline_datetime': timestr,
+                    'text': '',
+                    'examiner_create_new_feedbackset': 'unused value',
+                }
+            })
+
+        feedbacksets = group_models.FeedbackSet.objects.all()
+        self.assertEquals(2, len(feedbacksets))
+        self.assertEquals(datetime.strptime(timestr, '%Y-%m-%d %H:%M'), feedbacksets[1].deadline_datetime)
+
+        group_comments = group_models.GroupComment.objects.all()
+        self.assertEquals(0, len(group_comments))
+
+    def test_feedbackset_created_with_published_feedbackset_with_comment(self):
+        group = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        group_mommy.feedbackset_first_attempt_published(group=examiner.assignmentgroup)
+
+        timestr = (datetimeutils.get_current_datetime() + timezone.timedelta(days=2)).strftime('%Y-%m-%d %H:%M')
+        comment_text = 'New attempt given'
+
+        self.mock_http302_postrequest(
+            cradmin_role=examiner.assignmentgroup,
+            requestuser=examiner.relatedexaminer.user,
+            viewkwargs={'pk': examiner.assignmentgroup.id},
+            requestkwargs={
+                'data': {
+                    'deadline_datetime': timestr,
+                    'text': comment_text,
+                    'examiner_create_new_feedbackset': 'unused value',
+                }
+            })
+
+        feedbacksets = group_models.FeedbackSet.objects.all()
+        self.assertEquals(2, len(feedbacksets))
+        self.assertEquals(datetime.strptime(timestr, '%Y-%m-%d %H:%M'), feedbacksets[1].deadline_datetime)
+
+        comments = group_models.GroupComment.objects.all()
+        self.assertEquals(1, len(comments))
+        self.assertEquals(comments[0].feedback_set_id, feedbacksets[1].id)
+        self.assertEquals(comments[0].text, comment_text)
