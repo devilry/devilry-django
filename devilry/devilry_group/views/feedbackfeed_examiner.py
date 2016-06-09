@@ -1,37 +1,31 @@
 # Django imports
+from datetime import datetime
 from django import forms
 from django.contrib import messages
 from django.db import models
+from django.http import HttpResponseRedirect
 from django.utils import timezone
 from django_cradmin import crapp
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy, pgettext_lazy
 
 # Devilry/cradmin imports
+from django_cradmin.viewhelpers import delete
 from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
+from django_cradmin.viewhelpers import create
+from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
 from devilry.apps.core import models as core_models
+from devilry.utils import datetimeutils
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.views.cradmin_feedbackfeed_base import GroupCommentForm
+from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 
 # 3rd party imports
 from crispy_forms import layout
 
-
-class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
-    """
-    Base view for examiner.
-    """
-    def get_devilryrole(self):
-        return 'examiner'
-
-    def get_buttons(self):
-        return []
-
-    def set_automatic_attributes(self, obj):
-        super(ExaminerBaseFeedbackFeedView, self).set_automatic_attributes(obj)
-        obj.user_role = 'examiner'
+from devilry.utils.datetimeutils import ISODATETIME_DJANGOFORMAT
 
 
 class AbstractFeedbackForm(GroupCommentForm):
@@ -46,10 +40,10 @@ class PassedFailedFeedbackForm(AbstractFeedbackForm):
 
     #: Set delivery as passed or failed.
     passed = forms.BooleanField(
-        label=pgettext_lazy('grading', 'Passed?'),
-        help_text=pgettext_lazy('grading', 'Check to provide a passing grade.'),
-        initial=True,
-        required=False)
+            label=pgettext_lazy('grading', 'Passed?'),
+            help_text=pgettext_lazy('grading', 'Check to provide a passing grade.'),
+            initial=True,
+            required=False)
 
     @classmethod
     def get_field_layout(cls):
@@ -88,13 +82,119 @@ class PointsFeedbackForm(AbstractFeedbackForm):
         return self.cleaned_data['points']
 
 
+class CreateFeedbackSetForm(GroupCommentForm):
+
+    deadline_datetime = forms.DateTimeField(widget=DateTimePickerWidget)
+
+    @classmethod
+    def get_field_layout(cls):
+        return ['deadline_datetime']
+
+
+class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
+    """
+    Base view for examiner.
+    """
+
+    def get_devilryrole(self):
+        return 'examiner'
+
+    def get_buttons(self):
+        return []
+
+    def set_automatic_attributes(self, obj):
+        super(ExaminerBaseFeedbackFeedView, self).set_automatic_attributes(obj)
+        obj.user_role = 'examiner'
+
+
+class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
+    """
+    View to create a new FeedbackSet if the current last feedbackset is published.
+
+    When a new unpublished FeedbackSet is created, this view redirects to :class:`.ExaminerFeedbackView`.
+    See :meth:`dispatch`.
+    """
+    template_name = 'devilry_group/feedbackfeed_examiner_feedback.django.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        group = self.request.cradmin_role
+        if not group.last_feedbackset_is_published:
+            return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+
+        return super(ExaminerFeedbackCreateFeedbackSetView, self).dispatch(request, *args, **kwargs)
+
+    def get_form_class(self):
+        return CreateFeedbackSetForm
+
+    def get_buttons(self):
+        buttons = super(ExaminerFeedbackCreateFeedbackSetView, self).get_buttons()
+        buttons.extend([
+            layout.Submit('examiner_create_new_feedbackset',
+                          _('Give new attempt'),
+                          css_class='btn btn-primary'),
+        ])
+        return buttons
+
+    def __create_new_feedbackset(self, comment, new_deadline):
+        if new_deadline <= datetimeutils.get_current_datetime() + timezone.timedelta(days=1):
+            messages.error(self.request, ugettext_lazy('New deadline is in less than a day!'))
+            return None
+
+        # Update current last feedbackset in group before
+        # creating the new feedbackset.
+        current_feedbackset = group_models.FeedbackSet.objects.get(id=comment.feedback_set_id)
+        current_feedbackset.is_last_in_group = False
+        current_feedbackset.save()
+
+        feedbackset = group_models.FeedbackSet(
+            group=self.request.cradmin_role,
+            feedbackset_type=group_models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
+            created_by=comment.user,
+            deadline_datetime=new_deadline
+        )
+
+        return feedbackset
+
+    def save_object(self, form, commit=True):
+        comment = super(ExaminerFeedbackCreateFeedbackSetView, self).save_object(form=form)
+
+        if 'deadline_datetime' in self.request.POST:
+            new_deadline = datetime.strptime(self.request.POST['deadline_datetime'], '%Y-%m-%d %H:%M')
+
+            new_feedbackset = self.__create_new_feedbackset(comment=comment, new_deadline=new_deadline)
+            if new_feedbackset is None:
+                return comment
+
+            # Save new feedbackset!
+            new_feedbackset.save()
+
+            if len(comment.text) > 0:
+                # Also save comment and set the comments feedback_set to the newly
+                # created new_feedbackset.
+                comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
+                comment.feedback_set = new_feedbackset
+                comment.published_datetime = new_feedbackset.created_datetime + timezone.timedelta(seconds=1)
+                comment = super(ExaminerFeedbackCreateFeedbackSetView, self).save_object(form=form, commit=True)
+        return comment
+
+
 class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
     """
     The examiner feedbackview.
     This is the view where examiner corrects the delivery made by a student
     and is only able to create drafted comments, or publish grading.
+
+    If the last FeedbackSet is published, this view redirects to :class:`.ExaminerFeedbackCreateFeedbackSetView`.
+    See :meth:`dispatch`.
     """
     template_name = 'devilry_group/feedbackfeed_examiner_feedback.django.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        group = self.request.cradmin_role
+        if group.last_feedbackset_is_published:
+            return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl('create-feedbackset'))
+
+        return super(ExaminerFeedbackView, self).dispatch(request, *args, **kwargs)
 
     def get_form_class(self):
         """
@@ -116,9 +216,11 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         buttons = super(ExaminerFeedbackView, self).get_buttons()
         buttons.extend([
             DefaultSubmit('examiner_add_comment_to_feedback_draft',
-                          _('Save draft and preview')),
+                          _('Save draft and preview'),
+                          css_class='btn btn-default'),
             PrimarySubmit('examiner_publish_feedback',
-                          _('Publish feedback'))
+                          _('Publish feedback'),
+                          css_class='btn btn-primary')
         ])
         return buttons
 
@@ -127,21 +229,21 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         if obj.feedback_set.grading_published_datetime is not None:
             messages.warning(self.request, ugettext_lazy('Feedback is already published!'))
         else:
-            if form.data.get('examiner_add_comment_to_feedback_draft'):
+            if 'examiner_add_comment_to_feedback_draft' in self.request.POST:
                 # If comment is part of a draft, the comment should only be visible to
                 # the examiner until draft-publication.
                 obj.visibility = group_models.GroupComment.VISIBILITY_PRIVATE
                 obj.part_of_grading = True
                 obj = super(ExaminerFeedbackView, self).save_object(form=form, commit=True)
-            elif form.data.get('examiner_publish_feedback'):
+            elif 'examiner_publish_feedback' in self.request.POST:
                 result, error_msg = obj.feedback_set.publish(
                         published_by=obj.user,
                         grading_points=form.get_grading_points())
                 if result is False:
-                    messages.warning(self.request, ugettext_lazy(error_msg))
+                    messages.error(self.request, ugettext_lazy(error_msg))
                 elif len(obj.text) > 0:
-                    # Don't make comment visible to others unless it actaully
-                    # contains any text
+                    # Don't make comment visible to others unless it actually
+                    # contains any text.
                     obj.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
                     obj.part_of_grading = True
                     obj.published_datetime = obj.get_published_datetime()
@@ -188,15 +290,24 @@ class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
         return self.request.cradmin_app.reverse_appurl(viewname='discuss')
 
 
+class GroupCommentDeleteView(delete.DeleteView):
+    """
+
+    """
+
+
 class App(crapp.App):
     appurls = [
         crapp.Url(
-            r'^$',
-            ExaminerFeedbackView.as_view(),
-            name=crapp.INDEXVIEW_NAME),
+                r'^$',
+                ExaminerFeedbackView.as_view(),
+                name=crapp.INDEXVIEW_NAME),
         crapp.Url(
-            r'^discuss$',
-            ExaminerDiscussView.as_view(),
-            name='discuss'
-        )
+                r'^discuss$',
+                ExaminerDiscussView.as_view(),
+                name='discuss'),
+        crapp.Url(
+                r'^create-feedbackset$',
+                ExaminerFeedbackCreateFeedbackSetView.as_view(),
+                name='create-feedbackset'),
     ]

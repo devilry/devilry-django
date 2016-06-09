@@ -44,7 +44,7 @@ class GroupCommentForm(forms.ModelForm):
 
 class FeedbackFeedBaseView(create.CreateView):
     """
-    Base feedbackfeed view. Subclass views inherits from this.
+    Base feedbackfeed view. FeedbackFeed views inherits from this.
     """
     template_name = "devilry_group/feedbackfeed.django.html"
     model = group_models.GroupComment
