@@ -1445,6 +1445,17 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         return Q(examiners__user=user_obj)
 
     @property
+    def last_feedbackset_is_published(self):
+        from devilry.devilry_group import models as group_models
+        last_feedbackset = group_models.FeedbackSet.objects\
+            .filter(group=self)\
+            .order_by('-created_datetime')\
+            .first()
+        if last_feedbackset is None:
+            return False
+        return last_feedbackset.grading_published_datetime is not None
+
+    @property
     def should_ask_if_examiner_want_to_give_another_chance(self):
         """
         ``True`` if the current state of the group is such that the examiner should
