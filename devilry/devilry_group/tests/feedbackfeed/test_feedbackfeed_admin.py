@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
@@ -16,6 +17,26 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
                                                           requestuser=candidate.relatedstudent.user)
         self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
                           candidate.assignment_group.assignment.get_path())
+
+    def test_get_feedbackfeed_event_delivery_passed(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 group__parentnode__max_points=10,
+                                 group__parentnode__passing_grade_min_points=5,
+                                 grading_published_datetime=timezone.now(),
+                                 deadline_datetime=timezone.now(),
+                                 grading_points=7)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-passed'))
+
+    def test_get_feedbackfeed_event_delivery_failed(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 group__parentnode__max_points=10,
+                                 group__parentnode__passing_grade_min_points=5,
+                                 grading_published_datetime=timezone.now(),
+                                 grading_points=3)
+
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-failed'))
 
     def test_get_feedbackfeed_comment_admin(self):
         admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor the norse god')

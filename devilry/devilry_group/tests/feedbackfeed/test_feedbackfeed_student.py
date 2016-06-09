@@ -292,6 +292,26 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
     """
     viewclass = feedbackfeed_student.StudentFeedbackFeedView
 
+    def test_get_feedbackfeed_event_delivery_passed(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 group__parentnode__max_points=10,
+                                 group__parentnode__passing_grade_min_points=5,
+                                 grading_published_datetime=timezone.now(),
+                                 deadline_datetime=timezone.now(),
+                                 grading_points=7)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-passed'))
+
+    def test_get_feedbackfeed_event_delivery_failed(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 group__parentnode__max_points=10,
+                                 group__parentnode__passing_grade_min_points=5,
+                                 grading_published_datetime=timezone.now(),
+                                 grading_points=3)
+
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-failed'))
+
     def test_get_student_can_not_see_comments_part_of_grading_before_publish_first_attempt(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
