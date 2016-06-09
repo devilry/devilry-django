@@ -3,6 +3,7 @@
 {% load devilry_group_tags %}
 {% load devilry_core_tags %}
 {% load devilry_account_tags %}
+{% load cradmin_tags %}
 {% load crispy_forms_tags %}
 {% load i18n %}
 
@@ -31,6 +32,8 @@
 
     {% block details %}
     {% endblock details %}
+
+    {% include "devilry_group/include/groupcomment_delete_option.html" %}
 
 {% endblock content %}
 
