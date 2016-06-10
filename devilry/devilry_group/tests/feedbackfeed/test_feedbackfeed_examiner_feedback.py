@@ -311,17 +311,17 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, cradmin_testhelpers.Test
                              assignment_group=group,
                              relatedstudent=mommy.make('core.RelatedStudent'))
         mommy.make('devilry_group.GroupComment',
-                       text='test text 1',
-                       user=examiner.relatedexaminer.user,
-                       user_role='examiner',
-                       part_of_grading=True,
-                       feedback_set=feedbackset_first)
+                   text='test text 1',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   part_of_grading=True,
+                   feedback_set=feedbackset_first)
         comment2 = mommy.make('devilry_group.GroupComment',
-                       text='test text 2',
-                       user=examiner.relatedexaminer.user,
-                       user_role='examiner',
-                       part_of_grading=True,
-                       feedback_set=feedbackset_last)
+                              text='test text 2',
+                              user=examiner.relatedexaminer.user,
+                              user_role='examiner',
+                              part_of_grading=True,
+                              feedback_set=feedbackset_last)
         self.mock_http302_postrequest(
             cradmin_role=student.assignment_group,
             requestuser=student.relatedstudent.user,
@@ -470,6 +470,25 @@ class TestExaminerCreateNewFeedbackSet(TestCase, cradmin_testhelpers.TestCaseMix
         feedbackset = group_mommy.feedbackset_first_attempt_published(group__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
+
+    def test_examiner_can_see_deadline_picker(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        feedbackset = group_mommy.feedbackset_first_attempt_published(group__parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('#id_deadline_datetime_triggerbutton'))
+
+    def test_examiner_can_only_see_new_feedbackset_button(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        feedbackset = group_mommy.feedbackset_first_attempt_published(group__parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('#submit-id-examiner_create_new_feedbackset'))
+
+    def test_examiner_can_not_see_publish_and_drag_buttons(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        feedbackset = group_mommy.feedbackset_first_attempt_published(group__parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertFalse(mockresponse.selector.exists('#submit-id-examiner_publish_feedback'))
+        self.assertFalse(mockresponse.selector.exists('#submit-id-examiner_add_comment_to_feedback_draft'))
 
     def test_get_feedbackset_second_created_deadline_event(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
