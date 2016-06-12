@@ -92,6 +92,7 @@ class AbstractGroupComment(comment_models.Comment):
 
     def publish_draft(self, time):
         self.published_datetime = time + timezone.timedelta(milliseconds=1)
+        self.visibility = GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
         self.full_clean()
         self.save()
 
@@ -219,10 +220,13 @@ class FeedbackSet(models.Model):
                 'is_last_in_group': 'is_last_in_group can not be false.'
             })
 
-    @property
-    def current_deadline(self):
+    def current_deadline(self, assignment=None):
+        if assignment is None:
+            first_deadline = self.group.assignment.first_deadline
+        else:
+            first_deadline = assignment.first_deadline
         if self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
-            return self.group.parentnode.first_deadline or self.deadline_datetime
+            return first_deadline or self.deadline_datetime
         return self.deadline_datetime
 
     def publish(self, published_by, grading_points, gradeform_data_json=''):
@@ -248,7 +252,7 @@ class FeedbackSet(models.Model):
         if grading_points is None:
             raise ValueError
 
-        current_deadline = self.current_deadline
+        current_deadline = self.current_deadline()
 
         if current_deadline is None:
             return False, 'Cannot publish feedback without a deadline.'
