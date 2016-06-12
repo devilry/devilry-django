@@ -4,6 +4,7 @@ from model_mommy import mommy
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.models import GroupComment
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
+from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 
 
 class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMixin):
@@ -137,6 +138,23 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=request_examiner.assignmentgroup,
                                                           requestuser=request_examiner.relatedexaminer.user)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
+
+    def test_get_examiner_delete_on_drafts(self):
+        group = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'),)
+        comment = mommy.make('devilry_group.GroupComment',
+                             user=examiner.relatedexaminer.user,
+                             user_role='examiner',
+                             part_of_grading=True,
+                             visibility=GroupComment.VISIBILITY_PRIVATE,
+                             feedback_set__group=group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
+                                                          requestuser=examiner.relatedexaminer.user)
+
+        self.assertTrue(mockresponse.selector.exists('.btn-danger'))
+        self.assertTrue('Delete', mockresponse.selector.one('.btn-danger').alltext_normalized)
 
     # def test_post_comment_file(self):
     #     feedbackset = mommy.make('devilry_group.FeedbackSet')

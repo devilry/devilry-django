@@ -252,8 +252,7 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
 
     def test_get_feedbackfeed_event_without_feedbackset_deadline_datetime_expired(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet',
-                                 deadline_datetime=timezone.now() + timezone.timedelta(days=10)
-        )
+                                 deadline_datetime=timezone.now() + timezone.timedelta(days=10))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
 

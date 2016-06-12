@@ -1,9 +1,8 @@
-
 {% load cradmin_tags %}
 {% load i18n %}
 
-{% if me.group_comment.feedback_set.grading_published_datetime %}
-        <a href="
-{#        {% cradmin_appurl "groupcomment-delete" pk=me.group_comment.id %}#}
-        " class="btn btn-danger">{% trans "Delete" %}</a>
-    {% endif %}
+{% if me.group_comment.visibility == 'private' %}
+        <a href="{% cradmin_appurl "groupcomment-delete" pk=me.group_comment.id %}"
+           class="btn btn-danger">{% trans "Delete" %}
+        </a>
+{% endif %}

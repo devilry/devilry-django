@@ -9,6 +9,9 @@
 
 {% block content %}
     <div class="devilry-group-feedbackfeed-comment-content">
+
+        {% include "devilry_group/include/groupcomment_delete_option.html" %}
+
         <div class="devilry-group-comment-meta">
             <div class="devilry-group-comment-created-by">
                 <p class="comment-created-by-text">{% devilry_user_verbose_inline me.group_comment.user %} &nbsp;</p>
@@ -32,8 +35,6 @@
 
     {% block details %}
     {% endblock details %}
-
-    {% include "devilry_group/include/groupcomment_delete_option.html" %}
 
 {% endblock content %}
 

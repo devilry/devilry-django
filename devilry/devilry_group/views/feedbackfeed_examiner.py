@@ -292,8 +292,19 @@ class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
 
 class GroupCommentDeleteView(delete.DeleteView):
     """
-
+    View to delete an existing groupcomment with visibility set to private.
+    When a groupcomment has visibility set to private, this means it's a feedbackdraft.
     """
+    model = group_models.GroupComment
+
+    def get_queryset(self):
+        return group_models.GroupComment.objects.filter(feedback_set__group=self.request.cradmin_role)
+
+    def get_object_preview(self):
+        return 'Groupcomment'
+
+    def get_success_url(self):
+        return self.request.cradmin_app.reverse_appindexurl()
 
 
 class App(crapp.App):
@@ -310,4 +321,8 @@ class App(crapp.App):
                 r'^create-feedbackset$',
                 ExaminerFeedbackCreateFeedbackSetView.as_view(),
                 name='create-feedbackset'),
+        crapp.Url(
+                r'^groupcomment-delete/(?P<pk>\d+)$',
+                GroupCommentDeleteView.as_view(),
+                name="groupcomment-delete")
     ]

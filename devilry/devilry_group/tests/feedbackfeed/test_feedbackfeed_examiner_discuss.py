@@ -1,11 +1,12 @@
 from django.conf import settings
 from django.test import TestCase
+from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
-from devilry.devilry_group import models
+from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_examiner
 from devilry.devilry_group.views import feedbackfeed_examiner
 
@@ -38,6 +39,26 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
         self.assertFalse(mockresponse.selector.exists('#div_id_passed'))
         self.assertFalse(mockresponse.selector.exists('#div_id_points'))
 
+    def test_get_examiner_no_comment_delete_option_when_published(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_oldperiod_start')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'),)
+        feedbackset = group_mommy.feedbackset_first_attempt_published(group=examiner.assignmentgroup)
+        comment = mommy.make('devilry_group.GroupComment',
+                             user=examiner.relatedexaminer.user,
+                             user_role='examiner',
+                             part_of_grading=True,
+                             text='this was a draft, and is now a feedback',
+                             visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
+                             feedback_set=feedbackset)
+        feedbackset.publish(published_by=examiner.relatedexaminer.user, grading_points=0)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
+                                                          requestuser=examiner.relatedexaminer.user)
+
+        self.assertFalse(mockresponse.selector.exists('.btn-danger'))
+
     def test_post_feedbackset_comment_with_text(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet', )
         examiner = mommy.make('core.Examiner',
@@ -52,7 +73,7 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
                     'text': 'This is a comment',
                 }
             })
-        self.assertEquals(1, len(models.GroupComment.objects.all()))
+        self.assertEquals(1, len(group_models.GroupComment.objects.all()))
 
     def test_post_feedbackset_comment_with_text_published_datetime_is_set(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet', )
@@ -69,7 +90,7 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
                     'examiner_add_public_comment': 'unused value'
                 }
             })
-        self.assertIsNotNone(models.GroupComment.objects.all()[0].published_datetime)
+        self.assertIsNotNone(group_models.GroupComment.objects.all()[0].published_datetime)
 
     def test_post_feedbackset_comment_visible_to_everyone(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet', )
@@ -86,7 +107,7 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
                     'examiner_add_public_comment': 'unused value'
                 }
             })
-        self.assertEquals('visible-to-everyone', models.GroupComment.objects.all()[0].visibility)
+        self.assertEquals('visible-to-everyone', group_models.GroupComment.objects.all()[0].visibility)
 
     def test_post_feedbackset_comment_visible_to_examiner_and_admins(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet', )
@@ -103,7 +124,7 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
                     'examiner_add_comment_for_examiners': 'unused value'
                 }
             })
-        self.assertEquals('visible-to-examiner-and-admins', models.GroupComment.objects.all()[0].visibility)
+        self.assertEquals('visible-to-examiner-and-admins', group_models.GroupComment.objects.all()[0].visibility)
 
     def test_post_comment_always_to_last_feedbackset(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -126,7 +147,7 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
                     'examiner_add_public_comment': 'unused value',
                 }
             })
-        comments = models.GroupComment.objects.all()
+        comments = group_models.GroupComment.objects.all()
         self.assertEquals(len(comments), 1)
         self.assertNotEquals(feedbackset_first, comments[0].feedback_set)
         self.assertEquals(feedbackset_last, comments[0].feedback_set)
