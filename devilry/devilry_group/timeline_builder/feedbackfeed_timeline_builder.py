@@ -99,16 +99,7 @@ class FeedbackFeedTimelineBuilder(object):
         Returns:
 
         """
-        if feedbackset.feedbackset_type == group_models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
-            if self.group.parentnode.first_deadline is not None:
-                # first feedback set should use assignments first_deadline
-                return self.group.parentnode.first_deadline
-            else:
-                # if assignment has no first_deadline, fall back to the deadline
-                # of the feedbackset (this shouldn't happen)
-                return feedbackset.deadline_datetime
-        else:
-            return feedbackset.deadline_datetime
+        return feedbackset.current_deadline(assignment=self.group.parentnode)
 
     def __add_event_item_to_timeline(self, datetime, event_dict):
         """
