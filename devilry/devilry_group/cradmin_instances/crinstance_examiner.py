@@ -68,4 +68,3 @@ class ExaminerCrInstance(crinstance.BaseCrAdminInstance):
         exept that this method raises ValueError if it does not find a role.
         """
         return 'examiner'
-

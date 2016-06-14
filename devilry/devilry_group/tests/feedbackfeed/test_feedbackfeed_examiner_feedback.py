@@ -13,6 +13,9 @@ from devilry.devilry_group.views import feedbackfeed_examiner
 
 
 class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
+    """
+    Tests the general function of the ExaminerFeedbackView.
+    """
     viewclass = feedbackfeed_examiner.ExaminerFeedbackView
 
     def test_no_redirect_on_last_feedbackset_unpublished(self):
@@ -166,6 +169,9 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
 
 
 class TestFeedbackFeedExaminerPublishFeedback(TestCase, cradmin_testhelpers.TestCaseMixin):
+    """
+    Explicitly tests creating drafts and publishing of the FeedbackSet.
+    """
     viewclass = feedbackfeed_examiner.ExaminerFeedbackView
 
     def test_post_can_not_publish_with_first_deadline_as_none(self):
@@ -194,8 +200,8 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, cradmin_testhelpers.Test
                                        grading_system_plugin_id=core_models.Assignment
                                        .GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset_first = group_mommy.feedbackset_first_attempt_published(group=group, is_last_in_group=None)
-        feedbackset_last = group_mommy.feedbackset_new_attempt_unpublished(group=group, deadline_datetime=None)
+        group_mommy.feedbackset_first_attempt_published(group=group, is_last_in_group=None)
+        group_mommy.feedbackset_new_attempt_unpublished(group=group, deadline_datetime=None)
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=group,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
@@ -461,7 +467,9 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, cradmin_testhelpers.Test
 
 class TestExaminerCreateNewFeedbackSet(TestCase, cradmin_testhelpers.TestCaseMixin):
     """
-
+    Only tests the layout of the view when redirected there. Does not test whether or not this is the right
+    view to be in - that is handled by the ExaminerFeedbackView and is tested in
+    TestFeedbackfeedExaminerFeedback.
     """
     viewclass = feedbackfeed_examiner.ExaminerFeedbackCreateFeedbackSetView
 
@@ -483,7 +491,7 @@ class TestExaminerCreateNewFeedbackSet(TestCase, cradmin_testhelpers.TestCaseMix
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
         self.assertTrue(mockresponse.selector.exists('#submit-id-examiner_create_new_feedbackset'))
 
-    def test_examiner_can_not_see_publish_and_drag_buttons(self):
+    def test_examiner_can_not_see_publish_and_draft_buttons(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         feedbackset = group_mommy.feedbackset_first_attempt_published(group__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)

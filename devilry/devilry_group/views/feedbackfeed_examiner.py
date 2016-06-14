@@ -2,7 +2,6 @@
 from datetime import datetime
 from django import forms
 from django.contrib import messages
-from django.db import models
 from django.http import HttpResponseRedirect
 from django.utils import timezone
 from django_cradmin import crapp
@@ -10,13 +9,12 @@ from django.utils.translation import ugettext_lazy as _, ugettext_lazy, pgettext
 
 # Devilry/cradmin imports
 from django_cradmin.viewhelpers import delete
+from django_cradmin.viewhelpers import update
 from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
-from django_cradmin.viewhelpers import create
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
 from devilry.apps.core import models as core_models
 from devilry.utils import datetimeutils
-from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.views.cradmin_feedbackfeed_base import GroupCommentForm
@@ -25,10 +23,11 @@ from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 # 3rd party imports
 from crispy_forms import layout
 
-from devilry.utils.datetimeutils import ISODATETIME_DJANGOFORMAT
-
 
 class AbstractFeedbackForm(GroupCommentForm):
+    """
+    Feedback-related forms regarding grading inherits from this.
+    """
     def get_grading_points(self):
         raise NotImplementedError()
 
@@ -83,12 +82,27 @@ class PointsFeedbackForm(AbstractFeedbackForm):
 
 
 class CreateFeedbackSetForm(GroupCommentForm):
-
+    """
+    Form for creating a new FeedbackSet (deadline).
+    """
+    #: Deadline to be added to the new FeedbackSet.
     deadline_datetime = forms.DateTimeField(widget=DateTimePickerWidget)
 
     @classmethod
     def get_field_layout(cls):
         return ['deadline_datetime']
+
+
+class EditGroupCommentForm(forms.ModelForm):
+    """
+    Form for editing existing Feedback drafts.
+    """
+    #: Edit text-field in GroupComment.
+    text = forms.CharField(widget=AceMarkdownWidget)
+
+    class Meta:
+        fields = ['text']
+        model = group_models.GroupComment
 
 
 class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
@@ -136,8 +150,8 @@ class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
         return buttons
 
     def __create_new_feedbackset(self, comment, new_deadline):
-        if new_deadline <= datetimeutils.get_current_datetime() + timezone.timedelta(days=1):
-            messages.error(self.request, ugettext_lazy('New deadline is in less than a day!'))
+        if new_deadline <= datetimeutils.get_current_datetime():
+            messages.error(self.request, ugettext_lazy('Should deadline ahead of current date and time'))
             return None
 
         # Update current last feedbackset in group before
@@ -307,6 +321,30 @@ class GroupCommentDeleteView(delete.DeleteView):
         return self.request.cradmin_app.reverse_appindexurl()
 
 
+class GroupCommentEditView(update.UpdateView):
+    """
+    View to edit an existing feedback draft.
+    """
+    model = group_models.GroupComment
+
+    def get_queryset(self):
+        return group_models.GroupComment.objects.filter(feedback_set__group=self.request.cradmin_role)
+
+    def get_form_class(self):
+        return EditGroupCommentForm
+
+    def save_object(self, form, commit=True):
+        comment = super(GroupCommentEditView, self).save_object(form=form, commit=commit)
+        self.add_success_messages('GroupComment updated!')
+        return comment
+
+    def get_success_url(self):
+        if self.get_submit_save_and_continue_edititing_button_name() in self.request.POST:
+            return self.request.cradmin_app.reverse_appurl('groupcomment-edit', args=self.args, kwargs=self.kwargs)
+        else:
+            return self.request.cradmin_app.reverse_appindexurl()
+
+
 class App(crapp.App):
     appurls = [
         crapp.Url(
@@ -324,5 +362,9 @@ class App(crapp.App):
         crapp.Url(
                 r'^groupcomment-delete/(?P<pk>\d+)$',
                 GroupCommentDeleteView.as_view(),
-                name="groupcomment-delete")
+                name="groupcomment-delete"),
+        crapp.Url(
+                r'^groupcomment-edit/(?P<pk>\d+)$',
+                GroupCommentEditView.as_view(),
+                name='groupcomment-edit'),
     ]
