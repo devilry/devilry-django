@@ -5,7 +5,6 @@ from django.utils import formats
 from django_cradmin import cradmin_testhelpers
 
 from devilry.devilry_group import models
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 
 
 class TestFeedbackFeedHeaderMixin(cradmin_testhelpers.TestCaseMixin):

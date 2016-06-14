@@ -8,7 +8,9 @@ from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 
 
 class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMixin):
-
+    """
+    General mixin testclass with tests that should work on all examiner feedback views.
+    """
     def test_get(self):
         examiner = mommy.make('core.Examiner')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
@@ -155,6 +157,23 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
 
         self.assertTrue(mockresponse.selector.exists('.btn-danger'))
         self.assertTrue('Delete', mockresponse.selector.one('.btn-danger').alltext_normalized)
+
+    def test_get_examiner_edit_on_drafts(self):
+        group = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'),)
+        comment = mommy.make('devilry_group.GroupComment',
+                             user=examiner.relatedexaminer.user,
+                             user_role='examiner',
+                             part_of_grading=True,
+                             visibility=GroupComment.VISIBILITY_PRIVATE,
+                             feedback_set__group=group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
+                                                          requestuser=examiner.relatedexaminer.user)
+
+        self.assertTrue(mockresponse.selector.exists('.btn-info'))
+        self.assertTrue('Edit', mockresponse.selector.one('.btn-info').alltext_normalized)
 
     # def test_post_comment_file(self):
     #     feedbackset = mommy.make('devilry_group.FeedbackSet')
