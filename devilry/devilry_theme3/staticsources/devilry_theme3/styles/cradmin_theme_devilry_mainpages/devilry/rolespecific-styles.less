@@ -1,0 +1,100 @@
+
+.devilry-body-rolemixin(@color, @color-dark, @color-light, @color-bright, @color-whiten) {
+  a {
+    color: @color-dark;
+    text-decoration: none;
+    &:hover {
+      //color: @link-hover-color;
+      color: @color-dark;
+      text-decoration: underline;
+    }
+  }
+
+  a.btn {
+    text-decoration: none;
+  }
+
+  .btn {
+    &.btn-primary, &.btn-success {
+      background: #fff;
+      border-color: @color-dark;
+      color: @color-dark;
+      &:hover, &:focus {
+        background: @color-dark;
+        border-color: @color-dark;
+        color: #fff;
+      }
+    }
+
+    &.btn-default {
+      background: @color-whiten;
+      border-color: @color-whiten;
+      color: @text-color;
+      &:hover, &:focus {
+        background: @color-bright;
+        border-color: @color-bright;
+        color: @text-color;
+      }
+    }
+  }
+
+  a.django-cradmin-listbuilder-itemframe-link {
+    text-decoration: none;
+    .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+      &.django-cradmin-listbuilder-itemvalue-titledescription {
+        color: @text-color;
+        .django-cradmin-listbuilder-itemvalue-titledescription-title {
+          color: @color-dark;
+        }
+      }
+    }
+
+    &:hover {
+      .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+        border-color: @color-dark;
+      }
+    }
+
+    &.devilry-django-cradmin-listbuilder-itemframe-goforward {
+      .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+        color: @devilry-brand-color-default-whiten;
+      }
+    }
+    &:hover {
+      .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+        color: @color-dark;
+      }
+    }
+  }
+}
+
+
+.devilry-body-admin {
+  .devilry-body-rolemixin(
+          @devilry-brand-color-admin,
+          @devilry-brand-color-admin-dark,
+          @devilry-brand-color-admin-light,
+          @devilry-brand-color-admin-bright,
+          @devilry-brand-color-admin-whiten
+  );
+}
+
+.devilry-body-examiner {
+  .devilry-body-rolemixin(
+          @devilry-brand-color-examiner,
+          @devilry-brand-color-examiner-dark,
+          @devilry-brand-color-examiner-light,
+          @devilry-brand-color-examiner-bright,
+          @devilry-brand-color-examiner-whiten
+  );
+}
+
+.devilry-body-student {
+  .devilry-body-rolemixin(
+          @devilry-brand-color-student,
+          @devilry-brand-color-student-dark,
+          @devilry-brand-color-student-light,
+          @devilry-brand-color-student-bright,
+          @devilry-brand-color-student-whiten
+  );
+}

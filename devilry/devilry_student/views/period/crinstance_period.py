@@ -2,7 +2,7 @@ from django.http import Http404
 from django_cradmin import crmenu
 
 from devilry.apps.core.models import Period
-from devilry.devilry_student.cradminextensions import studentcrinstance
+from devilry.devilry_student.cradminextensions import devilry_crinstance_student
 from devilry.devilry_student.views.period import overview
 
 
@@ -23,7 +23,7 @@ def does_not_exist_view(request):
     raise Http404()
 
 
-class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
+class CrAdminInstance(devilry_crinstance_student.BaseCrInstanceStudent):
     id = 'devilry_student_period'
     menuclass = Menu
     roleclass = Period

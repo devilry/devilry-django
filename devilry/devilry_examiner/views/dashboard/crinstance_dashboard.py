@@ -3,6 +3,7 @@ import re
 from django_cradmin import crinstance
 
 from devilry.devilry_examiner.cradminextensions import devilry_crmenu_examiner
+from devilry.devilry_examiner.cradminextensions import devilry_crinstance_examiner
 from devilry.devilry_examiner.views.dashboard import assignmentlist
 
 
@@ -12,7 +13,7 @@ class Menu(devilry_crmenu_examiner.Menu):
         self.add_role_menuitem_object(active=True)
 
 
-class CrAdminInstance(crinstance.BaseCrAdminInstance):
+class CrAdminInstance(devilry_crinstance_examiner.BaseCrInstanceExaminer):
     menuclass = Menu
     apps = [
         ('assignmentlist', assignmentlist.App),
