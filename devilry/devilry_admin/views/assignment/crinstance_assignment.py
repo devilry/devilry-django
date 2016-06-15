@@ -1,20 +1,19 @@
-from django_cradmin import crinstance
-
 from devilry.apps.core.models import Assignment
 from devilry.devilry_account.models import PeriodPermissionGroup
+from devilry.devilry_admin.cradminextensions import devilry_crinstance_admin
 from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
 from devilry.devilry_admin.views.assignment import overview
+from devilry.devilry_admin.views.assignment.examiners import add_groups_to_examiner
+from devilry.devilry_admin.views.assignment.examiners import bulk_organize as bulk_organize_examiners
+from devilry.devilry_admin.views.assignment.examiners import examinerdetails
+from devilry.devilry_admin.views.assignment.examiners import overview as examineroverview
+from devilry.devilry_admin.views.assignment.examiners import remove_groups_from_examiner
 from devilry.devilry_admin.views.assignment.students import create_groups
 from devilry.devilry_admin.views.assignment.students import delete_groups
 from devilry.devilry_admin.views.assignment.students import groupdetails
 from devilry.devilry_admin.views.assignment.students import merge_groups
 from devilry.devilry_admin.views.assignment.students import overview as studentoverview
 from devilry.devilry_admin.views.assignment.students import replace_groups
-from devilry.devilry_admin.views.assignment.examiners import overview as examineroverview
-from devilry.devilry_admin.views.assignment.examiners import examinerdetails
-from devilry.devilry_admin.views.assignment.examiners import add_groups_to_examiner
-from devilry.devilry_admin.views.assignment.examiners import remove_groups_from_examiner
-from devilry.devilry_admin.views.assignment.examiners import bulk_organize as bulk_organize_examiners
 
 
 class Menu(devilry_crmenu_admin.Menu):
@@ -28,7 +27,7 @@ class Menu(devilry_crmenu_admin.Menu):
                                             active=True)
 
 
-class CrAdminInstance(crinstance.BaseCrAdminInstance):
+class CrAdminInstance(devilry_crinstance_admin.BaseCrInstanceAdmin):
     menuclass = Menu
     roleclass = Assignment
     apps = [

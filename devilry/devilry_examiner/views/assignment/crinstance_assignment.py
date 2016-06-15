@@ -4,6 +4,7 @@ from django_cradmin import crinstance
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_examiner.cradminextensions import devilry_crmenu_examiner
+from devilry.devilry_examiner.cradminextensions import devilry_crinstance_examiner
 from devilry.devilry_examiner.views.assignment import grouplist
 
 
@@ -15,7 +16,7 @@ class Menu(devilry_crmenu_examiner.Menu):
         self.add_assignment_breadcrumb_item(assignment=assignment, active=True)
 
 
-class CrAdminInstance(crinstance.BaseCrAdminInstance):
+class CrAdminInstance(devilry_crinstance_examiner.BaseCrInstanceExaminer):
     menuclass = Menu
     roleclass = Assignment
     apps = [

@@ -268,7 +268,7 @@ body {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 1.42857143;
-  color: #333333;
+  color: #000000;
   background-color: #fff;
 }
 input,
@@ -280,12 +280,12 @@ textarea {
   line-height: inherit;
 }
 a {
-  color: #377CA8;
+  color: #262626;
   text-decoration: none;
 }
 a:hover,
 a:focus {
-  color: #24516e;
+  color: #262626;
   text-decoration: underline;
 }
 a:focus {
@@ -1914,7 +1914,7 @@ select[multiple].input-lg {
   display: block;
   margin-top: 5px;
   margin-bottom: 10px;
-  color: #737373;
+  color: #404040;
 }
 @media (min-width: 768px) {
   .form-inline .form-group {
@@ -2071,8 +2071,8 @@ fieldset[disabled] .btn-default.active {
 }
 .btn-primary {
   color: #f2f2f2;
-  background-color: #377CA8;
-  border-color: #377CA8;
+  background-color: #262626;
+  border-color: #262626;
 }
 .btn-primary:hover,
 .btn-primary:focus,
@@ -2080,8 +2080,8 @@ fieldset[disabled] .btn-default.active {
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
   color: #f2f2f2;
-  background-color: #2d6589;
-  border-color: #285a7a;
+  background-color: #121212;
+  border-color: #070707;
 }
 .btn-primary:active,
 .btn-primary.active,
@@ -2103,11 +2103,11 @@ fieldset[disabled] .btn-primary:active,
 .btn-primary.disabled.active,
 .btn-primary[disabled].active,
 fieldset[disabled] .btn-primary.active {
-  background-color: #377CA8;
-  border-color: #377CA8;
+  background-color: #262626;
+  border-color: #262626;
 }
 .btn-primary .badge {
-  color: #377CA8;
+  color: #262626;
   background-color: #f2f2f2;
 }
 .btn-success {
@@ -2275,7 +2275,7 @@ fieldset[disabled] .btn-danger.active {
   background-color: #fff;
 }
 .btn-link {
-  color: #377CA8;
+  color: #262626;
   font-weight: normal;
   cursor: pointer;
   border-radius: 0;
@@ -2296,7 +2296,7 @@ fieldset[disabled] .btn-link {
 }
 .btn-link:hover,
 .btn-link:focus {
-  color: #24516e;
+  color: #262626;
   text-decoration: underline;
   background-color: transparent;
 }
@@ -3451,7 +3451,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   padding: 6px 12px;
   line-height: 1.42857143;
   text-decoration: none;
-  color: #377CA8;
+  color: #262626;
   background-color: #fff;
   border: 1px solid #ddd;
   margin-left: -1px;
@@ -3471,7 +3471,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .pagination > li > span:hover,
 .pagination > li > a:focus,
 .pagination > li > span:focus {
-  color: #24516e;
+  color: #262626;
   background-color: #eeeeee;
   border-color: #ddd;
 }
@@ -3666,7 +3666,7 @@ a.badge:focus {
 }
 a.list-group-item.active > .badge,
 .nav-pills > .active > a > .badge {
-  color: #377CA8;
+  color: #262626;
   background-color: #fff;
 }
 .nav-pills > li > a > .badge {
@@ -3726,11 +3726,11 @@ a.list-group-item.active > .badge,
 a.thumbnail:hover,
 a.thumbnail:focus,
 a.thumbnail.active {
-  border-color: #377CA8;
+  border-color: #262626;
 }
 .thumbnail .caption {
   padding: 9px;
-  color: #333333;
+  color: #000000;
 }
 .alert {
   padding: 15px;
@@ -4573,7 +4573,7 @@ button.close {
 }
 body {
   background: #f7f7f7;
-  color: #333333;
+  color: #000000;
 }
 body.django-cradmin-noscroll {
   overflow: hidden;
@@ -4854,7 +4854,7 @@ form .alert-block.alert-danger ul li {
 .form-control:focus,
 .cradmin-div-styled-as-textarea:focus {
   background: #fff;
-  border-color: #377CA8;
+  border-color: #262626;
   box-shadow: none;
 }
 .cradmin-div-styled-as-textarea {
@@ -4874,7 +4874,7 @@ textarea.cradmin-textarea-small {
   color: #777;
 }
 .django-cradmin-clearable-textinput .django-cradmin-clearable-textinput-button:hover {
-  color: #377CA8;
+  color: #262626;
 }
 .django-cradmin-clearable-textinput .django-cradmin-clearable-textinput-button.django-cradmin-clearable-textinput-button-visible {
   display: inline-block;
@@ -4956,8 +4956,8 @@ table.table.django-cradmin-table tbody td:last-child {
 }
 .btn.btn-primary:hover,
 .btn.btn-primary:focus {
-  background: #24516e;
-  border-color: #24516e;
+  background: #000000;
+  border-color: #000000;
   color: #fff;
 }
 .btn.btn-success:hover,
@@ -4981,12 +4981,12 @@ table.table.django-cradmin-table tbody td:last-child {
   }
 }
 .btn.btn-cancel {
-  color: #377CA8;
+  color: #262626;
   text-decoration: underline;
 }
 .btn.btn-cancel:hover,
 .btn.btn-cancel:focus {
-  color: #24516e;
+  color: #000000;
 }
 .django-cradmin-icon-font-lg {
   font-size: 20px !important;
@@ -4997,7 +4997,7 @@ table.table.django-cradmin-table tbody td:last-child {
 .django-cradmin-page-header-outer {
   padding: 20px 0 10px 0;
   background: none;
-  color: #333333;
+  color: #000000;
   border: none;
   margin: 0 0 15px 0;
 }
@@ -5047,7 +5047,7 @@ table.table.django-cradmin-table tbody td:last-child {
 }
 .pager-container .pager li > a:hover {
   background: transparent;
-  color: #377CA8;
+  color: #262626;
 }
 .pager-container .pager li.disabled > a,
 .pager-container .pager li.disabled > a:hover,
@@ -5559,7 +5559,7 @@ The bulk file upload widget base styles.
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox {
   background: #ffffff;
-  color: #333333;
+  color: #000000;
   font-weight: bold;
   font-size: inherit;
   padding: 5px 30px 5px 30px;
@@ -5585,10 +5585,10 @@ The bulk file upload widget base styles.
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox .django-cradmin-bulkfileupload-dropbox-text p.django-cradmin-bulkfileupload-advanced-fileselectbutton-wrapper .django-cradmin-bulkfileupload-advanced-fileselectbutton {
   display: inline-block;
-  color: #377CA8;
+  color: #262626;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox .django-cradmin-bulkfileupload-dropbox-text p.django-cradmin-bulkfileupload-advanced-fileselectbutton-wrapper .django-cradmin-bulkfileupload-advanced-fileselectbutton:hover {
-  color: #24516e;
+  color: #262626;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover {
   background: #5cb85c;
@@ -5661,7 +5661,7 @@ The bulk file upload widget base styles.
   background: #fff;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item {
-  color: #333333;
+  color: #000000;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar {
   display: inline-block;
@@ -5672,7 +5672,7 @@ The bulk file upload widget base styles.
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progressbar-progress {
   display: inline-block;
   height: 100%;
-  background: #377CA8;
+  background: #262626;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progresspercent {
   position: absolute;
@@ -5750,7 +5750,7 @@ child of ``<body>``.
   display: none;
   position: absolute;
   background: #fff;
-  color: #333333;
+  color: #000000;
   font-size: 16px;
   font-weight: bold;
   left: 0;
@@ -5890,7 +5890,7 @@ child of ``<body>``.
 }
 .django-cradmin-focusedpage-wrapper .django-cradmin-focusedpage-wrapper-inner .page-header {
   background: none;
-  color: #333333;
+  color: #000000;
   padding: 0 0 25px 0;
   border: none;
   margin: 0;
@@ -5909,11 +5909,11 @@ child of ``<body>``.
   }
 }
 nav.django-cradmin-menu {
-  background: #377CA8;
+  background: #262626;
 }
 nav.django-cradmin-menu .django-cradmin-menu-content {
   display: none;
-  background: #377CA8;
+  background: #262626;
 }
 nav.django-cradmin-menu .django-cradmin-menu-content.django-cradmin-menu-content-display {
   display: block;
@@ -5970,12 +5970,12 @@ nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-m
   cursor: pointer;
   text-decoration: none;
   color: #cccccc;
-  background-color: #377CA8;
+  background-color: #262626;
 }
 nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle:hover,
 nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle.django-cradmin-menu-mobile-toggle-button-expanded {
   color: #eee;
-  background-color: #316e95;
+  background-color: #191919;
   outline: none;
   text-decoration: none;
 }
@@ -5989,10 +5989,10 @@ nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-m
 }
 @media (min-width: 992px) {
   nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul.django-cradmin-menu-content-header {
-    background: #316e95;
+    background: #191919;
   }
   nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul.django-cradmin-menu-content-footer {
-    background: #316e95;
+    background: #191919;
   }
 }
 nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle {
@@ -6225,7 +6225,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page .django-cradmin-datetime-selector-closebutton:active,
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page .django-cradmin-datetime-selector-closebutton:focus {
   text-decoration: none;
-  color: #377CA8;
+  color: #262626;
 }
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview {
   padding-top: 15px;
@@ -6415,7 +6415,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   padding: 0;
   width: 50px;
   height: 100%;
-  color: #377CA8;
+  color: #262626;
   border-radius: 0;
   margin: 0;
   text-align: center;
@@ -6444,7 +6444,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton:focus,
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton:active {
   background: #f2f2f2;
-  color: #316e95;
+  color: #191919;
   text-decoration: none;
   outline: 0;
   background-image: none;
@@ -6646,11 +6646,11 @@ ol.django-cradmin-listbuilder-list li a.django-cradmin-listbuilder-itemframe-lin
   display: block;
 }
 a.django-cradmin-listbuilder-itemframe-link {
-  color: #333333;
+  color: #000000;
   text-decoration: none;
 }
 a.django-cradmin-listbuilder-itemframe-link:hover {
-  color: #333333;
+  color: #000000;
   text-decoration: none;
 }
 ol.django-cradmin-listbuilder-list li .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
@@ -6669,16 +6669,16 @@ a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalu
   }
 }
 a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox .django-cradmin-listbuilder-itemvalue-titledescription {
-  color: #333333;
+  color: #000000;
 }
 a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox .django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
-  color: #377CA8;
+  color: #262626;
 }
 a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
-  border-color: #377CA8;
+  border-color: #262626;
 }
 a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox .django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
-  color: #24516e;
+  color: #262626;
   text-decoration: underline;
 }
 ol.django-cradmin-listfilter-filterlist {
@@ -6813,7 +6813,7 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
   margin-top: 0;
 }
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls label.checkbox:hover {
-  color: #377CA8;
+  color: #262626;
   cursor: pointer;
 }
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .btn {
@@ -6949,7 +6949,7 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
     bottom: 0;
     height: 100%;
     width: 250px;
-    background: #377CA8;
+    background: #262626;
   }
 }
 body {
@@ -7056,7 +7056,7 @@ body {
 .django-cradmin-listing-no-items-message {
   padding: 10px 15px;
   background: #fff;
-  color: #333333;
+  color: #000000;
 }
 .btn {
   font-weight: bold;
@@ -7071,6 +7071,9 @@ body {
 }
 .btn.btn-lg {
   padding: 7px 16px;
+}
+a.btn {
+  text-decoration: none;
 }
 .form-control,
 .cradmin-div-styled-as-textarea {
@@ -7127,10 +7130,10 @@ ol.django-cradmin-listbuilder-list h3:first-child {
   display: inline-block;
   width: 30px;
   height: 30px;
-  color: #333333;
+  color: #000000;
 }
 .django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner a.devilry-page-header-backlink:hover {
-  color: #377CA8;
+  color: #262626;
 }
 .devilry-cradmin-groupitemvalue h2,
 .devilry-cradmin-groupitemvalue h3 {
@@ -7208,10 +7211,14 @@ a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-i
   transition: all 0.15s ease-in-out;
 }
 a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
-  color: #377CA8;
+  color: #262626;
 }
 a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
   padding-right: 55px;
+}
+ol.django-cradmin-listbuilder-list.django-cradmin-listbuilder-rowlist li .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
+  margin-top: 0;
+  margin-bottom: 10px;
 }
 a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning .django-cradmin-listbuilder-itemvalue-titledescription-description,
 .django-cradmin-listbuilder-itemvalue-titledescription-description.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning .django-cradmin-listbuilder-itemvalue-titledescription-description {
@@ -7225,6 +7232,9 @@ a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalu
 .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg h3 {
   font-size: 22px;
 }
+.django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+}
 .django-cradmin-form-wrapper.devilry-django-cradmin-form-wrapper-top-bottom-spacing {
   padding-top: 15px;
   padding-bottom: 15px;
@@ -7235,11 +7245,11 @@ form.devilry-form-inline {
   padding: 0;
 }
 h2 .devilry-user-verbose-inline small {
-  color: #333333;
+  color: #000000;
   font-size: 16px;
 }
 h3 .devilry-user-verbose-inline small {
-  color: #333333;
+  color: #000000;
   font-size: 14px;
 }
 .devilry-core-groupstatus:first-letter {
@@ -7250,8 +7260,9 @@ h3 .devilry-user-verbose-inline small {
 }
 .devilry-dashboard-container {
   background: #fff;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   padding: 15px 15px 5px 15px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
 }
 .devilry-dashboard-container h2,
 .devilry-dashboard-container h3 {

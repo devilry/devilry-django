@@ -2,7 +2,7 @@ import re
 
 from django_cradmin import crmenu
 
-from devilry.devilry_student.cradminextensions import studentcrinstance
+from devilry.devilry_student.cradminextensions import devilry_crinstance_student
 from devilry.devilry_student.views.dashboard import dashboard
 from devilry.devilry_student.views.dashboard import allperiods
 
@@ -28,7 +28,7 @@ class Menu(crmenu.Menu):
         pass
 
 
-class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
+class CrAdminInstance(devilry_crinstance_student.BaseCrInstanceStudent):
     id = 'devilry_student'
     menuclass = Menu
     rolefrontpage_appname = 'dashboard'

@@ -11,3 +11,9 @@
 {#        {% include "devilry_header/header2include.django.html" with devilry_header2_role=request.cradmin_instance.devilry_rolename %}#}
 {#    {% endif %}#}
 {% endblock global-pre-body %}
+
+{% block global-bodyclass %}
+    {% if request.devilryrole %}
+        devilry-body-{{ request.devilryrole }}
+    {% endif %}
+{% endblock global-bodyclass %}
