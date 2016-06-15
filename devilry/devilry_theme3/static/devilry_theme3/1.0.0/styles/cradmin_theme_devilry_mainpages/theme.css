@@ -6986,7 +6986,7 @@ a.btn {
 .form-control,
 .cradmin-div-styled-as-textarea {
   border-width: 3px;
-  border-radius: 5px;
+  border-radius: 0;
 }
 h2,
 h3,
@@ -7126,7 +7126,7 @@ a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-i
 }
 ol.django-cradmin-listbuilder-list.django-cradmin-listbuilder-rowlist li .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
   margin-top: 0;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning .django-cradmin-listbuilder-itemvalue-titledescription-description,
 .django-cradmin-listbuilder-itemvalue-titledescription-description.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning .django-cradmin-listbuilder-itemvalue-titledescription-description {
@@ -7168,7 +7168,7 @@ h3 .devilry-user-verbose-inline small {
 }
 .devilry-dashboard-container {
   background: #fff;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   padding: 15px 15px 5px 15px;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
 }
