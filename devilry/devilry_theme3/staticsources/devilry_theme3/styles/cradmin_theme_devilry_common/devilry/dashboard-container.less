@@ -1,8 +1,8 @@
 .devilry-dashboard-container {
   background: @cradmin-focus-bg;
-  margin-bottom: 5px;
+  margin-bottom: @devilry-brand-focusbox-margin;
   padding: 15px 15px 5px 15px;
-
+  box-shadow: @devilry-brand-focusbox-shadow;
 
   h2, h3 {
     margin-bottom: 5px;
@@ -20,7 +20,7 @@
       font-size: @devilry-font-size-h1;
     }
     h3 {
-      font-size: @devilry-font-size-h2;
+      font-size: ceil(@devilry-font-size-h2 * 2);
     }
   }
 

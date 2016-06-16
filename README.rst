@@ -32,3 +32,4 @@ out the latest development version.
 .. image:: https://travis-ci.org/devilry/devilry-django.png?branch=master
   :alt: Build status
   :target: https://travis-ci.org/devilry/devilry-django
+

@@ -1,34 +1,22 @@
 import re
 
-from django_cradmin import crmenu
-
-from devilry.devilry_student.cradminextensions import studentcrinstance
-from devilry.devilry_student.views.dashboard import dashboard
+from devilry.devilry_student.cradminextensions import devilry_crinstance_student
+from devilry.devilry_student.cradminextensions import devilry_crmenu_student
 from devilry.devilry_student.views.dashboard import allperiods
+from devilry.devilry_student.views.dashboard import dashboard
 
 
-class Menu(crmenu.Menu):
+class Menu(devilry_crmenu_student.Menu):
     def build_menu(self):
-        # self.add(
-        #     label=_('Add delivery'),
-        #     url=self.appindex_url('waitingfordeliveries'),
-        #     active=self.request.cradmin_app.appname == 'waitingfordeliveries')
-        # self.add(
-        #     label=_('Recent deliveries'),
-        #     url=self.appindex_url('recentdeliveries'),
-        #     active=self.request.cradmin_app.appname == 'recentdeliveries')
-        # self.add(
-        #     label=_('Recent feedbacks'),
-        #     url=self.appindex_url('recentfeedbacks'),
-        #     active=self.request.cradmin_app.appname == 'recentfeedbacks')
-        # self.add(
-        #     label=_('Browse all'),
-        #     url=self.appindex_url('allperiods'),
-        #     active=self.request.cradmin_app.appname == 'allperiods')
-        pass
+        super(Menu, self).build_menu()
+        if self.request.cradmin_app.appname == 'allperiods':
+            self.add_role_menuitem_object()
+            self.add_allperiods_breadcrumb_item(active=True)
+        else:
+            self.add_role_menuitem_object(active=True)
 
 
-class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
+class CrAdminInstance(devilry_crinstance_student.BaseCrInstanceStudent):
     id = 'devilry_student'
     menuclass = Menu
     rolefrontpage_appname = 'dashboard'

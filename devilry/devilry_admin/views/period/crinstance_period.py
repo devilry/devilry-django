@@ -3,6 +3,7 @@ from django_cradmin import crinstance
 from devilry.apps.core.models import Period
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
+from devilry.devilry_admin.cradminextensions import devilry_crinstance_admin
 from devilry.devilry_admin.views.period import admins
 from devilry.devilry_admin.views.period import createassignment
 from devilry.devilry_admin.views.period import examiners
@@ -21,7 +22,7 @@ class Menu(devilry_crmenu_admin.Menu):
         self.add_period_breadcrumb_item(period=period, active=True)
 
 
-class CrAdminInstance(crinstance.BaseCrAdminInstance):
+class CrAdminInstance(devilry_crinstance_admin.BaseCrInstanceAdmin):
     menuclass = Menu
     roleclass = Period
     apps = [

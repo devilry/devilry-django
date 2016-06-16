@@ -268,7 +268,7 @@ body {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 1.42857143;
-  color: #333333;
+  color: #000000;
   background-color: #fff;
 }
 input,
@@ -280,12 +280,12 @@ textarea {
   line-height: inherit;
 }
 a {
-  color: #377CA8;
+  color: #262626;
   text-decoration: none;
 }
 a:hover,
 a:focus {
-  color: #24516e;
+  color: #262626;
   text-decoration: underline;
 }
 a:focus {
@@ -1914,7 +1914,7 @@ select[multiple].input-lg {
   display: block;
   margin-top: 5px;
   margin-bottom: 10px;
-  color: #737373;
+  color: #404040;
 }
 @media (min-width: 768px) {
   .form-inline .form-group {
@@ -2071,8 +2071,8 @@ fieldset[disabled] .btn-default.active {
 }
 .btn-primary {
   color: #f2f2f2;
-  background-color: #377CA8;
-  border-color: #377CA8;
+  background-color: #262626;
+  border-color: #262626;
 }
 .btn-primary:hover,
 .btn-primary:focus,
@@ -2080,8 +2080,8 @@ fieldset[disabled] .btn-default.active {
 .btn-primary.active,
 .open .dropdown-toggle.btn-primary {
   color: #f2f2f2;
-  background-color: #2d6589;
-  border-color: #285a7a;
+  background-color: #121212;
+  border-color: #070707;
 }
 .btn-primary:active,
 .btn-primary.active,
@@ -2103,11 +2103,11 @@ fieldset[disabled] .btn-primary:active,
 .btn-primary.disabled.active,
 .btn-primary[disabled].active,
 fieldset[disabled] .btn-primary.active {
-  background-color: #377CA8;
-  border-color: #377CA8;
+  background-color: #262626;
+  border-color: #262626;
 }
 .btn-primary .badge {
-  color: #377CA8;
+  color: #262626;
   background-color: #f2f2f2;
 }
 .btn-success {
@@ -2275,7 +2275,7 @@ fieldset[disabled] .btn-danger.active {
   background-color: #fff;
 }
 .btn-link {
-  color: #377CA8;
+  color: #262626;
   font-weight: normal;
   cursor: pointer;
   border-radius: 0;
@@ -2296,7 +2296,7 @@ fieldset[disabled] .btn-link {
 }
 .btn-link:hover,
 .btn-link:focus {
-  color: #24516e;
+  color: #262626;
   text-decoration: underline;
   background-color: transparent;
 }
@@ -3451,7 +3451,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   padding: 6px 12px;
   line-height: 1.42857143;
   text-decoration: none;
-  color: #377CA8;
+  color: #262626;
   background-color: #fff;
   border: 1px solid #ddd;
   margin-left: -1px;
@@ -3471,7 +3471,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .pagination > li > span:hover,
 .pagination > li > a:focus,
 .pagination > li > span:focus {
-  color: #24516e;
+  color: #262626;
   background-color: #eeeeee;
   border-color: #ddd;
 }
@@ -3666,7 +3666,7 @@ a.badge:focus {
 }
 a.list-group-item.active > .badge,
 .nav-pills > .active > a > .badge {
-  color: #377CA8;
+  color: #262626;
   background-color: #fff;
 }
 .nav-pills > li > a > .badge {
@@ -3726,11 +3726,11 @@ a.list-group-item.active > .badge,
 a.thumbnail:hover,
 a.thumbnail:focus,
 a.thumbnail.active {
-  border-color: #377CA8;
+  border-color: #262626;
 }
 .thumbnail .caption {
   padding: 9px;
-  color: #333333;
+  color: #000000;
 }
 .alert {
   padding: 15px;
@@ -4572,8 +4572,8 @@ button.close {
   height: 100%;
 }
 body {
-  background: #f7f7f7;
-  color: #333333;
+  background: #f5f5f5;
+  color: #000000;
 }
 body.django-cradmin-noscroll {
   overflow: hidden;
@@ -4849,12 +4849,12 @@ form .alert-block.alert-danger ul li {
   border-radius: 4px;
   outline: none;
   box-shadow: none;
-  background: #f7f7f7;
+  background: #f5f5f5;
 }
 .form-control:focus,
 .cradmin-div-styled-as-textarea:focus {
   background: #fff;
-  border-color: #377CA8;
+  border-color: #262626;
   box-shadow: none;
 }
 .cradmin-div-styled-as-textarea {
@@ -4874,7 +4874,7 @@ textarea.cradmin-textarea-small {
   color: #777;
 }
 .django-cradmin-clearable-textinput .django-cradmin-clearable-textinput-button:hover {
-  color: #377CA8;
+  color: #262626;
 }
 .django-cradmin-clearable-textinput .django-cradmin-clearable-textinput-button.django-cradmin-clearable-textinput-button-visible {
   display: inline-block;
@@ -4956,8 +4956,8 @@ table.table.django-cradmin-table tbody td:last-child {
 }
 .btn.btn-primary:hover,
 .btn.btn-primary:focus {
-  background: #24516e;
-  border-color: #24516e;
+  background: #000000;
+  border-color: #000000;
   color: #fff;
 }
 .btn.btn-success:hover,
@@ -4981,12 +4981,12 @@ table.table.django-cradmin-table tbody td:last-child {
   }
 }
 .btn.btn-cancel {
-  color: #377CA8;
+  color: #262626;
   text-decoration: underline;
 }
 .btn.btn-cancel:hover,
 .btn.btn-cancel:focus {
-  color: #24516e;
+  color: #000000;
 }
 .django-cradmin-icon-font-lg {
   font-size: 20px !important;
@@ -4997,7 +4997,7 @@ table.table.django-cradmin-table tbody td:last-child {
 .django-cradmin-page-header-outer {
   padding: 25px 0 12px 0;
   background: none;
-  color: #333333;
+  color: #000000;
   border: none;
   margin: 0 0 15px 0;
 }
@@ -5047,7 +5047,7 @@ table.table.django-cradmin-table tbody td:last-child {
 }
 .pager-container .pager li > a:hover {
   background: transparent;
-  color: #377CA8;
+  color: #262626;
 }
 .pager-container .pager li.disabled > a,
 .pager-container .pager li.disabled > a:hover,
@@ -5190,7 +5190,7 @@ table.table.django-cradmin-table tbody td:last-child {
   border: none;
 }
 .django-cradmin-floating-fullsize-iframe-wrapper.django-cradmin-modelchoicefield-iframe-wrapper .django-cradmin-floating-fullsize-content {
-  background: #f7f7f7;
+  background: #f5f5f5;
 }
 @media (min-width: 992px) {
   body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper {
@@ -5467,10 +5467,10 @@ table.table.django-cradmin-table tbody td:last-child {
 .cradmin-acemarkdown .ace_editor {
   font-size: 16px;
   height: 400px;
-  background: #f7f7f7;
+  background: #f5f5f5;
 }
 .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea {
-  background: #f7f7f7;
+  background: #f5f5f5;
 }
 .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
   height: 100px;
@@ -5559,7 +5559,7 @@ The bulk file upload widget base styles.
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox {
   background: #ffffff;
-  color: #333333;
+  color: #000000;
   font-weight: bold;
   font-size: inherit;
   padding: 5px 30px 5px 30px;
@@ -5585,10 +5585,10 @@ The bulk file upload widget base styles.
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox .django-cradmin-bulkfileupload-dropbox-text p.django-cradmin-bulkfileupload-advanced-fileselectbutton-wrapper .django-cradmin-bulkfileupload-advanced-fileselectbutton {
   display: inline-block;
-  color: #377CA8;
+  color: #262626;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox .django-cradmin-bulkfileupload-dropbox-text p.django-cradmin-bulkfileupload-advanced-fileselectbutton-wrapper .django-cradmin-bulkfileupload-advanced-fileselectbutton:hover {
-  color: #24516e;
+  color: #262626;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover {
   background: #5cb85c;
@@ -5661,7 +5661,7 @@ The bulk file upload widget base styles.
   background: #fff;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item {
-  color: #333333;
+  color: #000000;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar {
   display: inline-block;
@@ -5672,7 +5672,7 @@ The bulk file upload widget base styles.
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progressbar-progress {
   display: inline-block;
   height: 100%;
-  background: #377CA8;
+  background: #262626;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progresspercent {
   position: absolute;
@@ -5750,7 +5750,7 @@ child of ``<body>``.
   display: none;
   position: absolute;
   background: #fff;
-  color: #333333;
+  color: #000000;
   font-size: 16px;
   font-weight: bold;
   left: 0;
@@ -5890,7 +5890,7 @@ child of ``<body>``.
 }
 .django-cradmin-focusedpage-wrapper .django-cradmin-focusedpage-wrapper-inner .page-header {
   background: none;
-  color: #333333;
+  color: #000000;
   padding: 0 0 25px 0;
   border: none;
   margin: 0;
@@ -6225,7 +6225,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page .django-cradmin-datetime-selector-closebutton:active,
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page .django-cradmin-datetime-selector-closebutton:focus {
   text-decoration: none;
-  color: #377CA8;
+  color: #262626;
 }
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview {
   padding-top: 15px;
@@ -6415,7 +6415,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
   padding: 0;
   width: 50px;
   height: 100%;
-  color: #377CA8;
+  color: #262626;
   border-radius: 0;
   margin: 0;
   text-align: center;
@@ -6444,7 +6444,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton:focus,
 .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton:active {
   background: #f2f2f2;
-  color: #316e95;
+  color: #191919;
   text-decoration: none;
   outline: 0;
   background-image: none;
@@ -6646,11 +6646,11 @@ ol.django-cradmin-listbuilder-list li a.django-cradmin-listbuilder-itemframe-lin
   display: block;
 }
 a.django-cradmin-listbuilder-itemframe-link {
-  color: #333333;
+  color: #000000;
   text-decoration: none;
 }
 a.django-cradmin-listbuilder-itemframe-link:hover {
-  color: #333333;
+  color: #000000;
   text-decoration: none;
 }
 ol.django-cradmin-listbuilder-list li .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
@@ -6669,16 +6669,16 @@ a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalu
   }
 }
 a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox .django-cradmin-listbuilder-itemvalue-titledescription {
-  color: #333333;
+  color: #000000;
 }
 a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox .django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
-  color: #377CA8;
+  color: #262626;
 }
 a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
-  border-color: #377CA8;
+  border-color: #262626;
 }
 a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox .django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
-  color: #24516e;
+  color: #262626;
   text-decoration: underline;
 }
 ol.django-cradmin-listfilter-filterlist {
@@ -6813,7 +6813,7 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
   margin-top: 0;
 }
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls label.checkbox:hover {
-  color: #377CA8;
+  color: #262626;
   cursor: pointer;
 }
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .btn {
@@ -6964,7 +6964,7 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
 .django-cradmin-listing-no-items-message {
   padding: 10px 15px;
   background: #fff;
-  color: #333333;
+  color: #000000;
 }
 .btn {
   font-weight: bold;
@@ -6980,21 +6980,13 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
 .btn.btn-lg {
   padding: 7px 16px;
 }
+a.btn {
+  text-decoration: none;
+}
 .form-control,
 .cradmin-div-styled-as-textarea {
   border-width: 3px;
-  border-radius: 5px;
-}
-h2,
-h3,
-h4 {
-  font-weight: bold;
-}
-h2 {
-  font-size: 23px;
-}
-h3 {
-  font-size: 16px;
+  border-radius: 0;
 }
 ol.django-cradmin-listbuilder-list {
   margin-bottom: 15px;
@@ -7035,10 +7027,10 @@ ol.django-cradmin-listbuilder-list h3:first-child {
   display: inline-block;
   width: 30px;
   height: 30px;
-  color: #333333;
+  color: #000000;
 }
 .django-cradmin-page-header-outer.devilry-page-header-with-backlink .django-cradmin-page-header-inner a.devilry-page-header-backlink:hover {
-  color: #377CA8;
+  color: #262626;
 }
 .devilry-cradmin-groupitemvalue h2,
 .devilry-cradmin-groupitemvalue h3 {
@@ -7116,10 +7108,14 @@ a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-i
   transition: all 0.15s ease-in-out;
 }
 a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
-  color: #377CA8;
+  color: #262626;
 }
 a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
   padding-right: 55px;
+}
+ol.django-cradmin-listbuilder-list.django-cradmin-listbuilder-rowlist li .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
+  margin-top: 0;
+  margin-bottom: 8px;
 }
 a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning .django-cradmin-listbuilder-itemvalue-titledescription-description,
 .django-cradmin-listbuilder-itemvalue-titledescription-description.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning .django-cradmin-listbuilder-itemvalue-titledescription-description {
@@ -7133,6 +7129,9 @@ a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalu
 .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg h3 {
   font-size: 22px;
 }
+.django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+}
 .django-cradmin-form-wrapper.devilry-django-cradmin-form-wrapper-top-bottom-spacing {
   padding-top: 15px;
   padding-bottom: 15px;
@@ -7143,11 +7142,11 @@ form.devilry-form-inline {
   padding: 0;
 }
 h2 .devilry-user-verbose-inline small {
-  color: #333333;
+  color: #000000;
   font-size: 16px;
 }
 h3 .devilry-user-verbose-inline small {
-  color: #333333;
+  color: #000000;
   font-size: 14px;
 }
 .devilry-core-groupstatus:first-letter {
@@ -7158,8 +7157,9 @@ h3 .devilry-user-verbose-inline small {
 }
 .devilry-dashboard-container {
   background: #fff;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   padding: 15px 15px 5px 15px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
 }
 .devilry-dashboard-container h2,
 .devilry-dashboard-container h3 {
@@ -7263,28 +7263,208 @@ dl.devilry-dl-indented {
 dl.devilry-dl-sm {
   font-size: 14px;
 }
+h2,
+h3,
+h4 {
+  font-weight: bold;
+}
+h2 {
+  font-size: 23px;
+}
+h3 {
+  font-size: 16px;
+}
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;
 }
 body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   text-align: left;
 }
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
-  border-bottom: 6px solid #000;
+.devilry-body-admin a {
+  color: #7e4a75;
+  text-decoration: none;
+}
+.devilry-body-admin a:hover {
+  color: #7e4a75;
+  text-decoration: underline;
+}
+.devilry-body-admin a.btn {
+  text-decoration: none;
+}
+.devilry-body-admin .btn.btn-primary,
+.devilry-body-admin .btn.btn-success {
+  background: #fff;
+  border-color: #7e4a75;
+  color: #7e4a75;
+}
+.devilry-body-admin .btn.btn-primary:hover,
+.devilry-body-admin .btn.btn-success:hover,
+.devilry-body-admin .btn.btn-primary:focus,
+.devilry-body-admin .btn.btn-success:focus {
+  background: #7e4a75;
+  border-color: #7e4a75;
+  color: #fff;
+}
+.devilry-body-admin .btn.btn-default {
+  background: #ebd9e8;
+  border-color: #ebd9e8;
+  color: #000000;
+}
+.devilry-body-admin .btn.btn-default:hover,
+.devilry-body-admin .btn.btn-default:focus {
+  background: #d9b4d3;
+  border-color: #d9b4d3;
+  color: #000000;
+}
+.devilry-body-admin a.django-cradmin-listbuilder-itemframe-link {
+  text-decoration: none;
+}
+.devilry-body-admin a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription {
+  color: #000000;
+}
+.devilry-body-admin a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
+  color: #7e4a75;
+}
+.devilry-body-admin a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+  border-color: #7e4a75;
+}
+.devilry-body-admin a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+  color: #d1d1d1;
+}
+.devilry-body-admin a.django-cradmin-listbuilder-itemframe-link:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+  color: #7e4a75;
+}
+.devilry-body-admin nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+  border-bottom: 6px solid #B568A9;
 }
 @media (min-width: 992px) {
-  nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+  .devilry-body-admin nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
     height: 66px;
   }
 }
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devilry-django-cradmin-menu-admin {
-  border-bottom-color: #ff9000;
+.devilry-body-examiner a {
+  color: #0d6890;
+  text-decoration: none;
 }
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devilry-django-cradmin-menu-examiner {
-  border-bottom-color: #0673ad;
+.devilry-body-examiner a:hover {
+  color: #0d6890;
+  text-decoration: underline;
 }
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devilry-django-cradmin-menu-student {
-  border-bottom-color: #5D8C08;
+.devilry-body-examiner a.btn {
+  text-decoration: none;
+}
+.devilry-body-examiner .btn.btn-primary,
+.devilry-body-examiner .btn.btn-success {
+  background: #fff;
+  border-color: #0d6890;
+  color: #0d6890;
+}
+.devilry-body-examiner .btn.btn-primary:hover,
+.devilry-body-examiner .btn.btn-success:hover,
+.devilry-body-examiner .btn.btn-primary:focus,
+.devilry-body-examiner .btn.btn-success:focus {
+  background: #0d6890;
+  border-color: #0d6890;
+  color: #fff;
+}
+.devilry-body-examiner .btn.btn-default {
+  background: #c0e4f2;
+  border-color: #c0e4f2;
+  color: #000000;
+}
+.devilry-body-examiner .btn.btn-default:hover,
+.devilry-body-examiner .btn.btn-default:focus {
+  background: #82c9e5;
+  border-color: #82c9e5;
+  color: #000000;
+}
+.devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link {
+  text-decoration: none;
+}
+.devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription {
+  color: #000000;
+}
+.devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
+  color: #0d6890;
+}
+.devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+  border-color: #0d6890;
+}
+.devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+  color: #d1d1d1;
+}
+.devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+  color: #0d6890;
+}
+.devilry-body-examiner nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+  border-bottom: 6px solid #0093D0;
+}
+@media (min-width: 992px) {
+  .devilry-body-examiner nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+    height: 66px;
+  }
+}
+.devilry-body-student a {
+  color: #ac9527;
+  text-decoration: none;
+}
+.devilry-body-student a:hover {
+  color: #ac9527;
+  text-decoration: underline;
+}
+.devilry-body-student a.btn {
+  text-decoration: none;
+}
+.devilry-body-student .btn.btn-primary,
+.devilry-body-student .btn.btn-success {
+  background: #fff;
+  border-color: #ac9527;
+  color: #ac9527;
+}
+.devilry-body-student .btn.btn-primary:hover,
+.devilry-body-student .btn.btn-success:hover,
+.devilry-body-student .btn.btn-primary:focus,
+.devilry-body-student .btn.btn-success:focus {
+  background: #ac9527;
+  border-color: #ac9527;
+  color: #fff;
+}
+.devilry-body-student .btn.btn-default {
+  background: #fdf4c9;
+  border-color: #fdf4c9;
+  color: #000000;
+}
+.devilry-body-student .btn.btn-default:hover,
+.devilry-body-student .btn.btn-default:focus {
+  background: #fae993;
+  border-color: #fae993;
+  color: #000000;
+}
+.devilry-body-student a.django-cradmin-listbuilder-itemframe-link {
+  text-decoration: none;
+}
+.devilry-body-student a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription {
+  color: #000000;
+}
+.devilry-body-student a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
+  color: #ac9527;
+}
+.devilry-body-student a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+  border-color: #ac9527;
+}
+.devilry-body-student a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+  color: #d1d1d1;
+}
+.devilry-body-student a.django-cradmin-listbuilder-itemframe-link:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+  color: #ac9527;
+}
+.devilry-body-student nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+  border-bottom: 6px solid #F7D71E;
+}
+@media (min-width: 992px) {
+  .devilry-body-student nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+    height: 66px;
+  }
 }
 @media (max-width: 991px) {
   nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb .devilry-django-cradmin-menuitem-breadcrumb-icon {
@@ -7321,19 +7501,6 @@ nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devi
     display: none;
   }
 }
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devilry-django-cradmin-menu-admin {
-  border-bottom-color: #ff9000;
-}
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devilry-django-cradmin-menu-admin .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem .django-cradmin-menu-activeitemwrapper > a,
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devilry-django-cradmin-menu-admin .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem > a {
-  border-bottom-color: #ff9000;
-}
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devilry-django-cradmin-menu-examiner {
-  border-bottom-color: #0673ad;
-}
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devilry-django-cradmin-menu-student {
-  border-bottom-color: #5D8C08;
-}
 .devilry-frontpage .devilry-frontpage-more-roles-link-wrapper,
 .devilry-frontpage .devilry-frontpage-superuser-link-wrapper {
   margin-top: 20px;
@@ -7344,46 +7511,46 @@ nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devi
   }
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student .devilry-frontpage-listbuilder-roleselect-itemvalue {
-  color: #fff;
-  background: #5D8C08;
+  color: #000000;
+  background: #f8df61;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
-  color: #fff;
+  color: #000000;
   opacity: 0.3;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student:hover .devilry-frontpage-listbuilder-roleselect-itemvalue {
-  border-bottom-color: #4d7407;
-  background: #4d7407;
+  border-bottom-color: #F7D71E;
+  background: #F7D71E;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
   opacity: 1;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner .devilry-frontpage-listbuilder-roleselect-itemvalue {
-  color: #fff;
-  background: #0673ad;
+  color: #000000;
+  background: #46aeda;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
-  color: #fff;
+  color: #000000;
   opacity: 0.3;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner:hover .devilry-frontpage-listbuilder-roleselect-itemvalue {
-  border-bottom-color: #056394;
-  background: #056394;
+  border-bottom-color: #0093D0;
+  background: #0093D0;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
   opacity: 1;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin .devilry-frontpage-listbuilder-roleselect-itemvalue {
-  color: #fff;
-  background: #ff9000;
+  color: #000000;
+  background: #c78fbe;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
-  color: #fff;
+  color: #000000;
   opacity: 0.3;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin:hover .devilry-frontpage-listbuilder-roleselect-itemvalue {
-  border-bottom-color: #e68200;
-  background: #e68200;
+  border-bottom-color: #B568A9;
+  background: #B568A9;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
   opacity: 1;
@@ -7420,13 +7587,13 @@ nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devi
   clear: both;
 }
 .devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-student {
-  border-left-color: #5D8C08;
+  border-left-color: #F7D71E;
 }
 .devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-examiner {
-  border-left-color: #0673ad;
+  border-left-color: #0093D0;
 }
 .devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-admin {
-  border-left-color: #ff9000;
+  border-left-color: #B568A9;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content {
   float: left;
@@ -7499,7 +7666,7 @@ nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devi
   background-color: #971009;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field.not-published-badge {
-  background-color: #0673ad;
+  background-color: #0093D0;
 }
 .badge-text-new {
   background-color: #f2dede;
@@ -7642,8 +7809,8 @@ fieldset[disabled] .button {
 }
 .button.btn-primary:hover,
 .button.btn-primary:focus {
-  background: #24516e;
-  border-color: #24516e;
+  background: #000000;
+  border-color: #000000;
   color: #fff;
 }
 .button.btn-success:hover,
@@ -7667,12 +7834,12 @@ fieldset[disabled] .button {
   }
 }
 .button.btn-cancel {
-  color: #377CA8;
+  color: #262626;
   text-decoration: underline;
 }
 .button.btn-cancel:hover,
 .button.btn-cancel:focus {
-  color: #24516e;
+  color: #000000;
 }
 .button.btn-sm {
   padding: 3px 10px;
@@ -7790,8 +7957,8 @@ fieldset[disabled] .button_default {
 }
 .button_default.btn-primary:hover,
 .button_default.btn-primary:focus {
-  background: #24516e;
-  border-color: #24516e;
+  background: #000000;
+  border-color: #000000;
   color: #fff;
 }
 .button_default.btn-success:hover,
@@ -7815,12 +7982,12 @@ fieldset[disabled] .button_default {
   }
 }
 .button_default.btn-cancel {
-  color: #377CA8;
+  color: #262626;
   text-decoration: underline;
 }
 .button_default.btn-cancel:hover,
 .button_default.btn-cancel:focus {
-  color: #24516e;
+  color: #000000;
 }
 .button_default.btn-sm {
   padding: 3px 10px;
@@ -7876,7 +8043,7 @@ fieldset[disabled] .button_default {
   font_size: 1.0em;
   font_weight: italic;
   transition: all 0.1s ease-in-out;
-  background_color: #ff9000;
+  background_color: #B568A9;
 }
 .button_admin:focus,
 .button_admin:active:focus,
@@ -7942,8 +8109,8 @@ fieldset[disabled] .button_admin {
 }
 .button_admin.btn-primary:hover,
 .button_admin.btn-primary:focus {
-  background: #24516e;
-  border-color: #24516e;
+  background: #000000;
+  border-color: #000000;
   color: #fff;
 }
 .button_admin.btn-success:hover,
@@ -7967,12 +8134,12 @@ fieldset[disabled] .button_admin {
   }
 }
 .button_admin.btn-cancel {
-  color: #377CA8;
+  color: #262626;
   text-decoration: underline;
 }
 .button_admin.btn-cancel:hover,
 .button_admin.btn-cancel:focus {
-  color: #24516e;
+  color: #000000;
 }
 .button_admin.btn-sm {
   padding: 3px 10px;
@@ -7996,7 +8163,7 @@ fieldset[disabled] .button_admin {
   color: #fff;
 }
 .button_admin:hover {
-  background_color: #ff9000 _35;
+  background_color: #B568A9 _35;
 }
 .button_examiner {
   display: inline-block;
@@ -8028,7 +8195,7 @@ fieldset[disabled] .button_admin {
   font_size: 1.0em;
   font_weight: italic;
   transition: all 0.1s ease-in-out;
-  background_color: #0673ad;
+  background_color: #0093D0;
 }
 .button_examiner:focus,
 .button_examiner:active:focus,
@@ -8094,8 +8261,8 @@ fieldset[disabled] .button_examiner {
 }
 .button_examiner.btn-primary:hover,
 .button_examiner.btn-primary:focus {
-  background: #24516e;
-  border-color: #24516e;
+  background: #000000;
+  border-color: #000000;
   color: #fff;
 }
 .button_examiner.btn-success:hover,
@@ -8119,12 +8286,12 @@ fieldset[disabled] .button_examiner {
   }
 }
 .button_examiner.btn-cancel {
-  color: #377CA8;
+  color: #262626;
   text-decoration: underline;
 }
 .button_examiner.btn-cancel:hover,
 .button_examiner.btn-cancel:focus {
-  color: #24516e;
+  color: #000000;
 }
 .button_examiner.btn-sm {
   padding: 3px 10px;
@@ -8148,7 +8315,7 @@ fieldset[disabled] .button_examiner {
   color: #fff;
 }
 .button_examiner:hover {
-  background_color: #0673ad _35;
+  background_color: #0093D0 _35;
 }
 .button_examiner_grayed {
   display: inline-block;
@@ -8246,8 +8413,8 @@ fieldset[disabled] .button_examiner_grayed {
 }
 .button_examiner_grayed.btn-primary:hover,
 .button_examiner_grayed.btn-primary:focus {
-  background: #24516e;
-  border-color: #24516e;
+  background: #000000;
+  border-color: #000000;
   color: #fff;
 }
 .button_examiner_grayed.btn-success:hover,
@@ -8271,12 +8438,12 @@ fieldset[disabled] .button_examiner_grayed {
   }
 }
 .button_examiner_grayed.btn-cancel {
-  color: #377CA8;
+  color: #262626;
   text-decoration: underline;
 }
 .button_examiner_grayed.btn-cancel:hover,
 .button_examiner_grayed.btn-cancel:focus {
-  color: #24516e;
+  color: #000000;
 }
 .button_examiner_grayed.btn-sm {
   padding: 3px 10px;
@@ -8300,7 +8467,7 @@ fieldset[disabled] .button_examiner_grayed {
   color: #fff;
 }
 .button_examiner_grayed:hover {
-  background_color: #0673ad _35;
+  background_color: #0093D0 _35;
 }
 .button_student {
   display: inline-block;
@@ -8332,7 +8499,7 @@ fieldset[disabled] .button_examiner_grayed {
   font_size: 1.0em;
   font_weight: italic;
   transition: all 0.1s ease-in-out;
-  background_color: #5D8C08;
+  background_color: #F7D71E;
 }
 .button_student:focus,
 .button_student:active:focus,
@@ -8398,8 +8565,8 @@ fieldset[disabled] .button_student {
 }
 .button_student.btn-primary:hover,
 .button_student.btn-primary:focus {
-  background: #24516e;
-  border-color: #24516e;
+  background: #000000;
+  border-color: #000000;
   color: #fff;
 }
 .button_student.btn-success:hover,
@@ -8423,12 +8590,12 @@ fieldset[disabled] .button_student {
   }
 }
 .button_student.btn-cancel {
-  color: #377CA8;
+  color: #262626;
   text-decoration: underline;
 }
 .button_student.btn-cancel:hover,
 .button_student.btn-cancel:focus {
-  color: #24516e;
+  color: #000000;
 }
 .button_student.btn-sm {
   padding: 3px 10px;
@@ -8452,7 +8619,7 @@ fieldset[disabled] .button_student {
   color: #fff;
 }
 .button_student:hover {
-  background_color: #5D8C08 _35;
+  background_color: #F7D71E _35;
 }
 .devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-current-deadline-heading {
   margin: 0 0 0 0;
@@ -8497,7 +8664,7 @@ fieldset[disabled] .button_student {
   color: #971009;
 }
 .devilry-group-feedbackfeed-sidebar dl dd i.examiner-file-icon {
-  color: #0673ad;
+  color: #0093D0;
 }
 .devilry-group-feedbackfeed-feed {
   /*

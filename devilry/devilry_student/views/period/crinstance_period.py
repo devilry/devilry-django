@@ -1,29 +1,27 @@
+from __future__ import unicode_literals
+
 from django.http import Http404
-from django_cradmin import crmenu
 
 from devilry.apps.core.models import Period
-from devilry.devilry_student.cradminextensions import studentcrinstance
+from devilry.devilry_student.cradminextensions import devilry_crinstance_student
+from devilry.devilry_student.cradminextensions import devilry_crmenu_student
 from devilry.devilry_student.views.period import overview
 
 
-class Menu(crmenu.Menu):
+class Menu(devilry_crmenu_student.Menu):
     def build_menu(self):
-        # self.add_headeritem(
-        #     label=_('Browse all'),
-        #     url=reverse_cradmin_url(
-        #         'devilry_student', 'allperiods', roleid=self.request.user.id),)
-        # self.add(
-        #     label=_('Assignments'),
-        #     url=self.appindex_url('assignments'),
-        #     active=self.request.cradmin_app.appname == 'assignments')
-        pass
+        super(Menu, self).build_menu()
+        period = self.request.cradmin_role
+        self.add_role_menuitem_object()
+        self.add_allperiods_breadcrumb_item()
+        self.add_singleperiods_breadcrumb_item(period=period, active=True)
 
 
 def does_not_exist_view(request):
     raise Http404()
 
 
-class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
+class CrAdminInstance(devilry_crinstance_student.BaseCrInstanceStudent):
     id = 'devilry_student_period'
     menuclass = Menu
     roleclass = Period
