@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.template import defaultfilters
 from django.utils.translation import pgettext_lazy
 from django_cradmin import crapp
@@ -29,6 +31,18 @@ class Menu(devilry_crmenu.Menu):
                 instanceid='devilry_student',
                 appname='allperiods',
                 roleid=None,
+                viewname=crapp.INDEXVIEW_NAME,
+            ),
+            active=active
+        ))
+
+    def add_singleperiods_breadcrumb_item(self, period, active=False):
+        self.add_headeritem_object(devilry_crmenu.BreadcrumbMenuItem(
+            label=period.short_name,
+            url=reverse_cradmin_url(
+                instanceid='devilry_student_period',
+                appname='overview',
+                roleid=period.id,
                 viewname=crapp.INDEXVIEW_NAME,
             ),
             active=active

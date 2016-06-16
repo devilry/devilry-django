@@ -1,11 +1,9 @@
 import re
 
-from django_cradmin import crmenu
-
 from devilry.devilry_student.cradminextensions import devilry_crinstance_student
 from devilry.devilry_student.cradminextensions import devilry_crmenu_student
-from devilry.devilry_student.views.dashboard import dashboard
 from devilry.devilry_student.views.dashboard import allperiods
+from devilry.devilry_student.views.dashboard import dashboard
 
 
 class Menu(devilry_crmenu_student.Menu):

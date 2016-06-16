@@ -1,26 +1,23 @@
-from django.utils.translation import ugettext_lazy as _
+from __future__ import unicode_literals
+
 from django.db import models
 from django.db.models.functions import Lower, Concat
-from django_cradmin import crmenu
 from django_cradmin import crinstance
 
 from devilry.apps.core.models import AssignmentGroup, Candidate, Examiner
 from devilry.devilry_group.views import feedbackfeed_student
+from devilry.devilry_student.cradminextensions import devilry_crmenu_student
 from devilry.devilry_student.views.group import projectgroupapp
 
 
-class Menu(crmenu.Menu):
+class Menu(devilry_crmenu_student.Menu):
     def build_menu(self):
+        super(Menu, self).build_menu()
         group = self.request.cradmin_role
-        self.add_headeritem(
-            label=group.subject.long_name,
-            url=self.appindex_url('feedbackfeed'))
-
-        if group.assignment.students_can_create_groups:
-            self.add(
-                label=_('Project group'),
-                url=self.appindex_url('projectgroup'),
-                active=self.request.cradmin_app.appname == 'projectgroup')
+        self.add_role_menuitem_object()
+        self.add_allperiods_breadcrumb_item()
+        self.add_singleperiods_breadcrumb_item(period=group.period)
+        self.add_group_breadcrumb_item(group=group, active=True)
 
 
 class StudentCrInstance(crinstance.BaseCrAdminInstance):
