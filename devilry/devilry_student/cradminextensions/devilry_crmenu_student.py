@@ -38,7 +38,7 @@ class Menu(devilry_crmenu.Menu):
 
     def add_singleperiods_breadcrumb_item(self, period, active=False):
         self.add_headeritem_object(devilry_crmenu.BreadcrumbMenuItem(
-            label=period.short_name,
+            label=period.get_path(),
             url=reverse_cradmin_url(
                 instanceid='devilry_student_period',
                 appname='overview',
