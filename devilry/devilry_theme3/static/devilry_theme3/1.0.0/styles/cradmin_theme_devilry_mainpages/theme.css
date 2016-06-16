@@ -7274,10 +7274,6 @@ h2 {
 h3 {
   font-size: 16px;
 }
-strong {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: bold;
-}
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;
 }
@@ -7338,6 +7334,14 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 .devilry-body-admin a.django-cradmin-listbuilder-itemframe-link:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
   color: #7e4a75;
 }
+.devilry-body-admin nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+  border-bottom: 6px solid #B568A9;
+}
+@media (min-width: 992px) {
+  .devilry-body-admin nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+    height: 66px;
+  }
+}
 .devilry-body-examiner a {
   color: #0d6890;
   text-decoration: none;
@@ -7391,6 +7395,14 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 }
 .devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
   color: #0d6890;
+}
+.devilry-body-examiner nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+  border-bottom: 6px solid #0093D0;
+}
+@media (min-width: 992px) {
+  .devilry-body-examiner nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+    height: 66px;
+  }
 }
 .devilry-body-student a {
   color: #ac9527;
@@ -7446,22 +7458,13 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 .devilry-body-student a.django-cradmin-listbuilder-itemframe-link:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
   color: #ac9527;
 }
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
-  border-bottom: 6px solid #000;
+.devilry-body-student nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+  border-bottom: 6px solid #F7D71E;
 }
 @media (min-width: 992px) {
-  nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+  .devilry-body-student nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
     height: 66px;
   }
-}
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devilry-django-cradmin-menu-admin {
-  border-bottom-color: #B568A9;
-}
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devilry-django-cradmin-menu-examiner {
-  border-bottom-color: #0093D0;
-}
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devilry-django-cradmin-menu-student {
-  border-bottom-color: #F7D71E;
 }
 @media (max-width: 991px) {
   nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb .devilry-django-cradmin-menuitem-breadcrumb-icon {
@@ -7497,19 +7500,6 @@ nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devi
   nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb.django-cradmin-menu-activeitem .devilry-django-cradmin-menuitem-breadcrumb-icon {
     display: none;
   }
-}
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devilry-django-cradmin-menu-admin {
-  border-bottom-color: #B568A9;
-}
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devilry-django-cradmin-menu-admin .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem .django-cradmin-menu-activeitemwrapper > a,
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devilry-django-cradmin-menu-admin .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem > a {
-  border-bottom-color: #B568A9;
-}
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devilry-django-cradmin-menu-examiner {
-  border-bottom-color: #0093D0;
-}
-nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu.devilry-django-cradmin-menu-student {
-  border-bottom-color: #F7D71E;
 }
 .devilry-frontpage .devilry-frontpage-more-roles-link-wrapper,
 .devilry-frontpage .devilry-frontpage-superuser-link-wrapper {

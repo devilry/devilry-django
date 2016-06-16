@@ -7366,10 +7366,6 @@ h2 {
 h3 {
   font-size: 16px;
 }
-strong {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: bold;
-}
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;
 }
