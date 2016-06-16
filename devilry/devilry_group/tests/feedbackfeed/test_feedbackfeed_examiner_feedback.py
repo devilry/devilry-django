@@ -591,7 +591,8 @@ class TestExaminerCreateNewFeedbackSet(TestCase, cradmin_testhelpers.TestCaseMix
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=group,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
-        group_mommy.feedbackset_first_attempt_published(group=examiner.assignmentgroup)
+        group_mommy.feedbackset_first_attempt_published(group=examiner.assignmentgroup,
+                                                        grading_published_by=examiner.relatedexaminer.user)
 
         timestr = (datetimeutils.get_current_datetime() + timezone.timedelta(days=2)).strftime('%Y-%m-%d %H:%M')
         comment_text = 'New attempt given'

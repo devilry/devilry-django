@@ -191,9 +191,11 @@ class FeedbackFeedTimelineBuilder(object):
             "related_deadline": self.__get_deadline_for_feedbackset(feedbackset=feedbackset),
         }
         if group_comment.user_role == Comment.USER_ROLE_STUDENT:
-            event_dict['candidate'] = self.__get_candidate_from_user(user=group_comment.user)
+            cand = self.__get_candidate_from_user(user=group_comment.user)
+            event_dict['candidate'] = cand
         elif group_comment.user_role == Comment.USER_ROLE_EXAMINER:
-            event_dict['examiner'] = self.__get_examiner_from_user(user=group_comment.user)
+            examiner = self.__get_examiner_from_user(user=group_comment.user)
+            event_dict['examiner'] = examiner
         self.__add_event_item_to_timeline(
             datetime=group_comment.published_datetime,
             event_dict=event_dict

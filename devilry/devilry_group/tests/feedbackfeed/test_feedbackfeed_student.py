@@ -139,6 +139,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
         self.assertTrue(mockresponse.selector.one('.after-deadline-badge'))
         self.assertEquals(johndoe.relatedstudent.user.fullname, name)
+        print johndoe.relatedstudent.user.fullname
 
     def test_get_feedbackfeed_student_can_see_examiner_visibility_visible_to_everyone(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')

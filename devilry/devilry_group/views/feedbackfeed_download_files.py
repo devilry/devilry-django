@@ -157,4 +157,3 @@ class CompressedAllFeedbackSetsFileDownloadView(generic.View):
         response['content-length'] = os.stat(tempfile.name).st_size
 
         return response
-

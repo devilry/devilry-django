@@ -1,3 +1,4 @@
+import mock
 from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
@@ -7,12 +8,52 @@ from devilry.apps.core import models as core_models
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
+from devilry.devilry_group.cradmin_instances import crinstance_examiner
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_examiner
 from devilry.devilry_group.views import feedbackfeed_examiner
 
 
 class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
     viewclass = feedbackfeed_examiner.ExaminerDiscussView
+
+
+
+    # def test_get_feedbackfeed_event_with_assignment_first_deadline_expired(self):
+    #     assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+    #                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+    #     feedbackset = mommy.make('devilry_group.FeedbackSet',
+    #                              group__parentnode=assignment)
+    #
+    #     examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+    #     candidate_user = mommy.make(settings.AUTH_USER_MODEL, shortname='johndoe', fullname='John Doe',)
+    #
+    #     examiner = mommy.make('core.Examiner',
+    #                           assignmentgroup=feedbackset.group,
+    #                           relatedexaminer=mommy.make('core.RelatedExaminer',
+    #                                                      user=examiner_user))
+    #
+    #     candidate = mommy.make('core.Candidate',
+    #                            assignment_group=feedbackset.group,
+    #                            candidate_id='AnonymID',
+    #                            relatedstudent=mommy.make('core.RelatedStudent',
+    #                                                      user=candidate_user,
+    #                                                      automatic_anonymous_id='AnonymID'))
+    #
+    #     comment = mommy.make('devilry_group.GroupComment',
+    #                          user=candidate.relatedstudent.user,
+    #                          user_role='student',
+    #                          text='student comment',
+    #                          visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+    #                          feedback_set=feedbackset)
+    #
+    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group,
+    #                                                       requestuser=examiner_user)
+    #     username = mockresponse.selector.one('.comment-created-by-text').alltext_normalized
+    #     self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
+    #     print 'group: ', feedbackset.group
+    #     print 'anonymous id: ', candidate.get_anonymous_name(assignment=assignment)
+    #     print 'comment as shown in feed: ', username
+
 
     def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choise_add_comment_for_examiners_and_admins_button(self):
         examiner = mommy.make('core.Examiner')

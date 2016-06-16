@@ -1,6 +1,7 @@
 # Devilry/cradmin imports
 from django_cradmin.viewhelpers import listbuilder
 
+from devilry.apps.core.models import Candidate
 from devilry.devilry_comment import models as comment_models
 
 
@@ -53,11 +54,11 @@ class TimelineListBuilderList(listbuilder.base.List):
         if event_dict['type'] == 'comment':
             group_comment = event_dict['obj']
             if group_comment.user_role == comment_models.Comment.USER_ROLE_STUDENT:
-                return StudentGroupCommentItemValue(value=group_comment, devilryrole=self.devilryrole)
+                return StudentGroupCommentItemValue(value=group_comment, devilryrole=self.devilryrole, user_obj=event_dict.get('candidate'))
             elif group_comment.user_role == comment_models.Comment.USER_ROLE_EXAMINER:
-                return ExaminerGroupCommentItemValue(value=group_comment, devilryrole=self.devilryrole)
+                return ExaminerGroupCommentItemValue(value=group_comment, devilryrole=self.devilryrole, user_obj=event_dict.get('examiner'))
             elif group_comment.user_role == comment_models.Comment.USER_ROLE_ADMIN:
-                return AdminGroupCommentItemValue(value=group_comment, devilryrole=self.devilryrole)
+                return AdminGroupCommentItemValue(value=group_comment, devilryrole=self.devilryrole, user=None)
         elif event_dict['type'] == 'deadline_created':
             return DeadlineCreatedItemValue(value=event_dict['feedbackset'], devilryrole=self.devilryrole)
         elif event_dict['type'] == 'deadline_expired':
@@ -104,6 +105,15 @@ class BaseGroupCommentItemValue(BaseItemValue):
     """
     valuealias = 'group_comment'
     template_name = 'devilry_group/listbuilder/base_groupcomment_item_value.django.html'
+
+    def __init__(self, *args, **kwargs):
+        super(BaseGroupCommentItemValue, self).__init__(*args, **kwargs)
+        self.user_obj = kwargs.get('user_obj')
+
+    def get_context_data(self, request=None):
+        context_data = super(BaseGroupCommentItemValue, self).get_context_data(request=request)
+        context_data['user_obj'] = self.user_obj
+        return context_data
 
     def get_extra_css_classes_list(self):
         """
