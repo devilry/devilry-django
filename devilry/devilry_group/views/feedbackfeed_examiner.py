@@ -151,13 +151,15 @@ class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
 
     def __create_new_feedbackset(self, comment, new_deadline):
         if new_deadline <= datetimeutils.get_current_datetime():
-            messages.error(self.request, ugettext_lazy('Should deadline ahead of current date and time'))
+            messages.error(self.request, ugettext_lazy('Deadline must be ahead of current date and time'))
             return None
 
         # Update current last feedbackset in group before
         # creating the new feedbackset.
         current_feedbackset = group_models.FeedbackSet.objects.get(id=comment.feedback_set_id)
-        current_feedbackset.is_last_in_group = False
+        current_feedbackset.is_last_in_group = None
+        current_feedbackset.grading_published_by = comment.user
+        current_feedbackset.full_clean()
         current_feedbackset.save()
 
         feedbackset = group_models.FeedbackSet(
@@ -166,7 +168,8 @@ class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
             created_by=comment.user,
             deadline_datetime=new_deadline
         )
-
+        feedbackset.full_clean()
+        feedbackset.save()
         return feedbackset
 
     def save_object(self, form, commit=True):
@@ -178,9 +181,6 @@ class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
             new_feedbackset = self.__create_new_feedbackset(comment=comment, new_deadline=new_deadline)
             if new_feedbackset is None:
                 return comment
-
-            # Save new feedbackset!
-            new_feedbackset.save()
 
             if len(comment.text) > 0:
                 # Also save comment and set the comments feedback_set to the newly
