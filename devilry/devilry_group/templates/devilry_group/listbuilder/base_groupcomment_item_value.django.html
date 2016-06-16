@@ -14,6 +14,7 @@
         <div class="devilry-group-comment-meta">
             <div class="devilry-group-comment-created-by">
                 <p class="comment-created-by-text">{% devilry_user_verbose_inline me.group_comment.user %} &nbsp;</p>
+
 {#                {% if me.group_comment.user_role == 'student'%}#}
 {#                    <p class="comment-created-by-text">{% devilry_single_candidate_long_displayname me.group_comment.feedback_set.group.parentnode user_obj me.group_comment.user_role %} &nbsp;</p>#}
 {#                {% elif me.group_comment.user_role == 'examiner' %}#}

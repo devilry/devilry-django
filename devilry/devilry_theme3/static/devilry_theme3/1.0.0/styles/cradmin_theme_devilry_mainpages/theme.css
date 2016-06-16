@@ -2234,18 +2234,18 @@ fieldset[disabled] .btn-warning.active {
   background-color: #fff;
 }
 .btn-danger {
-  color: #fff;
-  background-color: #d9534f;
-  border-color: #d43f3a;
+  color: #E84D3D;
+  background-color: #fff;
+  border-color: #E84D3D;
 }
 .btn-danger:hover,
 .btn-danger:focus,
 .btn-danger:active,
 .btn-danger.active,
 .open .dropdown-toggle.btn-danger {
-  color: #fff;
-  background-color: #d2322d;
-  border-color: #ac2925;
+  color: #E84D3D;
+  background-color: #ebebeb;
+  border-color: #cf2a19;
 }
 .btn-danger:active,
 .btn-danger.active,
@@ -2267,12 +2267,12 @@ fieldset[disabled] .btn-danger:active,
 .btn-danger.disabled.active,
 .btn-danger[disabled].active,
 fieldset[disabled] .btn-danger.active {
-  background-color: #d9534f;
-  border-color: #d43f3a;
+  background-color: #fff;
+  border-color: #E84D3D;
 }
 .btn-danger .badge {
-  color: #d9534f;
-  background-color: #fff;
+  color: #fff;
+  background-color: #E84D3D;
 }
 .btn-link {
   color: #262626;
@@ -4968,15 +4968,15 @@ table.table.django-cradmin-table tbody td:last-child {
 }
 .btn.btn-danger:hover,
 .btn.btn-danger:focus {
-  background: #d9534f;
-  border-color: #d43f3a;
-  color: #fff;
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
 }
 @media (min-width: 768px) {
   .btn.btn-danger:hover,
   .btn.btn-danger:focus {
-    background: #ce312c;
-    border-color: #ce312c;
+    background: #E84D3D;
+    border-color: #E84D3D;
     color: #fff;
   }
 }
@@ -6969,16 +6969,19 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
 .btn {
   font-weight: bold;
   border-width: 3px;
-  letter-spacing: 1.4px;
-  padding: 4px 12px;
+  letter-spacing: 1px;
+  padding: 6px 15px 3px 15px;
   margin-bottom: 5px;
   white-space: normal;
 }
+.btn.btn-xs {
+  padding: 3.5px 5px 0 5px;
+}
 .btn.btn-sm {
-  padding: 3px 10px;
+  padding: 4px 8px 1px 8px;
 }
 .btn.btn-lg {
-  padding: 7px 16px;
+  padding: 9px 19px 4.5px 19px;
 }
 a.btn {
   text-decoration: none;
@@ -7176,7 +7179,7 @@ h3 .devilry-user-verbose-inline small {
   font-size: 28px;
 }
 .devilry-dashboard-container.devilry-dashboard-container-focus h3 {
-  font-size: 23px;
+  font-size: 46px;
 }
 .devilry-dashboard-container dl {
   margin-bottom: 15px;
@@ -7735,8 +7738,8 @@ Buttons
   padding: 6px 12px;
   font-weight: bold;
   border-width: 3px;
-  letter-spacing: 1.4px;
-  padding: 4px 12px;
+  letter-spacing: 1px;
+  padding: 6px 15px 3px 15px;
   margin-bottom: 5px;
   white-space: normal;
   background_color: #444444;
@@ -7821,15 +7824,15 @@ fieldset[disabled] .button {
 }
 .button.btn-danger:hover,
 .button.btn-danger:focus {
-  background: #d9534f;
-  border-color: #d43f3a;
-  color: #fff;
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
 }
 @media (min-width: 768px) {
   .button.btn-danger:hover,
   .button.btn-danger:focus {
-    background: #ce312c;
-    border-color: #ce312c;
+    background: #E84D3D;
+    border-color: #E84D3D;
     color: #fff;
   }
 }
@@ -7841,11 +7844,14 @@ fieldset[disabled] .button {
 .button.btn-cancel:focus {
   color: #000000;
 }
+.button.btn-xs {
+  padding: 3.5px 5px 0 5px;
+}
 .button.btn-sm {
-  padding: 3px 10px;
+  padding: 4px 8px 1px 8px;
 }
 .button.btn-lg {
-  padding: 7px 16px;
+  padding: 9px 19px 4.5px 19px;
 }
 .button.devilry-btn-titledescription strong {
   display: block;
@@ -7883,8 +7889,8 @@ fieldset[disabled] .button {
   padding: 6px 12px;
   font-weight: bold;
   border-width: 3px;
-  letter-spacing: 1.4px;
-  padding: 4px 12px;
+  letter-spacing: 1px;
+  padding: 6px 15px 3px 15px;
   margin-bottom: 5px;
   white-space: normal;
   background_color: #444444;
@@ -7969,15 +7975,15 @@ fieldset[disabled] .button_default {
 }
 .button_default.btn-danger:hover,
 .button_default.btn-danger:focus {
-  background: #d9534f;
-  border-color: #d43f3a;
-  color: #fff;
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
 }
 @media (min-width: 768px) {
   .button_default.btn-danger:hover,
   .button_default.btn-danger:focus {
-    background: #ce312c;
-    border-color: #ce312c;
+    background: #E84D3D;
+    border-color: #E84D3D;
     color: #fff;
   }
 }
@@ -7989,11 +7995,14 @@ fieldset[disabled] .button_default {
 .button_default.btn-cancel:focus {
   color: #000000;
 }
+.button_default.btn-xs {
+  padding: 3.5px 5px 0 5px;
+}
 .button_default.btn-sm {
-  padding: 3px 10px;
+  padding: 4px 8px 1px 8px;
 }
 .button_default.btn-lg {
-  padding: 7px 16px;
+  padding: 9px 19px 4.5px 19px;
 }
 .button_default.devilry-btn-titledescription strong {
   display: block;
@@ -8034,8 +8043,8 @@ fieldset[disabled] .button_default {
   padding: 6px 12px;
   font-weight: bold;
   border-width: 3px;
-  letter-spacing: 1.4px;
-  padding: 4px 12px;
+  letter-spacing: 1px;
+  padding: 6px 15px 3px 15px;
   margin-bottom: 5px;
   white-space: normal;
   background_color: #444444;
@@ -8121,15 +8130,15 @@ fieldset[disabled] .button_admin {
 }
 .button_admin.btn-danger:hover,
 .button_admin.btn-danger:focus {
-  background: #d9534f;
-  border-color: #d43f3a;
-  color: #fff;
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
 }
 @media (min-width: 768px) {
   .button_admin.btn-danger:hover,
   .button_admin.btn-danger:focus {
-    background: #ce312c;
-    border-color: #ce312c;
+    background: #E84D3D;
+    border-color: #E84D3D;
     color: #fff;
   }
 }
@@ -8141,11 +8150,14 @@ fieldset[disabled] .button_admin {
 .button_admin.btn-cancel:focus {
   color: #000000;
 }
+.button_admin.btn-xs {
+  padding: 3.5px 5px 0 5px;
+}
 .button_admin.btn-sm {
-  padding: 3px 10px;
+  padding: 4px 8px 1px 8px;
 }
 .button_admin.btn-lg {
-  padding: 7px 16px;
+  padding: 9px 19px 4.5px 19px;
 }
 .button_admin.devilry-btn-titledescription strong {
   display: block;
@@ -8186,8 +8198,8 @@ fieldset[disabled] .button_admin {
   padding: 6px 12px;
   font-weight: bold;
   border-width: 3px;
-  letter-spacing: 1.4px;
-  padding: 4px 12px;
+  letter-spacing: 1px;
+  padding: 6px 15px 3px 15px;
   margin-bottom: 5px;
   white-space: normal;
   background_color: #444444;
@@ -8273,15 +8285,15 @@ fieldset[disabled] .button_examiner {
 }
 .button_examiner.btn-danger:hover,
 .button_examiner.btn-danger:focus {
-  background: #d9534f;
-  border-color: #d43f3a;
-  color: #fff;
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
 }
 @media (min-width: 768px) {
   .button_examiner.btn-danger:hover,
   .button_examiner.btn-danger:focus {
-    background: #ce312c;
-    border-color: #ce312c;
+    background: #E84D3D;
+    border-color: #E84D3D;
     color: #fff;
   }
 }
@@ -8293,11 +8305,14 @@ fieldset[disabled] .button_examiner {
 .button_examiner.btn-cancel:focus {
   color: #000000;
 }
+.button_examiner.btn-xs {
+  padding: 3.5px 5px 0 5px;
+}
 .button_examiner.btn-sm {
-  padding: 3px 10px;
+  padding: 4px 8px 1px 8px;
 }
 .button_examiner.btn-lg {
-  padding: 7px 16px;
+  padding: 9px 19px 4.5px 19px;
 }
 .button_examiner.devilry-btn-titledescription strong {
   display: block;
@@ -8338,8 +8353,8 @@ fieldset[disabled] .button_examiner {
   padding: 6px 12px;
   font-weight: bold;
   border-width: 3px;
-  letter-spacing: 1.4px;
-  padding: 4px 12px;
+  letter-spacing: 1px;
+  padding: 6px 15px 3px 15px;
   margin-bottom: 5px;
   white-space: normal;
   background_color: #444444;
@@ -8425,15 +8440,15 @@ fieldset[disabled] .button_examiner_grayed {
 }
 .button_examiner_grayed.btn-danger:hover,
 .button_examiner_grayed.btn-danger:focus {
-  background: #d9534f;
-  border-color: #d43f3a;
-  color: #fff;
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
 }
 @media (min-width: 768px) {
   .button_examiner_grayed.btn-danger:hover,
   .button_examiner_grayed.btn-danger:focus {
-    background: #ce312c;
-    border-color: #ce312c;
+    background: #E84D3D;
+    border-color: #E84D3D;
     color: #fff;
   }
 }
@@ -8445,11 +8460,14 @@ fieldset[disabled] .button_examiner_grayed {
 .button_examiner_grayed.btn-cancel:focus {
   color: #000000;
 }
+.button_examiner_grayed.btn-xs {
+  padding: 3.5px 5px 0 5px;
+}
 .button_examiner_grayed.btn-sm {
-  padding: 3px 10px;
+  padding: 4px 8px 1px 8px;
 }
 .button_examiner_grayed.btn-lg {
-  padding: 7px 16px;
+  padding: 9px 19px 4.5px 19px;
 }
 .button_examiner_grayed.devilry-btn-titledescription strong {
   display: block;
@@ -8490,8 +8508,8 @@ fieldset[disabled] .button_examiner_grayed {
   padding: 6px 12px;
   font-weight: bold;
   border-width: 3px;
-  letter-spacing: 1.4px;
-  padding: 4px 12px;
+  letter-spacing: 1px;
+  padding: 6px 15px 3px 15px;
   margin-bottom: 5px;
   white-space: normal;
   background_color: #444444;
@@ -8577,15 +8595,15 @@ fieldset[disabled] .button_student {
 }
 .button_student.btn-danger:hover,
 .button_student.btn-danger:focus {
-  background: #d9534f;
-  border-color: #d43f3a;
-  color: #fff;
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
 }
 @media (min-width: 768px) {
   .button_student.btn-danger:hover,
   .button_student.btn-danger:focus {
-    background: #ce312c;
-    border-color: #ce312c;
+    background: #E84D3D;
+    border-color: #E84D3D;
     color: #fff;
   }
 }
@@ -8597,11 +8615,14 @@ fieldset[disabled] .button_student {
 .button_student.btn-cancel:focus {
   color: #000000;
 }
+.button_student.btn-xs {
+  padding: 3.5px 5px 0 5px;
+}
 .button_student.btn-sm {
-  padding: 3px 10px;
+  padding: 4px 8px 1px 8px;
 }
 .button_student.btn-lg {
-  padding: 7px 16px;
+  padding: 9px 19px 4.5px 19px;
 }
 .button_student.devilry-btn-titledescription strong {
   display: block;
