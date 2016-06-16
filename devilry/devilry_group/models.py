@@ -43,6 +43,9 @@ class AbstractGroupComment(comment_models.Comment):
     part_of_grading = models.BooleanField(default=False)
 
     #: Comment only visible for :obj:`~devilry_comment.models.Comment.user` that created comment.
+    #: When this visibility choice is set, and :obj:`~.AbstractGroupComment.part_of_grading` is True, this
+    #: GroupComment is a drafted feedback and will be published when the :obj:`~.AbstractGroupComment.feedback_set`
+    #  it belongs to is published.
     #: Choice for :obj:`~.AbstractGroupComment.visibility`.
     VISIBILITY_PRIVATE = 'private'
 
@@ -76,12 +79,24 @@ class AbstractGroupComment(comment_models.Comment):
     class Meta:
         abstract = True
 
+    def clean(self):
+        if self.user_role == 'student':
+            if self.visibility is not AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
+                raise ValidationError({
+                    'visibility': ugettext_lazy('A student comment is always visible to everyone'),
+                })
+        if self.user_role == 'examiner':
+            if not self.part_of_grading and self.visibility == AbstractGroupComment.VISIBILITY_PRIVATE:
+                raise ValidationError({
+                    'visibility': ugettext_lazy('A examiner comment can only be private if part of grading.')
+                })
+
     def get_published_datetime(self):
         """
         Get the publishing datetime of the comment. Publishing datetime is
         the publishing time of the FeedbackSet if the comment has
         :obj:`~devilry.devilry_group.models.AbstractGroupComment.part_of_grading`
-        set to True.
+        set to True, else it's just the comments' published_datetime.
 
         Returns: Datetime.
 
@@ -91,6 +106,14 @@ class AbstractGroupComment(comment_models.Comment):
             else self.published_datetime
 
     def publish_draft(self, time):
+        """
+
+        Args:
+            time:
+
+        Returns:
+
+        """
         self.published_datetime = time + timezone.timedelta(milliseconds=1)
         self.visibility = GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
         self.full_clean()
@@ -131,7 +154,7 @@ class FeedbackSet(models.Model):
     #: Grading status choices for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_CHOICES = [
         (FEEDBACKSET_TYPE_FIRST_ATTEMPT, 'first attempt'),
-        (FEEDBACKSET_TYPE_NEW_ATTEMPT,'new attempt'),
+        (FEEDBACKSET_TYPE_NEW_ATTEMPT, 'new attempt'),
         (FEEDBACKSET_TYPE_RE_EDIT, 're edit'),
     ]
 
@@ -221,6 +244,16 @@ class FeedbackSet(models.Model):
             })
 
     def current_deadline(self, assignment=None):
+        """
+        If the :obj:`~.FeedbackSet.feedbackset_type` is ``FEEDBACKSET_TYPE_FIRST_ATTEMPT``, the
+        deadline datetime is the Assignments' first_deadline, else it's :obj:`~.FeedbackSet.deadline_datetime`.
+
+        :param assignment:
+            Optional argument.
+
+        Returns:
+            A deadline datetime or None
+        """
         if assignment is None:
             first_deadline = self.group.assignment.first_deadline
         else:
@@ -247,11 +280,6 @@ class FeedbackSet(models.Model):
             True or False and an error message.
 
         """
-        if published_by is None:
-            raise ValueError
-        if grading_points is None:
-            raise ValueError
-
         current_deadline = self.current_deadline()
 
         if current_deadline is None:
