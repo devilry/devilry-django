@@ -51,6 +51,6 @@ setup(
         'psycopg2==2.4.6',
         'elasticsearch==1.6.0',
         'django_cradmin==1.0.1b71',
-        'ievv_opensource==0.2.15',
+        'ievv_opensource==0.2.26',
     ]
 )
