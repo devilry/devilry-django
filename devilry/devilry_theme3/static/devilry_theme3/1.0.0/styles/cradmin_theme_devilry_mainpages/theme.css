@@ -6988,17 +6988,6 @@ a.btn {
   border-width: 3px;
   border-radius: 0;
 }
-h2,
-h3,
-h4 {
-  font-weight: bold;
-}
-h2 {
-  font-size: 23px;
-}
-h3 {
-  font-size: 16px;
-}
 ol.django-cradmin-listbuilder-list {
   margin-bottom: 15px;
 }
@@ -7273,6 +7262,21 @@ dl.devilry-dl-indented {
 }
 dl.devilry-dl-sm {
   font-size: 14px;
+}
+h2,
+h3,
+h4 {
+  font-weight: bold;
+}
+h2 {
+  font-size: 23px;
+}
+h3 {
+  font-size: 16px;
+}
+strong {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
 }
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;
