@@ -77,7 +77,7 @@ class AdminCrInstance(crinstance.BaseCrAdminInstance):
 
         The return values is the same as for
         :meth:`devilry.devilry_account.models.PeriodPermissionGroupQuerySet.get_devilryrole_for_user_on_period`,
-        exept that this method raises ValueError if it does not find a role.
+        except that this method raises ValueError if it does not find a role.
         """
         if not hasattr(self, '_devilryrole_for_requestuser'):
             self._devilryrole_for_requestuser = self.__get_devilryrole_for_requestuser()

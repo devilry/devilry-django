@@ -4,6 +4,7 @@ from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
+from devilry.apps.core import models as core_models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
@@ -24,6 +25,42 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
                           candidate.assignment_group.assignment.get_path())
 
+    def test_get_feedbackfeed_anonymous_examiner_semi(self):
+        testassignment = mommy.make('core.Assignment',
+                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = mommy.make('core.Examiner',
+                               assignmentgroup=group,
+                               relatedexaminer__automatic_anonymous_id='AnonymousExaminer',
+                               relatedexaminer__user__shortname='testexaminer')
+        mommy.make('devilry_group.GroupComment',
+                   user_role='examiner',
+                   user=candidate.relatedexaminer.user,
+                   feedback_set__group=group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        self.assertFalse(mockresponse.selector.exists('.devilry-user-verbose-inline'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-core-examiner-anonymous-name'))
+        self.assertEqual('AnonymousExaminer',
+                         mockresponse.selector.one('.devilry-core-examiner-anonymous-name').alltext_normalized)
+
+    def test_get_feedbackfeed_anonymous_examiner_fully(self):
+        testassignment = mommy.make('core.Assignment',
+                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = mommy.make('core.Examiner',
+                               assignmentgroup=group,
+                               relatedexaminer__automatic_anonymous_id='AnonymousExaminer',
+                               relatedexaminer__user__shortname='testexaminer')
+        mommy.make('devilry_group.GroupComment',
+                   user_role='examiner',
+                   user=candidate.relatedexaminer.user,
+                   feedback_set__group=group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        self.assertFalse(mockresponse.selector.exists('.devilry-user-verbose-inline'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-core-examiner-anonymous-name'))
+        self.assertEqual('AnonymousExaminer',
+                         mockresponse.selector.one('.devilry-core-examiner-anonymous-name').alltext_normalized)
+
     def test_get_feedbackfeed_student_cannot_see_feedback_or_discuss_in_header(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
@@ -36,14 +73,16 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-discuss-button'))
 
     def test_get_feedbackfeed_student_add_comment_to_feedbackset_without_deadline(self):
+        group = mommy.make('core.AssignmentGroup')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'))
+                               relatedstudent=mommy.make('core.RelatedStudent'),
+                               assignment_group=group)
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='student',
+                             user=candidate.relatedstudent.user,
                              published_datetime=timezone.now(),
-                             feedback_set__group=candidate.assignment_group)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
-                                                          requestuser=candidate.relatedstudent.user)
+                             feedback_set__group=group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(mockresponse.selector.one('.devilry-group-feedbackfeed-comment-student'))
 
     def test_get_feedbackset_student_comment_after_deadline(self):
@@ -139,7 +178,6 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
         self.assertTrue(mockresponse.selector.one('.after-deadline-badge'))
         self.assertEquals(johndoe.relatedstudent.user.fullname, name)
-        print johndoe.relatedstudent.user.fullname
 
     def test_get_feedbackfeed_student_can_see_examiner_visibility_visible_to_everyone(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
