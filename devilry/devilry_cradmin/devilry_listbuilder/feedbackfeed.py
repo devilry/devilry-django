@@ -25,9 +25,10 @@ class TimelineListBuilderList(listbuilder.base.List):
             listbuilder_list.append_eventdict(event_dict)
         return listbuilder_list
 
-    def __init__(self, devilryrole, group):
+    def __init__(self, devilryrole, group, assignment):
         self.devilryrole = devilryrole
         self.group = group
+        self.assignment = assignment
         super(TimelineListBuilderList, self).__init__()
 
     def append_eventdict(self, event_dict):
@@ -54,11 +55,19 @@ class TimelineListBuilderList(listbuilder.base.List):
         if event_dict['type'] == 'comment':
             group_comment = event_dict['obj']
             if group_comment.user_role == comment_models.Comment.USER_ROLE_STUDENT:
-                return StudentGroupCommentItemValue(value=group_comment, devilry_viewrole=self.devilryrole, user_obj=event_dict.get('candidate'))
+                return StudentGroupCommentItemValue(value=group_comment,
+                                                    devilry_viewrole=self.devilryrole,
+                                                    user_obj=event_dict.get('candidate'),
+                                                    assignment=self.assignment)
             elif group_comment.user_role == comment_models.Comment.USER_ROLE_EXAMINER:
-                return ExaminerGroupCommentItemValue(value=group_comment, devilry_viewrole=self.devilryrole, user_obj=event_dict.get('examiner'))
+                return ExaminerGroupCommentItemValue(value=group_comment,
+                                                     devilry_viewrole=self.devilryrole,
+                                                     user_obj=event_dict.get('examiner'),
+                                                     assignment=self.assignment)
             elif group_comment.user_role == comment_models.Comment.USER_ROLE_ADMIN:
-                return AdminGroupCommentItemValue(value=group_comment, devilry_viewrole=self.devilryrole, user=None)
+                return AdminGroupCommentItemValue(value=group_comment,
+                                                  devilry_viewrole=self.devilryrole,
+                                                  assignment=self.assignment)
         elif event_dict['type'] == 'deadline_created':
             return DeadlineCreatedItemValue(value=event_dict['feedbackset'], devilryrole=self.devilryrole)
         elif event_dict['type'] == 'deadline_expired':
@@ -109,6 +118,7 @@ class BaseGroupCommentItemValue(BaseItemValue):
     def __init__(self, *args, **kwargs):
         super(BaseGroupCommentItemValue, self).__init__(*args, **kwargs)
         self.user_obj = kwargs.get('user_obj')
+        self.assignment = kwargs.get('assignment')
 
     def get_context_data(self, request=None):
         context_data = super(BaseGroupCommentItemValue, self).get_context_data(request=request)

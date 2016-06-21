@@ -11,12 +11,13 @@
     <div class="devilry-group-feedbackfeed-comment-content">
 
         {% include "devilry_group/include/groupcomment_edit_delete_option.html" %}
+
         <div class="devilry-group-comment-meta">
             <div class="devilry-group-comment-created-by">
                 {% if me.group_comment.user_role == 'student'%}
-                    <p class="comment-created-by-text">{% devilry_single_candidate_long_displayname me.group_comment.feedback_set.group.parentnode me.user_obj me.devilry_viewrole %} &nbsp;</p>
+                    <p class="comment-created-by-text">{% devilry_single_candidate_long_displayname me.assignment me.user_obj me.devilry_viewrole %} &nbsp;</p>
                 {% elif me.group_comment.user_role == 'examiner' %}
-                    <p class="comment-created-by-text">{% devilry_single_examiner_long_displayname me.group_comment.feedback_set.group.parentnode me.user_obj me.devilry_viewrole %} &nbsp;</p>
+                    <p class="comment-created-by-text">{% devilry_single_examiner_long_displayname me.assignment me.user_obj me.devilry_viewrole %} &nbsp;</p>
                 {% else %}
                     <p class="comment-created-by-text">{% devilry_user_verbose_inline me.group_comment.user %} &nbsp;</p>
                 {% endif %}

@@ -108,7 +108,8 @@ class FeedbackFeedBaseView(create.CreateView):
         context['listbuilder_list'] = feedbackfeed_listbuilder.TimelineListBuilderList.from_built_timeline(
             built_timeline,
             group=self.request.cradmin_role,
-            devilryrole=self.get_devilryrole()
+            devilryrole=self.get_devilryrole(),
+            assignment=context['assignment']
         )
 
         return context
