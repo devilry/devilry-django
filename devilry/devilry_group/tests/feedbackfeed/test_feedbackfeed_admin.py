@@ -65,7 +65,7 @@
 #                              feedback_set__group__parentnode__parentnode=period,
 #                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 #         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
-#         # mockresponse.selector.prettyprint()
+#         mockresponse.selector.prettyprint()
 #         # self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
 #
 #

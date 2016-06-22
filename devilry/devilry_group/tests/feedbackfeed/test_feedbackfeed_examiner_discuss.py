@@ -25,7 +25,7 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
 
     def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choise_add_comment_public_button(self):
         examiner = mommy.make('core.Examiner')
-        feedbackset = mommy.make('devilry_group.FeedbackSet', group=examiner.assignmentgroup)
+        mommy.make('devilry_group.FeedbackSet', group=examiner.assignmentgroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
                                                           requestuser=examiner.relatedexaminer.user)
         self.assertTrue(mockresponse.selector.exists('#submit-id-examiner_add_public_comment'))
@@ -48,13 +48,13 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
                               assignmentgroup=group,
                               relatedexaminer=mommy.make('core.RelatedExaminer'),)
         feedbackset = group_mommy.feedbackset_first_attempt_published(group=examiner.assignmentgroup)
-        comment = mommy.make('devilry_group.GroupComment',
-                             user=examiner.relatedexaminer.user,
-                             user_role='examiner',
-                             part_of_grading=True,
-                             text='this was a draft, and is now a feedback',
-                             visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
-                             feedback_set=feedbackset)
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   part_of_grading=True,
+                   text='this was a draft, and is now a feedback',
+                   visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
+                   feedback_set=feedbackset)
         feedbackset.publish(published_by=examiner.relatedexaminer.user, grading_points=0)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
                                                           requestuser=examiner.relatedexaminer.user)
@@ -174,6 +174,6 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
                    feedback_set=feedbackset2,
                    _quantity=20)
 
-        with self.assertNumQueries(7):
+        with self.assertNumQueries(8):
             mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
                                                               requestuser=requestuser)

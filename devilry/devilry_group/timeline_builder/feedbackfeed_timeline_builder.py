@@ -28,7 +28,6 @@ class FeedbackFeedTimelineBuilder(object):
         This function must be implemented by subclasses of :class:`~.FeedbackFeedBaseView`
 
         :param group: The :class:`devilry.apps.core.models.AssignmentGroup` the user belongs to.
-
         :return: List of :class:`devilry.devilry_group.models.GroupComment` objects.
         """
         commentfile_queryset = CommentFile.objects\

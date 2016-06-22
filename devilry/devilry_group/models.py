@@ -16,8 +16,7 @@ class AbstractGroupCommentQuerySet(models.QuerySet):
     """
     def exclude_private_comments_from_other_users(self, user):
         return self.exclude(
-            models.Q(visibility=AbstractGroupComment.VISIBILITY_PRIVATE) &
-            ~models.Q(user=user)
+            models.Q(visibility=AbstractGroupComment.VISIBILITY_PRIVATE) & ~models.Q(user=user)
         )
 
     def exclude_is_part_of_grading_feedbackset_unpublished(self):
@@ -80,6 +79,18 @@ class AbstractGroupComment(comment_models.Comment):
         abstract = True
 
     def clean(self):
+        """
+        Check for situations that should result in error.
+
+        :raises: ValidationError:
+            Error occurs if :obj:`~.AbstractGroupComment.user_role` is ``'student'`` and
+            :obj:`~.AbstractGroupComment.visibility` is not set to
+            :obj:`~.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
+            |
+            Error occurs if :obj:`~.AbstractGroupComment.user_role` is ``'examiner'`` and
+            :obj:`~.AbstractGroupComment.part_of_grading` is ``False`` and :obj:`~.AbstractGroupComment.visibility` is
+            set to :obj:`~.AbstractGroupComment.VISIBILITY_PRIVATE`.
+        """
         if self.user_role == 'student':
             if self.visibility is not AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
                 raise ValidationError({
@@ -98,8 +109,7 @@ class AbstractGroupComment(comment_models.Comment):
         :obj:`~devilry.devilry_group.models.AbstractGroupComment.part_of_grading`
         set to True, else it's just the comments' published_datetime.
 
-        Returns: Datetime.
-
+        :return: Datetime.
         """
         return self.feedback_set.grading_published_datetime \
             if self.part_of_grading \
@@ -107,12 +117,10 @@ class AbstractGroupComment(comment_models.Comment):
 
     def publish_draft(self, time):
         """
+        Sets the published datetime of the comment to ``time`` and adds a millisecond to
+        make sure the comments are published in order.
 
-        Args:
-            time:
-
-        Returns:
-
+        :param time: publishing time to set for the comment.
         """
         self.published_datetime = time + timezone.timedelta(milliseconds=1)
         self.visibility = GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
@@ -228,6 +236,18 @@ class FeedbackSet(models.Model):
                 self.grading_points)
 
     def clean(self):
+        """
+        Check for situations that should result in error.
+
+        :raises: ValidationError:
+            Error occurs if :obj:`~.FeedbackSet.grading_published_datetime` has a datetime but
+            :obj:`~.FeedbackSet.grading_published_by` is ``None``.
+            |
+            Error occurs if :obj:`~.FeedbackSet.grading_published_datetime` has a datetime but
+            :obj:`~.FeedbackSet.grading_points` is ``None``.
+            |
+            Error occurs if :obj:`~.FeedbackSet.is_last_in_group` is ``None``.
+        """
         if self.grading_published_datetime is not None and self.grading_published_by is None:
             raise ValidationError({
                 'grading_published_datetime': ugettext_lazy('An assignment can not be published '
@@ -248,11 +268,8 @@ class FeedbackSet(models.Model):
         If the :obj:`~.FeedbackSet.feedbackset_type` is ``FEEDBACKSET_TYPE_FIRST_ATTEMPT``, the
         deadline datetime is the Assignments' first_deadline, else it's :obj:`~.FeedbackSet.deadline_datetime`.
 
-        :param assignment:
-            Optional argument.
-
-        Returns:
-            A deadline datetime or None
+        :param assignment: Optional argument.
+        :return: A deadline datetime or None
         """
         if assignment is None:
             first_deadline = self.group.assignment.first_deadline
@@ -267,18 +284,10 @@ class FeedbackSet(models.Model):
         Publishes this FeedbackSet and comments that belongs to this feedbackset and that are
         part of the grading.
 
-        :param published_by:
-            Who published the feedbackset.
-
-        :param grading_points:
-            Points to give to student(s).
-
-        :param gradeform_data_json:
-            gradeform(coming soon).
-
-        Returns:
-            True or False and an error message.
-
+        :param published_by: Who published the feedbackset.
+        :param grading_points: Points to give to student(s).
+        :param gradeform_data_json: gradeform(coming soon).
+        :return: True or False and an error message.
         """
         current_deadline = self.current_deadline()
 
