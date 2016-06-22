@@ -20,7 +20,6 @@ class TimelineListBuilderList(listbuilder.base.List):
         """
         listbuilder_list = cls(**kwargs)
         for event_dict in built_timeline.get_as_list():
-            print event_dict
             listbuilder_list.append_eventdict(event_dict)
         return listbuilder_list
 
