@@ -23,9 +23,6 @@ class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         )
 
     def get_devilryrole(self):
-        print type(self.request.cradmin_instance)
-        permission_queryset = self.request.cradmin_instance.get_devilryrole_for_requestuser()
-        print 'adminrole: ', permission_queryset.get_devilryrole_for_user_on_period(period=self.request.cradmin_role.parentnode.parentnode.parentnode, user=self.request.user)
         return self.request.cradmin_instance.get_devilryrole_for_requestuser()
 
     def get_context_data(self, **kwargs):

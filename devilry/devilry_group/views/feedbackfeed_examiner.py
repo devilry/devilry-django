@@ -207,7 +207,6 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         group = self.request.cradmin_role
         if group.last_feedbackset_is_published:
             return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl('create-feedbackset'))
-
         return super(ExaminerFeedbackView, self).dispatch(request, *args, **kwargs)
 
     def get_form_class(self):

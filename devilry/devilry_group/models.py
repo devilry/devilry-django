@@ -28,7 +28,7 @@ class AbstractGroupCommentQuerySet(models.QuerySet):
 
 class AbstractGroupComment(comment_models.Comment):
     """
-    The abstract superclass of all comments related to a delivery and feedback
+    The abstract superclass of all comments related to a delivery and feedback.
     """
 
     #: The related feedbackset. See :class:`.FeedbackSet`.
@@ -117,12 +117,11 @@ class AbstractGroupComment(comment_models.Comment):
 
     def publish_draft(self, time):
         """
-        Sets the published datetime of the comment to ``time`` and adds a millisecond to
-        make sure the comments are published in order.
+        Sets the published datetime of the comment to ``time``.
 
         :param time: publishing time to set for the comment.
         """
-        self.published_datetime = time + timezone.timedelta(milliseconds=1)
+        self.published_datetime = time
         self.visibility = GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
         self.full_clean()
         self.save()
@@ -279,9 +278,23 @@ class FeedbackSet(models.Model):
             return first_deadline or self.deadline_datetime
         return self.deadline_datetime
 
+    def __get_drafted_comments(self, user):
+        """
+        Get all drafted comments for this FeedbackSet drafted by ``user``.
+
+        :param user: Current user.
+        :return: QuerySet of GroupComments
+        """
+        return GroupComment.objects.filter(
+            feedback_set=self,
+            part_of_grading=True
+        ).exclude_private_comments_from_other_users(
+            user=user
+        ).order_by('created_datetime')
+
     def publish(self, published_by, grading_points, gradeform_data_json=''):
         """
-        Publishes this FeedbackSet and comments that belongs to this feedbackset and that are
+        Publishes this FeedbackSet and comments that belongs to this it and that are
         part of the grading.
 
         :param published_by: Who published the feedbackset.
@@ -290,22 +303,14 @@ class FeedbackSet(models.Model):
         :return: True or False and an error message.
         """
         current_deadline = self.current_deadline()
-
         if current_deadline is None:
             return False, 'Cannot publish feedback without a deadline.'
 
         if current_deadline > timezone.now():
             return False, 'The deadline has not expired. Feedback was saved, but not published.'
 
-        drafted_comments = GroupComment.objects.filter(
-                feedback_set=self,
-                part_of_grading=True
-        ).exclude_private_comments_from_other_users(
-            user=published_by
-        ).order_by('created_datetime')
-
-        now = timezone.now()
-        now_without_seconds = now.replace(second=0, microsecond=0)
+        drafted_comments = self.__get_drafted_comments(published_by)
+        now_without_seconds = timezone.now().replace(second=0, microsecond=0)
         for modifier, draft in enumerate(drafted_comments):
             draft.publish_draft(now_without_seconds + timezone.timedelta(milliseconds=modifier))
 

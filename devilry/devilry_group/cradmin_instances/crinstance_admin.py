@@ -67,7 +67,6 @@ class AdminCrInstance(crinstance.BaseCrAdminInstance):
         if devilryrole is None:
             raise ValueError('Could not find a devilryrole for request.user. This must be a bug in '
                              'get_rolequeryset().')
-
         return devilryrole
 
     def get_devilryrole_for_requestuser(self):

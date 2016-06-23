@@ -40,14 +40,14 @@ class TestGroupCommentModel(TestCase):
 
     def test_groupcomment_publish_draft(self):
         test_draftcomment = mommy.make('devilry_group.GroupComment',
-                                  published_datetime=timezone.now(),
-                                  part_of_grading=True,
-                                  visibility=group_models.GroupComment.VISIBILITY_PRIVATE)
+                                       published_datetime=timezone.now(),
+                                       part_of_grading=True,
+                                       visibility=group_models.GroupComment.VISIBILITY_PRIVATE)
         time = timezone.now()
         test_draftcomment.publish_draft(time)
         self.assertTrue(test_draftcomment.part_of_grading)
         self.assertEquals(test_draftcomment.visibility, group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        self.assertTrue(test_draftcomment.published_datetime > time)
+        self.assertEquals(test_draftcomment.published_datetime, time)
 
     def test_groupcomment_feedback_set(self):
         test_feedbackset = mommy.make('devilry_group.FeedbackSet')
