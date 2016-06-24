@@ -14,25 +14,26 @@ class TestCrinstanceAdmin(test.TestCase):
     def test_get_rolequeryset_not_admin(self):
         mommy.make('core.AssignmentGroup', parentnode=mommy.make('core.Assignment'))
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        request = test.RequestFactory().get('/test')
-        request.user = testuser
-        instance = crinstance_admin.AdminCrInstance(request=request)
+        mockrequest = mock.MagicMock()
+        mockrequest.user = testuser
+
+        instance = crinstance_admin.AdminCrInstance(request=mockrequest)
         self.assertEquals([], list(instance.get_rolequeryset()))
 
     def test_get_rolequeryset_superuser(self):
         testgroup = mommy.make('core.AssignmentGroup', parentnode=mommy.make('core.Assignment'))
         testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
-        request = test.RequestFactory().get('/test')
-        request.user = testuser
-        instance = crinstance_admin.AdminCrInstance(request=request)
+        mockrequest = mock.MagicMock()
+        mockrequest.user = testuser
+        instance = crinstance_admin.AdminCrInstance(request=mockrequest)
         self.assertEqual([testgroup], list(instance.get_rolequeryset()))
 
     def test_get_rolequeryset_not_superuser(self):
         mommy.make('core.AssignmentGroup', parentnode=mommy.make('core.Assignment'))
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        request = test.RequestFactory().get('/test')
-        request.user = testuser
-        instance = crinstance_admin.AdminCrInstance(request=request)
+        mockrequest = mock.MagicMock()
+        mockrequest.user = testuser
+        instance = crinstance_admin.AdminCrInstance(request=mockrequest)
         self.assertEqual([], list(instance.get_rolequeryset()))
 
     def test_getrolequeryset_admin_on_period(self):
@@ -44,9 +45,9 @@ class TestCrinstanceAdmin(test.TestCase):
         mommy.make('devilry_account.PermissionGroupUser',
                    user=testuser,
                    permissiongroup=periodpermissiongroup.permissiongroup)
-        request = test.RequestFactory().get('/test')
-        request.user = testuser
-        instance = crinstance_admin.AdminCrInstance(request=request)
+        mockrequest = mock.MagicMock()
+        mockrequest.user = testuser
+        instance = crinstance_admin.AdminCrInstance(request=mockrequest)
         self.assertEquals([testgroup], list(instance.get_rolequeryset()))
 
     def test_getrolequeryset_not_admin_on_period(self):
@@ -67,9 +68,9 @@ class TestCrinstanceAdmin(test.TestCase):
         mommy.make('devilry_account.PermissionGroupUser',
                    user=testuser,
                    permissiongroup=periodpermissiongroup.permissiongroup)
-        request = test.RequestFactory().get('/test')
-        request.user = testuser
-        instance = crinstance_admin.AdminCrInstance(request=request)
+        mockrequest = mock.MagicMock()
+        mockrequest.user = testuser
+        instance = crinstance_admin.AdminCrInstance(request=mockrequest)
         self.assertNotEquals([testgroup_another], list(instance.get_rolequeryset()))
 
     def test_getrolequeryset_admin_on_subject(self):
@@ -81,9 +82,9 @@ class TestCrinstanceAdmin(test.TestCase):
         mommy.make('devilry_account.PermissionGroupUser',
                    user=testuser,
                    permissiongroup=subjectpermissiongroup.permissiongroup)
-        request = test.RequestFactory().get('/test')
-        request.user = testuser
-        instance = crinstance_admin.AdminCrInstance(request=request)
+        mockrequest = mock.MagicMock()
+        mockrequest.user = testuser
+        instance = crinstance_admin.AdminCrInstance(request=mockrequest)
         self.assertEquals([testgroup], list(instance.get_rolequeryset()))
 
     def test_getrolequeryset_not_admin_on_subject(self):
@@ -104,39 +105,39 @@ class TestCrinstanceAdmin(test.TestCase):
         mommy.make('devilry_account.PermissionGroupUser',
                    user=testuser,
                    permissiongroup=subjectpermissiongroup.permissiongroup)
-        request = test.RequestFactory().get('/test')
-        request.user = testuser
-        instance = crinstance_admin.AdminCrInstance(request=request)
+        mockrequest = mock.MagicMock()
+        mockrequest.user = testuser
+        instance = crinstance_admin.AdminCrInstance(request=mockrequest)
         self.assertNotEquals([testgroup_another], list(instance.get_rolequeryset()))
 
     def test_admin_devilryrole_periodadmin(self):
         testperiod = mommy.make('core.Period')
         testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
-        admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
         mommy.make('devilry_account.PermissionGroupUser',
-                   user=admin,
+                   user=testuser,
                    permissiongroup=mommy.make(
                            'devilry_account.PeriodPermissionGroup',
                            permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_PERIODADMIN,
                            period=testperiod).permissiongroup)
-        request = test.RequestFactory().get('/test')
-        request.user = admin
-        request.cradmin_role = testgroup
-        testinstance = crinstance_admin.AdminCrInstance(request=request)
+        mockrequest = mock.MagicMock()
+        mockrequest.user = testuser
+        mockrequest.cradmin_role = testgroup
+        testinstance = crinstance_admin.AdminCrInstance(request=mockrequest)
         self.assertEquals('periodadmin', testinstance.get_devilryrole_for_requestuser())
 
     def test_admin_devilryrole_subjectadmin(self):
         testsubject = mommy.make('core.Subject')
         testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode__parentnode=testsubject)
-        admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
         mommy.make('devilry_account.PermissionGroupUser',
-                   user=admin,
+                   user=testuser,
                    permissiongroup=mommy.make(
                            'devilry_account.SubjectPermissionGroup',
                            permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_SUBJECTADMIN,
                            subject=testsubject).permissiongroup)
-        request = test.RequestFactory().get('/test')
-        request.user = admin
-        request.cradmin_role = testgroup
-        testinstance = crinstance_admin.AdminCrInstance(request=request)
+        mockrequest = mock.MagicMock()
+        mockrequest.user = testuser
+        mockrequest.cradmin_role = testgroup
+        testinstance = crinstance_admin.AdminCrInstance(request=mockrequest)
         self.assertEquals('subjectadmin', testinstance.get_devilryrole_for_requestuser())
