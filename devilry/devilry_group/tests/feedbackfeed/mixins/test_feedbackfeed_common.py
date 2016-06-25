@@ -1,3 +1,5 @@
+import mock
+
 from django.utils import timezone
 from model_mommy import mommy
 
@@ -127,6 +129,18 @@ class TestFeedbackFeedHeaderMixin(cradmin_testhelpers.TestCaseMixin):
 class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
     viewclass = None  # must be implemented in subclasses
 
+    def __get_mock_cradmin_instance(self):
+        """
+        If the subclass that implements this mixin is :class:`devilry.devilry_group.views.AdminFeedbackFeedView`
+        we need a admin devilry role for the cradmin instance and we just mock a returnvalue for the
+        `get_devilry_role_for_requestuser`.
+
+        :returns: the devilry role
+        """
+        mockrequest = mock.MagicMock()
+        mockrequest.cradmin_instance.get_devilryrole_for_requestuser.return_value = 'subjectadmin'
+        return mockrequest.cradmin_instance
+
     def test_get(self):
         group = mommy.make('core.AssignmentGroup')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
@@ -142,7 +156,8 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
                    user_role='student',
                    user=candidate.relatedstudent.user,
                    feedback_set__group=group)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group,
+                                                          cradmin_instance=self.__get_mock_cradmin_instance())
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-student'))
 
     def test_get_feedbackfeed_comment_examiner(self):
@@ -154,7 +169,9 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
                    user=examiner.relatedexaminer.user,
                    feedback_set__group=group,
                    visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group,
+                                                          cradmin_instance=self.__get_mock_cradmin_instance())
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-examiner'))
 
     def test_get_feedbackfeed_comment_admin(self):
@@ -174,7 +191,8 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
                              user_role='student',
                              feedback_set__group=group,
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
+                                                          cradmin_instance=self.__get_mock_cradmin_instance())
         self.assertTrue(comment.user.fullname, mockresponse.selector.one('.devilry-user-verbose-inline-fullname'))
 
     def test_get_feedbackfeed_comment_poster_shortname(self):
@@ -187,7 +205,8 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
                              user_role='student',
                              feedback_set__group=group,
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
+                                                          cradmin_instance=self.__get_mock_cradmin_instance())
         self.assertTrue(comment.user.shortname, mockresponse.selector.one('.devilry-user-verbose-inline-shortname'))
 
     def test_get_feedbackfeed_comment_student_user_role(self):
@@ -200,7 +219,8 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
                              user=candidate.relatedstudent.user,
                              feedback_set__group=group,
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
+                                                          cradmin_instance=self.__get_mock_cradmin_instance())
         role = mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized
         self.assertEquals(role, '({})'.format(comment.user_role))
 
@@ -208,7 +228,8 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='examiner',
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
+                                                          cradmin_instance=self.__get_mock_cradmin_instance())
         role = mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized
         self.assertEquals(role, '({})'.format(comment.user_role))
 
@@ -219,13 +240,6 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         role = mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized
         self.assertEquals(role, '({})'.format(comment.user_role))
-
-    def test_get_feedbackfeed_anonymous_student_semi(self):
-        testassignment = mommy.make('core.Assignment',
-                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        candidate = mommy.make('core.Candidate',
-                               assignment_group__parentnode=testassignment,
-                               relatedstudent__user__shortname='teststudent')
 
     def test_get_feedbackfeed_event_without_any_deadlines_created(self):
         # Checks that when a feedbackset has been created and no first deadlines given, either on Assignment
