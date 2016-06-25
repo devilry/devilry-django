@@ -9,8 +9,10 @@ from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models
 from django_cradmin import crapp
 
+
 # 3rd party imports
 from crispy_forms import layout
+from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
 
 
 class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
@@ -31,16 +33,18 @@ class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         return context
 
     def get_buttons(self):
-        return [
-            layout.Submit(
-                'administrator_add_comment_for_examiners',
+        buttons = super(AdminFeedbackFeedView, self).get_buttons()
+        buttons.extend([
+            PrimarySubmit(
+                'admin_add_comment_for_examiners',
                 _('Add comment for examiners'),
                 css_class='btn btn-primary'),
-            layout.Submit(
-                'administrator_add_public_comment',
+            DefaultSubmit(
+                'admin_add_public_comment',
                 _('Add comment'),
                 css_class='btn btn-primary')
-        ]
+        ])
+        return buttons
 
     def set_automatic_attributes(self, obj):
         super(AdminFeedbackFeedView, self).set_automatic_attributes(obj)

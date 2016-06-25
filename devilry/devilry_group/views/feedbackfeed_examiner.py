@@ -113,9 +113,6 @@ class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseVie
     def get_devilryrole(self):
         return 'examiner'
 
-    def get_buttons(self):
-        return []
-
     def set_automatic_attributes(self, obj):
         super(ExaminerBaseFeedbackFeedView, self).set_automatic_attributes(obj)
         obj.user_role = 'examiner'
@@ -143,7 +140,7 @@ class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
     def get_buttons(self):
         buttons = super(ExaminerFeedbackCreateFeedbackSetView, self).get_buttons()
         buttons.extend([
-            layout.Submit('examiner_create_new_feedbackset',
+            DefaultSubmit('examiner_create_new_feedbackset',
                           _('Give new attempt'),
                           css_class='btn btn-primary'),
         ])
@@ -277,10 +274,10 @@ class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
     def get_buttons(self):
         buttons = super(ExaminerDiscussView, self).get_buttons()
         buttons.extend([
-            layout.Submit('examiner_add_comment_for_examiners',
+            PrimarySubmit('examiner_add_comment_for_examiners',
                           _('Add comment for examiners'),
                           css_class='btn btn-default'),
-            layout.Submit('examiner_add_public_comment',
+            DefaultSubmit('examiner_add_public_comment',
                           _('Add public comment'),
                           css_class='btn btn-primary'),
         ])
@@ -311,7 +308,8 @@ class GroupCommentDeleteView(delete.DeleteView):
     model = group_models.GroupComment
 
     def get_queryset(self):
-        return group_models.GroupComment.objects.filter(feedback_set__group=self.request.cradmin_role)
+        return group_models.GroupComment.objects.filter(
+            feedback_set__group=self.request.cradmin_role)
 
     def get_object_preview(self):
         return 'Groupcomment'
@@ -327,7 +325,8 @@ class GroupCommentEditView(update.UpdateView):
     model = group_models.GroupComment
 
     def get_queryset(self):
-        return group_models.GroupComment.objects.filter(feedback_set__group=self.request.cradmin_role)
+        return group_models.GroupComment.objects.filter(
+            feedback_set__group=self.request.cradmin_role)
 
     def get_form_class(self):
         return EditGroupCommentForm
@@ -339,7 +338,10 @@ class GroupCommentEditView(update.UpdateView):
 
     def get_success_url(self):
         if self.get_submit_save_and_continue_edititing_button_name() in self.request.POST:
-            return self.request.cradmin_app.reverse_appurl('groupcomment-edit', args=self.args, kwargs=self.kwargs)
+            return self.request.cradmin_app.reverse_appurl(
+                'groupcomment-edit',
+                args=self.args,
+                kwargs=self.kwargs)
         else:
             return self.request.cradmin_app.reverse_appindexurl()
 
