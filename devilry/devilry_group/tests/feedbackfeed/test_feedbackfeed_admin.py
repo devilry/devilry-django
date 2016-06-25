@@ -10,6 +10,7 @@ from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
 from devilry.devilry_group.views import feedbackfeed_admin
 from devilry.devilry_group import models
+from devilry.devilry_group.cradmin_instances import crinstance_admin
 
 
 class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
@@ -84,15 +85,33 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
 
+    def test_get_feedbackfeed_subjectadmin_can_see_student_name_semi_anonymous(self):
+        testassignment = mommy.make('core.Assignment',
+                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testgroup,
+                               relatedstudent__user__shortname='teststudent')
+        mommy.make('devilry_group.GroupComment',
+                   user=candidate.relatedstudent.user,
+                   user_role='student',
+                   feedback_set__group=testgroup)
+        mockrequest = mock.MagicMock()
+        mockrequest.cradmin_instance.get_devilryrole_for_requestuser.return_value = 'subjectadmin'
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                                          cradmin_instance=mockrequest.cradmin_instance)
+        self.assertFalse(mockresponse.selector.exists('.devilry-core-candidate-anonymous-name'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-user-verbose-inline'))
+
     def test_get_feedbackfeed_admin_wysiwyg_get_comment_choise_add_comment_for_examiners_and_admins_button(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
-        self.assertTrue(mockresponse.selector.exists('#submit-id-administrator_add_comment_for_examiners'))
+        self.assertTrue(mockresponse.selector.exists('#submit-id-admin_add_comment_for_examiners'))
 
     def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choise_add_comment_public_button(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
-        self.assertTrue(mockresponse.selector.exists('#submit-id-administrator_add_public_comment'))
+        self.assertTrue(mockresponse.selector.exists('#submit-id-admin_add_public_comment'))
 
     def test_post_feedbackset_comment_visible_to_everyone(self):
         admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor')
