@@ -123,7 +123,7 @@ class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
     View to create a new FeedbackSet if the current last feedbackset is published.
 
     When a new unpublished FeedbackSet is created, this view redirects to :class:`.ExaminerFeedbackView`.
-    See :meth:`dispatch`.
+    See :func:`dispatch`.
     """
     template_name = 'devilry_group/feedbackfeed_examiner_feedback.django.html'
 
@@ -196,7 +196,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
     and is only able to create drafted comments, or publish grading.
 
     If the last FeedbackSet is published, this view redirects to :class:`.ExaminerFeedbackCreateFeedbackSetView`.
-    See :meth:`dispatch`.
+    See :func:`dispatch`.
     """
     template_name = 'devilry_group/feedbackfeed_examiner_feedback.django.html'
 
