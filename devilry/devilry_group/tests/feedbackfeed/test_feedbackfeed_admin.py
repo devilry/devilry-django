@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.utils import timezone
 from model_mommy import mommy
 from django.conf import settings
+from django import http
 
 # devilry imports
 from devilry.apps.core import models as core_models
@@ -100,6 +101,39 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
                                                           cradmin_instance=mockrequest.cradmin_instance)
         self.assertFalse(mockresponse.selector.exists('.devilry-core-candidate-anonymous-name'))
         self.assertTrue(mockresponse.selector.exists('.devilry-user-verbose-inline'))
+
+    def test_get_feedbackfeed_periodadmin_raise_404_fully_anonymous(self):
+        # creates a user in period permission group
+        testperiod = mommy.make('core.Period')
+        testassignment = mommy.make('core.Assignment',
+                                    parentnode=testperiod,
+                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser,
+                   permissiongroup=mommy.make(
+                       'devilry_account.PeriodPermissionGroup',
+                       permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_PERIODADMIN,
+                       period=testperiod).permissiongroup)
+        with self.assertRaisesMessage(http.Http404, ''):
+            self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup)
+
+    def test_get_feedbackfeed_subjectadmin_raise_404_fully_anonymous(self):
+        # creates a user in subject permission group
+        testsubject = mommy.make('core.Subject')
+        testassignment = mommy.make('core.Assignment',
+                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser,
+                   permissiongroup=mommy.make(
+                       'devilry_account.SubjectPermissionGroup',
+                       permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                       subject=testsubject).permissiongroup)
+        with self.assertRaisesMessage(http.Http404, ''):
+            self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup)
 
     def test_get_feedbackfeed_admin_wysiwyg_get_comment_choise_add_comment_for_examiners_and_admins_button(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet')
