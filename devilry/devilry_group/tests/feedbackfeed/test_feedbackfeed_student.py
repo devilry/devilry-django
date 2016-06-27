@@ -422,3 +422,17 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
                                                           requestuser=candidate.relatedstudent.user)
         feedback_comments = mockresponse.selector.list('.devilry-group-feedbackfeed-comment')
         self.assertEquals(2, len(feedback_comments))
+
+    def test_get_num_queries(self):
+       testgroup = mommy.make('core.AssignmentGroup')
+       candidate = mommy.make('core.Candidate', assignment_group=testgroup)
+       testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+       mommy.make('devilry_group.GroupComment',
+                  user=candidate.relatedstudent.user,
+                  user_role='student',
+                  feedback_set=testfeedbackset,
+                  _quantity=20)
+
+       with self.assertNumQueries(10):
+           self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                              requestuser=candidate.relatedstudent.user)

@@ -24,11 +24,10 @@ class FeedbackFeedTimelineBuilder(object):
 
     def __get_feedbackset_queryset(self):
         """
-        Retrieves the comments a user has access to.
-        This function must be implemented by subclasses of :class:`~.FeedbackFeedBaseView`
+        Get FeedbackSets' for the AssignmentGroup filtering on which comments
+        should be shown in the feedbackfeed.
 
-        :param group: The :class:`devilry.apps.core.models.AssignmentGroup` the user belongs to.
-        :return: List of :class:`devilry.devilry_group.models.GroupComment` objects.
+        :return: FeedbackSet queryset.
         """
         commentfile_queryset = CommentFile.objects\
             .select_related('comment__user')\

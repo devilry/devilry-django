@@ -17,6 +17,7 @@ from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed as feedback
 from devilry.devilry_comment.models import CommentFile, Comment
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
+from devilry.devilry_group.models import FeedbackSet
 from devilry.devilry_group.timeline_builder import feedbackfeed_timeline_builder
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
