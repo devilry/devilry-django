@@ -47,29 +47,41 @@ Views API
 
 .. currentmodule:: devilry.devilry_group.cradmin_feedbackfeed_base
 
-.. currentmodule:: devilry.devilry_group.feedbackfeed_student
+.. automodule:: devilry.devilry_group.views.cradmin_feedbackfeed_base
+:members:
+
+
+Examiner view
+=============
 
 .. currentmodule:: devilry.devilry_group.feedbackfeed_examiner
 
+.. automodule:: devilry.devilry_group.views.feedbackfeed_examiner
+:members:
+
+
+Admin view
+==========
+
 .. currentmodule:: devilry.devilry_group.feedbackfeed_admin
 
-.. automodule:: devilry.devilry_group.views.cradmin_feedbackfeed_base
-    :members:
+.. automodule:: devilry.devilry_group.views.feedbackfeed_admin
+:members:
+
+
+Student view
+============
+
+.. currentmodule:: devilry.devilry_group.feedbackfeed_student
 
 .. automodule:: devilry.devilry_group.views.feedbackfeed_student
-    :members:
+:members:
 
-.. automodule:: devilry.devilry_group.views.feedbackfeed_examiner
-    :members:
-
-.. automodule:: devilry.devilry_group.views.feedbackfeed_admin
-    :members:
 
 
 *********************************************
 Using ListBuilder to render the feedbackfeed.
 *********************************************
-
 
 .. currentmodule:: devilry.devilry_cradmin.feedbackfeed
 
