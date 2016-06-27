@@ -1,12 +1,12 @@
 from django.db import models
-from django.db.models.functions import Concat
-from django.db.models.functions import Lower
+from django.db.models.functions import Concat, Lower
 from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crmenu
 from django_cradmin import crinstance
 
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.apps.core.models import AssignmentGroup, Examiner, Candidate
+from devilry.devilry_group.cradmin_instances import crinstance_base
 from devilry.devilry_group.views import feedbackfeed_admin
 
 
@@ -18,7 +18,7 @@ class Menu(crmenu.Menu):
             url=self.appindex_url('feedbackfeed'))
 
 
-class AdminCrInstance(crinstance.BaseCrAdminInstance):
+class AdminCrInstance(crinstance_base.CrInstanceBase):
     menuclass = Menu
     roleclass = AssignmentGroup
     apps = [
@@ -28,31 +28,14 @@ class AdminCrInstance(crinstance.BaseCrAdminInstance):
     rolefrontpage_appname = 'feedbackfeed'
 
     def get_rolequeryset(self):
-        candidatequeryset = Candidate.objects\
-            .select_related('relatedstudent')\
-            .order_by(
-                Lower(Concat('relatedstudent__user__fullname',
-                             'relatedstudent__user__shortname')))
-        examinerqueryset = Examiner.objects\
-            .select_related('relatedexaminer')\
-            .order_by(
-                Lower(Concat('relatedexaminer__user__fullname',
-                             'relatedexaminer__user__shortname')))
         return AssignmentGroup.objects.filter_user_is_admin(user=self.request.user)\
             .select_related('parentnode__parentnode__parentnode')\
             .prefetch_related(
                 models.Prefetch('candidates',
-                                queryset=candidatequeryset))\
+                                queryset=self._get_candidatequeryset()))\
             .prefetch_related(
                 models.Prefetch('examiners',
-                                queryset=examinerqueryset))
-
-    def get_titletext_for_role(self, role):
-        """
-        Get a short title briefly describing the given ``role``.
-        Remember that the role is an AssignmentGroup.
-        """
-        return "{} - {}".format(role.period, role.assignment.short_name)
+                                queryset=self._get_examinerqueryset()))
 
     @classmethod
     def matches_urlpath(cls, urlpath):
