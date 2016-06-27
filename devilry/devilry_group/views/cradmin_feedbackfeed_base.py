@@ -44,7 +44,9 @@ class GroupCommentForm(forms.ModelForm):
 
 class FeedbackFeedBaseView(create.CreateView):
     """
-    Base feedbackfeed view. FeedbackFeed views inherits from this.
+    Base feedbackfeed view.
+    The feedbackfeed view handles the options a certain devilryrole(``student``, ``examiner``, 'someadmin') should have
+    when the feedbackfeed view is rendered. Specialized views for each devilryrole must subclasses this class.
     """
     template_name = "devilry_group/feedbackfeed.django.html"
     model = group_models.GroupComment
@@ -54,11 +56,14 @@ class FeedbackFeedBaseView(create.CreateView):
 
     submit_use_label = _('Post comment')
 
+    class Meta:
+        abstract = True
+
     def get_devilryrole(self):
         """
-
-        Returns:
-
+        Get the devilryrole of a user.
+        This function must be implemnted by a subclass.
+        :raises: NotImplementedError
         """
         raise NotImplementedError('Must be implemented in subclass')
 
@@ -73,9 +78,11 @@ class FeedbackFeedBaseView(create.CreateView):
 
     def __build_timeline(self):
         """
+        Building the timeline which includes all the events that occur in the feedbackfeed in
+        the order that they occur.
+        For more details, See :class:`devilry.devilry_group.feedbackfeed_timeline_builder.FeedbackFeedTimelineBuilder`
 
-        Returns:
-
+        :return: Built timeline.
         """
         timeline_builder = feedbackfeed_timeline_builder.FeedbackFeedTimelineBuilder(
                 group=self.request.cradmin_role,
@@ -88,11 +95,8 @@ class FeedbackFeedBaseView(create.CreateView):
         """
         Sets the context data needed to render elements in the template.
 
-        :param kwargs:
-            Parameters to get_context_data.
-
-        Returns:
-            The context data dictionary.
+        :param kwargs: Parameters to get_context_data.
+        :return: The context data dictionary.
         """
         context = super(FeedbackFeedBaseView, self).get_context_data(**kwargs)
         context['devilry_ui_role'] = self.get_devilryrole()

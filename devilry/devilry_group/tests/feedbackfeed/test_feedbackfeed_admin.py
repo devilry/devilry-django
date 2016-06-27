@@ -4,13 +4,13 @@ from django.utils import timezone
 from model_mommy import mommy
 from django.conf import settings
 
+# devilry imports
 from devilry.apps.core import models as core_models
 from devilry.devilry_account import models as account_models
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
 from devilry.devilry_group.views import feedbackfeed_admin
 from devilry.devilry_group import models
-from devilry.devilry_group.cradmin_instances import crinstance_admin
 
 
 class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
@@ -61,7 +61,6 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
                              feedback_set__group__parentnode__parentnode=period,
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
-        # mockresponse.selector.prettyprint()
         self.assertEqual(
             'periodadmin',
             PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
@@ -79,7 +78,6 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='admin',
                              user=admin,
-                             text='Hello, is it me you\'re looking for?',
                              feedback_set__group__parentnode__parentnode=period,
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
@@ -185,6 +183,6 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         mock_cradmininstance = mock.MagicMock()
         mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
         with self.assertNumQueries(10):
-            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
-                                                              requestuser=admin,
-                                                              cradmin_instance=mock_cradmininstance)
+            self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
+                                               requestuser=admin,
+                                               cradmin_instance=mock_cradmininstance)

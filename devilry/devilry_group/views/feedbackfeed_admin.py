@@ -1,5 +1,5 @@
 # Django imports
-from django.utils import http
+from django import http
 from django.utils.translation import ugettext_lazy as _
 
 # Devilry/cradmin imports
@@ -17,7 +17,10 @@ from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
 
 class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     """
-    TODO: Document
+    Admin view.
+    Handles what should be rendered for an admin in the feedbackfeed.
+
+    Special case when assignment is fully anonymized. See :func:`dispatch`.
     """
     def _get_comments_for_group(self, group):
         return models.GroupComment.objects.filter(
@@ -29,7 +32,6 @@ class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
 
     def get_context_data(self, **kwargs):
         context = super(AdminFeedbackFeedView, self).get_context_data(**kwargs)
-        # context['devilry_ui_role'] = 'admin'
         return context
 
     def get_buttons(self):
@@ -60,11 +62,18 @@ class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         return obj
 
     def dispatch(self, request, *args, **kwargs):
+        """
+        When :obj:`devilry.apps.core.Assignment.anonymizationmode` is set to ``ANONYMIZATIONMODE_FULLY_ANONYMOUS``
+        a 404 should be raised if the request user is not a ``departmentadmin``.
+
+        :param request: The request to check.
+        :raises: Http404
+        """
         assignment = self.request.cradmin_role.parentnode
         if assignment.anonymizationmode == core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
             if account_models.PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
                     user=self.request.user, period=assignment.period) != 'departmentadmin':
-                raise http.Http404()
+                raise http.Http404
         return super(AdminFeedbackFeedView, self).dispatch(request, *args, **kwargs)
 
 
