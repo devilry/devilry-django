@@ -97,7 +97,7 @@ class EditGroupCommentForm(forms.ModelForm):
     """
     Form for editing existing Feedback drafts.
     """
-    #: Edit text-field in GroupComment.
+    #: Edit text-field in GroupComment. Uses cradmin AceMarkdownWidget.
     text = forms.CharField(widget=AceMarkdownWidget)
 
     class Meta:
