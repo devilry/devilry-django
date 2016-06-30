@@ -20,23 +20,22 @@ class Menu(devilry_crmenu_examiner.Menu):
 
 class ExaminerCrInstance(crinstance_base.CrInstanceBase):
     menuclass = Menu
-    roleclass = AssignmentGroup
     apps = [
         ('feedbackfeed', feedbackfeed_examiner.App)
     ]
     id = 'devilry_group_examiner'
-    rolefrontpage_appname = 'feedbackfeed'
 
     def get_rolequeryset(self):
-        return AssignmentGroup.objects\
-            .filter_examiner_has_access(self.request.user)\
-            .select_related('parentnode__parentnode__parentnode')\
-            .prefetch_related(
-                models.Prefetch('candidates',
-                                queryset=self._get_candidatequeryset()))\
-            .prefetch_related(
-                models.Prefetch('examiners',
-                                queryset=self._get_examinerqueryset()))
+        """
+        Get the base rolequeryset from
+        :func:`~devilry.devilry_group.cradmin_instances.CrInstanceBase._get_base_rolequeryset` and filter on user.
+
+        Returns:
+            QuerySet: A queryset of :class:`~devilry.apps.core.models.AssignmentGroup`s
+                the ``request.user`` is examiner on.
+        """
+        return self._get_base_rolequeryset()\
+            .filter_examiner_has_access(self.request.user)
 
     @classmethod
     def matches_urlpath(cls, urlpath):
@@ -44,11 +43,7 @@ class ExaminerCrInstance(crinstance_base.CrInstanceBase):
 
     def get_devilryrole_for_requestuser(self):
         """
-        Get the devilryrole for the requesting user on the current
-        assignment (request.cradmin_instance).
-
-        The return values is the same as for
-        :meth:`devilry.devilry_account.models.PeriodPermissionGroupQuerySet.get_devilryrole_for_user_on_period`,
-        exept that this method raises ValueError if it does not find a role.
+        Returns:
+            str: ``examiner`` as devilryrole.
         """
         return 'examiner'

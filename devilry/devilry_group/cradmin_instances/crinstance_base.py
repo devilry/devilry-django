@@ -1,16 +1,40 @@
+from django.db import models
 from django.db.models.functions import Lower, Concat
 from django_cradmin import crinstance
-from devilry.apps.core.models import Examiner, Candidate
+from devilry.apps.core.models import Examiner, Candidate, AssignmentGroup
+
 
 class CrInstanceBase(crinstance.BaseCrAdminInstance):
     """
     Base CrInstance class for crinstances in devilry_group.
     """
+    roleclass = AssignmentGroup
+    rolefrontpage_appname = 'feedbackfeed'
+
+    def _get_base_rolequeryset(self):
+        """
+        Get :class:`~devilry.apps.core.models.AssignmentGroup`s and prefetch related
+        :class:`~devilry.apps.core.models.Examiner`s and :class:`~devilry.apps.core.models.Candidate`s.
+
+        Returns:
+            QuerySet: A queryset of :class:`~devilry.apps.core.models.AssignmentGroup`s.
+
+        """
+        return AssignmentGroup.objects\
+            .select_related('parentnode__parentnode__parentnode')\
+            .prefetch_related(
+                models.Prefetch('candidates',
+                                queryset=self._get_candidatequeryset()))\
+            .prefetch_related(
+                models.Prefetch('examiners',
+                                queryset=self._get_examinerqueryset()))
+
     def _get_candidatequeryset(self):
         """
         Get candidates.
 
-        :return: Queryset of :class:`devilry.apps.core.models.Candidate` objects.
+        Returns:
+            QuerySet: A queryset of :class:`~devilry.apps.core.models.Candidate`s.
         """
         return Candidate.objects\
             .select_related('relatedstudent')\
@@ -22,7 +46,8 @@ class CrInstanceBase(crinstance.BaseCrAdminInstance):
         """
         Get examiners.
 
-        :return: Queryset of :class:`devilry.apps.core.models.Examiner` objects.
+        Returns:
+            QuerySet: A queryset of :class:`~devilry.apps.core.models.Examiner`s.
         """
         return Examiner.objects\
             .select_related('relatedexaminer')\
@@ -32,9 +57,25 @@ class CrInstanceBase(crinstance.BaseCrAdminInstance):
 
     def get_titletext_for_role(self, role):
         """
-        Get a short title briefly describing the given ``role``.
 
-        :param role: :class:`devilry.apps.core.models.AssignmentGroup` object.
-        :return: String representation of role.
+        Args:
+            role: An :class:`~devilry.apps.core.models.AssignmentGroup`
+                instance of the roleclass for the crinstance.
+
+        Returns:
+            str: Formatted string reprensentation of the crinstance role.
         """
         return "{} - {}".format(role.period, role.assignment.short_name)
+
+    def get_devilryrole_for_requestuser(self):
+        """
+        Get the devilryrole for the requesting user on the current
+        assignmentrole (request.cradmin_instance).
+
+        Return:
+            str: The return values is the same as for
+                :meth:`devilry.devilry_account.models.PeriodPermissionGroupQuerySet.get_devilryrole_for_user_on_period`,
+                except that this method raises ValueError if it does not find a role or NotImplementedError if this
+                class is not subclassed.
+        """
+        raise NotImplementedError('Must be implemented by subclass.')
