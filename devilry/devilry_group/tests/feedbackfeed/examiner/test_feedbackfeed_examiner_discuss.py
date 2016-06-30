@@ -1,14 +1,9 @@
-import mock
-from django.conf import settings
 from django.test import TestCase
-from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
-from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
-from devilry.devilry_group.cradmin_instances import crinstance_examiner
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_examiner
 from devilry.devilry_group.views import feedbackfeed_examiner
 
@@ -155,25 +150,44 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
         self.assertEquals(feedbackset_last, comments[0].feedback_set)
 
     def test_get_num_queries(self):
-        requestuser = mommy.make(settings.AUTH_USER_MODEL)
-        feedbackset = mommy.make('devilry_group.FeedbackSet', is_last_in_group=False)
-        feedbackset2 = mommy.make('devilry_group.FeedbackSet', group=feedbackset.group)
-
-        examiner = mommy.make('core.Examiner',
-                              assignmentgroup=feedbackset.group,
-                              relatedexaminer__user=requestuser)
-
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
         mommy.make('devilry_group.GroupComment',
-                   user=requestuser,
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset,
-                   _quantity=20)
-        mommy.make('devilry_group.GroupComment',
-                   user=requestuser,
-                   user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set=feedbackset2,
-                   _quantity=20)
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=testfeedbackset)
 
         with self.assertNumQueries(8):
-            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
-                                                              requestuser=requestuser)
+            self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                               requestuser=examiner.relatedexaminer.user)
+
+    def test_get_num_queries_with_commentfiles(self):
+        """
+        NOTE: (works as it should)
+        Checking that no more queries are executed even though the
+        :func:`devilry.devilry_group.timeline_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
+        duplicates comment_file query.
+        """
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+        comment = mommy.make('devilry_group.GroupComment',
+                             user=examiner.relatedexaminer.user,
+                             user_role='examiner',
+                             feedback_set=testfeedbackset)
+        comment2 = mommy.make('devilry_group.GroupComment',
+                              user=examiner.relatedexaminer.user,
+                              user_role='examiner',
+                              feedback_set=testfeedbackset)
+        mommy.make('devilry_comment.CommentFile',
+                   filename='test.py',
+                   comment=comment,
+                   _quantity=100)
+        mommy.make('devilry_comment.CommentFile',
+                   filename='test2.py',
+                   comment=comment2,
+                   _quantity=100)
+        with self.assertNumQueries(8):
+            self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                               requestuser=examiner.relatedexaminer.user)

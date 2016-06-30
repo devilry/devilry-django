@@ -209,23 +209,48 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
         self.assertTrue(mockresponse.selector.exists('.btn-info'))
         self.assertTrue('Edit', mockresponse.selector.one('.btn-info').alltext_normalized)
 
-    def test_get_feedbackfeed_anonymous_student_semi(self):
-        testassignment = mommy.make('core.Assignment',
-                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        candidate = mommy.make('core.Candidate',
-                               assignment_group__parentnode=testassignment,
-                               relatedstudent__user__shortname='teststudent')
-        examiner = mommy.make('core.Examiner',
-                              assignmentgroup=candidate.assignment_group,
-                              relatedexaminer__user__shortname='testexaminer')
-        mommy.make('devilry_group.GroupComment',
-                   user_role='student',
-                   user=candidate.relatedstudent.user,
-                   feedback_set__group=candidate.assignment_group)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
-                                                          requestuser=examiner.relatedexaminer.user)
-        self.assertFalse(mockresponse.selector.exists('.devilry-user-verbose-inline'))
-        self.assertTrue(mockresponse.selector.exists('.devilry-core-candidate-anonymous-name'))
+    # def test_get_num_queries(self):
+    #     testgroup = mommy.make('core.AssignmentGroup')
+    #     examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+    #     testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+    #     mommy.make('devilry_group.GroupComment',
+    #                user=examiner.relatedexaminer.user,
+    #                user_role='examiner',
+    #                feedback_set=testfeedbackset)
+    #
+    #     with self.assertNumQueries(8):
+    #         self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+    #                                            requestuser=examiner.relatedexaminer.user)
+    #
+    # def test_get_num_queries_with_commentfiles(self):
+    #     """
+    #     NOTE: (works as it should)
+    #     Checking that no more queries are executed even though the
+    #     :func:`devilry.devilry_group.timeline_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
+    #     duplicates comment_file query.
+    #     """
+    #     testgroup = mommy.make('core.AssignmentGroup')
+    #     examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+    #     testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+    #     comment = mommy.make('devilry_group.GroupComment',
+    #                          user=examiner.relatedexaminer.user,
+    #                          user_role='examiner',
+    #                          feedback_set=testfeedbackset)
+    #     comment2 = mommy.make('devilry_group.GroupComment',
+    #                           user=examiner.relatedexaminer.user,
+    #                           user_role='examiner',
+    #                           feedback_set=testfeedbackset)
+    #     mommy.make('devilry_comment.CommentFile',
+    #                filename='test.py',
+    #                comment=comment,
+    #                _quantity=100)
+    #     mommy.make('devilry_comment.CommentFile',
+    #                filename='test2.py',
+    #                comment=comment2,
+    #                _quantity=100)
+    #     with self.assertNumQueries(8):
+    #         self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+    #                                            requestuser=examiner.relatedexaminer.user)
 
     # def test_post_comment_file(self):
     #     feedbackset = mommy.make('devilry_group.FeedbackSet')

@@ -1,15 +1,16 @@
 from datetime import datetime
+
 from django.test import TestCase
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
-from devilry.utils import datetimeutils
 from devilry.apps.core import models as core_models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_examiner
 from devilry.devilry_group.views import feedbackfeed_examiner
+from devilry.utils import datetimeutils
 
 
 class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
@@ -100,6 +101,49 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
         self.assertFalse(mockresponse.selector.exists('#div_id_passed'))
         self.assertTrue(mockresponse.selector.exists('#div_id_points'))
 
+    def test_get_num_queries(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=testfeedbackset)
+
+        with self.assertNumQueries(9):
+            self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                               requestuser=examiner.relatedexaminer.user)
+
+    def test_get_num_queries_with_commentfiles(self):
+        """
+        NOTE: (works as it should)
+        Checking that no more queries are executed even though the
+        :func:`devilry.devilry_group.timeline_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
+        duplicates comment_file query.
+        """
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+        comment = mommy.make('devilry_group.GroupComment',
+                             user=examiner.relatedexaminer.user,
+                             user_role='examiner',
+                             feedback_set=testfeedbackset)
+        comment2 = mommy.make('devilry_group.GroupComment',
+                              user=examiner.relatedexaminer.user,
+                              user_role='examiner',
+                              feedback_set=testfeedbackset)
+        mommy.make('devilry_comment.CommentFile',
+                   filename='test.py',
+                   comment=comment,
+                   _quantity=100)
+        mommy.make('devilry_comment.CommentFile',
+                   filename='test2.py',
+                   comment=comment2,
+                   _quantity=100)
+        with self.assertNumQueries(9):
+            self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                               requestuser=examiner.relatedexaminer.user)
+
     # def test_feedbackfeed_view_publish_feedback(self):
     #     group = mommy.make('core.AssignmentGroup')
     #     examiner = mommy.make('core.Examiner',
@@ -168,7 +212,7 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
         self.assertEquals('private', group_models.GroupComment.objects.all()[0].visibility)
 
 
-class TestFeedbackFeedExaminerPublishFeedback(TestCase, cradmin_testhelpers.TestCaseMixin):
+class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
     """
     Explicitly tests creating drafts and publishing of the FeedbackSet.
     """
@@ -395,51 +439,94 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, cradmin_testhelpers.Test
         self.assertEquals(1, feedbacksets[0].grading_points)
         self.assertEquals(5, len(feedback_comments))
 
-    def test_examiner_publishes_without_comment_text(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
-        feedbackset = mommy.make('devilry_group.FeedbackSet',
-                                 group__parentnode=assignment)
-        examiner = mommy.make('core.Examiner',
-                              assignmentgroup=feedbackset.group,
-                              relatedexaminer=mommy.make('core.RelatedExaminer'))
-        self.mock_http302_postrequest(
-            cradmin_role=examiner.assignmentgroup,
-            requestuser=examiner.relatedexaminer.user,
-            viewkwargs={'pk': feedbackset.group.id},
-            requestkwargs={
-                'data': {
-                    'passed': True,
-                    'text': '',
-                    'examiner_publish_feedback': 'unused value',
-                }
-            })
-        feedbacksets = group_models.FeedbackSet.objects.all()
-        self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
-        self.assertEquals(0, group_models.GroupComment.objects.all().count())
+    def test_get_num_queries(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=testfeedbackset)
 
-    def test_examiner_publishes_with_comment_text(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
-        feedbackset = mommy.make('devilry_group.FeedbackSet',
-                                 group__parentnode=assignment)
-        examiner = mommy.make('core.Examiner',
-                              assignmentgroup=feedbackset.group,
-                              relatedexaminer=mommy.make('core.RelatedExaminer'))
-        self.mock_http302_postrequest(
-            cradmin_role=examiner.assignmentgroup,
-            requestuser=examiner.relatedexaminer.user,
-            viewkwargs={'pk': feedbackset.group.id},
-            requestkwargs={
-                'data': {
-                    'passed': True,
-                    'text': 'test',
-                    'examiner_publish_feedback': 'unused value',
-                }
-            })
-        feedbacksets = group_models.FeedbackSet.objects.all()
-        self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
-        self.assertEquals(1, group_models.GroupComment.objects.all().count())
+        with self.assertNumQueries(9):
+            self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                               requestuser=examiner.relatedexaminer.user)
+
+    def test_get_num_queries_with_commentfiles(self):
+        """
+        NOTE: (works as it should)
+        Checking that no more queries are executed even though the
+        :func:`devilry.devilry_group.timeline_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
+        duplicates comment_file query.
+        """
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+        comment = mommy.make('devilry_group.GroupComment',
+                             user=examiner.relatedexaminer.user,
+                             user_role='examiner',
+                             feedback_set=testfeedbackset)
+        comment2 = mommy.make('devilry_group.GroupComment',
+                              user=examiner.relatedexaminer.user,
+                              user_role='examiner',
+                              feedback_set=testfeedbackset)
+        mommy.make('devilry_comment.CommentFile',
+                   filename='test.py',
+                   comment=comment,
+                   _quantity=100)
+        mommy.make('devilry_comment.CommentFile',
+                   filename='test2.py',
+                   comment=comment2,
+                   _quantity=100)
+        with self.assertNumQueries(9):
+            self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                               requestuser=examiner.relatedexaminer.user)
+
+    # def test_examiner_publishes_without_comment_text(self):
+    #     assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+    #                                    grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+    #     feedbackset = mommy.make('devilry_group.FeedbackSet',
+    #                              group__parentnode=assignment)
+    #     examiner = mommy.make('core.Examiner',
+    #                           assignmentgroup=feedbackset.group,
+    #                           relatedexaminer=mommy.make('core.RelatedExaminer'))
+    #     self.mock_http302_postrequest(
+    #         cradmin_role=examiner.assignmentgroup,
+    #         requestuser=examiner.relatedexaminer.user,
+    #         viewkwargs={'pk': feedbackset.group.id},
+    #         requestkwargs={
+    #             'data': {
+    #                 'passed': True,
+    #                 'text': '',
+    #                 'examiner_publish_feedback': 'unused value',
+    #             }
+    #         })
+    #     feedbacksets = group_models.FeedbackSet.objects.all()
+    #     self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
+    #     self.assertEquals(0, group_models.GroupComment.objects.all().count())
+    #
+    # def test_examiner_publishes_with_comment_text(self):
+    #     assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+    #                                    grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+    #     feedbackset = mommy.make('devilry_group.FeedbackSet',
+    #                              group__parentnode=assignment)
+    #     examiner = mommy.make('core.Examiner',
+    #                           assignmentgroup=feedbackset.group,
+    #                           relatedexaminer=mommy.make('core.RelatedExaminer'))
+    #     self.mock_http302_postrequest(
+    #         cradmin_role=examiner.assignmentgroup,
+    #         requestuser=examiner.relatedexaminer.user,
+    #         viewkwargs={'pk': feedbackset.group.id},
+    #         requestkwargs={
+    #             'data': {
+    #                 'passed': True,
+    #                 'text': 'test',
+    #                 'examiner_publish_feedback': 'unused value',
+    #             }
+    #         })
+    #     feedbacksets = group_models.FeedbackSet.objects.all()
+    #     self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
+    #     self.assertEquals(1, group_models.GroupComment.objects.all().count())
 
     # def test_post_comment_file(self):
     #     feedbackset = mommy.make('devilry_group.FeedbackSet')

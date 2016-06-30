@@ -5,6 +5,7 @@ from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
+from devilry.devilry_comment import models as comment_models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
@@ -424,15 +425,44 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
         self.assertEquals(2, len(feedback_comments))
 
     def test_get_num_queries(self):
-       testgroup = mommy.make('core.AssignmentGroup')
-       candidate = mommy.make('core.Candidate', assignment_group=testgroup)
-       testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
-       mommy.make('devilry_group.GroupComment',
-                  user=candidate.relatedstudent.user,
-                  user_role='student',
-                  feedback_set=testfeedbackset,
-                  _quantity=20)
+        testgroup = mommy.make('core.AssignmentGroup')
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
+        testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   user=candidate.relatedstudent.user,
+                   user_role='student',
+                   feedback_set=testfeedbackset)
 
-       with self.assertNumQueries(10):
-           self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
-                                              requestuser=candidate.relatedstudent.user)
+        with self.assertNumQueries(10):
+            self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                               requestuser=candidate.relatedstudent.user)
+
+    def test_get_num_queries_with_commentfiles(self):
+        """
+        NOTE: (works as it should)
+        Checking that no more queries are executed even though the
+        :func:`devilry.devilry_group.timeline_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
+        duplicates comment_file query.
+        """
+        testgroup = mommy.make('core.AssignmentGroup')
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
+        testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+        comment = mommy.make('devilry_group.GroupComment',
+                             user=candidate.relatedstudent.user,
+                             user_role='student',
+                             feedback_set=testfeedbackset)
+        comment2 = mommy.make('devilry_group.GroupComment',
+                              user=candidate.relatedstudent.user,
+                              user_role='student',
+                              feedback_set=testfeedbackset)
+        mommy.make('devilry_comment.CommentFile',
+                   filename='test.py',
+                   comment=comment,
+                   _quantity=100)
+        mommy.make('devilry_comment.CommentFile',
+                   filename='test2.py',
+                   comment=comment2,
+                   _quantity=100)
+        with self.assertNumQueries(10):
+            self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                               requestuser=candidate.relatedstudent.user)
