@@ -9,7 +9,7 @@ from devilry.apps.core import models as core_models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_examiner
-from devilry.devilry_group.views import feedbackfeed_examiner
+from devilry.devilry_group.views.examiner import feedbackfeed_examiner
 from devilry.utils import datetimeutils
 
 
@@ -81,7 +81,8 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
 
     def test_get_form_passedfailed_grade_option(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+                                       grading_system_plugin_id=core_models.Assignment
+                                       .GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=mommy.make('core.AssignmentGroup', parentnode=assignment),
                               relatedexaminer=mommy.make('core.RelatedExaminer'))

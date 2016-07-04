@@ -1,9 +1,9 @@
 from django.test import TestCase
+from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
-from django_cradmin import cradmin_testhelpers
-from devilry.devilry_group.views import feedbackfeed_examiner
 from devilry.devilry_group import models as group_models
+from devilry.devilry_group.views.examiner import feedbackfeed_examiner
 
 
 class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMixin):

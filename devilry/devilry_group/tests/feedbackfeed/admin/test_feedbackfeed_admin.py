@@ -1,16 +1,16 @@
 import mock
+from django import http
+from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
 from model_mommy import mommy
-from django.conf import settings
-from django import http
 
 # devilry imports
 from devilry.apps.core import models as core_models
 from devilry.devilry_account import models as account_models
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
-from devilry.devilry_group.views import feedbackfeed_admin
+from devilry.devilry_group.views.admin import feedbackfeed_admin
 from devilry.devilry_group import models
 
 

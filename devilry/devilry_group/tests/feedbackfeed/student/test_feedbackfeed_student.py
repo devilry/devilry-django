@@ -1,3 +1,4 @@
+import mock
 from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
@@ -5,11 +6,10 @@ from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
-from devilry.devilry_comment import models as comment_models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
-from devilry.devilry_group.views import feedbackfeed_student
+from devilry.devilry_group.views.student import feedbackfeed_student
 
 
 class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
@@ -432,10 +432,12 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
                    user=candidate.relatedstudent.user,
                    user_role='student',
                    feedback_set=testfeedbackset)
-
+        mock_cradmininstance = mock.MagicMock()
+        mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'student'
         with self.assertNumQueries(10):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
-                                               requestuser=candidate.relatedstudent.user)
+                                               requestuser=candidate.relatedstudent.user,
+                                               cradmin_instance=mock_cradmininstance)
 
     def test_get_num_queries_with_commentfiles(self):
         """
