@@ -1,3 +1,6 @@
+# Python imports
+from __future__ import unicode_literals
+
 # Django imports
 from datetime import datetime
 from django import forms
@@ -19,9 +22,6 @@ from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.views.cradmin_feedbackfeed_base import GroupCommentForm
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
-
-# 3rd party imports
-from crispy_forms import layout
 
 
 class AbstractFeedbackForm(GroupCommentForm):
@@ -109,85 +109,18 @@ class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseVie
     """
     Base view for examiner.
     """
-
     def get_devilryrole(self):
+        """
+        Get the devilryrole for the view.
+
+        Returns:
+            str: ``examiner`` as devilryrole.
+        """
         return 'examiner'
 
     def set_automatic_attributes(self, obj):
         super(ExaminerBaseFeedbackFeedView, self).set_automatic_attributes(obj)
         obj.user_role = 'examiner'
-
-
-class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
-    """
-    View to create a new FeedbackSet if the current last feedbackset is published.
-
-    When a new unpublished FeedbackSet is created, this view redirects to :class:`.ExaminerFeedbackView`.
-    See :func:`dispatch`.
-    """
-    template_name = 'devilry_group/feedbackfeed_examiner_feedback.django.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        group = self.request.cradmin_role
-        # NOTE: :func:`~devilry.apps.core.models.AssignmentGroup.last_feedbackset_is_published` performs a query.
-        if not group.last_feedbackset_is_published:
-            return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
-
-        return super(ExaminerFeedbackCreateFeedbackSetView, self).dispatch(request, *args, **kwargs)
-
-    def get_form_class(self):
-        return CreateFeedbackSetForm
-
-    def get_buttons(self):
-        buttons = super(ExaminerFeedbackCreateFeedbackSetView, self).get_buttons()
-        buttons.extend([
-            DefaultSubmit('examiner_create_new_feedbackset',
-                          _('Give new attempt'),
-                          css_class='btn btn-primary'),
-        ])
-        return buttons
-
-    def __create_new_feedbackset(self, comment, new_deadline):
-        if new_deadline <= datetimeutils.get_current_datetime():
-            messages.error(self.request, ugettext_lazy('Deadline must be ahead of current date and time'))
-            return None
-
-        # Update current last feedbackset in group before
-        # creating the new feedbackset.
-        current_feedbackset = group_models.FeedbackSet.objects.get(id=comment.feedback_set_id)
-        current_feedbackset.is_last_in_group = None
-        current_feedbackset.grading_published_by = comment.user
-        current_feedbackset.full_clean()
-        current_feedbackset.save()
-
-        feedbackset = group_models.FeedbackSet(
-            group=self.request.cradmin_role,
-            feedbackset_type=group_models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
-            created_by=comment.user,
-            deadline_datetime=new_deadline
-        )
-        feedbackset.full_clean()
-        feedbackset.save()
-        return feedbackset
-
-    def save_object(self, form, commit=True):
-        comment = super(ExaminerFeedbackCreateFeedbackSetView, self).save_object(form=form)
-
-        if 'deadline_datetime' in self.request.POST:
-            new_deadline = datetime.strptime(self.request.POST['deadline_datetime'], '%Y-%m-%d %H:%M')
-
-            new_feedbackset = self.__create_new_feedbackset(comment=comment, new_deadline=new_deadline)
-            if new_feedbackset is None:
-                return comment
-
-            if len(comment.text) > 0:
-                # Also save comment and set the comments feedback_set to the newly
-                # created new_feedbackset.
-                comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
-                comment.feedback_set = new_feedbackset
-                comment.published_datetime = new_feedbackset.created_datetime + timezone.timedelta(seconds=1)
-                comment = super(ExaminerFeedbackCreateFeedbackSetView, self).save_object(form=form, commit=True)
-        return comment
 
 
 class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
@@ -202,6 +135,16 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
     template_name = 'devilry_group/feedbackfeed_examiner_feedback.django.html'
 
     def dispatch(self, request, *args, **kwargs):
+        """
+        Checks if the last FeedbackSet in the group is published. If it's published, a redirect response to
+        :class:`~.ExaminerFeedbackCreateFeedbackSetView is returned.
+
+        Args:
+            request: request object.
+
+        Returns:
+            HttpResponse: The HTTP response.
+        """
         group = self.request.cradmin_role
         # NOTE: :func:`~devilry.apps.core.models.AssignmentGroup.last_feedbackset_is_published` performs a query.
         if group.last_feedbackset_is_published:
@@ -264,6 +207,102 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
 
     def get_form_invalid_message(self, form):
         return 'Cannot publish feedback until deadline has passed!'
+
+
+class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
+    """
+    View to create a new FeedbackSet if the current last feedbackset is published.
+
+    When a new unpublished FeedbackSet is created, this view redirects to :class:`.ExaminerFeedbackView`.
+    See :func:`dispatch`.
+    """
+    template_name = 'devilry_group/feedbackfeed_examiner_feedback.django.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Checks if the last FeedbackSet in the group is published. If it's published, a redirect response to
+        :class:`~.ExaminerFeedbackView` is returned.
+
+        Args:
+            request (HttpRequest): request object.
+
+        Returns:
+            HttpResponse: The HTTP response.
+        """
+        group = self.request.cradmin_role
+        # NOTE: :func:`~devilry.apps.core.models.AssignmentGroup.last_feedbackset_is_published` performs a query.
+        if not group.last_feedbackset_is_published:
+            return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+
+        return super(ExaminerFeedbackCreateFeedbackSetView, self).dispatch(request, *args, **kwargs)
+
+    def get_form_class(self):
+        return CreateFeedbackSetForm
+
+    def get_buttons(self):
+        buttons = super(ExaminerFeedbackCreateFeedbackSetView, self).get_buttons()
+        buttons.extend([
+            DefaultSubmit('examiner_create_new_feedbackset',
+                          _('Give new attempt'),
+                          css_class='btn btn-primary'),
+        ])
+        return buttons
+
+    def __create_new_feedbackset(self, comment, new_deadline):
+        """
+        Creates a new :class:`devilry.devilry_group.models.FeedbackSet` as long as the ``new_deadline`` is
+        in the future.
+
+        :Note: Extra constraints to the new deadline and creation of a FeedbackSet may be added.
+
+        Args:
+            comment (GroupComment): Comment to be posted with the new FeedbackSet
+            new_deadline (DateTime): The deadline.
+
+        Returns:
+            FeedbackSet: returns the newly created :class:`devilry.devilry_group.models.FeedbackSet` instance.
+
+        """
+        if new_deadline <= datetimeutils.get_current_datetime():
+            messages.error(self.request, ugettext_lazy('Deadline must be ahead of current date and time'))
+            return None
+
+        # Update current last feedbackset in group before
+        # creating the new feedbackset.
+        current_feedbackset = group_models.FeedbackSet.objects.get(id=comment.feedback_set_id)
+        current_feedbackset.is_last_in_group = None
+        current_feedbackset.grading_published_by = comment.user
+        current_feedbackset.full_clean()
+        current_feedbackset.save()
+
+        feedbackset = group_models.FeedbackSet(
+            group=self.request.cradmin_role,
+            feedbackset_type=group_models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
+            created_by=comment.user,
+            deadline_datetime=new_deadline
+        )
+        feedbackset.full_clean()
+        feedbackset.save()
+        return feedbackset
+
+    def save_object(self, form, commit=True):
+        comment = super(ExaminerFeedbackCreateFeedbackSetView, self).save_object(form=form)
+
+        if 'deadline_datetime' in self.request.POST:
+            new_deadline = datetime.strptime(self.request.POST['deadline_datetime'], '%Y-%m-%d %H:%M')
+
+            new_feedbackset = self.__create_new_feedbackset(comment=comment, new_deadline=new_deadline)
+            if new_feedbackset is None:
+                return comment
+
+            if len(comment.text) > 0:
+                # Also save comment and set the comments feedback_set to the newly
+                # created new_feedbackset.
+                comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
+                comment.feedback_set = new_feedbackset
+                comment.published_datetime = new_feedbackset.created_datetime + timezone.timedelta(seconds=1)
+                comment = super(ExaminerFeedbackCreateFeedbackSetView, self).save_object(form=form, commit=True)
+        return comment
 
 
 class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):

@@ -1,3 +1,6 @@
+# Python imports
+from __future__ import unicode_literals
+
 # Django imports
 from django import http
 from django.utils.translation import ugettext_lazy as _
@@ -8,10 +11,6 @@ from devilry.devilry_account import models as account_models
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models
 from django_cradmin import crapp
-
-
-# 3rd party imports
-from crispy_forms import layout
 from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
 
 
@@ -22,12 +21,10 @@ class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
 
     Special case when assignment is fully anonymized. See :func:`dispatch`.
     """
-    def _get_comments_for_group(self, group):
-        return models.GroupComment.objects.filter(
-            feedback_set__group=group
-        )
-
     def get_devilryrole(self):
+        """
+        See :meth:`~devilry.devilry_group.cradmin_instances.AdminCrInstance.get_devilryrole_for_requestuser`
+        """
         return self.request.cradmin_instance.get_devilryrole_for_requestuser()
 
     def get_context_data(self, **kwargs):
@@ -66,8 +63,15 @@ class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         When :obj:`devilry.apps.core.Assignment.anonymizationmode` is set to ``ANONYMIZATIONMODE_FULLY_ANONYMOUS``
         a 404 should be raised if the request user is not a ``departmentadmin``.
 
-        :param request: The request to check.
-        :raises: Http404
+        Args:
+             request: The request to check.
+
+        Returns:
+            HttpResponse: Response returned from dispatch.
+
+        Raises:
+             Http404: Is raised if :obj:`~devilry.apps.core.models.Assignment.anonymizationmode` is set to
+             ``ANONYMIZATIONMODE_FULLY_ANONYMOUS``, and the requestuser is not a ``departmentadmin``.
         """
         assignment = self.request.cradmin_role.parentnode
         if assignment.anonymizationmode == core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
