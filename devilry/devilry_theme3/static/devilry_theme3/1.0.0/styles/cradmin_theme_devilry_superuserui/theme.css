@@ -6627,9 +6627,6 @@ ol.django-cradmin-listbuilder-list.django-cradmin-listbuilder-rowlist li .django
   margin-top: 0;
   margin-bottom: 5px;
 }
-ol.django-cradmin-listbuilder-list.django-cradmin-listbuilder-rowlist li:last-child .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
-  margin-bottom: 0;
-}
 ol.django-cradmin-listbuilder-list.django-cradmin-listbuilder-floatgridlist li .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
   margin-top: 5px;
   margin-bottom: 5px;
@@ -6804,15 +6801,15 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls {
   margin-top: 7px;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls label.checkbox {
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls .checkbox label {
   font-weight: normal;
   margin-top: 10px;
   margin-bottom: 10px;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls label.checkbox:first-child {
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls .checkbox label:first-child {
   margin-top: 0;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls label.checkbox:hover {
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls .checkbox label:hover {
   color: #262626;
   cursor: pointer;
 }
