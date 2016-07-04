@@ -1,23 +1,18 @@
+# Python imports
+from __future__ import unicode_literals
+import json
+import datetime
+
 # Django imports
 from django import forms
-from django.db import models
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-# Python imports
-import json
-import datetime
-
 # Devilry/cradmin imports
-from django_cradmin.viewhelpers import listbuilder
-
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed as feedbackfeed_listbuilder
-
-from devilry.devilry_comment.models import CommentFile, Comment
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
-from devilry.devilry_group.models import FeedbackSet
 from devilry.devilry_group.timeline_builder import feedbackfeed_timeline_builder
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
@@ -29,7 +24,9 @@ from xml.sax.saxutils import quoteattr
 
 
 class GroupCommentForm(forms.ModelForm):
-
+    """
+    Model form for :class:`~devilry.apps.core.models.AssignmentGroup`
+    """
     class Meta:
         fields = ['text']
         model = group_models.GroupComment
@@ -64,7 +61,9 @@ class FeedbackFeedBaseView(create.CreateView):
         """
         Get the devilryrole of a user.
         This function must be implemnted by a subclass.
-        :raises: NotImplementedError
+
+        Raises:
+            NotImplementedError: Raised if not implemented by subclass.
         """
         raise NotImplementedError('Must be implemented in subclass')
 
@@ -83,7 +82,8 @@ class FeedbackFeedBaseView(create.CreateView):
         the order that they occur.
         For more details, See :class:`devilry.devilry_group.feedbackfeed_timeline_builder.FeedbackFeedTimelineBuilder`
 
-        :return: Built timeline.
+        Returns:
+             :obj:`devilry.devilry_group.timeline_builder.FeedbackFeedTimelineBuilder`: Built timeline.
         """
         timeline_builder = feedbackfeed_timeline_builder.FeedbackFeedTimelineBuilder(
                 group=self.request.cradmin_role,
@@ -96,8 +96,11 @@ class FeedbackFeedBaseView(create.CreateView):
         """
         Sets the context data needed to render elements in the template.
 
-        :param kwargs: Parameters to get_context_data.
-        :return: The context data dictionary.
+        Args:
+            **kwargs (dict): Parameters to get_context_data.
+
+        Returns:
+             dict: The context data dictionary.
         """
         context = super(FeedbackFeedBaseView, self).get_context_data(**kwargs)
         context['devilry_ui_role'] = self.get_devilryrole()
@@ -126,6 +129,9 @@ class FeedbackFeedBaseView(create.CreateView):
         Defaults to a :class:`crispy_forms.layout.Div` with css class
         ``django_cradmin_submitrow`` containing all the buttons
         returned by :meth:`.get_buttons`.
+
+        Returns:
+            list: List of buttons.
         """
         return [
         ]
@@ -183,23 +189,40 @@ class FeedbackFeedBaseView(create.CreateView):
         How post of the should be handled. This can be handled more specifically in subclasses.
         Should add a call to super in the subclass implementation on override.
 
-        :param form:
-            form thats passed on post.
-        :param commit:
-            if form-object(:class:`~devilry.devilry_group.models.GroupComment`) should be saved.
+        Args:
+            form (GroupCommentForm): Form thats passed on post.
+            commit (bool): If form-object(:class:`~devilry.devilry_group.models.GroupComment`) should be saved.
 
         Returns:
-            The form-object, :class:`~devilry.devilry_group.models.GroupComment`.
+            GroupComment: The form-object :class:`~devilry.devilry_group.models.GroupComment`.
         """
         obj = super(FeedbackFeedBaseView, self,).save_object(form, commit=commit)
         return obj
 
     def get_collectionqueryset(self):
+        """
+        Get a set of files from cradmins ``temporary fileuploadstore``.
+
+        Returns:
+            QuerySet: ``django_cradmin.TemporaryFileCollection`` objects.
+        """
         return TemporaryFileCollection.objects \
             .filter_for_user(self.request.user) \
             .prefetch_related('files')
 
     def _convert_temporary_files_to_comment_files(self, form, groupcomment):
+        """
+        Converts files added to a comment to :obj:`~devilry.devilry_comment.models.CommentFile`.
+        See :func:`~devilry.devilry_comment.models.CommentFile.add_comment_from_temporary_file`.
+
+        Args:
+            form (GroupCommentForm): :class:`~.GroupCommentForm` instance passed on post.
+            groupcomment (GroupComment): :class:`~devilry.devilry_group.models.GroupComment` instance posted.
+
+        Returns:
+            bool: False if files does not exist, else True.
+
+        """
         filecollection_id = form.cleaned_data.get('temporary_file_collection_id')
         if not filecollection_id:
             return False
