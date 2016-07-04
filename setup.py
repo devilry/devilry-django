@@ -26,7 +26,7 @@ setup(
         'flup==1.0.2',
         'django-extjs4==1.1.4-extjs4.1.1',
         'gunicorn==19.2.1',
-        'django-crispy-forms==1.4.0',
+        'django-crispy-forms==1.6.0',
         'openpyxl==1.6.1',
         'django==1.8.4',
         'URLObject==2.0.1',
@@ -50,7 +50,7 @@ setup(
         'bleach>=1.4',
         'psycopg2==2.4.6',
         'elasticsearch==1.6.0',
-        'django_cradmin==1.0.1b71',
+        'django_cradmin==1.1.1',
         'ievv_opensource==0.2.26',
     ]
 )
