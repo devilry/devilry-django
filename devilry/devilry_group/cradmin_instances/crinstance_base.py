@@ -1,5 +1,11 @@
+# Python imports
+from __future__ import unicode_literals
+
+# Django imports
 from django.db import models
 from django.db.models.functions import Lower, Concat
+
+# Devilry/cradmin imports
 from django_cradmin import crinstance
 from devilry.apps.core.models import Examiner, Candidate, AssignmentGroup
 
@@ -59,7 +65,7 @@ class CrInstanceBase(crinstance.BaseCrAdminInstance):
         """
 
         Args:
-            role: An :class:`~devilry.apps.core.models.AssignmentGroup`
+            role: An :obj:`~devilry.apps.core.models.AssignmentGroup`
                 instance of the roleclass for the crinstance.
 
         Returns:
@@ -77,5 +83,8 @@ class CrInstanceBase(crinstance.BaseCrAdminInstance):
                 :meth:`devilry.devilry_account.models.PeriodPermissionGroupQuerySet.get_devilryrole_for_user_on_period`,
                 except that this method raises ValueError if it does not find a role or NotImplementedError if this
                 class is not subclassed.
+
+        Raises:
+            NotImplementedError: Raised if implemented by subclass.
         """
         raise NotImplementedError('Must be implemented by subclass.')

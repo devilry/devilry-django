@@ -1,13 +1,16 @@
-from django.db import models
-from django_cradmin import crmenu
+# Python imports
+from __future__ import unicode_literals
 
+# Devilry/cradmin imports
+from django_cradmin import crmenu
 from devilry.devilry_account.models import PeriodPermissionGroup
-from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.cradmin_instances import crinstance_base
-from devilry.devilry_group.views import feedbackfeed_admin
+from devilry.devilry_group.views.admin import feedbackfeed_admin
 
 
 class Menu(crmenu.Menu):
+    devilryrole = 'admin'
+
     def build_menu(self):
         group = self.request.cradmin_role
         self.add_headeritem(
@@ -16,16 +19,23 @@ class Menu(crmenu.Menu):
 
 
 class AdminCrInstance(crinstance_base.CrInstanceBase):
+    """
+    CrInstance class for admins.
+    """
     menuclass = Menu
     apps = [
         ('feedbackfeed', feedbackfeed_admin.App)
     ]
     id = 'devilry_group_admin'
 
+    @classmethod
+    def matches_urlpath(cls, urlpath):
+        return urlpath.startswith('/devilry_group/admin')
+
     def get_rolequeryset(self):
         """
         Get the base rolequeryset from
-        :func:`~devilry.devilry_group.cradmin_instances.CrInstanceBase._get_base_rolequeryset` and filter on user.
+        :meth:`~devilry.devilry_group.cradmin_instances.CrInstanceBase._get_base_rolequeryset` and filter on user.
 
         Returns:
             QuerySet: A queryset of :class:`~devilry.apps.core.models.AssignmentGroup`s
@@ -34,11 +44,16 @@ class AdminCrInstance(crinstance_base.CrInstanceBase):
         return self._get_base_rolequeryset()\
             .filter_user_is_admin(user=self.request.user)
 
-    @classmethod
-    def matches_urlpath(cls, urlpath):
-        return urlpath.startswith('/devilry_group/admin')
-
     def __get_devilryrole_for_requestuser(self):
+        """
+        Checks the permission for the user via :class:`~devilry.devilry_account.models.PeriodPermissionGroup`.
+
+        Returns:
+            str: ``departmentadmin``, ``subjectadmin`` or ``periodadmin`` as devilryrole.
+
+        Raises:
+            ValueError: If the devilryrole returned is ``None``.
+        """
         assignment = self.request.cradmin_role.assignment
         devilryrole = PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
             user=self.request.user,
@@ -50,6 +65,12 @@ class AdminCrInstance(crinstance_base.CrInstanceBase):
         return devilryrole
 
     def get_devilryrole_for_requestuser(self):
+        """
+        Get the role of the user.
+
+        Returns:
+            str: ``departmentadmin``, ``subjectadmin`` or ``periodadmin`` as devilryrole.
+        """
         if not hasattr(self, '_devilryrole_for_requestuser'):
             self._devilryrole_for_requestuser = self.__get_devilryrole_for_requestuser()
         return self._devilryrole_for_requestuser

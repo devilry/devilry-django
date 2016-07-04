@@ -1,17 +1,16 @@
+# Python imports
 from __future__ import unicode_literals
 
-from django.db import models
-from django.db.models.functions import Lower, Concat
-from django_cradmin import crinstance
-
-from devilry.apps.core.models import AssignmentGroup, Candidate, Examiner
+# Devilry/cradmin imports
 from devilry.devilry_group.cradmin_instances import crinstance_base
-from devilry.devilry_group.views import feedbackfeed_student
+from devilry.devilry_group.views.student import feedbackfeed_student
 from devilry.devilry_student.cradminextensions import devilry_crmenu_student
 from devilry.devilry_student.views.group import projectgroupapp
 
 
 class Menu(devilry_crmenu_student.Menu):
+    devilryrole = 'student'
+
     def build_menu(self):
         super(Menu, self).build_menu()
         group = self.request.cradmin_role
@@ -22,12 +21,19 @@ class Menu(devilry_crmenu_student.Menu):
 
 
 class StudentCrInstance(crinstance_base.CrInstanceBase):
+    """
+    CrInstance class for students.
+    """
     menuclass = Menu
     apps = [
         ('projectgroup', projectgroupapp.App),
         ('feedbackfeed', feedbackfeed_student.App)
     ]
     id = 'devilry_group_student'
+
+    @classmethod
+    def matches_urlpath(cls, urlpath):
+        return urlpath.startswith('/devilry_group/student')
 
     def get_rolequeryset(self):
         """
@@ -41,13 +47,8 @@ class StudentCrInstance(crinstance_base.CrInstanceBase):
         return self._get_base_rolequeryset()\
             .filter_student_has_access(self.request.user)
 
-    @classmethod
-    def matches_urlpath(cls, urlpath):
-        return urlpath.startswith('/devilry_group/student')
-
     def get_devilryrole_for_requestuser(self):
         """
-        Returns:
-            str: ``student`` as devilryrole.
+        See :meth:`~devilry.devilry_group.cradmin_instances.AdminCrInstance.get_devilryrole_for_requestuser`
         """
         return 'student'
