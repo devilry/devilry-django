@@ -119,7 +119,6 @@ class FeedbackFeedBaseView(create.CreateView):
             devilryrole=self.get_devilryrole(),
             assignment=context['assignment']
         )
-
         return context
 
     def get_button_layout(self):
