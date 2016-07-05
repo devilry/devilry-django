@@ -23,7 +23,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
                              visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                              feedback_set__group=group)
 
-        mockresponse = self.mock_http302_postrequest(
+        self.mock_http302_postrequest(
             cradmin_role=examiner.assignmentgroup,
             requestuser=examiner.relatedexaminer.user,
             viewkwargs={'pk': comment.id},
@@ -52,7 +52,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
                              visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                              feedback_set__group=group)
 
-        mockresponse = self.mock_http302_postrequest(
+        self.mock_http302_postrequest(
             cradmin_role=examiner.assignmentgroup,
             requestuser=examiner.relatedexaminer.user,
             viewkwargs={'pk': comment.id},
