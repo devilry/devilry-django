@@ -238,7 +238,7 @@ class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         labels = [
             element.alltext_normalized
             for element in mockresponse.selector.list(
-                '#div_id_selected_relatedexaminers label.checkbox')]
+                '#div_id_selected_relatedexaminers .checkbox label')]
         self.assertEqual(
             {'Examiner One', 'examiner2'},
             set(labels))
@@ -475,7 +475,7 @@ class TestManualAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         labels = [
             element.alltext_normalized
             for element in mockresponse.selector.list(
-                '#div_id_selected_relatedexaminers label.checkbox')]
+                '#div_id_selected_relatedexaminers .checkbox label')]
         self.assertEqual(
             {'Examiner One', 'examiner2'},
             set(labels))
@@ -695,7 +695,7 @@ class TestManualReplaceView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         labels = [
             element.alltext_normalized
             for element in mockresponse.selector.list(
-                '#div_id_selected_relatedexaminers label.checkbox')]
+                '#div_id_selected_relatedexaminers .checkbox label')]
         self.assertEqual(
             {'Examiner One', 'examiner2'},
             set(labels))
