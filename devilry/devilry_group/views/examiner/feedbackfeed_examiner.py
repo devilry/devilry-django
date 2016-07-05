@@ -93,18 +93,6 @@ class CreateFeedbackSetForm(GroupCommentForm):
         return ['deadline_datetime']
 
 
-class EditGroupCommentForm(forms.ModelForm):
-    """
-    Form for editing existing Feedback drafts.
-    """
-    #: Edit text-field in GroupComment. Uses cradmin AceMarkdownWidget.
-    text = forms.CharField(widget=AceMarkdownWidget)
-
-    class Meta:
-        fields = ['text']
-        model = group_models.GroupComment
-
-
 class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     """
     Base view for examiner.
@@ -348,9 +336,20 @@ class GroupCommentDeleteView(delete.DeleteView):
     """
     model = group_models.GroupComment
 
-    def get_queryset(self):
+    def get_queryset_for_role(self, role):
+        """
+        Filter out :obj:`~devilry.devilry_group.models.GroupComment`s based on the role of role of the
+        crinstance and the primarykey of the comment since in this case only a single comment should be fetched.
+
+        Args:
+            role (GroupComment): The roleclass for the crinstance.
+
+        Returns:
+            QuerySet: Set containing one :obj:`~devilry.devilry_group.models.GroupComment`.
+        """
         return group_models.GroupComment.objects.filter(
-            feedback_set__group=self.request.cradmin_role)
+                feedback_set__group=role,
+                id=self.kwargs.get('pk'))
 
     def get_object_preview(self):
         return 'Groupcomment'
@@ -359,25 +358,101 @@ class GroupCommentDeleteView(delete.DeleteView):
         return self.request.cradmin_app.reverse_appindexurl()
 
 
+class EditGroupCommentForm(forms.ModelForm):
+    """
+    Form for editing existing Feedback drafts.
+    """
+    class Meta:
+        fields = ['text']
+        model = group_models.GroupComment
+
+    @classmethod
+    def get_field_layout(cls):
+        return ['text']
+
+
 class GroupCommentEditView(update.UpdateView):
     """
     View to edit an existing feedback draft.
+
+    Makes it possible for an Examiner to edit the ``text``-attribute value of a
+    :class:`~devilry.devilry_group.models.GroupComment` that's saved as a draft.
     """
     model = group_models.GroupComment
 
-    def get_queryset(self):
+    def get_queryset_for_role(self, role):
+        """
+        Filter out :obj:`~devilry.devilry_group.models.GroupComment`s based on the role of role of the
+        crinstance and the primarykey of the comment since in this case only a single comment should be fetched.
+
+        Args:
+            role (GroupComment): The roleclass for the crinstance.
+
+        Returns:
+            QuerySet: Set containing one :obj:`~devilry.devilry_group.models.GroupComment`.
+        """
         return group_models.GroupComment.objects.filter(
-            feedback_set__group=self.request.cradmin_role)
+                feedback_set__group=role,
+                id=self.kwargs.get('pk'))
 
     def get_form_class(self):
+        """
+        Get the formclass to use.
+
+        Returns:
+            EditGroupCommentForm: The form class.
+        """
         return EditGroupCommentForm
 
+    def get_form(self, form_class=None):
+        """
+        Set ``AceMarkdownWidget`` on the text form field and do not show the field label.
+        Args:
+            form_class: Defaults to None
+
+        Returns:
+            EditGroupCommentForm: Form with field-representations set.
+        """
+        form = super(GroupCommentEditView, self).get_form(form_class=form_class)
+        form.fields['text'].widget = AceMarkdownWidget()
+        form.fields['text'].label = False
+        return form
+
+    def get_field_layout(self):
+        """
+        Override get field layout as we're using ``AceMarkdownWidget`` to define
+        the form field in our form class :class:`~.EditGroupCommentForm`.
+
+        Returns:
+            list: List extended with the field layout of :class:`~.EditGroupCommentForm`.
+        """
+        field_layout = []
+        field_layout.extend(self.get_form_class().get_field_layout())
+        return field_layout
+
     def save_object(self, form, commit=True):
+        """
+        Save the edited :obj:`~devilry.devilry_group.models.GroupComment`.
+
+        Args:
+            form: The :class:`~.EditGroupCommentForm` passed.
+            commit: Should it be saved? (Defaults to True)
+
+        Returns:
+            GroupComment: The saved comment.
+        """
         comment = super(GroupCommentEditView, self).save_object(form=form, commit=commit)
         self.add_success_messages('GroupComment updated!')
         return comment
 
     def get_success_url(self):
+        """
+        The success url is for this view if the user wants to continue editing, else it redirects to
+        the indexview, :class:`~.ExaminerFeedbackView`.
+
+        Returns:
+            url: Redirected to view for that url.
+        """
         if self.get_submit_save_and_continue_edititing_button_name() in self.request.POST:
             return self.request.cradmin_app.reverse_appurl(
                 'groupcomment-edit',
