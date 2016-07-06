@@ -236,6 +236,22 @@ class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
         ])
         return buttons
 
+    @staticmethod
+    def __update_current_feedbackset(comment):
+        """
+        Get the current :obj:`~devilry.devilry_group.models.FeedbackSet` from ``comment``, update it's fields and
+        save it the changes.
+
+        Args:
+            comment (GroupComment): Get :obj:`~devilry.devilry_group.models.FeedbackSet` from.
+        """
+        current_feedbackset = group_models.FeedbackSet.objects.get(id=comment.feedback_set_id).update(
+            is_last_in_group=None,
+            grading_published_by=comment.user,
+        )
+        current_feedbackset.full_clean()
+        current_feedbackset.save()
+
     def __create_new_feedbackset(self, comment, new_deadline):
         """
         Creates a new :class:`devilry.devilry_group.models.FeedbackSet` as long as the ``new_deadline`` is
@@ -251,18 +267,16 @@ class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
             FeedbackSet: returns the newly created :class:`devilry.devilry_group.models.FeedbackSet` instance.
 
         """
+        # Make sure the deadline is in the future.
         if new_deadline <= datetimeutils.get_current_datetime():
             messages.error(self.request, ugettext_lazy('Deadline must be ahead of current date and time'))
             return None
 
         # Update current last feedbackset in group before
         # creating the new feedbackset.
-        current_feedbackset = group_models.FeedbackSet.objects.get(id=comment.feedback_set_id)
-        current_feedbackset.is_last_in_group = None
-        current_feedbackset.grading_published_by = comment.user
-        current_feedbackset.full_clean()
-        current_feedbackset.save()
+        self.__update_current_feedbackset(comment)
 
+        # Create a new :class:`~devilry.devilry_group.models.FeedbackSet` and save it.
         feedbackset = group_models.FeedbackSet(
             group=self.request.cradmin_role,
             feedbackset_type=group_models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
@@ -278,7 +292,7 @@ class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
 
         if 'deadline_datetime' in self.request.POST:
             new_deadline = datetime.strptime(self.request.POST['deadline_datetime'], '%Y-%m-%d %H:%M')
-
+            # Create a new :obj:`~devilry.devilry_group.models.FeedbackSet`.
             new_feedbackset = self.__create_new_feedbackset(comment=comment, new_deadline=new_deadline)
             if new_feedbackset is None:
                 return comment
