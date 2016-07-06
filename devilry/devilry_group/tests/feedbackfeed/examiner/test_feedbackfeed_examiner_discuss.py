@@ -27,7 +27,8 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
 
     def test_get_no_form_grade_option(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+                                       grading_system_plugin_id=core_models.Assignment
+                                       .GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=mommy.make('core.AssignmentGroup', parentnode=assignment),
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
@@ -125,7 +126,7 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
 
     def test_post_comment_always_to_last_feedbackset(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       grading_system_plugin_id=core_models.Assignment\
+                                       grading_system_plugin_id=core_models.Assignment
                                        .GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         examiner = mommy.make('core.Examiner',
