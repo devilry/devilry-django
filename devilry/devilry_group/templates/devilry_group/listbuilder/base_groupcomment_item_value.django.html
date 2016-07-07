@@ -13,6 +13,7 @@
         {% include "devilry_group/include/groupcomment_edit_delete_option.html" %}
 
         <div class="devilry-group-comment-meta">
+            <h1>{{ me.group_comment.id }}</h1>
             <div class="devilry-group-comment-created-by">
                 {% if me.group_comment.user_role == 'student'%}
                     <p class="comment-created-by-text">{% devilry_single_candidate_long_displayname me.assignment me.user_obj me.devilry_viewrole %} &nbsp;</p>

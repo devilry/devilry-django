@@ -1,35 +1,51 @@
 # Python imports
 from __future__ import unicode_literals
 
-# Django imports
 from datetime import datetime
+# Django imports
 from django import forms
+from django.core.exceptions import PermissionDenied
+from django.utils import timezone
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.utils import timezone
-from django_cradmin import crapp
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy, pgettext_lazy
 
 # Devilry/cradmin imports
-from django_cradmin.viewhelpers import delete
-from django_cradmin.viewhelpers import update
+from django_cradmin import crapp
+from django_cradmin.viewhelpers import update, delete
 from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
-from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
-
-from devilry.apps.core import models as core_models
-from devilry.utils import datetimeutils
-from devilry.devilry_group.views import cradmin_feedbackfeed_base
-from devilry.devilry_group import models as group_models
-from devilry.devilry_group.views.cradmin_feedbackfeed_base import GroupCommentForm
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
+from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
+from devilry.devilry_group.views import cradmin_feedbackfeed_base
+from devilry.apps.core import models as core_models
+from devilry.devilry_group import models as group_models
+from devilry.utils import datetimeutils
 
 
-class AbstractFeedbackForm(GroupCommentForm):
+class AbstractFeedbackForm(cradmin_feedbackfeed_base.GroupCommentForm):
     """
     Feedback-related forms regarding grading inherits from this.
     """
     def get_grading_points(self):
         raise NotImplementedError()
+
+
+class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
+    """
+    Base view for examiner.
+    """
+    def get_devilryrole(self):
+        """
+        Get the devilryrole for the view.
+
+        Returns:
+            str: ``examiner`` as devilryrole.
+        """
+        return 'examiner'
+
+    def set_automatic_attributes(self, obj):
+        super(ExaminerBaseFeedbackFeedView, self).set_automatic_attributes(obj)
+        obj.user_role = 'examiner'
 
 
 class PassedFailedFeedbackForm(AbstractFeedbackForm):
@@ -79,36 +95,6 @@ class PointsFeedbackForm(AbstractFeedbackForm):
 
     def get_grading_points(self):
         return self.cleaned_data['points']
-
-
-class CreateFeedbackSetForm(GroupCommentForm):
-    """
-    Form for creating a new FeedbackSet (deadline).
-    """
-    #: Deadline to be added to the new FeedbackSet.
-    deadline_datetime = forms.DateTimeField(widget=DateTimePickerWidget)
-
-    @classmethod
-    def get_field_layout(cls):
-        return ['deadline_datetime']
-
-
-class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
-    """
-    Base view for examiner.
-    """
-    def get_devilryrole(self):
-        """
-        Get the devilryrole for the view.
-
-        Returns:
-            str: ``examiner`` as devilryrole.
-        """
-        return 'examiner'
-
-    def set_automatic_attributes(self, obj):
-        super(ExaminerBaseFeedbackFeedView, self).set_automatic_attributes(obj)
-        obj.user_role = 'examiner'
 
 
 class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
@@ -168,33 +154,114 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         return buttons
 
     def save_object(self, form, commit=True):
-        obj = super(ExaminerFeedbackView, self).save_object(form=form)
-        if obj.feedback_set.grading_published_datetime is not None:
+        comment = super(ExaminerFeedbackView, self).save_object(form=form)
+        if comment.feedback_set.grading_published_datetime is not None:
             messages.warning(self.request, ugettext_lazy('Feedback is already published!'))
         else:
             if 'examiner_add_comment_to_feedback_draft' in self.request.POST:
                 # If comment is part of a draft, the comment should only be visible to
                 # the examiner until draft-publication.
-                obj.visibility = group_models.GroupComment.VISIBILITY_PRIVATE
-                obj.part_of_grading = True
-                obj = super(ExaminerFeedbackView, self).save_object(form=form, commit=True)
+                comment.visibility = group_models.GroupComment.VISIBILITY_PRIVATE
+                comment.part_of_grading = True
+                comment = super(ExaminerFeedbackView, self).save_object(form=form, commit=True)
             elif 'examiner_publish_feedback' in self.request.POST:
-                result, error_msg = obj.feedback_set.publish(
-                        published_by=obj.user,
+                result, error_msg = comment.feedback_set.publish(
+                        published_by=comment.user,
                         grading_points=form.get_grading_points())
                 if result is False:
                     messages.error(self.request, ugettext_lazy(error_msg))
-                elif len(obj.text) > 0:
+                elif len(comment.text) > 0:
                     # Don't make comment visible to others unless it actually
                     # contains any text.
-                    obj.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
-                    obj.part_of_grading = True
-                    obj.published_datetime = obj.get_published_datetime()
-                    obj = super(ExaminerFeedbackView, self).save_object(form=form, commit=True)
-        return obj
+                    comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
+                    comment.part_of_grading = True
+                    comment.published_datetime = comment.get_published_datetime()
+                    comment = super(ExaminerFeedbackView, self).save_object(form=form, commit=True)
+        return comment
 
     def get_form_invalid_message(self, form):
         return 'Cannot publish feedback until deadline has passed!'
+
+
+class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
+    """
+    The examiner discussview.
+    This is the view examiner uses for communicating with students and admins in the feedbackfeed.
+    """
+    template_name = 'devilry_group/feedbackfeed_examiner_discuss.django.html'
+
+    def get_buttons(self):
+        buttons = super(ExaminerDiscussView, self).get_buttons()
+        buttons.extend([
+            PrimarySubmit('examiner_add_comment_for_examiners',
+                          _('Add comment for examiners'),
+                          css_class='btn btn-default'),
+            DefaultSubmit('examiner_add_public_comment',
+                          _('Add public comment'),
+                          css_class='btn btn-primary'),
+        ])
+        return buttons
+
+    def save_object(self, form, commit=True):
+        comment = super(ExaminerDiscussView, self).save_object(form)
+        self._convert_temporary_files_to_comment_files(form, comment)
+        if form.data.get('examiner_add_comment_for_examiners'):
+            comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
+            comment.published_datetime = timezone.now()
+        elif form.data.get('examiner_add_public_comment'):
+            comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
+            comment.published_datetime = timezone.now()
+
+        comment = super(ExaminerDiscussView, self).save_object(form, commit=True)
+        return comment
+
+    def get_success_url(self):
+        return self.request.cradmin_app.reverse_appurl(viewname='discuss')
+
+
+class EditGroupCommentForm(forms.ModelForm):
+    """
+    Form for editing existing Feedback drafts.
+    """
+    class Meta:
+        fields = ['text']
+        model = group_models.GroupComment
+
+    @classmethod
+    def get_field_layout(cls):
+        return ['text']
+
+
+class GroupCommentEditDeleteMixin(object):
+    class Meta:
+        abstract = True
+
+    def get_queryset_for_role(self, role):
+        """
+        Filter out :obj:`~devilry.devilry_group.models.GroupComment`s based on the role of role of the
+        crinstance and the primarykey of the comment since in this case only a single comment should be fetched.
+
+        Args:
+            role (GroupComment): The roleclass for the crinstance.
+
+        Returns:
+            QuerySet: Set containing one :obj:`~devilry.devilry_group.models.GroupComment`.
+        """
+        return group_models.GroupComment.objects.filter(
+                feedback_set__group=role,
+                id=self.kwargs.get('pk'))
+
+
+class CreateFeedbackSetForm(cradmin_feedbackfeed_base.GroupCommentForm):
+    """
+    Form for creating a new FeedbackSet (deadline).
+    """
+    #: Deadline to be added to the new FeedbackSet.
+    deadline_datetime = forms.DateTimeField(widget=DateTimePickerWidget)
+
+    @classmethod
+    def get_field_layout(cls):
+        return ['deadline_datetime']
 
 
 class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
@@ -221,7 +288,6 @@ class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
         # NOTE: :func:`~devilry.apps.core.models.AssignmentGroup.last_feedbackset_is_published` performs a query.
         if not group.last_feedbackset_is_published:
             return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
-
         return super(ExaminerFeedbackCreateFeedbackSetView, self).dispatch(request, *args, **kwargs)
 
     def get_form_class(self):
@@ -245,10 +311,9 @@ class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
         Args:
             comment (GroupComment): Get :obj:`~devilry.devilry_group.models.FeedbackSet` from.
         """
-        current_feedbackset = group_models.FeedbackSet.objects.get(id=comment.feedback_set_id).update(
-            is_last_in_group=None,
-            grading_published_by=comment.user,
-        )
+        current_feedbackset = group_models.FeedbackSet.objects.get(id=comment.feedback_set_id)
+        current_feedbackset.is_last_in_group = None
+        current_feedbackset.grading_published_by = comment.user
         current_feedbackset.full_clean()
         current_feedbackset.save()
 
@@ -307,63 +372,32 @@ class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
         return comment
 
 
-class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
+class GroupCommentDeleteView(GroupCommentEditDeleteMixin, delete.DeleteView):
     """
-    The examiner discussview.
-    This is the view examiner uses for communicating with students and admins in the feedbackfeed.
-    """
-    template_name = 'devilry_group/feedbackfeed_examiner_discuss.django.html'
-
-    def get_buttons(self):
-        buttons = super(ExaminerDiscussView, self).get_buttons()
-        buttons.extend([
-            PrimarySubmit('examiner_add_comment_for_examiners',
-                          _('Add comment for examiners'),
-                          css_class='btn btn-default'),
-            DefaultSubmit('examiner_add_public_comment',
-                          _('Add public comment'),
-                          css_class='btn btn-primary'),
-        ])
-        return buttons
-
-    def save_object(self, form, commit=True):
-        obj = super(ExaminerDiscussView, self).save_object(form)
-        self._convert_temporary_files_to_comment_files(form, obj)
-        if form.data.get('examiner_add_comment_for_examiners'):
-            obj.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
-            obj.published_datetime = timezone.now()
-        elif form.data.get('examiner_add_public_comment'):
-            obj.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
-            obj.published_datetime = timezone.now()
-
-        obj = super(ExaminerDiscussView, self).save_object(form, commit=True)
-        return obj
-
-    def get_success_url(self):
-        return self.request.cradmin_app.reverse_appurl(viewname='discuss')
-
-
-class GroupCommentDeleteView(delete.DeleteView):
-    """
-    View to delete an existing groupcomment with visibility set to private.
+    View for deleting an existing groupcomment with visibility set to private.
     When a groupcomment has visibility set to private, this means it's a feedbackdraft.
     """
+    template_name = 'devilry_group/feedbackfeed_examiner_delete_groupcomment.html'
     model = group_models.GroupComment
 
-    def get_queryset_for_role(self, role):
+    def dispatch(self, request, *args, **kwargs):
         """
-        Filter out :obj:`~devilry.devilry_group.models.GroupComment`s based on the role of role of the
-        crinstance and the primarykey of the comment since in this case only a single comment should be fetched.
+        Checks if the GroupComment id passed is for a drafted comment.
+        If the comment is not a draft, PermissionDenied is raised.
 
         Args:
-            role (GroupComment): The roleclass for the crinstance.
+            request (HttpRequest): request object.
 
         Returns:
-            QuerySet: Set containing one :obj:`~devilry.devilry_group.models.GroupComment`.
+            HttpResponseRedirect: Reponse redirect object.
+
+        Raises:
+            PermissionDenied: If comment is not a draft, this exception is raised.
         """
-        return group_models.GroupComment.objects.filter(
-                feedback_set__group=role,
-                id=self.kwargs.get('pk'))
+        comment = self.get_queryset_for_role(request.cradmin_role)[0]
+        if comment.visibility != group_models.GroupComment.VISIBILITY_PRIVATE or not comment.part_of_grading:
+            raise PermissionDenied
+        return super(GroupCommentDeleteView, self).dispatch(request, *args, **kwargs)
 
     def get_object_preview(self):
         return 'Groupcomment'
@@ -372,42 +406,34 @@ class GroupCommentDeleteView(delete.DeleteView):
         return self.request.cradmin_app.reverse_appindexurl()
 
 
-class EditGroupCommentForm(forms.ModelForm):
-    """
-    Form for editing existing Feedback drafts.
-    """
-    class Meta:
-        fields = ['text']
-        model = group_models.GroupComment
-
-    @classmethod
-    def get_field_layout(cls):
-        return ['text']
-
-
-class GroupCommentEditView(update.UpdateView):
+class GroupCommentEditView(GroupCommentEditDeleteMixin, update.UpdateView):
     """
     View to edit an existing feedback draft.
 
     Makes it possible for an Examiner to edit the ``text``-attribute value of a
     :class:`~devilry.devilry_group.models.GroupComment` that's saved as a draft.
     """
+    template_name = 'devilry_group/feedbackfeed_examiner_edit_groupcomment.html'
     model = group_models.GroupComment
 
-    def get_queryset_for_role(self, role):
+    def dispatch(self, request, *args, **kwargs):
         """
-        Filter out :obj:`~devilry.devilry_group.models.GroupComment`s based on the role of role of the
-        crinstance and the primarykey of the comment since in this case only a single comment should be fetched.
+        Checks if the GroupComment id passed is for a drafted comment.
+        If the comment is not a draft, PermissionDenied is raised.
 
         Args:
-            role (GroupComment): The roleclass for the crinstance.
+            request (HttpRequest): request object.
 
         Returns:
-            QuerySet: Set containing one :obj:`~devilry.devilry_group.models.GroupComment`.
+            HttpResponseRedirect: Reponse redirect object.
+
+        Raises:
+            PermissionDenied: If comment is not a draft, this exception is raised.
         """
-        return group_models.GroupComment.objects.filter(
-                feedback_set__group=role,
-                id=self.kwargs.get('pk'))
+        comment = self.get_queryset_for_role(request.cradmin_role)[0]
+        if comment.visibility != group_models.GroupComment.VISIBILITY_PRIVATE or not comment.part_of_grading:
+            raise PermissionDenied
+        return super(GroupCommentEditView, self).dispatch(request, *args, **kwargs)
 
     def get_form_class(self):
         """
