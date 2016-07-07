@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
@@ -10,6 +11,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
     viewclass = feedbackfeed_examiner.GroupCommentEditView
 
     def test_edit_comment_draft_save(self):
+        # Test that the GroupComment is updated after default save
         group = mommy.make('core.AssignmentGroup')
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=group,
@@ -22,7 +24,6 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
                              part_of_grading=True,
                              visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                              feedback_set__group=group)
-
         self.mock_http302_postrequest(
             cradmin_role=examiner.assignmentgroup,
             requestuser=examiner.relatedexaminer.user,
@@ -30,20 +31,19 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
             requestkwargs={
                 'data': {
                     'text': 'edited',
-                    'submit-id-submit-save': True,
+                    'submit-id-submit-save': 'True',
                 }
             },
         )
-
         db_comment = group_models.GroupComment.objects.get(id=comment.id)
         self.assertEquals('edited', db_comment.text)
 
     def test_edit_comment_draft_save_continue_edit(self):
+        # Test that the GroupComment is updated after 'Save and continue editing'
         group = mommy.make('core.AssignmentGroup')
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=group,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
-
         comment = mommy.make('devilry_group.GroupComment',
                              user=examiner.relatedexaminer.user,
                              user_role='examiner',
@@ -51,7 +51,6 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
                              part_of_grading=True,
                              visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                              feedback_set__group=group)
-
         self.mock_http302_postrequest(
             cradmin_role=examiner.assignmentgroup,
             requestuser=examiner.relatedexaminer.user,
@@ -63,6 +62,34 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
                 }
             },
         )
-
         db_comment = group_models.GroupComment.objects.get(id=comment.id)
         self.assertEquals('edited', db_comment.text)
+
+    def test_edit_comment_is_not_draft(self):
+        # Test that PermissionDenied(403) is raised when trying to edit a non-draft GroupComment.
+        testexaminer = mommy.make('core.Examiner',
+                                  relatedexaminer=mommy.make('core.RelatedExaminer'))
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 user=testexaminer.relatedexaminer.user,
+                                 user_role='examiner',
+                                 feedback_set__group=testexaminer.assignmentgroup)
+        with self.assertRaises(PermissionDenied):
+            self.mock_getrequest(cradmin_role=testexaminer.assignmentgroup,
+                                 requestuser=testexaminer.relatedexaminer.user,
+                                 viewkwargs={'pk': testcomment.id})
+
+    def test_save_buttons_exist(self):
+        # Test that the save buttons exist in the edit view.
+        testexaminer = mommy.make('core.Examiner',
+                                  relatedexaminer=mommy.make('core.RelatedExaminer'))
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 user=testexaminer.relatedexaminer.user,
+                                 user_role='examiner',
+                                 part_of_grading=True,
+                                 visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
+                                 feedback_set__group=testexaminer.assignmentgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testexaminer.assignmentgroup,
+                                                          requestuser=testexaminer.relatedexaminer.user,
+                                                          viewkwargs={'pk': testcomment.id})
+        self.assertTrue(mockresponse.selector.exists('#submit-id-submit-save'))
+        self.assertTrue(mockresponse.selector.exists('#submit-id-submit-save-and-continue-editing'))

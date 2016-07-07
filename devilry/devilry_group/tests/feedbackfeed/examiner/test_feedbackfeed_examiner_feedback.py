@@ -6,8 +6,8 @@ from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
+from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_examiner
 from devilry.devilry_group.views.examiner import feedbackfeed_examiner
 from devilry.utils import datetimeutils
@@ -158,7 +158,6 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
     #                published_datetime=timezone.now(),
     #                feedback_set__group=group)
 
-
     # def test_get_examiner_comment_part_of_grading_private(self):
     #     group = mommy.make('core.AssignmentGroup')
     #     examiner1 = mommy.make('core.Examiner',
@@ -220,9 +219,10 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
     viewclass = feedbackfeed_examiner.ExaminerFeedbackView
 
     def test_post_can_not_publish_with_first_deadline_as_none(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
-                                       first_deadline=None)
+        assignment = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
+                first_deadline=None)
         feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode=assignment)
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=feedbackset.group,
@@ -241,9 +241,9 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
         self.assertIsNone(group_models.FeedbackSet.objects.all()[0].grading_published_datetime)
 
     def test_post_can_not_publish_with_last_feedbackset_deadline_as_none(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       grading_system_plugin_id=core_models.Assignment
-                                       .GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+        assignment = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         group_mommy.feedbackset_first_attempt_published(group=group, is_last_in_group=None)
         group_mommy.feedbackset_new_attempt_unpublished(group=group, deadline_datetime=None)
@@ -328,7 +328,8 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
 
     def test_post_publish_feedbackset_after_deadline_grading_system_passed_failed(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+                                       grading_system_plugin_id=core_models.Assignment
+                                       .GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
         feedbackset = mommy.make('devilry_group.FeedbackSet',
                                  group__parentnode=assignment)
         examiner = mommy.make('core.Examiner',
@@ -350,11 +351,13 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
         self.assertEquals(1, feedbacksets[0].grading_points)
 
     def test_post_publish_feedbackset_drafts_on_last_feedbackset_only(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+        assignment = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         feedbackset_first = group_mommy.feedbackset_first_attempt_published(is_last_in_group=None, group=group)
-        feedbackset_last = group_mommy.feedbackset_new_attempt_unpublished(group=group, deadline_datetime=timezone.now())
+        feedbackset_last = group_mommy.feedbackset_new_attempt_unpublished(group=group,
+                                                                           deadline_datetime=timezone.now())
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=group,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
@@ -392,8 +395,9 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
         self.assertEquals(feedback_comments[1].text, 'post comment')
 
     def test_post_publish_feedbackset_after_deadline_test_publish_drafts_part_of_grading(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+        assignment = mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
         feedbackset = mommy.make('devilry_group.FeedbackSet',
                                  group__parentnode=assignment)
         examiner = mommy.make('core.Examiner',
