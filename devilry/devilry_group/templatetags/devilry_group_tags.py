@@ -44,7 +44,7 @@ def devilry_truncatefileextension(value, max_length):
 
 
 @register.filter("devilry_verbosenumber")
-def devilry_verbosenumber(number):
+def devilry_verbosenumber(value, number):
     """
     Numbers from 1 to 10 is given as verbose(first, second, third, ...)
     and all numbers above 10 has the number and the corresponding ending(11th, 23rd, 32nd, 41st, ...)

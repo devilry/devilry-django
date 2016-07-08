@@ -256,3 +256,46 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=admin,
                                                cradmin_instance=mock_cradmininstance)
+
+    def test_get_files_in_sidebar(self):
+        """
+        NOTE: (works as it should)
+        Checking that no more queries are executed even though the
+        :func:`devilry.devilry_group.timeline_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
+        duplicates comment_file query.
+        """
+        period = mommy.make('core.Period')
+        admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=admin,
+                   permissiongroup=mommy.make(
+                           'devilry_account.PeriodPermissionGroup',
+                           permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_PERIODADMIN,
+                           period=period).permissiongroup)
+        testgroup = mommy.make('core.AssignmentGroup')
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
+        testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+        comment = mommy.make('devilry_group.GroupComment',
+                             user=candidate.relatedstudent.user,
+                             user_role='student',
+                             feedback_set=testfeedbackset)
+        comment2 = mommy.make('devilry_group.GroupComment',
+                              user=candidate.relatedstudent.user,
+                              user_role='student',
+                              feedback_set=testfeedbackset)
+        mommy.make('devilry_comment.CommentFile',
+                   filename='test.py',
+                   comment=comment,
+                   _quantity=100)
+        mommy.make('devilry_comment.CommentFile',
+                   filename='test2.py',
+                   comment=comment2,
+                   _quantity=100)
+        mock_cradmininstance = mock.MagicMock()
+        mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                                          requestuser=admin,
+                                                          cradmin_instance=mock_cradmininstance)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar-uploaded-files'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar-deadlines'))

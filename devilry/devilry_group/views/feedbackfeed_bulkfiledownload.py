@@ -126,7 +126,10 @@ class BulkFileDownloadBaseView(generic.View):
         archivename = "{}{}".format(archivebasename, commentfile.filename)
         while archivename in files.keys():
             identical_filenames_counter += 1
-            archivename = "{}{}-{}{}".format(archivebasename, split_filename[0], identical_filenames_counter, split_filename[1])
+            archivename = "{}{}-{}{}".format(archivebasename,
+                                             split_filename[0],
+                                             identical_filenames_counter,
+                                             split_filename[1])
         return archivename
 
     def __optimize_queryset(self, queryset):

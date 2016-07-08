@@ -8,33 +8,41 @@
                 {% trans "Uploaded files" %}
                 <i class="pull-right fa" ng-class="{'fa-chevron-up': filecollapse.value, 'fa-chevron-down': !filecollapse.value}"></i>
             </h4>
-{#            <div ng-show="filecollapse.value">#}
-{#                {% if feedbacksets|length > 1 %}#}
-{#                    <a href="{% url 'devilry-feedbackfeed-compressed-all-feedbacksets-file-download' last_feedbackset.group.id %}">#}
-{#                        <strong>{% trans 'Download all assignment files' %}</strong>#}
-{#                    </a>#}
-{#                {% endif %}#}
-{#                {% for feedbackset in feedbacksets %}#}
-{#                    <dl>#}
-{#                        <dt class="devilry-group-feedbackfeed-sidebar-deadlines">#}
-{#                            {% blocktrans with counter=''|devilry_verbosenumber:forloop.counter %}{{ counter }} deadline{% endblocktrans %}#}
-{#                        </dt>#}
-{#                        {% for comment in feedbackset.groupcomment_set.all %}#}
-{#                            {% for file in comment.commentfile_set.all %}#}
-{#                                <dd class="devilry-group-feedbackfeed-sidebar-files">#}
-{#                                    <a href="{% url 'devilry-feedbackfeed-file-download' feedbackset.id file.id %}" >{{ file.filename|devilry_truncatefileextension:26 }}</a>#}
-{#                                    {% if file.comment.published_datetime > file.comment.feedback_set.deadline_datetime and file.comment.user_role != 'examiner' %}#}
-{#                                        <i class="after-deadline-icon pull-left" tooltip="Submitted after deadline"></i>#}
-{#                                    {% elif file.comment.user_role == 'examiner' %}#}
-{#                                        <i class="examiner-file-icon pull-left" tooltip="Submitted by examiner"></i>#}
-{#                                    {% endif %}#}
-{#                                </dd>#}
-{#                            {% endfor %}#}
-{#                        {% endfor %}#}
-{#                        <a href="{% url 'devilry-feedbackfeed-compressed-feedbackset-file-download' feedbackset.id %}"><strong>Download all</strong></a>#}
-{#                    </dl>#}
-{#                {% endfor %}#}
-{#            </div>#}
+            <div ng-show="filecollapse.value">
+                {% if feedbacksets|length > 1 %}
+                    <a href="{% url 'devilry-feedbackfeed-compressed-all-feedbacksets-file-download' last_feedbackset.group.id %}">
+                        <strong>{% trans 'Download all assignment files' %}</strong>
+                    </a>
+                {% endif %}
+                {% for feedbackset in feedbacksets %}
+                    <dl>
+                        <dt class="devilry-group-feedbackfeed-sidebar-deadlines">
+                            {% blocktrans with counter=''|devilry_verbosenumber:forloop.counter %}{{ counter }} deadline{% endblocktrans %}
+                        </dt>
+                        {% for comment in feedbackset.groupcomment_set.all %}
+                            {% for file in comment.commentfile_set.all %}
+                                <dd class="devilry-group-feedbackfeed-sidebar-files">
+                                    <a href="{% url 'devilry-feedbackfeed-file-download' feedbackset.id file.id %}" >{{ file.filename|devilry_truncatefileextension:26 }}(OLD)</a>
+                                    {% if file.comment.published_datetime > file.comment.feedback_set.deadline_datetime and file.comment.user_role != 'examiner' %}
+                                        <i class="after-deadline-icon pull-left" tooltip="Submitted after deadline"></i>
+                                    {% elif file.comment.user_role == 'examiner' %}
+                                        <i class="examiner-file-icon pull-left" tooltip="Submitted by examiner"></i>
+                                    {% endif %}
+                                </dd>
+                                <dd class="devilry-group-feedbackfeed-sidebar-files">
+                                    <a href="{% url 'devilry-feedbackfeed-download' %}" >{{ file.filename|devilry_truncatefileextension:26 }}(NEW)</a>
+                                    {% if file.comment.published_datetime > file.comment.feedback_set.deadline_datetime and file.comment.user_role != 'examiner' %}
+                                        <i class="after-deadline-icon pull-left" tooltip="Submitted after deadline"></i>
+                                    {% elif file.comment.user_role == 'examiner' %}
+                                        <i class="examiner-file-icon pull-left" tooltip="Submitted by examiner"></i>
+                                    {% endif %}
+                                </dd>
+                            {% endfor %}
+                        {% endfor %}
+                        <a href="{% url 'devilry-feedbackfeed-compressed-feedbackset-file-download' feedbackset.id %}"><strong>Download all</strong></a>
+                    </dl>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>
