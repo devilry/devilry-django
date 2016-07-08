@@ -101,19 +101,7 @@ First, make sure you are in the ``devilry-django`` virtualenv::
 
 You can create a fairly full featured demo database with::
 
-    $ fab demodb
-
-... or you can create a much more full featured demo database with::
-
-    $ fab autodb
-
-... or you can create an empty database with::
-
-    $ fab reset_db
-
-Note: Creating the testdata with ``autodb`` takes a lot of time, but you can start using
-the server as soon as the users have been created (one of the first
-things the script does).
+    $ ievv recreate_devdb
 
 
 
@@ -128,36 +116,12 @@ First, make sure you are in the ``devilry-django`` virtualenv::
 
 Start the Django development server with::
 
-    $ python manage.py runserver
+    $ ievv devrun
 
 Go to http://localhost:8000/ and log in as a superuser using::
 
-    user: grandma
-    password: test
-
-Or as a user which is student, examiner and admin using::
-
-    user: thor
+    user: grandma@example.com
     password: test
 
 **Note:** All users have ``password==test``, and you can see all users
-in the superadmin interface. See `the demo page on the
-wiki <https://github.com/devilry/devilry-django/wiki/demo>`_ for more
-info about the demo database, including recommended test users for each
-role.
-
-
-.. _aboutfabric:
-
-******
-Fabric
-******
-
-We use `Fabric <http://fabfile.org>`_ to simplify common tasks. Fabric
-simply runs the requested ``@task`` decorated functions in
-``fabfile.py``.
-
-``fabfile.py`` is very straigt forward to read if you wonder what the
-tasks actually do. The ``fabric.api.local(...)`` function runs an
-executable on the local machine.
-
+in the superadmin interface.

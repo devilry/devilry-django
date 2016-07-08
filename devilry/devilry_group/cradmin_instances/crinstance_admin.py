@@ -1,16 +1,16 @@
-from django.db import models
-from django.db.models.functions import Concat
-from django.db.models.functions import Lower
-from django.utils.translation import ugettext_lazy as _
-from django_cradmin import crmenu
-from django_cradmin import crinstance
+# Python imports
+from __future__ import unicode_literals
 
+# Devilry/cradmin imports
+from django_cradmin import crmenu
 from devilry.devilry_account.models import PeriodPermissionGroup
-from devilry.apps.core.models import AssignmentGroup, Examiner, Candidate
-from devilry.devilry_group.views import feedbackfeed_admin
+from devilry.devilry_group.cradmin_instances import crinstance_base
+from devilry.devilry_group.views.admin import feedbackfeed_admin
 
 
 class Menu(crmenu.Menu):
+    devilryrole = 'admin'
+
     def build_menu(self):
         group = self.request.cradmin_role
         self.add_headeritem(
@@ -18,47 +18,42 @@ class Menu(crmenu.Menu):
             url=self.appindex_url('feedbackfeed'))
 
 
-class AdminCrInstance(crinstance.BaseCrAdminInstance):
+class AdminCrInstance(crinstance_base.CrInstanceBase):
+    """
+    CrInstance class for admins.
+    """
     menuclass = Menu
-    roleclass = AssignmentGroup
     apps = [
         ('feedbackfeed', feedbackfeed_admin.App)
     ]
     id = 'devilry_group_admin'
-    rolefrontpage_appname = 'feedbackfeed'
-
-    def get_rolequeryset(self):
-        candidatequeryset = Candidate.objects\
-            .select_related('relatedstudent')\
-            .order_by(
-                Lower(Concat('relatedstudent__user__fullname',
-                             'relatedstudent__user__shortname')))
-        examinerqueryset = Examiner.objects\
-            .select_related('relatedexaminer')\
-            .order_by(
-                Lower(Concat('relatedexaminer__user__fullname',
-                             'relatedexaminer__user__shortname')))
-        return AssignmentGroup.objects.filter_user_is_admin(user=self.request.user)\
-            .select_related('parentnode__parentnode__parentnode')\
-            .prefetch_related(
-                models.Prefetch('candidates',
-                                queryset=candidatequeryset))\
-            .prefetch_related(
-                models.Prefetch('examiners',
-                                queryset=examinerqueryset))
-
-    def get_titletext_for_role(self, role):
-        """
-        Get a short title briefly describing the given ``role``.
-        Remember that the role is an AssignmentGroup.
-        """
-        return "{} - {}".format(role.period, role.assignment.short_name)
 
     @classmethod
     def matches_urlpath(cls, urlpath):
         return urlpath.startswith('/devilry_group/admin')
 
+    def get_rolequeryset(self):
+        """
+        Get the base rolequeryset from
+        :meth:`~devilry.devilry_group.cradmin_instances.CrInstanceBase._get_base_rolequeryset` and filter on user.
+
+        Returns:
+            QuerySet: A queryset of :class:`~devilry.apps.core.models.AssignmentGroup`s
+                the ``request.user`` is admin on.
+        """
+        return self._get_base_rolequeryset()\
+            .filter_user_is_admin(user=self.request.user)
+
     def __get_devilryrole_for_requestuser(self):
+        """
+        Checks the permission for the user via :class:`~devilry.devilry_account.models.PeriodPermissionGroup`.
+
+        Returns:
+            str: ``departmentadmin``, ``subjectadmin`` or ``periodadmin`` as devilryrole.
+
+        Raises:
+            ValueError: If the devilryrole returned is ``None``.
+        """
         assignment = self.request.cradmin_role.assignment
         devilryrole = PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
             user=self.request.user,
@@ -67,17 +62,14 @@ class AdminCrInstance(crinstance.BaseCrAdminInstance):
         if devilryrole is None:
             raise ValueError('Could not find a devilryrole for request.user. This must be a bug in '
                              'get_rolequeryset().')
-
         return devilryrole
 
     def get_devilryrole_for_requestuser(self):
         """
-        Get the devilryrole for the requesting user on the current
-        assignment (request.cradmin_instance).
+        Get the role of the user.
 
-        The return values is the same as for
-        :meth:`devilry.devilry_account.models.PeriodPermissionGroupQuerySet.get_devilryrole_for_user_on_period`,
-        exept that this method raises ValueError if it does not find a role.
+        Returns:
+            str: ``departmentadmin``, ``subjectadmin`` or ``periodadmin`` as devilryrole.
         """
         if not hasattr(self, '_devilryrole_for_requestuser'):
             self._devilryrole_for_requestuser = self.__get_devilryrole_for_requestuser()

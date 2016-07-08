@@ -2234,18 +2234,18 @@ fieldset[disabled] .btn-warning.active {
   background-color: #fff;
 }
 .btn-danger {
-  color: #fff;
-  background-color: #d9534f;
-  border-color: #d43f3a;
+  color: #E84D3D;
+  background-color: #fff;
+  border-color: #E84D3D;
 }
 .btn-danger:hover,
 .btn-danger:focus,
 .btn-danger:active,
 .btn-danger.active,
 .open .dropdown-toggle.btn-danger {
-  color: #fff;
-  background-color: #d2322d;
-  border-color: #ac2925;
+  color: #E84D3D;
+  background-color: #ebebeb;
+  border-color: #cf2a19;
 }
 .btn-danger:active,
 .btn-danger.active,
@@ -2267,12 +2267,12 @@ fieldset[disabled] .btn-danger:active,
 .btn-danger.disabled.active,
 .btn-danger[disabled].active,
 fieldset[disabled] .btn-danger.active {
-  background-color: #d9534f;
-  border-color: #d43f3a;
+  background-color: #fff;
+  border-color: #E84D3D;
 }
 .btn-danger .badge {
-  color: #d9534f;
-  background-color: #fff;
+  color: #fff;
+  background-color: #E84D3D;
 }
 .btn-link {
   color: #262626;
@@ -4572,7 +4572,7 @@ button.close {
   height: 100%;
 }
 body {
-  background: #f7f7f7;
+  background: #f5f5f5;
   color: #000000;
 }
 body.django-cradmin-noscroll {
@@ -4849,7 +4849,7 @@ form .alert-block.alert-danger ul li {
   border-radius: 4px;
   outline: none;
   box-shadow: none;
-  background: #f7f7f7;
+  background: #f5f5f5;
 }
 .form-control:focus,
 .cradmin-div-styled-as-textarea:focus {
@@ -4968,15 +4968,15 @@ table.table.django-cradmin-table tbody td:last-child {
 }
 .btn.btn-danger:hover,
 .btn.btn-danger:focus {
-  background: #d9534f;
-  border-color: #d43f3a;
-  color: #fff;
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
 }
 @media (min-width: 768px) {
   .btn.btn-danger:hover,
   .btn.btn-danger:focus {
-    background: #ce312c;
-    border-color: #ce312c;
+    background: #E84D3D;
+    border-color: #E84D3D;
     color: #fff;
   }
 }
@@ -5190,7 +5190,7 @@ table.table.django-cradmin-table tbody td:last-child {
   border: none;
 }
 .django-cradmin-floating-fullsize-iframe-wrapper.django-cradmin-modelchoicefield-iframe-wrapper .django-cradmin-floating-fullsize-content {
-  background: #f7f7f7;
+  background: #f5f5f5;
 }
 @media (min-width: 992px) {
   body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper {
@@ -5467,10 +5467,10 @@ table.table.django-cradmin-table tbody td:last-child {
 .cradmin-acemarkdown .ace_editor {
   font-size: 16px;
   height: 400px;
-  background: #f7f7f7;
+  background: #f5f5f5;
 }
 .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea {
-  background: #f7f7f7;
+  background: #f5f5f5;
 }
 .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
   height: 100px;
@@ -6627,9 +6627,6 @@ ol.django-cradmin-listbuilder-list.django-cradmin-listbuilder-rowlist li .django
   margin-top: 0;
   margin-bottom: 5px;
 }
-ol.django-cradmin-listbuilder-list.django-cradmin-listbuilder-rowlist li:last-child .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
-  margin-bottom: 0;
-}
 ol.django-cradmin-listbuilder-list.django-cradmin-listbuilder-floatgridlist li .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
   margin-top: 5px;
   margin-bottom: 5px;
@@ -6804,15 +6801,15 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls {
   margin-top: 7px;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls label.checkbox {
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls .checkbox label {
   font-weight: normal;
   margin-top: 10px;
   margin-bottom: 10px;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls label.checkbox:first-child {
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls .checkbox label:first-child {
   margin-top: 0;
 }
-.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls label.checkbox:hover {
+.django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-formfields .form-group .controls .checkbox label:hover {
   color: #262626;
   cursor: pointer;
 }
@@ -6953,7 +6950,7 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
   }
 }
 body {
-  background: #f7f7f7;
+  background: #f5f5f5;
 }
 #django_cradmin_contentwrapper {
   background: #f0f0f0;
@@ -7061,16 +7058,19 @@ body {
 .btn {
   font-weight: bold;
   border-width: 3px;
-  letter-spacing: 1.4px;
-  padding: 4px 12px;
+  letter-spacing: 1px;
+  padding: 6px 15px 3px 15px;
   margin-bottom: 5px;
   white-space: normal;
 }
+.btn.btn-xs {
+  padding: 3.5px 5px 0 5px;
+}
 .btn.btn-sm {
-  padding: 3px 10px;
+  padding: 4px 8px 1px 8px;
 }
 .btn.btn-lg {
-  padding: 7px 16px;
+  padding: 9px 19px 4.5px 19px;
 }
 a.btn {
   text-decoration: none;
@@ -7079,17 +7079,6 @@ a.btn {
 .cradmin-div-styled-as-textarea {
   border-width: 3px;
   border-radius: 0;
-}
-h2,
-h3,
-h4 {
-  font-weight: bold;
-}
-h2 {
-  font-size: 23px;
-}
-h3 {
-  font-size: 16px;
 }
 ol.django-cradmin-listbuilder-list {
   margin-bottom: 15px;
@@ -7279,7 +7268,7 @@ h3 .devilry-user-verbose-inline small {
   font-size: 28px;
 }
 .devilry-dashboard-container.devilry-dashboard-container-focus h3 {
-  font-size: 23px;
+  font-size: 46px;
 }
 .devilry-dashboard-container dl {
   margin-bottom: 15px;
@@ -7365,6 +7354,17 @@ dl.devilry-dl-indented {
 }
 dl.devilry-dl-sm {
   font-size: 14px;
+}
+h2,
+h3,
+h4 {
+  font-weight: bold;
+}
+h2 {
+  font-size: 23px;
+}
+h3 {
+  font-size: 16px;
 }
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;

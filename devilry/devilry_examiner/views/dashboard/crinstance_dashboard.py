@@ -1,7 +1,6 @@
 import re
 
-from django_cradmin import crinstance
-
+from devilry.devilry_examiner.cradminextensions import devilry_crinstance_examiner
 from devilry.devilry_examiner.cradminextensions import devilry_crmenu_examiner
 from devilry.devilry_examiner.cradminextensions import devilry_crinstance_examiner
 from devilry.devilry_examiner.views.dashboard import assignmentlist

@@ -10,6 +10,20 @@ from devilry.devilry_group.cradmin_instances import crinstance_examiner
 
 class TestCrinstanceExaminer(test.TestCase):
 
+    def test_get_titletext_for_role(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode__parentnode__short_name='s1',
+                               parentnode__parentnode__short_name='p1',
+                               parentnode__short_name='a1')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockrequest = mock.MagicMock()
+        mockrequest.user = testuser
+        crinstance = crinstance_examiner.ExaminerCrInstance(request=mockrequest)
+        self.assertEqual('s1.p1 - a1', crinstance.get_titletext_for_role(testgroup))
+
     def test_get_rolequeryset_no_assignmentgroups_where_period_is_inactive_old(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_oldperiod_end')
@@ -75,7 +89,8 @@ class TestCrinstanceExaminer(test.TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         crinstance = crinstance_examiner.ExaminerCrInstance(request=mockrequest)
-        self.assertNotEqual(unrelated_feedbackset, crinstance.get_rolequeryset()[0].feedbackset_set.all()[0])
+        self.assertEqual(1, len(crinstance.get_rolequeryset()[0].feedbackset_set.all()))
+        self.assertNotIn(unrelated_feedbackset, crinstance.get_rolequeryset()[0].feedbackset_set.all())
 
     def test_get_rolequeryset_access_to_multiple_assignment_groups_in_assignment(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

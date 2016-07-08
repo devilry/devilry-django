@@ -1,0 +1,9 @@
+{% extends 'devilry_group/listbuilder/base_event_item_value.django.html' %}
+
+{% load devilry_core_tags %}
+{% load i18n %}
+
+{% block details %}
+    {% trans "This delivery was corrected, and given" context 'devilry_group feedbackfeed' %}:
+    {% devilry_grade_full assignment=me.group.assignment points=me.feedbackset.grading_points devilryrole=me.devilryrole %}
+{% endblock details %}

@@ -1,14 +1,15 @@
+import mock
 from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
+from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
-from devilry.devilry_group import models as group_models
-from devilry.devilry_group.tests.feedbackfeed import test_feedbackfeed_common
-from devilry.devilry_group.views import feedbackfeed_student
+from devilry.apps.core import models as core_models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
-
-from django_cradmin import cradmin_testhelpers
+from devilry.devilry_group import models as group_models
+from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
+from devilry.devilry_group.views.student import feedbackfeed_student
 
 
 class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
@@ -25,6 +26,42 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
                           candidate.assignment_group.assignment.get_path())
 
+    def test_get_feedbackfeed_anonymous_examiner_semi(self):
+        testassignment = mommy.make('core.Assignment',
+                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = mommy.make('core.Examiner',
+                               assignmentgroup=group,
+                               relatedexaminer__automatic_anonymous_id='AnonymousExaminer',
+                               relatedexaminer__user__shortname='testexaminer')
+        mommy.make('devilry_group.GroupComment',
+                   user_role='examiner',
+                   user=candidate.relatedexaminer.user,
+                   feedback_set__group=group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        self.assertFalse(mockresponse.selector.exists('.devilry-user-verbose-inline'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-core-examiner-anonymous-name'))
+        self.assertEqual('AnonymousExaminer',
+                         mockresponse.selector.one('.devilry-core-examiner-anonymous-name').alltext_normalized)
+
+    def test_get_feedbackfeed_anonymous_examiner_fully(self):
+        testassignment = mommy.make('core.Assignment',
+                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = mommy.make('core.Examiner',
+                               assignmentgroup=group,
+                               relatedexaminer__automatic_anonymous_id='AnonymousExaminer',
+                               relatedexaminer__user__shortname='testexaminer')
+        mommy.make('devilry_group.GroupComment',
+                   user_role='examiner',
+                   user=candidate.relatedexaminer.user,
+                   feedback_set__group=group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        self.assertFalse(mockresponse.selector.exists('.devilry-user-verbose-inline'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-core-examiner-anonymous-name'))
+        self.assertEqual('AnonymousExaminer',
+                         mockresponse.selector.one('.devilry-core-examiner-anonymous-name').alltext_normalized)
+
     def test_get_feedbackfeed_student_cannot_see_feedback_or_discuss_in_header(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
@@ -37,14 +74,16 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-discuss-button'))
 
     def test_get_feedbackfeed_student_add_comment_to_feedbackset_without_deadline(self):
+        group = mommy.make('core.AssignmentGroup')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'))
+                               relatedstudent=mommy.make('core.RelatedStudent'),
+                               assignment_group=group)
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='student',
+                             user=candidate.relatedstudent.user,
                              published_datetime=timezone.now(),
-                             feedback_set__group=candidate.assignment_group)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
-                                                          requestuser=candidate.relatedstudent.user)
+                             feedback_set__group=group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(mockresponse.selector.one('.devilry-group-feedbackfeed-comment-student'))
 
     def test_get_feedbackset_student_comment_after_deadline(self):
@@ -199,6 +238,25 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                                                           requestuser=requestuser)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
 
+    def test_get_feedbackfeed_student_can_not_see_admin_comment_visibility_visible_to_examiner_and_admins(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        admin = mommy.make('devilry_account.User', shortname='subjectadmin')
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode__admins=[admin])
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=group,
+                               relatedstudent__user=requestuser)
+
+        mommy.make('devilry_group.GroupComment',
+                   user=admin,
+                   user_role='admin',
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                   feedback_set__group=group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
+                                                          requestuser=requestuser)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
+
     def test_get_student_cannot_see_comment_visibility_private(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         candidate = mommy.make('core.Candidate',
@@ -274,7 +332,27 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
     """
     viewclass = feedbackfeed_student.StudentFeedbackFeedView
 
-    def test_get_student_can_not_see_comments__part_of_grading_before_publish_first_attempt(self):
+    def test_get_feedbackfeed_event_delivery_passed(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 group__parentnode__max_points=10,
+                                 group__parentnode__passing_grade_min_points=5,
+                                 grading_published_datetime=timezone.now(),
+                                 deadline_datetime=timezone.now(),
+                                 grading_points=7)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-passed'))
+
+    def test_get_feedbackfeed_event_delivery_failed(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 group__parentnode__max_points=10,
+                                 group__parentnode__passing_grade_min_points=5,
+                                 grading_published_datetime=timezone.now(),
+                                 grading_points=3)
+
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-failed'))
+
+    def test_get_student_can_not_see_comments_part_of_grading_before_publish_first_attempt(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=assignment)
@@ -345,3 +423,48 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
                                                           requestuser=candidate.relatedstudent.user)
         feedback_comments = mockresponse.selector.list('.devilry-group-feedbackfeed-comment')
         self.assertEquals(2, len(feedback_comments))
+
+    def test_get_num_queries(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
+        testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   user=candidate.relatedstudent.user,
+                   user_role='student',
+                   feedback_set=testfeedbackset)
+        mock_cradmininstance = mock.MagicMock()
+        mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'student'
+        with self.assertNumQueries(10):
+            self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                               requestuser=candidate.relatedstudent.user,
+                                               cradmin_instance=mock_cradmininstance)
+
+    def test_get_num_queries_with_commentfiles(self):
+        """
+        NOTE: (works as it should)
+        Checking that no more queries are executed even though the
+        :func:`devilry.devilry_group.timeline_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
+        duplicates comment_file query.
+        """
+        testgroup = mommy.make('core.AssignmentGroup')
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
+        testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+        comment = mommy.make('devilry_group.GroupComment',
+                             user=candidate.relatedstudent.user,
+                             user_role='student',
+                             feedback_set=testfeedbackset)
+        comment2 = mommy.make('devilry_group.GroupComment',
+                              user=candidate.relatedstudent.user,
+                              user_role='student',
+                              feedback_set=testfeedbackset)
+        mommy.make('devilry_comment.CommentFile',
+                   filename='test.py',
+                   comment=comment,
+                   _quantity=100)
+        mommy.make('devilry_comment.CommentFile',
+                   filename='test2.py',
+                   comment=comment2,
+                   _quantity=100)
+        with self.assertNumQueries(10):
+            self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                               requestuser=candidate.relatedstudent.user)

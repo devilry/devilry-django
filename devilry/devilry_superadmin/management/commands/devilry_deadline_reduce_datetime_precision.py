@@ -1,14 +1,13 @@
 from django.db import transaction
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 
 
-
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = "Set the microsecond of all deadlines to 0."
 
-    def handle_noargs(self, **options):
+    def handle(self, *args, **kwargs):
         from devilry.apps.core.models import Deadline
-        verbosity = int(options.get('verbosity', '1'))
+        verbosity = int(kwargs.get('verbosity', '1'))
 
         updates = 0
         with transaction.commit_manually():

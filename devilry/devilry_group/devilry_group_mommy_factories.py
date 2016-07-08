@@ -53,7 +53,7 @@ def feedbackset_new_attempt_published(grading_published_datetime=None, grading_p
 
 def feedbackset_first_attempt_unpublished(**kwargs):
     """
-    Creates a published FeedbackSet with ``feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT``
+    Creates a unpublished FeedbackSet with ``feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT``
     using ``mommy.make('devilry_group.FeedbackSet)``.
 
     Args:
@@ -69,7 +69,7 @@ def feedbackset_first_attempt_unpublished(**kwargs):
 
 def feedbackset_new_attempt_unpublished(**kwargs):
     """
-    Creates a published FeedbackSet with ``feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT``
+    Creates a unpublished FeedbackSet with ``feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT``
     using ``mommy.make('devilry_group.FeedbackSet)``.
 
     Args:

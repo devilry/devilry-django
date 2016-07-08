@@ -1,5 +1,8 @@
+# Python imports
+from __future__ import unicode_literals
+
 # Django imports
-from django.utils import http
+from django import http
 from django.utils.translation import ugettext_lazy as _
 
 # Devilry/cradmin imports
@@ -8,39 +11,39 @@ from devilry.devilry_account import models as account_models
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models
 from django_cradmin import crapp
-
-# 3rd party imports
-from crispy_forms import layout
+from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
 
 
 class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     """
-    TODO: Document
-    """
-    def _get_comments_for_group(self, group):
-        return models.GroupComment.objects.filter(
-            feedback_set__group=group
-        )
+    Admin view.
+    Handles what should be rendered for an admin in the feedbackfeed.
 
+    Special case when assignment is fully anonymized. See :func:`dispatch`.
+    """
     def get_devilryrole(self):
+        """
+        See :meth:`~devilry.devilry_group.cradmin_instances.AdminCrInstance.get_devilryrole_for_requestuser`
+        """
         return self.request.cradmin_instance.get_devilryrole_for_requestuser()
 
     def get_context_data(self, **kwargs):
         context = super(AdminFeedbackFeedView, self).get_context_data(**kwargs)
-        context['devilry_ui_role'] = 'admin'
         return context
 
     def get_buttons(self):
-        return [
-            layout.Submit(
-                'administrator_add_comment_for_examiners',
+        buttons = super(AdminFeedbackFeedView, self).get_buttons()
+        buttons.extend([
+            PrimarySubmit(
+                'admin_add_comment_for_examiners',
                 _('Add comment for examiners'),
                 css_class='btn btn-primary'),
-            layout.Submit(
-                'administrator_add_public_comment',
+            DefaultSubmit(
+                'admin_add_public_comment',
                 _('Add comment'),
                 css_class='btn btn-primary')
-        ]
+        ])
+        return buttons
 
     def set_automatic_attributes(self, obj):
         super(AdminFeedbackFeedView, self).set_automatic_attributes(obj)
@@ -56,11 +59,25 @@ class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         return obj
 
     def dispatch(self, request, *args, **kwargs):
+        """
+        When :obj:`devilry.apps.core.Assignment.anonymizationmode` is set to ``ANONYMIZATIONMODE_FULLY_ANONYMOUS``
+        a 404 should be raised if the request user is not a ``departmentadmin``.
+
+        Args:
+             request: The request to check.
+
+        Returns:
+            HttpResponse: Response returned from dispatch.
+
+        Raises:
+             Http404: Is raised if :obj:`~devilry.apps.core.models.Assignment.anonymizationmode` is set to
+             ``ANONYMIZATIONMODE_FULLY_ANONYMOUS``, and the requestuser is not a ``departmentadmin``.
+        """
         assignment = self.request.cradmin_role.parentnode
         if assignment.anonymizationmode == core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
             if account_models.PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
                     user=self.request.user, period=assignment.period) != 'departmentadmin':
-                raise http.Http404()
+                raise http.Http404
         return super(AdminFeedbackFeedView, self).dispatch(request, *args, **kwargs)
 
 

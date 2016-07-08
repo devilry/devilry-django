@@ -1,15 +1,16 @@
+# Python imports
+from __future__ import unicode_literals
+
 # django imports
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.db.models import Q
 
 # Devilry/cradmin imports
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
-from devilry.devilry_group import models
 from django_cradmin import crapp
 
 # 3rd party imports
-from crispy_forms import layout
+from django_cradmin.crispylayouts import DefaultSubmit
 
 
 class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
@@ -19,15 +20,24 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     on the FeedbackFeed.
     """
     def get_devilryrole(self):
+        """
+        Get the devilryrole for the view.
+
+        Returns:
+            str: ``student`` as devilryrole.
+        """
         return 'student'
 
     def get_buttons(self):
-        return [
-            layout.Submit(
+        buttons = super(StudentFeedbackFeedView, self).get_buttons()
+        buttons.extend([
+            DefaultSubmit(
                 'student_add_comment',
                 _('Add comment'),
-                css_class='btn btn-success')
-        ]
+                css_class='btn btn-success'
+            )
+        ])
+        return buttons
 
     def set_automatic_attributes(self, obj):
         super(StudentFeedbackFeedView, self).set_automatic_attributes(obj)

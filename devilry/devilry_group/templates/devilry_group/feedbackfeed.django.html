@@ -29,20 +29,9 @@
                     <p class="devilry-group-feedbackfeed-header-period">
                         {{ period.long_name }}
                     </p>
-{#                    {{ subject.long_name }} {{ period.long_name }}#}
                 </div>
-                {% if devilry_ui_role == 'examiner' %}
-                    <nav>
-                        <ul class="nav nav-pills">
-                            <li role="presentation" class="active">
-                                <a href="feedback" class="devilry-group-feedbackfeed-feedback-button">Feedback</a>
-                            </li>
-                            <li role="presentation" class="active">
-                                <a href="discuss" class="devilry-group-feedbackfeed-discuss-button active">Discuss</a>
-                            </li>
-                        </ul>
-                    </nav>
-                {% endif %}
+                {% block navigation %}
+                {% endblock %}
 
             </div>
             <div class="col-sm-5 text-right">
@@ -73,10 +62,7 @@
 {% endblock pageheader-inner %}
 
 {% block content %}
-
-<!-- Content -->
     <div class="container">
-
         <div class="row">
             {# Sidebar #}
             <div class="col-sm-4 col-sm-push-8">
@@ -84,161 +70,20 @@
                     {% include "devilry_group/include/sidebar.django.html" %}
                 {% endblock sidebar %}
             </div>
-
             {# Feedbackfeed #}
             <div class="col-sm-8 col-sm-pull-4">
                 {% block feed %}
                     {% cradmin_render_renderable listbuilder_list %}
-{#                    {% for timestamp, eventlist in timeline.items %}#}
-{#                        {% for event in eventlist %}#}
-{#                            <!--#}
-{#                            Handle comments events#}
-{#                            -->#}
-{#                            {% if event.type == "comment" %}#}
-{#                                {% with event.obj as comment %}#}
-{#                                    <div class="#}
-{#                                        devilry-group-feedbackfeed-comment#}
-{#                                        {% if comment.user_role == "student" %}#}
-{#                                            devilry-group-feedbackfeed-comment-student#}
-{#                                        {% elif comment.user_role == "examiner"%}#}
-{#                                            devilry-group-feedbackfeed-comment-examiner#}
-{#                                        {% elif comment.user_role == "admin"%}#}
-{#                                            devilry-group-feedbackfeed-comment-admin#}
-{#                                        {% endif %}">#}
-{#                                        <div class="devilry-group-feedbackfeed-comment-content">#}
-{#                                            <div class="devilry-group-comment-meta">#}
-{#                                                <div class="devilry-group-comment-created-by">#}
-{#                                                    <p class="comment-created-by-text">{% devilry_user_verbose_inline comment.user %} &nbsp;</p>#}
-{#                                                </div>#}
-{#                                                <div class="devilry-group-comment-created-by-role">#}
-{#                                                    <p class="comment-created-by-role-text">({{ comment.user_role }})&nbsp;</p>#}
-{#                                                </div>#}
-{#                                                <div class="devilry-group-comment-published-date">#}
-{#                                                    <p class="comment-published-date-text"> {{ comment|devilry_group_comment_published }}</p>#}
-{#                                                </div>#}
-{#                                            </div>#}
-{#                                            <div class="devilry-group-comment-text">#}
-{#                                                {% blocktrans with text=comment.text|devilry_group_markdown|safe %} {{text}} {% endblocktrans %}#}
-{#                                            </div>#}
-{#                                            {% for file in comment.commentfile_set.all %}#}
-{#                                                <a href="{% url 'devilry-feedbackfeed-file-download' comment.feedback_set_id file.id %}">#}
-{#                                                    <i class="fa fa-file fa-3x" tooltip="{{ file.filename }}"></i>#}
-{#                                                </a>#}
-{#                                            {% endfor %}#}
-{#                                        </div>#}
-{##}
-{#                                        {% if comment.user_role == "examiner" %}#}
-{#                                            <!--#}
-{#                                            Handles published and unpublished comment styles#}
-{#                                            -->#}
-{#                                            {% if comment.part_of_grading == True %}#}
-{#                                                {% if comment.get_published_datetime == None %}#}
-{#                                                    <!--#}
-{#                                                    Comment is part of grading, but not published.#}
-{#                                                    -->#}
-{#                                                    <div class="devilry-group-feedbackfeed-right-badge-field not-published-badge">#}
-{#                                                        <p class="badge-text-new">{% trans "NOT PUBLISHED" %}</p>#}
-{#                                                    </div>#}
-{#                                                {% else %}#}
-{#                                                    <!--#}
-{#                                                    Comment is published as part of the feedback.#}
-{#                                                    -->#}
-{#                                                    <div class="devilry-group-feedbackfeed-right-badge-field not-published-badge">#}
-{#                                                        <p class="badge-text-new">{% trans "PART OF FEEDBACK" %}</p>#}
-{#                                                    </div>#}
-{#                                                {% endif %}#}
-{#                                            {% endif %}#}
-{#                                        {% elif comment.user_role == "student" %}#}
-{#                                            <!--#}
-{#                                            Check if comment is posted after the its related deadline#}
-{#                                            -->#}
-{#                                            {% if comment.published_datetime > event.related_deadline %}#}
-{#                                                <div class="devilry-group-feedbackfeed-right-badge-field after-deadline-badge">#}
-{#                                                    <p class="devilry-group-feedbackfeed-badge-text">{% trans "Not part of delivery" %}</p>#}
-{#                                                    <p class="badge-text-new">{% trans "NOT PART OF DELIVERY" %}</p>#}
-{#                                                </div>#}
-{#                                            {% endif %}#}
-{##}
-{#                                        {% endif %}#}
-{##}
-{#                                    </div>#}
-{#                                {% endwith %}#}
-{##}
-{#                                <!--#}
-{#                                Handle the deadline events#}
-{#                                -->#}
-{#                                {% elif event.type == "deadline_created" %}#}
-{#                                    {% with deadline=event.obj%}#}
-{#                                        <div class="devilry-group-feedbackfeed-event-message-deadline-created">#}
-{#                                            <p>#}
-{#                                                {{ timestamp }}: {{ event.user }} {%  trans "created a new deadline" %}: <strong>{{ deadline|date:'DATETIME_FORMAT' }}</strong>#}
-{#                                            </p>#}
-{#                                        </div>#}
-{#                                    {% endwith %}#}
-{#                                {% elif event.type == "deadline_expired" %}#}
-{#                                    {% if timestamp != None %}#}
-{#                                        <div class="devilry-group-feedbackfeed-event-message-deadline-expired">#}
-{#                                            <p>#}
-{#                                                {{ timestamp }}: <strong> {% trans "Deadline expired" %}</strong>#}
-{#                                            </p>#}
-{#                                        </div>#}
-{#                                    {% endif %}#}
-{##}
-{#                                <!--#}
-{#                                Handle feedback grade events#}
-{#                                -->#}
-{#                                {% elif event.type == "grade" %}#}
-{#                                    {% if event.obj >= assignment.passing_grade_min_points %}#}
-{#                                        <div class="devilry-group-feedbackfeed-event-message-passed">#}
-{#                                            <p>{{ timestamp }}: {% trans "This delivery was corrected, and given the grade" %}#}
-{#                                                <strong>{{ event.obj }}/{{ assignment.max_points }} {% trans "(passed)" %}</strong>#}
-{#                                            </p>#}
-{#                                        </div>#}
-{#                                    {% else %}#}
-{#                                        <div class="devilry-group-feedbackfeed-event-message-failed">#}
-{#                                            <p>#}
-{#                                                {{ timestamp }}: {% trans "This delivery was corrected, and given the grade" %}#}
-{#                                                <strong>{{ event.obj }}/{{ assignment.max_points }} {%  trans "(failed)" %}</strong>#}
-{#                                            </p>#}
-{#                                        </div>#}
-{#                                    {% endif %}#}
-{##}
-{#                                    {% if devilry_ui_role == 'student' %}#}
-{#                                        <div class="well">#}
-{#                                            {{ event.gradeform }}#}
-{#                                        </div>#}
-{#                                    {% endif %}#}
-{##}
-{#                                {% endif %}#}
-{##}
-{#                        {% endfor %}#}
-
-{#                    {% endfor %}#}
-
-
-                    {% comment %}
-                        Accordion option for examiner to edit gradeform
-                    {% endcomment %}
-{#                    {% block examiner_edit_last_delivery %}#}
-{#                        {% include "devilry_group/include/examiner.editlastdelivery.django.html" %}#}
-{#                    {% endblock examiner_edit_last_delivery %}#}
-
-
-
                     {% block pre_form %}{% endblock pre_form %}
                     {% block form %}
                         {% crispy form formhelper %}
-                        {% comment %}
-                            NOTE: This will probably break when https://github.com/maraujop/django-crispy-forms/issues/263 is fixed
-                        {% endcomment %}
                         {{ form.media }}
                     {% endblock form %}
                     {% block post_form %}{% endblock post_form %}
-
-
                 {% endblock feed %}
               </div>
-
+        </div>
+    </div>
 {% endblock content %}
 
 {% block initialize_angular %}

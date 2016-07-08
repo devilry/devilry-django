@@ -53,7 +53,7 @@
     {% if subjects_where_user_is_subjectadmin %}
     <div id="devilry_admin_dashboard_subjects_where_user_is_subjectadmin">
         <h2>
-            {% trans "Your courses" %}
+            {% trans "Your courses" context "student" %}
         </h2>
         <ul>
             {% for subject in subjects_where_user_is_subjectadmin %}

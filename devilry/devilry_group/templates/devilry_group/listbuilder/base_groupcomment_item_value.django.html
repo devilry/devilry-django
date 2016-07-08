@@ -1,16 +1,26 @@
 {% extends 'django_cradmin/viewhelpers/listbuilder/base/itemvalue.django.html' %}
 
 {% load devilry_group_tags %}
+{% load devilry_core_tags %}
 {% load devilry_account_tags %}
+{% load cradmin_tags %}
 {% load crispy_forms_tags %}
 {% load i18n %}
 
 {% block content %}
-
     <div class="devilry-group-feedbackfeed-comment-content">
+
+        {% include "devilry_group/include/groupcomment_edit_delete_option.html" %}
+
         <div class="devilry-group-comment-meta">
             <div class="devilry-group-comment-created-by">
-                <p class="comment-created-by-text">{% devilry_user_verbose_inline me.group_comment.user %} &nbsp;</p>
+                {% if me.group_comment.user_role == 'student'%}
+                    <p class="comment-created-by-text">{% devilry_single_candidate_long_displayname me.assignment me.user_obj me.devilry_viewrole %} &nbsp;</p>
+                {% elif me.group_comment.user_role == 'examiner' %}
+                    <p class="comment-created-by-text">{% devilry_single_examiner_long_displayname me.assignment me.user_obj me.devilry_viewrole %} &nbsp;</p>
+                {% else %}
+                    <p class="comment-created-by-text">{% devilry_user_verbose_inline me.group_comment.user %} &nbsp;</p>
+                {% endif %}
             </div>
             <div class="devilry-group-comment-created-by-role">
                 <p class="comment-created-by-role-text">({{ me.group_comment.user_role }})&nbsp;</p>
@@ -29,39 +39,8 @@
         {% endfor %}
     </div>
 
-    {% if me.group_comment.user_role == "examiner" %}
-        <!--
-        Handles published and unpublished comment styles
-        -->
-        {% if me.group_comment.part_of_grading == True %}
-            {% if me.group_comment.get_published_datetime == None %}
-                <!--
-                Comment is part of grading, but not published.
-                -->
-                <div class="devilry-group-feedbackfeed-right-badge-field not-published-badge">
-                    <p class="badge-text-new">{% trans "NOT PUBLISHED" %}</p>
-                </div>
-            {% else %}
-                <!--
-                Comment is published as part of the feedback.
-                -->
-                <div class="devilry-group-feedbackfeed-right-badge-field not-published-badge">
-                    <p class="badge-text-new">{% trans "PART OF FEEDBACK" %}</p>
-                </div>
-            {% endif %}
-        {% endif %}
-    {% elif me.group_comment.user_role == "student" %}
-        <!--
-        Check if comment is posted after the its related deadline
-        -->
-        {% if me.group_comment.published_datetime > event.related_deadline %}
-            <div class="devilry-group-feedbackfeed-right-badge-field after-deadline-badge">
-                <p class="devilry-group-feedbackfeed-badge-text">{% trans "Not part of delivery" %}</p>
-    {#                                                    <p class="badge-text-new">{% trans "NOT PART OF DELIVERY" %}</p>#}
-            </div>
-        {% endif %}
-
-    {% endif %}
+    {% block details %}
+    {% endblock details %}
 
 {% endblock content %}
 

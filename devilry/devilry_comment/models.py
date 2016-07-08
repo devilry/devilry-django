@@ -73,6 +73,12 @@ class Comment(models.Model):
     comment_type = models.CharField(choices=COMMENT_TYPE_CHOICES, max_length=42)
 
     def add_commentfile_from_temporary_file(self, tempfile):
+        """
+        Converts a temporary file to a :class:`~.CommentFile` and saves it.
+
+        Args:
+            tempfile (TemporaryFile): Temporary file to convert.
+        """
         print "running add_commentfile_from_temporary_file"
         commentfile = CommentFile.objects.create(filename=tempfile.filename,
                                                  mimetype=tempfile.mimetype,

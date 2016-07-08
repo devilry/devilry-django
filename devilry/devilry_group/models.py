@@ -1,13 +1,13 @@
 import json
 
-from django.utils import timezone
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy
 
-from devilry.devilry_comment import models as comment_models
 from devilry.apps.core.models import assignment_group
+from devilry.devilry_comment import models as comment_models
 
 
 class AbstractGroupCommentQuerySet(models.QuerySet):
@@ -15,21 +15,54 @@ class AbstractGroupCommentQuerySet(models.QuerySet):
     Base class for QuerySets for :class:`.AbstractGroupComment`.
     """
     def exclude_private_comments_from_other_users(self, user):
+        """
+        Exclude all GroupComments with :obj:`~.GroupComment.visibility` set to :obj:`~.GroupComment.VISIBILITY_PRIVATE`
+        and the :obj:`~.GroupComment.user` is not the ``user``.
+
+        Args:
+            user: The requestuser.
+
+        Returns:
+            QuerySet: QuerySet of :obj:`~.GroupComment`s not excluded.
+        """
         return self.exclude(
-            models.Q(visibility=AbstractGroupComment.VISIBILITY_PRIVATE) &
-            ~models.Q(user=user)
+            models.Q(visibility=AbstractGroupComment.VISIBILITY_PRIVATE) & ~models.Q(user=user)
         )
 
     def exclude_is_part_of_grading_feedbackset_unpublished(self):
+        """
+        Exclude all :class:`~.GroupComment`s that has :obj:`~.GroupComment.part_of_grading` set to ``True`` if the
+        :obj:`~.GroupComment.feedback_set.grading_published_datetime` is ``None``.
+
+        Returns:
+            QuerySet: QuerySet of :obj:`~.GroupComment`s not excluded.
+        """
         return self.exclude(
             part_of_grading=True,
             feedback_set__grading_published_datetime__isnull=True
         )
 
+    def exclude_comment_is_not_draft_from_user(self, user):
+        """
+        Exclude :class:`~.GroupComment`s that are not drafts or the :obj:`~.GroupComment.user` is not the requestuser.
+
+        A :class:`~.GroupComment` is a draft if :obj:`~.GroupComment.visibility` set to
+        :obj:`~.GroupComment.VISIBILITY_PRIVATE` and :obj:`~.GroupComment.part_of_grading` is ``True``.
+
+        Args:
+            user: The requestuser
+
+        Returns:
+            QuerySet: QuerySet of :obj:`~.GroupComment`s not excluded.
+        """
+        return self.exclude(
+            ~models.Q(part_of_grading=True, visibility=GroupComment.VISIBILITY_PRIVATE) | ~models.Q(user=user)
+        )
+
 
 class AbstractGroupComment(comment_models.Comment):
     """
-    The abstract superclass of all comments related to a delivery and feedback
+    The abstract superclass of all comments related to a delivery and feedback.
     """
 
     #: The related feedbackset. See :class:`.FeedbackSet`.
@@ -43,6 +76,9 @@ class AbstractGroupComment(comment_models.Comment):
     part_of_grading = models.BooleanField(default=False)
 
     #: Comment only visible for :obj:`~devilry_comment.models.Comment.user` that created comment.
+    #: When this visibility choice is set, and :obj:`~.AbstractGroupComment.part_of_grading` is True, this
+    #: GroupComment is a drafted feedback and will be published when the :obj:`~.AbstractGroupComment.feedback_set`
+    #  it belongs to is published.
     #: Choice for :obj:`~.AbstractGroupComment.visibility`.
     VISIBILITY_PRIVATE = 'private'
 
@@ -76,22 +112,51 @@ class AbstractGroupComment(comment_models.Comment):
     class Meta:
         abstract = True
 
+    def clean(self):
+        """
+        Check for situations that should result in error.
+
+        :raises: ValidationError:
+            Error occurs if :obj:`~.AbstractGroupComment.user_role` is ``'student'`` and
+            :obj:`~.AbstractGroupComment.visibility` is not set to
+            :obj:`~.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
+            |
+            Error occurs if :obj:`~.AbstractGroupComment.user_role` is ``'examiner'`` and
+            :obj:`~.AbstractGroupComment.part_of_grading` is ``False`` and :obj:`~.AbstractGroupComment.visibility` is
+            set to :obj:`~.AbstractGroupComment.VISIBILITY_PRIVATE`.
+        """
+        if self.user_role == 'student':
+            if self.visibility is not AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
+                raise ValidationError({
+                    'visibility': ugettext_lazy('A student comment is always visible to everyone'),
+                })
+        if self.user_role == 'examiner':
+            if not self.part_of_grading and self.visibility == AbstractGroupComment.VISIBILITY_PRIVATE:
+                raise ValidationError({
+                    'visibility': ugettext_lazy('A examiner comment can only be private if part of grading.')
+                })
+
     def get_published_datetime(self):
         """
         Get the publishing datetime of the comment. Publishing datetime is
         the publishing time of the FeedbackSet if the comment has
         :obj:`~devilry.devilry_group.models.AbstractGroupComment.part_of_grading`
-        set to True.
+        set to True, else it's just the comments' published_datetime.
 
-        Returns: Datetime.
-
+        :return: Datetime.
         """
         return self.feedback_set.grading_published_datetime \
             if self.part_of_grading \
             else self.published_datetime
 
     def publish_draft(self, time):
-        self.published_datetime = time + timezone.timedelta(milliseconds=1)
+        """
+        Sets the published datetime of the comment to ``time``.
+
+        :param time: publishing time to set for the comment.
+        """
+        self.published_datetime = time
+        self.visibility = GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
         self.full_clean()
         self.save()
 
@@ -131,7 +196,7 @@ class FeedbackSet(models.Model):
     #: Grading status choices for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_CHOICES = [
         (FEEDBACKSET_TYPE_FIRST_ATTEMPT, 'first attempt'),
-        (FEEDBACKSET_TYPE_NEW_ATTEMPT,'new attempt'),
+        (FEEDBACKSET_TYPE_NEW_ATTEMPT, 'new attempt'),
         (FEEDBACKSET_TYPE_RE_EDIT, 're edit'),
     ]
 
@@ -203,9 +268,26 @@ class FeedbackSet(models.Model):
         # )
 
     def __unicode__(self):
-        return u"{} - {} - {} - deadline: {}".format(self.group.assignment, self.feedbackset_type, self.group.long_displayname, self.deadline_datetime)
+        return u"{} - {} - {} - deadline: {} - points: {}".format(
+                self.group.assignment,
+                self.feedbackset_type,
+                self.group.get_unanonymized_long_displayname(),
+                self.deadline_datetime,
+                self.grading_points)
 
     def clean(self):
+        """
+        Check for situations that should result in error.
+
+        :raises: ValidationError:
+            Error occurs if :obj:`~.FeedbackSet.grading_published_datetime` has a datetime but
+            :obj:`~.FeedbackSet.grading_published_by` is ``None``.
+            |
+            Error occurs if :obj:`~.FeedbackSet.grading_published_datetime` has a datetime but
+            :obj:`~.FeedbackSet.grading_points` is ``None``.
+            |
+            Error occurs if :obj:`~.FeedbackSet.is_last_in_group` is ``None``.
+        """
         if self.grading_published_datetime is not None and self.grading_published_by is None:
             raise ValidationError({
                 'grading_published_datetime': ugettext_lazy('An assignment can not be published '
@@ -221,56 +303,55 @@ class FeedbackSet(models.Model):
                 'is_last_in_group': 'is_last_in_group can not be false.'
             })
 
-    @property
-    def current_deadline(self):
+    def current_deadline(self, assignment=None):
+        """
+        If the :obj:`~.FeedbackSet.feedbackset_type` is ``FEEDBACKSET_TYPE_FIRST_ATTEMPT``, the
+        deadline datetime is the Assignments' first_deadline, else it's :obj:`~.FeedbackSet.deadline_datetime`.
+
+        :param assignment: Optional argument.
+        :return: A deadline datetime or None
+        """
+        if assignment is None:
+            first_deadline = self.group.assignment.first_deadline
+        else:
+            first_deadline = assignment.first_deadline
         if self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
-            return self.group.parentnode.first_deadline or self.deadline_datetime
+            return first_deadline or self.deadline_datetime
         return self.deadline_datetime
+
+    def __get_drafted_comments(self, user):
+        """
+        Get all drafted comments for this FeedbackSet drafted by ``user``.
+
+        :param user: Current user.
+        :return: QuerySet of GroupComments
+        """
+        return GroupComment.objects.filter(
+            feedback_set=self,
+            part_of_grading=True
+        ).exclude_private_comments_from_other_users(
+            user=user
+        ).order_by('created_datetime')
 
     def publish(self, published_by, grading_points, gradeform_data_json=''):
         """
-        Publishes this FeedbackSet and comments that belongs to this feedbackset and that are
+        Publishes this FeedbackSet and comments that belongs to this it and that are
         part of the grading.
 
-        :param published_by:
-            Who published the feedbackset.
-
-        :param grading_points:
-            Points give to student(s).
-
-        :param gradeform_data_json:
-            gradeform(coming soon).
-
-        Returns:
-            True or False and an error message.
-
+        :param published_by: Who published the feedbackset.
+        :param grading_points: Points to give to student(s).
+        :param gradeform_data_json: gradeform(coming soon).
+        :return: True or False and an error message.
         """
-        if published_by is None:
-            raise ValueError
-        if grading_points is None:
-            raise ValueError
-
-        current_deadline = self.current_deadline
-        # if self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
-        #     current_deadline = self.deadline_datetime or self.group.parentnode.first_deadline
-        # elif self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT:
-        #     current_deadline = self.deadline_datetime
-
+        current_deadline = self.current_deadline()
         if current_deadline is None:
             return False, 'Cannot publish feedback without a deadline.'
 
         if current_deadline > timezone.now():
             return False, 'The deadline has not expired. Feedback was saved, but not published.'
 
-        drafted_comments = GroupComment.objects.filter(
-                feedback_set=self,
-                part_of_grading=True
-        ).exclude_private_comments_from_other_users(
-            user=published_by
-        ).order_by('created_datetime')
-
-        now = timezone.now()
-        now_without_seconds = now.replace(second=0, microsecond=0)
+        drafted_comments = self.__get_drafted_comments(published_by)
+        now_without_seconds = timezone.now().replace(second=0, microsecond=0)
         for modifier, draft in enumerate(drafted_comments):
             draft.publish_draft(now_without_seconds + timezone.timedelta(milliseconds=modifier))
 

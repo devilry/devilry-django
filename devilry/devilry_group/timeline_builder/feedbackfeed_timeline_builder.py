@@ -1,18 +1,31 @@
+# Python imports
+from __future__ import unicode_literals
 import collections
 import datetime
 
+# Django imports
 from django.db import models
 from django.utils import timezone
 
+# Devilry/cradmin imports
 from devilry.devilry_comment.models import CommentFile, Comment
 from devilry.devilry_group import models as group_models
 
 
 class FeedbackFeedTimelineBuilder(object):
     """
-
+    Builds a sorted timeline of events that occur in the feedbackfeed.
+    Generates a dictionary of events such as comments, new deadlines, expired deadlines and grading.
     """
     def __init__(self, group, requestuser, devilryrole):
+        """
+        Initialize instance of :class:`~FeedbackFeedTimelineBuilder`.
+
+        Args:
+            group: An :obj:`~devilry.apps.core.AssignmentGroup` object.
+            requestuser: The requestuser.
+            devilryrole: The role of the requestuser.
+        """
         self.requestuser = requestuser
         self.devilryrole = devilryrole
         self.group = group
@@ -23,21 +36,16 @@ class FeedbackFeedTimelineBuilder(object):
 
     def __get_feedbackset_queryset(self):
         """
-        Retrieves the comments a user has access to.
-        This function must be implemented by subclasses of :class:`~.FeedbackFeedBaseView`
-
-        :param group:
-            The :class:`devilry.apps.core.models.AssignmentGroup` the user belongs to.
+        Get FeedbackSets' for the AssignmentGroup filtering on which comments
+        should be shown in the feedbackfeed.
 
         Returns:
-            List of :class:`devilry.devilry_group.models.GroupComment` objects.
-
+            QuerySet: FeedbackSet queryset.
         """
         commentfile_queryset = CommentFile.objects\
             .select_related('comment__user')\
             .order_by('filename')
         groupcomment_queryset = group_models.GroupComment.objects\
-            .filter(feedback_set__group=self.group)\
             .exclude_private_comments_from_other_users(user=self.requestuser)\
             .select_related(
                 'user',
@@ -49,32 +57,65 @@ class FeedbackFeedTimelineBuilder(object):
                 .filter(visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)\
                 .exclude_is_part_of_grading_feedbackset_unpublished()
         return group_models.FeedbackSet.objects\
+            .filter(group=self.group)\
             .prefetch_related(models.Prefetch('groupcomment_set', queryset=groupcomment_queryset))\
             .order_by('created_datetime')
 
     def __make_candidatemap(self):
+        """
+        Create a map of :class:`devilry.apps.core.models.Candidate` objects with user id as key.
+
+        Returns:
+            dict: Map of candidates.
+        """
         candidatemap = {}
         for candidate in self.group.candidates.all():
             candidatemap[candidate.relatedstudent.user_id] = candidate
         return candidatemap
 
     def __make_examinermap(self):
+        """
+        Create a map of :class:`devilry.apps.core.models.Examiner` objects with user id as key.
+
+        Returns:
+             dict: Map of examiners.
+        """
         examinermap = {}
         for examiner in self.group.examiners.all():
             examinermap[examiner.relatedexaminer.user_id] = examiner
         return examinermap
 
     def __get_candidate_from_user(self, user):
-        return self.__candidatemap.get(user.id, None)
+        """
+        Get the :class:`devilry.apps.core.models.Candidate` object based on the user from the
+        candidate map.
+
+        Args:
+            user: A class:`devilry.devilry_account.models.User` object.
+
+        Returns:
+             :class:`devilry.apps.core.models.Candidate`: A candidate or None.
+        """
+        return self.__candidatemap.get(user.id)
 
     def __get_examiner_from_user(self, user):
-        return self.__examinermap.get(user.id, None)
+        """
+        Get the :class:`devilry.apps.core.models.Candidate` object based on the user from the
+        examiner map.
+
+        Args:
+            user: A :class:`devilry.devilry_account.models.User` object.
+        Returns:
+             :class:`devilry.apps.core.models.Examiner`: An examiner or None.
+        """
+        return self.__examinermap.get(user.id)
 
     def get_last_feedbackset(self):
         """
+        Get the last :class:`devilry.devilry_group.models.FeedbackSet`.
 
         Returns:
-
+             The last :class:`devilry.devilry_group.models.FeedbackSet`
         """
         if self.feedbacksets:
             return self.feedbacksets[-1]
@@ -83,9 +124,10 @@ class FeedbackFeedTimelineBuilder(object):
 
     def __get_first_feedbackset(self):
         """
+        Get the first :class:`devilry.devilry_group.models.FeedbackSet`.
 
         Returns:
-
+             :class:`devilry.devilry_group.models.FeedbackSet`: The first FeedbackSet or None.
         """
         if self.feedbacksets:
             return self.feedbacksets[0]
@@ -94,9 +136,11 @@ class FeedbackFeedTimelineBuilder(object):
 
     def get_last_deadline(self):
         """
+        Get the :obj:`devilry.devilry_group.models.FeedbackSet.deadline_datetime` of the last
+        FeedbackSet.
 
         Returns:
-
+             DateTime: Deadline datetime or None.
         """
         last_feedbackset = self.get_last_feedbackset()
         if last_feedbackset:
@@ -106,34 +150,25 @@ class FeedbackFeedTimelineBuilder(object):
 
     def __get_deadline_for_feedbackset(self, feedbackset):
         """
+        Get the :obj:`devilry.devilry_group.models.FeedbackSet.deadline_datetime` for the ``feedbackset``.
 
         Args:
-            index:
-            feedbackset:
+            feedbackset: Get deadline from.
 
         Returns:
-
+            DateTime: Current deadline for ``feedbackset``(may be None).
         """
-        if feedbackset.feedbackset_type == group_models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
-            if self.group.parentnode.first_deadline is not None:
-                # first feedback set should use assignments first_deadline
-                return self.group.parentnode.first_deadline
-            else:
-                # if assignment has no first_deadline, fall back to the deadline
-                # of the feedbackset (this shouldn't happen)
-                return feedbackset.deadline_datetime
-        else:
-            return feedbackset.deadline_datetime
+        return feedbackset.current_deadline(assignment=self.group.parentnode)
 
     def __add_event_item_to_timeline(self, datetime, event_dict):
         """
         General function for adding an event to the timeline.
-        An event item is everything that occurs on the feedbackfeed that can
+        An event item is anything that occurs on the feedbackfeed that can
         be sorted; a comment, deadline created, deadline expired and grading.
 
         Args:
-            datetime: The time the event is sorted on
-            event_dict: The event object.
+            datetime: The datetime the event should be ordered by.
+            event_dict: The event dictionary.
         """
         if datetime is None:
             return
@@ -144,32 +179,30 @@ class FeedbackFeedTimelineBuilder(object):
 
     def __add_deadline_created_to_timeline(self, feedbackset):
         """
+        Adds a deadline_created event type to the timeline.
+        A deadline_created event is when a :class:`devilry.devilry_group.models.FeedbackSet` is created
+        and the :obj:`devilry.devilry_group.models.FeedbackSet.feedbackset_type` is ``FEEDBACKSET_TYPE_NEW_ATTEMPT``.
 
         Args:
-            feedbackset:
-
-        Returns:
-
+            feedbackset: FeedbackSet to add to the timeline.
         """
         if feedbackset.feedbackset_type == group_models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
             return
-        current_deadline = self.__get_deadline_for_feedbackset(feedbackset=feedbackset)
         self.__add_event_item_to_timeline(
                 datetime=feedbackset.created_datetime,
                 event_dict={
                     "type": "deadline_created",
-                    "obj": current_deadline,
-                    "user": feedbackset.created_by
+                    "feedbackset": feedbackset
                 })
 
     def __add_deadline_expired_if_needed(self, feedbackset):
         """
+        Adds a deadline_expired event type to the timeline.
+        The expired deadline is the :func:`devilry.devilry_group.models.FeedbackSet.current_deadline` of
+        ``feedbackset``.
 
         Args:
-            feedbackset:
-
-        Returns:
-
+            feedbackset: Get deadline from.
         """
         current_deadline = self.__get_deadline_for_feedbackset(feedbackset=feedbackset)
         if current_deadline is None:
@@ -179,36 +212,32 @@ class FeedbackFeedTimelineBuilder(object):
                     datetime=current_deadline,
                     event_dict={
                         "type": "deadline_expired",
-                        "obj": current_deadline
+                        "deadline_datetime": current_deadline
                     })
 
     def __add_grade_to_timeline_if_published(self, feedbackset):
         """
+        Add a grade event when the :obj:`devilry.devilry_group.models.FeedbackSet.grading_published_datetime` is set for
+        ``feedbackset``.
 
         Args:
-            deadline_datetime:
-            feedbackset:
-
-        Returns:
-
+            feedbackset: Get published grading datetime from.
         """
         self.__add_event_item_to_timeline(
             datetime=feedbackset.grading_published_datetime,
             event_dict={
                 "type": "grade",
-                "obj": feedbackset.grading_points
+                "feedbackset": feedbackset
             }
         )
 
     def __add_comment_to_timeline(self, group_comment, feedbackset):
         """
+        Adds a :class:`devilry.devilry_group.models.GroupComment` to the timeline.
 
         Args:
-            group_comment:
-            feedbackset:
-
-        Returns:
-
+            group_comment: The comment to add.
+            feedbackset: The feedbackset the comment belongs to.
         """
         event_dict = {
             "type": "comment",
@@ -226,24 +255,26 @@ class FeedbackFeedTimelineBuilder(object):
 
     def __add_comments_to_timeline(self, feedbackset):
         """
+        Iterates through the comments for ``feedbackset`` and adds them to the timeline.
 
         Args:
-            feedbackset:
-
-        Returns:
-
+             feedbackset: Feedbackset to get comments from.
         """
         for group_comment in feedbackset.groupcomment_set.all():
             self.__add_comment_to_timeline(group_comment=group_comment, feedbackset=feedbackset)
 
     def __add_feedbackset_to_timeline(self, feedbackset):
         """
+        Adds events to the timeline by calling the functions for adding specific events.
+
+        See documentation for functions:
+            ``__add_deadline_created_to_timeline()``
+            ``__add_deadline_expired_if_needed()``
+            ``__add_grade_to_timeline_if_published()``
+            ``__add_comments_to_timeline()``
 
         Args:
-            feedbackset:
-
-        Returns:
-
+            feedbackset: Current feedbackset to add events for.
         """
         self.__add_deadline_created_to_timeline(feedbackset=feedbackset)
         self.__add_deadline_expired_if_needed(feedbackset=feedbackset)
@@ -252,10 +283,11 @@ class FeedbackFeedTimelineBuilder(object):
 
     def __sort_timeline(self):
         """
+        Sorts the timeline after all events are added.
         """
-        def compare_timeline_items(a, b):
-            datetime_a = a[0]
-            datetime_b = b[0]
+        def compare_timeline_items(timeline_item_a, timeline_item_b):
+            datetime_a = timeline_item_a[0]
+            datetime_b = timeline_item_b[0]
             if datetime_a is None:
                 datetime_a = datetime.datetime(1970, 1, 1)
             if datetime_b is None:
@@ -265,7 +297,8 @@ class FeedbackFeedTimelineBuilder(object):
 
     def build(self):
         """
-
+        Build is called on an instance of :class:`~.FeedbackFeedTimelineBuilder` and builds the timeline
+        and then sorts it.
         """
         for feedbackset in self.feedbacksets:
             self.__add_feedbackset_to_timeline(feedbackset=feedbackset)
@@ -273,9 +306,10 @@ class FeedbackFeedTimelineBuilder(object):
 
     def get_as_list(self):
         """
+        Get a flat list of event dictionaries.
 
         Returns:
-
+             list: List of event-dictionaries.
         """
         timeline_list = []
         for datetime in sorted(self.timeline.keys()):
