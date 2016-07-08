@@ -232,26 +232,6 @@ class EditGroupCommentForm(forms.ModelForm):
         return ['text']
 
 
-class GroupCommentEditDeleteMixin(object):
-    class Meta:
-        abstract = True
-
-    def get_queryset_for_role(self, role):
-        """
-        Filter out :obj:`~devilry.devilry_group.models.GroupComment`s based on the role of role of the
-        crinstance and the primarykey of the comment since in this case only a single comment should be fetched.
-
-        Args:
-            role (GroupComment): The roleclass for the crinstance.
-
-        Returns:
-            QuerySet: Set containing one :obj:`~devilry.devilry_group.models.GroupComment`.
-        """
-        return group_models.GroupComment.objects.filter(
-                feedback_set__group=role,
-                id=self.kwargs.get('pk'))
-
-
 class CreateFeedbackSetForm(cradmin_feedbackfeed_base.GroupCommentForm):
     """
     Form for creating a new FeedbackSet (deadline).
@@ -372,13 +352,37 @@ class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
         return comment
 
 
+class GroupCommentEditDeleteMixin(object):
+    """
+    Basic mixin/super-class for GroupCommentDeleteView and GroupCommentEditView.
+    """
+    model = group_models.GroupComment
+
+    class Meta:
+        abstract = True
+
+    def get_queryset_for_role(self, role):
+        """
+        Filter out :obj:`~devilry.devilry_group.models.GroupComment`s based on the role of role of the
+        crinstance and the primarykey of the comment since in this case only a single comment should be fetched.
+
+        Args:
+            role (GroupComment): The roleclass for the crinstance.
+
+        Returns:
+            QuerySet: Set containing one :obj:`~devilry.devilry_group.models.GroupComment`.
+        """
+        return group_models.GroupComment.objects.filter(
+                feedback_set__group=role,
+                id=self.kwargs.get('pk')).exclude_comment_is_not_draft_from_user(self.request.user)
+
+
 class GroupCommentDeleteView(GroupCommentEditDeleteMixin, delete.DeleteView):
     """
     View for deleting an existing groupcomment with visibility set to private.
     When a groupcomment has visibility set to private, this means it's a feedbackdraft.
     """
     template_name = 'devilry_group/feedbackfeed_examiner_delete_groupcomment.html'
-    model = group_models.GroupComment
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -394,8 +398,7 @@ class GroupCommentDeleteView(GroupCommentEditDeleteMixin, delete.DeleteView):
         Raises:
             PermissionDenied: If comment is not a draft, this exception is raised.
         """
-        comment = self.get_queryset_for_role(request.cradmin_role)[0]
-        if comment.visibility != group_models.GroupComment.VISIBILITY_PRIVATE or not comment.part_of_grading:
+        if len(self.get_queryset_for_role(request.cradmin_role)) == 0:
             raise PermissionDenied
         return super(GroupCommentDeleteView, self).dispatch(request, *args, **kwargs)
 
@@ -414,7 +417,6 @@ class GroupCommentEditView(GroupCommentEditDeleteMixin, update.UpdateView):
     :class:`~devilry.devilry_group.models.GroupComment` that's saved as a draft.
     """
     template_name = 'devilry_group/feedbackfeed_examiner_edit_groupcomment.html'
-    model = group_models.GroupComment
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -430,8 +432,7 @@ class GroupCommentEditView(GroupCommentEditDeleteMixin, update.UpdateView):
         Raises:
             PermissionDenied: If comment is not a draft, this exception is raised.
         """
-        comment = self.get_queryset_for_role(request.cradmin_role)[0]
-        if comment.visibility != group_models.GroupComment.VISIBILITY_PRIVATE or not comment.part_of_grading:
+        if len(self.get_queryset_for_role(request.cradmin_role)) == 0:
             raise PermissionDenied
         return super(GroupCommentEditView, self).dispatch(request, *args, **kwargs)
 

@@ -1,13 +1,13 @@
 import json
 
-from django.utils import timezone
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy
 
-from devilry.devilry_comment import models as comment_models
 from devilry.apps.core.models import assignment_group
+from devilry.devilry_comment import models as comment_models
 
 
 class AbstractGroupCommentQuerySet(models.QuerySet):

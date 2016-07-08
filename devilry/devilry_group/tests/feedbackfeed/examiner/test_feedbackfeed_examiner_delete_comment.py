@@ -46,6 +46,24 @@ class TestFeedbackFeedDeleteComment(TestCase, cradmin_testhelpers.TestCaseMixin)
                                  requestuser=testexaminer.relatedexaminer.user,
                                  viewkwargs={'pk': testcomment.id})
 
+    def test_delete_comment_only_created_by_requestuser(self):
+        # Test that another examiner cannot delete other examiners drafts.
+        testexaminer = mommy.make('core.Examiner',
+                                  relatedexaminer=mommy.make('core.RelatedExaminer'))
+        testexaminer_author = mommy.make('core.Examiner',
+                                         assignmentgroup=testexaminer.assignmentgroup,
+                                         relatedexaminer=mommy.make('core.RelatedExaminer'))
+        testcommentdraft = mommy.make('devilry_group.GroupComment',
+                                      user=testexaminer_author.relatedexaminer.user,
+                                      user_role='examiner',
+                                      part_of_grading=True,
+                                      visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
+                                      feedback_set__group=testexaminer.assignmentgroup)
+        with self.assertRaises(PermissionDenied):
+            self.mock_getrequest(cradmin_role=testexaminer.assignmentgroup,
+                                 requestuser=testexaminer.relatedexaminer.user,
+                                 viewkwargs={'pk': testcommentdraft.id})
+
     def test_delete_and_cancel_buttons_exists(self):
         # Test that `Delete` and `Cancel` buttons exist
         testexaminer = mommy.make('core.Examiner',
@@ -61,3 +79,18 @@ class TestFeedbackFeedDeleteComment(TestCase, cradmin_testhelpers.TestCaseMixin)
                                                           viewkwargs={'pk': testcomment.id})
         self.assertEquals('Delete', mockresponse.selector.one('.btn-danger').alltext_normalized)
         self.assertEquals('Cancel', mockresponse.selector.one('.btn-cancel').alltext_normalized)
+
+    def test_delete_num_queries(self):
+        # Test number of queries executed
+        testexaminer = mommy.make('core.Examiner',
+                                  relatedexaminer=mommy.make('core.RelatedExaminer'))
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 user=testexaminer.relatedexaminer.user,
+                                 user_role='examiner',
+                                 part_of_grading=True,
+                                 visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
+                                 feedback_set__group=testexaminer.assignmentgroup)
+        with self.assertNumQueries(2):
+            self.mock_http200_getrequest_htmls(cradmin_role=testexaminer.assignmentgroup,
+                                               requestuser=testexaminer.relatedexaminer.user,
+                                               viewkwargs={'pk': testcomment.id})
