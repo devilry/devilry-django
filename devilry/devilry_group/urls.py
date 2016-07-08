@@ -1,12 +1,11 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 
-from devilry.devilry_group.cradmin_instances import crinstance_student
-from devilry.devilry_group.cradmin_instances import crinstance_examiner
 from devilry.devilry_group.cradmin_instances import crinstance_admin
+from devilry.devilry_group.cradmin_instances import crinstance_examiner
+from devilry.devilry_group.cradmin_instances import crinstance_student
 from devilry.devilry_group.views import feedbackfeed_download_files
 
-urlpatterns = patterns(
-    'devilry.devilry_group',
+urlpatterns = [
     url(r'^student/', include(crinstance_student.StudentCrInstance.urls())),
     url(r'^examiner/', include(crinstance_examiner.ExaminerCrInstance.urls())),
     url(r'^admin/', include(crinstance_admin.AdminCrInstance.urls())),
@@ -22,4 +21,4 @@ urlpatterns = patterns(
     url(r'devilry-feedbackfeed-compressed-feedback-file-download/(?P<feedbackset_id>[0-9]+)',
         feedbackfeed_download_files.CompressedFeedbackSetFileDownloadView.as_view(),
         name='devilry-feedbackfeed-compressed-feedbackset-file-download'),
-)
+]

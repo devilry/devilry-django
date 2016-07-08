@@ -5,7 +5,7 @@ from devilry.apps.core import models as core_models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_examiner
-from devilry.devilry_group.views import feedbackfeed_examiner
+from devilry.devilry_group.views.examiner import feedbackfeed_examiner
 
 
 class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
@@ -27,7 +27,8 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
 
     def test_get_no_form_grade_option(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+                                       grading_system_plugin_id=core_models.Assignment
+                                       .GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=mommy.make('core.AssignmentGroup', parentnode=assignment),
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
@@ -107,7 +108,7 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
         self.assertEquals('visible-to-everyone', group_models.GroupComment.objects.all()[0].visibility)
 
     def test_post_feedbackset_comment_visible_to_examiner_and_admins(self):
-        feedbackset = mommy.make('devilry_group.FeedbackSet', )
+        feedbackset = mommy.make('devilry_group.FeedbackSet')
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=feedbackset.group,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
@@ -125,13 +126,12 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
 
     def test_post_comment_always_to_last_feedbackset(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
-
+                                       grading_system_plugin_id=core_models.Assignment
+                                       .GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=group,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
-
         feedbackset_first = group_mommy.feedbackset_first_attempt_published(is_last_in_group=None, group=group)
         feedbackset_last = group_mommy.feedbackset_new_attempt_unpublished(group=group)
         self.mock_http302_postrequest(

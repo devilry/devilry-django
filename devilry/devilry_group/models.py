@@ -1,13 +1,13 @@
 import json
 
-from django.utils import timezone
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy
 
-from devilry.devilry_comment import models as comment_models
 from devilry.apps.core.models import assignment_group
+from devilry.devilry_comment import models as comment_models
 
 
 class AbstractGroupCommentQuerySet(models.QuerySet):
@@ -15,14 +15,48 @@ class AbstractGroupCommentQuerySet(models.QuerySet):
     Base class for QuerySets for :class:`.AbstractGroupComment`.
     """
     def exclude_private_comments_from_other_users(self, user):
+        """
+        Exclude all GroupComments with :obj:`~.GroupComment.visibility` set to :obj:`~.GroupComment.VISIBILITY_PRIVATE`
+        and the :obj:`~.GroupComment.user` is not the ``user``.
+
+        Args:
+            user: The requestuser.
+
+        Returns:
+            QuerySet: QuerySet of :obj:`~.GroupComment`s not excluded.
+        """
         return self.exclude(
             models.Q(visibility=AbstractGroupComment.VISIBILITY_PRIVATE) & ~models.Q(user=user)
         )
 
     def exclude_is_part_of_grading_feedbackset_unpublished(self):
+        """
+        Exclude all :class:`~.GroupComment`s that has :obj:`~.GroupComment.part_of_grading` set to ``True`` if the
+        :obj:`~.GroupComment.feedback_set.grading_published_datetime` is ``None``.
+
+        Returns:
+            QuerySet: QuerySet of :obj:`~.GroupComment`s not excluded.
+        """
         return self.exclude(
             part_of_grading=True,
             feedback_set__grading_published_datetime__isnull=True
+        )
+
+    def exclude_comment_is_not_draft_from_user(self, user):
+        """
+        Exclude :class:`~.GroupComment`s that are not drafts or the :obj:`~.GroupComment.user` is not the requestuser.
+
+        A :class:`~.GroupComment` is a draft if :obj:`~.GroupComment.visibility` set to
+        :obj:`~.GroupComment.VISIBILITY_PRIVATE` and :obj:`~.GroupComment.part_of_grading` is ``True``.
+
+        Args:
+            user: The requestuser
+
+        Returns:
+            QuerySet: QuerySet of :obj:`~.GroupComment`s not excluded.
+        """
+        return self.exclude(
+            ~models.Q(part_of_grading=True, visibility=GroupComment.VISIBILITY_PRIVATE) | ~models.Q(user=user)
         )
 
 

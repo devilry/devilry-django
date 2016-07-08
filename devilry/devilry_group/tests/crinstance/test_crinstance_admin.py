@@ -16,7 +16,6 @@ class TestCrinstanceAdmin(test.TestCase):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
-
         instance = crinstance_admin.AdminCrInstance(request=mockrequest)
         self.assertEquals([], list(instance.get_rolequeryset()))
 
