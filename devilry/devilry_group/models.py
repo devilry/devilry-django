@@ -1,11 +1,17 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+# python imports
 import json
 
+# django imports
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy
 
+# devilry imports
 from devilry.apps.core.models import assignment_group
 from devilry.devilry_comment import models as comment_models
 

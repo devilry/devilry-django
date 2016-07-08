@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 # python imports
 from tempfile import NamedTemporaryFile
 import posixpath

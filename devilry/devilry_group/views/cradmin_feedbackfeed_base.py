@@ -1,5 +1,7 @@
-# Python imports
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+# Python imports
 import json
 import datetime
 

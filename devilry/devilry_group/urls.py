@@ -1,5 +1,10 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+# django imports
 from django.conf.urls import url, include
 
+# devilry imports
 from devilry.devilry_group.cradmin_instances import crinstance_admin
 from devilry.devilry_group.cradmin_instances import crinstance_examiner
 from devilry.devilry_group.cradmin_instances import crinstance_student

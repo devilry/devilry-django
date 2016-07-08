@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 # Python imports
 import os
 import zipfile
-import io
 
 # Django imports
 from django import http
