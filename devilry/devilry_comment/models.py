@@ -72,6 +72,9 @@ class Comment(models.Model):
     #: What type of comment is this. Used for reverse mapping to subclasses.
     comment_type = models.CharField(choices=COMMENT_TYPE_CHOICES, max_length=42)
 
+    def __unicode__(self):
+        return '{}'.format(self.user)
+
     def add_commentfile_from_temporary_file(self, tempfile):
         """
         Converts a temporary file to a :class:`~.CommentFile` and saves it.
