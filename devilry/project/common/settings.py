@@ -93,6 +93,9 @@ INSTALLED_APPS = [
     'devilry.devilry_detektor',
     'devilry.devilry_admin',
     'devilry.project.common',
+    'rest_framework_swagger',
+    'rest_framework',
+    'devilry.devilry_api',
 
     # 'devilry.devilry_elasticsearch_cache.apps.ElasticsearchCacheAppConfig',
 ]
@@ -171,6 +174,19 @@ LOCALE_PATHS = [
         'locale')
 ]
 
+###########################
+# REST API related settings
+###########################
+
+SWAGGER_SETTINGS = {
+    'info': {
+        'title': 'devilry API documentation',
+    }
+}
+REST_FRAMEWORK = {
+    'VIEW_DESCRIPTION_FUNCTION': 'rest_framework_swagger.views.get_restructuredtext',
+
+}
 
 ###################################################
 # Setup logging using the defaults - logs to stderr
