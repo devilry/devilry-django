@@ -51,4 +51,5 @@ devilry_urls = (
     #url(r'^devilry_gradingsystemplugin_approved/', include('devilry.devilry_gradingsystemplugin_approved.urls')),
     url(r'^devilry_detektor/', include('devilry.devilry_detektor.urls')),
     url(r'^', include(crinstance_frontpage.CrAdminInstance.urls())),
+    url(r'^api/', include('devilry.devilry_api.urls')),
 )

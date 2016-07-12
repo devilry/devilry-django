@@ -89,13 +89,12 @@ INSTALLED_APPS = [
     'devilry.devilry_gradingsystem',
     'devilry.devilry_gradingsystemplugin_points.apps.GradingsystemPointsAppConfig',
     'devilry.devilry_gradingsystemplugin_approved.apps.GradingsystemApprovedAppConfig',
-    'devilry.devilry_rest',
     'devilry.devilry_detektor',
     'devilry.devilry_admin',
     'devilry.project.common',
     'rest_framework_swagger',
     'rest_framework',
-    'devilry.devilry_api',
+    'devilry.devilry_api.apps.DevilryAPIAppConfig',
 
     # 'devilry.devilry_elasticsearch_cache.apps.ElasticsearchCacheAppConfig',
 ]
