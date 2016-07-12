@@ -14,13 +14,12 @@ class DownloadAllDeliveriesOnAssignment(object):
         self.assignment = assignment
         self.args_dict = args_dict
 
-
     def create_directory_structure_of_all_deliveries_on_assignment(self):
         tmp_rootdir_name = self.assignment.get_path().encode('ascii', 'replace')
         self._create_delivery_files(tmp_rootdir_name)
 
     def _create_delivery_files(self, tmp_rootdir_name):
-        for group in self._get_queryset():
+        for group in self._get_assignmentgroup_queryset():
             groupname = '{} (groupid={})'.format(group.short_displayname, group.id)
             for deadline in group.deadlines.all():
                 for delivery in deadline.deliveries.all():
@@ -42,7 +41,7 @@ class DownloadAllDeliveriesOnAssignment(object):
                             delivery_file.write(file_content.read())
                             delivery_file.close()
 
-    def _get_queryset(self):
+    def _get_assignmentgroup_queryset(self):
         return AssignmentGroup.objects.filter(parentnode=self.assignment)
 
 
@@ -66,10 +65,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
     args_dict = vars(args)
 
-    assignment = Assignment.objects.filter(parentnode__short_name=args_dict.get('period')).\
-            filter(parentnode__parentnode__short_name=args_dict.get('subject')).\
-            filter(short_name=args_dict.get('assignment')).\
-            first()
+    assignment = Assignment.objects.filter(parentnode__short_name=args_dict.get('period')). \
+        filter(parentnode__parentnode__short_name=args_dict.get('subject')). \
+        filter(short_name=args_dict.get('assignment')). \
+        first()
 
     if not assignment:
         print "There is no assignment matching the arguments of the script"
