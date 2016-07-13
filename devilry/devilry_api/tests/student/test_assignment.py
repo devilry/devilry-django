@@ -9,7 +9,6 @@ from devilry.devilry_api.student.views import assignment_views
 from devilry.devilry_api.tests.mixins import auth_test_common
 
 
-class TestAssignmentGroupListView(auth_test_common.TestAuthMixin, test.TestCase):
+class TestAssignmentGroupListView(auth_test_common.TestAuthAPIKeyMixin, test.TestCase):
     viewclass = assignment_views.AssignmentGroupListView
     route = '/student/assignment-list/'
-
