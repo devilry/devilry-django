@@ -1,0 +1,13 @@
+{% extends 'devilry_group/listbuilder_sidebar/base_sidebar_file_item_value.django.html' %}
+
+{% load devilry_group_tags %}
+{% load i18n %}
+
+{% block content %}
+    <a href="#" >{{ me.delivery_file.filename|devilry_truncatefileextension:26 }}</a>
+    {% if me.delivery_file.comment.published_datetime > me.delivery_file.comment.feedback_set.deadline_datetime and me.delivery_file.comment.user_role != 'examiner' %}
+        <i class="after-deadline-icon pull-left" tooltip="Submitted after deadline"></i>
+    {% elif me.delivery_file.comment.user_role == 'examiner' %}
+        <i class="examiner-file-icon pull-left" tooltip="Submitted by examiner"></i>
+    {% endif %}
+{% endblock content %}
