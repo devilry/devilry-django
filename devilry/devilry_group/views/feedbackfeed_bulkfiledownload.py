@@ -173,6 +173,12 @@ class BulkFileDownloadBaseView(generic.View):
                     - .....
             inf2100.oblig2.student3.student4/
                 - ....
+
+        Args:
+            queryset (QuerySet): The queryset to use.
+
+        Returns:
+            dict: Dictionary of :class:`~devilry.devilry_comment.models.CommentFile`s.
         """
         files = {}
         attemptcounter = 1
@@ -194,6 +200,9 @@ class BulkFileDownloadBaseView(generic.View):
         """
         Build a zip-archive with structure defined by get_filestructure() in memory using ZipBuffer, and yield chunks
         for streaming to response
+
+        Args:
+            queryset(QuerySet): The queryset to use.
         """
         sink = ZipBuffer()
         archive = zipfile.ZipFile(sink, "w")
@@ -211,6 +220,15 @@ class BulkFileDownloadBaseView(generic.View):
             yield chunk
 
     def get(self, request):
+        """
+        Generate a HttpResponse with a zipped collection of files.
+
+        Args:
+            request (HttpRequest): request for the view.
+
+        Returns:
+            HttpResponse: created response.
+        """
         queryset = self.get_queryset(request)
         if not queryset.exists():
             return http.Http404()  # TODO: fitting errmsg
