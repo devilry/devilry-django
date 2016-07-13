@@ -39,7 +39,7 @@ class APIKey(models.Model):
     #: key activation start date
     start_datetime = models.DateTimeField(default=timezone.now)
 
-    #: the key expire this date
+    #: the key expire this date or never if None
     expiration_date = models.DateTimeField(blank=True, null=True)
 
     #: last login timestamp
@@ -56,12 +56,9 @@ class APIKey(models.Model):
         Returns:
             bool: true if the key has expired, false if not
         """
-        if self.expiration_date is None:
-            return False
-        elif self.expiration_date <= timezone.now():
+        if self.expiration_date and self.expiration_date <= timezone.now():
             return True
-        else:
-            return False
+        return False
 
     @property
     def is_active(self):

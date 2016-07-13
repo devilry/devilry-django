@@ -12,6 +12,7 @@ class TokenAuthentication(authentication.TokenAuthentication):
 
     def authenticate(self, request):
         auth = authentication.get_authorization_header(request).split()
+
         if not auth or auth[0].lower() != b'token':
             msg = ugettext_lazy('Token not provided.')
             raise authentication.exceptions.AuthenticationFailed(msg)

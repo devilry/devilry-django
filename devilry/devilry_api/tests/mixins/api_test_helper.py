@@ -35,7 +35,7 @@ class TestCaseMixin(object):
         if requestuser:
             request.user = requestuser
         if apikey:
-            force_authenticate(request, token=apikey)
+            request.META['HTTP_AUTHORIZATION'] = apikey
         return request, kwargs
 
     def create_admin_user(self):
