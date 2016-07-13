@@ -3,12 +3,21 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from model_mommy import mommy
-from rest_framework.test import APIRequestFactory, force_authenticate
+from rest_framework.test import APIRequestFactory
 
 
 class TestCaseMixin(object):
+    """
+    A mixin class that makes it easier to write tests for django rest framework views.
+
+    """
+    #: Url route
     route = None
+
+    #: Class of the view to test
     viewclass = None
+
+    #: Set to True if the viewclass is a viewset
     is_viewset = False
 
     def get_request(self, method,
@@ -18,6 +27,23 @@ class TestCaseMixin(object):
                     queryparams='',
                     apikey=None,
                     **kwargs):
+        """
+        Creates a request using :class:`~rest_framework.test.APIRequestFactory`
+
+        Parameters:
+            method: The http method (get, post, ...).
+            requestuser: The request.user to use.
+            format: The format
+            data: The data to post, put or patch
+            queryparams: Url parameters (?id=1...)
+            apikey: The api key to use if the viewclass has TokenAuthentication
+            **kwargs:
+
+        """
+        if self.viewclass is None:
+            raise NotImplementedError('You must set the viewclass attribute on TestCase classes using TestCaseMixin.')
+        if self.route is None:
+            raise NotImplementedError('You must set the route attribute on TestCase classes using TestCaseMixin.')
         data = data or {}
         request = {
             'get': APIRequestFactory().get('{}{}'.format(self.route, queryparams), format=format),
@@ -35,7 +61,7 @@ class TestCaseMixin(object):
         if requestuser:
             request.user = requestuser
         if apikey:
-            request.META['HTTP_AUTHORIZATION'] = apikey
+            request.META['HTTP_AUTHORIZATION'] = 'Token {}'.format(apikey)
         return request, kwargs
 
     def create_admin_user(self):
