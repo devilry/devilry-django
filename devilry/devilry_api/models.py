@@ -57,5 +57,15 @@ class APIKey(models.Model):
         """
         return self.expiration_date <= timezone.now()
 
+    def is_active(self):
+        """
+        Checks if the :obj:`~.APIKey` is active
+
+        Returns:
+            bool: true if the key is active, false if not
+
+        """
+        return self.start_datetime <= timezone.now() and self.expiration_date > timezone.now()
+
     def __str__(self):
         return '{} - {}'.format(self.user.shortname, self.key)
