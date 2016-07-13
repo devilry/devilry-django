@@ -27,6 +27,7 @@ class FeedbackFeedTimelineBuilder(object):
             group: An :obj:`~devilry.apps.core.AssignmentGroup` object.
             requestuser: The requestuser.
             devilryrole: The role of the requestuser.
+            feedbacksets: Fetched feedbacksets, comments and files.
         """
         self.requestuser = requestuser
         self.devilryrole = devilryrole
@@ -38,6 +39,8 @@ class FeedbackFeedTimelineBuilder(object):
 
     def __get_feedbackset_queryset(self):
         """
+        NOTE: Should be moved to the base feedbackfeed view as it is reused.
+
         Get FeedbackSets' for the AssignmentGroup filtering on which comments
         should be shown in the feedbackfeed.
 

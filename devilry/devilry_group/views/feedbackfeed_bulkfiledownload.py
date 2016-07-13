@@ -11,6 +11,8 @@ from django.db import models
 from django.views import generic
 
 # Devilry/cradmin imports
+from django_cradmin import crapp
+from devilry.devilry_group import models as group_models
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group.models import GroupComment, ImageAnnotationComment
 
@@ -215,3 +217,24 @@ class BulkFileDownloadBaseView(generic.View):
         response = http.HttpResponse(self.generate_zipped_stream(queryset), content_type="application/zip")
         response['Content-Disposition'] = "attachment; filename={}".format(self.get_zipfilename(request))
         return response
+
+
+class FeedbackfeedBulkFileDownload(BulkFileDownloadBaseView):
+    """
+    View that implements :class:`~.BulkFileDownloadBaseView` for downloading all files
+    for an :class:`~devilry.apps.core.models.AssignmentGroup`.
+    """
+    def get_queryset(self, request):
+        return group_models.FeedbackSet.objects.filter(group=request.cradmin_role)
+
+    def get_zipfilename(self, request):
+        return 'deliveryfile.zip'
+
+
+class App(crapp.App):
+    appurls = [
+        crapp.Url(
+            r'^bulk-file-download$',
+            FeedbackfeedBulkFileDownload.as_view(),
+            name='bulk-file-download'),
+    ]

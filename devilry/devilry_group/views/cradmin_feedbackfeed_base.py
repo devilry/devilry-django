@@ -10,12 +10,16 @@ from django import forms
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
+from django.db import models
 
 # Devilry/cradmin imports
-from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed as feedbackfeed_listbuilder
+from devilry.devilry_comment.models import CommentFile
+from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_timeline
+from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_group.timeline_builder import feedbackfeed_timeline_builder
+from devilry.devilry_group.timeline_builder import feedbackfeed_sidebarbuilder
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 from django_cradmin.viewhelpers import create
@@ -94,6 +98,18 @@ class FeedbackFeedBaseView(create.CreateView):
         timeline_builder.build()
         return timeline_builder
 
+    def __build_sidebar(self, feedbacksets):
+        """
+
+        Returns:
+            :obj:`devilry.devilry_group.timeline_builder.FeedbackFeedSidebarBuilder`
+        """
+        sidebar_builder = feedbackfeed_sidebarbuilder.FeedbackFeedSidebarBuilder(
+            feedbacksets=feedbacksets
+        )
+        sidebar_builder.build()
+        return sidebar_builder
+
     def get_context_data(self, **kwargs):
         """
         Sets the context data needed to render elements in the template.
@@ -109,14 +125,25 @@ class FeedbackFeedBaseView(create.CreateView):
         context['subject'] = self.request.cradmin_role.assignment.period.subject
         context['assignment'] = self.request.cradmin_role.assignment
         context['period'] = self.request.cradmin_role.assignment.period
+
+        # Build the timeline for the feedbackfeed
         built_timeline = self.__build_timeline()
         context['last_deadline'] = built_timeline.get_last_deadline()
         context['timeline'] = built_timeline.timeline
         context['feedbacksets'] = built_timeline.feedbacksets
         context['last_feedbackset'] = built_timeline.get_last_feedbackset()
         context['current_date'] = datetime.datetime.now()
-        context['listbuilder_list'] = feedbackfeed_listbuilder.TimelineListBuilderList.from_built_timeline(
+        context['listbuilder_list'] = feedbackfeed_timeline.TimelineListBuilderList.from_built_timeline(
             built_timeline,
+            group=self.request.cradmin_role,
+            devilryrole=self.get_devilryrole(),
+            assignment=context['assignment']
+        )
+
+        # Build the sidebar using the fetched data from timelinebuilder
+        built_sidebar = self.__build_sidebar(built_timeline.feedbacksets)
+        context['sidebarbuilder_list'] = feedbackfeed_sidebar.SidebarListBuilderList.from_built_sidebar(
+            built_sidebar,
             group=self.request.cradmin_role,
             devilryrole=self.get_devilryrole(),
             assignment=context['assignment']

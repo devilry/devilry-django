@@ -9,7 +9,6 @@ from devilry.devilry_group.cradmin_instances import crinstance_admin
 from devilry.devilry_group.cradmin_instances import crinstance_examiner
 from devilry.devilry_group.cradmin_instances import crinstance_student
 from devilry.devilry_group.views import feedbackfeed_download_files
-from devilry.devilry_group.views import feedbackfeed_filedownload_new
 
 urlpatterns = [
     url(r'^student/', include(crinstance_student.StudentCrInstance.urls())),
@@ -27,8 +26,4 @@ urlpatterns = [
     url(r'devilry-feedbackfeed-compressed-feedback-file-download/(?P<feedbackset_id>[0-9]+)',
         feedbackfeed_download_files.CompressedFeedbackSetFileDownloadView.as_view(),
         name='devilry-feedbackfeed-compressed-feedbackset-file-download'),
-
-    url(r'devilry-feedbackfeed-download',
-        feedbackfeed_filedownload_new.FeedbackfeedFileDownload.as_view(),
-        name='devilry-feedbackfeed-download')
 ]
