@@ -122,7 +122,7 @@ class BaseGroupCommentItemValue(BaseItemValue):
     Base class for a GroupComment item.
     """
     valuealias = 'group_comment'
-    template_name = 'devilry_group/listbuilder/base_groupcomment_item_value.django.html'
+    template_name = 'devilry_group/listbuilder_feedbackfeed/base_groupcomment_item_value.django.html'
 
     def __init__(self, *args, **kwargs):
         super(BaseGroupCommentItemValue, self).__init__(*args, **kwargs)
@@ -137,7 +137,7 @@ class BaseGroupCommentItemValue(BaseItemValue):
 
 class StudentGroupCommentItemValue(BaseGroupCommentItemValue):
     valuealias = 'group_comment'
-    template_name = 'devilry_group/listbuilder/student_groupcomment_item_value.django.html'
+    template_name = 'devilry_group/listbuilder_feedbackfeed/student_groupcomment_item_value.django.html'
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(StudentGroupCommentItemValue, self).get_extra_css_classes_list()
@@ -147,7 +147,7 @@ class StudentGroupCommentItemValue(BaseGroupCommentItemValue):
 
 class ExaminerGroupCommentItemValue(BaseGroupCommentItemValue):
     valuealias = 'group_comment'
-    template_name = 'devilry_group/listbuilder/examiner_groupcomment_item_value.django.html'
+    template_name = 'devilry_group/listbuilder_feedbackfeed/examiner_groupcomment_item_value.django.html'
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(ExaminerGroupCommentItemValue, self).get_extra_css_classes_list()
@@ -157,7 +157,7 @@ class ExaminerGroupCommentItemValue(BaseGroupCommentItemValue):
 
 class AdminGroupCommentItemValue(BaseGroupCommentItemValue):
     valuealias = 'group_comment'
-    template_name = 'devilry_group/listbuilder/admin_groupcomment_item_value.django.html'
+    template_name = 'devilry_group/listbuilder_feedbackfeed/admin_groupcomment_item_value.django.html'
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(AdminGroupCommentItemValue, self).get_extra_css_classes_list()
@@ -167,7 +167,7 @@ class AdminGroupCommentItemValue(BaseGroupCommentItemValue):
 
 class DeadlineCreatedItemValue(BaseEventItemValue):
     valuealias = 'feedbackset'
-    template_name = 'devilry_group/listbuilder/deadline_created_item_value.django.html'
+    template_name = 'devilry_group/listbuilder_feedbackfeed/deadline_created_item_value.django.html'
 
     def get_timeline_datetime(self):
         return self.feedbackset.created_datetime
@@ -180,7 +180,7 @@ class DeadlineCreatedItemValue(BaseEventItemValue):
 
 class DeadlineExpiredItemValue(BaseEventItemValue):
     valuealias = 'deadline_datetime'
-    template_name = 'devilry_group/listbuilder/deadline_expired_item_value.django.html'
+    template_name = 'devilry_group/listbuilder_feedbackfeed/deadline_expired_item_value.django.html'
 
     def get_timeline_datetime(self):
         return self.deadline_datetime
@@ -193,7 +193,7 @@ class DeadlineExpiredItemValue(BaseEventItemValue):
 
 class GradeItemValue(BaseEventItemValue):
     valuealias = 'feedbackset'
-    template_name = 'devilry_group/listbuilder/grading_item_value.django.html'
+    template_name = 'devilry_group/listbuilder_feedbackfeed/grading_item_value.django.html'
 
     @property
     def group(self):
