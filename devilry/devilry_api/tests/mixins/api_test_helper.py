@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from model_mommy import mommy
-from rest_framework.test import APIRequestFactory
+from rest_framework.test import APIRequestFactory, force_authenticate
 
 
 class TestCaseMixin(object):
@@ -16,6 +16,7 @@ class TestCaseMixin(object):
                     format='json',
                     data=None,
                     queryparams='',
+                    apikey=None,
                     **kwargs):
         data = data or {}
         request = {
@@ -33,6 +34,8 @@ class TestCaseMixin(object):
         }[method]
         if requestuser:
             request.user = requestuser
+        if apikey:
+            force_authenticate(request, token=apikey)
         return request, kwargs
 
     def create_admin_user(self):
