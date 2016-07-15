@@ -1,13 +1,17 @@
 # -​*- coding: utf-8 -*​-
 from __future__ import unicode_literals
 
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from devilry.apps.core.models.assignment_group import AssignmentGroup
+from devilry.apps.core.models.assignment_group import AssignmentGroup, Assignment
 from devilry.devilry_api.auth.authentication import TokenAuthentication, SessionAuthentication
-from devilry.devilry_api.student.serializers.assignment_serializers import AssignmentGroupModelSerializer
+from devilry.devilry_api.student.serializers.assignment_serializers import (
+    AssignmentGroupModelSerializer,
+    AssignmentModelSerializer)
 
 
 class AssignmentGroupListView(APIView):
@@ -17,9 +21,34 @@ class AssignmentGroupListView(APIView):
 
     def get(self, request, *args, **kwargs):
         """
-        list all assignments for user
+        list all assignment groups for user
 
         """
         assignment_groups = AssignmentGroup.objects.filter_user_is_candidate(self.request.user)
         serializer = self.serializer_class(assignment_groups, many=True)
         return Response(serializer.data)
+
+
+class AssignmentListView(ListAPIView):
+    """
+    List view for assignments as an candidate
+
+    Authentication is required.
+    Authentication method allowed is by api key or session
+
+    filters is passed as queryparams
+
+    Examples:
+        http://example.com/?subject=duck1010
+        http://example.com/?ordering=publishing_time
+        http://example.com/?semester=spring2015&ordering=-first_deadline
+
+    """
+    serializer_class = AssignmentModelSerializer
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication, SessionAuthentication, )
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['subject', 'semester']
+
+    def get_queryset(self):
+        return Assignment.objects.filter_user_is_candidate(self.request.user)

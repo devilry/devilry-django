@@ -2,8 +2,11 @@
 from __future__ import unicode_literals
 
 from django.conf.urls import url, include
-from devilry.devilry_api.student.views.assignment_views import AssignmentGroupListView
+from devilry.devilry_api.student.views.assignment_views import (
+    AssignmentGroupListView,
+    AssignmentListView)
 
 urlpatterns = [
-    url('^assignment-list/$', AssignmentGroupListView.as_view(), name='assignment-list'),
+    url('^assignmentgroup/list$', AssignmentGroupListView.as_view(), name='assignmentgroup-list'),
+    url('^assignment/list$', AssignmentListView.as_view(), name='assigment-list'),
 ]
