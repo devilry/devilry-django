@@ -1,70 +1,34 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-# Python imports
-import collections
-import datetime
-
 # Django imports
-from django.db import models
 from django.utils import timezone
 
 # Devilry/cradmin imports
-from devilry.devilry_comment.models import CommentFile, Comment
+from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import models as group_models
+from devilry.devilry_group.timeline_builder import builder_base
 
 
-class FeedbackFeedTimelineBuilder(object):
+class FeedbackFeedTimelineBuilder(builder_base.FeedbackFeedBuilderBase):
     """
     Builds a sorted timeline of events that occur in the feedbackfeed.
     Generates a dictionary of events such as comments, new deadlines, expired deadlines and grading.
     """
-    def __init__(self, group, requestuser, devilryrole):
+    def __init__(self, feedbacksets, group):
         """
         Initialize instance of :class:`~FeedbackFeedTimelineBuilder`.
 
         Args:
             group: An :obj:`~devilry.apps.core.AssignmentGroup` object.
-            requestuser: The requestuser.
-            devilryrole: The role of the requestuser.
             feedbacksets: Fetched feedbacksets, comments and files.
         """
-        self.requestuser = requestuser
-        self.devilryrole = devilryrole
+        super(FeedbackFeedTimelineBuilder, self). __init__()
+        self.feedbacksets = list(feedbacksets)
         self.group = group
-        self.feedbacksets = list(self.__get_feedbackset_queryset())
         self.__candidatemap = self.__make_candidatemap()
         self.__examinermap = self.__make_examinermap()
         self.timeline = {}
-
-    def __get_feedbackset_queryset(self):
-        """
-        NOTE: Should be moved to the base feedbackfeed view as it is reused.
-
-        Get FeedbackSets' for the AssignmentGroup filtering on which comments
-        should be shown in the feedbackfeed.
-
-        Returns:
-            QuerySet: FeedbackSet queryset.
-        """
-        commentfile_queryset = CommentFile.objects\
-            .select_related('comment__user')\
-            .order_by('filename')
-        groupcomment_queryset = group_models.GroupComment.objects\
-            .exclude_private_comments_from_other_users(user=self.requestuser)\
-            .select_related(
-                'user',
-                'feedback_set__created_by',
-                'feedback_set__grading_published_by')\
-            .prefetch_related(models.Prefetch('commentfile_set', queryset=commentfile_queryset))
-        if self.devilryrole == 'student':
-            groupcomment_queryset = groupcomment_queryset\
-                .filter(visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)\
-                .exclude_is_part_of_grading_feedbackset_unpublished()
-        return group_models.FeedbackSet.objects\
-            .filter(group=self.group)\
-            .prefetch_related(models.Prefetch('groupcomment_set', queryset=groupcomment_queryset))\
-            .order_by('created_datetime')
 
     def __make_candidatemap(self):
         """
@@ -268,6 +232,42 @@ class FeedbackFeedTimelineBuilder(object):
         for group_comment in feedbackset.groupcomment_set.all():
             self.__add_comment_to_timeline(group_comment=group_comment, feedbackset=feedbackset)
 
+    def __get_files_for_feedbackset(self, feedbackset):
+        """
+        Get all files for ``feedbackset``, and add them to a list.
+
+        Args:
+            feedbackset (FeedbackSet): Get files for.
+
+        Returns:
+            List: A list of files or None.
+        """
+        comments = feedbackset.groupcomment_set.all()
+        if len(comments) == 0:
+            return None
+        files = []
+        for comment in comments:
+            for commentfile in comment.commentfile_set.all():
+                files.append(commentfile)
+        return files
+
+    def __add_files_for_feedbackset(self, feedbackset):
+        """
+        Add files for feedbackset to a dictionary
+        Args:
+            feedbackset:
+
+        Returns:
+
+        """
+        filelist = self.__get_files_for_feedbackset(feedbackset)
+        if filelist:
+            self.sidebar_dict[feedbackset.created_datetime] = {
+                'feedbackset_num': 0,
+                'feedbackset': feedbackset,
+                'files': filelist
+            }
+
     def __add_feedbackset_to_timeline(self, feedbackset):
         """
         Adds events to the timeline by calling the functions for adding specific events.
@@ -286,19 +286,17 @@ class FeedbackFeedTimelineBuilder(object):
         self.__add_grade_to_timeline_if_published(feedbackset=feedbackset)
         self.__add_comments_to_timeline(feedbackset=feedbackset)
 
-    def __sort_timeline(self):
+    def add_files_to_sidebar(self, feedbackset):
         """
-        Sorts the timeline after all events are added.
+        Adds files for feedbackset to sidebar.
+
+        Args:
+            feedbackset:
+
+        Returns:
+
         """
-        def compare_timeline_items(timeline_item_a, timeline_item_b):
-            datetime_a = timeline_item_a[0]
-            datetime_b = timeline_item_b[0]
-            if datetime_a is None:
-                datetime_a = datetime.datetime(1970, 1, 1)
-            if datetime_b is None:
-                datetime_b = datetime.datetime(1970, 1, 1)
-            return cmp(datetime_a, datetime_b)
-        self.timeline = collections.OrderedDict(sorted(self.timeline.items(), compare_timeline_items))
+        self.__add_files_for_feedbackset(feedbackset=feedbackset)
 
     def build(self):
         """
@@ -307,7 +305,8 @@ class FeedbackFeedTimelineBuilder(object):
         """
         for feedbackset in self.feedbacksets:
             self.__add_feedbackset_to_timeline(feedbackset=feedbackset)
-        self.__sort_timeline()
+
+        self.timeline = self.sort_dict(self.timeline)
 
     def get_as_list(self):
         """

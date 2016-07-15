@@ -4,9 +4,8 @@ from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group.timeline_builder import builder_base
 from devilry.devilry_group.timeline_builder.feedbackfeed_sidebarbuilder import FeedbackFeedSidebarBuilder
-from devilry.devilry_group import models as group_models
-from devilry.devilry_group.timeline_builder.feedbackfeed_timeline_builder import FeedbackFeedTimelineBuilder
 
 
 class TestFeedbackfeedSidebarBuilder(TestCase):
@@ -35,11 +34,9 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         mommy.make('devilry_comment.CommentFile',
                    comment=testcomment1)
 
-        with self.assertNumQueries(6):
-            timelinebuilder = FeedbackFeedTimelineBuilder(group=testgroup, requestuser=testuser, devilryrole='unused')
-            timelinebuilder.build()
-
-            sidebarbuilder = FeedbackFeedSidebarBuilder(timelinebuilder.feedbacksets)
+        with self.assertNumQueries(4):
+            feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(testgroup, testuser, 'unused')
+            sidebarbuilder = FeedbackFeedSidebarBuilder(feedbacksets=feedbackset_queryset)
             sidebarbuilder.build()
 
     def test_ordering_dictionary(self):
@@ -62,11 +59,8 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         testcomment1 = mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset1)
         mommy.make('devilry_comment.CommentFile',
                    comment=testcomment1)
-
-        timelinebuilder = FeedbackFeedTimelineBuilder(group=testgroup, requestuser=testuser, devilryrole='unused')
-        timelinebuilder.build()
-
-        sidebarbuilder = FeedbackFeedSidebarBuilder(timelinebuilder.feedbacksets)
+        feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(testgroup, testuser, 'unused')
+        sidebarbuilder = FeedbackFeedSidebarBuilder(feedbacksets=feedbackset_queryset)
         sidebarbuilder.build()
 
         self.assertTrue(sidebarbuilder.file_dict.keys()[0] < sidebarbuilder.file_dict.keys()[1])
@@ -92,11 +86,10 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         mommy.make('devilry_comment.CommentFile',
                    comment=testcomment1)
 
-        timelinebuilder = FeedbackFeedTimelineBuilder(group=testgroup, requestuser=testuser, devilryrole='unused')
-        timelinebuilder.build()
-
-        sidebarbuilder = FeedbackFeedSidebarBuilder(timelinebuilder.feedbacksets)
+        feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(testgroup, testuser, 'unused')
+        sidebarbuilder = FeedbackFeedSidebarBuilder(feedbacksets=feedbackset_queryset)
         sidebarbuilder.build()
 
         sidebarlist = sidebarbuilder.get_as_list()
-        self.assertTrue(sidebarlist[0]['feedbackset'].current_deadline() < sidebarlist[1]['feedbackset'].current_deadline())
+        self.assertTrue(
+                sidebarlist[0]['feedbackset'].current_deadline() < sidebarlist[1]['feedbackset'].current_deadline())

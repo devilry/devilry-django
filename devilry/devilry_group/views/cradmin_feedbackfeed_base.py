@@ -10,10 +10,9 @@ from django import forms
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
-from django.db import models
 
 # Devilry/cradmin imports
-from devilry.devilry_comment.models import CommentFile
+from devilry.devilry_group.timeline_builder import builder_base
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_timeline
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
 from devilry.devilry_group import models as group_models
@@ -82,7 +81,7 @@ class FeedbackFeedBaseView(create.CreateView):
         kwargs['group'] = group
         return kwargs
 
-    def __build_timeline(self):
+    def __build_timeline(self, feedbackset_queryset):
         """
         Building the timeline which includes all the events that occur in the feedbackfeed in
         the order that they occur.
@@ -92,20 +91,19 @@ class FeedbackFeedBaseView(create.CreateView):
              :obj:`devilry.devilry_group.timeline_builder.FeedbackFeedTimelineBuilder`: Built timeline.
         """
         timeline_builder = feedbackfeed_timeline_builder.FeedbackFeedTimelineBuilder(
-                group=self.request.cradmin_role,
-                requestuser=self.request.user,
-                devilryrole=self.get_devilryrole())
+                feedbacksets=feedbackset_queryset,
+                group=self.request.cradmin_role)
         timeline_builder.build()
         return timeline_builder
 
-    def __build_sidebar(self, feedbacksets):
+    def __build_sidebar(self, feedbackset_queryset):
         """
 
         Returns:
             :obj:`devilry.devilry_group.timeline_builder.FeedbackFeedSidebarBuilder`
         """
         sidebar_builder = feedbackfeed_sidebarbuilder.FeedbackFeedSidebarBuilder(
-            feedbacksets=feedbacksets
+            feedbacksets=feedbackset_queryset
         )
         sidebar_builder.build()
         return sidebar_builder
@@ -127,7 +125,11 @@ class FeedbackFeedBaseView(create.CreateView):
         context['period'] = self.request.cradmin_role.assignment.period
 
         # Build the timeline for the feedbackfeed
-        built_timeline = self.__build_timeline()
+        builder_queryset = builder_base.get_feedbackfeed_builder_queryset(
+                self.request.cradmin_role,
+                self.request.user,
+                self.get_devilryrole())
+        built_timeline = self.__build_timeline(builder_queryset)
         context['last_deadline'] = built_timeline.get_last_deadline()
         context['timeline'] = built_timeline.timeline
         context['feedbacksets'] = built_timeline.feedbacksets
@@ -141,7 +143,7 @@ class FeedbackFeedBaseView(create.CreateView):
         )
 
         # Build the sidebar using the fetched data from timelinebuilder
-        built_sidebar = self.__build_sidebar(built_timeline.feedbacksets)
+        built_sidebar = self.__build_sidebar(builder_queryset)
         context['sidebarbuilder_list'] = feedbackfeed_sidebar.SidebarListBuilderList.from_built_sidebar(
             built_sidebar,
             group=self.request.cradmin_role,

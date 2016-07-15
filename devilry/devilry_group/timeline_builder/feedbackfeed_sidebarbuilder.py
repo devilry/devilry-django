@@ -5,8 +5,11 @@ from __future__ import unicode_literals
 import collections
 import datetime
 
+# Devilry imports
+from devilry.devilry_group.timeline_builder import builder_base
 
-class FeedbackFeedSidebarBuilder(object):
+
+class FeedbackFeedSidebarBuilder(builder_base.FeedbackFeedBuilderBase):
     """
     Builds a sorted structure over files for FeedbackSet.
     Creates a dictionary sorted over the :obj:`~devilry.devilry_group.models.FeedbackSet.created_datetime`.
@@ -29,7 +32,8 @@ class FeedbackFeedSidebarBuilder(object):
         Args:
             feedbackset_queryset: prefetched feedbacksets, groupcomments, and commentfiles.
         """
-        self.feedbacksets = feedbacksets
+        super(FeedbackFeedSidebarBuilder, self).__init__()
+        self.feedbacksets = list(feedbacksets)
         self.file_dict = {}
 
     def __get_files_for_feedbackset(self, feedbackset):
@@ -51,20 +55,6 @@ class FeedbackFeedSidebarBuilder(object):
                 files.append(commentfile)
         return files
 
-    def __sort_filedict(self):
-        """
-        Sorts the file_dict on :obj:`~devilry.devilry_group.models.FeedbackSet.created_datetime`.
-        """
-        def compare_feedbackset_created(fbset_created_a, fbset_created_b):
-            datetime_a = fbset_created_a[0]
-            datetime_b = fbset_created_b[0]
-            if datetime_a is None:
-                datetime_a = datetime.datetime(1970, 1, 1)
-            if datetime_b is None:
-                datetime_b = datetime.datetime(1970, 1, 1)
-            return cmp(datetime_a, datetime_b)
-        self.file_dict = collections.OrderedDict(sorted(self.file_dict.items(), compare_feedbackset_created))
-
     def build(self):
         """
         Build a dictionary with a list of all files for each feedbackset and sorts it.
@@ -78,7 +68,7 @@ class FeedbackFeedSidebarBuilder(object):
                     'feedbackset': feedbackset,
                     'files': filelist
                 }
-        self.__sort_filedict()
+        self.file_dict = self.sort_dict(self.file_dict)
 
     def get_as_list(self):
         """
