@@ -123,7 +123,7 @@ class TestAssignmentListView(test_auth_common.TestAuthAPIKeyMixin,
         self.assertEqual(200, response.status_code)
         self.assertEqual(0, len(response.data))
 
-    def test_filter_semester_found(self):
+    def test_filter_subject_found(self):
         assignment = mommy.make('core.Assignment',
                                 parentnode__parentnode__short_name='duck1010')
         candidate = mommy.make('core.Candidate',
