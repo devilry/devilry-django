@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import json
 from django import test
+from django.conf import settings
 from rest_framework.test import APITestCase
 from model_mommy import mommy
 
@@ -133,3 +134,38 @@ class TestAssignmentListView(test_auth_common.TestAuthAPIKeyMixin,
                                          queryparams='?subject=duck1010')
         self.assertEqual(200, response.status_code)
         self.assertEqual(assignment.parentnode.parentnode.short_name, response.data[0]['subject'])
+
+    def test_ordering_deadline_asc(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        assignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment2 = mommy.make_recipe('devilry.apps.core.assignment_oldperiod_start')
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group__parentnode=assignment1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group__parentnode=assignment2)
+        response = self.mock_get_request(requestuser=testuser,
+                                         queryparams='?ordering=first_deadline')
+        self.assertEqual(200, response.status_code)
+        assignment_names = [assignment['first_deadline'] for assignment in response.data]
+        self.assertListEqual([assignment2.first_deadline.isoformat(), assignment1.first_deadline.isoformat()],
+                             assignment_names)
+
+    def test_ordering_deadline_desc(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        assignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment2 = mommy.make_recipe('devilry.apps.core.assignment_oldperiod_start')
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group__parentnode=assignment1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group__parentnode=assignment2)
+        response = self.mock_get_request(requestuser=testuser,
+                                         queryparams='?ordering=-first_deadline')
+        self.assertEqual(200, response.status_code)
+        assignment_names = [assignment['first_deadline'] for assignment in response.data]
+        self.assertListEqual([assignment1.first_deadline.isoformat(), assignment2.first_deadline.isoformat()],
+                             assignment_names)
+
