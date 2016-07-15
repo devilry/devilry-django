@@ -8,5 +8,6 @@ from devilry.devilry_api.student.views.assignment_views import (
 
 urlpatterns = [
     url('^assignmentgroup/list$', AssignmentGroupListView.as_view(), name='assignmentgroup-list'),
-    url('^assignment/list$', AssignmentListView.as_view(), name='assigment-list'),
+    url('^assignment/list/$', AssignmentListView.as_view(), name='assigment-list'),
 ]
+

@@ -1,6 +1,7 @@
 # -​*- coding: utf-8 -*​-
 from __future__ import unicode_literals
 
+from django.db.models import Q
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -48,7 +49,14 @@ class AssignmentListView(ListAPIView):
     permission_classes = (IsAuthenticated, )
     authentication_classes = (TokenAuthentication, SessionAuthentication, )
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ['subject', 'semester']
+    search_fields = ['parentnode__parentnode__short_name', 'parentnode__short_name']
 
     def get_queryset(self):
-        return Assignment.objects.filter_user_is_candidate(self.request.user)
+        queryset_list = Assignment.objects.filter_user_is_candidate(self.request.user)
+        semester = self.request.query_params.get('semester', None)
+        subject = self.request.query_params.get('subject', None)
+        if semester:
+            queryset_list = queryset_list.filter(parentnode__short_name=semester).distinct()
+        if subject:
+            queryset_list = queryset_list.filter(parentnode__parentnode__short_name=subject).distinct()
+        return queryset_list

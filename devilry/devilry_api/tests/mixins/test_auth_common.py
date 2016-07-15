@@ -8,7 +8,7 @@ from devilry.apps.core import mommy_recipes
 from devilry.devilry_api.tests.mixins import api_test_helper
 
 
-class TestAuthAPIKeyMixin(api_test_helper.TestCaseMixin):
+class TestAuthAPIKeyMixin(object):
 
     def test_auth_not_valid_api_key(self):
         response = self.mock_get_request(apikey='b2660057e2a109c032aa07171633d4fb92ca560a')
