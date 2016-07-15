@@ -8,6 +8,7 @@ router = routers.DefaultRouter()
 
 urlpatterns = [
     url(r'^student/', include('devilry.devilry_api.student.urls')),
+    url(r'^docs/', include('rest_framework_swagger.urls')),
 ]
 
 urlpatterns += router.urls

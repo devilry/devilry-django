@@ -168,4 +168,3 @@ class TestAssignmentListView(test_auth_common.TestAuthAPIKeyMixin,
         assignment_names = [assignment['first_deadline'] for assignment in response.data]
         self.assertListEqual([assignment1.first_deadline.isoformat(), assignment2.first_deadline.isoformat()],
                              assignment_names)
-
