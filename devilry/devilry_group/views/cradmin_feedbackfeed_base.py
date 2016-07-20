@@ -17,7 +17,7 @@ from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_timeline
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
-from devilry.devilry_group.timeline_builder import feedbackfeed_timeline_builder
+from devilry.devilry_group.timeline_builder import feedbackfeed_timelinebuilder
 from devilry.devilry_group.timeline_builder import feedbackfeed_sidebarbuilder
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
@@ -90,7 +90,7 @@ class FeedbackFeedBaseView(create.CreateView):
         Returns:
              :obj:`devilry.devilry_group.timeline_builder.FeedbackFeedTimelineBuilder`: Built timeline.
         """
-        timeline_builder = feedbackfeed_timeline_builder.FeedbackFeedTimelineBuilder(
+        timeline_builder = feedbackfeed_timelinebuilder.FeedbackFeedTimelineBuilder(
                 feedbacksets=feedbackset_queryset,
                 group=self.request.cradmin_role)
         timeline_builder.build()
