@@ -4,7 +4,7 @@
 {% load i18n %}
 
 {% block content %}
-    <a href="#" >{{ me.delivery_file.filename|devilry_truncatefileextension:26 }}</a>
+    <a href="{% url 'devilry-feedbackfeed-file-download' me.delivery_file.comment.feedback_set.id me.delivery_file.id %}" >{{ me.delivery_file.filename|devilry_truncatefileextension:26 }}</a>
     {% if me.delivery_file.comment.published_datetime > me.delivery_file.comment.feedback_set.deadline_datetime and me.delivery_file.comment.user_role != 'examiner' %}
         <i class="after-deadline-icon pull-left" tooltip="Submitted after deadline"></i>
     {% elif me.delivery_file.comment.user_role == 'examiner' %}

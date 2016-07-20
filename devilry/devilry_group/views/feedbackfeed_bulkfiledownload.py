@@ -252,7 +252,7 @@ class FeedbackfeedBulkFileDownload(BulkFileDownloadBaseView):
 class App(crapp.App):
     appurls = [
         crapp.Url(
-            r'^bulk-file-download$',
+            r'^bulk-filedownload$',
             FeedbackfeedBulkFileDownload.as_view(),
-            name='bulk-file-download'),
+            name='bulk-filedownload'),
     ]
