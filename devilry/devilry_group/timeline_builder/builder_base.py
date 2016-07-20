@@ -15,7 +15,8 @@ from devilry.devilry_group import models as group_models
 
 def get_feedbackfeed_builder_queryset(group, requestuser, devilryrole):
     """
-    Get a queryset containing prefetched FeedbackSets', GroupComments' and CommentFiles'
+    Get a queryset containing prefetched :class:`~devilry.devilry_group.models.FeedbackSets`,
+    :class:`~devilry.devilry_group.models.GroupComments` and :class:`~devilry.devilry_comment.models.CommentFiles`
     the requestuser har access to.
 
     Args:
