@@ -5,7 +5,8 @@ from django.conf import settings
 from django.utils import timezone
 
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_timeline as listbuilder
-from devilry.devilry_group.timeline_builder import feedbackfeed_timeline_builder
+from devilry.devilry_group.timeline_builder import feedbackfeed_timelinebuilder
+from devilry.devilry_group.timeline_builder import builder_base
 from devilry.apps.core import models as core_models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 
@@ -73,10 +74,14 @@ class TestListBuilderListItems(test.TestCase):
                    part_of_grading=True,
                    feedback_set=testfeedbackset2)
 
-        built_timeline = feedbackfeed_timeline_builder.FeedbackFeedTimelineBuilder(
+        feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(
             group=testgroup,
             requestuser=testuser,
             devilryrole='student'
+        )
+        built_timeline = feedbackfeed_timelinebuilder.FeedbackFeedTimelineBuilder(
+            feedbacksets=feedbackset_queryset,
+            group=testgroup
         )
 
         built_timeline.build()
