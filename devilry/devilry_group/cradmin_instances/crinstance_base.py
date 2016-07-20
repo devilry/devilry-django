@@ -11,14 +11,14 @@ from devilry.apps.core.models import Examiner, Candidate, AssignmentGroup
 
 
 class CrInstanceBase(crinstance.BaseCrAdminInstance):
-    """
-    Base CrInstance class for crinstances in devilry_group.
+    """Base CrInstance class for crinstances in devilry_group.
     """
     roleclass = AssignmentGroup
     rolefrontpage_appname = 'feedbackfeed'
 
     def _get_base_rolequeryset(self):
-        """
+        """Get base rolequerysets used by subclasses.
+
         Get :class:`~devilry.apps.core.models.AssignmentGroup`s and prefetch related
         :class:`~devilry.apps.core.models.Examiner`s and :class:`~devilry.apps.core.models.Candidate`s.
 
@@ -36,8 +36,7 @@ class CrInstanceBase(crinstance.BaseCrAdminInstance):
                                 queryset=self._get_examinerqueryset()))
 
     def _get_candidatequeryset(self):
-        """
-        Get candidates.
+        """Get candidates.
 
         Returns:
             QuerySet: A queryset of :class:`~devilry.apps.core.models.Candidate`s.
@@ -49,8 +48,7 @@ class CrInstanceBase(crinstance.BaseCrAdminInstance):
                              'relatedstudent__user__shortname')))
 
     def _get_examinerqueryset(self):
-        """
-        Get examiners.
+        """Get examiners.
 
         Returns:
             QuerySet: A queryset of :class:`~devilry.apps.core.models.Examiner`s.
@@ -62,7 +60,7 @@ class CrInstanceBase(crinstance.BaseCrAdminInstance):
                              'relatedexaminer__user__shortname')))
 
     def get_titletext_for_role(self, role):
-        """
+        """String representation for the role.
 
         Args:
             role: An :obj:`~devilry.apps.core.models.AssignmentGroup`
@@ -74,7 +72,8 @@ class CrInstanceBase(crinstance.BaseCrAdminInstance):
         return "{} - {}".format(role.period, role.assignment.short_name)
 
     def get_devilryrole_for_requestuser(self):
-        """
+        """Get devilry role for the user.
+
         Get the devilryrole for the requesting user on the current
         assignmentrole (request.cradmin_instance).
 
