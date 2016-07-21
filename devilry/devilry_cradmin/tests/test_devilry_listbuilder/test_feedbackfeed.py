@@ -5,8 +5,8 @@ from django.conf import settings
 from django.utils import timezone
 
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_timeline as listbuilder
-from devilry.devilry_group.timeline_builder import feedbackfeed_timelinebuilder
-from devilry.devilry_group.timeline_builder import builder_base
+from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_timelinebuilder
+from devilry.devilry_group.feedbackfeed_builder import builder_base
 from devilry.apps.core import models as core_models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 

@@ -12,13 +12,13 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
 # Devilry/cradmin imports
-from devilry.devilry_group.timeline_builder import builder_base
+from devilry.devilry_group.feedbackfeed_builder import builder_base
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_timeline
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
-from devilry.devilry_group.timeline_builder import feedbackfeed_timelinebuilder
-from devilry.devilry_group.timeline_builder import feedbackfeed_sidebarbuilder
+from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_timelinebuilder
+from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_sidebarbuilder
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 from django_cradmin.viewhelpers import create
@@ -88,7 +88,7 @@ class FeedbackFeedBaseView(create.CreateView):
         For more details, See :class:`devilry.devilry_group.feedbackfeed_timeline_builder.FeedbackFeedTimelineBuilder`
 
         Returns:
-             :obj:`devilry.devilry_group.timeline_builder.FeedbackFeedTimelineBuilder`: Built timeline.
+             :obj:`devilry.devilry_group.feedbackfeed_builder.FeedbackFeedTimelineBuilder`: Built timeline.
         """
         timeline_builder = feedbackfeed_timelinebuilder.FeedbackFeedTimelineBuilder(
                 feedbacksets=feedbackset_queryset,
@@ -100,7 +100,7 @@ class FeedbackFeedBaseView(create.CreateView):
         """
 
         Returns:
-            :obj:`devilry.devilry_group.timeline_builder.FeedbackFeedSidebarBuilder`
+            :obj:`devilry.devilry_group.feedbackfeed_builder.FeedbackFeedSidebarBuilder`
         """
         sidebar_builder = feedbackfeed_sidebarbuilder.FeedbackFeedSidebarBuilder(
             feedbacksets=feedbackset_queryset
@@ -143,13 +143,13 @@ class FeedbackFeedBaseView(create.CreateView):
         )
 
         # Build the sidebar using the fetched data from timelinebuilder
-        built_sidebar = self.__build_sidebar(builder_queryset)
-        context['sidebarbuilder_list'] = feedbackfeed_sidebar.SidebarListBuilderList.from_built_sidebar(
-            built_sidebar,
-            group=self.request.cradmin_role,
-            devilryrole=self.get_devilryrole(),
-            assignment=context['assignment']
-        )
+        # built_sidebar = self.__build_sidebar(builder_queryset)
+        # context['sidebarbuilder_list'] = feedbackfeed_sidebar.SidebarListBuilderList.from_built_sidebar(
+        #     built_sidebar,
+        #     group=self.request.cradmin_role,
+        #     devilryrole=self.get_devilryrole(),
+        #     assignment=context['assignment']
+        # )
         return context
 
     def get_button_layout(self):

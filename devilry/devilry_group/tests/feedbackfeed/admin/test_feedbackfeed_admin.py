@@ -220,7 +220,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         """
         NOTE: (works as it should)
         Checking that no more queries are executed even though the
-        :func:`devilry.devilry_group.timeline_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
+        :func:`devilry.devilry_group.feedbackfeed_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
         duplicates comment_file query.
         """
         period = mommy.make('core.Period')
@@ -261,7 +261,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         """
         NOTE: (works as it should)
         Checking that no more queries are executed even though the
-        :func:`devilry.devilry_group.timeline_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
+        :func:`devilry.devilry_group.feedbackfeed_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
         duplicates comment_file query.
         """
         period = mommy.make('core.Period')

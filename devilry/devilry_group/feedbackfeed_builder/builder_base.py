@@ -22,6 +22,7 @@ def get_feedbackfeed_builder_queryset(group, requestuser, devilryrole):
     Args:
         group (AssignmentGroup): The cradmin role.
         requestuser (User): The requestuser.
+        devilryrole (str): Role for the requestuser.
 
     Returns:
         QuerySet: FeedbackSet queryset.
@@ -50,8 +51,9 @@ class FeedbackFeedBuilderBase(object):
     """
 
     """
-    def __init__(self):
-        pass
+    def __init__(self, feedbacksets):
+        super(FeedbackFeedBuilderBase, self).__init__()
+        self.feedbacksets = list(feedbacksets)
 
     def sort_dict(self, dictionary):
         """

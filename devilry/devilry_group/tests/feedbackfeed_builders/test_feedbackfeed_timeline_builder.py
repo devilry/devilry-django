@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 # Django imports
 from django.test import TestCase
 from django.utils import timezone
@@ -11,9 +8,9 @@ from model_mommy import mommy
 
 # Devilry imports
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
-from devilry.devilry_group.timeline_builder.feedbackfeed_timelinebuilder import FeedbackFeedTimelineBuilder
+from devilry.devilry_group.feedbackfeed_builder.feedbackfeed_timelinebuilder import FeedbackFeedTimelineBuilder
 from devilry.devilry_group import models as group_models
-from devilry.devilry_group.timeline_builder import builder_base
+from devilry.devilry_group.feedbackfeed_builder import builder_base
 
 
 class TestFeedbackFeedTimelineBuilder(TestCase, object):

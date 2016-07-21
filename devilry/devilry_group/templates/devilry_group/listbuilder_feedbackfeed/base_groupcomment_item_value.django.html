@@ -32,8 +32,8 @@
         <div class="devilry-group-comment-text">
             {% blocktrans with text=me.group_comment.text|devilry_group_markdown|safe %} {{text}} {% endblocktrans %}
         </div>
-        {% for file in me.group_comment.commentfile_set.all %}
-            <a href="#">
+        {% for commentfile in me.group_comment.commentfile_set.all %}
+            <a href="{% url 'devilry-feedbackfeed-file-download' me.group_comment.feedback_set.id commentfile.id %}">
                 <i class="fa fa-file fa-3x" tooltip="{{ file.filename }}"></i>
             </a>
         {% endfor %}
