@@ -143,13 +143,13 @@ class FeedbackFeedBaseView(create.CreateView):
         )
 
         # Build the sidebar using the fetched data from timelinebuilder
-        # built_sidebar = self.__build_sidebar(builder_queryset)
-        # context['sidebarbuilder_list'] = feedbackfeed_sidebar.SidebarListBuilderList.from_built_sidebar(
-        #     built_sidebar,
-        #     group=self.request.cradmin_role,
-        #     devilryrole=self.get_devilryrole(),
-        #     assignment=context['assignment']
-        # )
+        built_sidebar = self.__build_sidebar(builder_queryset)
+        context['sidebarbuilder_list'] = feedbackfeed_sidebar.SidebarListBuilderList.from_built_sidebar(
+            built_sidebar,
+            group=self.request.cradmin_role,
+            devilryrole=self.get_devilryrole(),
+            assignment=context['assignment']
+        )
         return context
 
     def get_button_layout(self):

@@ -32,7 +32,7 @@ class SidebarListBuilderList(listbuilder.base.List):
         """
 
         Args:
-            feedbackset_files_dict:
+            feedbackset_dict:
 
         Returns:
 
@@ -40,7 +40,7 @@ class SidebarListBuilderList(listbuilder.base.List):
         self.append(renderable=FeedbackSetItemValue(value=feedbackset_dict['feedbackset_num']))
         # valuerenderer = FileListBuilderList.from_files(files=feedbackset_dict['files'])
         # self.append(renderable=valuerenderer)
-        valuerenderer = GroupCommentDateTimeListBuilderList.from_groupcomments(comment_dict=feedbackset_dict['comments'])
+        valuerenderer = GroupCommentDateTimeListBuilderList.from_groupcomments(comments=feedbackset_dict['comments'])
         self.append(renderable=valuerenderer)
 
     def get_extra_css_classes_list(self):
@@ -54,33 +54,31 @@ class GroupCommentDateTimeListBuilderList(listbuilder.base.List):
 
     """
     @classmethod
-    def from_groupcomments(cls, comment_dict, **kwargs):
+    def from_groupcomments(cls, comments, **kwargs):
         """
 
         Args:
-            comment_dict:
-            **kwargs:
+            comments:
 
         Returns:
 
         """
         commentdatebuilder_list = cls(**kwargs)
-        for comment_date in comment_dict:
-            commentdatebuilder_list.append_dict(comment_date=comment_date, comment_dict=comment_dict)
+        for comment_dict in comments:
+            commentdatebuilder_list.append_dict(comment_dict=comment_dict)
         return commentdatebuilder_list
 
-    def append_dict(self, comment_date, comment_dict):
+    def append_dict(self, comment_dict):
         """
 
         Args:
-            comment_date:
             comment_dict:
 
         Returns:
 
         """
-        self.append(renderable=GroupCommentDateTimeItemValue(value=comment_date))
-        valuerenderer = FileListBuilderList.from_files(comment_dict[comment_date]['files'])
+        self.append(renderable=GroupCommentDateTimeItemValue(value=comment_dict['comment_published']))
+        valuerenderer = FileListBuilderList.from_files(comment_dict['files'])
         self.append(renderable=valuerenderer)
 
 
@@ -103,8 +101,7 @@ class FileListBuilderList(listbuilder.base.List):
         filebuilder_list = cls(**kwargs)
         print files
         for commentfile in files:
-            if commentfile is not None:
-                filebuilder_list.append(FileItemValue(value=commentfile))
+            filebuilder_list.append(FileItemValue(value=commentfile))
         return filebuilder_list
 
 
