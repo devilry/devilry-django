@@ -138,9 +138,11 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         sidebarbuilder = FeedbackFeedSidebarBuilder(feedbacksets=feedbackset_queryset)
         sidebarbuilder.build()
         sidebarlist = sidebarbuilder.get_as_list()
-        feedbackset_comments = sidebarlist[0]['comments']
-        self.assertTrue(feedbackset_comments[0]['comment_published'] < feedbackset_comments[1]['comment_published'])
-        self.assertTrue(feedbackset_comments[1]['comment_published'] < feedbackset_comments[2]['comment_published'])
+        comments = sidebarlist[0]['comments']
+        self.assertTrue(
+                comments[0]['groupcomment'].published_datetime < comments[1]['groupcomment'].published_datetime)
+        self.assertTrue(
+                comments[1]['groupcomment'].published_datetime < comments[2]['groupcomment'].published_datetime)
 
     def test_files_for_comments(self):
         # Test the correct number of files for each comment and that it's the correct files.
@@ -166,18 +168,18 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         sidebarlist = sidebarbuilder.get_as_list()
 
         # Test the number of files per GroupComment
-        feedbackset_comments = sidebarlist[0]['comments']
-        self.assertEquals(len(feedbackset_comments[0]['files']), 3)
-        self.assertEquals(len(feedbackset_comments[1]['files']), 1)
+        comments = sidebarlist[0]['comments']
+        self.assertEquals(len(comments[0]['files']), 3)
+        self.assertEquals(len(comments[1]['files']), 1)
 
         # Test CommentFiles for testcomment1
-        testcomment1_files = feedbackset_comments[0]['files']
+        testcomment1_files = comments[0]['files']
         self.assertEquals(testcomment1_files[0].filename, testfile1.filename)
         self.assertEquals(testcomment1_files[1].filename, testfile2.filename)
         self.assertEquals(testcomment1_files[2].filename, testfile3.filename)
 
         # Test CommentFiles for testcomment2
-        testcomment2_files = feedbackset_comments[1]['files']
+        testcomment2_files = comments[1]['files']
         self.assertEquals(testcomment2_files[0].filename, testfile4.filename)
 
     def test_items_in_builder_student(self):
@@ -214,11 +216,10 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         feedbackset_comments = sidebarlist[0]['comments']
         self.assertEquals(len(feedbackset_comments), 2)
         for comment_dict in feedbackset_comments:
-            self.assertNotEquals(private_comment.published_datetime, comment_dict['comment_published'])
+            self.assertNotEquals(private_comment.published_datetime, comment_dict['groupcomment'].published_datetime)
 
     def test_items_in_builder_examiner(self):
         # Test that examiner can see private comment
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
         testuser_examiner = mommy.make(settings.AUTH_USER_MODEL)
         testgroup = mommy.make('core.AssignmentGroup')
         testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
@@ -252,6 +253,7 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         sidebarbuilder.build()
         sidebarlist = sidebarbuilder.get_as_list()
 
-        feedbackset_comments = sidebarlist[0]['comments']
-        self.assertEquals(len(feedbackset_comments), 3)
-        self.assertEquals(private_comment.published_datetime, feedbackset_comments[2]['comment_published'])
+        comments = sidebarlist[0]['comments']
+        self.assertEquals(len(comments), 3)
+        self.assertEquals(
+                private_comment.published_datetime, comments[2]['groupcomment'].published_datetime)

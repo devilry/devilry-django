@@ -21,6 +21,7 @@ class FeedbackFeedSidebarBuilder(builder_base.FeedbackFeedBuilderBase):
                             # comment published date
                             01.02.2016 03:00:
                                 {
+                                    'groupcomment': :obj:`~devilry.devilry_group.models.GroupComment`,
                                     'files': [
                                         :obj:`~devilry.devilry_comment.models.CommentFile`,
                                         :obj:`~devilry.devilry_comment.models.CommentFile`
@@ -38,7 +39,6 @@ class FeedbackFeedSidebarBuilder(builder_base.FeedbackFeedBuilderBase):
             feedbacksets (QuerySet): prefetched feedbacksets, groupcomments, and commentfiles.
         """
         super(FeedbackFeedSidebarBuilder, self).__init__(**kwargs)
-        # self.feedbacksets = list(feedbacksets)
         self.feedbackset_dict = {}
 
     def __get_files_for_comment(self, comment):
@@ -71,6 +71,7 @@ class FeedbackFeedSidebarBuilder(builder_base.FeedbackFeedBuilderBase):
             comment_files = self.__get_files_for_comment(comment=comment)
             if comment_files:
                 commentdict[comment.published_datetime] = {
+                    'groupcomment': comment,
                     'files': comment_files
                 }
         if len(commentdict) > 0:
@@ -96,8 +97,8 @@ class FeedbackFeedSidebarBuilder(builder_base.FeedbackFeedBuilderBase):
         The elements are added to the list in ascending order based on the FeedbackSets
         chronological order(created_datetime).
 
-        ``feedbackset_dict`` can be accessed directly through a instance of this class, but this function provides a
-        flat list over the feedbacksets and comments and simplifies the iteration process.
+        ``feedbackset_dict`` can be accessed directly through a instance of this class, but this function provides lists
+        of dictionaries representing the elements.
 
         The above example with one FeedbackSet, one GroupComment with two CommentFiles as a list structure::
         [
@@ -107,7 +108,7 @@ class FeedbackFeedSidebarBuilder(builder_base.FeedbackFeedBuilderBase):
                 'comments':
                     [
                         {
-                            'datetime': 01.02.2016 03:00,
+                            'groupcomment': :obj:`~devilry.devilry_group.models.GroupComment`,
                             'files': [
                                 :obj:`~devilry.devilry_comment.models.CommentFile`,
                                 :obj:`~devilry.devilry_comment.models.CommentFile`
@@ -132,7 +133,6 @@ class FeedbackFeedSidebarBuilder(builder_base.FeedbackFeedBuilderBase):
             commentlist = []
             for commentkey in sorted(feedbacksets['comments'].keys()):
                 commentdict = feedbacksets['comments'][commentkey]
-                commentdict['comment_published'] = commentkey
                 commentlist.append(commentdict)
             feedbacksets['comments'] = commentlist
             feedbackset_list.append(feedbacksets)
