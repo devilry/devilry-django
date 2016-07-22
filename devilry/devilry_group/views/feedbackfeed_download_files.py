@@ -9,11 +9,14 @@ import zipfile
 
 # django imports
 from django import http
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from django.core.servers.basehttp import FileWrapper
 
 # devilry imports
+from django_cradmin import crapp
+
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
 
@@ -31,8 +34,14 @@ class FileDownloadFeedbackfeedView(generic.View):
             commentfile_id: The CommentFile to retreive the file from.
 
         Returns:
-            HttpResponse with FileWrapper containing the file.
+            HttpResponse: File.
         """
+        feedbackset = get_object_or_404(group_models.FeedbackSet, id=feedbackset_id)
+
+        # Check that the cradmin role and the AssignmentGroup is the same.
+        if feedbackset.group.id != request.cradmin_role.id:
+            return HttpResponseForbidden('Forbidden')
+
         comment_file = get_object_or_404(comment_models.CommentFile, id=commentfile_id)
 
         # Load file as chunks rather than loading the whole file into memory
@@ -45,28 +54,78 @@ class FileDownloadFeedbackfeedView(generic.View):
         return response
 
 
-class CompressedFeedbackSetFileDownloadView(generic.View):
+class CompressedGroupCommentFileDownload(generic.View):
+    """Compress all files from a specific GroupComment into a zipped folder
     """
-    Compress all files from a specific FeedbackSet for an assignment into a zip folder.
+    def get(self, request, groupcomment_id):
+        """
+
+        Args:
+            groupcomment_id:
+
+        Returns:
+             HttpResponse: Zipped folder.
+        """
+        groupcomment = get_object_or_404(group_models.GroupComment, id=groupcomment_id)
+
+        # Check that the cradmin role and the AssignmentGroup is the same.
+        if groupcomment.feedback_set.group.id != request.cradmin_role.id:
+            return HttpResponseForbidden('Forbidden')
+
+        commentfiles = groupcomment.commentfile_set.all()
+
+        dirname = '{}-{}'.format(
+            groupcomment.user_role,
+            groupcomment.user
+        )
+
+        zip_file_name = '{}.zip'.format(dirname.encode('ascii', 'ignore'))
+        tempfile = NamedTemporaryFile()
+        zip_file = zipfile.ZipFile(tempfile, 'w')
+
+        for commentfile in commentfiles:
+            zip_file.write(
+                commentfile.file.file.name,
+                posixpath.join('', commentfile.filename)
+            )
+
+        zip_file.close()
+        tempfile.seek(0)
+
+        # Load file as chunks
+        filewrapper = FileWrapper(tempfile)
+        response = http.HttpResponse(filewrapper, content_type='application/zip')
+        response['content-disposition'] = 'attachement; filename=%s' % \
+            zip_file_name.encode('ascii', 'replace')
+        response['content-length'] = os.stat(tempfile.name).st_size
+        return response
+
+
+class CompressedFeedbackSetFileDownloadView(generic.View):
+    """Compress all files from a specific FeedbackSet for an assignment into a zipped folder.
     """
     def get(self, request, feedbackset_id):
         """Download all files for a feedbackset into zipped folder.
 
         Args:
             request: The request object with a user.
-            assignmentgroup_id: The FeedbackSet the files belong to.
+            feedbackset_id: The FeedbackSet the files belong to.
 
         Returns:
-            HttpResponse with FileWrapper containing the zipped folder.
+            HttpResponse: Zipped folder.
         """
         feedbackset = get_object_or_404(group_models.FeedbackSet, id=feedbackset_id)
 
-        dirname = u'{}-{}-delivery'.format(
+        # Check that the cradmin role and the AssignmentGroup is the same.
+        if feedbackset.group.id != request.cradmin_role.id:
+            return HttpResponseForbidden('Forbidden')
+
+        dirname = '{}-{}-delivery'.format(
             feedbackset.group.parentnode.get_path(),
             feedbackset.group.short_displayname
         )
 
-        zip_file_name = u'{}.zip'.format(dirname.encode('ascii', 'ignore'))
+        zip_file_name = '{}.zip'.format(dirname.encode('ascii', 'ignore'))
         tempfile = NamedTemporaryFile()
         zip_file = zipfile.ZipFile(tempfile, 'w')
 
@@ -74,12 +133,12 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
             if group_comment.commentfile_set is not None:
                 for comment_file in group_comment.commentfile_set.all():
                     if comment_file.comment.published_datetime > group_comment.feedback_set.deadline_datetime \
-                            and comment_file.comment.user_role == u'student':
-                        path = u'uploaded_after_deadline'
-                    elif comment_file.comment.user_role == u'examiner':
-                        path = u'uploaded_by_examiner'
+                            and comment_file.comment.user_role == 'student':
+                        path = 'uploaded_after_deadline'
+                    elif comment_file.comment.user_role == 'examiner':
+                        path = 'uploaded_by_examiner'
                     else:
-                        path = u'uploaded_by_student'
+                        path = 'uploaded_by_student'
                     zip_file.write(
                             comment_file.file.file.name,
                             posixpath.join(path, comment_file.filename)
@@ -96,3 +155,20 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
         response['content-length'] = os.stat(tempfile.name).st_size
 
         return response
+
+
+class App(crapp.App):
+    appurls = [
+        crapp.Url(
+            r'^file-download/(?P<feedbackset_id>[0-9]+)/(?P<commentfile_id>[0-9]+)$',
+            FileDownloadFeedbackfeedView.as_view(),
+            name='file-download'),
+        crapp.Url(
+            r'^groupcomment-file-download/(?P<groupcomment_id>[0-9]+)$',
+            CompressedGroupCommentFileDownload.as_view(),
+            name='groupcomment-file-download'),
+        crapp.Url(
+            r'^feedbackset-file-download/(?P<feedbackset_id>[0-9]+)$',
+            FileDownloadFeedbackfeedView.as_view(),
+            name='feedbackset-file-download'),
+    ]

@@ -126,7 +126,7 @@ class GroupCommentDateTimeItemValue(listbuilder.base.ItemValueRenderer):
         valuealias (:obj:`~devilry.devilry_group.models.GroupComment`): Instance.
     """
     valuealias = 'groupcomment'
-    template_name = 'devilry_group/listbuilder_sidebar/sidebar_comment_date_item_value.django.html'
+    template_name = 'devilry_group/listbuilder_sidebar/sidebar_comment_item_value.django.html'
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(GroupCommentDateTimeItemValue, self).get_extra_css_classes_list()

@@ -9,6 +9,7 @@ app.controller 'sidebarCollapseCtrl', ["$scope", ($scope) ->
 
 
   $scope.toggle_collapse = (collapse_id) ->
+    console.log "asd"
     for collapse_var in $scope.collapse_variables
       if collapse_var.name == collapse_id
         collapse_var.value = true

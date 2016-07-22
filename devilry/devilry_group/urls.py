@@ -22,4 +22,8 @@ urlpatterns = [
     url(r'devilry-feedbackfeed-compressed-feedback-file-download/(?P<feedbackset_id>[0-9]+)',
         feedbackfeed_download_files.CompressedFeedbackSetFileDownloadView.as_view(),
         name='devilry-feedbackfeed-compressed-feedbackset-file-download'),
+
+    url(r'devilry-feedbackfeed-compressed-groupcomment-file-download/(?P<groupcomment_id>[0-9]+)',
+        feedbackfeed_download_files.CompressedGroupCommentFileDownload.as_view(),
+        name='devilry-feedbackfeed-compressed-groupcomment-file-download'),
 ]
