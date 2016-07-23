@@ -1,4 +1,5 @@
 from rest_framework.permissions import IsAuthenticated
+from devilry.devilry_account.models import User
 
 
 class IsStudent(IsAuthenticated):
@@ -9,7 +10,7 @@ class IsStudent(IsAuthenticated):
     """
 
     def has_permission(self, request, view):
-        return super(IsStudent, self).has_permission(request, view) and request.user.user_is_student()
+        return super(IsStudent, self).has_permission(request, view) and User.objects.user_is_student(request.user)
 
 
 class IsExaminer(IsAuthenticated):
@@ -20,4 +21,4 @@ class IsExaminer(IsAuthenticated):
     """
 
     def has_permission(self, request, view):
-        return super(IsExaminer, self).has_permission(request, view) and request.user.user_is_examiner()
+        return super(IsExaminer, self).has_permission(request, view) and User.objects.user_is_examiner(request.user)
