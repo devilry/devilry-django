@@ -7,17 +7,10 @@ from model_mommy import mommy
 from rest_framework.test import APITestCase
 
 from devilry.devilry_api.assignment.views import assignment_student
-from devilry.devilry_api.tests.mixins import test_auth_common, api_test_helper
+from devilry.devilry_api.tests.mixins import test_auth_student, api_test_helper
 
 
-# class TestAssignmentGroupListView(test_auth_common.TestAuthAPIKeyMixin,
-#                                   api_test_helper.TestCaseMixin,
-#                                   test.TestCase):
-#     viewclass = assignment_student.AssignmentGroupListView
-#     route = '/assignmentgroup/list/'
-#
-
-class TestAssignmentListView(test_auth_common.TestAuthAPIKeyMixin,
+class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
                              api_test_helper.TestCaseMixin,
                              APITestCase):
     viewclass = assignment_student.AssignmentListView

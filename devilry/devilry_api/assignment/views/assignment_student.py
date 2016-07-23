@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from rest_framework.permissions import IsAuthenticated
 
+from devilry.devilry_api.permission.role_permission import IsStudent
 from devilry.apps.core.models.assignment_group import Assignment
 from devilry.devilry_api.assignment.views.assignment_base import AssignmentListViewBase, AssignmentViewBase
 
@@ -22,7 +23,7 @@ class AssignmentListView(AssignmentListViewBase):
         /?semester=spring2015&ordering=-first_deadline
 
     """
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsStudent, )
 
     def get_role_queryset(self):
         return Assignment.objects.filter_student_has_access(self.request.user)
