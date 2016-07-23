@@ -1,35 +1,13 @@
 # -​*- coding: utf-8 -*​-
 from __future__ import unicode_literals
 
-from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
-from devilry.apps.core.models.assignment_group import AssignmentGroup, Assignment
-from devilry.devilry_api.assignment.serializers import (
-    AssignmentGroupModelSerializer,
-    AssignmentModelSerializer)
-from devilry.devilry_api.auth.authentication import TokenAuthentication, SessionAuthentication
+from devilry.apps.core.models.assignment_group import Assignment
+from devilry.devilry_api.assignment.views.assignment_base import AssignmentListViewBase, AssignmentViewBase
 
 
-class AssignmentGroupListView(APIView):
-    serializer_class = AssignmentGroupModelSerializer
-    permission_classes = (IsAuthenticated, )
-    authentication_classes = (TokenAuthentication, SessionAuthentication, )
-
-    def get(self, request, *args, **kwargs):
-        """
-        list all assignment groups for user
-
-        """
-        assignment_groups = AssignmentGroup.objects.filter_user_is_candidate(self.request.user)
-        serializer = self.serializer_class(assignment_groups, many=True)
-        return Response(serializer.data)
-
-
-class AssignmentListView(ListAPIView):
+class AssignmentListView(AssignmentListViewBase):
     """
     List view for assignments as an candidate
 
@@ -39,26 +17,25 @@ class AssignmentListView(ListAPIView):
     filters is passed as queryparams
 
     Examples:
-        http://example.com/?subject=duck1010
-        http://example.com/?ordering=publishing_time
-        http://example.com/?semester=spring2015&ordering=-first_deadline
+        /?subject=duck1010
+        /?ordering=publishing_time
+        /?semester=spring2015&ordering=-first_deadline
 
     """
-    serializer_class = AssignmentModelSerializer
     permission_classes = (IsAuthenticated, )
-    authentication_classes = (TokenAuthentication, SessionAuthentication, )
-    filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ['parentnode__parentnode__short_name', 'parentnode__short_name']
 
-    def get_queryset(self):
-        queryset_list = Assignment.objects.filter_user_is_candidate(self.request.user)
-        semester = self.request.query_params.get('semester', None)
-        subject = self.request.query_params.get('subject', None)
-        if semester:
-            queryset_list = queryset_list.filter(parentnode__short_name=semester).distinct()
-        if subject:
-            queryset_list = queryset_list.filter(parentnode__parentnode__short_name=subject).distinct()
-        return queryset_list
+    def get_role_queryset(self):
+        return Assignment.objects.filter_student_has_access(self.request.user)
+
+    # def get_queryset(self):
+    #     queryset_list = Assignment.objects.filter_student_has_access(self.request.user)
+    #     semester = self.request.query_params.get('semester', None)
+    #     subject = self.request.query_params.get('subject', None)
+    #     if semester:
+    #         queryset_list = queryset_list.filter(parentnode__short_name=semester).distinct()
+    #     if subject:
+    #         queryset_list = queryset_list.filter(parentnode__parentnode__short_name=subject).distinct()
+    #     return queryset_list
 
     def get(self, request, *args, **kwargs):
         """
@@ -90,3 +67,45 @@ class AssignmentListView(ListAPIView):
 
         """
         return super(AssignmentListView, self).get(request, *args, **kwargs)
+
+
+class AssignmentView(AssignmentViewBase):
+    """
+    student assignment view
+    get a specific assignment by subject, semester and assignment name
+
+    Authentication is required.
+    Authentication method allowed is by api key or session
+
+    Examples:
+        /inf1000/v15/assignment1
+    """
+    permission_classes = (IsAuthenticated, )
+
+    def get_role_queryset(self):
+        return Assignment.objects.filter_student_has_access(self.request.user)
+
+    def get(self, request, subject, semester, assignment, *args, **kwargs):
+        """
+        Get a specific assignment
+
+        ---
+        parameters:
+            - name: subject
+              required: true
+              paramType: path
+              type: String
+              description: subject(INF1000)
+            - name: semester
+              required: true
+              paramType: path
+              type: String
+              description: semester(V15)
+            - name: assignment
+              required: true
+              paramType: path
+              type: String
+              description: assignment(assignment1)
+
+        """
+        return super(AssignmentView, self).get(request, subject, semester, assignment, *args, **kwargs)
