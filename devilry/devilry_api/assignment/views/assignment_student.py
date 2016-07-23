@@ -27,16 +27,6 @@ class AssignmentListView(AssignmentListViewBase):
     def get_role_queryset(self):
         return Assignment.objects.filter_student_has_access(self.request.user)
 
-    # def get_queryset(self):
-    #     queryset_list = Assignment.objects.filter_student_has_access(self.request.user)
-    #     semester = self.request.query_params.get('semester', None)
-    #     subject = self.request.query_params.get('subject', None)
-    #     if semester:
-    #         queryset_list = queryset_list.filter(parentnode__short_name=semester).distinct()
-    #     if subject:
-    #         queryset_list = queryset_list.filter(parentnode__parentnode__short_name=subject).distinct()
-    #     return queryset_list
-
     def get(self, request, *args, **kwargs):
         """
         Gets a list of assignments
