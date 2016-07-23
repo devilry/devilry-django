@@ -7,7 +7,7 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 
 urlpatterns = [
-    url(r'^student/', include('devilry.devilry_api.student.urls')),
+    url(r'^assignment/', include('devilry.devilry_api.assignment.urls')),
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]
 

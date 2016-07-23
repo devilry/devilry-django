@@ -1,7 +1,6 @@
 # -​*- coding: utf-8 -*​-
 from __future__ import unicode_literals
 
-from django.db.models import Q
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -9,10 +8,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from devilry.apps.core.models.assignment_group import AssignmentGroup, Assignment
-from devilry.devilry_api.auth.authentication import TokenAuthentication, SessionAuthentication
-from devilry.devilry_api.student.serializers.assignment_serializers import (
+from devilry.devilry_api.assignment.serializers import (
     AssignmentGroupModelSerializer,
     AssignmentModelSerializer)
+from devilry.devilry_api.auth.authentication import TokenAuthentication, SessionAuthentication
 
 
 class AssignmentGroupListView(APIView):

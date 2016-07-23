@@ -1,27 +1,26 @@
 # -​*- coding: utf-8 -*​-
 from __future__ import unicode_literals
 
-import json
 from django import test
 from django.conf import settings
-from rest_framework.test import APITestCase
 from model_mommy import mommy
+from rest_framework.test import APITestCase
 
-from devilry.devilry_api.student.views import assignment_views
+from devilry.devilry_api.assignment.views import assignment_student
 from devilry.devilry_api.tests.mixins import test_auth_common, api_test_helper
 
 
 class TestAssignmentGroupListView(test_auth_common.TestAuthAPIKeyMixin,
                                   api_test_helper.TestCaseMixin,
                                   test.TestCase):
-    viewclass = assignment_views.AssignmentGroupListView
+    viewclass = assignment_student.AssignmentGroupListView
     route = '/assignmentgroup/list/'
 
 
 class TestAssignmentListView(test_auth_common.TestAuthAPIKeyMixin,
                              api_test_helper.TestCaseMixin,
                              APITestCase):
-    viewclass = assignment_views.AssignmentListView
+    viewclass = assignment_student.AssignmentListView
     route = '/student/assignment/list/'
 
     def test_unauthorized_401(self):
