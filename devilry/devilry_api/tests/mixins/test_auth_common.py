@@ -1,10 +1,20 @@
 # -​*- coding: utf-8 -*​-
 from __future__ import unicode_literals
 
+from django.utils import timezone
+
 from devilry.apps.core import mommy_recipes
+from devilry.devilry_api.models import APIKey
 
 
 class TestAuthAPIKeyMixin(object):
+    """
+    These test cases will only test for the read permission level
+    which is the lowest.
+    """
+
+    #: This can be useful if we have a variables in the url path
+    extra_kwargs = {}
 
     def get_apikey(self, **kwargs):
         """
@@ -15,16 +25,31 @@ class TestAuthAPIKeyMixin(object):
         """
         raise NotImplementedError()
 
+    def set_up_common(self, **kwargs):
+        """
+        This can be used if we want to mock som extra data for all common tests.
+        """
+        pass
+
     def test_auth_not_valid_api_key(self):
-        response = self.mock_get_request(apikey='b2660057e2a109c032aa07171633d4fb92ca560a')
+        self.set_up_common()
+        response = self.mock_get_request(apikey='b2660057e2a109c032aa07171633d4fb92ca560a', **self.extra_kwargs)
         self.assertEqual(401, response.status_code)
 
-    def test_auth_api_key(self):
-        api_key = self.get_apikey()
-        response = self.mock_get_request(apikey=api_key.key)
-        self.assertEqual(200, response.status_code)
-
     def test_auth_key_expired(self):
-        api_key = self.get_apikey(created_datetime=mommy_recipes.OLD_PERIOD_START)
-        response = self.mock_get_request(apikey=api_key.key)
+        self.set_up_common()
+        apikey = self.get_apikey(created_datetime=mommy_recipes.OLD_PERIOD_START)
+        response = self.mock_get_request(apikey=apikey.key, **self.extra_kwargs)
+        self.assertEqual(401, response.status_code)
+
+    def test_key_expired_short(self):
+        self.set_up_common()
+        apikey = self.get_apikey(created_datetime=timezone.now()-APIKey.LIFETIME[APIKey.LIFETIME_SHORT])
+        response = self.mock_get_request(apikey=apikey.key, **self.extra_kwargs)
+        self.assertEqual(401, response.status_code)
+
+    def test_key_expired_long(self):
+        self.set_up_common()
+        apikey = self.get_apikey(created_datetime=timezone.now()-APIKey.LIFETIME[APIKey.LIFETIME_LONG])
+        response = self.mock_get_request(apikey=apikey.key, **self.extra_kwargs)
         self.assertEqual(401, response.status_code)

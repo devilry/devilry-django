@@ -172,10 +172,18 @@ class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
         self.assertListEqual([assignment1.first_deadline.isoformat(), assignment2.first_deadline.isoformat()],
                              assignment_names)
 
-#
-# class TestAssignmentView(test_auth_student.TestAuthAPIKeyStudentMixin,
-#                          api_test_helper.TestCaseMixin,
-#                          APITestCase):
-#
-#     viewclass = assignment_student.AssignmentView
-#     route = r'assignment/student/(?P<subject>.+)/(?P<semester>.+)/(?P<assignment>.+)/'
+
+class TestAssignmentView(test_auth_student.TestAuthAPIKeyStudentMixin,
+                         api_test_helper.TestCaseMixin,
+                         APITestCase):
+
+    viewclass = assignment_student.AssignmentView
+    route = r'^/assignment/student/(?P<subject>.+)/(?P<semester>.+)/(?P<assignment>.+)/$'
+
+    extra_kwargs = dict(subject='duck1010', semester='springaaaa', assignment='assignment1')
+
+    def set_up_common_for_key(self):
+        mommy.make('core.Assignment',
+                   short_name='assignment1',
+                   parentnode__short_name='springaaaa',
+                   parentnode__parentnode__short_name='duck1010')

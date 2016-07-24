@@ -7,7 +7,8 @@ from devilry.devilry_api import devilry_api_mommy_factories
 
 class TestAuthAPIKeyStudentMixin(test_auth_common.TestAuthAPIKeyMixin):
     """
-    Mixin for testing the student role
+    These test cases will only test for the read permission level
+    which is the lowest.
     """
     
     def get_apikey(self, **kwargs):
@@ -20,16 +21,19 @@ class TestAuthAPIKeyStudentMixin(test_auth_common.TestAuthAPIKeyMixin):
         return devilry_api_mommy_factories.api_key_student_permission_read(**kwargs)
 
     def test_auth_not_student(self):
+        self.set_up_common()
         api_key = devilry_api_mommy_factories.api_key_short_lifetime()
-        response = self.mock_get_request(apikey=api_key.key)
+        response = self.mock_get_request(apikey=api_key.key, **self.extra_kwargs)
         self.assertEqual(403, response.status_code)
 
     def test_auth_examiner_permission_not_student(self):
+        self.set_up_common()
         api_key = devilry_api_mommy_factories.api_key_examiner_permission_read()
-        response = self.mock_get_request(apikey=api_key.key)
+        response = self.mock_get_request(apikey=api_key.key, **self.extra_kwargs)
         self.assertEqual(403, response.status_code)
 
     def test_auth_admin_permission_not_student(self):
+        self.set_up_common()
         api_key = devilry_api_mommy_factories.api_key_admin_permission_read()
-        response = self.mock_get_request(apikey=api_key.key)
+        response = self.mock_get_request(apikey=api_key.key, **self.extra_kwargs)
         self.assertEqual(403, response.status_code)

@@ -71,7 +71,7 @@ class AssignmentView(AssignmentViewBase):
     Examples:
         /inf1000/v15/assignment1
     """
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsStudent, )
 
     def get_role_queryset(self):
         return Assignment.objects.filter_student_has_access(self.request.user)
