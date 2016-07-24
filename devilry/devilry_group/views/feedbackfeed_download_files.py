@@ -43,11 +43,17 @@ class FileDownloadFeedbackfeedView(generic.View):
             return HttpResponseForbidden('Forbidden')
 
         comment_file = get_object_or_404(comment_models.CommentFile, id=commentfile_id)
+        groupcomment = get_object_or_404(group_models.GroupComment, id=comment_file.comment.id)
+
+        # If it's a private GroupComment, the request.user must be the one that created the comment.
+        if groupcomment.visibility != group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
+            if groupcomment.user.id != request.user:
+                return HttpResponseForbidden('Forbidden')
 
         # Load file as chunks rather than loading the whole file into memory
         filewrapper = FileWrapper(comment_file.file)
         response = http.HttpResponse(filewrapper, content_type=comment_file.mimetype)
-        response['content-disposition'] = 'attachement; filename=%s' % \
+        response['content-disposition'] = 'attachment; filename=%s' % \
             comment_file.filename.encode('ascii', 'replace')
         response['content-length'] = comment_file.filesize
 
@@ -60,8 +66,10 @@ class CompressedGroupCommentFileDownload(generic.View):
     def get(self, request, groupcomment_id):
         """
 
+
         Args:
             groupcomment_id:
+            request:
 
         Returns:
              HttpResponse: Zipped folder.
@@ -71,6 +79,11 @@ class CompressedGroupCommentFileDownload(generic.View):
         # Check that the cradmin role and the AssignmentGroup is the same.
         if groupcomment.feedback_set.group.id != request.cradmin_role.id:
             return HttpResponseForbidden('Forbidden')
+
+        # If it's a private GroupComment, the request.user must be the one that created the comment.
+        if groupcomment.visibility != group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
+            if groupcomment.user.id != request.user.id:
+                return HttpResponseForbidden('Forbidden')
 
         commentfiles = groupcomment.commentfile_set.all()
 
@@ -95,7 +108,7 @@ class CompressedGroupCommentFileDownload(generic.View):
         # Load file as chunks
         filewrapper = FileWrapper(tempfile)
         response = http.HttpResponse(filewrapper, content_type='application/zip')
-        response['content-disposition'] = 'attachement; filename=%s' % \
+        response['content-disposition'] = 'attachment; filename=%s' % \
             zip_file_name.encode('ascii', 'replace')
         response['content-length'] = os.stat(tempfile.name).st_size
         return response
@@ -103,6 +116,8 @@ class CompressedGroupCommentFileDownload(generic.View):
 
 class CompressedFeedbackSetFileDownloadView(generic.View):
     """Compress all files from a specific FeedbackSet for an assignment into a zipped folder.
+
+    Downloads only files from GroupComments that are visible to everyone.
     """
     def get(self, request, feedbackset_id):
         """Download all files for a feedbackset into zipped folder.
@@ -130,7 +145,8 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
         zip_file = zipfile.ZipFile(tempfile, 'w')
 
         for group_comment in feedbackset.groupcomment_set.all():
-            if group_comment.commentfile_set is not None:
+            # Don't add files from comments which are not visible to everyone.
+            if group_comment.visibility == group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
                 for comment_file in group_comment.commentfile_set.all():
                     if comment_file.comment.published_datetime > group_comment.feedback_set.deadline_datetime \
                             and comment_file.comment.user_role == 'student':
@@ -148,9 +164,9 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
         tempfile.seek(0)
 
         # Load file as chunks rather than loading the whole file into memory
-        filewrapper = FileWrapper(tempfile.seek(0))
+        filewrapper = FileWrapper(tempfile)
         response = http.HttpResponse(filewrapper, content_type='application/zip')
-        response['content-disposition'] = 'attachement; filename=%s' % \
+        response['content-disposition'] = 'attachment; filename=%s' % \
             zip_file_name.encode('ascii', 'replace')
         response['content-length'] = os.stat(tempfile.name).st_size
 
