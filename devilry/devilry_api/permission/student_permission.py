@@ -15,10 +15,8 @@ class StudentReadOnlyAPIKey(BaseIsAuthenticatedAPIKey):
     read_only_methods = ('GET', 'HEAD', 'OPTIONS')
 
     def has_permission(self, request, view):
-        apikey = self.get_apikey(request)
         return (
             super(StudentReadOnlyAPIKey, self).has_permission(request, view) and
-            apikey and
-            apikey.student_permission == APIKey.STUDENT_PERMISSION_READ and
+            self.apikey.student_permission == APIKey.STUDENT_PERMISSION_READ and
             request.method in self.read_only_methods
         )

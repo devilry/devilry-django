@@ -19,6 +19,9 @@ class BaseIsAuthenticatedAPIKey(IsAuthenticated):
         key = auth[1].decode()
         return APIKey.objects.get(key=key)
 
+    def has_permission(self, request, view):
+        self.apikey = self.get_apikey(request)
+        return super(BaseIsAuthenticatedAPIKey, self).has_permission(request, view) and self.apikey
 
 # class IsStudent(BaseIsAuthenticatedAPIKey):
 #     """
