@@ -195,21 +195,21 @@ class APIKey(models.Model):
     )
 
     @property
-    def key_has_student_permission(self):
+    def has_student_permission(self):
         """
         This returns ``True`` if the :obj:`.APIKey.student_permission` has permission
         """
         return self.student_permission != self.STUDENT_NO_PERMISSION
 
     @property
-    def key_has_examiner_permission(self):
+    def has_examiner_permission(self):
         """
         This returns ``True`` if the :obj:`.APIKey.examiner_permission` has permission
         """
         return self.examiner_permission != self.EXAMINER_NO_PERMISSION
 
     @property
-    def key_has_examiner_permission(self):
+    def has_admin_permission(self):
         """
         This returns ``True`` if the :obj:`.APIKey.admin_permission` has permission
         """
