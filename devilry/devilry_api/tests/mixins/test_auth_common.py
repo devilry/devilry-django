@@ -10,7 +10,7 @@ class TestAuthAPIKeyMixin(object):
 
     def get_user(self):
         """
-        returns a user
+        should return a user
         Returns:
             :obj:`~devilry_account.User`
 

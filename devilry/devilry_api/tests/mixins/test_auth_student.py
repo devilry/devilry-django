@@ -5,7 +5,10 @@ from devilry.apps.core import mommy_recipes
 
 
 class TestAuthAPIKeyStudentMixin(test_auth_common.TestAuthAPIKeyMixin):
-
+    """
+    Mixin for testing the student role
+    """
+    
     def get_user(self):
         """
         returns a studnet user

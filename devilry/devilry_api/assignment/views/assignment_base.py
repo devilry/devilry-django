@@ -28,7 +28,7 @@ class AssignmentListViewBase(ListAPIView):
 
     """
     serializer_class = AssignmentModelSerializer
-    authentication_classes = (TokenAuthentication, SessionAuthentication, )
+    authentication_classes = (TokenAuthentication, )
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['parentnode__parentnode__short_name', 'parentnode__short_name']
 
@@ -61,7 +61,7 @@ class AssignmentViewBase(GenericAPIView):
         /inf1000/v15/assignment1
     """
     serializer_class = AssignmentModelSerializer
-    authentication_classes = (TokenAuthentication, SessionAuthentication,)
+    authentication_classes = (TokenAuthentication, )
 
     @property
     def permission_classes(self):
