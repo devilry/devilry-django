@@ -18,5 +18,5 @@ class TestAPIKey(testcases.TestCase):
         self.assertTrue(testkey.has_expired)
 
     def test_key_has_not_expired(self):
-        testkey = mommy.make('devilry_api.APIKey', created_datetime=mommy_recipes.FUTURE_PERIOD_START)
+        testkey = mommy.make('devilry_api.APIKey')
         self.assertFalse(testkey.has_expired)
