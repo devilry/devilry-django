@@ -2,6 +2,7 @@ from devilry.devilry_api.tests.mixins import test_auth_common
 from model_mommy import mommy
 
 from devilry.apps.core import mommy_recipes
+from devilry.devilry_api import devilry_api_mommy_factories
 
 
 class TestAuthAPIKeyStudentMixin(test_auth_common.TestAuthAPIKeyMixin):
@@ -9,22 +10,26 @@ class TestAuthAPIKeyStudentMixin(test_auth_common.TestAuthAPIKeyMixin):
     Mixin for testing the student role
     """
     
-    def get_user(self):
+    def get_apikey(self, **kwargs):
         """
-        returns a studnet user
+        returns a :obj:`~devilry_api.APIKey` with student permission
         Returns:
-            :obj:`~devilry_account.User`
+            :obj:`~devilry_api.APIKey`
 
         """
-        assignment = mommy.make('core.Assignment',
-                                parentnode__parentnode__short_name='duckduck1010')
-        candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
-                               assignment_group__parentnode=assignment)
-        return candidate.relatedstudent.user
+        return devilry_api_mommy_factories.api_key_student_permission_read(**kwargs)
 
     def test_auth_not_student(self):
-        api_key = mommy.make('devilry_api.APIKey',
-                             expiration_date=mommy_recipes.ACTIVE_PERIOD_END)
+        api_key = devilry_api_mommy_factories.api_key_short_lifetime()
+        response = self.mock_get_request(apikey=api_key.key)
+        self.assertEqual(403, response.status_code)
+
+    def test_auth_examiner_permission_not_student(self):
+        api_key = devilry_api_mommy_factories.api_key_examiner_permission_read()
+        response = self.mock_get_request(apikey=api_key.key)
+        self.assertEqual(403, response.status_code)
+
+    def test_auth_admin_permission_not_student(self):
+        api_key = devilry_api_mommy_factories.api_key_admin_permission_read()
         response = self.mock_get_request(apikey=api_key.key)
         self.assertEqual(403, response.status_code)

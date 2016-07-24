@@ -25,7 +25,7 @@ class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
         candidate = mommy.make('core.Candidate',
                                relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
-        apikey = devilry_api_mommy_factories.api_key_infinite_lifetime(candidate.relatedstudent.user)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(assignment.parentnode.parentnode.short_name, response.data[0]['subject'])
@@ -46,7 +46,7 @@ class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
         candidate = mommy.make('core.Candidate',
                                relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
-        apikey = devilry_api_mommy_factories.api_key_infinite_lifetime(candidate.relatedstudent.user)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
                                          queryparams='?search=123')
         self.assertEqual(200, response.status_code)
@@ -58,7 +58,7 @@ class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
         candidate = mommy.make('core.Candidate',
                                relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
-        apikey = devilry_api_mommy_factories.api_key_infinite_lifetime(candidate.relatedstudent.user)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
                                          queryparams='?search=duckduck1010')
         self.assertEqual(200, response.status_code)
@@ -70,7 +70,7 @@ class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
         candidate = mommy.make('core.Candidate',
                                relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
-        apikey = devilry_api_mommy_factories.api_key_infinite_lifetime(candidate.relatedstudent.user)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
                                          queryparams='?search=S16')
         self.assertEqual(200, response.status_code)
@@ -82,7 +82,7 @@ class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
         candidate = mommy.make('core.Candidate',
                                relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
-        apikey = devilry_api_mommy_factories.api_key_infinite_lifetime(candidate.relatedstudent.user)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
                                          queryparams='?search=S15')
         self.assertEqual(200, response.status_code)
@@ -94,7 +94,7 @@ class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
         candidate = mommy.make('core.Candidate',
                                relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
-        apikey = devilry_api_mommy_factories.api_key_infinite_lifetime(candidate.relatedstudent.user)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
                                          queryparams='?semester=S15')
         self.assertEqual(200, response.status_code)
@@ -106,7 +106,7 @@ class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
         candidate = mommy.make('core.Candidate',
                                relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
-        apikey = devilry_api_mommy_factories.api_key_infinite_lifetime(candidate.relatedstudent.user)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
                                          queryparams='?semester=S15')
         self.assertEqual(200, response.status_code)
@@ -118,7 +118,7 @@ class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
         candidate = mommy.make('core.Candidate',
                                relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
-        apikey = devilry_api_mommy_factories.api_key_infinite_lifetime(candidate.relatedstudent.user)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
                                          queryparams='?subject=duck1000')
         self.assertEqual(200, response.status_code)
@@ -130,7 +130,7 @@ class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
         candidate = mommy.make('core.Candidate',
                                relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
-        apikey = devilry_api_mommy_factories.api_key_infinite_lifetime(candidate.relatedstudent.user)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
                                          queryparams='?subject=duck1010')
         self.assertEqual(200, response.status_code)
@@ -146,7 +146,7 @@ class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
         mommy.make('core.Candidate',
                    relatedstudent__user=testuser,
                    assignment_group__parentnode=assignment2)
-        apikey = devilry_api_mommy_factories.api_key_infinite_lifetime(testuser)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=testuser)
         response = self.mock_get_request(apikey=apikey.key,
                                          queryparams='?ordering=first_deadline')
         self.assertEqual(200, response.status_code)
@@ -164,7 +164,7 @@ class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
         mommy.make('core.Candidate',
                    relatedstudent__user=testuser,
                    assignment_group__parentnode=assignment2)
-        apikey = devilry_api_mommy_factories.api_key_infinite_lifetime(testuser)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=testuser)
         response = self.mock_get_request(apikey=apikey.key,
                                          queryparams='?ordering=-first_deadline')
         self.assertEqual(200, response.status_code)

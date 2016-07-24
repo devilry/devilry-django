@@ -13,8 +13,11 @@ class BasePermission(IsAuthenticated):
         Returns:
             :obj: `~devilry_api.APIKey`
         """
-        key = get_authorization_header(request).split()[1].decode()
-        return APIKey.get(key=key)
+        auth = get_authorization_header(request).split()
+        if not auth or auth[0].lower() != b'token':
+            return None
+        key = auth[1].decode()
+        return APIKey.objects.get(key=key)
 
 
 class IsStudent(BasePermission):
@@ -26,7 +29,7 @@ class IsStudent(BasePermission):
 
     def has_permission(self, request, view):
         apikey = self.get_apikey(request)
-        return super(IsStudent, self).has_permission(request, view) and apikey.has_student_permission
+        return super(IsStudent, self).has_permission(request, view) and apikey and apikey.has_student_permission
 
 
 class IsExaminer(BasePermission):
@@ -38,4 +41,4 @@ class IsExaminer(BasePermission):
 
     def has_permission(self, request, view):
         apikey = self.get_apikey(request)
-        return super(IsExaminer, self).has_permission(request, view) and apikey.has_examiner_permission
+        return super(IsExaminer, self).has_permission(request, view) and apikey and apikey.has_examiner_permission
