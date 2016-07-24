@@ -172,11 +172,10 @@ class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
         self.assertListEqual([assignment1.first_deadline.isoformat(), assignment2.first_deadline.isoformat()],
                              assignment_names)
 
-
-class TestAssignmentView(test_auth_student.TestAuthAPIKeyStudentMixin,
-                         api_test_helper.TestCaseMixin,
-                         APITestCase):
-    def test_sanity(self):
-        pass
-
-    pass
+#
+# class TestAssignmentView(test_auth_student.TestAuthAPIKeyStudentMixin,
+#                          api_test_helper.TestCaseMixin,
+#                          APITestCase):
+#
+#     viewclass = assignment_student.AssignmentView
+#     route = r'assignment/student/(?P<subject>.+)/(?P<semester>.+)/(?P<assignment>.+)/'
