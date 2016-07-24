@@ -183,7 +183,16 @@ class TestAssignmentView(test_auth_student.TestAuthAPIKeyStudentMixin,
     extra_kwargs = dict(subject='duck1010', semester='springaaaa', assignment='assignment1')
 
     def set_up_common_for_key(self):
+        """
+        So we at least have one valid url that does not return 404
+        """
         mommy.make('core.Assignment',
                    short_name='assignment1',
                    parentnode__short_name='springaaaa',
                    parentnode__parentnode__short_name='duck1010')
+
+    def test_path_404(self):
+        apikey = self.get_apikey()
+        response = self.mock_get_request(apikey=apikey.key, subject='subject', semester='s', assignment='a1')
+        self.assertEqual(404, response.status_code)
+
