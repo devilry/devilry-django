@@ -1,9 +1,7 @@
 # -​*- coding: utf-8 -*​-
 from __future__ import unicode_literals
 
-from rest_framework.permissions import IsAuthenticated
-
-from devilry.devilry_api.permission.role_permission import IsStudent
+from devilry.devilry_api.permission.student_permission import StudentReadOnlyAPIKey
 from devilry.apps.core.models.assignment_group import Assignment
 from devilry.devilry_api.assignment.views.assignment_base import AssignmentListViewBase, AssignmentViewBase
 
@@ -23,7 +21,7 @@ class AssignmentListView(AssignmentListViewBase):
         /?semester=spring2015&ordering=-first_deadline
 
     """
-    permission_classes = (IsStudent, )
+    permission_classes = (StudentReadOnlyAPIKey, )
 
     def get_role_queryset(self):
         return Assignment.objects.filter_student_has_access(self.request.user)
@@ -71,7 +69,7 @@ class AssignmentView(AssignmentViewBase):
     Examples:
         /inf1000/v15/assignment1
     """
-    permission_classes = (IsStudent, )
+    permission_classes = (StudentReadOnlyAPIKey, )
 
     def get_role_queryset(self):
         return Assignment.objects.filter_student_has_access(self.request.user)
