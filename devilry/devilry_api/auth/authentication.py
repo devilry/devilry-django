@@ -24,9 +24,6 @@ class TokenAuthentication(authentication.TokenAuthentication):
         if token.has_expired:
             raise authentication.exceptions.AuthenticationFailed(ugettext_lazy('Api key has expired.'))
 
-        if not token.is_active:
-            raise authentication.exceptions.AuthenticationFailed(ugettext_lazy('Api key is not active.'))
-
         return (token.user, token)
 
 
