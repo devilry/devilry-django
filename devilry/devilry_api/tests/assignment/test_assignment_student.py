@@ -5,12 +5,13 @@ from django.conf import settings
 from model_mommy import mommy
 from rest_framework.test import APITestCase
 
-from devilry.devilry_api.assignment.views import assignment_student
-from devilry.devilry_api.tests.mixins import test_auth_student, api_test_helper
 from devilry.devilry_api import devilry_api_mommy_factories
+from devilry.devilry_api.assignment.views import assignment_student
+from devilry.devilry_api.tests.mixins import test_auth_student, api_test_helper, test_auth_common
 
 
 class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
+                             test_auth_common.TestAuthAPIKeyMixin,
                              api_test_helper.TestCaseMixin,
                              APITestCase):
     viewclass = assignment_student.AssignmentListView
@@ -174,6 +175,7 @@ class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
 
 
 class TestAssignmentView(test_auth_student.TestAuthAPIKeyStudentMixin,
+                         test_auth_common.TestAuthAPIKeyMixin,
                          api_test_helper.TestCaseMixin,
                          APITestCase):
 
@@ -195,4 +197,3 @@ class TestAssignmentView(test_auth_student.TestAuthAPIKeyStudentMixin,
         apikey = self.get_apikey()
         response = self.mock_get_request(apikey=apikey.key, subject='subject', semester='s', assignment='a1')
         self.assertEqual(404, response.status_code)
-

@@ -1,14 +1,17 @@
-from devilry.devilry_api.tests.mixins import test_auth_common
-from model_mommy import mommy
-
-from devilry.apps.core import mommy_recipes
 from devilry.devilry_api import devilry_api_mommy_factories
 
 
-class TestAuthAPIKeyStudentMixin(test_auth_common.TestAuthAPIKeyMixin):
+class TestAuthAPIKeyStudentMixin(object):
     """
     These test cases will only test for the read permission level
     which is the lowest.
+
+    Examples:
+        class TestCase(TestAuthAPIKeyStudentMixin,
+                       test_auth_common.TestAuthAPIKeyMixin,
+                       api_test_helper.TestCaseMixin,
+                       APITestCase):
+            viewclass = MyView
     """
     
     def get_apikey(self, **kwargs):

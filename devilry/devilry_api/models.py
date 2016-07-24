@@ -3,12 +3,13 @@ from __future__ import unicode_literals
 
 import binascii
 import os
+from datetime import timedelta
 
 from django.db import models
 from django.utils import timezone
-from rest_framework.authtoken.models import Token
 from django.utils.translation import pgettext_lazy, ugettext_lazy
-from datetime import timedelta
+from rest_framework.authtoken.models import Token
+
 from devilry.devilry_account.models import User
 
 

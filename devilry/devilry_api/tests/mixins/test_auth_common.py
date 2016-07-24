@@ -11,6 +11,12 @@ class TestAuthAPIKeyMixin(object):
     """
     These test cases will only test for the read permission level
     which is the lowest.
+
+    Examples:
+        class TestCase(TestAuthAPIKeyMixin,
+                       api_test_helper.TestCaseMixin,
+                       APITestCase):
+            viewclass = MyView
     """
 
     #: This can be useful if we have a variables in the url path
