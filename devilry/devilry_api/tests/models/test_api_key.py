@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.test import testcases
 from model_mommy import mommy
+from django.utils import timezone
 
 from devilry.apps.core import mommy_recipes
 from devilry.devilry_api.models import APIKey
@@ -21,6 +22,17 @@ class TestAPIKey(testcases.TestCase):
     def test_key_has_not_expired(self):
         testkey = mommy.make('devilry_api.APIKey')
         self.assertFalse(testkey.has_expired)
+
+    def test_key_has_expired_short(self):
+        testkey = mommy.make('devilry_api.APIKey',
+                             created_datetime=timezone.now() - APIKey.LIFETIME[APIKey.LIFETIME_SHORT])
+        self.assertTrue(testkey.has_expired)
+
+    def test_key_has_expired_long(self):
+        testkey = mommy.make('devilry_api.APIKey',
+                             created_datetime=timezone.now() - APIKey.LIFETIME[APIKey.LIFETIME_LONG],
+                             lifetime=APIKey.LIFETIME_LONG)
+        self.assertTrue(testkey.has_expired)
 
     def test_key_has_student_permission_only(self):
         testkey = mommy.make('devilry_api.APIKey', student_permission=APIKey.STUDENT_PERMISSION_READ)
