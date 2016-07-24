@@ -8,7 +8,7 @@ from django.db import models
 from django.utils import timezone
 from rest_framework.authtoken.models import Token
 from django.utils.translation import pgettext_lazy, ugettext_lazy
-
+from datetime import timedelta
 from devilry.devilry_account.models import User
 
 
@@ -37,9 +37,6 @@ class APIKey(models.Model):
     #: created timestamp.
     created_datetime = models.DateTimeField(default=timezone.now)
 
-    #: the key expire this date or never if None.
-    expiration_date = models.DateTimeField(blank=True, null=True)
-
     #: last login timestamp.
     last_login_datetime = models.DateTimeField(blank=True, null=True)
 
@@ -49,127 +46,179 @@ class APIKey(models.Model):
     #: purpose of the key
     purpose = models.CharField(max_length=255, blank=True)
 
-    #: Constant for the :obj:`~.APIKey.role` "student" choice.
-    ROLE_STUDENT = 'student'
+    #: Constant for the :obj:`~.APIKey.student_permission` "read" choice.
+    STUDENT_PERMISSION_READ = 'read'
 
-    #: Constant for the :obj:`~.APIKey.role` "examiner" choice.
-    ROLE_EXAMINER = 'examiner'
+    #: Constant for the :obj:`~.APIKey.student_permission` "write" choice.
+    STUDENT_PERMISSION_WRITE = 'write'
 
-    #: Constant for the :obj:`~.APIKey.role` "admin" choice.
-    ROLE_ADMIN = 'admin'
+    #: Constant for the :obj:`~.APIKey.student_permission` "no permission" choice.
+    STUDENT_NO_PERMISSION = 'no permission'
 
-    #: Choices for :obj:`.APIKey.role'.
-    ROLE_CHOICES = [
+    #: Choices for :obj:`.APIKey.student_permission'.
+    STUDENT_PERMISSION_CHOICES = [
         (
-            ROLE_STUDENT,
-            pgettext_lazy('api key as role', 'student')
+            STUDENT_NO_PERMISSION,
+            pgettext_lazy('student permission', 'no permission')
         ),
         (
-            ROLE_EXAMINER,
-            pgettext_lazy('api key as role', 'examiner')
+            STUDENT_PERMISSION_READ,
+            pgettext_lazy('student permission', 'read')
         ),
         (
-            ROLE_ADMIN,
-            pgettext_lazy('api key as role', 'admin')
+            STUDENT_PERMISSION_WRITE,
+            pgettext_lazy('student permission', 'write')
         )
     ]
 
-    #: A choicefield for the api key role.
+    #: A choicefield for the api key student permission.
     #:
     #: Choices:
     #:
-    #: - :obj:`~.APIKey.ROLE_STUDENT`
-    #: - :obj:`~.APIKey.ROLE_EXAMINER`
-    #: - :obj:`~.APIKey.ROLE_ADMIN`
-    role = models.CharField(
-        verbose_name=ugettext_lazy('api key role'),
-        choices=ROLE_CHOICES,
-        default=ROLE_STUDENT,
+    #: - :obj:`~.APIKey.STUDENT_NO_PERMISSION`
+    #: - :obj:`~.APIKey.STUDENT_PERMISSION_READ`
+    #: - :obj:`~.APIKey.STUDENT_PERMISSION_WRITE`
+    student_permission = models.CharField(
+        verbose_name=ugettext_lazy('student permission'),
+        choices=STUDENT_PERMISSION_CHOICES,
+        default=STUDENT_NO_PERMISSION,
         max_length=255
     )
 
-    #: Constant for the :obj: `~.APIKey.privilege` "read only" choice.
-    PRIVILEGE_READ_ONLY = 'read only'
+    #: Constant for the :obj:`~.APIKey.examiner_permission` "read" choice.
+    EXAMINER_PERMISSION_READ = 'read'
 
-    #: Constant for the :obj: `~.APIKey.privilege` "all" choice.
-    PRIVILEGE_ALL = 'all'
+    #: Constant for the :obj:`~.APIKey.examiner_permission` "write" choice.
+    EXAMINER_PERMISSION_WRITE = 'write'
 
-    #: Choices for :obj:`.APIKey.privilege'.
-    PRIVILEGE_CHOICES = [
+    #: Constant for the :obj:`~.APIKey.examiner_permission` "no permission" choice.
+    EXAMINER_NO_PERMISSION = 'no permission'
+
+    #: Choices for :obj:`.APIKey.examiner_permission'.
+    EXAMINER_PERMISSION_CHOICES = [
         (
-            PRIVILEGE_READ_ONLY,
-            pgettext_lazy('api key has privilege', 'read only')
+            EXAMINER_NO_PERMISSION,
+            pgettext_lazy('examiner permission', 'no permission')
         ),
         (
-            PRIVILEGE_ALL,
-            pgettext_lazy('api key has privilege', 'all')
+            EXAMINER_PERMISSION_READ,
+            pgettext_lazy('examiner permission', 'read')
+        ),
+        (
+            EXAMINER_PERMISSION_WRITE,
+            pgettext_lazy('examiner permission', 'write')
         )
     ]
 
-    #: A choicefield for the api key privilege.
+    #: A choicefield for the api key examiner permission.
     #:
     #: Choices:
     #:
-    #: - :obj:`~.APIKey.PRIVILEGE_READ_ONLY`
-    #: - :obj:`~.APIKey.PRIVILEGE_ALL`
-    privilege = models.CharField(
-        verbose_name=ugettext_lazy('api key privilege'),
-        choices=PRIVILEGE_CHOICES,
-        default=PRIVILEGE_READ_ONLY,
+    #: - :obj:`~.APIKey.EXAMINER_NO_PERMISSION`
+    #: - :obj:`~.APIKey.EXAMINER_PERMISSION_READ`
+    #: - :obj:`~.APIKey.EXAMINER_PERMISSION_WRITE`
+    examiner_permission = models.CharField(
+        verbose_name=ugettext_lazy('examiner permission'),
+        choices=EXAMINER_PERMISSION_CHOICES,
+        default=EXAMINER_NO_PERMISSION,
         max_length=255
     )
 
-    #: Constant for the :obj: `~.APIKey.type` "half a year" choice.
-    TYPE_SHORT_LIFETIME = 'half a year'
+    #: Constant for the :obj:`~.APIKey.admin_permission` "read" choice.
+    ADMIN_PERMISSION_READ = 'read'
 
-    #: Constant for the :obj: `~.APIKey.type` "a year" choice.
-    TYPE_LONG_LIFETIME = 'a year'
+    #: Constant for the :obj:`~.APIKey.admin_permission` "write" choice.
+    ADMIN_PERMISSION_WRITE = 'write'
 
-    #: Choices for :obj:`.APIKey.type'.
-    TYPE_CHOICES = [
+    #: Constant for the :obj:`~.APIKey.admin_permission` "no permission" choice.
+    ADMIN_NO_PERMISSION = 'no permission'
+
+    #: Choices for :obj:`.APIKey.admin_permission'.
+    ADMIN_PERMISSION_CHOICES = [
         (
-            TYPE_SHORT_LIFETIME,
+            ADMIN_NO_PERMISSION,
+            pgettext_lazy('admin permission', 'no permission')
+        ),
+        (
+            ADMIN_PERMISSION_READ,
+            pgettext_lazy('admin permission', 'read')
+        ),
+        (
+            ADMIN_PERMISSION_WRITE,
+            pgettext_lazy('admin permission', 'write')
+        )
+    ]
+
+    #: A choicefield for the api key admin permission.
+    #:
+    #: Choices:
+    #:
+    #: - :obj:`~.APIKey.ADMIN_NO_PERMISSION`
+    #: - :obj:`~.APIKey.ADMIN_PERMISSION_READ`
+    #: - :obj:`~.APIKey.ADMIN_PERMISSION_WRITE`
+    admin_permission = models.CharField(
+        verbose_name=ugettext_lazy('admin permission'),
+        choices=ADMIN_PERMISSION_CHOICES,
+        default=ADMIN_NO_PERMISSION,
+        max_length=255
+    )
+
+    #: Constant for the :obj: `~.APIKey.lifetime` "half a year" choice.
+    LIFETIME_SHORT = 'half a year'
+
+    #: Constant for the :obj: `~.APIKey.lifetime` "a year" choice.
+    LIFETIME_LONG = 'a year'
+
+    #: Choices for :obj:`.APIKey.lifetime'.
+    LIFETIME_CHOICES = [
+        (
+            LIFETIME_SHORT,
             pgettext_lazy('api key lifetime', 'half a year')
         ),
         (
-            TYPE_LONG_LIFETIME,
+            LIFETIME_LONG,
             pgettext_lazy('api key lifetime', 'a year')
         )
     ]
 
-    #: A choicefield for the api key type.
+    #: A choicefield for the api key lifetime.
     #:
     #: Choices:
     #:
-    #: - :obj:`~.APIKey.TYPE_SHORT_LIFETIME`
-    #: - :obj:`~.APIKey.TYPE_LONG_LIFETIME`
-    type = models.CharField(
+    #: - :obj:`~.APIKey.LIFETIME_SHORT`
+    #: - :obj:`~.APIKey.LIFETIME_LONG`
+    lifetime = models.CharField(
         verbose_name=ugettext_lazy('api key lifetime'),
-        choices=TYPE_CHOICES,
-        default=TYPE_SHORT_LIFETIME,
+        choices=LIFETIME_CHOICES,
+        default=LIFETIME_SHORT,
         max_length=255
     )
 
     @property
-    def role_is_student(self):
+    def key_has_student_permission(self):
         """
-        This returns ``True`` if the :obj:`.APIKey.role` is student
+        This returns ``True`` if the :obj:`.APIKey.student_permission` has permission
         """
-        return self.role == self.ROLE_STUDENT
+        return self.student_permission != self.STUDENT_NO_PERMISSION
 
     @property
-    def role_is_examiner(self):
+    def key_has_examiner_permission(self):
         """
-        This returns ``True`` if the :obj:`.APIKey.role` is examiner
+        This returns ``True`` if the :obj:`.APIKey.examiner_permission` has permission
         """
-        return self.role == self.ROLE_EXAMINER
+        return self.examiner_permission != self.EXAMINER_NO_PERMISSION
 
     @property
-    def role_is_admin(self):
+    def key_has_examiner_permission(self):
         """
-        This returns ``True`` if the :obj:`.APIKey.role` is admin
+        This returns ``True`` if the :obj:`.APIKey.admin_permission` has permission
         """
-        return self.role == self.ROLE_ADMIN
+        return self.admin_permission != self.ADMIN_NO_PERMISSION
+
+    LIFETIME = {
+        LIFETIME_SHORT: timedelta(days=183),
+        LIFETIME_LONG: timedelta(days=365)
+    }
 
     @property
     def has_expired(self):
@@ -177,25 +226,9 @@ class APIKey(models.Model):
         Checks if the :obj:`~.APIKey` has expired or not
         returns ``True`` if the key has expired
         """
-        if self.expiration_date and self.expiration_date <= timezone.now():
+        if self.created_datetime + self.LIFETIME[self.lifetime] <= timezone.now():
             return True
         return False
-
-    # @property
-    # def is_active(self):
-    #     """
-    #     Checks if the :obj:`~.APIKey` is active
-    #
-    #     Returns:
-    #         bool: true if the key is active, false if not
-    #
-    #     """
-    #     if self.expiration_date is None and self.start_datetime <= timezone.now():
-    #         return True
-    #     elif self.start_datetime <= timezone.now() and self.expiration_date > timezone.now():
-    #         return True
-    #     else:
-    #         return False
 
     def __str__(self):
         return '{} - {}'.format(self.user.shortname, self.key)
