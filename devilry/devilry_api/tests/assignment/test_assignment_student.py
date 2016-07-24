@@ -7,11 +7,12 @@ from rest_framework.test import APITestCase
 
 from devilry.devilry_api import devilry_api_mommy_factories
 from devilry.devilry_api.assignment.views import assignment_student
-from devilry.devilry_api.tests.mixins import test_auth_student, api_test_helper, test_auth_common
+from devilry.devilry_api.tests.mixins import test_student_mixins, api_test_helper, test_common_mixins
 
 
-class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
-                             test_auth_common.TestAuthAPIKeyMixin,
+class TestAssignmentListView(test_common_mixins.TestReadOnlyPermissionMixin,
+                             test_student_mixins.TestAuthAPIKeyStudentMixin,
+                             test_common_mixins.TestAuthAPIKeyMixin,
                              api_test_helper.TestCaseMixin,
                              APITestCase):
     viewclass = assignment_student.AssignmentListView
@@ -174,8 +175,9 @@ class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
                              assignment_names)
 
 
-class TestAssignmentView(test_auth_student.TestAuthAPIKeyStudentMixin,
-                         test_auth_common.TestAuthAPIKeyMixin,
+class TestAssignmentView(test_common_mixins.TestReadOnlyPermissionMixin,
+                         test_student_mixins.TestAuthAPIKeyStudentMixin,
+                         test_common_mixins.TestAuthAPIKeyMixin,
                          api_test_helper.TestCaseMixin,
                          APITestCase):
 

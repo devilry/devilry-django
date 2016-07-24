@@ -59,3 +59,42 @@ class TestAuthAPIKeyMixin(object):
         apikey = self.get_apikey(created_datetime=timezone.now()-APIKey.LIFETIME[APIKey.LIFETIME_LONG])
         response = self.mock_get_request(apikey=apikey.key, **self.extra_kwargs)
         self.assertEqual(401, response.status_code)
+
+
+class TestReadOnlyPermissionMixin(object):
+    """
+    Test mixin for read only permission.
+
+    get_apikey() should return a key with read only permission
+
+    Examples:
+        class TestCase(TestReadOnlyPermissionMixin,
+                       TestAuthAPIKeyMixin,
+                       api_test_helper.TestCaseMixin,
+                       APITestCase):
+            viewclass = MyView
+    """
+
+    def test_post_403(self):
+        self.set_up_common()
+        apikey = self.get_apikey()
+        response = self.mock_post_request(apikey=apikey.key)
+        self.assertEqual(403, response.status_code)
+
+    def test_delete_403(self):
+        self.set_up_common()
+        apikey = self.get_apikey()
+        response = self.mock_delete_request(apikey=apikey.key)
+        self.assertEqual(403, response.status_code)
+
+    def test_put_403(self):
+        self.set_up_common()
+        apikey = self.get_apikey()
+        response = self.mock_put_request(apikey=apikey.key)
+        self.assertEqual(403, response.status_code)
+
+    def test_patch_403(self):
+        self.set_up_common()
+        apikey = self.get_apikey()
+        response = self.mock_patch_request(apikey=apikey.key)
+        self.assertEqual(403, response.status_code)
