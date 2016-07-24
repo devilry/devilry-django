@@ -1,7 +1,6 @@
 # -​*- coding: utf-8 -*​-
 from __future__ import unicode_literals
 
-from django import test
 from django.conf import settings
 from model_mommy import mommy
 from rest_framework.test import APITestCase
@@ -160,3 +159,12 @@ class TestAssignmentListView(test_auth_student.TestAuthAPIKeyStudentMixin,
         assignment_names = [assignment['first_deadline'] for assignment in response.data]
         self.assertListEqual([assignment1.first_deadline.isoformat(), assignment2.first_deadline.isoformat()],
                              assignment_names)
+
+
+class TestAssignmentView(test_auth_student.TestAuthAPIKeyStudentMixin,
+                         api_test_helper.TestCaseMixin,
+                         APITestCase):
+    def test_sanity(self):
+        pass
+
+    pass
