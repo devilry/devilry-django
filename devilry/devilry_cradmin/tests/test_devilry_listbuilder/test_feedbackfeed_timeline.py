@@ -11,7 +11,7 @@ from devilry.apps.core import models as core_models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 
 
-class TestListBuilderListItems(test.TestCase):
+class TestFeedbackfeedTimelineListBuilderList(test.TestCase):
     """
     Testing the listbuilder and the items it holds.
     """
