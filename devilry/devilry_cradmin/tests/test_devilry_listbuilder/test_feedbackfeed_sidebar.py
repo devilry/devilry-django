@@ -1,7 +1,10 @@
+import htmls
+import mock
 from django import test
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.utils import timezone
+from django_cradmin.cradmin_testhelpers import TestCaseMixin
 from model_mommy import mommy
 
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
@@ -10,9 +13,16 @@ from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_sidebarbuild
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
 
 
-class TestFeedbackfeedSidebarListBuilderList(test.TestCase):
+class TestFeedbackfeedSidebarListBuilderList(TestCaseMixin, test.TestCase):
+
+    def test_feedbackset_item_value(self):
+        selector = htmls.S(feedbackfeed_sidebar.FeedbackSetItemValue(value=1).render())
+        self.assertEquals(
+                'first deadline', selector.one('.devilry-group-feedbackfeed-sidebar-deadlines').alltext_normalized)
 
     def test_listbuilder_sidebar_complete_example(self):
+        # Just a sanity check with a full example comprising of two FeedbackSets
+        # with one GroupComment each and one CommentFile for each GroupComment.
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -90,6 +100,19 @@ class TestFeedbackfeedSidebarListBuilderList(test.TestCase):
             assignment=testassignment
         )
 
+        # Checks the structure of the built list:
+        #
+        # FeedbackSetItemValue
+        #     GroupCommentListBuilderList
+        #     GroupCommentItemValue
+        #         FileListBuilderList
+        #         FileItemValue
+        # FeedbackSetItemValue
+        #     GroupCommentListBuilderList
+        #     GroupCommentItemValue
+        #         FileListBuilderList
+        #         FileItemValue
+        #
         self.assertTrue(isinstance(listbuilder_list.renderable_list[0],
                                    feedbackfeed_sidebar.FeedbackSetItemValue))
         self.assertTrue(isinstance(listbuilder_list.renderable_list[1],
@@ -99,4 +122,15 @@ class TestFeedbackfeedSidebarListBuilderList(test.TestCase):
         self.assertTrue(isinstance(listbuilder_list.renderable_list[1].renderable_list[1],
                                    feedbackfeed_sidebar.FileListBuilderList))
         self.assertTrue(isinstance(listbuilder_list.renderable_list[1].renderable_list[1].renderable_list[0],
+                                   feedbackfeed_sidebar.FileItemValue))
+
+        self.assertTrue(isinstance(listbuilder_list.renderable_list[2],
+                                   feedbackfeed_sidebar.FeedbackSetItemValue))
+        self.assertTrue(isinstance(listbuilder_list.renderable_list[3],
+                                   feedbackfeed_sidebar.GroupCommentListBuilderList))
+        self.assertTrue(isinstance(listbuilder_list.renderable_list[3].renderable_list[0],
+                                   feedbackfeed_sidebar.GroupCommentItemValue))
+        self.assertTrue(isinstance(listbuilder_list.renderable_list[3].renderable_list[1],
+                                   feedbackfeed_sidebar.FileListBuilderList))
+        self.assertTrue(isinstance(listbuilder_list.renderable_list[3].renderable_list[1].renderable_list[0],
                                    feedbackfeed_sidebar.FileItemValue))

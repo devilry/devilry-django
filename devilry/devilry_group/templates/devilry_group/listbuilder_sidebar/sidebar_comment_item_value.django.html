@@ -5,9 +5,13 @@
 {% load i18n %}
 
 {% block content %}
-    <span style="padding-left: 20px;">
-        <a href="{% cradmin_appurl 'groupcomment-file-download' me.groupcomment.id %}">
-            (COMMENT){{ me.groupcomment.published_datetime }}
-        </a>
-    </span>
+    <dl>
+        <dt>
+{#            <span style="padding-left: 20px;">#}
+            <a href="{% cradmin_appurl 'groupcomment-file-download' me.groupcomment.id %}">
+                ({{ me.groupcomment.user }}){{ me.groupcomment.published_datetime }}
+            </a>
+{#            </span>#}
+        </dt>
+    </dl>
 {% endblock content %}

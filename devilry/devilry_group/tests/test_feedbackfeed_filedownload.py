@@ -230,6 +230,8 @@ class TestCompressedFeedbackSetFileDownload(TestCase):
         zipfileobject = ZipFile(StringIO(response.content))
         self.assertEquals('student-testcontent', zipfileobject.read('uploaded_by_student/testfile-student.txt'))
         self.assertEquals('examiner-testcontent', zipfileobject.read('uploaded_by_examiner/testfile-examiner.txt'))
+
+        # Check that the private comment does not exist
         with self.assertRaises(KeyError):
             self.assertEquals('examiner-private-testcontent',
                               zipfileobject.read('uploaded_by_examiner/testfile-private-examiner.txt'))

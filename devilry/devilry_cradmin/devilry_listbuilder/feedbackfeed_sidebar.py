@@ -65,10 +65,10 @@ class GroupCommentListBuilderList(listbuilder.base.List):
         Returns:
             List: Instance of CrAdmins renderable List.
         """
-        commentdatebuilder_list = cls(**kwargs)
+        groupcommentbuilder_list = cls(**kwargs)
         for comment_dict in comment_list:
-            commentdatebuilder_list.append_dict(comment_dict=comment_dict)
-        return commentdatebuilder_list
+            groupcommentbuilder_list.append_dict(comment_dict=comment_dict)
+        return groupcommentbuilder_list
 
     def append_dict(self, comment_dict):
         """Appends renderables to this list.
@@ -130,6 +130,7 @@ class GroupCommentItemValue(listbuilder.base.ItemValueRenderer):
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(GroupCommentItemValue, self).get_extra_css_classes_list()
+        css_classes_list.append('devilry-group-feedbackfeed-sidebar-groupcomment')
         return css_classes_list
 
 
