@@ -93,9 +93,9 @@ class TestFeedbackfeedSidebarListBuilderList(test.TestCase):
         self.assertTrue(isinstance(listbuilder_list.renderable_list[0],
                                    feedbackfeed_sidebar.FeedbackSetItemValue))
         self.assertTrue(isinstance(listbuilder_list.renderable_list[1],
-                                   feedbackfeed_sidebar.GroupCommentDateTimeListBuilderList))
+                                   feedbackfeed_sidebar.GroupCommentListBuilderList))
         self.assertTrue(isinstance(listbuilder_list.renderable_list[1].renderable_list[0],
-                                   feedbackfeed_sidebar.GroupCommentDateTimeItemValue))
+                                   feedbackfeed_sidebar.GroupCommentItemValue))
         self.assertTrue(isinstance(listbuilder_list.renderable_list[1].renderable_list[1],
                                    feedbackfeed_sidebar.FileListBuilderList))
         self.assertTrue(isinstance(listbuilder_list.renderable_list[1].renderable_list[1].renderable_list[0],

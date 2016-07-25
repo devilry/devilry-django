@@ -39,7 +39,7 @@ class SidebarListBuilderList(listbuilder.base.List):
             feedbackset_dict (dict): Dictionary containing FeedbackSet data.
         """
         self.append(renderable=FeedbackSetItemValue(value=feedbackset_dict['feedbackset_num']))
-        valuerenderer = GroupCommentDateTimeListBuilderList.from_groupcomments(
+        valuerenderer = GroupCommentListBuilderList.from_groupcomments(
                 comment_list=feedbackset_dict['comments'])
         self.append(renderable=valuerenderer)
 
@@ -49,7 +49,7 @@ class SidebarListBuilderList(listbuilder.base.List):
         return css_classes_list
 
 
-class GroupCommentDateTimeListBuilderList(listbuilder.base.List):
+class GroupCommentListBuilderList(listbuilder.base.List):
     """Builds a list over :class:`~devilry.devilry_comment.models.CommentFile`s.
 
     Builds a list of CommentFiles for all :obj:`~devilry.devilry_group.GroupComment`s
@@ -79,7 +79,7 @@ class GroupCommentDateTimeListBuilderList(listbuilder.base.List):
         Args:
             comment_dict (dict): Dictionary for a GroupComment.
         """
-        self.append(renderable=GroupCommentDateTimeItemValue(value=comment_dict['groupcomment']))
+        self.append(renderable=GroupCommentItemValue(value=comment_dict['groupcomment']))
         valuerenderer = FileListBuilderList.from_files(comment_dict['files'])
         self.append(renderable=valuerenderer)
 
@@ -119,7 +119,7 @@ class FeedbackSetItemValue(listbuilder.base.ItemValueRenderer):
         return css_classes_list
 
 
-class GroupCommentDateTimeItemValue(listbuilder.base.ItemValueRenderer):
+class GroupCommentItemValue(listbuilder.base.ItemValueRenderer):
     """Renderable for a GroupComment.
 
     Attributes:
@@ -129,7 +129,7 @@ class GroupCommentDateTimeItemValue(listbuilder.base.ItemValueRenderer):
     template_name = 'devilry_group/listbuilder_sidebar/sidebar_comment_item_value.django.html'
 
     def get_extra_css_classes_list(self):
-        css_classes_list = super(GroupCommentDateTimeItemValue, self).get_extra_css_classes_list()
+        css_classes_list = super(GroupCommentItemValue, self).get_extra_css_classes_list()
         return css_classes_list
 
 
