@@ -22,15 +22,45 @@ class TestFileDownloadFeedbackfeedView(TestCase):
     """
     def test_single_file_download(self):
         # Test download of single file
+        testgroup = mommy.make('core.AssignmentGroup')
         testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
-        testcomment = mommy.make('devilry_group.GroupComment', user=testuser, user_role='student')
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set__group=testgroup,
+                                 user=testuser,
+                                 user_role='student')
         commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
 
         testdownloader = feedbackfeed_download_files.FileDownloadFeedbackfeedView()
         mockrequest = mock.MagicMock()
-        mockrequest.cradmin_role = testcomment.feedback_set.group
+        mockrequest.cradmin_role = testgroup
         mockrequest.user = testuser
+        response = testdownloader.get(mockrequest, commentfile.id)
+        self.assertEquals(response.content, 'testcontent')
+
+    def test_single_file_download_two_users(self):
+        # Test download of single file
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
+        testuser1 = mommy.make(settings.AUTH_USER_MODEL, shortname='april@example.com', fullname='April Duck')
+        candidate1 = mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
+        candidate2 = mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser1)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set__group=testgroup,
+                                 user=testuser,
+                                 user_role='student')
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+
+        testdownloader = feedbackfeed_download_files.FileDownloadFeedbackfeedView()
+        mockrequest = mock.MagicMock()
+        mockrequest.cradmin_role = candidate1.assignment_group
+        mockrequest.user = testuser
+        response = testdownloader.get(mockrequest, commentfile.id)
+        self.assertEquals(response.content, 'testcontent')
+
+        mockrequest.cradmin_role = candidate2.assignment_group
+        mockrequest.user = testuser1
         response = testdownloader.get(mockrequest, commentfile.id)
         self.assertEquals(response.content, 'testcontent')
 
@@ -83,6 +113,38 @@ class TestCompressedGroupCommentFileDownload(TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.cradmin_role = testcomment.feedback_set.group
         mockrequest.user = testuser
+        response = testdownloader.get(mockrequest, testcomment.id)
+        zipfileobject = ZipFile(StringIO(response.content))
+        filecontents = zipfileobject.read('testfile.txt')
+        self.assertEquals(filecontents, 'testcontent')
+
+    def test_groupcomment_files_download_two_users(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser1 = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
+        testuser2 = mommy.make(settings.AUTH_USER_MODEL, shortname='april@example.com', fullname='April Duck')
+        candidate1 = mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser1)
+        candidate2 = mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser2)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set__group=testgroup,
+                                 user=testuser1,
+                                 user_role='student')
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+
+        testdownloader = feedbackfeed_download_files.CompressedGroupCommentFileDownload()
+
+        # First user download
+        mockrequest = mock.MagicMock()
+        mockrequest.cradmin_role = candidate1.assignment_group
+        mockrequest.user = testuser1
+        response = testdownloader.get(mockrequest, testcomment.id)
+        zipfileobject = ZipFile(StringIO(response.content))
+        filecontents = zipfileobject.read('testfile.txt')
+        self.assertEquals(filecontents, 'testcontent')
+
+        # Second user download
+        mockrequest.cradmin_role = candidate2.assignment_group
+        mockrequest.user = testuser2
         response = testdownloader.get(mockrequest, testcomment.id)
         zipfileobject = ZipFile(StringIO(response.content))
         filecontents = zipfileobject.read('testfile.txt')
