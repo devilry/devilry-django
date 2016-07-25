@@ -31,7 +31,7 @@ class TestFileDownloadFeedbackfeedView(TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.cradmin_role = testcomment.feedback_set.group
         mockrequest.user = testuser
-        response = testdownloader.get(mockrequest, testcomment.feedback_set.id, commentfile.id)
+        response = testdownloader.get(mockrequest, commentfile.id)
         self.assertEquals(response.content, 'testcontent')
 
     def test_file_download_user_not_in_group_403(self):
@@ -46,7 +46,7 @@ class TestFileDownloadFeedbackfeedView(TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         mockrequest.cradmin_role = testgroup
-        response = testdownloader.get(mockrequest, testcomment.feedback_set.id, testcomment.id)
+        response = testdownloader.get(mockrequest, commentfile.id)
         self.assertEquals(403, response.status_code)
 
     def test_file_download_private_comment_403(self):
@@ -64,7 +64,7 @@ class TestFileDownloadFeedbackfeedView(TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         mockrequest.cradmin_role = testgroup
-        response = testdownloader.get(mockrequest, testcomment.feedback_set.id, testcomment.id)
+        response = testdownloader.get(mockrequest, commentfile.id)
         self.assertEquals(403, response.status_code)
 
 

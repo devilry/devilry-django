@@ -25,7 +25,7 @@ class FileDownloadFeedbackfeedView(generic.View):
     """
     Download a single file uncompressed.
     """
-    def get(self, request, feedbackset_id, commentfile_id):
+    def get(self, request, commentfile_id):
         """Download a single file
 
         Args:
@@ -36,14 +36,12 @@ class FileDownloadFeedbackfeedView(generic.View):
         Returns:
             HttpResponse: File.
         """
-        feedbackset = get_object_or_404(group_models.FeedbackSet, id=feedbackset_id)
-
-        # Check that the cradmin role and the AssignmentGroup is the same.
-        if feedbackset.group.id != request.cradmin_role.id:
-            return HttpResponseForbidden('Forbidden')
-
         comment_file = get_object_or_404(comment_models.CommentFile, id=commentfile_id)
         groupcomment = get_object_or_404(group_models.GroupComment, id=comment_file.comment.id)
+
+        # Check that the cradmin role and the AssignmentGroup is the same.
+        if groupcomment.feedback_set.group.id != request.cradmin_role.id:
+            return HttpResponseForbidden('Forbidden')
 
         # If it's a private GroupComment, the request.user must be the one that created the comment.
         if groupcomment.visibility != group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
@@ -176,7 +174,7 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
 class App(crapp.App):
     appurls = [
         crapp.Url(
-            r'^file-download/(?P<feedbackset_id>[0-9]+)/(?P<commentfile_id>[0-9]+)$',
+            r'^file-download/(?P<commentfile_id>[0-9]+)$',
             FileDownloadFeedbackfeedView.as_view(),
             name='file-download'),
         crapp.Url(
