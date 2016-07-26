@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from django.apps import AppConfig
-from django_cradmin.superuserui import superuserui_registry
 
 
 class DevilryCommentAppConfig(AppConfig):
@@ -10,6 +9,7 @@ class DevilryCommentAppConfig(AppConfig):
     verbose_name = "Devilry comment"
 
     def ready(self):
+        from django_cradmin.superuserui import superuserui_registry
         appconfig = superuserui_registry.default.add_djangoapp(
             superuserui_registry.DjangoAppConfig(app_label='devilry_comment'))
         appconfig.add_all_models()
