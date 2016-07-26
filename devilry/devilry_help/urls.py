@@ -1,8 +1,7 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
+
 from devilry.devilry_help.views import HelpView
 
-
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url('^$', HelpView.as_view(), name='devilry-help'),
-)
+]
