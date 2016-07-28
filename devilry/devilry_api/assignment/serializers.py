@@ -23,25 +23,21 @@ from devilry.apps.core.models.assignment_group import Assignment
 #
 
 class AssignmentModelSerializer(serializers.ModelSerializer):
-    semester = serializers.SerializerMethodField()
     subject = serializers.SerializerMethodField()
+    period = serializers.SerializerMethodField()
 
     class Meta:
         model = Assignment
         fields = [
+            'id',
             'subject',
             'long_name',
             'short_name',
-            'semester',
+            'period',
             'publishing_time',
-            'first_deadline',
-            'anonymizationmode',
-            'max_points',
-            'passing_grade_min_points',
-            'deadline_handling',
-            'delivery_types']
+            'anonymizationmode']
 
-    def get_semester(self, instance):
+    def get_period(self, instance):
         return instance.parentnode.short_name
 
     def get_subject(self, instance):

@@ -37,7 +37,7 @@ class AssignmentListViewBase(ListAPIView):
         raise NotImplementedError("please set permission_classes example: permission_classes = (IsAuthenticated, )")
 
     def get_role_queryset(self):
-        raise NotImplementedError
+        raise NotImplementedError()
 
     def get_queryset(self):
         queryset_list = self.get_role_queryset()
@@ -48,6 +48,37 @@ class AssignmentListViewBase(ListAPIView):
         if subject:
             queryset_list = queryset_list.filter(parentnode__parentnode__short_name=subject).distinct()
         return queryset_list
+
+    def get(self, request, *args, **kwargs):
+        """
+        Gets a list of assignments
+
+        ---
+        parameters:
+            - name: ordering
+              required: false
+              paramType: query
+              type: String
+              description: ordering
+            - name: search
+              required: false
+              paramType: query
+              type: String
+              description: search fields(subject, semester)
+            - name: period_short_name
+              required: false
+              paramType: query
+              type: String
+              description: semester filter
+            - name: subject
+              required: false
+              paramType: query
+              type: String
+              description: subject filter
+
+
+        """
+        return super(AssignmentListViewBase, self).get(request, *args, **kwargs)
 
 
 class AssignmentViewBase(GenericAPIView):
