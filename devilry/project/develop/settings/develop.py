@@ -98,6 +98,9 @@ CELERY_RESULT_BACKEND = 'amqp://'
 # DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
 
 
+
+#: Where to store zipfiles for filedownloads
+DEVILRY_GROUP_ZIPFILE_DIRECTORY = os.path.join(developfilesdir, 'devilry_zip')
 DEVILRY_ELASTICSEARCH_HOSTS = [
     {"host": "localhost", "port": 9491}
 ]

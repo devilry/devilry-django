@@ -10,6 +10,9 @@ DEVILRY_URLPATH_PREFIX = ''
 # The default grade-plugin:
 DEVILRY_DEFAULT_GRADEEDITOR = 'approved'
 
+#: Where to store zipfiles for filedownloads
+DEVILRY_GROUP_ZIPFILE_DIRECTORY = None
+
 DEVILRY_STATIC_URL = '/static'  # Must not end in / (this means that '' is the server root)
 DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/extjs4'
 DEVILRY_MATHJAX_URL = 'https://cdn.mathjax.org/mathjax/latest/MathJax.js'
