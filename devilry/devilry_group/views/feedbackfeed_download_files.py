@@ -9,7 +9,7 @@ import zipfile
 
 # django imports
 from django import http
-from django.http import HttpResponseForbidden
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from django.core.servers.basehttp import FileWrapper
@@ -41,12 +41,11 @@ class FileDownloadFeedbackfeedView(generic.View):
 
         # Check that the cradmin role and the AssignmentGroup is the same.
         if groupcomment.feedback_set.group.id != request.cradmin_role.id:
-            return HttpResponseForbidden('Forbidden')
+            raise Http404()
 
         # If it's a private GroupComment, the request.user must be the one that created the comment.
         if groupcomment.visibility != group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
-            if groupcomment.user.id != request.user:
-                return HttpResponseForbidden('Forbidden')
+            raise Http404()
 
         # Load file as chunks rather than loading the whole file into memory
         filewrapper = FileWrapper(comment_file.file)
@@ -76,12 +75,11 @@ class CompressedGroupCommentFileDownload(generic.View):
 
         # Check that the cradmin role and the AssignmentGroup is the same.
         if groupcomment.feedback_set.group.id != request.cradmin_role.id:
-            return HttpResponseForbidden('Forbidden')
+            raise Http404()
 
         # If it's a private GroupComment, the request.user must be the one that created the comment.
         if groupcomment.visibility != group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
-            if groupcomment.user.id != request.user.id:
-                return HttpResponseForbidden('Forbidden')
+            raise Http404()
 
         commentfiles = groupcomment.commentfile_set.all()
 
@@ -131,7 +129,7 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
 
         # Check that the cradmin role and the AssignmentGroup is the same.
         if feedbackset.group.id != request.cradmin_role.id:
-            return HttpResponseForbidden('Forbidden')
+            raise Http404()
 
         dirname = '{}-{}-delivery'.format(
             feedbackset.group.parentnode.get_path(),
