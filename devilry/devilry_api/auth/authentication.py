@@ -10,6 +10,11 @@ from devilry.devilry_api.models import APIKey
 class TokenAuthentication(authentication.TokenAuthentication):
     model = APIKey
 
+    def authenticate(self, request):
+        user, token = super(TokenAuthentication, self).authenticate(request)
+        request.apikey_token = token
+        return (user, token)
+
     def authenticate_credentials(self, key):
         model = self.get_model()
 
