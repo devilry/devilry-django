@@ -20,7 +20,7 @@ class TestAuthAPIKeyMixin(object):
     """
 
     #: This can be useful if we have a variables in the url path
-    extra_kwargs = {}
+    test_auth_apikey_mixin_extra_kwargs = {}
 
     def get_apikey(self, **kwargs):
         """
@@ -31,33 +31,23 @@ class TestAuthAPIKeyMixin(object):
         """
         raise NotImplementedError()
 
-    def set_up_common(self, **kwargs):
-        """
-        This can be used if we want to mock som extra data for all common tests.
-        """
-        pass
-
     def test_auth_not_valid_api_key(self):
-        self.set_up_common()
-        response = self.mock_get_request(apikey='b2660057e2a109c032aa07171633d4fb92ca560a', **self.extra_kwargs)
+        response = self.mock_get_request(apikey='invalid', **self.test_auth_apikey_mixin_extra_kwargs)
         self.assertEqual(401, response.status_code)
 
     def test_auth_key_expired(self):
-        self.set_up_common()
         apikey = self.get_apikey(created_datetime=mommy_recipes.OLD_PERIOD_START)
-        response = self.mock_get_request(apikey=apikey.key, **self.extra_kwargs)
+        response = self.mock_get_request(apikey=apikey.key, **self.test_auth_apikey_mixin_extra_kwargs)
         self.assertEqual(401, response.status_code)
 
     def test_key_expired_short(self):
-        self.set_up_common()
         apikey = self.get_apikey(created_datetime=timezone.now()-APIKey.LIFETIME[APIKey.LIFETIME_SHORT])
-        response = self.mock_get_request(apikey=apikey.key, **self.extra_kwargs)
+        response = self.mock_get_request(apikey=apikey.key, **self.test_auth_apikey_mixin_extra_kwargs)
         self.assertEqual(401, response.status_code)
 
     def test_key_expired_long(self):
-        self.set_up_common()
         apikey = self.get_apikey(created_datetime=timezone.now()-APIKey.LIFETIME[APIKey.LIFETIME_LONG])
-        response = self.mock_get_request(apikey=apikey.key, **self.extra_kwargs)
+        response = self.mock_get_request(apikey=apikey.key, **self.test_auth_apikey_mixin_extra_kwargs)
         self.assertEqual(401, response.status_code)
 
 
@@ -76,25 +66,21 @@ class TestReadOnlyPermissionMixin(object):
     """
 
     def test_post_403(self):
-        self.set_up_common()
         apikey = self.get_apikey()
         response = self.mock_post_request(apikey=apikey.key)
         self.assertEqual(403, response.status_code)
 
     def test_delete_403(self):
-        self.set_up_common()
         apikey = self.get_apikey()
         response = self.mock_delete_request(apikey=apikey.key)
         self.assertEqual(403, response.status_code)
 
     def test_put_403(self):
-        self.set_up_common()
         apikey = self.get_apikey()
         response = self.mock_put_request(apikey=apikey.key)
         self.assertEqual(403, response.status_code)
 
     def test_patch_403(self):
-        self.set_up_common()
         apikey = self.get_apikey()
         response = self.mock_patch_request(apikey=apikey.key)
         self.assertEqual(403, response.status_code)

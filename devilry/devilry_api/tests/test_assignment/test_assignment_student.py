@@ -23,7 +23,7 @@ class TestAssignmentListView(test_common_mixins.TestReadOnlyPermissionMixin,
         self.assertEqual(401, response.status_code)
 
     def test_sanity(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', long_name='assignment 1')
         candidate = mommy.make('core.Candidate',
                                relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
@@ -31,7 +31,7 @@ class TestAssignmentListView(test_common_mixins.TestReadOnlyPermissionMixin,
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(assignment.parentnode.parentnode.short_name, response.data[0]['subject'])
-        self.assertEqual(str(assignment.long_name), response.data[0]['long_name'])
+        self.assertEqual(assignment.long_name, response.data[0]['long_name'])
         self.assertEqual(assignment.short_name, response.data[0]['short_name'])
         self.assertEqual(assignment.parentnode.short_name, response.data[0]['semester'])
         self.assertEqual(assignment.publishing_time.isoformat(), response.data[0]['publishing_time'])
@@ -41,6 +41,8 @@ class TestAssignmentListView(test_common_mixins.TestReadOnlyPermissionMixin,
         self.assertEqual(assignment.passing_grade_min_points, response.data[0]['passing_grade_min_points'])
         self.assertEqual(assignment.deadline_handling, response.data[0]['deadline_handling'])
         self.assertEqual(assignment.delivery_types, response.data[0]['delivery_types'])
+
+    # def test_assignment_long))
 
     def test_filter_search_subject_not_found(self):
         assignment = mommy.make('core.Assignment',
@@ -174,6 +176,17 @@ class TestAssignmentListView(test_common_mixins.TestReadOnlyPermissionMixin,
         self.assertListEqual([assignment1.first_deadline.isoformat(), assignment2.first_deadline.isoformat()],
                              assignment_names)
 
+    def test_num_queries(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        for x in range(10):
+            assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+            mommy.make('core.Candidate',
+                       relatedstudent__user=testuser,
+                       assignment_group__parentnode=assignment)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=testuser)
+        with self.assertNumQueries(2):
+            self.mock_get_request(apikey=apikey.key)
+
 
 class TestAssignmentView(test_common_mixins.TestReadOnlyPermissionMixin,
                          test_student_mixins.TestAuthAPIKeyStudentMixin,
@@ -184,16 +197,7 @@ class TestAssignmentView(test_common_mixins.TestReadOnlyPermissionMixin,
     viewclass = assignment_student.AssignmentView
     route = r'^/assignment/student/(?P<subject>.+)/(?P<semester>.+)/(?P<assignment>.+)/$'
 
-    extra_kwargs = dict(subject='duck1010', semester='springaaaa', assignment='assignment1')
-
-    def set_up_common_for_key(self):
-        """
-        So we at least have one valid url that does not return 404
-        """
-        mommy.make('core.Assignment',
-                   short_name='assignment1',
-                   parentnode__short_name='springaaaa',
-                   parentnode__parentnode__short_name='duck1010')
+    test_auth_apikey_mixin_extra_kwargs = dict(subject='duck1010', semester='springaaaa', assignment='assignment1')
 
     def test_path_404(self):
         apikey = self.get_apikey()
