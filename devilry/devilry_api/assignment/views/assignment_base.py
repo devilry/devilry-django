@@ -30,7 +30,7 @@ class AssignmentListViewBase(ListAPIView):
     serializer_class = AssignmentModelSerializer
     authentication_classes = (TokenAuthentication, )
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ['parentnode__parentnode__short_name', 'parentnode__short_name']
+    search_fields = ['parentnode__parentnode__short_name', 'parentnode__short_name', 'short_name']
 
     @property
     def permission_classes(self):
@@ -41,12 +41,18 @@ class AssignmentListViewBase(ListAPIView):
 
     def get_queryset(self):
         queryset_list = self.get_role_queryset()
-        semester = self.request.query_params.get('semester', None)
-        subject = self.request.query_params.get('subject', None)
-        if semester:
-            queryset_list = queryset_list.filter(parentnode__short_name=semester).distinct()
-        if subject:
-            queryset_list = queryset_list.filter(parentnode__parentnode__short_name=subject).distinct()
+        period_short_name = self.request.query_params.get('period_short_name', None)
+        subject_short_name = self.request.query_params.get('subject_short_name', None)
+        short_name = self.request.query_params.get('short_name', None)
+        id = self.request.query_params.get('id', None)
+        if id:
+            queryset_list = queryset_list.filter(id=id).distinct()
+        if period_short_name:
+            queryset_list = queryset_list.filter(parentnode__short_name=period_short_name).distinct()
+        if subject_short_name:
+            queryset_list = queryset_list.filter(parentnode__parentnode__short_name=subject_short_name).distinct()
+        if short_name:
+            queryset_list = queryset_list.filter(short_name=short_name).distinct()
         return queryset_list
 
     def get(self, request, *args, **kwargs):
@@ -69,12 +75,22 @@ class AssignmentListViewBase(ListAPIView):
               required: false
               paramType: query
               type: String
-              description: semester filter
-            - name: subject
+              description: period filter
+            - name: subject_short_name
               required: false
               paramType: query
               type: String
               description: subject filter
+            - name: short_name
+              required: false
+              paramType: query
+              type: String
+              description: assignment short_name filter
+            - name: id
+              required: false
+              paramType: query
+              type: Int
+              description: assignment id filter
 
 
         """
