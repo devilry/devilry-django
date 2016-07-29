@@ -3,9 +3,9 @@ from __future__ import unicode_literals
 
 from django.conf.urls import url
 
-from devilry.devilry_api.assignment.views.assignment_student import (
-    AssignmentListView)
-
+from devilry.devilry_api.assignment.views.assignment_student import AssignmentListView as StudentAssignmentListView
+from devilry.devilry_api.assignment.views.assignment_examiner import AssignmentListView as ExaminerAssignmentListView
 urlpatterns = [
-    url('^student/$', AssignmentListView.as_view(), name='assigment-list')
+    url('^student/$', StudentAssignmentListView.as_view(), name='student-assigment'),
+    url('^examiner/$', ExaminerAssignmentListView.as_view(), name='examiner-assignment'),
 ]
