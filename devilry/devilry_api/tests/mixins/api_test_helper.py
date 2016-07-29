@@ -12,7 +12,7 @@ class TestCaseMixin(object):
 
     """
     #: Url route
-    route = None
+    route = ''
 
     #: Class of the view to test
     viewclass = None

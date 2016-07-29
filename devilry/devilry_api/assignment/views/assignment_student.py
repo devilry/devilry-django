@@ -1,9 +1,9 @@
 # -​*- coding: utf-8 -*​-
 from __future__ import unicode_literals
 
-from devilry.devilry_api.permission.student_permission import StudentReadOnlyAPIKey
 from devilry.apps.core.models.assignment_group import Assignment
-from devilry.devilry_api.assignment.views.assignment_base import AssignmentListViewBase, AssignmentViewBase
+from devilry.devilry_api.assignment.views.assignment_base import AssignmentListViewBase
+from devilry.devilry_api.permission.student_permission import StudentReadOnlyAPIKey
 
 
 class AssignmentListView(AssignmentListViewBase):

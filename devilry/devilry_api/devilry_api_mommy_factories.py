@@ -12,7 +12,7 @@ def api_key_short_lifetime(**kwargs):
     Returns:
         :obj:`~devilry_api.APIKey` api key
     """
-    return mommy.make('devilry_api.APIKey', lifetime=APIKey.LIFETIME_SHORT, **kwargs)
+    return mommy.make('devilry_api.APIKey', keytype=APIKey.LIFETIME_SHORT, **kwargs)
 
 
 def api_key_long_lifetime(**kwargs):
@@ -24,7 +24,7 @@ def api_key_long_lifetime(**kwargs):
     Returns:
         :obj:`~devilry_api.APIKey` api key
     """
-    return mommy.make('devilry_api.APIKey', lifetime=APIKey.LIFETIME_LONG, **kwargs)
+    return mommy.make('devilry_api.APIKey', keytype=APIKey.LIFETIME_LONG, **kwargs)
 
 
 def api_key_expired(**kwargs):
