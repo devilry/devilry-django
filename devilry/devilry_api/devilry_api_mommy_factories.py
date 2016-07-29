@@ -73,4 +73,3 @@ def api_key_admin_permission_read(**kwargs):
         :obj:`~devilry_api.APIKey` api key
     """
     return mommy.make('devilry_api.APIKey', admin_permission=APIKey.ADMIN_PERMISSION_READ, **kwargs)
-

@@ -23,7 +23,6 @@ class TestAssignmentListView(test_common_mixins.TestReadOnlyPermissionMixin,
     def test_sanity(self):
         assignment = mommy.make('core.Assignment')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
@@ -32,7 +31,6 @@ class TestAssignmentListView(test_common_mixins.TestReadOnlyPermissionMixin,
     def test_id(self):
         assignment = mommy.make('core.Assignment', id=10)
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
@@ -42,7 +40,6 @@ class TestAssignmentListView(test_common_mixins.TestReadOnlyPermissionMixin,
     def test_long_name(self):
         assignment = mommy.make('core.Assignment', long_name='Assignment 1')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
@@ -52,7 +49,6 @@ class TestAssignmentListView(test_common_mixins.TestReadOnlyPermissionMixin,
     def test_short_name(self):
         assignment = mommy.make('core.Assignment', short_name='assignment1')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
@@ -62,7 +58,6 @@ class TestAssignmentListView(test_common_mixins.TestReadOnlyPermissionMixin,
     def test_period_short_name(self):
         assignment = mommy.make('core.Assignment', parentnode__short_name='V15')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
@@ -72,7 +67,6 @@ class TestAssignmentListView(test_common_mixins.TestReadOnlyPermissionMixin,
     def test_subject_short_name(self):
         assignment = mommy.make('core.Assignment', parentnode__parentnode__short_name='Duck1010')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
@@ -82,7 +76,6 @@ class TestAssignmentListView(test_common_mixins.TestReadOnlyPermissionMixin,
     def test_publishing_time(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
@@ -92,7 +85,6 @@ class TestAssignmentListView(test_common_mixins.TestReadOnlyPermissionMixin,
     def test_anonymizationmode(self):
         assignment = mommy.make('core.Assignment')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
@@ -118,7 +110,6 @@ class TestAssignmentListViewFilters(api_test_helper.TestCaseMixin, APITestCase):
         assignment = mommy.make('core.Assignment',
                                 parentnode__parentnode__short_name='duckduck1010')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
@@ -130,7 +121,6 @@ class TestAssignmentListViewFilters(api_test_helper.TestCaseMixin, APITestCase):
         assignment = mommy.make('core.Assignment',
                                 parentnode__parentnode__short_name='duckduck1010')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
@@ -142,7 +132,6 @@ class TestAssignmentListViewFilters(api_test_helper.TestCaseMixin, APITestCase):
         assignment = mommy.make('core.Assignment',
                                 parentnode__short_name='asd')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
@@ -154,7 +143,6 @@ class TestAssignmentListViewFilters(api_test_helper.TestCaseMixin, APITestCase):
         assignment = mommy.make('core.Assignment',
                                 parentnode__short_name='S15')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
@@ -165,7 +153,6 @@ class TestAssignmentListViewFilters(api_test_helper.TestCaseMixin, APITestCase):
     def test_filter_search_short_name_not_found(self):
         assignment = mommy.make('core.Assignment', short_name='assignment1')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
@@ -176,7 +163,6 @@ class TestAssignmentListViewFilters(api_test_helper.TestCaseMixin, APITestCase):
     def test_filter_search_short_name_found(self):
         assignment = mommy.make('core.Assignment', short_name='assignment1')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
@@ -188,7 +174,6 @@ class TestAssignmentListViewFilters(api_test_helper.TestCaseMixin, APITestCase):
         assignment = mommy.make('core.Assignment',
                                 parentnode__parentnode__short_name='duck1010')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
@@ -200,7 +185,6 @@ class TestAssignmentListViewFilters(api_test_helper.TestCaseMixin, APITestCase):
         assignment = mommy.make('core.Assignment',
                                 parentnode__parentnode__short_name='duck1010')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
@@ -212,7 +196,6 @@ class TestAssignmentListViewFilters(api_test_helper.TestCaseMixin, APITestCase):
         assignment = mommy.make('core.Assignment',
                                 parentnode__short_name='S07')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
@@ -224,7 +207,6 @@ class TestAssignmentListViewFilters(api_test_helper.TestCaseMixin, APITestCase):
         assignment = mommy.make('core.Assignment',
                                 parentnode__short_name='S15')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
@@ -235,7 +217,6 @@ class TestAssignmentListViewFilters(api_test_helper.TestCaseMixin, APITestCase):
     def test_filter_short_name_not_found(self):
         assignment = mommy.make('core.Assignment', short_name='assignment1')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
@@ -246,7 +227,6 @@ class TestAssignmentListViewFilters(api_test_helper.TestCaseMixin, APITestCase):
     def test_filter_short_name_found(self):
         assignment = mommy.make('core.Assignment', short_name='assignment1')
         candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'),
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key,
@@ -287,5 +267,5 @@ class TestAssignmentListViewFilters(api_test_helper.TestCaseMixin, APITestCase):
                                          queryparams='?ordering=-publishing_time')
         self.assertEqual(200, response.status_code)
         assignment_publishing_time = [assignment['publishing_time'] for assignment in response.data]
-        self.assertListEqual([assignment1.publishing_time.isoformat(), assignment2.publishing_time.isoformat()],
-                             assignment_publishing_time)
+        self.assertListEqual([assignment1.publishing_time.isoformat(),
+                              assignment2.publishing_time.isoformat()], assignment_publishing_time)

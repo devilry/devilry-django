@@ -12,7 +12,7 @@ class BaseExaminerPermissionAPIKey(BaseIsAuthenticatedAPIKey):
     def has_permission(self, request, view):
         return (
             super(BaseExaminerPermissionAPIKey, self).has_permission(request, view) and
-            self.apikey.student_permission in self.required_examiner_permissions and
+            self.apikey.examiner_permission in self.required_examiner_permissions and
             request.method in self.http_allowed_methods
         )
 
