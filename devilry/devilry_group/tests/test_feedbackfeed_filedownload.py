@@ -2,7 +2,9 @@
 # Third party imports
 from StringIO import StringIO
 from zipfile import ZipFile
+
 import mock
+from django.http import Http404
 from model_mommy import mommy
 
 # Django imports
@@ -64,7 +66,7 @@ class TestFileDownloadFeedbackfeedView(TestCase):
         response = testdownloader.get(mockrequest, commentfile.id)
         self.assertEquals(response.content, 'testcontent')
 
-    def test_file_download_user_not_in_group_403(self):
+    def test_file_download_user_not_in_group_404(self):
         # Test user can't download if not part of AssignmentGroup
         testgroup = mommy.make('core.AssignmentGroup')
         testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
@@ -76,10 +78,10 @@ class TestFileDownloadFeedbackfeedView(TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         mockrequest.cradmin_role = testgroup
-        response = testdownloader.get(mockrequest, commentfile.id)
-        self.assertEquals(403, response.status_code)
+        with self.assertRaises(Http404):
+            testdownloader.get(mockrequest, commentfile.id)
 
-    def test_file_download_private_comment_403(self):
+    def test_file_download_private_comment_404(self):
         # User can't download file if the comment it belongs to is private unless the user created it.
         testgroup = mommy.make('core.AssignmentGroup')
         testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
@@ -94,8 +96,8 @@ class TestFileDownloadFeedbackfeedView(TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         mockrequest.cradmin_role = testgroup
-        response = testdownloader.get(mockrequest, commentfile.id)
-        self.assertEquals(403, response.status_code)
+        with self.assertRaises(Http404):
+            testdownloader.get(mockrequest, commentfile.id)
 
 
 class TestCompressedGroupCommentFileDownload(TestCase):
@@ -150,7 +152,7 @@ class TestCompressedGroupCommentFileDownload(TestCase):
         filecontents = zipfileobject.read('testfile.txt')
         self.assertEquals(filecontents, 'testcontent')
 
-    def test_groupcomment_download_user_not_in_group_403(self):
+    def test_groupcomment_download_user_not_in_group_404(self):
         # Test user can't download if not part of AssignmentGroup
         testgroup = mommy.make('core.AssignmentGroup')
         testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
@@ -162,10 +164,10 @@ class TestCompressedGroupCommentFileDownload(TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         mockrequest.cradmin_role = testgroup
-        response = testdownloader.get(mockrequest, testcomment.id)
-        self.assertEquals(403, response.status_code)
+        with self.assertRaises(Http404):
+            testdownloader.get(mockrequest, testcomment.id)
 
-    def test_groupcomment_download_private_comment_403(self):
+    def test_groupcomment_download_private_comment_404(self):
         # User cant download private comment unless the user created it.
         testgroup = mommy.make('core.AssignmentGroup')
         testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
@@ -180,8 +182,8 @@ class TestCompressedGroupCommentFileDownload(TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         mockrequest.cradmin_role = testgroup
-        response = testdownloader.get(mockrequest, testcomment.id)
-        self.assertEquals(403, response.status_code)
+        with self.assertRaises(Http404):
+            testdownloader.get(mockrequest, testcomment.id)
 
 
 class TestCompressedFeedbackSetFileDownload(TestCase):
@@ -259,7 +261,7 @@ class TestCompressedFeedbackSetFileDownload(TestCase):
         zipfileobject = ZipFile(StringIO(response.content))
         self.assertEquals('student-testcontent', zipfileobject.read('uploaded_after_deadline/testfile-student.txt'))
 
-    def test_feedbackset_download_user_not_in_group_403(self):
+    def test_feedbackset_download_user_not_in_group_404(self):
         # Test user can't download if not part of AssignmentGroup
         testgroup = mommy.make('core.AssignmentGroup')
         testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
@@ -271,5 +273,5 @@ class TestCompressedFeedbackSetFileDownload(TestCase):
         mockrequest = mock.MagicMock()
         mockrequest.user = testuser
         mockrequest.cradmin_role = testgroup
-        response = testdownloader.get(mockrequest, testcomment.feedback_set.id)
-        self.assertEquals(403, response.status_code)
+        with self.assertRaises(Http404):
+            testdownloader.get(mockrequest, testcomment.feedback_set.id)
