@@ -14,13 +14,15 @@ class TokenAuthentication(authentication.TokenAuthentication):
         """
         Sets the token that is used to authenticate to our request object.
         """
-        user, token = super(TokenAuthentication, self).authenticate(request)
-        request.apikey_token = token
-        return (user, token)
+        retval = super(TokenAuthentication, self).authenticate(request)
+        if retval is None:
+            request.apikey_token = None
+            return None
+        request.apikey_token = retval[1]
+        return retval
 
     def authenticate_credentials(self, key):
         model = self.get_model()
-
         try:
             token = model.objects.select_related('user').get(key=key)
         except model.DoesNotExist:
