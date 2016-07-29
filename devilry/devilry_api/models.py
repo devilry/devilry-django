@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 
 import binascii
 import os
-from datetime import timedelta
 
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import pgettext_lazy, ugettext_lazy
@@ -14,15 +14,12 @@ from devilry.devilry_account.models import User
 
 
 def generate_key():
-    return binascii.hexlify(os.urandom(20)).decode()
+    return binascii.hexlify(os.urandom(settings.DEVILRY_API_KEYLENGTH)).decode()
 
 
 class APIKey(models.Model):
     """
     A class representing a given api key for a `user`.
-
-
-    Extra stuff: when, where, who the key was last used.
 
     """
     class Meta:
@@ -48,27 +45,27 @@ class APIKey(models.Model):
     purpose = models.CharField(max_length=255, blank=True)
 
     #: Constant for the :obj:`~.APIKey.student_permission` "read" choice.
-    STUDENT_PERMISSION_READ = 'read'
+    STUDENT_PERMISSION_READ = 'student-read'
 
     #: Constant for the :obj:`~.APIKey.student_permission` "write" choice.
-    STUDENT_PERMISSION_WRITE = 'write'
+    STUDENT_PERMISSION_WRITE = 'student-write'
 
     #: Constant for the :obj:`~.APIKey.student_permission` "no permission" choice.
-    STUDENT_NO_PERMISSION = 'no permission'
+    STUDENT_NO_PERMISSION = 'student-no-permission'
 
     #: Choices for :obj:`.APIKey.student_permission'.
     STUDENT_PERMISSION_CHOICES = [
         (
             STUDENT_NO_PERMISSION,
-            pgettext_lazy('student permission', 'no permission')
+            pgettext_lazy('devilry_api student permission', 'no permission')
         ),
         (
             STUDENT_PERMISSION_READ,
-            pgettext_lazy('student permission', 'read')
+            pgettext_lazy('devilry_api student permission', 'read')
         ),
         (
             STUDENT_PERMISSION_WRITE,
-            pgettext_lazy('student permission', 'write')
+            pgettext_lazy('devilry_api student permission', 'write')
         )
     ]
 
@@ -87,27 +84,27 @@ class APIKey(models.Model):
     )
 
     #: Constant for the :obj:`~.APIKey.examiner_permission` "read" choice.
-    EXAMINER_PERMISSION_READ = 'read'
+    EXAMINER_PERMISSION_READ = 'examiner-read'
 
     #: Constant for the :obj:`~.APIKey.examiner_permission` "write" choice.
-    EXAMINER_PERMISSION_WRITE = 'write'
+    EXAMINER_PERMISSION_WRITE = 'examiner-write'
 
     #: Constant for the :obj:`~.APIKey.examiner_permission` "no permission" choice.
-    EXAMINER_NO_PERMISSION = 'no permission'
+    EXAMINER_NO_PERMISSION = 'examiner-no-permission'
 
     #: Choices for :obj:`.APIKey.examiner_permission'.
     EXAMINER_PERMISSION_CHOICES = [
         (
             EXAMINER_NO_PERMISSION,
-            pgettext_lazy('examiner permission', 'no permission')
+            pgettext_lazy('devilry_api examiner permission', 'no permission')
         ),
         (
             EXAMINER_PERMISSION_READ,
-            pgettext_lazy('examiner permission', 'read')
+            pgettext_lazy('devilry_api examiner permission', 'read')
         ),
         (
             EXAMINER_PERMISSION_WRITE,
-            pgettext_lazy('examiner permission', 'write')
+            pgettext_lazy('devilry_api examiner permission', 'write')
         )
     ]
 
@@ -126,27 +123,27 @@ class APIKey(models.Model):
     )
 
     #: Constant for the :obj:`~.APIKey.admin_permission` "read" choice.
-    ADMIN_PERMISSION_READ = 'read'
+    ADMIN_PERMISSION_READ = 'admin-read'
 
     #: Constant for the :obj:`~.APIKey.admin_permission` "write" choice.
-    ADMIN_PERMISSION_WRITE = 'write'
+    ADMIN_PERMISSION_WRITE = 'admin-write'
 
     #: Constant for the :obj:`~.APIKey.admin_permission` "no permission" choice.
-    ADMIN_NO_PERMISSION = 'no permission'
+    ADMIN_NO_PERMISSION = 'admin-no-permission'
 
     #: Choices for :obj:`.APIKey.admin_permission'.
     ADMIN_PERMISSION_CHOICES = [
         (
             ADMIN_NO_PERMISSION,
-            pgettext_lazy('admin permission', 'no permission')
+            pgettext_lazy('devilry_api admin permission', 'no permission')
         ),
         (
             ADMIN_PERMISSION_READ,
-            pgettext_lazy('admin permission', 'read')
+            pgettext_lazy('devilry_api admin permission', 'read')
         ),
         (
             ADMIN_PERMISSION_WRITE,
-            pgettext_lazy('admin permission', 'write')
+            pgettext_lazy('devilry_api admin permission', 'write')
         )
     ]
 
@@ -164,14 +161,14 @@ class APIKey(models.Model):
         max_length=255
     )
 
-    #: Constant for the :obj: `~.APIKey.lifetime` "half a year" choice.
-    LIFETIME_SHORT = 'half a year'
+    #: Constant for the :obj: `~.APIKey.keytype` "half a year" choice.
+    LIFETIME_SHORT = 'half-a-year'
 
-    #: Constant for the :obj: `~.APIKey.lifetime` "a year" choice.
-    LIFETIME_LONG = 'a year'
+    #: Constant for the :obj: `~.APIKey.keytype` "a year" choice.
+    LIFETIME_LONG = 'a-year'
 
-    #: Choices for :obj:`.APIKey.lifetime'.
-    LIFETIME_CHOICES = [
+    #: Choices for :obj:`.APIKey.keytype'.
+    KEYTYPE_CHOICES = [
         (
             LIFETIME_SHORT,
             pgettext_lazy('api key lifetime', 'half a year')
@@ -182,15 +179,15 @@ class APIKey(models.Model):
         )
     ]
 
-    #: A choicefield for the api key lifetime.
+    #: A choicefield for the api key keytype.
     #:
     #: Choices:
     #:
     #: - :obj:`~.APIKey.LIFETIME_SHORT`
     #: - :obj:`~.APIKey.LIFETIME_LONG`
-    lifetime = models.CharField(
-        verbose_name=ugettext_lazy('api key lifetime'),
-        choices=LIFETIME_CHOICES,
+    keytype = models.CharField(
+        verbose_name=ugettext_lazy('api key type'),
+        choices=KEYTYPE_CHOICES,
         default=LIFETIME_SHORT,
         max_length=255
     )
@@ -198,7 +195,8 @@ class APIKey(models.Model):
     @property
     def has_student_permission(self):
         """
-        This returns ``True`` if the :obj:`.APIKey.student_permission` has permission
+        This returns ``True`` if the :obj:`.APIKey.student_permission`
+        has access to the APIs accessing data using the student role”.
         """
         return self.student_permission != self.STUDENT_NO_PERMISSION
 
@@ -206,6 +204,7 @@ class APIKey(models.Model):
     def has_examiner_permission(self):
         """
         This returns ``True`` if the :obj:`.APIKey.examiner_permission` has permission
+        has access to the APIs accessing data using the examiner role”.
         """
         return self.examiner_permission != self.EXAMINER_NO_PERMISSION
 
@@ -213,12 +212,13 @@ class APIKey(models.Model):
     def has_admin_permission(self):
         """
         This returns ``True`` if the :obj:`.APIKey.admin_permission` has permission
+        has access to the APIs accessing data using the admin role”.
         """
         return self.admin_permission != self.ADMIN_NO_PERMISSION
 
     LIFETIME = {
-        LIFETIME_SHORT: timedelta(days=183),
-        LIFETIME_LONG: timedelta(days=365)
+        LIFETIME_SHORT: settings.DEVILRY_API_LIFETIME_SHORT,
+        LIFETIME_LONG: settings.DEVILRY_API_LIFETIME_LONG
     }
 
     @property
@@ -227,7 +227,7 @@ class APIKey(models.Model):
         Checks if the :obj:`~.APIKey` has expired or not
         returns ``True`` if the key has expired
         """
-        if self.created_datetime + self.LIFETIME[self.lifetime] <= timezone.now():
+        if self.created_datetime + self.LIFETIME[self.keytype] <= timezone.now():
             return True
         return False
 

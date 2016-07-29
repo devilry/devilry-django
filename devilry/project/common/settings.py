@@ -187,6 +187,12 @@ REST_FRAMEWORK = {
 
 }
 
+DEVILRY_API_KEYLENGTH = 20
+
+from datetime import timedelta
+DEVILRY_API_LIFETIME_SHORT = timedelta(days=183)
+DEVILRY_API_LIFETIME_LONG = timedelta(days=365)
+
 ###################################################
 # Setup logging using the defaults - logs to stderr
 ###################################################
