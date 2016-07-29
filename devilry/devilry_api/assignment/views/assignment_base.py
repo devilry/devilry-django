@@ -40,7 +40,7 @@ class AssignmentListViewBase(ListAPIView):
         raise NotImplementedError()
 
     def get_queryset(self):
-        queryset_list = self.get_role_queryset()
+        queryset_list = self.get_role_queryset().select_related('parentnode__parentnode')
         period_short_name = self.request.query_params.get('period_short_name', None)
         subject_short_name = self.request.query_params.get('subject_short_name', None)
         short_name = self.request.query_params.get('short_name', None)

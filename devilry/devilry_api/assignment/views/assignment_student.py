@@ -24,8 +24,7 @@ class AssignmentListView(AssignmentListViewBase):
     permission_classes = (StudentReadOnlyAPIKey, )
 
     def get_role_queryset(self):
-        return Assignment.objects.filter_student_has_access(self.request.user) \
-            .select_related('parentnode__parentnode')
+        return Assignment.objects.filter_student_has_access(self.request.user)
 
     def get(self, request, *args, **kwargs):
         return super(AssignmentListView, self).get(request, *args, **kwargs)
