@@ -12,8 +12,9 @@ from devilry.devilry_api.models import APIKey
 class TestAPIKey(testcases.TestCase):
 
     def test_key_length(self):
-        testkey = mommy.make('devilry_api.APIKey')
-        self.assertEqual(40, len(testkey.key))
+        with self.settings(DEVILRY_API_KEYLENGTH=40):
+            testkey = mommy.make('devilry_api.APIKey')
+            self.assertEqual(40, len(testkey.key))
 
     def test_key_has_expired(self):
         testkey = mommy.make('devilry_api.APIKey', created_datetime=mommy_recipes.OLD_PERIOD_START)
@@ -31,7 +32,7 @@ class TestAPIKey(testcases.TestCase):
     def test_key_has_expired_long(self):
         testkey = mommy.make('devilry_api.APIKey',
                              created_datetime=timezone.now() - APIKey.LIFETIME[APIKey.LIFETIME_LONG],
-                             lifetime=APIKey.LIFETIME_LONG)
+                             keytype=APIKey.LIFETIME_LONG)
         self.assertTrue(testkey.has_expired)
 
     def test_key_has_student_permission_only(self):

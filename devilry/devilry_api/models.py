@@ -14,7 +14,7 @@ from devilry.devilry_account.models import User
 
 
 def generate_key():
-    return binascii.hexlify(os.urandom(settings.DEVILRY_API_KEYLENGTH)).decode()
+    return binascii.hexlify(os.urandom(settings.DEVILRY_API_KEYLENGTH/2)).decode()
 
 
 class APIKey(models.Model):
@@ -27,7 +27,7 @@ class APIKey(models.Model):
         verbose_name_plural = 'api keys'
 
     #: api key.
-    key = models.CharField(max_length=40, default=generate_key, unique=True, editable=False)
+    key = models.CharField(max_length=settings.DEVILRY_API_KEYLENGTH, default=generate_key, unique=True, editable=False)
 
     #: The owner of the key.
     user = models.ForeignKey(User, null=False, related_name='api_key')

@@ -187,7 +187,7 @@ REST_FRAMEWORK = {
 
 }
 
-DEVILRY_API_KEYLENGTH = 20
+DEVILRY_API_KEYLENGTH = 40
 
 from datetime import timedelta
 DEVILRY_API_LIFETIME_SHORT = timedelta(days=183)
