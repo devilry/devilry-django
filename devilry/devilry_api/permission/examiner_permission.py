@@ -27,7 +27,7 @@ class ExaminerReadOnlyAPIKey(BaseExaminerPermissionAPIKey):
     """
 
     http_allowed_methods = READ_HTTP_METHODS
-    required_student_permissions = [APIKey.EXAMINER_PERMISSION_READ, APIKey.EXAMINER_PERMISSION_WRITE]
+    required_examiner_permissions = [APIKey.EXAMINER_PERMISSION_READ, APIKey.EXAMINER_PERMISSION_WRITE]
 
 
 class ExaminerWriteAPIKey(BaseExaminerPermissionAPIKey):
@@ -39,4 +39,4 @@ class ExaminerWriteAPIKey(BaseExaminerPermissionAPIKey):
     method allowed is write
     """
     http_allowed_methods = WRITE_HTTP_METHODS
-    required_student_permissions = [APIKey.STUDENT_PERMISSION_WRITE]
+    required_examiner_permissions = [APIKey.STUDENT_PERMISSION_WRITE]
