@@ -11,6 +11,9 @@ class TokenAuthentication(authentication.TokenAuthentication):
     model = APIKey
 
     def authenticate(self, request):
+        """
+        Sets the token that is used to authenticate to our request object.
+        """
         user, token = super(TokenAuthentication, self).authenticate(request)
         request.apikey_token = token
         return (user, token)

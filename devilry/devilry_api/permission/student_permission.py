@@ -1,14 +1,13 @@
 from devilry.devilry_api.models import APIKey
 
-from devilry.devilry_api.permission.base_permission import BaseIsAuthenticatedAPIKey
-
-READ_HTTP_METHODS = ['GET', 'HEAD', 'OPTIONS']
-WRITE_HTTP_METHODS = ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'DELETE', 'PATCH']
+from devilry.devilry_api.permission.base_permission import(
+    BaseIsAuthenticatedAPIKey,
+    READ_HTTP_METHODS,
+    WRITE_HTTP_METHODS)
 
 
 class BaseStudentPermissionAPIKey(BaseIsAuthenticatedAPIKey):
     required_student_permissions = []
-    http_allowed_methods = []
 
     def has_permission(self, request, view):
         return (
@@ -24,7 +23,7 @@ class StudentReadOnlyAPIKey(BaseStudentPermissionAPIKey):
 
     Ensures that the request.user is authenticated,
     apiKey has student permission "read" and
-    method is read only
+    method allowed is read only
     """
 
     http_allowed_methods = READ_HTTP_METHODS
@@ -32,5 +31,12 @@ class StudentReadOnlyAPIKey(BaseStudentPermissionAPIKey):
 
 
 class StudentWriteAPIKey(BaseStudentPermissionAPIKey):
+    """
+    Permission for student has write access
+
+    Ensures that the request.user is authenticated,
+    apikey has student permission "write" and
+    method allowed is write
+    """
     http_allowed_methods = WRITE_HTTP_METHODS
     required_student_permissions = [APIKey.STUDENT_PERMISSION_WRITE]
