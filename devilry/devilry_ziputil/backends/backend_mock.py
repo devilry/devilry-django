@@ -1,19 +1,45 @@
-import os
-import zipfile
+from devilry.devilry_ziputil.backends.backends_base import PythonZipFileBackend
+
+from django.conf import settings
 
 
-class ZipArchive(object):
+class MockDevilryZipBackend(PythonZipFileBackend):
     """
 
     """
-    def __init__(self, archive_path):
-        pass
+    backend_id = 'default'
 
-    def write(self, path, filelike_obj):
-        pass
+    @classmethod
+    def get_storage_location(cls):
+        return settings.DEVILRY_GROUP_ZIPFILE_DIRECTORY
 
-    def archive_size(self):
-        pass
+    def __init__(self, **kwargs):
+        super(MockDevilryZipBackend, self).__init__(**kwargs)
 
-    def get_archive(self):
-        pass
+
+class MockDevilryZipBackendS3(MockDevilryZipBackend):
+    """
+
+    """
+    backend_id = 's3'
+
+    @classmethod
+    def get_storage_location(cls):
+        return 'url/to/s3/filestorage'
+
+    def __init__(self, **kwargs):
+        super(MockDevilryZipBackendS3, self).__init__(**kwargs)
+
+
+class MockDevilryZipBackendHeroku(MockDevilryZipBackend):
+    """
+
+    """
+    backend_id = 'heroku'
+
+    @classmethod
+    def get_storage_location(cls):
+        return 'url/to/heroku/filestorage'
+
+    def __init__(self, **kwargs):
+        super(MockDevilryZipBackendHeroku, self).__init__(**kwargs)
