@@ -5,6 +5,8 @@ from .base import *
 # MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.project.develop.middleware.FakeLoginMiddleware']
 # HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
+#: Where to store zipfiles for filedownloads
+DEVILRY_GROUP_ZIPFILE_DIRECTORY = os.path.join(developfilesdir, 'devilry_zip')
 
 # The if's below is just to make it easy to toggle these settings on and off during development
 profiler_middleware = False
@@ -97,8 +99,6 @@ CELERY_RESULT_BACKEND = 'amqp://'
 # DEVILRY_PROFILEPAGE_HEADER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
 # DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
 
-#: Where to store zipfiles for filedownloads
-DEVILRY_GROUP_ZIPFILE_DIRECTORY = os.path.join(developfilesdir, 'devilry_zip')
 DEVILRY_ELASTICSEARCH_HOSTS = [
     {"host": "localhost", "port": 9491}
 ]
