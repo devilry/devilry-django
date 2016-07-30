@@ -5,17 +5,17 @@ CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 CELERY_EAGER_TRANSACTION = True
 BROKER_BACKEND = 'memory'
 
-developfilesdir = 'devilry_testfiles'
-if not exists(developfilesdir):
-    os.mkdir(developfilesdir)
-logdir = join(developfilesdir, 'log')
+testfilesdir = 'devilry_testfiles'
+if not exists(testfilesdir):
+    os.mkdir(testfilesdir)
+logdir = join(testfilesdir, 'log')
 if not exists(logdir):
     os.mkdir(logdir)
-MEDIA_ROOT = join(developfilesdir, "filestore")
-DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(developfilesdir, 'deliverystorehier')
+MEDIA_ROOT = join(testfilesdir, "filestore")
+DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(testfilesdir, 'deliverystorehier')
 
 #: Where to store zipfiles for filedownloads
-DEVILRY_GROUP_ZIPFILE_DIRECTORY = os.path.join(developfilesdir, 'devilry_zip')
+DEVILRY_GROUP_ZIPFILE_DIRECTORY = os.path.join(testfilesdir, 'devilry_zip')
 
 if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' in MIDDLEWARE_CLASSES:
     MIDDLEWARE_CLASSES.remove('devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware')
