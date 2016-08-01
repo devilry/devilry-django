@@ -9,7 +9,7 @@ class AssignmentGroupListViewExaminer(AssignmentGroupListViewBase):
     serializer_class = AssignmentGroupModelSerializer
 
     def get_role_query_set(self):
-        return AssignmentGroup.objects.filter_student_has_access(self.request.user)
+        return AssignmentGroup.objects.filter_examiner_has_access(self.request.user)
 
     def get(self, request, *args, **kwargs):
         return super(AssignmentGroupListViewExaminer, self).get(request, *args, **kwargs)
