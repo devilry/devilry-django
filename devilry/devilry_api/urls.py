@@ -8,6 +8,7 @@ router = routers.DefaultRouter()
 
 urlpatterns = [
     url(r'^assignment/', include('devilry.devilry_api.assignment.urls')),
+    url(r'^assignment-group/', include('devilry.devilry_api.assignment_group.urls')),
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]
 
