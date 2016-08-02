@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     'devilry.devilry_settings',
     'devilry.devilry_search',
     'devilry.devilry_qualifiesforexam',
+    'devilry.devilry_ziputil',
     # 'devilry.devilry_qualifiesforexam_approved',
     # 'devilry.devilry_qualifiesforexam_points',
     # 'devilry.devilry_qualifiesforexam_select',
