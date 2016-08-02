@@ -78,13 +78,17 @@ class PythonZipFileBackend(BaseZipFile):
             self.__archive = zipfile.ZipFile(self.archive_path, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
         self.__archive.writestr(path, filelike_obj.read())
 
-    def open_archive(self):
+    def open_archive(self, mode='rb'):
         """
-        Get archive in readmode if ``readmode`` is ``True``.
-        For this to work, the archive must already exist.
+        Open archive in readmode and return filepointer.
+
+        ``readmode`` must be set to ``True`` with ``instance_of_this_class.readmode = True``.
+
+        Args:
+            mode (str): How to read, same as every file. Defaults to ``rb``(read binary).
 
         Returns:
-            ZipFile: ZipFile ready for reading.
+            File object: Python fileobject.
 
         Raises:
             ValueError: Error when either archive does not exists, or ``readmode`` is ``False``.
@@ -93,7 +97,7 @@ class PythonZipFileBackend(BaseZipFile):
             raise ValueError('Must be in readmode')
         if not self.__archive:
             raise ValueError('Archive does not exist at {}'.format(self.archive_path))
-        return zipfile.ZipFile(self.archive_path, 'r', allowZip64=True)
+        return open(self.archive_path, mode=mode)
 
     def close_archive(self):
         """
@@ -110,7 +114,7 @@ class PythonZipFileBackend(BaseZipFile):
         Returns:
             ZipFile: The zipped archive.
         """
-        return self.__archive
+        return zipfile.ZipFile(self.archive_path, 'r', allowZip64=True)
 
     def archive_size(self):
         """
