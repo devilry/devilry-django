@@ -6,7 +6,7 @@ from .base import *
 # HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 #: Where to store zipfiles for filedownloads
-DEVILRY_GROUP_ZIPFILE_DIRECTORY = os.path.join(developfilesdir, 'devilry_zip')
+DEVILRY_GROUP_ZIPFILE_DIRECTORY = os.path.join(developfilesdir, 'devilry_zip/')
 
 # The if's below is just to make it easy to toggle these settings on and off during development
 profiler_middleware = False
