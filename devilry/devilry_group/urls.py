@@ -8,7 +8,7 @@ from django.conf.urls import url, include
 from devilry.devilry_group.cradmin_instances import crinstance_admin
 from devilry.devilry_group.cradmin_instances import crinstance_examiner
 from devilry.devilry_group.cradmin_instances import crinstance_student
-from devilry.devilry_group.views import feedbackfeed_download_files
+from devilry.devilry_group.views.download_files import feedbackfeed_download_files
 
 urlpatterns = [
     url(r'^student/', include(crinstance_student.StudentCrInstance.urls())),

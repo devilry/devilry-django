@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 
 # Devilry/cradmin imports
 from devilry.devilry_group.cradmin_instances import crinstance_base
-from devilry.devilry_group.views import feedbackfeed_bulkfiledownload
-from devilry.devilry_group.views import feedbackfeed_download_files
+from devilry.devilry_group.views.download_files import feedbackfeed_bulkfiledownload
+from devilry.devilry_group.views.download_files import feedbackfeed_download_files
 from devilry.devilry_group.views.student import feedbackfeed_student
 from devilry.devilry_student.cradminextensions import devilry_crmenu_student
 from devilry.devilry_student.views.group import projectgroupapp

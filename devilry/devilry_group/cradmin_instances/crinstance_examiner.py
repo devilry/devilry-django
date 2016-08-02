@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 # Devilry/cradmin imports
 from devilry.devilry_examiner.cradminextensions import devilry_crmenu_examiner
 from devilry.devilry_group.cradmin_instances import crinstance_base
-from devilry.devilry_group.views import feedbackfeed_bulkfiledownload
-from devilry.devilry_group.views import feedbackfeed_download_files
+from devilry.devilry_group.views.download_files import feedbackfeed_bulkfiledownload
+from devilry.devilry_group.views.download_files import feedbackfeed_download_files
 from devilry.devilry_group.views.examiner import feedbackfeed_examiner
 
 

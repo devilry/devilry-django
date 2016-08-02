@@ -7,7 +7,7 @@ from django_cradmin import crmenu
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_group.cradmin_instances import crinstance_base
 from devilry.devilry_group.views.admin import feedbackfeed_admin
-from devilry.devilry_group.views import feedbackfeed_bulkfiledownload
+from devilry.devilry_group.views.download_files import feedbackfeed_bulkfiledownload
 
 
 class Menu(crmenu.Menu):

@@ -8,8 +8,6 @@ from django.db.models.functions import Lower, Concat
 # Devilry/cradmin imports
 from django_cradmin import crinstance
 from devilry.apps.core.models import Examiner, Candidate, AssignmentGroup
-from devilry.devilry_group.views import feedbackfeed_bulkfiledownload
-from devilry.devilry_student.views.group import projectgroupapp
 
 
 class CrInstanceBase(crinstance.BaseCrAdminInstance):
