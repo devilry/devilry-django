@@ -2,10 +2,12 @@ from devilry.devilry_ziputil.backends.backends_base import PythonZipFileBackend
 
 from django.conf import settings
 
+import os
+
 
 class MockDevilryZipBackend(PythonZipFileBackend):
     """
-
+    Used for testing.
     """
     backend_id = 'default'
 
@@ -15,6 +17,21 @@ class MockDevilryZipBackend(PythonZipFileBackend):
 
     def __init__(self, **kwargs):
         super(MockDevilryZipBackend, self).__init__(**kwargs)
+        self.__create_path_if_not_exists()
+
+    def __create_path_if_not_exists(self):
+        """
+        Create path if given path does not exist.
+        """
+        if os.path.exists(self.archive_path):
+            return
+        path_list = self.archive_path.split('/')
+        path_list.pop()
+        pathbuilder = ''
+        for path in path_list:
+            pathbuilder += path + '/'
+            if not os.path.exists(pathbuilder):
+                os.mkdir(pathbuilder)
 
 
 class MockDevilryZipBackendS3(MockDevilryZipBackend):
