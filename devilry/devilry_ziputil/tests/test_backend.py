@@ -96,6 +96,37 @@ class TestZipBackend(TestCase):
 
                 # Read from created archive
                 backend.readmode = True
-                archive = backend.open_archive()
+                archive = backend.get_archive()
+                self.assertEquals('testcontent', archive.read(archive.namelist()[0]))
+                os.remove(backend.archive_path)
+
+    def test_backend_add_file_deep_path(self):
+            # Test storage of zip archive locally
+            # This test is mostly for testing the API and that files are stored correctly.
+            with self.settings(DEVILRY_GROUP_ZIPFILE_DIRECTORY='devilry_testfiles/zipfiles'):
+                mockregistry = backend_registry.MockableRegistry.make_mockregistry(
+                    backend_mock.MockDevilryZipBackend
+                )
+                # Get backend and set storage path
+                backend_class = mockregistry.get('default')
+                # storage_path = backend_class.get_storage_location() + '/testfile1.zip'
+                storage_path = '{}/{}/{}/{}.zip'.format(backend_class.get_storage_location(),
+                                                        1, 2, 'testarchive')
+                backend = backend_class(archive_path=storage_path, readmode=False)
+
+                # Create testfile
+                filename = 'testfile.txt'
+                f = open(filename, 'w')
+                f.write('testcontent')
+                f.close()
+
+                # Write to backend
+                backend.add_file('{}'.format(filename), open(filename, 'r'))
+                backend.close_archive()
+                os.remove(f.name)
+
+                # Read from created archive
+                backend.readmode = True
+                archive = backend.get_archive()
                 self.assertEquals('testcontent', archive.read(archive.namelist()[0]))
                 os.remove(backend.archive_path)
