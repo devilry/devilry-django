@@ -14,7 +14,7 @@ from django.core.files.base import ContentFile
 from django.utils import timezone
 
 # Devilry imports
-from devilry.devilry_group.views import feedbackfeed_download_files
+from devilry.devilry_group.views.download_files import feedbackfeed_download_files
 from devilry.devilry_group import models as group_models
 
 
@@ -195,6 +195,31 @@ class TestCompressedFeedbackSetFileDownload(TestCase):
         testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
         testfeedbackset = mommy.make('devilry_group.FeedbackSet',
                                      deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+
+        # Add student comment with file
+        testcomment_student = mommy.make('devilry_group.GroupComment',
+                                         feedback_set=testfeedbackset,
+                                         user=testuser,
+                                         user_role='student')
+        commentfile_student = mommy.make('devilry_comment.CommentFile',
+                                         comment=testcomment_student,
+                                         filename='testfile-student.txt')
+        commentfile_student.file.save('testfile.txt', ContentFile('student-testcontent'))
+
+        testdownloader = feedbackfeed_download_files.CompressedFeedbackSetFileDownloadView()
+        mockrequest = mock.MagicMock()
+        mockrequest.cradmin_role = testfeedbackset.group
+        mockrequest.user = testuser
+        response = testdownloader.get(mockrequest, testcomment_student.feedback_set.id)
+        zipfileobject = ZipFile(StringIO(response.content))
+        self.assertEquals('student-testcontent', zipfileobject.read('delivery/testfile-student.txt'))
+
+    def test_feedbackset_files_download_two_users(self):
+        # Test download files from feedbackset
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
+        testfeedbackset = mommy.make('devilry_group.FeedbackSet',
+                                     deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+
         # Add student comment visible to everyone
         testcomment_student = mommy.make('devilry_group.GroupComment',
                                          feedback_set=testfeedbackset,
@@ -230,13 +255,11 @@ class TestCompressedFeedbackSetFileDownload(TestCase):
         mockrequest.user = testuser
         response = testdownloader.get(mockrequest, testcomment_student.feedback_set.id)
         zipfileobject = ZipFile(StringIO(response.content))
-        self.assertEquals('student-testcontent', zipfileobject.read('uploaded_by_student/testfile-student.txt'))
-        self.assertEquals('examiner-testcontent', zipfileobject.read('uploaded_by_examiner/testfile-examiner.txt'))
+        self.assertEquals('student-testcontent', zipfileobject.read('delivery/testfile-student.txt'))
 
         # Check that the private comment does not exist
         with self.assertRaises(KeyError):
-            self.assertEquals('examiner-private-testcontent',
-                              zipfileobject.read('uploaded_by_examiner/testfile-private-examiner.txt'))
+            zipfileobject.read('delivery/testfile-private-examiner.txt')
 
     def test_feedbackset_files_download_after_deadline(self):
         # Test download files from feedbackset
