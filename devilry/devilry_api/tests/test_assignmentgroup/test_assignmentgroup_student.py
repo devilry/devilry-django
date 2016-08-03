@@ -1,11 +1,11 @@
 from model_mommy import mommy
 from rest_framework.test import APITestCase
 
+from devilry.apps.core import devilry_core_mommy_factories
 from devilry.apps.core.models import Assignment
 from devilry.devilry_api import devilry_api_mommy_factories
 from devilry.devilry_api.assignment_group.views.assignmentgroup_student import AssignmentGroupListViewStudent
 from devilry.devilry_api.tests.mixins import test_student_mixins, api_test_helper, test_common_mixins
-from devilry.apps.core import devilry_core_mommy_factories
 
 
 class TestAssignmentGroupListView(test_common_mixins.TestReadOnlyPermissionMixin,
@@ -37,7 +37,6 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         assignment_group = response.data[0]
         self.assertEqual(assignment_group['candidates'][0]['fullname'], 'April')
         self.assertEqual(assignment_group['examiners'][0]['fullname'], 'Thor')
@@ -50,7 +49,6 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         assignment_group = response.data[0]
         self.assertEqual(assignment_group['candidates'][0]['shortname'], 'April@example.com')
         self.assertEqual(assignment_group['examiners'][0]['shortname'], 'Thor@example.com')
@@ -63,9 +61,7 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         candidates = response.data[0]['candidates']
-        self.assertEqual(2, len(candidates))
         self.assertEqual(['Alice', 'April'], [cand['fullname'] for cand in candidates])
 
     def test_anonymization_mode_off_multiple_candidates_shortname(self):
@@ -76,9 +72,7 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         candidates = response.data[0]['candidates']
-        self.assertEqual(2, len(candidates))
         self.assertEqual(['Alice@example.com', 'April@example.com'], [cand['shortname'] for cand in candidates])
 
     def test_anonymization_mode_off_multiple_examiners_fullname(self):
@@ -90,9 +84,7 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         examiners = response.data[0]['examiners']
-        self.assertEqual(2, len(examiners))
         self.assertEqual(['Balder', 'Thor'], [exam['fullname'] for exam in examiners])
 
     def test_anonymization_mode_off_multiple_examiners_shortname(self):
@@ -104,10 +96,23 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         examiners = response.data[0]['examiners']
-        self.assertEqual(2, len(examiners))
         self.assertEqual(['Balder@example.com', 'Thor@example.com'], [exam['shortname'] for exam in examiners])
+
+    def test_anonymization_mode_off_anonymous_id(self):
+        assignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        candidate = devilry_core_mommy_factories.candidate(group)
+        devilry_core_mommy_factories.examiner(group,
+                                              fullname='Balder',
+                                              shortname='Balder@example.com',
+                                              automatic_anonymous_id='Thor')
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        examiner = response.data[0]['examiners'][0]
+        self.assertEqual('Balder', examiner['fullname'])
+        self.assertEqual('Balder@example.com', examiner['shortname'])
 
     def test_anonymization_mode_semi_fullname(self):
         assignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
@@ -117,7 +122,6 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         assignment_group = response.data[0]
         self.assertEqual(assignment_group['candidates'][0]['fullname'], 'April')
         self.assertEqual(assignment_group['examiners'][0]['fullname'], 'Anonymous ID missing')
@@ -130,7 +134,6 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         assignment_group = response.data[0]
         self.assertEqual(assignment_group['candidates'][0]['shortname'], 'April@example.com')
         self.assertEqual(assignment_group['examiners'][0]['shortname'], 'Anonymous ID missing')
@@ -143,9 +146,7 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         candidates = response.data[0]['candidates']
-        self.assertEqual(2, len(candidates))
         self.assertEqual(['Alice', 'April'], [cand['fullname'] for cand in candidates])
 
     def test_anonymization_mode_semi_multiple_candidates_shortname(self):
@@ -156,9 +157,7 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         candidates = response.data[0]['candidates']
-        self.assertEqual(2, len(candidates))
         self.assertEqual(['Alice@example.com', 'April@example.com'], [cand['shortname'] for cand in candidates])
 
     def test_anonymization_mode_semi_multiple_examiners_fullname(self):
@@ -170,9 +169,7 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         examiners = response.data[0]['examiners']
-        self.assertEqual(2, len(examiners))
         self.assertEqual(['Anonymous ID missing', 'Anonymous ID missing'], [exam['fullname'] for exam in examiners])
 
     def test_anonymization_mode_semi_multiple_examiners_shortname(self):
@@ -184,10 +181,23 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         examiners = response.data[0]['examiners']
-        self.assertEqual(2, len(examiners))
         self.assertEqual(['Anonymous ID missing', 'Anonymous ID missing'], [exam['shortname'] for exam in examiners])
+
+    def test_anonymization_mode_semi_anonymous_id(self):
+        assignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        candidate = devilry_core_mommy_factories.candidate(group)
+        devilry_core_mommy_factories.examiner(group,
+                                              fullname='Balder',
+                                              shortname='Balder@example.com',
+                                              automatic_anonymous_id='Thor')
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        examiner = response.data[0]['examiners'][0]
+        self.assertEqual('Thor', examiner['fullname'])
+        self.assertEqual('Thor', examiner['shortname'])
 
     def test_anonymization_mode_full_fullname(self):
         assignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
@@ -197,7 +207,6 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         assignment_group = response.data[0]
         self.assertEqual(assignment_group['candidates'][0]['fullname'], 'April')
         self.assertEqual(assignment_group['examiners'][0]['fullname'], 'Anonymous ID missing')
@@ -210,7 +219,6 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         assignment_group = response.data[0]
         self.assertEqual(assignment_group['candidates'][0]['shortname'], 'April@example.com')
         self.assertEqual(assignment_group['examiners'][0]['shortname'], 'Anonymous ID missing')
@@ -223,9 +231,7 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         candidates = response.data[0]['candidates']
-        self.assertEqual(2, len(candidates))
         self.assertEqual(['Alice', 'April'], [cand['fullname'] for cand in candidates])
 
     def test_anonymization_mode_full_multiple_candidates_shortname(self):
@@ -236,9 +242,7 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         candidates = response.data[0]['candidates']
-        self.assertEqual(2, len(candidates))
         self.assertEqual(['Alice@example.com', 'April@example.com'], [cand['shortname'] for cand in candidates])
 
     def test_anonymization_mode_full_multiple_examiners_fullname(self):
@@ -250,9 +254,7 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         examiners = response.data[0]['examiners']
-        self.assertEqual(2, len(examiners))
         self.assertEqual(['Anonymous ID missing', 'Anonymous ID missing'], [exam['fullname'] for exam in examiners])
 
     def test_anonymization_mode_full_multiple_examiners_shortname(self):
@@ -264,8 +266,20 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(1, len(response.data))
         examiners = response.data[0]['examiners']
-        self.assertEqual(2, len(examiners))
         self.assertEqual(['Anonymous ID missing', 'Anonymous ID missing'], [exam['shortname'] for exam in examiners])
 
+    def test_anonymization_mode_full_anonymous_id(self):
+        assignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        candidate = devilry_core_mommy_factories.candidate(group)
+        devilry_core_mommy_factories.examiner(group,
+                                              fullname='Balder',
+                                              shortname='Balder@example.com',
+                                              automatic_anonymous_id='Thor')
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        examiner = response.data[0]['examiners'][0]
+        self.assertEqual('Thor', examiner['fullname'])
+        self.assertEqual('Thor', examiner['shortname'])
