@@ -95,37 +95,3 @@ class AssignmentListViewBase(ListAPIView):
 
         """
         return super(AssignmentListViewBase, self).get(request, *args, **kwargs)
-
-
-class AssignmentViewBase(GenericAPIView):
-    """
-    Base assignment view
-
-    Authentication is required.
-    Authentication method allowed is by api key or session
-
-    Examples:
-        /inf1000/v15/assignment1
-    """
-    serializer_class = AssignmentModelSerializer
-    authentication_classes = (TokenAuthentication, )
-
-    @property
-    def permission_classes(self):
-        raise NotImplementedError("please set permission_classes example: permission_classes = (IsAuthenticated, )")
-
-    def get_role_queryset(self):
-        raise NotImplementedError
-
-    def get_queryset(self):
-        return self.get_role_queryset()
-
-    def get(self, request, subject, semester, assignment, *args, **kwargs):
-        try:
-            queryset = self.get_queryset().get(parentnode__parentnode__short_name=subject,
-                                               parentnode__short_name=semester,
-                                               short_name=assignment)
-        except Assignment.DoesNotExist:
-            raise Http404
-        serializer = self.serializer_class(queryset)
-        return Response(serializer.data)

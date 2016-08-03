@@ -45,4 +45,5 @@ class AssignmentGroupListViewBase(ListAPIView):
         return queryset
 
     def get(self, request, *args, **kwargs):
+
         return super(AssignmentGroupListViewBase, self).get(request, *args, **kwargs)
