@@ -3,15 +3,24 @@ from devilry.devilry_api.assignment_group.serializers import serializer_base
 
 
 class CandidateSerializer(serializer_base.CandidateSerializer):
+    """
+    Candidate in assignment group shown as examiner role.
+    """
     devilry_role = 'examiner'
 
 
 class ExaminerSerializer(serializer_base.ExaminerSerializer):
+    """
+    Examiner in assignment group shown as examiner role.
+    """
     devilry_role = 'examiner'
 
 
 class AssignmentGroupModelSerializer(serializer_base.AssignmentGroupModelSerializer):
+    #: Candidates in assignment group
     candidates = CandidateSerializer(many=True)
+
+    #: Examiners in assignment group
     examiners = ExaminerSerializer(many=True)
 
     class Meta:
@@ -31,4 +40,3 @@ class AssignmentGroupModelSerializer(serializer_base.AssignmentGroupModelSeriali
             'candidates',
             'examiners',
         ]
-
