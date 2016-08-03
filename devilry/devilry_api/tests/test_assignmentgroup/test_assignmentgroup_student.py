@@ -26,6 +26,70 @@ class TestAssignmentGroupListView(test_common_mixins.TestReadOnlyPermissionMixin
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
 
+    def test_id(self):
+        group = mommy.make('core.AssignmentGroup', id=10)
+        candidate = devilry_core_mommy_factories.candidate(group)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(group.id, response.data[0]['id'])
+
+    def test_name(self):
+        group = mommy.make('core.AssignmentGroup', name='somegroup')
+        candidate = devilry_core_mommy_factories.candidate(group)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(group.name, response.data[0]['name'])
+
+    def test_assignment_id(self):
+        group = mommy.make('core.AssignmentGroup', parentnode__id=5)
+        candidate = devilry_core_mommy_factories.candidate(group)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(5, response.data[0]['assignment_id'])
+
+    def test_assignment_short_name(self):
+        group = mommy.make('core.AssignmentGroup', parentnode__short_name='assignment0')
+        candidate = devilry_core_mommy_factories.candidate(group)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('assignment0', response.data[0]['assignment_short_name'])
+
+    def test_subject_short_name(self):
+        group = mommy.make('core.AssignmentGroup', parentnode__parentnode__parentnode__short_name='Duck1010')
+        candidate = devilry_core_mommy_factories.candidate(group)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('Duck1010', response.data[0]['subject_short_name'])
+
+    def test_period_short_name(self):
+        group = mommy.make('core.AssignmentGroup', parentnode__parentnode__short_name='V15')
+        candidate = devilry_core_mommy_factories.candidate(group)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('V15', response.data[0]['period_short_name'])
+
+    def test_short_displayname(self):
+        group = mommy.make('core.AssignmentGroup')
+        candidate = devilry_core_mommy_factories.candidate(group)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(group.short_displayname, response.data[0]['short_displayname'])
+
+    def test_long_displayname(self):
+        group = mommy.make('core.AssignmentGroup')
+        candidate = devilry_core_mommy_factories.candidate(group)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(group.long_displayname, response.data[0]['long_displayname'])
+
     def test_num_queries(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         for x in range(10):
