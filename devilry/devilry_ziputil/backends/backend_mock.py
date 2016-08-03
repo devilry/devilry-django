@@ -11,10 +11,6 @@ class MockDevilryZipBackend(PythonZipFileBackend):
     """
     backend_id = 'default'
 
-    @classmethod
-    def get_storage_location(cls):
-        return settings.DEVILRY_GROUP_ZIPFILE_DIRECTORY
-
     def __init__(self, **kwargs):
         super(MockDevilryZipBackend, self).__init__(**kwargs)
         self.__create_path_if_not_exists()
@@ -23,15 +19,15 @@ class MockDevilryZipBackend(PythonZipFileBackend):
         """
         Create path if given path does not exist.
         """
-        if os.path.exists(self.archive_path):
-            return
-        path_list = self.archive_path.split('/')
-        path_list.pop()
-        pathbuilder = ''
-        for path in path_list:
-            pathbuilder += path + '/'
-            if not os.path.exists(pathbuilder):
-                os.mkdir(pathbuilder)
+        archivedirname = os.path.dirname(self.archive_path)
+        if not os.path.exists(archivedirname):
+            os.makedirs(archivedirname)
+
+    def get_path(self):
+        """
+        Get the archive path. Used for testing.
+        """
+        return self.archive_path
 
 
 class MockDevilryZipBackendS3(MockDevilryZipBackend):

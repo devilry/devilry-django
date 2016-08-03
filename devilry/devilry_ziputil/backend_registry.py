@@ -53,7 +53,7 @@ class Registry(Singleton):
 
 class MockableRegistry(Registry):
     """
-    A non-singleton verison of :class:`.Registry` for tests.
+    A non-singleton version of :class:`.Registry` for tests.
     """
 
     def __init__(self):

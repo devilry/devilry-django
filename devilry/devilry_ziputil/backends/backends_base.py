@@ -1,18 +1,22 @@
 import os
+import re
 import zipfile
+
+from django.conf import settings
 
 
 class BaseZipFile(object):
     """
-    Specifies the interface for a subclass.
+    Specifies the interface for a backend zip-subclass.
     """
     def __init__(self, archive_path, readmode=True):
         self.archive_path = archive_path
         self.readmode = readmode
+        self.__closed = False
 
     def add_file(self, path, filelike_obj):
         """
-        Add files to archive.
+        Add files to archive. This function is used for writing to the archive.
 
         Args:
             path: Path to the file inside the Zip-archive.
@@ -62,9 +66,21 @@ class PythonZipFileBackend(BaseZipFile):
     #: is used and is the identifier for a registry-class. Example IDs ``s3``, ``heroku`` etc.
     backend_id = None
 
+    @classmethod
+    def get_storage_location(cls):
+        return settings.DEVILRY_ZIPFILE_DIRECTORY
+
     def __init__(self, **kwargs):
         super(PythonZipFileBackend, self).__init__(**kwargs)
         self.__archive = None
+        self.__add_path_extension()
+
+    def __add_path_extension(self):
+        """
+        Adds ``.zip`` extension to path.
+        """
+        if not self.archive_path.endswith('.zip'):
+            self.archive_path = PythonZipFileBackend.get_storage_location() + self.archive_path + '.zip'
 
     def add_file(self, path, filelike_obj):
         """
@@ -74,13 +90,16 @@ class PythonZipFileBackend(BaseZipFile):
             path (str):
             filelike_obj (ReadableInterface):
         """
-        if self.__archive is None:
-            self.__archive = zipfile.ZipFile(self.archive_path, 'w', zipfile.ZIP_DEFLATED, allowZip64=True)
+        if self.readmode is True:
+            raise ValueError('readmode must be False to add files.')
+        if self.__archive is None or self.__closed:
+            self.__closed = False
+            self.__archive = zipfile.ZipFile(self.archive_path, 'a', zipfile.ZIP_DEFLATED, allowZip64=True)
         self.__archive.writestr(path, filelike_obj.read())
 
-    def open_archive(self, mode='rb'):
+    def open_archive(self):
         """
-        Open archive in readmode and return filepointer.
+        Open archive in readmode as fileobject.
 
         ``readmode`` must be set to ``True`` with ``instance_of_this_class.readmode = True``.
 
@@ -97,7 +116,7 @@ class PythonZipFileBackend(BaseZipFile):
             raise ValueError('Must be in readmode')
         if not self.__archive:
             raise ValueError('Archive does not exist at {}'.format(self.archive_path))
-        return open(self.archive_path, mode=mode)
+        return open(self.archive_path, mode='rb')
 
     def close_archive(self):
         """
@@ -105,6 +124,7 @@ class PythonZipFileBackend(BaseZipFile):
         """
         if not self.__archive:
             raise ValueError('Archive does not exist at {}'.format(self.archive_path))
+        self.__closed = True
         self.__archive.close()
 
     def get_archive(self):
