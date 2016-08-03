@@ -135,7 +135,7 @@ class CompressedGroupCommentFileDownload(generic.View):
 
         commentfiles = groupcomment.commentfile_set.all()
 
-        archivename = '{}-{}.zip'.format(
+        archivename = '{}-{}'.format(
             groupcomment.user_role,
             groupcomment.user
         )
@@ -143,11 +143,10 @@ class CompressedGroupCommentFileDownload(generic.View):
         # Get backend and path
         from devilry.devilry_ziputil import backend_registry
         zipfile_backend_class = backend_registry.Registry.get_instance().get('devilry_group_local')
-        zipfile_path = '{}/{}/{}/{}/{}'.format(zipfile_backend_class.get_storage_location(),
-                                               groupcomment.feedback_set.group.id,
-                                               groupcomment.feedback_set.id,
-                                               groupcomment.id,
-                                               archivename)
+        zipfile_path = '{}/{}/{}/{}'.format(groupcomment.feedback_set.group.id,
+                                            groupcomment.feedback_set.id,
+                                            groupcomment.id,
+                                            archivename)
 
         # Get backend instance
         zipfile_backend = zipfile_backend_class(
@@ -248,7 +247,7 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
         if feedbackset.group.id != request.cradmin_role.id:
             raise Http404()
 
-        archivename = '{}-{}-delivery.zip'.format(
+        archivename = '{}-{}-delivery'.format(
             feedbackset.group.parentnode.get_path(),
             feedbackset.current_deadline()
         )
@@ -256,10 +255,9 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
         # Get backend and path
         from devilry.devilry_ziputil import backend_registry
         zipfile_backend_class = backend_registry.Registry.get_instance().get('devilry_group_local')
-        zipfile_path = '{}/{}/{}/{}'.format(zipfile_backend_class.get_storage_location(),
-                                            feedbackset.group.id,
-                                            feedbackset.id,
-                                            archivename)
+        zipfile_path = '{}/{}/{}'.format(feedbackset.group.id,
+                                         feedbackset.id,
+                                         archivename)
 
         # Get backend instance
         zipfile_backend = zipfile_backend_class(
