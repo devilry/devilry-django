@@ -1,15 +1,12 @@
 # -​*- coding: utf-8 -*​-
 from __future__ import unicode_literals
 
-from django.http import Http404
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.generics import ListAPIView, GenericAPIView
-from rest_framework.response import Response
+from rest_framework.generics import ListAPIView
 
-from devilry.apps.core.models.assignment_group import Assignment
 from devilry.devilry_api.assignment.serializers import (
     AssignmentModelSerializer)
-from devilry.devilry_api.auth.authentication import TokenAuthentication, SessionAuthentication
+from devilry.devilry_api.auth.authentication import TokenAuthentication
 
 
 class AssignmentListViewBase(ListAPIView):
@@ -70,7 +67,7 @@ class AssignmentListViewBase(ListAPIView):
               required: false
               paramType: query
               type: String
-              description: search fields(subject, semester)
+              description: search fields(subject, period)
             - name: period_short_name
               required: false
               paramType: query
