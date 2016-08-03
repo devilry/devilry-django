@@ -4,6 +4,7 @@ from rest_framework.generics import ListAPIView
 
 from devilry.apps.core.models.candidate import Candidate
 from devilry.apps.core.models.examiner import Examiner
+from devilry.apps.core.models.assignment import Assignment
 from devilry.devilry_api.auth.authentication import TokenAuthentication
 
 
@@ -28,8 +29,8 @@ class AssignmentGroupListViewBase(ListAPIView):
             .order_by(
                 Lower(Concat('relatedexaminer__user__fullname',
                              'relatedexaminer__user__shortname')))
-
         queryset = self.get_role_query_set() \
+            .select_related('parentnode__parentnode__parentnode') \
             .prefetch_related(
                 models.Prefetch('candidates',
                                 queryset=candidatequeryset)) \

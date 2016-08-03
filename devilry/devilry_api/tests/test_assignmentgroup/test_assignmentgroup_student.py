@@ -1,6 +1,7 @@
 from model_mommy import mommy
 from rest_framework.test import APITestCase
 
+from django.conf import settings
 from devilry.apps.core import devilry_core_mommy_factories
 from devilry.apps.core.models import Assignment
 from devilry.devilry_api import devilry_api_mommy_factories
@@ -23,6 +24,15 @@ class TestAssignmentGroupListView(test_common_mixins.TestReadOnlyPermissionMixin
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
+
+    def test_num_queries(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        for x in range(10):
+            mommy.make('core.Candidate',
+                       relatedstudent__user=testuser)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=testuser)
+        with self.assertNumQueries(4):
+            self.mock_get_request(apikey=apikey.key)
 
 
 class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
@@ -103,9 +113,7 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         assignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         candidate = devilry_core_mommy_factories.candidate(group)
-        devilry_core_mommy_factories.examiner(group,
-                                              fullname='Balder',
-                                              shortname='Balder@example.com',
+        devilry_core_mommy_factories.examiner(group, fullname='Balder', shortname='Balder@example.com',
                                               automatic_anonymous_id='Thor')
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
