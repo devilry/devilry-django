@@ -320,3 +320,123 @@ class TestAssignmentGroupListViewFilters(api_test_helper.TestCaseMixin,
                                          TestAssignmentFiltersExaminerMixin,
                                          APITestCase):
     viewclass = AssignmentGroupListViewExaminer
+
+    def test_filter_search_assignment_short_name_not_found(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       short_name='assignment1')
+        examiner = mommy.make('core.Examiner',
+                              relatedexaminer=mommy.make('core.RelatedExaminer', active=True),
+                              assignmentgroup__parentnode=assignment)
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?search=assignment0')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response.data))
+
+    def test_filter_search_assignment_short_name_found(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       short_name='assignment1')
+        examiner = mommy.make('core.Examiner',
+                              relatedexaminer=mommy.make('core.RelatedExaminer', active=True),
+                              assignmentgroup__parentnode=assignment)
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?search=assignment1')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(assignment.short_name, response.data[0]['assignment_short_name'])
+
+    def test_filter_assignment_short_name_not_found(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       short_name='assignment1')
+        examiner = mommy.make('core.Examiner',
+                              relatedexaminer=mommy.make('core.RelatedExaminer', active=True),
+                              assignmentgroup__parentnode=assignment)
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?assignment_short_name=assignment0')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response.data))
+
+    def test_filter_assignment_short_name_found(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       short_name='assignment1')
+        examiner = mommy.make('core.Examiner',
+                              relatedexaminer=mommy.make('core.RelatedExaminer', active=True),
+                              assignmentgroup__parentnode=assignment)
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?short_name=assignment1')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(assignment.short_name, response.data[0]['assignment_short_name'])
+
+    def test_filter_assignment_id_not_found(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', id=10)
+        examiner = mommy.make('core.Examiner',
+                              relatedexaminer=mommy.make('core.RelatedExaminer', active=True),
+                              assignmentgroup__parentnode=assignment)
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?assignment_id=1')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response.data))
+
+    def test_filter_assignment_id_found(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', id=10)
+        examiner = mommy.make('core.Examiner',
+                              relatedexaminer=mommy.make('core.RelatedExaminer', active=True),
+                              assignmentgroup__parentnode=assignment)
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?assignment_id=10')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(assignment.id, response.data[0]['assignment_id'])
+
+    def test_filter_id_not_found(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment, id=10)
+        examiner = devilry_core_mommy_factories.examiner(group)
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?id=1')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response.data))
+
+    def test_filter_id_found(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment, id=10)
+        examiner = devilry_core_mommy_factories.examiner(group)
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?id=10')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(10, response.data[0]['id'])
+
+    def test_ordering_name_asc(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mommy.make('core.Examiner',
+                   assignmentgroup=mommy.make('core.AssignmentGroup', parentnode=assignment, name='AAA'),
+                   relatedexaminer=mommy.make('core.RelatedExaminer', active=True, user=testuser))
+        mommy.make('core.Examiner',
+                   assignmentgroup=mommy.make('core.AssignmentGroup', parentnode=assignment, name='BBB'),
+                   relatedexaminer=mommy.make('core.RelatedExaminer', active=True, user=testuser))
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=testuser)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?ordering=name')
+        self.assertEqual(200, response.status_code)
+        self.assertListEqual(['AAA', 'BBB'], [group['name'] for group in response.data])
+
+    def test_ordering_name_desc(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mommy.make('core.Examiner',
+                   assignmentgroup=mommy.make('core.AssignmentGroup', parentnode=assignment, name='AAA'),
+                   relatedexaminer=mommy.make('core.RelatedExaminer', active=True, user=testuser))
+        mommy.make('core.Examiner',
+                   assignmentgroup=mommy.make('core.AssignmentGroup', parentnode=assignment, name='BBB'),
+                   relatedexaminer=mommy.make('core.RelatedExaminer', active=True, user=testuser))
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=testuser)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?ordering=-name')
+        self.assertEqual(200, response.status_code)
+        self.assertListEqual(['BBB', 'AAA'], [group['name'] for group in response.data])

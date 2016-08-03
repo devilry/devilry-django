@@ -298,7 +298,7 @@ class TestAssignmentGroupListViewFilters(api_test_helper.TestCaseMixin,
                                          APITestCase):
     viewclass = AssignmentGroupListViewStudent
 
-    def test_filter_search_short_name_not_found(self):
+    def test_filter_search_assignment_short_name_not_found(self):
         assignment = mommy.make('core.Assignment', short_name='assignment1')
         candidate = mommy.make('core.Candidate',
                                assignment_group__parentnode=assignment)
@@ -308,7 +308,7 @@ class TestAssignmentGroupListViewFilters(api_test_helper.TestCaseMixin,
         self.assertEqual(200, response.status_code)
         self.assertEqual(0, len(response.data))
 
-    def test_filter_search_short_name_found(self):
+    def test_filter_search_assignment_short_name_found(self):
         assignment = mommy.make('core.Assignment', short_name='assignment1')
         candidate = mommy.make('core.Candidate',
                                assignment_group__parentnode=assignment)
