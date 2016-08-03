@@ -7,6 +7,7 @@ from devilry.apps.core.models import Assignment
 from devilry.devilry_api import devilry_api_mommy_factories
 from devilry.devilry_api.assignment_group.views.assignmentgroup_student import AssignmentGroupListViewStudent
 from devilry.devilry_api.tests.mixins import test_student_mixins, api_test_helper, test_common_mixins
+from devilry.devilry_api.tests.mixins.test_common_filters_mixin import TestAssignmentFiltersStudentMixin
 
 
 class TestAssignmentGroupListView(test_common_mixins.TestReadOnlyPermissionMixin,
@@ -35,8 +36,7 @@ class TestAssignmentGroupListView(test_common_mixins.TestReadOnlyPermissionMixin
             self.mock_get_request(apikey=apikey.key)
 
 
-class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
-                                               APITestCase):
+class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin, APITestCase):
     viewclass = AssignmentGroupListViewStudent
 
     def test_anonymization_mode_off_fullname(self):
@@ -291,3 +291,107 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         examiner = response.data[0]['examiners'][0]
         self.assertEqual('Thor', examiner['fullname'])
         self.assertEqual('Thor', examiner['shortname'])
+
+
+class TestAssignmentGroupListViewFilters(api_test_helper.TestCaseMixin,
+                                         TestAssignmentFiltersStudentMixin,
+                                         APITestCase):
+    viewclass = AssignmentGroupListViewStudent
+
+    def test_filter_search_short_name_not_found(self):
+        assignment = mommy.make('core.Assignment', short_name='assignment1')
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode=assignment)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?search=assignment0')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response.data))
+
+    def test_filter_search_short_name_found(self):
+        assignment = mommy.make('core.Assignment', short_name='assignment1')
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode=assignment)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?search=assignment1')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(assignment.short_name, response.data[0]['assignment_short_name'])
+
+    def test_filter_assignment_short_name_not_found(self):
+        assignment = mommy.make('core.Assignment', short_name='assignment1')
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode=assignment)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?assignment_short_name=assignment0')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response.data))
+
+    def test_filter_assignment_short_name_found(self):
+        assignment = mommy.make('core.Assignment', short_name='assignment1')
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode=assignment)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?assignment_short_name=assignment1')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(assignment.short_name, response.data[0]['assignment_short_name'])
+
+    def test_filter_assignment_id_not_found(self):
+        assignment = mommy.make('core.Assignment', id=10)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode=assignment)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?assignment_id=1')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response.data))
+
+    def test_filter_assignment_id_found(self):
+        assignment = mommy.make('core.Assignment', id=10)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode=assignment)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?assignment_id=10')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(assignment.id, response.data[0]['assignment_id'])
+
+    def test_filter_id_not_found(self):
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__id=10)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?id=1')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response.data))
+
+    def test_filter_id_found(self):
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__id=10)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?id=10')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(10, response.data[0]['id'])
+
+    def test_ordering_name_asc(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group__name='AAA')
+        mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group__name='BBB')
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=testuser)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?ordering=name')
+        self.assertEqual(200, response.status_code)
+        self.assertListEqual(['AAA', 'BBB'], [group['name'] for group in response.data])
+
+    def test_ordering_name_desc(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group__name='AAA')
+        mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group__name='BBB')
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=testuser)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?ordering=-name')
+        self.assertEqual(200, response.status_code)
+        self.assertListEqual(['BBB', 'AAA'], [group['name'] for group in response.data])
