@@ -7,6 +7,7 @@ from devilry.apps.core.models import Assignment
 from devilry.devilry_api import devilry_api_mommy_factories
 from devilry.devilry_api.assignment_group.views.assignmentgroup_examiner import AssignmentGroupListViewExaminer
 from devilry.devilry_api.tests.mixins import test_examiner_mixins, api_test_helper, test_common_mixins
+from devilry.devilry_api.tests.mixins.test_common_filters_mixin import TestAssignmentFiltersExaminerMixin
 
 
 class TestAssignmentGroupListView(test_common_mixins.TestReadOnlyPermissionMixin,
@@ -313,3 +314,9 @@ class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
         candidate = response.data[0]['candidates'][0]
         self.assertEqual(candidate['fullname'], 'Alice')
         self.assertEqual(candidate['shortname'], 'Alice')
+
+
+class TestAssignmentGroupListViewFilters(api_test_helper.TestCaseMixin,
+                                         TestAssignmentFiltersExaminerMixin,
+                                         APITestCase):
+    viewclass = AssignmentGroupListViewExaminer
