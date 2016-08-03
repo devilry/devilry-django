@@ -94,8 +94,8 @@ class AssignmentGroupModelSerializer(serializers.ModelSerializer):
     AssignmentGroup model serializer base.
     """
 
-    #: Related assignment long name.
-    assignment_long_name = serializers.SerializerMethodField()
+    #: Related assignment short name.
+    assignment_short_name = serializers.SerializerMethodField()
 
     #: Related assignment id.
     assignment_id = serializers.SerializerMethodField()
@@ -121,11 +121,11 @@ class AssignmentGroupModelSerializer(serializers.ModelSerializer):
         """
         return instance.parentnode.id
 
-    def get_assignment_long_name(self, instance):
+    def get_assignment_short_name(self, instance):
         """
         Returns related assignment short name.
         """
-        return instance.parentnode.long_name
+        return instance.parentnode.short_name
 
     def get_subject_short_name(self, instance):
         """

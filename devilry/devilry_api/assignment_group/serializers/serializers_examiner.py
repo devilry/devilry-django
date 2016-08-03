@@ -29,7 +29,7 @@ class AssignmentGroupModelSerializer(serializer_base.AssignmentGroupModelSeriali
             'id',
             'name',
             'assignment_id',
-            'assignment_long_name',
+            'assignment_short_name',
             'subject_short_name',
             'period_short_name',
             'short_displayname',

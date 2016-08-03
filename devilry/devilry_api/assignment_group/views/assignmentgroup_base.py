@@ -55,14 +55,18 @@ class AssignmentGroupListViewBase(ListAPIView):
         assignment_id = self.request.query_params.get('assignment_id', None)
         period_short_name = self.request.query_params.get('period_short_name', None)
         subject_short_name = self.request.query_params.get('subject_short_name', None)
+        assignment_short_name = self.request.query_params.get('assignment_short_name', None)
         if id:
             queryset = queryset.filter(id=id).distinct()
         if assignment_id:
             queryset = queryset.filter(parentnode__id=assignment_id).distinct()
         if period_short_name:
-            queryset = queryset.filter(parentnode__parentnode__short_name=subject_short_name).distinct()
+            queryset = queryset.filter(parentnode__parentnode__short_name=period_short_name).distinct()
         if subject_short_name:
             queryset = queryset.filter(parentnode__parentnode__parentnode__short_name=subject_short_name).distinct()
+        if assignment_short_name:
+            queryset = queryset.filter(parentnode__short_name=assignment_short_name).distinct()
+
         return queryset
 
     def get(self, request, *args, **kwargs):
@@ -91,6 +95,11 @@ class AssignmentGroupListViewBase(ListAPIView):
               paramType: query
               type: String
               description: subject filter
+            - name: assignment_short_name
+              required: false
+              paramType: query
+              type: String
+              description: assignment filter
             - name: id
               required: false
               paramType: query
