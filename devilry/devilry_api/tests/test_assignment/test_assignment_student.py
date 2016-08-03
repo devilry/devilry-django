@@ -149,6 +149,26 @@ class TestAssignmentListViewFilters(api_test_helper.TestCaseMixin,
         self.assertEqual(200, response.status_code)
         self.assertEqual(assignment.short_name, response.data[0]['short_name'])
 
+    def test_filter_id_not_found(self):
+        assignment = mommy.make('core.Assignment', id=43)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode=assignment)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?id=2')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response.data))
+
+    def test_filter_id_found(self):
+        assignment = mommy.make('core.Assignment', id=43)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode=assignment)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key,
+                                         queryparams='?id=43')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(43, response.data[0]['id'])
+
     def test_ordering_publishing_time_asc(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         assignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
