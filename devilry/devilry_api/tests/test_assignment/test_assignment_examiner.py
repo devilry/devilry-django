@@ -91,7 +91,8 @@ class TestAssignmentListView(test_common_mixins.TestReadOnlyPermissionMixin,
         self.assertEqual('V15', response.data[0]['period_short_name'])
 
     def test_subject_short_name(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode__parentnode__short_name='Duck1010')
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       parentnode__parentnode__short_name='Duck1010')
         examiner = mommy.make('core.Examiner',
                               relatedexaminer=mommy.make('core.RelatedExaminer', active=True),
                               assignmentgroup__parentnode=assignment)
