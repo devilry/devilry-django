@@ -66,7 +66,7 @@ class AbstractGroupComment(comment_models.Comment):
     """
 
     #: The related feedbackset. See :class:`.FeedbackSet`.
-    feedback_set = models.ForeignKey('FeedbackSet')
+    feedback_set = models.ForeignKey('FeedbackSet', related_name='%(class)s')
 
     #: If this is ``True``, the comment is published when the feedbackset
     #: is published. This means that this comment is part of the feedback/grading
