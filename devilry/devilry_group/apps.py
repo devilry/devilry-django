@@ -11,6 +11,10 @@ class DevilryGroupAppConfig(AppConfig):
     verbose_name = "Devilry group"
 
     def ready(self):
+        # Import tasks for celery
+        import devilry.devilry_group.views.download_files.batch_zip
+
+        # Add models to cradmin superuserui
         from django_cradmin.superuserui import superuserui_registry
         from devilry.devilry_group.views.download_files import backends
         appconfig = superuserui_registry.default.add_djangoapp(

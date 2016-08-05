@@ -30,7 +30,7 @@ class BaseZipFile(object):
         """
         raise NotImplementedError()
 
-    def open_archive(self):
+    def read_archive(self):
         """
         Open archive in readmode.
         """
@@ -97,7 +97,7 @@ class PythonZipFileBackend(BaseZipFile):
             self.__archive = zipfile.ZipFile(self.archive_path, 'a', zipfile.ZIP_DEFLATED, allowZip64=True)
         self.__archive.writestr(path, filelike_obj.read())
 
-    def open_archive(self):
+    def read_archive(self):
         """
         Open archive in readmode as fileobject.
 

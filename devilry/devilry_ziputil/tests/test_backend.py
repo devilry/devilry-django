@@ -49,13 +49,13 @@ class TestZipBackend(TestCase):
             backend = backend_mock.MockDevilryZipBackend(archive_path=testpath)
             with self.assertRaisesMessage(ValueError, 'Archive does not exist at {}{}.zip'.format(
                     self.backend_path, testpath)):
-                backend.open_archive()
+                backend.read_archive()
 
     def test_backend_open_readmode_false(self):
         with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
             backend = backend_mock.MockDevilryZipBackend(archive_path='testpath', readmode=False)
             with self.assertRaisesMessage(ValueError, 'Must be in readmode'):
-                backend.open_archive()
+                backend.read_archive()
 
     def test_backend_open_readmode_true(self):
         # Raises ValueError since the archive is None. This is just to test that the readmode
@@ -66,7 +66,7 @@ class TestZipBackend(TestCase):
             backend.readmode = True
             with self.assertRaisesMessage(ValueError, 'Archive does not exist at {}{}.zip'.format(
                     self.backend_path, testpath)):
-                backend.open_archive()
+                backend.read_archive()
 
     def test_backend_add_file_readmode_true(self):
         with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):

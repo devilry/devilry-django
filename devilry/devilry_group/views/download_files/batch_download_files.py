@@ -2,18 +2,26 @@
 from __future__ import unicode_literals
 
 # python imports
+from tempfile import NamedTemporaryFile
+import posixpath
+import os
+import zipfile
 
 # django imports
 from django import http
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from django.core.servers.basehttp import FileWrapper
+from django_cradmin.viewhelpers.detail import DetailRoleView
+
+from ievv_opensource.ievv_batchframework.models import BatchOperation
 
 # devilry imports
 from django_cradmin import crapp
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
+from devilry.devilry_group.views.download_files import batch_zip
 
 
 class FileDownloadFeedbackfeedView(generic.View):
@@ -105,10 +113,11 @@ class FileDownloadFeedbackfeedView(generic.View):
 #         return response
 
 
-class CompressedGroupCommentFileDownload(generic.View):
+class CompressedGroupCommentFileDownload(generic.TemplateView):
     """Compress all files from a specific GroupComment into a zipped folder
     """
-    def get(self, request, groupcomment_id):
+
+    def get(self, request, *args, **kwargs):
         """
 
         Args:
@@ -118,6 +127,7 @@ class CompressedGroupCommentFileDownload(generic.View):
         Returns:
              HttpResponse: Zipped folder.
         """
+        groupcomment_id = kwargs['groupcomment_id']
         groupcomment = get_object_or_404(group_models.GroupComment, id=groupcomment_id)
 
         # Check that the cradmin role and the AssignmentGroup is the same.
@@ -128,39 +138,31 @@ class CompressedGroupCommentFileDownload(generic.View):
         if groupcomment.visibility != group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
             raise Http404()
 
-        commentfiles = groupcomment.commentfile_set.all()
+        BatchOperation.objects.filter(context_object_id=groupcomment_id).remove()
+        # if len(queryset) > 0:
+        #     for item in queryset:
+        #         print 'Removing old batch operations on same batch id'
+        #         item.remove()
 
-        archivename = '{}-{}.zip'.format(
-            groupcomment.user_role,
-            groupcomment.user
+        BatchOperation.objects.create_asyncronous(
+            context_object_id=groupcomment_id,
+            operationtype='zip-groupcomment'
         )
 
-        # Get backend and path
-        from devilry.devilry_ziputil import backend_registry
-        zipfile_backend_class = backend_registry.Registry.get_instance().get('devilry_group_local')
-        zipfile_path = '{}/{}/{}/{}'.format(groupcomment.feedback_set.group.id,
-                                            groupcomment.feedback_set.id,
-                                            groupcomment.id,
-                                            archivename)
+        # Run celery task
+        batch_zip.batch_zip_groupcomment.delay(groupcomment)
 
-        # Get backend instance
-        zipfile_backend = zipfile_backend_class(
-                archive_path=zipfile_path,
-                readmode=False
-        )
+        while True:
+            if BatchOperation.objects.get(context_object_id=groupcomment_id, operationtype='zip-groupcomment') \
+                    .result == BatchOperation.RESULT_SUCCESSFUL:
+                break
 
-        # Write files to archive
-        for commentfile in commentfiles:
-            zipfile_backend.add_file('{}'.format(commentfile.filename), commentfile.file.file)
-        zipfile_backend.close_archive()
-
-        # Add zipped archive to response
-        zipfile_backend.readmode = True
-        filewrapper = FileWrapper(zipfile_backend.read_archive())
-        response = http.HttpResponse(filewrapper, content_type='application/zip')
-        response['content-disposition'] = 'attachment; filename=%s' % archivename.encode('ascii', 'replace')
-        response['content-length'] = zipfile_backend.archive_size()
-        return response
+        batchoperation = BatchOperation.objects.get(context_object_id=groupcomment_id, operationtype='zip-groupcomment')
+        response = batchoperation.output_data()
+        batchoperation.remove()
+        print response
+        # return HttpResponseRedirect(
+        #         self.request.cradmin_app.reverse_appurl('wait-for-download', groupcomment_id))
 
 
 # class CompressedFeedbackSetFileDownloadView(generic.View):
