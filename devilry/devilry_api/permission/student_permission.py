@@ -5,38 +5,22 @@ from devilry.devilry_api.permission.base_permission import(
     READ_HTTP_METHODS,
     WRITE_HTTP_METHODS)
 
+#: API key student permissions allowed methods
+API_KEY_ALLOWED_METHODS = {
+    APIKey.STUDENT_PERMISSION_READ: READ_HTTP_METHODS,
+    APIKey.STUDENT_PERMISSION_WRITE: WRITE_HTTP_METHODS,
 
-class BaseStudentPermissionAPIKey(BaseIsAuthenticatedAPIKey):
-    required_student_permissions = []
+}
+
+
+class StudentPermissionAPIKey(BaseIsAuthenticatedAPIKey):
+    """
+
+    """
 
     def has_permission(self, request, view):
         return (
-            super(BaseStudentPermissionAPIKey, self).has_permission(request, view) and
-            self.apikey.student_permission in self.required_student_permissions and
-            request.method in self.http_allowed_methods
+            super(StudentPermissionAPIKey, self).has_permission(request, view) and
+            self.apikey.student_permission in view.api_key_permissions and
+            request.method in API_KEY_ALLOWED_METHODS[self.apikey.student_permission]
         )
-
-
-class StudentReadOnlyAPIKey(BaseStudentPermissionAPIKey):
-    """
-    Permission for student read only
-
-    Ensures that the request.user is authenticated,
-    apiKey has student permission "read" and
-    method allowed is read only
-    """
-
-    http_allowed_methods = READ_HTTP_METHODS
-    required_student_permissions = [APIKey.STUDENT_PERMISSION_READ, APIKey.STUDENT_PERMISSION_WRITE]
-
-
-class StudentWriteAPIKey(BaseStudentPermissionAPIKey):
-    """
-    Permission for student has write access
-
-    Ensures that the request.user is authenticated,
-    apikey has student permission "write" and
-    method allowed is write
-    """
-    http_allowed_methods = WRITE_HTTP_METHODS
-    required_student_permissions = [APIKey.STUDENT_PERMISSION_WRITE]

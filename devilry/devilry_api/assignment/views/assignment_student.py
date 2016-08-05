@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 
 from devilry.apps.core.models.assignment_group import Assignment
 from devilry.devilry_api.assignment.views.assignment_base import AssignmentListViewBase
-from devilry.devilry_api.permission.student_permission import StudentReadOnlyAPIKey
+from devilry.devilry_api.models import APIKey
+from devilry.devilry_api.permission.student_permission import StudentPermissionAPIKey
 
 
 class AssignmentListView(AssignmentListViewBase):
@@ -21,7 +22,10 @@ class AssignmentListView(AssignmentListViewBase):
         /?semester=spring2015&ordering=-first_deadline
 
     """
-    permission_classes = (StudentReadOnlyAPIKey, )
+    permission_classes = (StudentPermissionAPIKey, )
+
+    #: api key permissions allowed
+    api_key_permissions = (APIKey.STUDENT_PERMISSION_READ, APIKey.STUDENT_PERMISSION_WRITE)
 
     def get_role_queryset(self):
         return Assignment.objects.filter_student_has_access(self.request.user)
