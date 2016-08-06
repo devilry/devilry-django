@@ -126,8 +126,16 @@ class OverviewSubjectListView(listbuilderview.FilterListMixin, listbuilderview.V
         """
         Create the queryset, and apply the filters from the filterlist.
         """
-        return coremodels.Subject.objects.all()
+        # Return Subjects where the user can be admin on Subject and or admin on a Period within a Subject
+        return coremodels.Subject.objects.filter_user_is_admin_for_any_periods_within_subject(self.request.user)
 
+    def get_context_data(self, **kwargs):
+        context = super(OverviewSubjectListView, self).get_context_data(**kwargs)
+        context['subjects_where_user_is_subjectadmin'] = \
+            self.__get_all_subjects_where_user_is_subjectadmin()
+        context['periods_where_user_is_subjectadmin_or_periodadmin'] = \
+            self.__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
+        return context
 
 class App(crapp.App):
     appurls = [
