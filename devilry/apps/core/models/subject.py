@@ -91,9 +91,9 @@ class SubjectQuerySet(models.QuerySet):
         """
         from devilry.apps.core.models import Period
         return self.prefetch_related(
-                models.Prefetch('periods',
-                                queryset=Period.objects.filter_active().order_by('start_time'),
-                                to_attr='active_periodobjects'))
+            models.Prefetch('periods',
+                            queryset=Period.objects.filter_active().order_by('start_time'),
+                            to_attr='active_periodobjects'))
 
 
 class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
