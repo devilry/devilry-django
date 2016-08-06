@@ -93,7 +93,7 @@ class SubjectQuerySet(models.QuerySet):
         return self.prefetch_related(
                 models.Prefetch('periods',
                                 queryset=Period.objects.filter_active().order_by('start_time'),
-                                to_attr='active_period_objects'))
+                                to_attr='active_periodobjects'))
 
 
 class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
