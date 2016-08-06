@@ -47,7 +47,7 @@ class FeedbacksetListViewBase(mixins.ListModelMixin,
             - name: assignment_group_id
               required: false
               paramType: query
-              type: String
+              type: int
               description: assignment_group_id filter
 
         """

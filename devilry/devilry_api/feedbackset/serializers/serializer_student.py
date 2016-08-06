@@ -8,7 +8,7 @@ class FeedbacksetModelSerializer(serializer_base.FeedbacksetModelSerializer):
         model = FeedbackSet
         fields = [
             'id',
-            'assignment_group_id',
+            'group',
             'created_datetime',
             'feedbackset_type',
             'is_last_in_group',
