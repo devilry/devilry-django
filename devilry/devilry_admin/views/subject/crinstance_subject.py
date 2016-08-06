@@ -5,6 +5,7 @@ from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
 from devilry.devilry_admin.views.subject import admins
 from devilry.devilry_admin.views.subject import createperiod
 from devilry.devilry_admin.views.subject import overview
+from devilry.devilry_admin.views.subject import edit
 
 
 class Menu(devilry_crmenu_admin.Menu):
@@ -21,7 +22,8 @@ class CrAdminInstance(devilry_crinstance_admin.BaseCrInstanceAdmin):
     apps = [
         ('overview', overview.App),
         ('admins', admins.App),
-        ('createperiod', createperiod.App)
+        ('createperiod', createperiod.App),
+        ('edit', edit.App),
     ]
     id = 'devilry_admin_subjectadmin'
     rolefrontpage_appname = 'overview'
