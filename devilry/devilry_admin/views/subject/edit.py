@@ -2,12 +2,10 @@ from __future__ import unicode_literals
 
 from crispy_forms import layout
 from devilry.apps.core.models import Subject
-from devilry.devilry_admin.views.subject import createperiod
 from django.utils.translation import ugettext_lazy
 from django_cradmin import crapp
 from django_cradmin.viewhelpers import crudbase
 from django_cradmin.viewhelpers import update
-from django.utils.translation import ugettext_lazy
 
 
 class UpdateView(crudbase.OnlySaveButtonMixin, update.UpdateRoleView):
