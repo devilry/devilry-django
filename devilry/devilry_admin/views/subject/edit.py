@@ -1,15 +1,16 @@
 from __future__ import unicode_literals
 
+from crispy_forms import layout
 from devilry.apps.core.models import Subject
 from devilry.devilry_admin.views.subject import createperiod
 from django.utils.translation import ugettext_lazy
 from django_cradmin import crapp
 from django_cradmin.viewhelpers import crudbase
 from django_cradmin.viewhelpers import update
+from django.utils.translation import ugettext_lazy
 
 
-class UpdateView(crudbase.OnlySaveButtonMixin, createperiod.CreateUpdateMixin,
-                 update.UpdateRoleView):
+class UpdateView(crudbase.OnlySaveButtonMixin, update.UpdateRoleView):
     template_name = 'devilry_admin/subject/edit/updateview.django.html'
 
     model = Subject
@@ -18,6 +19,16 @@ class UpdateView(crudbase.OnlySaveButtonMixin, createperiod.CreateUpdateMixin,
         'long_name',
         'short_name'
     ]
+
+    def get_field_layout(self):
+        return [
+            layout.Div(
+                layout.Field('long_name', placeholder=ugettext_lazy('Example: DUCK1010 Object Oriented Programming'),
+                             focusonme='focusonme'),
+                layout.Field('short_name', placeholder=ugettext_lazy('Example: duck1010')),
+                css_class='cradmin-globalfields'
+            )
+        ]
 
     def dispatch(self, *args, **kwargs):
         return super(UpdateView, self).dispatch(*args, **kwargs)
