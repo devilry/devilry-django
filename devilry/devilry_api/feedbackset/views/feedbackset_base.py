@@ -16,15 +16,14 @@ class FeedbacksetListViewBase(mixins.ListModelMixin,
         raise NotImplementedError()
 
     def get_queryset(self):
-        queryset = self.get_role_query_set() \
-            .distinct()
+        queryset = self.get_role_query_set()
 
         id = self.request.query_params.get('id', None)
         assignment_group_id = self.request.query_params.get('assignment_group_id', None)
         if id:
-            queryset = queryset.filter(id=id).distinct()
+            queryset = queryset.filter(id=id)
         if assignment_group_id:
-            queryset = queryset.filter(group__id=assignment_group_id).distinct()
+            queryset = queryset.filter(group__id=assignment_group_id)
 
         return queryset
 

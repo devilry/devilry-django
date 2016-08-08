@@ -4,6 +4,8 @@ from devilry.devilry_group.models import FeedbackSet
 
 class FeedbacksetModelSerializer(serializer_base.FeedbacksetModelSerializer):
 
+    devilry_role = 'student'
+
     class Meta:
         model = FeedbackSet
         fields = [
@@ -13,4 +15,5 @@ class FeedbacksetModelSerializer(serializer_base.FeedbacksetModelSerializer):
             'feedbackset_type',
             'is_last_in_group',
             'deadline_datetime',
+            'created_by_fullname'
         ]

@@ -9,6 +9,8 @@ from devilry.devilry_group.models import FeedbackSet
 
 class FeedbacksetModelSerializer(serializer_base.FeedbacksetModelSerializer):
 
+    devilry_role = 'examiner'
+
     class Meta:
         model = FeedbackSet
         fields = [
@@ -18,29 +20,54 @@ class FeedbacksetModelSerializer(serializer_base.FeedbacksetModelSerializer):
             'feedbackset_type',
             'is_last_in_group',
             'deadline_datetime',
+            'created_by_fullname',
         ]
 
-    def validate(self, data):
+    def validate_patch(self, data):
+        """
+        checks that selected feedback deadline_datetime has expired
+
+        Returns:
+            Empty dictionary
+
+        """
+        if not self.instance.current_deadline() or self.instance.current_deadline() < datetime.now():
+            raise serializers.ValidationError(ugettext_lazy('deadline has not expired yet'))
+        return {}
+
+    def validate_post(self, data):
         """
         Checks existence of required data and makes sure that any other data than group, and feedbackset_type is ignored,
         rest of the data will be set automatically.
 
         Returns:
-            dict with group and deadline_datetime
+            dict with group, deadline_datetime and feedbackset_type
         """
         # checks existence
         if 'group' not in data:
-            raise serializers.ValidationError(ugettext_lazy('Data missing', 'group missing.'))
+            raise serializers.ValidationError(ugettext_lazy('Data missing: ' 'group missing.'))
         if 'feedbackset_type' not in data:
-            raise serializers.ValidationError(ugettext_lazy('Data missing', 'feedbackset_type missing.'))
+            raise serializers.ValidationError(ugettext_lazy('Data missing: ' 'feedbackset_type missing.'))
+        if 'deadline_datetime' not in data:
+            raise serializers.ValidationError(ugettext_lazy('Data missing: ' 'deadline_datetime missing.'))
 
         # ignore any other data
         validated_data = dict()
         validated_data['group'] = data['group']
         validated_data['feedbackset_type'] = data['feedbackset_type']
-        if 'deadline_datetime' in data:
-            validated_data['deadline_datetime'] = data['deadline_datetime']
+        validated_data['deadline_datetime'] = data['deadline_datetime']
         return validated_data
+
+    def validate(self, data):
+        """
+        validate router
+        Returns: validated data
+
+        """
+
+        if self.partial:
+            return self.validate_patch(data)
+        return self.validate_post(data)
 
     def validate_is_last_in_group(self, value):
         """
@@ -58,14 +85,18 @@ class FeedbacksetModelSerializer(serializer_base.FeedbacksetModelSerializer):
         """
         Make sure that examiner is part of assignment group
 
+        Args:
+            value: :obj:`~core.AssignemntGroup`
+
         Returns:
-            :class:`~core.AssignemntGroup`
+            :obj:`~core.AssignemntGroup`
         """
-        assignment_group_queryset = AssignmentGroup.objects \
-            .filter_examiner_has_access(user=self.context['request'].user) \
-            .filter(id=value.id).distinct()
-        if not assignment_group_queryset:
-            raise serializers.ValidationError(ugettext_lazy('Access denied', 'Examiner not part of assignment group'))
+        try:
+            AssignmentGroup.objects \
+                .filter_examiner_has_access(user=self.context['request'].user) \
+                .get(id=value.id)
+        except AssignmentGroup.DoesNotExist:
+            raise serializers.ValidationError(ugettext_lazy('Access denied' 'Examiner not part of assignment group'))
         return value
 
     def validate_deadline_datetime(self, value):
@@ -74,7 +105,7 @@ class FeedbacksetModelSerializer(serializer_base.FeedbacksetModelSerializer):
 
         TODO: we could also check if the previous set deadline has expired
         Returns:
-            datetime
+            datetime (DateTime)
 
         """
         if value < datetime.now():
@@ -86,11 +117,15 @@ class FeedbacksetModelSerializer(serializer_base.FeedbacksetModelSerializer):
         TODO: validate that the previous set is first_attempt or new_attempt if
         value is new_attempt etc..
         Args:
-            value:
+            value: :obj:`~devilry_group.Feedbackset.feedbackset_type`
 
         Returns:
-
+            :obj:`~devilry_group.Feedbackset.feedbackset_type`
         """
+        if value not in [FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT, FeedbackSet.FEEDBACKSET_TYPE_RE_EDIT]:
+            raise serializers.ValidationError(
+                ugettext_lazy('Examiner can only create feedbacksets with feedbackset_type: {} and {}',
+                              FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT, FeedbackSet.FEEDBACKSET_TYPE_RE_EDIT))
         return value
 
     def __set_is_last_in_group_false_in_previous_feedbackset(self, group):
@@ -98,7 +133,7 @@ class FeedbacksetModelSerializer(serializer_base.FeedbacksetModelSerializer):
         Sets the attribute :obj:`~devilry_group.Feedbackset.is_last_in_group` for the previous
          feedbackset to False
         Args:
-            group: :class:`~core.AssignmentGroup`
+            group: :obj:`~core.AssignmentGroup`
         """
         previous_feedback_set = FeedbackSet.objects.filter(group=group, is_last_in_group=True).first()
         if not previous_feedback_set:
@@ -110,9 +145,24 @@ class FeedbacksetModelSerializer(serializer_base.FeedbacksetModelSerializer):
         """
         Creates a new feedbackset
 
+        Args:
+            validated_data: dictionary
+
         Returns:
-            :class:`~devilry_group.Feedbackset`
+            :obj:`~devilry_group.Feedbackset`
 
         """
         self.__set_is_last_in_group_false_in_previous_feedbackset(validated_data['group'])
         return FeedbackSet.objects.create(created_by=self.context['request'].user, **validated_data)
+
+    def update(self, instance, validated_data):
+        """
+        TODO: publish feedback
+        Args:
+            instance: :obj:`~devilry_group.Feedbackset`
+            validated_data: dictionary
+
+        Returns:
+
+        """
+        pass

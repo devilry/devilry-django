@@ -27,3 +27,4 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
         apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
+
