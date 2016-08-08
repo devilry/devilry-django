@@ -1,4 +1,6 @@
 from rest_framework.generics import mixins
+from rest_framework.response import Response
+from rest_framework import status
 
 from devilry.devilry_api.models import APIKey
 from devilry.apps.core.models import AssignmentGroup
@@ -25,6 +27,10 @@ class FeedbacksetListViewExaminer(mixins.CreateModelMixin,
         Create a new feedbackset
 
         ---
+        omit_parameters:
+            - query
+            - path
+        parameter_strategy: replace
         parameters:
             - name: group
               required: true
@@ -34,12 +40,19 @@ class FeedbacksetListViewExaminer(mixins.CreateModelMixin,
             - name: deadline_datetime
               required: true
               paramType: form
-              type: Datetime
+              type: Choice
               description: Deadline
+            - name: feedbackset_type
+              required: true
+              paramType: form
+              enum:
+                - first_attempt
+                - new_attempt
+                - re_edit
+              description: feedbackset type type
 
         """
-        pass
-        return self.create(request, *args, **kwargs)
+        return super(FeedbacksetListViewExaminer, self).create(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         return super(FeedbacksetListViewExaminer, self).get(request, *args, **kwargs)
