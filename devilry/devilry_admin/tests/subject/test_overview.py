@@ -38,13 +38,16 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_link_urls(self):
         testsubject = mommy.make('core.Subject')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
-        self.assertEqual(2, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(3, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEqual(
-                mock.call(appname=u'createperiod', args=(), viewname=u'INDEX', kwargs={}),
+                mock.call(appname=u'edit', args=(), viewname=u'INDEX', kwargs={}),
                 mockresponse.request.cradmin_instance.reverse_url.call_args_list[0])
         self.assertEqual(
-                mock.call(appname=u'admins', args=(), viewname=u'INDEX', kwargs={}),
+                mock.call(appname=u'createperiod', args=(), viewname=u'INDEX', kwargs={}),
                 mockresponse.request.cradmin_instance.reverse_url.call_args_list[1])
+        self.assertEqual(
+                mock.call(appname=u'admins', args=(), viewname=u'INDEX', kwargs={}),
+                mockresponse.request.cradmin_instance.reverse_url.call_args_list[2])
 
     def test_periodlist_no_periods(self):
         testsubject = mommy.make('core.Subject')

@@ -65,11 +65,11 @@ class SubjectQuerySet(models.QuerySet):
                 )
         )
 
-    def prefetch_active_periodobjects(self):
+    def prefetch_active_period_objects(self):
         """
-        Prefetch active periods in the ``active_periodobjects`` attribute.
+        Prefetch active periods in the ``active_period_objects`` attribute.
 
-        The ``active_periodobjects`` attribute is a ``list`` of
+        The ``active_period_objects`` attribute is a ``list`` of
         :class:`devilry.apps.core.models.Period` objects ordered by
         ``start_time`` in ascending order.
 
@@ -78,11 +78,11 @@ class SubjectQuerySet(models.QuerySet):
             Make a queryset using with active peridods prefetched::
 
                 from devilry.apps.core.models import Period
-                queryset = Period.objects.prefetch_active_periodobjects()
+                queryset = Period.objects.prefetch_active_period_objects()
 
             Work with the queryset::
 
-                for period in queryset.first().active_periodobjects:
+                for period in queryset.first().active_period_objects:
                     print(period.short_name)
 
             Get the last active period for a subject (see :meth:`.Subject.last_active_period`)::
@@ -93,7 +93,7 @@ class SubjectQuerySet(models.QuerySet):
         return self.prefetch_related(
             models.Prefetch('periods',
                             queryset=Period.objects.filter_active().order_by('start_time'),
-                            to_attr='active_periodobjects'))
+                            to_attr='active_period_objects'))
 
 
 class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
@@ -156,7 +156,7 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
         """
         if not hasattr(self, 'active_period_objects'):
             raise AttributeError('The last_active_period property requires '
-                                 'SubjectQuerySet.prefetch_active_periodobjects()')
+                                 'SubjectQuerySet.prefetch_active_period_objects()')
         if self.active_period_objects:
             return self.active_period_objects[-1]
         else:

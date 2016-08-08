@@ -128,7 +128,7 @@ class OverviewSubjectListView(listbuilderview.FilterListMixin, listbuilderview.V
         """
         # Return Subjects where the user can be admin on Subject and or admin on a Period within a Subject
         return coremodels.Subject.objects.filter_user_is_admin_for_any_periods_within_subject(self.request.user).\
-            prefetch_active_periodobjects()
+            prefetch_active_period_objects()
 
     def get_context_data(self, **kwargs):
         context = super(OverviewSubjectListView, self).get_context_data(**kwargs)
