@@ -38,7 +38,7 @@ class FeedbacksetListViewExaminer(mixins.CreateModelMixin,
               type: int
               description: Related assignment_group id
             - name: deadline_datetime
-              required: true
+              required: false
               paramType: form
               type: Choice
               description: Deadline
@@ -49,7 +49,7 @@ class FeedbacksetListViewExaminer(mixins.CreateModelMixin,
                 - first_attempt
                 - new_attempt
                 - re_edit
-              description: feedbackset type type
+              description: feedbackset type
 
         """
         return super(FeedbacksetListViewExaminer, self).create(request, *args, **kwargs)

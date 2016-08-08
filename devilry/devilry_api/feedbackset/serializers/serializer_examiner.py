@@ -22,8 +22,7 @@ class FeedbacksetModelSerializer(serializer_base.FeedbacksetModelSerializer):
 
     def validate(self, data):
         """
-        Checks existence of required data and makes sure that any other data than group,
-        deadline_datetime and feedbackset_type is ignored,
+        Checks existence of required data and makes sure that any other data than group, and feedbackset_type is ignored,
         rest of the data will be set automatically.
 
         Returns:
@@ -32,16 +31,15 @@ class FeedbacksetModelSerializer(serializer_base.FeedbacksetModelSerializer):
         # checks existence
         if 'group' not in data:
             raise serializers.ValidationError(ugettext_lazy('Data missing', 'group missing.'))
-        if 'deadline_datetime' not in data:
-            raise serializers.ValidationError(ugettext_lazy('Data missing', 'deadline_datetime missing.'))
         if 'feedbackset_type' not in data:
             raise serializers.ValidationError(ugettext_lazy('Data missing', 'feedbackset_type missing.'))
 
         # ignore any other data
         validated_data = dict()
         validated_data['group'] = data['group']
-        validated_data['deadline_datetime'] = data['deadline_datetime']
         validated_data['feedbackset_type'] = data['feedbackset_type']
+        if 'deadline_datetime' in data:
+            validated_data['deadline_datetime'] = data['deadline_datetime']
         return validated_data
 
     def validate_is_last_in_group(self, value):
@@ -117,9 +115,4 @@ class FeedbacksetModelSerializer(serializer_base.FeedbacksetModelSerializer):
 
         """
         self.__set_is_last_in_group_false_in_previous_feedbackset(validated_data['group'])
-
-        user = self.context['request'].user
-        return FeedbackSet.objects.create(created_by=user,
-                                          deadline_datetime=validated_data['deadline_datetime'],
-                                          feedbackset_type=validated_data['feedbackset_type'],
-                                          group=validated_data['group'])
+        return FeedbackSet.objects.create(created_by=self.context['request'].user, **validated_data)
