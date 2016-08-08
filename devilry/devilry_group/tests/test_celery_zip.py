@@ -44,13 +44,13 @@
 #             time.sleep(5)
 #
 #         batchoperation = BatchOperation.objects.get(context_object_id=testcomment.id)
-#         # print batchoperation.output_data()
-#
-#         # testdownloader = feedbackfeed_download_files.CompressedGroupCommentFileDownload()
-#         # mockrequest = mock.MagicMock()
-#         # mockrequest.cradmin_role = testcomment.feedback_set.group
-#         # mockrequest.user = testuser
-#         # response = testdownloader.get(mockrequest, testcomment.id)
-#         # zipfileobject = ZipFile(StringIO(response.content))
-#         # filecontents = zipfileobject.read('testfile.txt')
-#         # self.assertEquals(filecontents, 'testcontent')
+        # print batchoperation.output_data()
+
+        # testdownloader = feedbackfeed_download_files.CompressedGroupCommentFileDownload()
+        # mockrequest = mock.MagicMock()
+        # mockrequest.cradmin_role = testcomment.feedback_set.group
+        # mockrequest.user = testuser
+        # response = testdownloader.get(mockrequest, testcomment.id)
+        # zipfileobject = ZipFile(StringIO(response.content))
+        # filecontents = zipfileobject.read('testfile.txt')
+        # self.assertEquals(filecontents, 'testcontent')

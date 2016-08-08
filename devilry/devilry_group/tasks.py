@@ -7,6 +7,7 @@ import posixpath
 import os
 import zipfile
 
+
 # django imports
 from django import http
 from django.http import Http404
@@ -81,5 +82,6 @@ def get_zipped_response(request, groupcomment_id):
     # response['content-disposition'] = 'attachment; filename=%s' % archivename.encode('ascii', 'replace')
     # response['content-length'] = zipfile_backend.archive_size()
     # return response
+    sleep(13)
     print groupcomment_id
     return 'done'

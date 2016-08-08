@@ -60,59 +60,6 @@ class FileDownloadFeedbackfeedView(generic.View):
         return response
 
 
-# class CompressedGroupCommentFileDownload(generic.View):
-#     """Compress all files from a specific GroupComment into a zipped folder
-#     """
-#     def get(self, request, groupcomment_id):
-#         """
-#
-#
-#         Args:
-#             groupcomment_id:
-#             request:
-#
-#         Returns:
-#              HttpResponse: Zipped folder.
-#         """
-#         groupcomment = get_object_or_404(group_models.GroupComment, id=groupcomment_id)
-#
-#         # Check that the cradmin role and the AssignmentGroup is the same.
-#         if groupcomment.feedback_set.group.id != request.cradmin_role.id:
-#             raise Http404()
-#
-#         # If it's a private GroupComment, the request.user must be the one that created the comment.
-#         if groupcomment.visibility != group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
-#             raise Http404()
-#
-#         commentfiles = groupcomment.commentfile_set.all()
-#
-#         dirname = '{}-{}'.format(
-#             groupcomment.user_role,
-#             groupcomment.user
-#         )
-#
-#         zip_file_name = '{}.zip'.format(dirname.encode('ascii', 'ignore'))
-#         tempfile = NamedTemporaryFile()
-#         zip_file = zipfile.ZipFile(tempfile, 'w')
-#
-#         for commentfile in commentfiles:
-#             zip_file.write(
-#                 commentfile.file.file.name,
-#                 posixpath.join('', commentfile.filename)
-#             )
-#
-#         zip_file.close()
-#         tempfile.seek(0)
-#
-#         # Load file as chunks
-#         filewrapper = FileWrapper(tempfile)
-#         response = http.HttpResponse(filewrapper, content_type='application/zip')
-#         response['content-disposition'] = 'attachment; filename=%s' % \
-#             zip_file_name.encode('ascii', 'replace')
-#         response['content-length'] = os.stat(tempfile.name).st_size
-#         return response
-
-
 class CompressedGroupCommentFileDownload(generic.TemplateView):
     """Compress all files from a specific GroupComment into a zipped folder
     """
@@ -138,11 +85,7 @@ class CompressedGroupCommentFileDownload(generic.TemplateView):
         if groupcomment.visibility != group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
             raise Http404()
 
-        BatchOperation.objects.filter(context_object_id=groupcomment_id).remove()
-        # if len(queryset) > 0:
-        #     for item in queryset:
-        #         print 'Removing old batch operations on same batch id'
-        #         item.remove()
+        BatchOperation.objects.filter(context_object_id=groupcomment_id).delete()
 
         BatchOperation.objects.create_asyncronous(
             context_object_id=groupcomment_id,
@@ -152,17 +95,8 @@ class CompressedGroupCommentFileDownload(generic.TemplateView):
         # Run celery task
         batch_zip.batch_zip_groupcomment.delay(groupcomment)
 
-        while True:
-            if BatchOperation.objects.get(context_object_id=groupcomment_id, operationtype='zip-groupcomment') \
-                    .result == BatchOperation.RESULT_SUCCESSFUL:
-                break
-
-        batchoperation = BatchOperation.objects.get(context_object_id=groupcomment_id, operationtype='zip-groupcomment')
-        response = batchoperation.output_data()
-        batchoperation.remove()
-        print response
-        # return HttpResponseRedirect(
-        #         self.request.cradmin_app.reverse_appurl('wait-for-download', groupcomment_id))
+        return HttpResponseRedirect(
+                self.request.cradmin_app.reverse_appurl('wait-for-download', groupcomment_id))
 
 
 # class CompressedFeedbackSetFileDownloadView(generic.View):

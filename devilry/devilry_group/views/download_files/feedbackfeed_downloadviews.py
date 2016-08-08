@@ -1,37 +1,22 @@
 from django.http import HttpResponseRedirect
+from django.views.generic import TemplateView
+
 from django_cradmin import crapp
+from ievv_opensource.ievv_batchframework.models import BatchOperation
 
 from devilry.devilry_cradmin.viewhelpers.devilry_confirmview import View
 
 
-class WaitForDownload(View):
+class WaitForDownload(TemplateView):
     """
     Redirected to this view when downloading files.
     """
-    # def get(self, request, *args, **kwargs):
-    #     """
-    #
-    #     Args:
-    #         request:
-    #         *args:
-    #         **kwargs:
-    #
-    #     Returns:
-    #
-    #     """
-    #     print args
+    template_name = 'devilry_group/wait_for_download.django.html'
 
-    def get_confirm_message(self):
-        return 'Wait while zipping and preparing download'
-
-    def get_submit_button_label(self):
-        return 'back'
-
-    def get_backlink_label(self):
-        return ''
-
-    def get_backlink_url(self):
-        return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+    def get(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        print pk
+        return super(WaitForDownload, self).get(request=request, *args, **kwargs)
 
 
 class App(crapp.App):
