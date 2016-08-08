@@ -1,14 +1,13 @@
 import htmls
-import mock
+from devilry.apps.core.models import Assignment, AssignmentGroup
+from devilry.apps.core.templatetags import devilry_core_tags
+from devilry.devilry_comment.models import Comment
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from devilry.devilry_group.models import GroupComment
 from django import test
 from django.conf import settings
 from django.template.loader import render_to_string
 from model_mommy import mommy
-
-from devilry.apps.core.models import Assignment, AssignmentGroup
-from devilry.apps.core.templatetags import devilry_core_tags
-from devilry.devilry_comment.models import Comment
-from devilry.devilry_group.models import GroupComment
 
 
 class TestDevilrySingleCandidateLongDisplayname(test.TestCase):
@@ -78,6 +77,7 @@ class TestDevilrySingleCandidateLongDisplayname(test.TestCase):
 
 
 class TestDevilrySingleCandidateShortDisplayname(test.TestCase):
+
     def test_nonanonymous_cssclass(self):
         assignment = mommy.make('core.Assignment')
         candidate = mommy.make('core.Candidate',
@@ -1231,6 +1231,10 @@ class TestDevilryGradeFull(test.TestCase):
 
 
 class TestDevilryCommentSummary(test.TestCase):
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_zero_comments_from_students(self):
         mommy.make('core.AssignmentGroup')
         testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_students().first()
@@ -1289,9 +1293,11 @@ class TestDevilryCommentSummary(test.TestCase):
             selector.one('.devilry-core-comment-summary-studentfiles').alltext_normalized)
 
     def test_one_commentfile_from_students(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testgroup = mommy.make('core.AssignmentGroup')
         testcomment = mommy.make('devilry_group.GroupComment',
                                  feedback_set__group=testgroup,
+                                 comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                                  user_role=Comment.USER_ROLE_STUDENT)
         mommy.make('devilry_comment.CommentFile', comment=testcomment)
@@ -1310,11 +1316,13 @@ class TestDevilryCommentSummary(test.TestCase):
                                   feedback_set__group=testgroup,
                                   feedback_set__is_last_in_group=False,
                                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                                  comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                                   user_role=Comment.USER_ROLE_STUDENT)
         mommy.make('devilry_comment.CommentFile', comment=testcomment1)
         testcomment2 = mommy.make('devilry_group.GroupComment',
                                   feedback_set__group=testgroup,
                                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                                  comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                                   user_role=Comment.USER_ROLE_STUDENT)
         mommy.make('devilry_comment.CommentFile', comment=testcomment2)
         testgroup = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()

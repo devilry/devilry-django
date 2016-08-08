@@ -1,7 +1,15 @@
 from __future__ import unicode_literals
+
 from datetime import timedelta
 
 import mock
+from devilry.apps.core.models import Assignment
+from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
+from devilry.devilry_comment.models import Comment
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group.models import GroupComment
+from devilry.devilry_student.views.dashboard import dashboard
 from django import test
 from django.conf import settings
 from django.utils import timezone
@@ -9,13 +17,6 @@ from django_cradmin import cradmin_testhelpers
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 from model_mommy import mommy
-
-from devilry.apps.core.models import Assignment
-from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
-from devilry.devilry_comment.models import Comment
-from devilry.devilry_group import devilry_group_mommy_factories
-from devilry.devilry_group.models import GroupComment
-from devilry.devilry_student.views.dashboard import dashboard
 
 
 class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -358,6 +359,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_grouplist_comments_sanity(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
@@ -369,24 +371,27 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_STUDENT,
                    _quantity=2)
         mommy.make('devilry_comment.CommentFile',
                    comment=mommy.make('devilry_group.GroupComment',
                                       feedback_set=feedbackset,
                                       visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                                      comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                                       user_role=Comment.USER_ROLE_STUDENT))
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    _quantity=5)
         mommy.make('devilry_group.GroupComment',  # Should not be part of count
                    feedback_set=feedbackset,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_EXAMINER)
-        mockresponse = self.mock_http200_getrequest_htmls(
-                requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 '3 comments from student. 1 file from student. 5 comments from examiner.',
                 mockresponse.selector.one(

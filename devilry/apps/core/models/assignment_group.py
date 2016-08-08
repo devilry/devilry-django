@@ -321,14 +321,8 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         Only comments that should be visible to everyone with access to the
         group is included.
         """
-        from devilry.devilry_group.models import GroupComment
         return self.annotate(
-            number_of_groupcomments=models.Count(
-                models.Case(
-                    models.When(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                                then=1)
-                )
-            )
+            number_of_groupcomments=models.F('cached_data__public_total_comment_count')
         )
 
     def annotate_with_number_of_groupcomments_from_students(self):
@@ -340,15 +334,8 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         Only comments that should be visible to everyone with access to the
         group is included.
         """
-        from devilry.devilry_group.models import GroupComment
         return self.annotate(
-            number_of_groupcomments_from_students=models.Count(
-                models.Case(
-                    models.When(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                                feedbackset__groupcomment__user_role=GroupComment.USER_ROLE_STUDENT,
-                                then=1)
-                )
-            )
+            number_of_groupcomments_from_students=models.F('cached_data__public_student_comment_count')
         )
 
     def annotate_with_number_of_groupcomments_from_examiners(self):
@@ -360,15 +347,8 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         Only comments that should be visible to everyone with access to the
         group is included.
         """
-        from devilry.devilry_group.models import GroupComment
         return self.annotate(
-            number_of_groupcomments_from_examiners=models.Count(
-                models.Case(
-                    models.When(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                                feedbackset__groupcomment__user_role=GroupComment.USER_ROLE_EXAMINER,
-                                then=1)
-                )
-            )
+            number_of_groupcomments_from_examiners=models.F('cached_data__public_examiner_comment_count')
         )
 
     def annotate_with_number_of_groupcomments_from_admins(self):
@@ -380,15 +360,8 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         Only comments that should be visible to everyone with access to the
         group is included.
         """
-        from devilry.devilry_group.models import GroupComment
         return self.annotate(
-            number_of_groupcomments_from_admins=models.Count(
-                models.Case(
-                    models.When(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                                feedbackset__groupcomment__user_role=GroupComment.USER_ROLE_ADMIN,
-                                then=1)
-                )
-            )
+            number_of_groupcomments_from_admins=models.F('cached_data__public_admin_comment_count')
         )
 
     def annotate_with_number_of_imageannotationcomments(self):
@@ -413,7 +386,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
 
     def annotate_with_number_of_imageannotationcomments_from_students(self):
         """
-        Annotate the queryset with ``number_of_imageannotationcomments`` -
+        Annotate the queryset with ``number_of_imageannotationcomments_from_students`` -
         the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
         added by students within each AssignmentGroup.
 
@@ -434,7 +407,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
 
     def annotate_with_number_of_imageannotationcomments_from_examiners(self):
         """
-        Annotate the queryset with ``number_of_imageannotationcomments`` -
+        Annotate the queryset with ``number_of_imageannotationcomments_from_examiners`` -
         the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
         added by examiners within each AssignmentGroup.
 
@@ -455,7 +428,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
 
     def annotate_with_number_of_imageannotationcomments_from_admins(self):
         """
-        Annotate the queryset with ``number_of_imageannotationcomments`` -
+        Annotate the queryset with ``number_of_imageannotationcomments_from_admins`` -
         the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
         added by admins within each AssignmentGroup.
 
@@ -476,31 +449,15 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
 
     def annotate_with_number_of_commentfiles_from_students(self):
         """
-        Annotate the queryset with ``number_of_imageannotationcomments`` -
+        Annotate the queryset with ``annotate_with_number_of_commentfiles_from_students`` -
         the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
-        added by admins within each AssignmentGroup.
+        added by students within each AssignmentGroup.
 
         Only comments that should be visible to everyone with access to the
         group is included.
         """
-        from devilry.devilry_group.models import ImageAnnotationComment
-        from devilry.devilry_group.models import GroupComment
-        whenquery = models.When(
-            models.Q(
-                feedbackset__groupcomment__commentfile__isnull=False,
-                feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                feedbackset__groupcomment__user_role=GroupComment.USER_ROLE_STUDENT,
-            ) | models.Q(
-                feedbackset__imageannotationcomment__commentfile__isnull=False,
-                feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                feedbackset__imageannotationcomment__user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
-            ),
-            then=1
-        )
         return self.annotate(
-            number_of_commentfiles_from_students=models.Count(
-                models.Case(whenquery)
-            )
+            number_of_commentfiles_from_students=models.F('cached_data__file_upload_count_student')
         )
 
     def annotate_with_number_of_private_groupcomments_from_user(self, user):
@@ -591,9 +548,9 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`
         or any comments.
         """
-        return self.annotate_with_number_of_groupcomments()\
-            .annotate_with_number_of_imageannotationcomments()\
-            .annotate_with_number_of_published_feedbacksets()\
+        return self.annotate_with_number_of_groupcomments() \
+            .annotate_with_number_of_imageannotationcomments() \
+            .annotate_with_number_of_published_feedbacksets() \
             .filter(
                 models.Q(number_of_published_feedbacksets__gt=0) |
                 models.Q(number_of_imageannotationcomments__gt=0) |
@@ -952,6 +909,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         )
 
     def annotate_with_datetime_of_last_student_comment(self):
+        # TODO CACHE: Cache last student comment?
         """
         Annotate the queryset with ``datetime_of_last_student_comment``.
         """
@@ -1294,6 +1252,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
            * "corrected"
            * "closed-without-feedback"
            * "waiting-for-something"
+
+    .. attribute:: cached_data
+
+        A Django RelatedManager of :class:`cached_data <devilry.devilry_dbcache.models.AssignmentGroupCachedData>` for this AssignmentGroup.
+
     """
 
     objects = AssignmentGroupManager.from_queryset(AssignmentGroupQuerySet)()
@@ -1447,6 +1410,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     @property
     def last_feedbackset_is_published(self):
+        # TODO CACHE: Use cached field: last_feedbackset
         from devilry.devilry_group import models as group_models
         last_feedbackset = group_models.FeedbackSet.objects\
             .filter(group=self)\

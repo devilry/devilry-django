@@ -1,13 +1,16 @@
 from datetime import datetime, timedelta
+
+from devilry.apps.core.models import AssignmentGroup
+from devilry.devilry_comment.models import CommentFile
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from devilry.devilry_dbcache.models import AssignmentGroupCachedData
+from devilry.devilry_group.models import FeedbackSet, GroupComment
 from django import test
 from django.conf import settings
+from django.core.files.base import ContentFile
 from django.db import connection
 from django.utils import timezone
 from model_mommy import mommy
-
-from devilry.apps.core.models import AssignmentGroup
-from devilry.devilry_dbcache.models import AssignmentGroupCachedData
-from devilry.devilry_group.models import FeedbackSet
 
 
 def _run_sql(sql):
@@ -21,255 +24,75 @@ def _remove_triggers():
             ON core_assignmentgroup;
         DROP TRIGGER IF EXISTS devilry_dbcache_on_feedbackset_insert_or_update_trigger
             ON devilry_group_feedbackset;
-    """)
-
-
-def _create_triggers():
-    _run_sql("""
-
-        CREATE OR REPLACE FUNCTION devilry_dbcache_timestampvalue_has_changed(
-            param_old_value timestamp with time zone, param_new_value timestamp with time zone)
-        RETURNS boolean AS $$
-        BEGIN
-            IF (param_old_value IS NULL AND param_new_value IS NOT NULL)
-                OR (param_new_value IS NULL AND param_old_value IS NOT NULL)
-                OR (param_new_value != param_old_value)
-            THEN
-                RETURN TRUE;
-            ELSE
-                RETURN FALSE;
-            END IF;
-        END
-        $$ LANGUAGE plpgsql;
-
-
-        CREATE OR REPLACE FUNCTION devilry_dbcache_find_last_published_feedbackset_id_in_group(param_group_id integer)
-        RETURNS integer AS $$
-        DECLARE
-            var_last_published_feedbackset_id integer;
-        BEGIN
-            SELECT
-                id INTO var_last_published_feedbackset_id
-            FROM devilry_group_feedbackset
-            WHERE group_id = param_group_id AND grading_published_datetime IS NOT NULL
-            ORDER BY created_datetime DESC
-            LIMIT 1;
-
-            RETURN var_last_published_feedbackset_id;
-        END
-        $$ LANGUAGE plpgsql;
-
-
-        CREATE OR REPLACE FUNCTION devilry_dbcache_find_first_feedbackset_id_in_group(param_group_id integer)
-        RETURNS integer AS $$
-        DECLARE
-            var_first_feedbackset_id integer;
-        BEGIN
-            SELECT
-                id INTO var_first_feedbackset_id
-            FROM devilry_group_feedbackset
-            WHERE group_id = param_group_id
-            ORDER BY created_datetime ASC
-            LIMIT 1;
-
-            RETURN var_first_feedbackset_id;
-        END
-        $$ LANGUAGE plpgsql;
-
-        CREATE OR REPLACE FUNCTION devilry_dbcache_find_last_feedbackset_id_in_group(param_group_id integer)
-        RETURNS integer AS $$
-        DECLARE
-            var_last_feedbackset_id integer;
-        BEGIN
-            SELECT
-                id INTO var_last_feedbackset_id
-            FROM devilry_group_feedbackset
-            WHERE group_id = param_group_id
-            ORDER BY created_datetime DESC
-            LIMIT 1;
-
-            RETURN var_last_feedbackset_id;
-        END
-        $$ LANGUAGE plpgsql;
-
-
-        CREATE OR REPLACE FUNCTION devilry_dbcache_on_feedbackset_insert_or_update() RETURNS TRIGGER AS $$
-        DECLARE
-            var_first_feedbackset_id integer;
-            var_last_feedbackset_id integer;
-            var_last_published_feedbackset_id integer;
-            var_cached_data_exists boolean;
-            var_cached_data record;
-        BEGIN
-            SELECT
-               EXISTS (SELECT 1 FROM devilry_dbcache_assignmentgroupcacheddata WHERE group_id = NEW.group_id)
-               INTO var_cached_data_exists;
-
-            IF NOT var_cached_data_exists THEN
-                -- If the AssignmentGroupCachedData for feedbackset.group does NOT exist, create it
-                -- We assume that if this is the first time we create an AssignmentGroupCachedData
-                -- for the group, this is the first FeedbackSet in the group!
-                IF NEW.grading_published_datetime IS NOT NULL THEN
-                    var_last_published_feedbackset_id := NEW.id;
-                END IF;
-                INSERT INTO devilry_dbcache_assignmentgroupcacheddata (
-                    group_id,
-                    first_feedbackset_id,
-                    last_feedbackset_id,
-                    last_published_feedbackset_id)
-                VALUES (
-                    NEW.group_id,
-                    NEW.id,
-                    NEW.id,
-                    var_last_published_feedbackset_id);
-            ELSE
-                SELECT
-                    cached_data.group_id AS group_id,
-                    cached_data.first_feedbackset_id AS first_feedbackset_id,
-                    cached_data.last_feedbackset_id AS last_feedbackset_id,
-                    cached_data.last_published_feedbackset_id AS last_published_feedbackset_id,
-                    first_feedbackset.created_datetime AS first_feedbackset_created_datetime,
-                    last_feedbackset.created_datetime AS last_feedbackset_created_datetime,
-                    last_published_feedbackset.created_datetime AS last_published_feedbackset_created_datetime
-                FROM devilry_dbcache_assignmentgroupcacheddata AS cached_data
-                LEFT JOIN devilry_group_feedbackset first_feedbackset
-                    ON cached_data.first_feedbackset_id = first_feedbackset.id
-                LEFT JOIN devilry_group_feedbackset last_feedbackset
-                    ON cached_data.last_feedbackset_id = last_feedbackset.id
-                LEFT JOIN devilry_group_feedbackset last_published_feedbackset
-                    ON cached_data.last_published_feedbackset_id = last_published_feedbackset.id
-                WHERE cached_data.group_id = NEW.group_id
-                INTO var_cached_data;
-
-                -- We only update the cache if any fields affecting the cache is changed
-                IF NEW.created_datetime < var_cached_data.first_feedbackset_created_datetime THEN
-                    var_first_feedbackset_id := NEW.id;
-                ELSE
-                    var_first_feedbackset_id := var_cached_data.first_feedbackset_id;
-                END IF;
-
-                IF NEW.created_datetime > var_cached_data.last_feedbackset_created_datetime THEN
-                    var_last_feedbackset_id := NEW.id;
-                ELSE
-                    var_last_feedbackset_id := var_cached_data.last_feedbackset_id;
-                END IF;
-
-                IF (var_cached_data.last_published_feedbackset_id IS NULL
-                    OR var_cached_data.last_published_feedbackset_id != NEW.id
-                    ) AND NEW.grading_published_datetime IS NOT NULL
-                    AND (
-                        var_cached_data.last_published_feedbackset_created_datetime IS NULL
-                        OR NEW.created_datetime > var_cached_data.last_published_feedbackset_created_datetime)
-                THEN
-                    var_last_published_feedbackset_id := NEW.id;
-                ELSE
-                    IF var_cached_data.last_published_feedbackset_id = NEW.id THEN
-                        -- This happens if we unpublish the currently last published feedbackset.
-                        -- We have to perform at SELECT query to find the correct value. This is a
-                        -- bit expensive, but it is not a problem since this rarely happens, and
-                        -- it will very rarely be done in bulk.
-                        var_last_published_feedbackset_id := devilry_dbcache_find_last_published_feedbackset_id_in_group(NEW.group_id);
-                    ELSE
-                        var_last_published_feedbackset_id := var_cached_data.last_published_feedbackset_id;
-                    END IF;
-                END IF;
-
-                UPDATE devilry_dbcache_assignmentgroupcacheddata
-                SET
-                    first_feedbackset_id = var_first_feedbackset_id,
-                    last_feedbackset_id = var_last_feedbackset_id,
-                    last_published_feedbackset_id = var_last_published_feedbackset_id
-                WHERE group_id = NEW.group_id;
-            END IF;
-
-            RETURN NEW;
-        END
-        $$ LANGUAGE plpgsql;
-
-        DROP TRIGGER IF EXISTS devilry_dbcache_on_feedbackset_insert_or_update_trigger
-            ON devilry_group_feedbackset;
-        CREATE TRIGGER devilry_dbcache_on_feedbackset_insert_or_update_trigger
-            AFTER INSERT OR UPDATE ON devilry_group_feedbackset
-            FOR EACH ROW
-                EXECUTE PROCEDURE devilry_dbcache_on_feedbackset_insert_or_update();
-
-
-        /*
-        Autocreate first FeedbackSet when creating an AssignmentGroup.
-        */
-        CREATE OR REPLACE FUNCTION devilry_dbcache_on_assignmentgroup_insert() RETURNS TRIGGER AS $$
-        BEGIN
-            INSERT INTO devilry_group_feedbackset (
-                group_id,
-                created_datetime,
-                feedbackset_type,
-                gradeform_data_json)
-            VALUES (
-                NEW.id,
-                now(),
-                'first_attempt',
-                '');
-            RETURN NEW;
-        END
-        $$ LANGUAGE plpgsql;
-
-        DROP TRIGGER IF EXISTS devilry_dbcache_on_assignmentgroup_insert_trigger
-            ON core_assignmentgroup;
-        CREATE TRIGGER devilry_dbcache_on_assignmentgroup_insert_trigger
-            AFTER INSERT ON core_assignmentgroup
-            FOR EACH ROW
-                EXECUTE PROCEDURE devilry_dbcache_on_assignmentgroup_insert();
-
-
-        /*
-        Autoupdate AssignmentGroupCachedData.*_comment_count fields automatically.
-        */
-        /*
-        CREATE OR REPLACE FUNCTION devilry_dbcache_on_group_or_imageannotationcomment_change() RETURNS TRIGGER AS $$
-        DECLARE
-            var_basecomment record;
-        BEGIN
-            SELECT user_role
-            FROM devilry_comment.comment WHERE id = NEW.id
-            INTO var_basecomment;
-
-            IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
-                IF TG_OP = 'INSERT' THEN
-                    IF NEW.visibility = 'important' THEN
-                        UPDATE devilry_dbcache_assignmentgroupcacheddata
-                        SET public_total_comment_count = public_total_comment_count + 1
-                        WHERE id = NEW.group_id;
-                    ELSEIF  NEW.vote_type = 'unimportant' THEN
-                    END IF;
-                END IF;
-            ELSEIF TG_OP = 'DELETE' THEN
-
-            END IF;
-
-            RETURN NEW;
-        END
-        $$ LANGUAGE plpgsql;
-
-        DROP TRIGGER IF EXISTS devilry_dbcache_on_group_change_trigger
-            ON devilry_group_groupcomment;
-        CREATE TRIGGER devilry_dbcache_on_group_change_trigger
-            AFTER INSERT UPDATE OR OR DELETE ON devilry_group_groupcomment
-            FOR EACH ROW
-                EXECUTE PROCEDURE devilry_dbcache_on_group_or_imageannotationcomment_change();
 
         DROP TRIGGER IF EXISTS devilry_dbcache_on_group_imageannotationcomment_trigger
             ON devilry_group_imageannotationcomment;
-        CREATE TRIGGER devilry_dbcache_on_group_imageannotationcomment_trigger
-            AFTER INSERT OR UPDATE OR DELETE ON devilry_group_imageannotationcomment
-            FOR EACH ROW
-                EXECUTE PROCEDURE devilry_dbcache_on_group_or_imageannotationcomment_change();
-        */
+
+        DROP TRIGGER IF EXISTS devilry_dbcache_on_group_change_trigger
+            ON devilry_group_imageannotationcomment;
     """)
+
+
+class TestBenchMarkAssignmentGroupFileUploadCountTrigger(test.TestCase):
+
+    def setUp(self):
+        _remove_triggers()
+
+    def __create_distinct_comments(self, label):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group=group)
+
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer__user=mommy.make(settings.AUTH_USER_MODEL))
+
+        comment_admin = mommy.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
+                                   user_role=GroupComment.USER_ROLE_ADMIN)
+        comment_student = mommy.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
+                                     user_role=GroupComment.USER_ROLE_STUDENT)
+        comment_examiner = mommy.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
+                                      user_role=GroupComment.USER_ROLE_EXAMINER)
+
+        count = 1000
+        comments = []
+        with TimeExecution('{} ({})'.format(label, count)):
+            for x in range(count):
+                student_file = mommy.make(CommentFile, comment=comment_student)
+                student_file.file.save('testfile.txt', ContentFile('test'))
+                examiner_file = mommy.make(CommentFile, comment=comment_examiner)
+                examiner_file.file.save('testfile.txt', ContentFile('test'))
+                # student_file.delete()
+
+                # f or c in comments:
+                #     c.save()
+
+                # for c in comments:
+                #     c.delete()
+                #
+                # cached_data = AssignmentGroupCachedData.objects.get(group=group)
+                # print "feedbackset_count:", cached_data.feedbackset_count
+                # print "public_total_comment_count:", cached_data.public_total_comment_count
+                # print "public_student_comment_count:", cached_data.public_student_comment_count
+                # print "public_examiner_comment_count:", cached_data.public_examiner_comment_count
+                # print "public_admin_comment_count:", cached_data.public_admin_comment_count
+                #
+                #
+                # print "file_upload_count_total:", cached_data.file_upload_count_total
+                # print "file_upload_count_student:", cached_data.file_upload_count_student
+                # print "file_upload_count_examiner:", cached_data.file_upload_count_examiner
+
+    def test_create_in_distinct_groups_without_triggers(self):
+        self.__create_distinct_comments('file upload: no triggers')
+
+    def test_create_in_distinct_groups_with_triggers(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+        self.__create_distinct_comments('file upload: with triggers')
 
 
 class TestFeedbackSetTriggers(test.TestCase):
     def setUp(self):
-        _create_triggers()
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_create_feedbackset_sanity(self):
         group = mommy.make('core.AssignmentGroup')
@@ -302,8 +125,9 @@ class TestFeedbackSetTriggers(test.TestCase):
 
 
 class TestAssignmentGroupTriggers(test.TestCase):
+
     def setUp(self):
-        _create_triggers()
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_create_group_creates_feedbackset_sanity(self):
         group = mommy.make('core.AssignmentGroup')
@@ -340,6 +164,7 @@ class TimeExecution(object):
 
 
 class TestBenchMarkFeedbackSetTrigger(test.TestCase):
+
     def setUp(self):
         _remove_triggers()
 
@@ -365,7 +190,7 @@ class TestBenchMarkFeedbackSetTrigger(test.TestCase):
         self.__create_in_distinct_groups_feedbacksets('feedbacksets distinct groups: no triggers')
 
     def test_create_feedbacksets_in_distinct_groups_with_triggers(self):
-        _create_triggers()
+        AssignmentGroupDbCacheCustomSql().initialize()
         self.__create_in_distinct_groups_feedbacksets('feedbacksets distinct groups: with triggers')
 
     def __create_in_same_group_feedbacksets(self, label):
@@ -386,7 +211,7 @@ class TestBenchMarkFeedbackSetTrigger(test.TestCase):
         self.__create_in_same_group_feedbacksets('feedbacksets same group: no triggers')
 
     def test_create_feedbacksets_in_same_group_with_triggers(self):
-        _create_triggers()
+        AssignmentGroupDbCacheCustomSql().initialize()
         # This should have some overhead because we need to UPDATE the AssignmentGroupCachedData
         # for each INSERT
         self.__create_in_same_group_feedbacksets('feedbacksets same group: with triggers')
@@ -407,8 +232,54 @@ class TestBenchMarkAssignmentGroupTrigger(test.TestCase):
             AssignmentGroup.objects.bulk_create(groups)
 
     def test_create_in_distinct_groups_without_triggers(self):
-        self.__create_distinct_groups('groups: no triggers')
+        self.__create_distinct_groups('assignment groups: no triggers')
 
     def test_create_in_distinct_groups_with_triggers(self):
-        _create_triggers()
-        self.__create_distinct_groups('groups: with triggers')
+        AssignmentGroupDbCacheCustomSql().initialize()
+        self.__create_distinct_groups('assignment groups: with triggers')
+
+
+class TestBenchMarkAssignmentGroupCommentCountTrigger(test.TestCase):
+    def setUp(self):
+        _remove_triggers()
+
+    def __create_distinct_comments(self, label):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group=group)
+
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer__user=mommy.make(settings.AUTH_USER_MODEL))
+
+        count = 100
+        comments = []
+        for x in range(count):
+            comments.append(mommy.prepare(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
+                                          user_role=GroupComment.USER_ROLE_ADMIN))
+            comments.append(mommy.prepare(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
+                                          user_role=GroupComment.USER_ROLE_STUDENT))
+            comments.append(mommy.prepare(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
+                                          user_role=GroupComment.USER_ROLE_EXAMINER))
+
+        with TimeExecution('{} ({})'.format(label, count)):
+            for c in comments:
+                c.save()
+
+                # for c in comments:
+                #    c.delete()
+                #
+        return group
+
+    def test_create_in_distinct_groups_without_triggers(self):
+        self.__create_distinct_comments('assignment groups comments: no triggers')
+
+    def test_create_in_distinct_groups_with_triggers(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+        group = self.__create_distinct_comments('assignment groups comments: with triggers')
+        cached_data = AssignmentGroupCachedData.objects.get(group=group)
+        print "feedbackset_count:", cached_data.feedbackset_count
+        print "public_total_comment_count:", cached_data.public_total_comment_count
+        print "public_student_comment_count:", cached_data.public_student_comment_count
+        print "public_examiner_comment_count:", cached_data.public_examiner_comment_count
+        print "public_admin_comment_count:", cached_data.public_admin_comment_count

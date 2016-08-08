@@ -12,6 +12,7 @@ from devilry.apps.core import devilry_core_mommy_factories
 from devilry.apps.core.models import Assignment, AssignmentGroup
 from devilry.devilry_admin.views.assignment.students import groupdetails
 from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
 class TestGroupDetailsRenderable(test.TestCase):
@@ -158,6 +159,7 @@ class TestGroupDetailsRenderable(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_grade_comment_summary_is_available(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         mommy.make('core.AssignmentGroup')
         testgroup = AssignmentGroup.objects\
             .annotate_with_number_of_commentfiles_from_students()\
