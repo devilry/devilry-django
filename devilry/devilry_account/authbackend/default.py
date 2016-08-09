@@ -1,5 +1,5 @@
 from django.contrib import auth
-from django.contrib.auth import models as auth_models, get_user_model
+from django.contrib.auth import get_user_model
 
 
 class AbstractBaseAuthBackend(object):
@@ -41,10 +41,10 @@ class EmailAuthBackend(AbstractBaseAuthBackend):
         except get_user_model().DoesNotExist:
             return None
         else:
-            password_valid = auth_models.check_password(password, user.password)
-            if not password_valid:
+            if user.check_password(raw_password=password):
+                return user
+            else:
                 return None
-            return user
 
     def lookup_user(self, email):
         user = get_user_model().objects.get_by_email(email=email)
@@ -74,10 +74,10 @@ class UsernameAuthBackend(AbstractBaseAuthBackend):
         except get_user_model().DoesNotExist:
             return None
         else:
-            password_valid = auth_models.check_password(password, user.password)
-            if not password_valid:
+            if user.check_password(raw_password=password):
+                return user
+            else:
                 return None
-            return user
 
     def lookup_user(self, username):
         user = get_user_model().objects.get_by_username(username=username)
