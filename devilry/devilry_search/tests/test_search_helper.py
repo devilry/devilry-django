@@ -39,7 +39,6 @@ class TestSearchHelper(TestCase):
     def tearDown(self):
         rmtree(self.tempdir)
 
-
     def _rebuild_searchindex(self):
         haystack.autodiscover()
         call_command('rebuild_index', verbosity=1, interactive=False)
