@@ -77,10 +77,13 @@ class PythonZipFileBackend(BaseZipFile):
 
     def __add_path_extension(self):
         """
-        Adds ``.zip`` extension to path.
+        Sets :obj:`~.PythonZipFileBackend.archive_path` to full path by prepending the backend storage location
+        to the archive_path. Also adds .zip extension
         """
         if not self.archive_path.endswith('.zip'):
             self.archive_path = PythonZipFileBackend.get_storage_location() + self.archive_path + '.zip'
+        else:
+            self.archive_path = PythonZipFileBackend.get_storage_location() + self.archive_path
 
     def add_file(self, path, filelike_obj):
         """
