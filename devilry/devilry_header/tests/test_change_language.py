@@ -5,7 +5,6 @@ from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.project.develop.testhelpers.login import LoginTestCaseMixin
 
 
-
 class TestChangeLanguage(TestCase, LoginTestCaseMixin):
     def setUp(self):
         self.url = reverse('devilry_change_language')
