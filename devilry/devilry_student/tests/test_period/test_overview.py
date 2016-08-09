@@ -418,6 +418,7 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                                       user_role=Comment.USER_ROLE_STUDENT))
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    _quantity=5)

@@ -1250,6 +1250,7 @@ class TestDevilryCommentSummary(test.TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT)
         testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_students().first()
@@ -1266,10 +1267,12 @@ class TestDevilryCommentSummary(test.TestCase):
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    feedback_set__is_last_in_group=False,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT)
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT)
         testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_students().first()
@@ -1349,6 +1352,7 @@ class TestDevilryCommentSummary(test.TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER)
         testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_examiners().first()
@@ -1365,10 +1369,12 @@ class TestDevilryCommentSummary(test.TestCase):
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    feedback_set__is_last_in_group=False,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER)
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER)
         testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_examiners().first()

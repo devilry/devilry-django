@@ -15,10 +15,16 @@ class AssignmentGroupCachedData(models.Model):
                                                    null=True, blank=True)
 
     feedbackset_count = models.PositiveIntegerField()
+
     public_total_comment_count = models.PositiveIntegerField()
     public_student_comment_count = models.PositiveIntegerField()
     public_examiner_comment_count = models.PositiveIntegerField()
     public_admin_comment_count = models.PositiveIntegerField()
+
+    public_total_imageannotationcomment_count = models.PositiveIntegerField()
+    public_student_imageannotationcomment_count = models.PositiveIntegerField()
+    public_examiner_imageannotationcomment_count = models.PositiveIntegerField()
+    public_admin_imageannotationcomment_count = models.PositiveIntegerField()
 
     file_upload_count_total = models.PositiveIntegerField()
     file_upload_count_student = models.PositiveIntegerField()

@@ -53,6 +53,10 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
               public_student_comment_count,
               public_examiner_comment_count,
               public_admin_comment_count,
+              public_total_imageannotationcomment_count,
+              public_student_imageannotationcomment_count,
+              public_examiner_imageannotationcomment_count,
+              public_admin_imageannotationcomment_count,
               file_upload_count_total,
               file_upload_count_student,
               file_upload_count_examiner)
@@ -61,7 +65,7 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
               NEW.id,
               NEW.id,
               var_last_published_feedbackset_id,
-              0,0,0,0,0,0,0,0);
+              0,0,0,0,0,0,0,0,0,0,0,0);
       ELSE
           SELECT
               cached_data.group_id AS group_id,
@@ -176,6 +180,7 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
   CREATE OR REPLACE FUNCTION devilry_dbcache_on_group_or_imageannotationcomment_change() RETURNS TRIGGER AS $$
   DECLARE
       var_user_role varchar;
+      var_comment_type varchar;
       var_assignment_group_id integer;
       var_feedbackset_id record;
       var_update_public boolean;
@@ -197,28 +202,51 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
       FROM devilry_group_feedbackset
       WHERE id = var_record.feedback_set_id;
 
-      SELECT user_role
-      FROM devilry_comment_comment WHERE id = var_record.comment_ptr_id
-      INTO var_user_role;
+      SELECT INTO var_comment_type, var_user_role
+                      comment_type,     user_role
+      FROM devilry_comment_comment
+      WHERE id = var_record.comment_ptr_id;
 
       IF var_update_public = TRUE THEN
-          UPDATE devilry_dbcache_assignmentgroupcacheddata
-          SET public_total_comment_count = devilry_increment_or_decrement_value(public_total_comment_count, var_increment)
-          WHERE group_id = var_assignment_group_id;
+          IF var_comment_type = 'groupcomment' THEN
+              -- groupcomment
+              UPDATE devilry_dbcache_assignmentgroupcacheddata
+              SET public_total_comment_count = devilry_increment_or_decrement_value(public_total_comment_count, var_increment)
+              WHERE group_id = var_assignment_group_id;
 
-          IF var_user_role = 'student' THEN
+              IF var_user_role = 'student' THEN
+                  UPDATE devilry_dbcache_assignmentgroupcacheddata
+                  SET public_student_comment_count = devilry_increment_or_decrement_value(public_student_comment_count, var_increment)
+                  WHERE group_id = var_assignment_group_id;
+              ELSEIF var_user_role = 'admin' THEN
+                 UPDATE devilry_dbcache_assignmentgroupcacheddata
+                  SET public_admin_comment_count = devilry_increment_or_decrement_value(public_admin_comment_count, var_increment)
+                  WHERE group_id = var_assignment_group_id;
+              ELSEIF var_user_role = 'examiner' THEN
+                  UPDATE devilry_dbcache_assignmentgroupcacheddata
+                  SET public_examiner_comment_count = devilry_increment_or_decrement_value(public_examiner_comment_count, var_increment)
+                  WHERE group_id = var_assignment_group_id;
+              END IF;
+          ELSE
+              -- imageannotationcomment
               UPDATE devilry_dbcache_assignmentgroupcacheddata
-              SET public_student_comment_count = devilry_increment_or_decrement_value(public_student_comment_count, var_increment)
+              SET public_total_imageannotationcomment_count = devilry_increment_or_decrement_value(public_total_imageannotationcomment_count, var_increment)
               WHERE group_id = var_assignment_group_id;
-          ELSEIF var_user_role = 'admin' THEN
-              UPDATE devilry_dbcache_assignmentgroupcacheddata
-              SET public_admin_comment_count = devilry_increment_or_decrement_value(public_admin_comment_count, var_increment)
-              WHERE group_id = var_assignment_group_id;
-          ELSEIF var_user_role = 'examiner' THEN
-              UPDATE devilry_dbcache_assignmentgroupcacheddata
-              SET public_examiner_comment_count = devilry_increment_or_decrement_value(public_examiner_comment_count, var_increment)
-              WHERE group_id = var_assignment_group_id;
-          END IF;
+
+              IF var_user_role = 'student' THEN
+                  UPDATE devilry_dbcache_assignmentgroupcacheddata
+                  SET public_student_imageannotationcomment_count = devilry_increment_or_decrement_value(public_student_imageannotationcomment_count, var_increment)
+                  WHERE group_id = var_assignment_group_id;
+              ELSEIF var_user_role = 'admin' THEN
+                 UPDATE devilry_dbcache_assignmentgroupcacheddata
+                  SET public_admin_imageannotationcomment_count = devilry_increment_or_decrement_value(public_admin_imageannotationcomment_count, var_increment)
+                  WHERE group_id = var_assignment_group_id;
+              ELSEIF var_user_role = 'examiner' THEN
+                  UPDATE devilry_dbcache_assignmentgroupcacheddata
+                  SET public_examiner_imageannotationcomment_count = devilry_increment_or_decrement_value(public_examiner_imageannotationcomment_count, var_increment)
+                  WHERE group_id = var_assignment_group_id;
+              END IF;
+        END IF;
       END IF;
       RETURN var_record;
   END

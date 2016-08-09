@@ -373,15 +373,8 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         Only comments that should be visible to everyone with access to the
         group is included.
         """
-        from devilry.devilry_group.models import ImageAnnotationComment
-        whenquery = models.When(
-            feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-            then=1
-        )
         return self.annotate(
-            number_of_imageannotationcomments=models.Count(
-                models.Case(whenquery)
-            )
+            number_of_imageannotationcomments=models.F('cached_data__public_total_imageannotationcomment_count')
         )
 
     def annotate_with_number_of_imageannotationcomments_from_students(self):
@@ -393,16 +386,9 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         Only comments that should be visible to everyone with access to the
         group is included.
         """
-        from devilry.devilry_group.models import ImageAnnotationComment
-        whenquery = models.When(
-            feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-            feedbackset__imageannotationcomment__user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
-            then=1
-        )
         return self.annotate(
-            number_of_imageannotationcomments_from_students=models.Count(
-                models.Case(whenquery)
-            )
+            number_of_imageannotationcomments_from_students=
+            models.F('cached_data__public_student_imageannotationcomment_count')
         )
 
     def annotate_with_number_of_imageannotationcomments_from_examiners(self):
@@ -414,16 +400,9 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         Only comments that should be visible to everyone with access to the
         group is included.
         """
-        from devilry.devilry_group.models import ImageAnnotationComment
-        whenquery = models.When(
-            feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-            feedbackset__imageannotationcomment__user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
-            then=1
-        )
         return self.annotate(
-            number_of_imageannotationcomments_from_examiners=models.Count(
-                models.Case(whenquery)
-            )
+            number_of_imageannotationcomments_from_examiners=
+            models.F('cached_data__public_examiner_imageannotationcomment_count')
         )
 
     def annotate_with_number_of_imageannotationcomments_from_admins(self):
@@ -435,16 +414,9 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         Only comments that should be visible to everyone with access to the
         group is included.
         """
-        from devilry.devilry_group.models import ImageAnnotationComment
-        whenquery = models.When(
-            feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-            feedbackset__imageannotationcomment__user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
-            then=1
-        )
         return self.annotate(
-            number_of_imageannotationcomments_from_admins=models.Count(
-                models.Case(whenquery)
-            )
+            number_of_imageannotationcomments_from_admins=
+            models.F('cached_data__public_admin_imageannotationcomment_count')
         )
 
     def annotate_with_number_of_commentfiles_from_students(self):

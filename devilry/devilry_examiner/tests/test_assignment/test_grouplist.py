@@ -20,6 +20,9 @@ from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = grouplist.GroupListView
 
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_title(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1665,6 +1668,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -1750,6 +1754,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -1835,6 +1840,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_ADMIN,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
