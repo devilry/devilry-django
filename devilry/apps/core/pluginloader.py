@@ -1,5 +1,5 @@
 from django.apps import apps
-from django.utils.importlib import import_module
+from importlib import import_module
 
 # A flag to tell us if autodiscover is running.  autodiscover will set this to
 # True while running, and False when it finishes.

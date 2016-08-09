@@ -1,8 +1,7 @@
 from os.path import exists, dirname, isdir, join
 
 from django.conf import settings
-from django.utils.importlib import import_module
-
+from importlib import import_module
 
 
 def get_installed_apps():
@@ -25,6 +24,7 @@ def get_installed_apps():
 
 def get_staticdir(appdir, appname):
     return join(appdir, 'static', appname)
+
 
 def get_staticdir_from_appname(appname, installed_apps=None):
     """

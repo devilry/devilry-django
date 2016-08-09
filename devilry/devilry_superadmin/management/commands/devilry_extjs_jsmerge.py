@@ -3,7 +3,7 @@ from os.path import join, dirname, isdir, exists, basename
 import re
 
 from django.core.management.base import BaseCommand
-from django.utils.importlib import import_module
+from importlib import import_module
 from django.conf import settings
 
 
@@ -75,6 +75,7 @@ def depsfullfilled(jsfile, jsfiles):
             return False
     return True
 
+
 def orderJsFiles(jsfiles):
     ordered = []
     while jsfiles:
@@ -104,6 +105,7 @@ def collect_jsfiles(jsfiles, rootdir, verbose):
                     else:
                         jsfiles[jsfile.clsname] = jsfile
 
+
 def collect_jsfiles_in_installedapps(jsfiles, verbose):
     for app in settings.INSTALLED_APPS:
         if not app.startswith('django.'):
@@ -111,7 +113,6 @@ def collect_jsfiles_in_installedapps(jsfiles, verbose):
             if exists(mod.__file__) and isdir(dirname(mod.__file__)):
                 moddir = dirname(mod.__file__)
                 collect_jsfiles(jsfiles, moddir, verbose)
-
 
 
 class Command(BaseCommand):
