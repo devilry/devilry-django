@@ -1,7 +1,6 @@
 import json
 from setuptools import setup, find_packages
 
-
 with open('devilry/version.json') as versionfile:
     version = json.load(versionfile)
 
@@ -52,6 +51,6 @@ setup(
         'psycopg2==2.4.6',
         'elasticsearch==1.6.0',
         'django_cradmin==1.1.1',
-        'ievv_opensource==1.1.2',
+        'ievv_opensource==1.1.3',
     ]
 )
