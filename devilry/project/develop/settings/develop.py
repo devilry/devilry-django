@@ -57,20 +57,18 @@ HAYSTACK_CONNECTIONS = {  # Whoosh
 # }
 
 
-
 ##################################################################################
 # Celery
 ##################################################################################
-CELERY_ALWAYS_EAGER = False
-CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
-CELERY_EAGER_TRANSACTION = True
+# # CELERY_ALWAYS_EAGER = True
+# CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+# CELERY_EAGER_TRANSACTION = True
 
 ## For testing celery
 ## - Se the "Developing and testing Celery background tasks" chapter of the developer docs.
-CELERY_ALWAYS_EAGER = False
-BROKER_URL = 'amqp://'
-CELERY_RESULT_BACKEND = 'amqp://'
-
+# CELERY_ALWAYS_EAGER = False
+# BROKER_URL = 'amqp://'
+# CELERY_RESULT_BACKEND = 'amqp://'
 
 
 ######################################################
@@ -164,11 +162,15 @@ IEVVTASKS_DEVRUN_RUNNABLES = {
     'default': ievvdevrun.config.RunnableThreadList(
         ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
         ievvdevrun.runnables.django_runserver.RunnableThread(),
+        ievvdevrun.runnables.redis_server.RunnableThread(),
+        ievvdevrun.runnables.celery_worker.RunnableThread(app='devilry.project.common'),
     ),
     'design': ievvdevrun.config.RunnableThreadList(
         ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
         ievvdevrun.runnables.django_runserver.RunnableThread(),
         ievvdevrun.runnables.ievv_buildstatic.RunnableThread(),
+        ievvdevrun.runnables.redis_server.RunnableThread(),
+        ievvdevrun.runnables.celery_worker.RunnableThread(app='devilry.project.common'),
     ),
 }
 
