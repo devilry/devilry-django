@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'gunicorn',
     'extjs4',
-    'haystack',
+    # 'haystack',
     'ievv_opensource.ievvtasks_common',
     'ievv_opensource.ievv_batchframework.apps.BatchOperationAppConfig',
 
@@ -80,7 +80,7 @@ INSTALLED_APPS = [
     'devilry.devilry_comment.apps.DevilryCommentAppConfig',
     'devilry.devilry_i18n',
     'devilry.devilry_settings',
-    'devilry.devilry_search',
+    # 'devilry.devilry_search',
     'devilry.devilry_qualifiesforexam',
     'devilry.devilry_ziputil',
     # 'devilry.devilry_qualifiesforexam_approved',
@@ -144,11 +144,28 @@ HAYSTACK_SIGNAL_PROCESSOR = 'devilry.devilry_search.haystack_signal_processor.De
 # Celery
 #
 ########################################################################
-CELERY_ALWAYS_EAGER = True
+CELERY_ALWAYS_EAGER = False
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 CELERY_EAGER_TRANSACTION = True
 CELERY_TIMEZONE = 'Europe/Oslo'
 CELERY_ENABLE_UTC = True
+
+# Celery settings
+BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_IMPORTS = [
+    'ievv_opensource.ievv_batchframework.celery_tasks',
+]
+CELERYD_TASK_LOG_FORMAT = '[%(asctime)s: %(levelname)s/%(processName)s] ' \
+                          '[%(name)s] ' \
+                          '[%(task_name)s(%(task_id)s)] ' \
+                          '%(message)s'
+
+# ievv_batchframework settings
+IEVV_BATCHFRAMEWORK_CELERY_APP = 'devrirly.project.common.celery'
 
 
 ########################################################################
