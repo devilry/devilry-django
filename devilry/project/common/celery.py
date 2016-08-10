@@ -1,23 +1,25 @@
 from __future__ import absolute_import
-
 import os
 from celery import Celery
 
-# set the default Django settings module for the 'celery' program.
+
+# Ensure this matches your
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'devilry.project.settingsproxy')
 
-from django.conf import settings
+# The ``main``-argument is used as prefix for celery task names.
+app = Celery(main='devilry')
 
-
-app = Celery('devilry')
-
-
-# Using a string here means the worker will not have to
-# pickle the object when using Windows.
+# We put all the celery settings in out Django settings so we use
+# this line to load Celery settings from Django settings.
+# You could also add configuration for celery directly in this
+# file using app.conf.update(...)
 app.config_from_object('django.conf:settings')
-app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 
+# This debug task is only here to make it easier to verify that
+# celery is working properly.
 @app.task(bind=True)
-def debug_task(self):
-    print('Request: {0!r}'.format(self.request))
+def debug_add_task(self, a, b):
+    print('Request: {} - Running {} + {}, and returning the result.'.format(
+        self.request, a, b))
+    return a + b
