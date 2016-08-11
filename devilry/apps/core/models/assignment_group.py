@@ -1257,6 +1257,13 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         A Django RelatedManager of :class:`cached_data <devilry.devilry_dbcache.models.AssignmentGroupCachedData>` for this AssignmentGroup.
 
+    .. attribute:: feedbackset
+
+        A Django RelatedManager :class:`devilry.apps.core.models.FeedbackSet` for this AssignmentGroup
+
+    Note:
+        Postgres triggers create a :class:`devilry.apps.core.models.FeedbackSet` on INSERT
+
     """
 
     objects = AssignmentGroupManager.from_queryset(AssignmentGroupQuerySet)()
