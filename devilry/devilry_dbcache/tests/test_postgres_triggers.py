@@ -4,7 +4,8 @@ from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_dbcache.models import AssignmentGroupCachedData
-from devilry.devilry_group.models import FeedbackSet, GroupComment
+from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group.models import FeedbackSet, GroupComment, ImageAnnotationComment
 from django import test
 from django.conf import settings
 from django.core.files.base import ContentFile
@@ -13,84 +14,8 @@ from django.utils import timezone
 from model_mommy import mommy
 
 
-def _run_sql(sql):
-    cursor = connection.cursor()
-    cursor.execute(sql)
-
-
-def _remove_triggers():
-    _run_sql("""
-        DROP TRIGGER IF EXISTS devilry_dbcache_on_assignmentgroup_insert_trigger
-            ON core_assignmentgroup;
-        DROP TRIGGER IF EXISTS devilry_dbcache_on_feedbackset_insert_or_update_trigger
-            ON devilry_group_feedbackset;
-
-        DROP TRIGGER IF EXISTS devilry_dbcache_on_group_imageannotationcomment_trigger
-            ON devilry_group_imageannotationcomment;
-
-        DROP TRIGGER IF EXISTS devilry_dbcache_on_group_change_trigger
-            ON devilry_group_imageannotationcomment;
-    """)
-
-
-class TestBenchMarkAssignmentGroupFileUploadCountTrigger(test.TestCase):
-
-    def setUp(self):
-        _remove_triggers()
-
-    def __create_distinct_comments(self, label):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = mommy.make('devilry_group.FeedbackSet', group=group)
-
-        examiner = mommy.make('core.Examiner',
-                              assignmentgroup=group,
-                              relatedexaminer__user=mommy.make(settings.AUTH_USER_MODEL))
-
-        comment_admin = mommy.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
-                                   user_role=GroupComment.USER_ROLE_ADMIN)
-        comment_student = mommy.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
-                                     user_role=GroupComment.USER_ROLE_STUDENT)
-        comment_examiner = mommy.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
-                                      user_role=GroupComment.USER_ROLE_EXAMINER)
-
-        count = 1000
-        comments = []
-        with TimeExecution('{} ({})'.format(label, count)):
-            for x in range(count):
-                student_file = mommy.make(CommentFile, comment=comment_student)
-                student_file.file.save('testfile.txt', ContentFile('test'))
-                examiner_file = mommy.make(CommentFile, comment=comment_examiner)
-                examiner_file.file.save('testfile.txt', ContentFile('test'))
-                # student_file.delete()
-
-                # f or c in comments:
-                #     c.save()
-
-                # for c in comments:
-                #     c.delete()
-                #
-                # cached_data = AssignmentGroupCachedData.objects.get(group=group)
-                # print "feedbackset_count:", cached_data.feedbackset_count
-                # print "public_total_comment_count:", cached_data.public_total_comment_count
-                # print "public_student_comment_count:", cached_data.public_student_comment_count
-                # print "public_examiner_comment_count:", cached_data.public_examiner_comment_count
-                # print "public_admin_comment_count:", cached_data.public_admin_comment_count
-                #
-                #
-                # print "file_upload_count_total:", cached_data.file_upload_count_total
-                # print "file_upload_count_student:", cached_data.file_upload_count_student
-                # print "file_upload_count_examiner:", cached_data.file_upload_count_examiner
-
-    def test_create_in_distinct_groups_without_triggers(self):
-        self.__create_distinct_comments('file upload: no triggers')
-
-    def test_create_in_distinct_groups_with_triggers(self):
-        AssignmentGroupDbCacheCustomSql().initialize()
-        self.__create_distinct_comments('file upload: with triggers')
-
-
 class TestFeedbackSetTriggers(test.TestCase):
+
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
@@ -147,6 +72,353 @@ class TestAssignmentGroupTriggers(test.TestCase):
         self.assertTrue(autocreated_feedbackset.created_datetime <= after)
 
 
+class TestGroupCommentTriggers(test.TestCase):
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_create_groupcomment_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                   user_role=GroupComment.USER_ROLE_ADMIN,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEqual(3, testgroup.cached_data.public_total_comment_count)
+
+    def test_delete_groupcomment_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        comment1 = mommy.make('devilry_group.GroupComment',
+                              feedback_set=feedbackset,
+                              comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                              user_role=GroupComment.USER_ROLE_STUDENT,
+                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment2 = mommy.make('devilry_group.GroupComment',
+                              feedback_set=feedbackset,
+                              comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                              user_role=GroupComment.USER_ROLE_EXAMINER,
+                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment3 = mommy.make('devilry_group.GroupComment',
+                              feedback_set=feedbackset,
+                              comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                              user_role=GroupComment.USER_ROLE_ADMIN,
+                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment1.delete()
+        comment2.delete()
+        comment3.delete()
+        self.assertEqual(0, testgroup.cached_data.public_total_comment_count)
+
+    def test_create_groupcomment_student_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEqual(1, testgroup.cached_data.public_student_comment_count)
+
+    def test_delete_groupcomment_student_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        comment1 = mommy.make('devilry_group.GroupComment',
+                              feedback_set=feedbackset,
+                              comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                              user_role=GroupComment.USER_ROLE_STUDENT,
+                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment1.delete()
+        self.assertEqual(0, testgroup.cached_data.public_student_comment_count)
+
+    def test_create_groupcomment_examiner_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEqual(1, testgroup.cached_data.public_examiner_comment_count)
+
+    def test_delete_groupcomment_examiner_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        comment1 = mommy.make('devilry_group.GroupComment',
+                              feedback_set=feedbackset,
+                              comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                              user_role=GroupComment.USER_ROLE_EXAMINER,
+                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment1.delete()
+        self.assertEqual(0, testgroup.cached_data.public_examiner_comment_count)
+
+    def test_create_groupcomment_admin_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set=feedbackset,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                   user_role=GroupComment.USER_ROLE_ADMIN,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEqual(1, testgroup.cached_data.public_admin_comment_count)
+
+    def test_delete_groupcomment_admin_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        comment1 = mommy.make('devilry_group.GroupComment',
+                              feedback_set=feedbackset,
+                              comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                              user_role=GroupComment.USER_ROLE_ADMIN,
+                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment1.delete()
+        self.assertEqual(0, testgroup.cached_data.public_admin_comment_count)
+
+    def test_groupcomment_count_with_imageannotationcomment(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        mommy.make('devilry_comment.CommentFile',
+                   comment=mommy.make('devilry_group.GroupComment',
+                                      feedback_set=feedbackset,
+                                      comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                                      user_role=GroupComment.USER_ROLE_STUDENT,
+                                      visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE))
+        testcomment = mommy.make('devilry_group.ImageAnnotationComment',
+                                 feedback_set=feedbackset,
+                                 comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+                                 user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                                 visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        self.assertEqual(1, testgroup.cached_data.public_student_comment_count)
+        self.assertEqual(1, testgroup.cached_data.public_student_imageannotationcomment_count)
+
+
+class TestImageAnnotationCommentTriggers(test.TestCase):
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_create_imageannotationcomment_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+                   user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+                   user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+                   user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEqual(3, testgroup.cached_data.public_total_imageannotationcomment_count)
+
+    def test_delete_imageannotationcomment_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        comment1 = mommy.make('devilry_group.ImageAnnotationComment',
+                              feedback_set=feedbackset,
+                              comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+                              user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                              visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment2 = mommy.make('devilry_group.ImageAnnotationComment',
+                              feedback_set=feedbackset,
+                              comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+                              user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                              visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment3 = mommy.make('devilry_group.ImageAnnotationComment',
+                              feedback_set=feedbackset,
+                              comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+                              user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                              visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment1.delete()
+        comment2.delete()
+        comment3.delete()
+        self.assertEqual(0, testgroup.cached_data.public_total_imageannotationcomment_count)
+
+    def test_create_imageannotationcomment_student_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+                   user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEqual(1, testgroup.cached_data.public_student_imageannotationcomment_count)
+
+    def test_delete_imageannotationcomment_student_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        comment1 = mommy.make('devilry_group.ImageAnnotationComment',
+                              feedback_set=feedbackset,
+                              comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+                              user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
+                              visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment1.delete()
+        self.assertEqual(0, testgroup.cached_data.public_student_imageannotationcomment_count)
+
+    def test_create_imageannotationcomment_examiner_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+                   user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEqual(1, testgroup.cached_data.public_examiner_imageannotationcomment_count)
+
+    def test_delete_imageannotationcomment_examiner_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        comment1 = mommy.make('devilry_group.ImageAnnotationComment',
+                              feedback_set=feedbackset,
+                              comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+                              user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
+                              visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment1.delete()
+        self.assertEqual(0, testgroup.cached_data.public_examiner_imageannotationcomment_count)
+
+    def test_create_imageannotationcomment_admin_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set=feedbackset,
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+                   user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEqual(1, testgroup.cached_data.public_admin_imageannotationcomment_count)
+
+    def test_delete_imageannotationcomment_admin_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        comment1 = mommy.make('devilry_group.ImageAnnotationComment',
+                              feedback_set=feedbackset,
+                              comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+                              user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                              visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment1.delete()
+        self.assertEqual(0, testgroup.cached_data.public_admin_imageannotationcomment_count)
+
+
+class TestCommentFileTriggers(test.TestCase):
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_create_commentfile_total_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
+        testcomment1 = mommy.make('devilry_group.GroupComment',
+                                  feedback_set=feedbackset,
+                                  comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                                  user_role=GroupComment.USER_ROLE_STUDENT,
+                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment1)
+        testcomment2 = mommy.make('devilry_group.GroupComment',
+                                  feedback_set=feedbackset,
+                                  comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                                  user_role=GroupComment.USER_ROLE_EXAMINER,
+                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment2)
+        self.assertEqual(2, testgroup.cached_data.file_upload_count_total)
+
+    def test_delete_commentfile_total_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
+        testcomment1 = mommy.make('devilry_group.GroupComment',
+                                  feedback_set=feedbackset,
+                                  comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                                  user_role=GroupComment.USER_ROLE_STUDENT,
+                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        commentfile1 = mommy.make('devilry_comment.CommentFile', comment=testcomment1)
+        testcomment2 = mommy.make('devilry_group.GroupComment',
+                                  feedback_set=feedbackset,
+                                  comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                                  user_role=GroupComment.USER_ROLE_EXAMINER,
+                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        commentfile2 = mommy.make('devilry_comment.CommentFile', comment=testcomment2)
+        commentfile1.delete()
+        commentfile2.delete()
+        self.assertEqual(0, testgroup.cached_data.file_upload_count_total)
+
+    def test_create_commentfile_student_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=feedbackset,
+                                 comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                                 user_role=GroupComment.USER_ROLE_STUDENT,
+                                 visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        self.assertEqual(1, testgroup.cached_data.file_upload_count_student)
+
+    def test_delete_commentfile_student_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=feedbackset,
+                                 comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                                 user_role=GroupComment.USER_ROLE_STUDENT,
+                                 visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        commentfile.delete()
+        self.assertEqual(0, testgroup.cached_data.file_upload_count_student)
+
+    def test_create_commentfile_examiner_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=feedbackset,
+                                 comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                                 user_role=GroupComment.USER_ROLE_EXAMINER,
+                                 visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        self.assertEqual(1, testgroup.cached_data.file_upload_count_examiner)
+
+    def test_delete_commentfile_examiner_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=feedbackset,
+                                 comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                                 user_role=GroupComment.USER_ROLE_EXAMINER,
+                                 visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        commentfile.delete()
+        self.assertEqual(0, testgroup.cached_data.file_upload_count_examiner)
+
+
 class TimeExecution(object):
     def __init__(self, label):
         self.start_time = None
@@ -161,6 +433,82 @@ class TimeExecution(object):
         print
         print '{}: {}s'.format(self.label, duration)
         print
+
+
+def _run_sql(sql):
+    cursor = connection.cursor()
+    cursor.execute(sql)
+
+
+def _remove_triggers():
+    _run_sql("""
+        DROP TRIGGER IF EXISTS devilry_dbcache_on_assignmentgroup_insert_trigger
+            ON core_assignmentgroup;
+        DROP TRIGGER IF EXISTS devilry_dbcache_on_feedbackset_insert_or_update_trigger
+            ON devilry_group_feedbackset;
+
+        DROP TRIGGER IF EXISTS devilry_dbcache_on_group_imageannotationcomment_trigger
+            ON devilry_group_imageannotationcomment;
+
+        DROP TRIGGER IF EXISTS devilry_dbcache_on_group_change_trigger
+            ON devilry_group_imageannotationcomment;
+    """)
+
+
+class TestBenchMarkAssignmentGroupFileUploadCountTrigger(test.TestCase):
+
+    def setUp(self):
+        _remove_triggers()
+
+    def __create_distinct_comments(self, label):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group=group)
+
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer__user=mommy.make(settings.AUTH_USER_MODEL))
+
+        mommy.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_ADMIN)
+        comment_student = mommy.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
+                                     user_role=GroupComment.USER_ROLE_STUDENT)
+        comment_examiner = mommy.make(GroupComment, user=examiner.relatedexaminer.user, feedback_set=feedbackset,
+                                      user_role=GroupComment.USER_ROLE_EXAMINER)
+
+        count = 1000
+        with TimeExecution('{} ({})'.format(label, count)):
+            for x in range(count):
+                student_file = mommy.make(CommentFile, comment=comment_student)
+                student_file.file.save('testfile.txt', ContentFile('test'))
+                examiner_file = mommy.make(CommentFile, comment=comment_examiner)
+                examiner_file.file.save('testfile.txt', ContentFile('test'))
+                # student_file.delete()
+
+                # f or c in comments:
+                #     c.save()
+
+                # for c in comments:
+                #     c.delete()
+                #
+                # cached_data = AssignmentGroupCachedData.objects.get(group=group)
+                # print "feedbackset_count:", cached_data.feedbackset_count
+                # print "public_total_comment_count:", cached_data.public_total_comment_count
+                # print "public_student_comment_count:", cached_data.public_student_comment_count
+                # print "public_examiner_comment_count:", cached_data.public_examiner_comment_count
+                # print "public_admin_comment_count:", cached_data.public_admin_comment_count
+                #
+                #
+                # print "file_upload_count_total:", cached_data.file_upload_count_total
+                # print "file_upload_count_student:", cached_data.file_upload_count_student
+                # print "file_upload_count_examiner:", cached_data.file_upload_count_examiner
+
+    def test_create_in_distinct_groups_without_triggers(self):
+        self.__create_distinct_comments('file upload: no triggers')
+
+    def test_create_in_distinct_groups_with_triggers(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+        self.__create_distinct_comments('file upload: with triggers')
 
 
 class TestBenchMarkFeedbackSetTrigger(test.TestCase):
