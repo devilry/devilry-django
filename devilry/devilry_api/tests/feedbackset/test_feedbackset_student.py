@@ -150,3 +150,60 @@ class TestFeedbacksetAnonymization(api_test_helper.TestCaseMixin,
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['created_by_fullname'], 'Anonymous ID missing')
+
+
+class TestFeedbacksetFilters(api_test_helper.TestCaseMixin,
+                             APITestCase):
+    viewclass = feedbackset_student.FeedbacksetListViewStudent
+
+    def test_filter_id_not_found(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=10)
+        candidate = devilry_core_mommy_factories.candidate(group=feedbackset.group)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key, queryparams='?id=20')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response.data))
+
+    def test_filter_id_found(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=10)
+        candidate = devilry_core_mommy_factories.candidate(group=feedbackset.group)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key, queryparams='?id=10')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(feedbackset.id, response.data[0]['id'])
+
+    def test_filter_group_id_not_found(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__id=10)
+        candidate = devilry_core_mommy_factories.candidate(group=feedbackset.group)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key, queryparams='?group_id=20')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response.data))
+
+    def test_filter_group_id_found(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__id=10)
+        candidate = devilry_core_mommy_factories.candidate(group=feedbackset.group)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key, queryparams='?group_id=10')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(feedbackset.group.id, response.data[0]['group_id'])
+
+    def test_filter_ordering_id_asc(self):
+        group = mommy.make('core.AssignmentGroup')
+        candidate = devilry_core_mommy_factories.candidate(group=group)
+        group_mommy.feedbackset_first_attempt_published(group=group, id=10, is_last_in_group=False)
+        group_mommy.feedbackset_new_attempt_unpublished(group=group, id=20, is_last_in_group=True)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key, queryparams='?ordering=id')
+        self.assertEqual(200, response.status_code)
+        self.assertListEqual([feedbackset['id'] for feedbackset in response.data], [10, 20])
+
+    def test_filter_ordering_id_desc(self):
+        group = mommy.make('core.AssignmentGroup')
+        candidate = devilry_core_mommy_factories.candidate(group=group)
+        group_mommy.feedbackset_first_attempt_published(group=group, id=10, is_last_in_group=False)
+        group_mommy.feedbackset_new_attempt_unpublished(group=group, id=20, is_last_in_group=True)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key, queryparams='?ordering=-id')
+        self.assertEqual(200, response.status_code)
+        self.assertListEqual([feedbackset['id'] for feedbackset in response.data], [20, 10])

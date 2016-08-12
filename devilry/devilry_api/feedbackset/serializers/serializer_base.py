@@ -20,9 +20,6 @@ class FeedbacksetSerializerBase(serializers.Serializer):
     deadline_datetime = DeadlineDatetime(required=True)
     created_by_fullname = serializers.SerializerMethodField()
 
-    class Meta:
-        ordering = ('deadline_datetime', )
-
     @property
     def devilry_role(self):
         """

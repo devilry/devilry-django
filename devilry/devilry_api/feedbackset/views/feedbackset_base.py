@@ -19,11 +19,11 @@ class FeedbacksetListViewBase(mixins.ListModelMixin,
         queryset = self.get_role_query_set()
 
         id = self.request.query_params.get('id', None)
-        assignment_group_id = self.request.query_params.get('assignment_group_id', None)
+        group_id = self.request.query_params.get('group_id', None)
         if id:
             queryset = queryset.filter(id=id)
-        if assignment_group_id:
-            queryset = queryset.filter(group__id=assignment_group_id)
+        if group_id:
+            queryset = queryset.filter(group__id=group_id)
 
         return queryset
 
@@ -43,7 +43,7 @@ class FeedbacksetListViewBase(mixins.ListModelMixin,
               paramType: query
               type: String
               description: feedbackset id
-            - name: assignment_group_id
+            - name: group_id
               required: false
               paramType: query
               type: int
