@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from devilry.apps.core.models import Examiner
+from devilry.devilry_group.models import FeedbackSet
 
 
 class DeadlineDatetime(serializers.DateTimeField):
@@ -9,7 +10,7 @@ class DeadlineDatetime(serializers.DateTimeField):
 
 
 class FeedbacksetSerializerBase(serializers.Serializer):
-    FEEDBACKSET_CHOICES = []
+    FEEDBACKSET_CHOICES = FeedbackSet.FEEDBACKSET_TYPE_CHOICES
 
     id = serializers.IntegerField(required=False)
     group_id = serializers.IntegerField(required=True)

@@ -8,11 +8,6 @@ from devilry.devilry_group.models import FeedbackSet
 
 
 class FeedbacksetSerializerExaminer(serializer_base.FeedbacksetSerializerBase):
-    FEEDBACKSET_CHOICES = [
-        (FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT, 'new attempt'),
-        (FeedbackSet.FEEDBACKSET_TYPE_RE_EDIT, 're edit')
-    ]
-
     devilry_role = 'examiner'
 
     def validate_group_id(self, value):
