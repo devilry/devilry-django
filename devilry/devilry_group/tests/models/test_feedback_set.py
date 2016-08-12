@@ -13,8 +13,7 @@ class TestFeedbackSetModel(TestCase):
 
     def test_feedbackset_group(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = mommy.make('devilry_group.FeedbackSet',
-                                 group=testgroup)
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
         self.assertEquals(feedbackset.group, testgroup)
 
     def test_feedbackset_is_last_in_group_default_true(self):

@@ -15,11 +15,6 @@ from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
 
 class TestFeedbackfeedSidebarListBuilderList(TestCaseMixin, test.TestCase):
 
-    def test_feedbackset_item_value(self):
-        selector = htmls.S(feedbackfeed_sidebar.FeedbackSetItemValue(value=1).render())
-        self.assertEquals(
-                'first deadline', selector.one('.devilry-group-feedbackfeed-sidebar-deadlines').alltext_normalized)
-
     def test_listbuilder_sidebar_complete_example(self):
         # Just a sanity check with a full example comprising of two FeedbackSets
         # with one GroupComment each and one CommentFile for each GroupComment.

@@ -144,7 +144,7 @@ HAYSTACK_SIGNAL_PROCESSOR = 'devilry.devilry_search.haystack_signal_processor.De
 # Celery
 #
 ########################################################################
-CELERY_ALWAYS_EAGER = False
+CELERY_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 CELERY_EAGER_TRANSACTION = True
 CELERY_TIMEZONE = 'Europe/Oslo'
@@ -165,7 +165,10 @@ CELERYD_TASK_LOG_FORMAT = '[%(asctime)s: %(levelname)s/%(processName)s] ' \
                           '%(message)s'
 
 # ievv_batchframework settings
-IEVV_BATCHFRAMEWORK_CELERY_APP = 'devrirly.project.common.celery'
+IEVV_BATCHFRAMEWORK_CELERY_APP = 'devilry.project.common.celery_app'
+
+# ievv_batchframework celery mode.
+IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS = False
 
 
 ########################################################################

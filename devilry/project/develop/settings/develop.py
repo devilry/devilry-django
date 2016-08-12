@@ -60,9 +60,9 @@ HAYSTACK_CONNECTIONS = {  # Whoosh
 ##################################################################################
 # Celery
 ##################################################################################
-# # CELERY_ALWAYS_EAGER = True
-# CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
-# CELERY_EAGER_TRANSACTION = True
+CELERY_ALWAYS_EAGER = False
+CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+CELERY_EAGER_TRANSACTION = True
 
 ## For testing celery
 ## - Se the "Developing and testing Celery background tasks" chapter of the developer docs.

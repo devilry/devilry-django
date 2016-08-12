@@ -1216,7 +1216,7 @@ class AssignmentGroupManager(models.Manager):
         Returns:
             django.db.models.QuerySet: A queryset with the created groups.
         """
-        batchoperation = BatchOperation.objects.create_syncronous(
+        batchoperation = BatchOperation.objects.create_synchronous(
             context_object=assignment,
             operationtype='create-groups-with-candidate-and-feedbackset')
         group_queryset = self.__bulk_create_groups(assignment=assignment,

@@ -1,7 +1,5 @@
 import os
 
-from django.conf import settings
-
 from devilry.devilry_ziputil.backends import backends_base
 
 

@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 from django.apps import AppConfig
 
 from devilry.devilry_ziputil import backend_registry
+from ievv_opensource.ievv_batchframework import batchregistry
+from devilry.devilry_group import tasks
 
 
 class DevilryGroupAppConfig(AppConfig):
@@ -11,9 +13,6 @@ class DevilryGroupAppConfig(AppConfig):
     verbose_name = "Devilry group"
 
     def ready(self):
-        # Import tasks for celery
-        import devilry.devilry_group.views.download_files.batch_zip
-
         # Add models to cradmin superuserui
         from django_cradmin.superuserui import superuserui_registry
         from devilry.devilry_group.views.download_files import backends
@@ -23,3 +22,21 @@ class DevilryGroupAppConfig(AppConfig):
 
         # add zip backend to registry
         backend_registry.Registry.get_instance().add(backends.DevilryGroupZipBackend)
+
+        # add actiongroup for zipping groupcomment files to registry
+        batchregistry.Registry.get_instance().add_actiongroup(
+            batchregistry.ActionGroup(
+                name='batchframework_compress_groupcomment',
+                mode=batchregistry.ActionGroup.MODE_ASYNCHRONOUS,
+                actions=[
+                    tasks.GroupCommentCompressAction
+                ]))
+
+        # add actiongroup for zipping all files in a feedbackset to registry
+        batchregistry.Registry.get_instance().add_actiongroup(
+            batchregistry.ActionGroup(
+                name='batchframework_compress_feedbackset',
+                mode=batchregistry.ActionGroup.MODE_ASYNCHRONOUS,
+                actions=[
+                    tasks.FeedbackSetCompressAction
+                ]))

@@ -8,12 +8,13 @@ from django import http
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views import generic
-from django.core.servers.basehttp import FileWrapper
+from wsgiref.util import FileWrapper
 
 # devilry imports
 from django_cradmin import crapp
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
+from devilry.devilry_ziputil import backend_registry
 
 
 class FileDownloadFeedbackfeedView(generic.View):
@@ -136,7 +137,6 @@ class CompressedGroupCommentFileDownload(generic.View):
         )
 
         # Get backend and path
-        from devilry.devilry_ziputil import backend_registry
         zipfile_backend_class = backend_registry.Registry.get_instance().get('devilry_group_local')
         zipfile_path = '{}/{}/{}/{}'.format(groupcomment.feedback_set.group.id,
                                             groupcomment.feedback_set.id,
