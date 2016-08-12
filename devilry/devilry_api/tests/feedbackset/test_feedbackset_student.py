@@ -38,14 +38,14 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['id'], 10)
 
-    def test_group(self):
+    def test_group_id(self):
         group = mommy.make('core.AssignmentGroup')
         feedbackset = mommy.make('devilry_group.Feedbackset', group=group)
         candidate = devilry_core_mommy_factories.candidate(feedbackset.group)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(response.data[0]['group'], group.id)
+        self.assertEqual(response.data[0]['group_id'], group.id)
 
     def test_created_datetime(self):
         feedbackset = mommy.make('devilry_group.Feedbackset', group=mommy.make('core.AssignmentGroup'))
@@ -85,7 +85,7 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
-        self.assertEqual(response.data[0]['deadline_datetime'], group.parentnode.first_deadline)
+        self.assertEqual(response.data[0]['deadline_datetime'], group.parentnode.first_deadline.isoformat())
 
     def test_deadline_datetime_new_attempt(self):
         group = mommy.make('core.AssignmentGroup',

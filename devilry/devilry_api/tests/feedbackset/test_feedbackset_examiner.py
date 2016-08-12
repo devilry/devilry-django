@@ -42,7 +42,7 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['id'], 10)
 
-    def test_group(self):
+    def test_group_id(self):
         group = mommy.make('core.AssignmentGroup',
                            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
         feedbackset = mommy.make('devilry_group.Feedbackset', group=group)
@@ -147,7 +147,7 @@ class TestFeedbacksetPost(api_test_helper.TestCaseMixin,
                 'feedbackset_type': FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT
             })
         self.assertEqual(400, response.status_code)
-        self.assertEqual(['This field is required.'], response.data['deadline_datetime'])
+        self.assertEqual(['This field is required.'], response.data['group_id'])
 
     def test_post_deadline_datetime_missing(self):
         group = mommy.make('core.AssignmentGroup',
