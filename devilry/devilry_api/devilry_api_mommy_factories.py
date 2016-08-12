@@ -63,6 +63,16 @@ def api_key_examiner_permission_read(**kwargs):
     return mommy.make('devilry_api.APIKey', examiner_permission=APIKey.EXAMINER_PERMISSION_READ, **kwargs)
 
 
+def api_key_examiner_permission_write(**kwargs):
+    """
+    Creates a api key that has examiner write permission.
+
+    Returns:
+        :obj:`~devilry_api.APIKey` api key
+    """
+    return mommy.make('devilry_api.APIKey', examiner_permission=APIKey.EXAMINER_PERMISSION_WRITE, **kwargs)
+
+
 def api_key_admin_permission_read(**kwargs):
     """
     Creates a api key that has admin read persmission.

@@ -1,21 +1,20 @@
-from rest_framework.generics import mixins
-from rest_framework.response import Response
-from rest_framework import status
+from django.utils.translation import ugettext_lazy
 from rest_framework import exceptions
-from devilry.devilry_api.models import APIKey
+from rest_framework.generics import mixins
+
 from devilry.apps.core.models import AssignmentGroup
-from devilry.devilry_api.feedbackset.serializers.serializer_examiner import FeedbacksetModelSerializer
+from devilry.devilry_api.feedbackset.serializers.serializer_examiner import FeedbacksetSerializerExaminer
 from devilry.devilry_api.feedbackset.views.feedbackset_base import FeedbacksetListViewBase
+from devilry.devilry_api.models import APIKey
 from devilry.devilry_api.permission.examiner_permission import ExaminerPermissionAPIKey
 from devilry.devilry_group.models import FeedbackSet
-from django.utils.translation import ugettext_lazy
 
 
 class FeedbacksetListViewExaminer(mixins.CreateModelMixin,
                                   mixins.UpdateModelMixin,
                                   FeedbacksetListViewBase):
     permission_classes = (ExaminerPermissionAPIKey, )
-    serializer_class = FeedbacksetModelSerializer
+    serializer_class = FeedbacksetSerializerExaminer
 
     #: examiner permissions allowed for view
     api_key_permissions = (APIKey.EXAMINER_PERMISSION_WRITE, APIKey.EXAMINER_PERMISSION_READ)
@@ -44,7 +43,7 @@ class FeedbacksetListViewExaminer(mixins.CreateModelMixin,
             - path
         parameter_strategy: replace
         parameters:
-            - name: group
+            - name: group_id
               required: true
               paramType: form
               type: int
@@ -52,7 +51,7 @@ class FeedbacksetListViewExaminer(mixins.CreateModelMixin,
             - name: deadline_datetime
               required: true
               paramType: form
-              type: Choice
+              type: DateTime
               description: Deadline
             - name: feedbackset_type
               required: true
