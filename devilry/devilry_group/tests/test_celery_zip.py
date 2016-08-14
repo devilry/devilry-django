@@ -18,6 +18,7 @@
 #
 # # Devilry imports
 # from devilry.devilry_group.views.download_files import feedbackfeed_download_files
+# from devilry.devilry_group import tasks
 # from devilry.devilry_group import models as group_models
 #
 #
@@ -28,50 +29,25 @@
 #
 # class TestCompressedGroupCommentFileDownload(TestCase):
 #
-#     def setUp(self):
-#         self.registry = batchregistry.Registry()
+#     # def setUp(self):
+#     #     self.registry = batchregistry.Registry()
 #
 #     def test_batchframework(self):
-#         self.registry.add_actiongroup(
-#             batchregistry.ActionGroup(
-#                 name='batchframework_test',
-#                 # mode=batchregistry.ActionGroup.MODE_ASYNCHRONOUS,
-#                 actions=[
-#                     DummyAction
-#                 ]))
-#         result = self.registry.run(actiongroup_name='batchframework_test', test='test')
-#         print result.is_asynchronous
-#         print result.actiongroupresult
-#         self.assertEquals(1, 1)
+#         testcomment = mommy.make('devilry_group.GroupComment',
+#                                  user_role='student',
+#                                  user__shortname='testuser@example.com')
+#         commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+#         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
 #
-#     # def test_groupcomment_files_download(self):
-#     #     # Test download of all files for GroupComment.
-#     #     testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
-#     #     testcomment = mommy.make('devilry_group.GroupComment', user=testuser, user_role='student')
-#     #     commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-#     #     commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-#     #
-#     #     BatchOperation.objects.create_asyncronous(
-#     #         context_object_id=testcomment.id,
-#     #         operationtype='zip-groupcomment'
-#     #     )
-#     #
-#     #     # Run celery task
-#     #     while True:
-#     #         if BatchOperation.objects.get(context_object_id=testcomment.id).result == BatchOperation.RESULT_SUCCESSFUL:
-#     #             break
-#     #         else:
-#     #             print 'Not finished yet'
-#     #         time.sleep(5)
-#     #
-#     #     batchoperation = BatchOperation.objects.get(context_object_id=testcomment.id)
-#     #     print batchoperation.output_data()
-#     #
-#     #     testdownloader = feedbackfeed_download_files.CompressedGroupCommentFileDownload()
-#     #     mockrequest = mock.MagicMock()
-#     #     mockrequest.cradmin_role = testcomment.feedback_set.group
-#     #     mockrequest.user = testuser
-#     #     response = testdownloader.get(mockrequest, testcomment.id)
-#     #     zipfileobject = ZipFile(StringIO(response.content))
-#     #     filecontents = zipfileobject.read('testfile.txt')
-#     #     # self.assertEquals(filecontents, 'testcontent')
+#         batchregistry.Registry.get_instance().add_actiongroup(
+#             batchregistry.ActionGroup(
+#                 name='batchframework_groupcomment',
+#                 mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
+#                 actions=[
+#                     tasks.GroupCommentCompressAction
+#                 ]))
+#         result = batchregistry.Registry.get_instance().run(actiongroup_name='batchframework_groupcomment',
+#                                                            context_object=testcomment,
+#                                                            test='test')
+#         # print result.actiongroupresult
+#         self.assertEquals(1, 1)
