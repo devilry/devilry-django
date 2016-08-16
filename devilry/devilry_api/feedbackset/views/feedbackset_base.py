@@ -12,6 +12,12 @@ class FeedbacksetListViewBase(mixins.ListModelMixin,
     def permission_classes(self):
         raise NotImplementedError("please set permission_classes example: permission_classes = (IsAuthenticated, )")
 
+    @property
+    def api_key_permissions(self):
+        raise NotImplementedError(
+            "please set api_key_permission example: "
+            "api_key_permissions = (APIKey.EXAMINER_PERMISSION_WRITE, APIKey.EXAMINER_PERMISSION_READ)")
+
     def get_role_query_set(self):
         raise NotImplementedError()
 
