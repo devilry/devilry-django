@@ -91,7 +91,7 @@ class PythonZipFileBackend(BaseZipFile):
 
         Args:
             path (str):
-            filelike_obj (ReadableInterface):
+            filelike_obj:
         """
         if self.readmode is True:
             raise ValueError('readmode must be False to add files.')
