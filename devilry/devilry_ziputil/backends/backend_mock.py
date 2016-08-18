@@ -11,9 +11,10 @@ class MockDevilryZipBackend(PythonZipFileBackend):
     """
     backend_id = 'default'
 
-    def __init__(self, **kwargs):
+    def __init__(self, dry_run=False, **kwargs):
         super(MockDevilryZipBackend, self).__init__(**kwargs)
-        self.__create_path_if_not_exists()
+        if not dry_run:
+            self.__create_path_if_not_exists()
 
     def __create_path_if_not_exists(self):
         """
