@@ -1,5 +1,4 @@
 import os
-import re
 import zipfile
 
 from django.conf import settings
@@ -8,19 +7,21 @@ from django.conf import settings
 class BaseZipFile(object):
     """
     Specifies the interface for a backend zip-subclass.
+
+    All backends must implement this class
     """
-    def __init__(self, archive_path, readmode=True):
+    class Meta:
+        abstract = True
+
+    def __init__(self, archive_path, archive_name='', readmode=True):
         self.archive_path = archive_path
+        self.archive_name = archive_name
         self.readmode = readmode
         self.__closed = False
 
     def add_file(self, path, filelike_obj):
         """
-        Add files to archive. This function is used for writing to the archive.
-
-        Args:
-            path: Path to the file inside the Zip-archive.
-            filelike_obj: An object with method ``read()``
+        Add files to archive.
         """
         raise NotImplementedError()
 
@@ -33,6 +34,9 @@ class BaseZipFile(object):
     def read_archive(self):
         """
         Open archive in readmode.
+
+        Returns:
+            File object: Python fileobject.
         """
         raise NotImplementedError()
 
@@ -40,7 +44,7 @@ class BaseZipFile(object):
         """
         Get the Zip archive
 
-        Return:
+        Returns:
             ZipFile: Zip-archive created.
         """
         raise NotImplementedError()
@@ -57,7 +61,8 @@ class BaseZipFile(object):
 
 class PythonZipFileBackend(BaseZipFile):
     """
-    Defines a baseclass backend for the :class:`~devilry.devilry_ziputil.backend_registry.Registry`.
+    Defines a baseclass backend using :class:`~ZipFile`
+    for the :class:`~devilry.devilry_ziputil.backend_registry.Registry`.
 
     This class should be subclassed by backend-specific classes(backends for Heroku, S3, etc).
     """
@@ -81,17 +86,18 @@ class PythonZipFileBackend(BaseZipFile):
         to the archive_path. Also adds .zip extension
         """
         if not self.archive_path.endswith('.zip'):
+            self.archive_name += '.zip'
             self.archive_path = PythonZipFileBackend.get_storage_location() + self.archive_path + '.zip'
         else:
             self.archive_path = PythonZipFileBackend.get_storage_location() + self.archive_path
 
     def add_file(self, path, filelike_obj):
         """
-        Add/write a file to the Zip-archive.
+        Add files to archive. This function is used for writing to the archive.
 
         Args:
-            path (str):
-            filelike_obj:
+            path: Path to the file inside the Zip-archive.
+            filelike_obj: An object with method ``read()``
         """
         if self.readmode is True:
             raise ValueError('readmode must be False to add files.')
@@ -105,9 +111,6 @@ class PythonZipFileBackend(BaseZipFile):
         Open archive in readmode as fileobject.
 
         ``readmode`` must be set to ``True`` with ``instance_of_this_class.readmode = True``.
-
-        Args:
-            mode (str): How to read, same as every file. Defaults to ``rb``(read binary).
 
         Returns:
             File object: Python fileobject.
