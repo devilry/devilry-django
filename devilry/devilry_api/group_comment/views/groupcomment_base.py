@@ -3,8 +3,8 @@ from rest_framework.filters import OrderingFilter
 from devilry.devilry_api.auth.authentication import TokenAuthentication
 
 
-class FeedbacksetListViewBase(mixins.ListModelMixin,
-                              GenericAPIView):
+class GroupCommentViewBase(mixins.ListModelMixin,
+                           GenericAPIView):
     authentication_classes = (TokenAuthentication, )
     filter_backends = [OrderingFilter]
 
@@ -24,36 +24,36 @@ class FeedbacksetListViewBase(mixins.ListModelMixin,
     def get_queryset(self):
         queryset = self.get_role_query_set()
 
+        feedback_set_id = self.request.query_params.get('feedback_set_id', None)
         id = self.request.query_params.get('id', None)
-        group_id = self.request.query_params.get('group_id', None)
+        if feedback_set_id:
+            queryset = queryset.filter(feedback_set__id=feedback_set_id)
         if id:
             queryset = queryset.filter(id=id)
-        if group_id:
-            queryset = queryset.filter(group__id=group_id)
 
         return queryset
 
     def get(self, request, *args, **kwargs):
         """
-        Gets a list of feedback sets
+        List comments
 
         ---
-        parameters:
+        parameter:
             - name: ordering
               required: false
               paramType: query
               type: String
               description: ordering
+            - name: feedbackset_set_id
+              required: false
+              paramType: query
+              type: Int
+              description: feedbackset id
             - name: id
               required: false
               paramType: query
-              type: String
-              description: feedbackset id
-            - name: group_id
-              required: false
-              paramType: query
-              type: int
-              description: assignment_group_id filter
+              type: Int
+              description: group comment id
 
         """
         return self.list(request, *args, **kwargs)
