@@ -38,7 +38,7 @@ class GroupCommentViewBase(mixins.ListModelMixin,
         List comments
 
         ---
-        parameter:
+        parameters:
             - name: ordering
               required: false
               paramType: query

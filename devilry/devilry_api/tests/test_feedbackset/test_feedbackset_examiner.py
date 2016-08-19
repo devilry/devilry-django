@@ -268,7 +268,7 @@ class TestFeedbacksetPost(api_test_helper.TestCaseMixin,
                            id=10,
                            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
         examiner = mommy.make('core.Examiner')
-        group_mommy.feedbackset_first_attempt_published(group=group)
+        group_mommy.feedbackset_first_attempt_published(group=group, is_last_in_group=False)
         apikey = devilry_api_mommy_factories.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
         response = self.mock_post_request(
             apikey=apikey.key,
