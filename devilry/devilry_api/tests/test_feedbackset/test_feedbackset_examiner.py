@@ -265,7 +265,7 @@ class TestFeedbacksetPost(api_test_helper.TestCaseMixin,
 
     def test_post_examiner_not_part_of_group(self):
         group = mommy.make('core.AssignmentGroup',
-                           id=10,
+                           id=24,
                            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
         examiner = mommy.make('core.Examiner')
         group_mommy.feedbackset_first_attempt_published(group=group, is_last_in_group=False)
@@ -273,7 +273,7 @@ class TestFeedbacksetPost(api_test_helper.TestCaseMixin,
         response = self.mock_post_request(
             apikey=apikey.key,
             data={
-                'group_id': 10,
+                'group_id': 24,
                 'deadline_datetime': mommy_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_FIRST_DEADLINE,
                 'feedbackset_type': FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT
             })

@@ -363,6 +363,22 @@ class TestGroupCommentVisibility(api_test_helper.TestCaseMixin,
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['id'], 10)
 
+    def test_visible_to_everyone_created_by_another_student(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        candidate = core_mommy.candidate(feedbackset.group)
+        request_candidate = core_mommy.candidate(feedbackset.group)
+        mommy.make('devilry_group.GroupComment',
+                   id=10,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   user=candidate.relatedstudent.user,
+                   feedback_set=feedbackset,
+                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
+        apikey = api_mommy.api_key_student_permission_read(user=request_candidate.relatedstudent.user)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data[0]['id'], 10)
+
     def test_visible_private(self):
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
         examiner = core_mommy.examiner(feedbackset.group)
