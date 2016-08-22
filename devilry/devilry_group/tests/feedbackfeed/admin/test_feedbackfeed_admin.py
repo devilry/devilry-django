@@ -9,6 +9,7 @@ from model_mommy import mommy
 from devilry.apps.core import models as core_models
 from devilry.devilry_account import models as account_models
 from devilry.devilry_account.models import PeriodPermissionGroup
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
 from devilry.devilry_group.views.admin import feedbackfeed_admin
 from devilry.devilry_group import models
@@ -16,6 +17,9 @@ from devilry.devilry_group import models
 
 class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
     viewclass = feedbackfeed_admin.AdminFeedbackFeedView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get(self):
         candidate = mommy.make('core.Candidate',

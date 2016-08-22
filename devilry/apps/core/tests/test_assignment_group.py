@@ -1,7 +1,6 @@
 import unittest
 from datetime import datetime, timedelta
 
-from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
@@ -17,6 +16,7 @@ from devilry.apps.core.models.assignment_group import GroupPopNotCandiateError
 from devilry.apps.core.models.assignment_group import GroupPopToFewCandiatesError
 from devilry.apps.core.testhelper import TestHelper
 from devilry.devilry_comment.models import Comment
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import FeedbackSet, GroupComment, ImageAnnotationComment
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
@@ -29,6 +29,10 @@ class TestAssignmentGroup(TestCase):
     """
     Test AssignmentGroup using the next generation less coupled testing frameworks.
     """
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_anonymous_displayname_empty(self):
         testgroup = mommy.make('core.AssignmentGroup')
         self.assertEquals(
@@ -175,6 +179,24 @@ class TestAssignmentGroup(TestCase):
         last_delivery = Delivery.objects.get(deadline__assignment_group=group1builder.group)
         self.assertEquals(last_delivery.delivery_type, deliverytypes.NON_ELECTRONIC)
         self.assertTrue(last_delivery.successful)
+
+    def test_last_feedbackset_is_published(self):
+        testassignment = mommy.make('core.Assignment', passing_grade_min_points=1)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now(),  # -> published=True
+                   is_last_in_group=None,
+                   grading_points=1)
+
+        self.assertTrue(testgroup.last_feedbackset_is_published)
+
+        mommy.make('devilry_group.FeedbackSet',
+                                     group=testgroup,
+                                     grading_points=1)
+
+        testgroup.cached_data.refresh_from_db()  # Update cached data from database
+        self.assertFalse(testgroup.last_feedbackset_is_published)
 
     def test_should_ask_if_examiner_want_to_give_another_chance_nonelectronic(self):
         group = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -503,17 +525,23 @@ class TestAssignmentGroup(TestCase):
     def test_bulk_create_groups_creates_feedbackset(self):
         testperiod = mommy.make('core.Period')
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        relatedstudent = mommy.make('core.RelatedStudent',
-                                    period=testperiod)
+        relatedstudents = []
+        for i in range(5):
+            relatedstudents.append(mommy.make('core.RelatedStudent',
+                                    period=testperiod))
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
-        AssignmentGroup.objects.bulk_create_groups(created_by_user=testuser,
+        group_list = list(AssignmentGroup.objects.bulk_create_groups(created_by_user=testuser,
                                                    assignment=testassignment,
-                                                   relatedstudents=[relatedstudent])
-        created_group = AssignmentGroup.objects.first()
-        self.assertEqual(1, created_group.feedbackset_set.count())
-        created_feedbackset = FeedbackSet.objects.first()
-        self.assertEqual(testuser, created_feedbackset.created_by)
-        self.assertIsNone(created_feedbackset.deadline_datetime)
+                                                   relatedstudents=relatedstudents))
+
+        self.assertEqual(5, FeedbackSet.objects.all().count())
+
+        for group in AssignmentGroup.objects.all():
+            self.assertEqual(1, group.feedbackset_set.count())
+
+        for created_feedbackset in FeedbackSet.objects.all():
+            self.assertEqual(testuser, created_feedbackset.created_by)
+            self.assertIsNone(created_feedbackset.deadline_datetime)
 
     def test_bulk_create_groups_multiple(self):
         testperiod = mommy.make('core.Period')
@@ -568,7 +596,7 @@ class TestAssignmentGroup(TestCase):
     def test_filter_has_passing_grade(self):
         testassignment = mommy.make('core.Assignment',
                                     passing_grade_min_points=1)
-        passingfeecbackset = mommy.make('devilry_group.FeedbackSet',
+        passingfeedbackset = mommy.make('devilry_group.FeedbackSet',
                                         grading_published_datetime=timezone.now(),
                                         is_last_in_group=None,
                                         group__parentnode=testassignment,
@@ -578,7 +606,7 @@ class TestAssignmentGroup(TestCase):
                    grading_published_datetime=timezone.now(),
                    grading_points=0)
         self.assertEqual(
-            [passingfeecbackset.group],
+            [passingfeedbackset.group],
             list(AssignmentGroup.objects.filter_has_passing_grade(assignment=testassignment)))
 
     def test_filter_has_passing_grade_unpublished_ignored(self):

@@ -65,7 +65,7 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
               NEW.id,
               NEW.id,
               var_last_published_feedbackset_id,
-              0,0,0,0,0,0,0,0,0,0,0,0);
+              1,0,0,0,0,0,0,0,0,0,0,0);
       ELSE
           SELECT
               cached_data.group_id AS group_id,
@@ -183,7 +183,6 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
       var_comment_type varchar;
       var_assignment_group_id integer;
       var_feedbackset_id record;
-      var_update_public boolean;
       var_increment boolean;
       var_record record;
   BEGIN
@@ -196,8 +195,6 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
           var_record = OLD;
       END IF;
 
-      var_update_public = (var_record.visibility = 'visible-to-everyone') AND TG_OP != 'UPDATE';
-
       SELECT group_id INTO var_assignment_group_id
       FROM devilry_group_feedbackset
       WHERE id = var_record.feedback_set_id;
@@ -207,7 +204,7 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
       FROM devilry_comment_comment
       WHERE id = var_record.comment_ptr_id;
 
-      IF var_update_public = TRUE THEN
+      IF var_record.visibility = 'visible-to-everyone' THEN
           IF var_comment_type = 'groupcomment' THEN
               -- groupcomment
               UPDATE devilry_dbcache_assignmentgroupcacheddata
@@ -255,14 +252,14 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
   DROP TRIGGER IF EXISTS devilry_dbcache_on_group_change_trigger
       ON devilry_group_groupcomment;
   CREATE TRIGGER devilry_dbcache_on_group_change_trigger
-      AFTER INSERT OR UPDATE OR DELETE ON devilry_group_groupcomment
+      AFTER INSERT OR DELETE ON devilry_group_groupcomment
       FOR EACH ROW
           EXECUTE PROCEDURE devilry_dbcache_on_group_or_imageannotationcomment_change();
 
   DROP TRIGGER IF EXISTS devilry_dbcache_on_group_imageannotationcomment_trigger
       ON devilry_group_imageannotationcomment;
   CREATE TRIGGER devilry_dbcache_on_group_imageannotationcomment_trigger
-      AFTER INSERT OR UPDATE OR DELETE ON devilry_group_imageannotationcomment
+      AFTER INSERT OR DELETE ON devilry_group_imageannotationcomment
       FOR EACH ROW
           EXECUTE PROCEDURE devilry_dbcache_on_group_or_imageannotationcomment_change();
 
@@ -325,7 +322,7 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
                  END IF;
              END IF;
         END IF;
-        RETURN NEW;
+        RETURN var_record;
      END
      $$ LANGUAGE plpgsql;
 

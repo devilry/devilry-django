@@ -1113,15 +1113,9 @@ class AssignmentGroupManager(models.Manager):
             candidates.append(candidate)
         Candidate.objects.bulk_create(candidates)
 
-    def __bulk_create_feedbacksets(self, group_list, created_by_user):
+    def __bulk_update_feedbacksets(self, group_list, created_by_user):
         from devilry.devilry_group.models import FeedbackSet
-        feedbacksets = []
-        for group in group_list:
-            feedbackset = FeedbackSet(
-                group=group,
-                created_by=created_by_user)
-            feedbacksets.append(feedbackset)
-        FeedbackSet.objects.bulk_create(feedbacksets)
+        FeedbackSet.objects.filter(group__in=group_list).update(created_by=created_by_user)
 
     def bulk_create_groups(self, created_by_user, assignment, relatedstudents):
         """
@@ -1158,7 +1152,7 @@ class AssignmentGroupManager(models.Manager):
 
         self.__bulk_create_candidates(group_list=group_list,
                                       relatedstudents=relatedstudents)
-        self.__bulk_create_feedbacksets(created_by_user=created_by_user,
+        self.__bulk_update_feedbacksets(created_by_user=created_by_user,
                                         group_list=group_list)
         batchoperation.finish()
         return group_queryset
@@ -1389,15 +1383,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     @property
     def last_feedbackset_is_published(self):
-        # TODO CACHE: Use cached field: last_feedbackset
-        from devilry.devilry_group import models as group_models
-        last_feedbackset = group_models.FeedbackSet.objects\
-            .filter(group=self)\
-            .order_by('-created_datetime')\
-            .first()
-        if last_feedbackset is None:
-            return False
-        return last_feedbackset.grading_published_datetime is not None
+        return self.cached_data.last_feedbackset.grading_published_datetime is not None
 
     @property
     def should_ask_if_examiner_want_to_give_another_chance(self):

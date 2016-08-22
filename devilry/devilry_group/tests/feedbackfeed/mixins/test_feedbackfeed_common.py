@@ -4,6 +4,7 @@ from django.utils import formats
 from django.utils import timezone
 
 from django_cradmin import cradmin_testhelpers
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 
@@ -167,6 +168,10 @@ class TestFeedbackFeedGroupCommentMixin(cradmin_testhelpers.TestCaseMixin):
     """
     Tests the rendering of GroupComment in a feedbackfeed.
     """
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_get_comment_student(self):
         # test that student comment-style is rendered.
         group = mommy.make('core.AssignmentGroup')
@@ -269,6 +274,9 @@ class TestFeedbackFeedGroupCommentMixin(cradmin_testhelpers.TestCaseMixin):
 
 class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCommentMixin):
     viewclass = None  # must be implemented in subclass
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get(self):
         group = mommy.make('core.AssignmentGroup')
@@ -393,7 +401,7 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
                    deadline_datetime=timezone.now() - timezone.timedelta(days=4))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
         expired = mockresponse.selector.list('.devilry-group-feedbackfeed-event-message-deadline-expired')
-        self.assertEqual(2, len(expired))
+        self.assertEqual(3, len(expired))
 
     def test_post_302(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet')
