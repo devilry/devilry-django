@@ -3,8 +3,8 @@ from rest_framework.filters import OrderingFilter
 from devilry.devilry_api.auth.authentication import TokenAuthentication
 
 
-class FeedbacksetListViewBase(mixins.ListModelMixin,
-                              GenericAPIView):
+class BaseFeedbacksetView(mixins.ListModelMixin,
+                          GenericAPIView):
     authentication_classes = (TokenAuthentication, )
     filter_backends = [OrderingFilter]
 

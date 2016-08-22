@@ -19,7 +19,7 @@ class DeadlineDatetime(serializers.DateTimeField):
         return instance.current_deadline()
 
 
-class FeedbacksetSerializerBase(serializers.Serializer):
+class BaseFeedbacksetSerializer(serializers.Serializer):
     FEEDBACKSET_CHOICES = FeedbackSet.FEEDBACKSET_TYPE_CHOICES
 
     #: Id of feedbackset.

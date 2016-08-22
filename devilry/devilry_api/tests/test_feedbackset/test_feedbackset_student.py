@@ -17,7 +17,7 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                             test_student_mixins.TestAuthAPIKeyStudentMixin,
                             api_test_helper.TestCaseMixin,
                             APITestCase):
-    viewclass = feedbackset_student.FeedbacksetListViewStudent
+    viewclass = feedbackset_student.FeedbacksetViewStudent
 
     def test_unauthorized_401(self):
         response = self.mock_get_request()
@@ -113,7 +113,7 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
 
 class TestFeedbacksetAnonymization(api_test_helper.TestCaseMixin,
                                    APITestCase):
-    viewclass = feedbackset_student.FeedbacksetListViewStudent
+    viewclass = feedbackset_student.FeedbacksetViewStudent
 
     def test_anonymization_off_created_by_fullname(self):
         group = mommy.make('core.AssignmentGroup',
@@ -154,7 +154,7 @@ class TestFeedbacksetAnonymization(api_test_helper.TestCaseMixin,
 
 class TestFeedbacksetFilters(api_test_helper.TestCaseMixin,
                              APITestCase):
-    viewclass = feedbackset_student.FeedbacksetListViewStudent
+    viewclass = feedbackset_student.FeedbacksetViewStudent
 
     def test_filter_id_not_found(self):
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=10)

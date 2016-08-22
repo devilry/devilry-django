@@ -4,15 +4,15 @@ from rest_framework.generics import mixins
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_api.feedbackset.serializers.serializer_examiner import FeedbacksetSerializerExaminer
-from devilry.devilry_api.feedbackset.views.feedbackset_base import FeedbacksetListViewBase
+from devilry.devilry_api.feedbackset.views.feedbackset_base import BaseFeedbacksetView
 from devilry.devilry_api.models import APIKey
 from devilry.devilry_api.permission.examiner_permission import ExaminerPermissionAPIKey
 from devilry.devilry_group.models import FeedbackSet
 
 
-class FeedbacksetListViewExaminer(mixins.CreateModelMixin,
-                                  mixins.UpdateModelMixin,
-                                  FeedbacksetListViewBase):
+class FeedbacksetViewExaminer(mixins.CreateModelMixin,
+                              mixins.UpdateModelMixin,
+                              BaseFeedbacksetView):
     permission_classes = (ExaminerPermissionAPIKey, )
     serializer_class = FeedbacksetSerializerExaminer
 
@@ -74,7 +74,7 @@ class FeedbacksetListViewExaminer(mixins.CreateModelMixin,
               description: feedbackset type
 
         """
-        return super(FeedbacksetListViewExaminer, self).create(request, *args, **kwargs)
+        return super(FeedbacksetViewExaminer, self).create(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
         """
@@ -89,9 +89,9 @@ class FeedbacksetListViewExaminer(mixins.CreateModelMixin,
                   description: id for feedbackset to publish
 
             """
-        return super(FeedbacksetListViewExaminer, self).partial_update(request, *args, **kwargs)
+        return super(FeedbacksetViewExaminer, self).partial_update(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        return super(FeedbacksetListViewExaminer, self).get(request, *args, **kwargs)
+        return super(FeedbacksetViewExaminer, self).get(request, *args, **kwargs)
 
-    get.__doc__ = FeedbacksetListViewBase.get.__doc__
+    get.__doc__ = BaseFeedbacksetView.get.__doc__

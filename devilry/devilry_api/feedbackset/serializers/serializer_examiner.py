@@ -7,7 +7,7 @@ from devilry.devilry_api.feedbackset.serializers import serializer_base
 from devilry.devilry_group.models import FeedbackSet
 
 
-class FeedbacksetSerializerExaminer(serializer_base.FeedbacksetSerializerBase):
+class FeedbacksetSerializerExaminer(serializer_base.BaseFeedbacksetSerializer):
     devilry_role = 'examiner'
 
     def validate_group_id(self, value):
