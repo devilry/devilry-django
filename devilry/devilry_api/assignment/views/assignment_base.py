@@ -10,20 +10,6 @@ from devilry.devilry_api.auth.authentication import TokenAuthentication
 
 
 class AssignmentListViewBase(ListAPIView):
-    """
-    Base assignment list view
-
-    Authentication is required.
-    Authentication method allowed is by api key or session
-
-    filters is passed as queryparams
-
-    Examples:
-        /?subject=duck1010
-        /?ordering=publishing_time
-        /?semester=spring2015&ordering=-first_deadline
-
-    """
     serializer_class = AssignmentModelSerializer
     authentication_classes = (TokenAuthentication, )
     filter_backends = [SearchFilter, OrderingFilter]
@@ -35,14 +21,37 @@ class AssignmentListViewBase(ListAPIView):
 
     @property
     def api_key_permissions(self):
+        """
+        Should be a list with API key permissions :class:`devilry_api.APIKey`.
+
+        Example:
+            api_key_permissions = (APIKey.STUDENT_PERMISSION_WRITE, APIKey.STUDENT_PERMISSION_READ)
+
+        Returns:
+            list with api keys
+        """
         raise NotImplementedError(
             "please set api_key_permission example: "
             "api_key_permissions = (APIKey.EXAMINER_PERMISSION_WRITE, APIKey.EXAMINER_PERMISSION_READ)")
 
     def get_role_queryset(self):
+        """
+        Returns queryset for role (examiner, student etc...).
+
+        Returns:
+            :class:`~apps.core.Assignment` queryset.
+
+        """
         raise NotImplementedError()
 
     def get_queryset(self):
+        """
+        Checks query parameters and applies them if given.
+
+        Returns:
+            :class:`~apps.core.Assignment` queryset.
+
+        """
         queryset_list = self.get_role_queryset().select_related('parentnode__parentnode')
         period_short_name = self.request.query_params.get('period_short_name', None)
         subject_short_name = self.request.query_params.get('subject_short_name', None)
@@ -60,15 +69,25 @@ class AssignmentListViewBase(ListAPIView):
 
     def get(self, request, *args, **kwargs):
         """
-        Gets a list of assignments
+        Get a list of assignments.
 
+        Search fields:
+            :attr:`apps.core.Subject.short_name`
+            :attr:`apps.core.Period.short_name`
+            :attr:`apps.core.Assignment.short_name`
+
+        Examples:
+            /?subject=duck1010
+            /?ordering=publishing_time
+            /?semester=spring2015&ordering=-first_deadline
+            /?search=duck1010
         ---
         parameters:
             - name: ordering
               required: false
               paramType: query
               type: String
-              description: ordering
+              description: ordering field
             - name: search
               required: false
               paramType: query
@@ -94,7 +113,6 @@ class AssignmentListViewBase(ListAPIView):
               paramType: query
               type: Int
               description: assignment id filter
-
 
         """
         return super(AssignmentListViewBase, self).get(request, *args, **kwargs)

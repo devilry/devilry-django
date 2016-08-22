@@ -11,16 +11,6 @@ class AssignmentListView(AssignmentListViewBase):
     """
     List view for assignments as an candidate
 
-    Authentication is required.
-    Authentication method allowed is by api key or session
-
-    filters is passed as queryparams
-
-    Examples:
-        /?subject=duck1010
-        /?ordering=publishing_time
-        /?semester=spring2015&ordering=-first_deadline
-
     """
     permission_classes = (StudentPermissionAPIKey, )
 
@@ -28,6 +18,12 @@ class AssignmentListView(AssignmentListViewBase):
     api_key_permissions = (APIKey.STUDENT_PERMISSION_READ, APIKey.STUDENT_PERMISSION_WRITE)
 
     def get_role_queryset(self):
+        """
+        Returns queryset for student role.
+
+        Returns:
+            :class:`~apps.core.Assignment` queryset
+        """
         return Assignment.objects.filter_student_has_access(self.request.user)
 
     def get(self, request, *args, **kwargs):
