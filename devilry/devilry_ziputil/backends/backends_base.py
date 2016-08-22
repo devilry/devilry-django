@@ -4,9 +4,9 @@ import zipfile
 from django.conf import settings
 
 
-class BaseZipFile(object):
+class BaseArchiveBackend(object):
     """
-    Specifies the interface for a backend zip-subclass.
+    Specifies the interface for a backend compression-subclass.
 
     All backends must implement this class
     """
@@ -59,7 +59,7 @@ class BaseZipFile(object):
         raise NotImplementedError()
 
 
-class PythonZipFileBackend(BaseZipFile):
+class PythonZipFileBackend(BaseArchiveBackend):
     """
     Defines a baseclass backend using :class:`~ZipFile`
     for the :class:`~devilry.devilry_ziputil.backend_registry.Registry`.
