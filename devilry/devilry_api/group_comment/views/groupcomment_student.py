@@ -1,6 +1,4 @@
-from rest_framework import status
 from rest_framework.generics import mixins
-from rest_framework.response import Response
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_api.group_comment.serializers.serializer_student import GroupCommentSerializerStudent
