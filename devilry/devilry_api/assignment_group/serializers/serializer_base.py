@@ -1,15 +1,12 @@
 from rest_framework import serializers
 
 
-class AbstractCandidateSerializer(serializers.Serializer):
+class BaseCandidateSerializer(serializers.Serializer):
     #: Full name of the candidate
     fullname = serializers.SerializerMethodField()
 
     #: Short name of the candidate
     shortname = serializers.SerializerMethodField()
-
-    class Meta:
-        abstract = True
 
     @property
     def devilry_role(self):
@@ -52,15 +49,12 @@ class AbstractCandidateSerializer(serializers.Serializer):
         return instance.relatedstudent.user.shortname
 
 
-class AbstractExaminerSerializer(serializers.Serializer):
+class BaseExaminerSerializer(serializers.Serializer):
     #: Full name of the examiner.
     fullname = serializers.SerializerMethodField()
 
     #: Short name of the examiner.
     shortname = serializers.SerializerMethodField()
-
-    class Meta:
-        abstract = True
 
     @property
     def devilry_role(self):
@@ -103,7 +97,7 @@ class AbstractExaminerSerializer(serializers.Serializer):
         return instance.relatedexaminer.user.shortname
 
 
-class AbstractAssignmentGroupSerializer(serializers.ModelSerializer):
+class BaseAssignmentGroupSerializer(serializers.ModelSerializer):
 
     #: Related assignment short name.
     assignment_short_name = serializers.SerializerMethodField()
@@ -125,9 +119,6 @@ class AbstractAssignmentGroupSerializer(serializers.ModelSerializer):
 
     #: set to ``True`` if corrected
     is_corrected = serializers.BooleanField()
-
-    class Meta:
-        abstract = True
 
     def get_assignment_id(self, instance):
         """
