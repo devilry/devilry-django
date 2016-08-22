@@ -14,7 +14,7 @@ class DeadlineDatetime(serializers.DateTimeField):
             instance: :obj:`devilry_group.Feedbackset`
 
         Returns:
-            :attr:`devilry_group.Feedbackset.current_deadline`
+            :method:`devilry_group.Feedbackset.current_deadline`
         """
         return instance.current_deadline()
 
