@@ -8,7 +8,7 @@ from devilry.apps.core.models.examiner import Examiner
 from devilry.devilry_api.auth.authentication import TokenAuthentication
 
 
-class AssignmentGroupListViewBase(ListAPIView):
+class BaseAssignmentGroupView(ListAPIView):
     authentication_classes = (TokenAuthentication, )
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['parentnode__parentnode__parentnode__short_name',
@@ -17,18 +17,51 @@ class AssignmentGroupListViewBase(ListAPIView):
 
     @property
     def permission_classes(self):
+        """
+        Permission classes required
+
+        Example:
+            permission_classes = (IsAuthenticated, )
+
+        Raises:
+            :class:`NotImplementedError`
+        """
         raise NotImplementedError("please set permission_classes example: permission_classes = (IsAuthenticated, )")
 
     @property
     def api_key_permissions(self):
+        """
+        Should be a list with API key permissions :class:`devilry_api.APIKey`.
+
+        Example:
+            api_key_permissions = (APIKey.STUDENT_PERMISSION_WRITE, APIKey.STUDENT_PERMISSION_READ)
+
+        Raises:
+            :class:`NotImplementedError`
+        """
         raise NotImplementedError(
             "please set api_key_permission example: "
             "api_key_permissions = (APIKey.EXAMINER_PERMISSION_WRITE, APIKey.EXAMINER_PERMISSION_READ)")
 
     def get_role_query_set(self):
+        """
+        Returns queryset for role (examiner, student etc...).
+
+        should return a :class:`~apps.core.AssignmentGroup` queryset.
+
+        Raises:
+            :class:`NotImplementedError`
+
+        """
         raise NotImplementedError()
 
     def get_candidate_queryset(self):
+        """
+        Candidate queryset for prefetch
+
+        Returns:
+            :class:`~apps.core.Candidate` queryset
+        """
         return Candidate.objects \
             .select_related('relatedstudent__user') \
             .order_by(
@@ -36,6 +69,12 @@ class AssignmentGroupListViewBase(ListAPIView):
                              'relatedstudent__user__shortname')))
 
     def get_examiner_queryset(self):
+        """
+        Examiner queryset for prefetch
+
+        Returns:
+            :class:`~apps.core.Examiner` queryset
+        """
         return Examiner.objects \
             .select_related('relatedexaminer__user') \
             .order_by(
@@ -43,6 +82,13 @@ class AssignmentGroupListViewBase(ListAPIView):
                              'relatedexaminer__user__shortname')))
 
     def get_queryset(self):
+        """
+        Checks query parameters and applies them if given.
+
+        Returns:
+            :class:`~apps.core.AssignmentGroup` queryset.
+
+        """
         queryset = self.get_role_query_set() \
             .select_related('parentnode__parentnode__parentnode') \
             .prefetch_related(
@@ -77,7 +123,12 @@ class AssignmentGroupListViewBase(ListAPIView):
 
     def get(self, request, *args, **kwargs):
         """
-        Gets a list of assignment groups
+        Get a list of assignment groups
+
+        Search fields:
+            :attr:`apps.core.Subject.short_name`
+            :attr:`apps.core.Period.short_name`
+            :attr:`apps.core.Assignment.short_name`
 
         ---
         parameters:
@@ -119,4 +170,4 @@ class AssignmentGroupListViewBase(ListAPIView):
 
 
         """
-        return super(AssignmentGroupListViewBase, self).get(request, *args, **kwargs)
+        return super(BaseAssignmentGroupView, self).get(request, *args, **kwargs)

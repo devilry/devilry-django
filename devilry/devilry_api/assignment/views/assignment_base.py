@@ -17,6 +17,16 @@ class AssignmentListViewBase(ListAPIView):
 
     @property
     def permission_classes(self):
+        """
+        Permission classes required
+
+        Example:
+            permission_classes = (IsAuthenticated, )
+
+        Raises:
+            :class:`NotImplementedError`
+
+        """
         raise NotImplementedError("please set permission_classes example: permission_classes = (IsAuthenticated, )")
 
     @property
