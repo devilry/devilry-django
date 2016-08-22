@@ -6,13 +6,35 @@ from devilry.devilry_api.models import APIKey
 from devilry.devilry_api.permission.examiner_permission import ExaminerPermissionAPIKey
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.models import GroupComment
+from rest_framework.exceptions import PermissionDenied, ValidationError, NotFound
+from django.utils.translation import ugettext_lazy
 
 
 class GroupCommentViewExaminer(mixins.CreateModelMixin,
+                               mixins.DestroyModelMixin,
                                GroupCommentViewBase):
     permission_classes = (ExaminerPermissionAPIKey, )
     api_key_permissions = (APIKey.EXAMINER_PERMISSION_READ, APIKey.EXAMINER_PERMISSION_WRITE)
     serializer_class = GroupCommentSerializerExaminer
+
+    def get_object(self):
+        """
+        This is only used to get a drafted comment
+        """
+        try:
+            id = self.request.query_params.get('id', None)
+            if not id:
+                raise ValidationError(ugettext_lazy('Queryparam id required.'))
+            comment = self.get_role_query_set().get(feedback_set__id=self.kwargs['feedback_set'], id=id)
+            if comment.grading_published_datetime is not None:
+                raise PermissionDenied(ugettext_lazy('Cannot delete published comment.'))
+            if comment.visibility != GroupComment.VISIBILITY_PRIVATE:
+                raise PermissionDenied(ugettext_lazy('Cannot delete a comment that is not private.'))
+            if not comment.part_of_grading:
+                raise PermissionDenied(ugettext_lazy('Cannot delete a comment that is not a draft.'))
+            return comment
+        except GroupComment.DoesNotExist:
+            raise NotFound
 
     def get_role_query_set(self):
         assignment_group_queryset = AssignmentGroup.objects.filter_examiner_has_access(user=self.request.user)
@@ -58,3 +80,23 @@ class GroupCommentViewExaminer(mixins.CreateModelMixin,
         request.data['feedback_set'] = feedback_set
         request.data['user_role'] = GroupComment.USER_ROLE_EXAMINER
         return super(GroupCommentViewExaminer, self).create(request, *args, **kwargs)
+
+    def delete(self, request, feedback_set, *args, **kwargs):
+        """
+        destroy drafted comment
+
+        ---
+        parameters:
+            - name: feedback_set
+              required: true
+              paramType: path
+              type: Int
+              description: feedbackset id
+            - name: id
+              required: true
+              paramType: query
+              type: Int
+              description: comment id to destroy
+
+        """
+        return super(GroupCommentViewExaminer, self).destroy(request, *args, **kwargs)

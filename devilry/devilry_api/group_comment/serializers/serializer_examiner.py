@@ -6,6 +6,7 @@ from devilry.devilry_api.group_comment.serializers import serializer_base
 from devilry.devilry_group.models import GroupComment
 from devilry.devilry_group.models import FeedbackSet
 
+
 class GroupCommentSerializerExaminer(serializer_base.GroupCommentSerializerBase):
     devilry_role = 'examiner'
 

@@ -1,7 +1,7 @@
 from rest_framework.permissions import IsAuthenticated
 
 READ_HTTP_METHODS = ['GET', 'HEAD', 'OPTIONS']
-WRITE_HTTP_METHODS = ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH']
+WRITE_HTTP_METHODS = ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
 
 
 class BaseIsAuthenticatedAPIKey(IsAuthenticated):
