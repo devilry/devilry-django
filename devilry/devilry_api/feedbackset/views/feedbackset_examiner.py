@@ -20,6 +20,12 @@ class FeedbacksetListViewExaminer(mixins.CreateModelMixin,
     api_key_permissions = (APIKey.EXAMINER_PERMISSION_WRITE, APIKey.EXAMINER_PERMISSION_READ)
 
     def get_object(self):
+        """
+        Returns a :obj:`devilry_group.Feedbackset` with id passed in queryparams
+
+        Returns:
+            :obj:`devilry_group.Feedbackset`
+        """
         id = self.request.query_params.get('id', None)
         if not id:
             raise exceptions.ParseError(ugettext_lazy('query paramter "id" required'))
@@ -30,6 +36,12 @@ class FeedbacksetListViewExaminer(mixins.CreateModelMixin,
         return instance
 
     def get_role_query_set(self):
+        """
+        Returns role queryset for examiner role
+
+        Returns:
+            :class:`~devilry_group.Feedbackset` queryset
+        """
         assignment_group_queryset = AssignmentGroup.objects.filter_examiner_has_access(user=self.request.user)
         return FeedbackSet.objects.filter(group=assignment_group_queryset)
 

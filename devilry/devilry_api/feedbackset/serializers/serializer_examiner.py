@@ -12,7 +12,7 @@ class FeedbacksetSerializerExaminer(serializer_base.FeedbacksetSerializerBase):
 
     def validate_group_id(self, value):
         """
-        Make sure that examiner is part of assignment group
+        Make sure that examiner is part of assignment group.
 
         Args:
             value: :obj:`~core.AssignemntGroup.id`
@@ -30,11 +30,15 @@ class FeedbacksetSerializerExaminer(serializer_base.FeedbacksetSerializerBase):
 
     def validate_deadline_datetime(self, value):
         """
-        Make sure that deadline is not in the past
+        Make sure that deadline is not in the past.
 
         TODO: we could also check if the previous set deadline has expired
+
+        Args:
+            value: :attr:`~devilry_group.Feedbackset.deadline_datetime`
+
         Returns:
-            datetime (DateTime)
+            :attr:`~devilry_group.Feedbackset.deadline_datetime`
 
         """
         if value < datetime.now():
@@ -44,7 +48,7 @@ class FeedbacksetSerializerExaminer(serializer_base.FeedbacksetSerializerBase):
     def validate_feedbackset_type(self, value):
         """
         TODO: validate that the previous set is first_attempt or new_attempt if
-        value is new_attempt etc..
+        value is new_attempt etc...
         Args:
             value: :obj:`~devilry_group.Feedbackset.feedbackset_type`
 
@@ -59,8 +63,8 @@ class FeedbacksetSerializerExaminer(serializer_base.FeedbacksetSerializerBase):
 
     def validate(self, data):
         """
-        Checks existence of required data and makes sure that any other data than group, and feedbackset_type is ignored,
-        rest of the data will be set automatically.
+        Checks existence of required data and makes sure that any other data than group,
+        and feedbackset_type is ignored, rest of the data will be set automatically.
 
         Returns:
             dict with group, deadline_datetime and feedbackset_type
@@ -82,8 +86,8 @@ class FeedbacksetSerializerExaminer(serializer_base.FeedbacksetSerializerBase):
 
     def __set_is_last_in_group_false_in_previous_feedbackset(self, group_id):
         """
-        Sets the attribute :obj:`~devilry_group.Feedbackset.is_last_in_group` for the previous
-         feedbackset to False
+        Sets the attribute :obj:`~devilry_group.Feedbackset.is_last_in_group` for the previous feedbackset to False.
+
         Args:
             group: :obj:`~core.AssignmentGroup.id`
         """
@@ -95,7 +99,7 @@ class FeedbacksetSerializerExaminer(serializer_base.FeedbacksetSerializerBase):
 
     def create(self, validated_data):
         """
-        Creates a new feedbackset
+        Creates a new feedbackset.
 
         Args:
             validated_data: dictionary

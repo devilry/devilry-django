@@ -10,18 +10,52 @@ class FeedbacksetListViewBase(mixins.ListModelMixin,
 
     @property
     def permission_classes(self):
+        """
+        Permission classes required
+
+        Example:
+            permission_classes = (IsAuthenticated, )
+
+        Raises:
+            :class:`NotImplementedError`
+        """
         raise NotImplementedError("please set permission_classes example: permission_classes = (IsAuthenticated, )")
 
     @property
     def api_key_permissions(self):
+        """
+        Should be a list with API key permissions :class:`devilry_api.APIKey`.
+
+        Example:
+            api_key_permissions = (APIKey.STUDENT_PERMISSION_WRITE, APIKey.STUDENT_PERMISSION_READ)
+
+        Raises:
+            :class:`NotImplementedError`
+        """
         raise NotImplementedError(
             "please set api_key_permission example: "
             "api_key_permissions = (APIKey.EXAMINER_PERMISSION_WRITE, APIKey.EXAMINER_PERMISSION_READ)")
 
     def get_role_query_set(self):
+        """
+        Returns queryset for role (examiner, student etc...).
+
+        should return a :class:`~apps.core.AssignmentGroup` queryset.
+
+        Raises:
+            :class:`NotImplementedError`
+
+        """
         raise NotImplementedError()
 
     def get_queryset(self):
+        """
+        Checks query parameters and applies them if given.
+
+        Returns:
+            :class:`~devilry_group.Feedbackset` queryset.
+
+        """
         queryset = self.get_role_query_set()
 
         id = self.request.query_params.get('id', None)
@@ -35,7 +69,7 @@ class FeedbacksetListViewBase(mixins.ListModelMixin,
 
     def get(self, request, *args, **kwargs):
         """
-        Gets a list of feedback sets
+        Get a list of feedback sets
 
         ---
         parameters:

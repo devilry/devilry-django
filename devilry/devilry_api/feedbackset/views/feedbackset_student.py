@@ -12,6 +12,12 @@ class FeedbacksetListViewStudent(FeedbacksetListViewBase):
     api_key_permissions = (APIKey.STUDENT_PERMISSION_READ, APIKey.STUDENT_PERMISSION_WRITE)
 
     def get_role_query_set(self):
+        """
+        Returns role queryset for student role
+
+        Returns:
+            :class:`~devilry_group.Feedbackset` queryset
+        """
         assignment_group_queryset = AssignmentGroup.objects.filter_student_has_access(user=self.request.user)
         return FeedbackSet.objects.filter(group=assignment_group_queryset)
 
