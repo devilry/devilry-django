@@ -492,7 +492,6 @@ class TestPostComment(api_test_helper.TestCaseMixin,
         self.assertEqual(response.data['user_role'], 'student')
         self.assertEqual(response.data['visibility'], 'visible-to-everyone')
         self.assertEqual(response.data['feedback_set'], 10)
-        self.assertEqual(response.data['id'], 1)
         self.assertEqual(response.data['part_of_grading'], False)
 
     def test_post_comment_no_text(self):
