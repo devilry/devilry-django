@@ -37,6 +37,7 @@ API and utilities
     devilry_core_tags
     core.deliverystore
     devilry.utils
+    devilry_ziputil
 
 
 ***************
