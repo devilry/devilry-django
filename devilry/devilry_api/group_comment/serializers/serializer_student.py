@@ -13,9 +13,10 @@ class GroupCommentSerializerStudent(serializer_base.GroupCommentSerializerBase):
         """
 
         Args:
-            data:
+            data: dictionary
 
         Returns:
+            dictonary with validated_data
 
         """
         if 'text' not in data:

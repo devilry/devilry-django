@@ -36,6 +36,10 @@ class GroupCommentViewStudent(mixins.CreateModelMixin,
               paramType: path
               type: Int
               description: feedbackset id
+            - name: text
+              required: true
+              type: String
+              description: comment text
         """
         request.data['feedback_set'] = feedback_set
         request.data['user_role'] = GroupComment.USER_ROLE_STUDENT

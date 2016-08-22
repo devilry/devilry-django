@@ -8,7 +8,8 @@ from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.models import GroupComment
 
 
-class GroupCommentViewExaminer(GroupCommentViewBase):
+class GroupCommentViewExaminer(mixins.CreateModelMixin,
+                               GroupCommentViewBase):
     permission_classes = (ExaminerPermissionAPIKey, )
     api_key_permissions = (APIKey.EXAMINER_PERMISSION_READ, APIKey.EXAMINER_PERMISSION_WRITE)
     serializer_class = GroupCommentSerializerExaminer
@@ -23,3 +24,37 @@ class GroupCommentViewExaminer(GroupCommentViewBase):
         return super(GroupCommentViewExaminer, self).get(request, feedback_set, *args, **kwargs)
 
     get.__doc__ = GroupCommentViewBase.get.__doc__
+
+    def post(self, request, feedback_set, *args, **kwargs):
+        """
+        post a comment to a feedbackset
+
+        ---
+        parameters:
+            - name: feedback_set
+              required: true
+              paramType: path
+              type: Int
+              description: feedbackset id
+            - name: text
+              paramType: form
+              required: true
+              type: String
+              description: comment text
+            - name: part_of_grading
+              required: false
+              paramType: form
+              type: Boolean
+              description: part of grading
+            - name: visibility
+              required: false
+              paramType: form
+              enum:
+                - visible-to-everyone
+                - visible-to-examiner-and-admins
+                - private
+              description: comment visibility
+        """
+        request.data['feedback_set'] = feedback_set
+        request.data['user_role'] = GroupComment.USER_ROLE_EXAMINER
+        return super(GroupCommentViewExaminer, self).create(request, *args, **kwargs)
