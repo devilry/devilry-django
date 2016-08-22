@@ -33,7 +33,7 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                    feedback_set=feedbackset,
                    user_role=GroupComment.USER_ROLE_STUDENT,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(len(response.data), 1)
 
@@ -47,7 +47,7 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                              feedback_set=feedbackset,
                              user_role=GroupComment.USER_ROLE_STUDENT,
                              comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['published_datetime'], comment.published_datetime)
 
@@ -62,7 +62,7 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                    user_role=GroupComment.USER_ROLE_STUDENT,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    text='lol')
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['text'], 'lol')
 
@@ -77,7 +77,7 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                    user_role=GroupComment.USER_ROLE_STUDENT,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    id=20)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['id'], 20)
 
@@ -91,7 +91,7 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                    feedback_set=feedbackset,
                    user_role=GroupComment.USER_ROLE_STUDENT,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['visibility'], GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -105,7 +105,7 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                    feedback_set=feedbackset,
                    user_role=GroupComment.USER_ROLE_STUDENT,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertFalse(response.data[0]['part_of_grading'])
 
@@ -119,7 +119,7 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                    feedback_set=feedbackset,
                    user_role=GroupComment.USER_ROLE_STUDENT,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['user_fullname'], 'Alice')
 
@@ -133,7 +133,7 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                    feedback_set=feedbackset,
                    user_role=GroupComment.USER_ROLE_STUDENT,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['user_shortname'], candidate.relatedstudent.user.shortname)
 
@@ -147,7 +147,7 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                    feedback_set=feedbackset,
                    user_role=GroupComment.USER_ROLE_STUDENT,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['user_role'], GroupComment.USER_ROLE_STUDENT)
 
@@ -168,7 +168,7 @@ class TestGroupCommentAnonymization(api_test_helper.TestCaseMixin,
                    user_role=GroupComment.USER_ROLE_EXAMINER,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(apikey=apikey.key, feedback_set=feedbackset.id)
         self.assertEqual(response.data[0]['user_fullname'], 'Thor')
 
     def test_anonymization_semi_examiner_user_fullname(self):
@@ -184,7 +184,7 @@ class TestGroupCommentAnonymization(api_test_helper.TestCaseMixin,
                    user_role=GroupComment.USER_ROLE_EXAMINER,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(response.data[0]['user_fullname'], 'lol')
 
     def test_anonymization_full_examiner_user_fullname(self):
@@ -199,7 +199,7 @@ class TestGroupCommentAnonymization(api_test_helper.TestCaseMixin,
                    user_role=GroupComment.USER_ROLE_EXAMINER,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         print(response.data[0]['user_fullname'])
         self.assertEqual(response.data[0]['user_fullname'], 'Anonymous ID missing')
 
@@ -215,7 +215,7 @@ class TestGroupCommentAnonymization(api_test_helper.TestCaseMixin,
                    user_role=GroupComment.USER_ROLE_EXAMINER,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(response.data[0]['user_shortname'], 'Thor@example.com')
 
     def test_anonymization_semi_examiner_user_shortname(self):
@@ -231,7 +231,7 @@ class TestGroupCommentAnonymization(api_test_helper.TestCaseMixin,
                    user_role=GroupComment.USER_ROLE_EXAMINER,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(response.data[0]['user_shortname'], 'lol')
 
     def test_anonymization_full_examiner_user_shortname(self):
@@ -246,7 +246,7 @@ class TestGroupCommentAnonymization(api_test_helper.TestCaseMixin,
                    user_role=GroupComment.USER_ROLE_EXAMINER,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(response.data[0]['user_shortname'], 'Anonymous ID missing')
 
     def test_anonymization_off_student_user_fullname(self):
@@ -261,7 +261,7 @@ class TestGroupCommentAnonymization(api_test_helper.TestCaseMixin,
                    user_role=GroupComment.USER_ROLE_STUDENT,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(response.data[0]['user_fullname'], 'Alice')
 
     def test_anonymization_semi_student_user_fullname(self):
@@ -277,7 +277,7 @@ class TestGroupCommentAnonymization(api_test_helper.TestCaseMixin,
                    user_role=GroupComment.USER_ROLE_STUDENT,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(response.data[0]['user_fullname'], 'Alice')
 
     def test_anonymization_full_student_user_fullname(self):
@@ -292,7 +292,7 @@ class TestGroupCommentAnonymization(api_test_helper.TestCaseMixin,
                    user_role=GroupComment.USER_ROLE_STUDENT,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         print(response.data[0]['user_fullname'])
         self.assertEqual(response.data[0]['user_fullname'], 'Alice')
 
@@ -308,7 +308,7 @@ class TestGroupCommentAnonymization(api_test_helper.TestCaseMixin,
                    user_role=GroupComment.USER_ROLE_STUDENT,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(response.data[0]['user_shortname'], 'Alice@example.com')
 
     def test_anonymization_semi_student_user_shortname(self):
@@ -324,7 +324,7 @@ class TestGroupCommentAnonymization(api_test_helper.TestCaseMixin,
                    user_role=GroupComment.USER_ROLE_STUDENT,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(response.data[0]['user_shortname'], 'Alice@example.com')
 
     def test_anonymization_full_student_user_shortname(self):
@@ -339,7 +339,7 @@ class TestGroupCommentAnonymization(api_test_helper.TestCaseMixin,
                    user_role=GroupComment.USER_ROLE_STUDENT,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(response.data[0]['user_shortname'], 'Alice@example.com')
 
 
@@ -359,7 +359,7 @@ class TestGroupCommentVisibility(api_test_helper.TestCaseMixin,
                    user_role=GroupComment.USER_ROLE_EXAMINER,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['id'], 10)
 
@@ -374,7 +374,7 @@ class TestGroupCommentVisibility(api_test_helper.TestCaseMixin,
                    user_role=GroupComment.USER_ROLE_EXAMINER,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(len(response.data), 0)
 
@@ -389,7 +389,7 @@ class TestGroupCommentVisibility(api_test_helper.TestCaseMixin,
                    user_role=GroupComment.USER_ROLE_EXAMINER,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(len(response.data), 0)
 
@@ -397,29 +397,6 @@ class TestGroupCommentVisibility(api_test_helper.TestCaseMixin,
 class TestGroupCommentFilters(api_test_helper.TestCaseMixin,
                               APITestCase):
     viewclass = groupcomment_student.GroupCommentViewStudent
-
-    def test_filter_feedbackset_id(self):
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=5)
-        examiner = core_mommy.examiner(feedbackset.group)
-        mommy.make('devilry_group.GroupComment',
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   user=examiner.relatedexaminer.user,
-                   feedback_set=feedbackset,
-                   user_role=GroupComment.USER_ROLE_EXAMINER,
-                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT, _quantity=10)
-        candidate = core_mommy.candidate(feedbackset.group)
-        apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key, queryparams='?feedback_set_id=5')
-        self.assertEqual(200, response.status_code)
-        self.assertEqual(len(response.data), 10)
-
-    def test_filter_feedbackset_id_not_found(self):
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=5)
-        candidate = core_mommy.candidate(feedbackset.group)
-        apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key, queryparams='?feedback_set_id=5')
-        self.assertEqual(200, response.status_code)
-        self.assertEqual(len(response.data), 0)
 
     def test_filter_id(self):
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
@@ -433,7 +410,7 @@ class TestGroupCommentFilters(api_test_helper.TestCaseMixin,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         candidate = core_mommy.candidate(feedbackset.group)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key, queryparams='?id=63')
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key, queryparams='?id=63')
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['id'], 63)
 
@@ -449,7 +426,7 @@ class TestGroupCommentFilters(api_test_helper.TestCaseMixin,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         candidate = core_mommy.candidate(feedbackset.group)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key, queryparams='?id=63')
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key, queryparams='?id=63')
         self.assertEqual(200, response.status_code)
         self.assertEqual(len(response.data), 0)
 
@@ -467,7 +444,7 @@ class TestGroupCommentFilters(api_test_helper.TestCaseMixin,
             examiner = core_mommy.examiner(feedbackset.group)
         candidate = core_mommy.candidate(feedbackset.group)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key, queryparams='?ordering=id')
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key, queryparams='?ordering=id')
         self.assertEqual(200, response.status_code)
         self.assertEqual([comment['id'] for comment in response.data], [1, 2, 3])
 
@@ -485,6 +462,6 @@ class TestGroupCommentFilters(api_test_helper.TestCaseMixin,
         candidate = core_mommy.candidate(feedbackset.group)
         examiner = core_mommy.examiner(feedbackset.group)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
-        response = self.mock_get_request(apikey=apikey.key, queryparams='?ordering=-id')
+        response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key, queryparams='?ordering=-id')
         self.assertEqual(200, response.status_code)
         self.assertEqual([comment['id'] for comment in response.data], [3, 2, 1])

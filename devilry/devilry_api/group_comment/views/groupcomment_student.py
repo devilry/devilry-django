@@ -1,3 +1,5 @@
+from rest_framework.generics import mixins
+
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_api.group_comment.serializers.serializer_student import GroupCommentSerializerStudent
 from devilry.devilry_api.group_comment.views.groupcomment_base import GroupCommentViewBase
@@ -6,7 +8,8 @@ from devilry.devilry_api.permission.student_permission import StudentPermissionA
 from devilry.devilry_group.models import GroupComment
 
 
-class GroupCommentViewStudent(GroupCommentViewBase):
+class GroupCommentViewStudent(mixins.CreateModelMixin,
+                              GroupCommentViewBase):
     permission_classes = (StudentPermissionAPIKey, )
     api_key_permissions = (APIKey.STUDENT_PERMISSION_READ, APIKey.STUDENT_PERMISSION_WRITE)
     serializer_class = GroupCommentSerializerStudent
@@ -17,7 +20,16 @@ class GroupCommentViewStudent(GroupCommentViewBase):
                                            comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                                            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
-    def get(self, request, *args, **kwargs):
-        return super(GroupCommentViewStudent, self).get(request, *args, **kwargs)
+    def get(self, request, feedback_set, *args, **kwargs):
+        return super(GroupCommentViewStudent, self).get(request, feedback_set, *args, **kwargs)
 
     get.__doc__ = GroupCommentViewBase.get.__doc__
+
+    def post(self, request, feedbackset, *args, **kwargs):
+        """
+        post a comment to a feedbackset
+
+        ---
+
+        """
+        super(GroupCommentViewStudent, self).create(request, *args, **kwargs)
