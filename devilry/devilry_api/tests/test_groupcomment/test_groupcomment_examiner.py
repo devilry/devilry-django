@@ -721,3 +721,201 @@ class TestGroupCommentPost(api_test_helper.TestCaseMixin,
         self.assertEqual(response.data['visibility'], GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
         self.assertFalse(response.data['part_of_grading'])
         self.assertEqual(response.data['user_role'], GroupComment.USER_ROLE_EXAMINER)
+
+
+class TestGroupCommentDeleteDraft(api_test_helper.TestCaseMixin,
+                                  APITestCase):
+    viewclass = groupcomment_examiner.GroupCommentViewExaminer
+
+    def test_unauthorized_401(self):
+        response = self.mock_delete_request(feedback_set=10, data={'id': 5})
+        self.assertEqual(401, response.status_code)
+
+    def test_delete_comment_404(self):
+        examiner = core_mommy.examiner(group=mommy.make('core.AssignmentGroup'))
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_delete_request(apikey=apikey.key, feedback_set=10, queryparams='?id=5')
+        self.assertEqual(404, response.status_code)
+
+    def test_queryparam_id_required(self):
+        examiner = core_mommy.examiner(group=mommy.make('core.AssignmentGroup'))
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_delete_request(apikey=apikey.key, feedback_set=10)
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(response.data, ['Queryparam id required.'])
+
+    def test_url_path_paramter_required(self):
+        examiner = core_mommy.examiner(group=mommy.make('core.AssignmentGroup'))
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_delete_request(apikey=apikey.key)
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(response.data, ['Url path parameter feedback_set required'])
+
+    def test_cannot_delete_published_comment(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_published(group=group)
+        examiner = core_mommy.examiner(group=group)
+        comment = mommy.make('devilry_group.GroupComment',
+                             visibility=GroupComment.VISIBILITY_PRIVATE,
+                             user=examiner.relatedexaminer.user,
+                             feedback_set=feedbackset,
+                             user_role=GroupComment.USER_ROLE_EXAMINER,
+                             comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                             part_of_grading=True)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_delete_request(apikey=apikey.key,
+                                            feedback_set=feedbackset.id,
+                                            queryparams='?id={}'.format(comment.id))
+        self.assertEqual(403, response.status_code)
+        self.assertEqual('Cannot delete published comment.', response.data['detail'])
+
+    def test_cannot_delete_comment_visible_everyone(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        examiner = core_mommy.examiner(group=group)
+        comment = mommy.make('devilry_group.GroupComment',
+                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                             user=examiner.relatedexaminer.user,
+                             feedback_set=feedbackset,
+                             user_role=GroupComment.USER_ROLE_EXAMINER,
+                             comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_delete_request(apikey=apikey.key,
+                                            feedback_set=feedbackset.id,
+                                            queryparams='?id={}'.format(comment.id))
+        self.assertEqual(403, response.status_code)
+        self.assertEqual('Cannot delete a comment that is not private.', response.data['detail'])
+
+    def test_cannot_delete_comment_visible_examiner_and_admins(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        examiner = core_mommy.examiner(group=group)
+        comment = mommy.make('devilry_group.GroupComment',
+                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                             user=examiner.relatedexaminer.user,
+                             feedback_set=feedbackset,
+                             user_role=GroupComment.USER_ROLE_EXAMINER,
+                             comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_delete_request(apikey=apikey.key,
+                                            feedback_set=feedbackset.id,
+                                            queryparams='?id={}'.format(comment.id))
+        self.assertEqual(403, response.status_code)
+        self.assertEqual('Cannot delete a comment that is not private.', response.data['detail'])
+
+    def test_cannot_delete_comment_part_of_grading_false(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        examiner = core_mommy.examiner(group=group)
+        comment = mommy.make('devilry_group.GroupComment',
+                             visibility=GroupComment.VISIBILITY_PRIVATE,
+                             user=examiner.relatedexaminer.user,
+                             feedback_set=feedbackset,
+                             user_role=GroupComment.USER_ROLE_EXAMINER,
+                             comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                             part_of_grading=False)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_delete_request(apikey=apikey.key,
+                                            feedback_set=feedbackset.id,
+                                            queryparams='?id={}'.format(comment.id))
+        self.assertEqual(403, response.status_code)
+        self.assertEqual('Cannot delete a comment that is not a draft.', response.data['detail'])
+
+    def test_delete_another_examiners_draft_same_group(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        requset_examiner = core_mommy.examiner(group=group)
+        examiner = core_mommy.examiner(group=group)
+        comment = mommy.make('devilry_group.GroupComment',
+                             visibility=GroupComment.VISIBILITY_PRIVATE,
+                             user=examiner.relatedexaminer.user,
+                             feedback_set=feedbackset,
+                             user_role=GroupComment.USER_ROLE_EXAMINER,
+                             comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                             part_of_grading=True)
+        apikey = api_mommy.api_key_examiner_permission_write(user=requset_examiner.relatedexaminer.user)
+        response = self.mock_delete_request(apikey=apikey.key,
+                                            feedback_set=feedbackset.id,
+                                            queryparams='?id={}'.format(comment.id))
+        self.assertEqual(404, response.status_code)
+
+    def test_delete_draft_not_part_of_assignment_group(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        requset_examiner = core_mommy.examiner(group=mommy.make('core.AssignmentGroup'))
+        examiner = core_mommy.examiner(group=group)
+        comment = mommy.make('devilry_group.GroupComment',
+                             visibility=GroupComment.VISIBILITY_PRIVATE,
+                             user=examiner.relatedexaminer.user,
+                             feedback_set=feedbackset,
+                             user_role=GroupComment.USER_ROLE_EXAMINER,
+                             comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                             part_of_grading=True)
+        apikey = api_mommy.api_key_examiner_permission_write(user=requset_examiner.relatedexaminer.user)
+        response = self.mock_delete_request(apikey=apikey.key,
+                                            feedback_set=feedbackset.id,
+                                            queryparams='?id={}'.format(comment.id))
+        self.assertEqual(404, response.status_code)
+
+    def test_delete_draft_from_old_period_assignment_group(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_oldperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        examiner = core_mommy.examiner(group=group)
+        comment = mommy.make('devilry_group.GroupComment',
+                             visibility=GroupComment.VISIBILITY_PRIVATE,
+                             user=examiner.relatedexaminer.user,
+                             feedback_set=feedbackset,
+                             user_role=GroupComment.USER_ROLE_EXAMINER,
+                             comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                             part_of_grading=True)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_delete_request(apikey=apikey.key,
+                                            feedback_set=feedbackset.id,
+                                            queryparams='?id={}'.format(comment.id))
+        self.assertEqual(404, response.status_code)
+
+    def test_delete_sanity(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        examiner = core_mommy.examiner(group=group)
+        comment = mommy.make('devilry_group.GroupComment',
+                             visibility=GroupComment.VISIBILITY_PRIVATE,
+                             user=examiner.relatedexaminer.user,
+                             feedback_set=feedbackset,
+                             user_role=GroupComment.USER_ROLE_EXAMINER,
+                             comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                             part_of_grading=True)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_delete_request(apikey=apikey.key,
+                                            feedback_set=feedbackset.id,
+                                            queryparams='?id={}'.format(comment.id))
+        self.assertEqual(204, response.status_code)
+
+    def test_comment_is_deleted_from_db(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        examiner = core_mommy.examiner(group=group)
+        comment = mommy.make('devilry_group.GroupComment',
+                             id=55,
+                             visibility=GroupComment.VISIBILITY_PRIVATE,
+                             user=examiner.relatedexaminer.user,
+                             feedback_set=feedbackset,
+                             user_role=GroupComment.USER_ROLE_EXAMINER,
+                             comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                             part_of_grading=True)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_delete_request(apikey=apikey.key,
+                                            feedback_set=feedbackset.id,
+                                            queryparams='?id={}'.format(comment.id))
+        self.assertEqual(204, response.status_code)
+        with self.assertRaises(GroupComment.DoesNotExist):
+            GroupComment.objects.get(id=55)

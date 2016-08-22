@@ -21,20 +21,22 @@ class GroupCommentViewExaminer(mixins.CreateModelMixin,
         """
         This is only used to get a drafted comment
         """
+        if 'feedback_set' not in self.kwargs:
+            raise ValidationError(ugettext_lazy('Url path parameter feedback_set required'))
+        id = self.request.query_params.get('id', None)
+        if not id:
+            raise ValidationError(ugettext_lazy('Queryparam id required.'))
         try:
-            id = self.request.query_params.get('id', None)
-            if not id:
-                raise ValidationError(ugettext_lazy('Queryparam id required.'))
             comment = self.get_role_query_set().get(feedback_set__id=self.kwargs['feedback_set'], id=id)
-            if comment.grading_published_datetime is not None:
-                raise PermissionDenied(ugettext_lazy('Cannot delete published comment.'))
-            if comment.visibility != GroupComment.VISIBILITY_PRIVATE:
-                raise PermissionDenied(ugettext_lazy('Cannot delete a comment that is not private.'))
-            if not comment.part_of_grading:
-                raise PermissionDenied(ugettext_lazy('Cannot delete a comment that is not a draft.'))
-            return comment
         except GroupComment.DoesNotExist:
             raise NotFound
+        if comment.feedback_set.grading_published_datetime is not None:
+            raise PermissionDenied(ugettext_lazy('Cannot delete published comment.'))
+        if comment.visibility != GroupComment.VISIBILITY_PRIVATE:
+            raise PermissionDenied(ugettext_lazy('Cannot delete a comment that is not private.'))
+        if not comment.part_of_grading:
+            raise PermissionDenied(ugettext_lazy('Cannot delete a comment that is not a draft.'))
+        return comment
 
     def get_role_query_set(self):
         assignment_group_queryset = AssignmentGroup.objects.filter_examiner_has_access(user=self.request.user)
@@ -81,7 +83,7 @@ class GroupCommentViewExaminer(mixins.CreateModelMixin,
         request.data['user_role'] = GroupComment.USER_ROLE_EXAMINER
         return super(GroupCommentViewExaminer, self).create(request, *args, **kwargs)
 
-    def delete(self, request, feedback_set, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
         """
         destroy drafted comment
 
