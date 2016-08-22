@@ -29,9 +29,11 @@ class GroupCommentCompressAction(batchregistry.Action):
                                             groupcomment.id,
                                             archivename)
 
-        # Get backend instance
+        # Get backend instance and set the path
+        # to the archive and the archivename.
         zipfile_backend = zipfile_backend_class(
                 archive_path=zipfile_path,
+                archive_name=archivename,
                 readmode=False
         )
 
@@ -40,11 +42,12 @@ class GroupCommentCompressAction(batchregistry.Action):
             zipfile_backend.add_file('{}'.format(commentfile.filename), commentfile.file.file)
         zipfile_backend.close_archive()
 
-        # zipfile_backend.readmode = True
-        # filewrapper = FileWrapper(zipfile_backend.read_archive())
-        # response = http.HttpResponse(filewrapper, content_type='application/zip')
-        # response['content-disposition'] = 'attachment; filename=%s' % archivename.encode('ascii', 'replace')
-        # response['content-length'] = zipfile_backend.archive_size()
+        # create archive meta entry
+        from devilry.devilry_ziputil.models import CompressedArchiveMeta
+        CompressedArchiveMeta.objects.create_meta(
+                instance=groupcomment,
+                zipfile_backend=zipfile_backend
+        )
 
 
 class FeedbackSetCompressAction(batchregistry.Action):
@@ -74,13 +77,14 @@ class FeedbackSetCompressAction(batchregistry.Action):
         # Get backend instance
         zipfile_backend = zipfile_backend_class(
             archive_path=zipfile_path,
+            archive_name=archivename,
             readmode=False
         )
 
         # Write files to archive
         from devilry.devilry_group import models as group_models
         for group_comment in feedbackset.groupcomment_set.all():
-            # Don't add files from comments which are not visible to everyone.
+            # Don't add files from comments that are not visible to everyone.
             if group_comment.visibility == group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
                 for comment_file in group_comment.commentfile_set.all():
                     if comment_file.comment.user_role == 'student':
@@ -92,11 +96,9 @@ class FeedbackSetCompressAction(batchregistry.Action):
                                                      comment_file.file.file)
         zipfile_backend.close_archive()
 
-        # Add zipped archive to response
-        # zipfile_backend.readmode = True
-        # filewrapper = FileWrapper(zipfile_backend.read_archive())
-        # response = http.HttpResponse(filewrapper, content_type='application/zip')
-        # response['content-disposition'] = 'attachment; filename=%s' % archivename.encode('ascii', 'replace')
-        # response['content-length'] = zipfile_backend.archive_size()
-        #
-        # return response
+        # create archive meta entry
+        from devilry.devilry_ziputil.models import CompressedArchiveMeta
+        CompressedArchiveMeta.objects.create_meta(
+                instance=feedbackset,
+                zipfile_backend=zipfile_backend
+        )

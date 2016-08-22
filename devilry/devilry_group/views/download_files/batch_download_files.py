@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 # django imports
 from django import http
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views import generic
@@ -15,6 +16,8 @@ from ievv_opensource.ievv_batchframework import batchregistry
 from django_cradmin import crapp
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
+from devilry.devilry_ziputil import models as zipmodels
+from devilry.devilry_group.utils import download_response
 
 
 class FileDownloadFeedbackfeedView(generic.TemplateView):
@@ -61,12 +64,14 @@ class CompressedGroupCommentFileDownload(generic.TemplateView):
         Checks permission
 
         Args:
-            request:
+            request (HttpRequest): Request from client.
 
         Returns:
-             HttpResponse: Zipped folder.
+            Response: redirects to wait-for-download view,
+                see :class:`~devilry.devilry_group.views.download_files.feedbackfeed_downloadviews.WaitForDownload`, or
+                returns the content, see `~devilry.devilry_group.utils.download_response`.
         """
-        groupcomment_id = kwargs['groupcomment_id']
+        groupcomment_id = kwargs.get('groupcomment_id')
         groupcomment = get_object_or_404(group_models.GroupComment, id=groupcomment_id)
 
         # Check that the cradmin role and the AssignmentGroup is the same.
@@ -77,47 +82,71 @@ class CompressedGroupCommentFileDownload(generic.TemplateView):
         if groupcomment.visibility != group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
             raise Http404()
 
-        # Run actiongroup
-        executioninfo = batchregistry.Registry.get_instance().run(
-            actiongroup_name='batchframework_compress_groupcomment',
-            context_object=groupcomment,
-        )
+        # Check if archive exists
+        try:
+            archive_meta = zipmodels.CompressedArchiveMeta.objects.get(content_object_id=groupcomment_id)
+        except ObjectDoesNotExist:
+            # Run actiongroup.
+            batchregistry.Registry.get_instance().run(
+                actiongroup_name='batchframework_compress_groupcomment',
+                context_object=groupcomment,
+            )
+        else:
+            # Send response.
+            return download_response.download_response(
+                    content_path=archive_meta.get_full_path(),
+                    content_name=archive_meta.archive_path,
+                    content_type='application/zip',
+                    content_size=archive_meta.archive_size
+            )
 
-        batchoperation_id = executioninfo.batchoperation.id
-        print batchoperation_id
-        # return HttpResponse('OK')
         return HttpResponseRedirect(
-                self.request.cradmin_app.reverse_appurl('wait-for-download', batchoperation_id))
+                self.request.cradmin_app.reverse_appurl('wait-for-download', groupcomment_id))
 
 
-class CompressedFeedbackSetFileDownloadView(generic.View):
+class CompressedFeedbackSetFileDownloadView(generic.TemplateView):
     """Compress all files from a specific FeedbackSet for an assignment into a zipped folder.
 
     Downloads only files from GroupComments that are visible to everyone.
     """
-    def get(self, request, feedbackset_id):
+    def get(self, request, *args, **kwargs):
         """Download all files for a feedbackset into zipped folder.
 
         Args:
-            request: The request object.
-            feedbackset_id: The FeedbackSet the files belong to.
+            request (HttpRequest): Request from client..
 
         Returns:
-            HttpResponse: Response with zipped folder.
+            Response: redirects to wait-for-download view,
+                see :class:`~devilry.devilry_group.views.download_files.feedbackfeed_downloadviews.WaitForDownload`, or
+                returns the content, see `~devilry.devilry_group.utils.download_response`.
         """
+        feedbackset_id = kwargs.get('feedbackset_id')
         feedbackset = get_object_or_404(group_models.FeedbackSet, id=feedbackset_id)
 
         # Check that the cradmin role and the AssignmentGroup is the same.
         if feedbackset.group.id != request.cradmin_role.id:
             raise Http404()
 
-        # Run actiongroup
-        batchregistry.Registry.get_instance().run(
-            actiongroup_name='batchframework_compress_feedbackset',
-            context_object=feedbackset,
-        )
+        # Check if archive exists
+        try:
+            archive_meta = zipmodels.CompressedArchiveMeta.objects.get(content_object_id=feedbackset_id)
+        except ObjectDoesNotExist:
+            # Run actiongroup
+            batchregistry.Registry.get_instance().run(
+                actiongroup_name='batchframework_compress_feedbackset',
+                context_object=feedbackset,
+            )
+        else:
+            # Send response
+            return download_response.download_response(
+                    content_path=archive_meta.get_full_path(),
+                    content_name=archive_meta.archive_path,
+                    content_type='application/zip',
+                    content_size=archive_meta.archive_size
+            )
 
-        return HttpResponse('OK')
+        return HttpResponseRedirect(
+                self.request.cradmin_app.reverse_appurl('wait-for-download', feedbackset_id))
 
 
 class App(crapp.App):
