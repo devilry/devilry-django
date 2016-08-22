@@ -200,7 +200,6 @@ class TestGroupCommentAnonymization(api_test_helper.TestCaseMixin,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
-        print(response.data[0]['user_fullname'])
         self.assertEqual(response.data[0]['user_fullname'], 'Anonymous ID missing')
 
     def test_anonymization_off_examiner_user_shortname(self):
@@ -293,7 +292,6 @@ class TestGroupCommentAnonymization(api_test_helper.TestCaseMixin,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
-        print(response.data[0]['user_fullname'])
         self.assertEqual(response.data[0]['user_fullname'], 'Alice')
 
     def test_anonymization_off_student_user_shortname(self):
