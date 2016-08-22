@@ -1,17 +1,15 @@
 from rest_framework import serializers
 
 
-class CandidateSerializer(serializers.Serializer):
-    """
-    Candidate serializer,
-    subclass this and override the devilry_role property
-    """
-
+class AbstractCandidateSerializer(serializers.Serializer):
     #: Full name of the candidate
     fullname = serializers.SerializerMethodField()
 
     #: Short name of the candidate
     shortname = serializers.SerializerMethodField()
+
+    class Meta:
+        abstract = True
 
     @property
     def devilry_role(self):
@@ -21,12 +19,18 @@ class CandidateSerializer(serializers.Serializer):
                                 'periodadmin',
                                 'subjectadmin' or
                                 'departmentadmin'.
+
+        Raises:
+            :class:`NotImplementedError'
         """
         raise NotImplementedError("Please set devilry_role example: devilry_role = 'student'")
 
     def get_fullname(self, instance):
         """
         Gets full name of the candidate or anonymized name
+
+        Returns:
+            :attr:`devilry_account.User.fullname`
         """
         anonymous = instance.assignment_group.parentnode. \
             students_must_be_anonymized_for_devilryrole(self.devilry_role)
@@ -37,6 +41,9 @@ class CandidateSerializer(serializers.Serializer):
     def get_shortname(self, instance):
         """
         Gets short name of the candidate or anonymized name
+
+        Returns:
+            :attr:`devilry_account.User.shortname`
         """
         anonymous = instance.assignment_group.parentnode. \
             students_must_be_anonymized_for_devilryrole(self.devilry_role)
@@ -45,17 +52,15 @@ class CandidateSerializer(serializers.Serializer):
         return instance.relatedstudent.user.shortname
 
 
-class ExaminerSerializer(serializers.Serializer):
-    """
-    Examiner serializer,
-    subclass this and override the devilry_role property.
-    """
-
+class AbstractExaminerSerializer(serializers.Serializer):
     #: Full name of the examiner.
     fullname = serializers.SerializerMethodField()
 
     #: Short name of the examiner.
     shortname = serializers.SerializerMethodField()
+
+    class Meta:
+        abstract = True
 
     @property
     def devilry_role(self):
@@ -65,12 +70,18 @@ class ExaminerSerializer(serializers.Serializer):
                                 'periodadmin',
                                 'subjectadmin' or
                                 'departmentadmin'.
+
+        Raises:
+            :class:`NotImplementedError'
         """
         raise NotImplementedError("Please set devilry_role example: devilry_role = 'student'")
 
     def get_fullname(self, instance):
         """
         Gets full name of the examiner or anonymized name.
+
+        Returns:
+            :attr:`devilry_account.User.fullname`
         """
         anonymous = instance.assignmentgroup.parentnode. \
             examiners_must_be_anonymized_for_devilryrole(self.devilry_role)
@@ -81,6 +92,9 @@ class ExaminerSerializer(serializers.Serializer):
     def get_shortname(self, instance):
         """
         Gets short name of the examiner or anonymized name.
+
+        Returns:
+            :attr:`devilry_account.User.shortname`
         """
         anonymous = instance.assignmentgroup.parentnode. \
             examiners_must_be_anonymized_for_devilryrole(self.devilry_role)
@@ -89,10 +103,7 @@ class ExaminerSerializer(serializers.Serializer):
         return instance.relatedexaminer.user.shortname
 
 
-class AssignmentGroupModelSerializer(serializers.ModelSerializer):
-    """
-    AssignmentGroup model serializer base.
-    """
+class AbstractAssignmentGroupSerializer(serializers.ModelSerializer):
 
     #: Related assignment short name.
     assignment_short_name = serializers.SerializerMethodField()
@@ -115,26 +126,41 @@ class AssignmentGroupModelSerializer(serializers.ModelSerializer):
     #: set to ``True`` if corrected
     is_corrected = serializers.BooleanField()
 
+    class Meta:
+        abstract = True
+
     def get_assignment_id(self, instance):
         """
         Returns related assignment id.
+
+        Returns:
+            :attr:`apps.core.Assignment.id`
         """
         return instance.parentnode.id
 
     def get_assignment_short_name(self, instance):
         """
         Returns related assignment short name.
+
+        Returns:
+            :attr:`apps.core.Assignment.short_name`
         """
         return instance.parentnode.short_name
 
     def get_subject_short_name(self, instance):
         """
         Returns related subject short name.
+
+        Returns:
+            :attr:`apps.core.Subject.short_name`
         """
         return instance.subject.short_name
 
     def get_period_short_name(self, instance):
         """
         Returns related period short name.
+
+        Returns:
+            :attr:`apps.core.Period.short_name`
         """
         return instance.period.short_name

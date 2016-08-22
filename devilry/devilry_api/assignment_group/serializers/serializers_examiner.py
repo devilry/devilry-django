@@ -2,21 +2,21 @@ from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_api.assignment_group.serializers import serializer_base
 
 
-class CandidateSerializer(serializer_base.CandidateSerializer):
+class CandidateSerializer(serializer_base.AbstractCandidateSerializer):
     """
     Candidate in assignment group shown as examiner role.
     """
     devilry_role = 'examiner'
 
 
-class ExaminerSerializer(serializer_base.ExaminerSerializer):
+class ExaminerSerializer(serializer_base.AbstractExaminerSerializer):
     """
     Examiner in assignment group shown as examiner role.
     """
     devilry_role = 'examiner'
 
 
-class AssignmentGroupModelSerializer(serializer_base.AssignmentGroupModelSerializer):
+class AssignmentGroupModelSerializer(serializer_base.AbstractAssignmentGroupSerializer):
     #: Candidates in assignment group
     candidates = CandidateSerializer(many=True)
 
