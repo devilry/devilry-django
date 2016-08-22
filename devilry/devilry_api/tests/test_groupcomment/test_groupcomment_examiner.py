@@ -565,3 +565,159 @@ class TestGroupCommentFilters(api_test_helper.TestCaseMixin,
         response = self.mock_get_request(apikey=apikey.key, feedback_set=feedbackset.id, queryparams='?ordering=-id')
         self.assertEqual(200, response.status_code)
         self.assertEqual([comment['id'] for comment in response.data], [3, 2, 1])
+
+
+class TestGroupCommentPost(api_test_helper.TestCaseMixin,
+                           APITestCase):
+    viewclass = groupcomment_examiner.GroupCommentViewExaminer
+
+    def test_unauthorized_401(self):
+        response = self.mock_post_request(feedbackset=1)
+        self.assertEqual(401, response.status_code)
+
+    def test_not_part_of_assignment_group(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        examiner = core_mommy.examiner(group=mommy.make('core.AssignmentGroup'))
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={'text': 'hei'})
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(['Access denied Examiner not part of assignment group'], response.data['feedback_set'])
+
+    def test_part_of_assignment_group_old_period(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_oldperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        examiner = core_mommy.examiner(group=group)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={'text': 'hei'})
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(['Access denied Examiner not part of assignment group'], response.data['feedback_set'])
+
+    def test_post_comment_sanity(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group, id=10)
+        examiner = core_mommy.examiner(group=group)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={'text': 'hei'})
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.data['text'], 'hei')
+        self.assertEqual(response.data['user_role'], 'examiner')
+        self.assertEqual(response.data['visibility'], 'visible-to-everyone')
+        self.assertEqual(response.data['feedback_set'], 10)
+        self.assertEqual(response.data['part_of_grading'], False)
+
+    def test_post_comment_no_text(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        examiner = core_mommy.examiner(group=group)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id)
+        self.assertEqual(400, response.status_code)
+
+    def test_post_user_role_cannot_be_student(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        examiner = core_mommy.examiner(group=group)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
+            'text': 'hei',
+            'user_role': 'student'
+        })
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.data['user_role'], 'examiner')
+
+    def test_post_user_role_cannot_be_admin(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        examiner = core_mommy.examiner(group=group)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
+            'text': 'hei',
+            'user_role': 'admin'
+        })
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.data['user_role'], 'examiner')
+
+    def test_post_visibility_private_part_of_grading_false(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        examiner = core_mommy.examiner(group=group)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
+            'text': 'hei',
+            'visibility': GroupComment.VISIBILITY_PRIVATE,
+            'part_of_grading': False
+        })
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(['if visibility = private, part_of_grading has to be True'], response.data['visibility'])
+
+    def test_post_visibility_everyone_part_of_grading_true(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        examiner = core_mommy.examiner(group=group)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
+            'text': 'hei',
+            'visibility': GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            'part_of_grading': True
+        })
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(['if part_of_grading = True, visibility has to be private'], response.data['part_of_grading'])
+
+    def test_post_part_of_grading_True_published_feedbackset(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_published(group=group, id=10)
+        examiner = core_mommy.examiner(group=group)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
+            'text': 'hei',
+            'visibility': GroupComment.VISIBILITY_PRIVATE,
+            'part_of_grading': True
+        })
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(['Cannot post part of grading comment when grading is published'],
+                         response.data['part_of_grading'])
+
+    def test_post_part_of_grading_True_visibility_private_success(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group, id=10)
+        examiner = core_mommy.examiner(group=group)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
+            'text': 'hei',
+            'visibility': GroupComment.VISIBILITY_PRIVATE,
+            'part_of_grading': True
+        })
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.data['text'], 'hei')
+        self.assertEqual(response.data['feedback_set'], 10)
+        self.assertEqual(response.data['visibility'], GroupComment.VISIBILITY_PRIVATE)
+        self.assertTrue(response.data['part_of_grading'])
+        self.assertEqual(response.data['user_role'], GroupComment.USER_ROLE_EXAMINER)
+
+    def test_post_visible_to_examiner_and_admins(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group, id=10)
+        examiner = core_mommy.examiner(group=group)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
+            'text': 'hei',
+            'visibility': GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
+        })
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.data['text'], 'hei')
+        self.assertEqual(response.data['feedback_set'], 10)
+        self.assertEqual(response.data['visibility'], GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        self.assertFalse(response.data['part_of_grading'])
+        self.assertEqual(response.data['user_role'], GroupComment.USER_ROLE_EXAMINER)
