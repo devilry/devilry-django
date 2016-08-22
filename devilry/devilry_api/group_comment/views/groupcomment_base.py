@@ -23,7 +23,7 @@ class GroupCommentViewBase(mixins.ListModelMixin,
 
     def get_queryset(self):
         queryset = self.get_role_query_set()
-        queryset = queryset.filter(feedback_set__id=self.feedback_set)
+        queryset = queryset.filter(feedback_set__id=self.kwargs['feedback_set'])
 
         # feedback_set_id = self.request.query_params.get('feedback_set_id', None)
         id = self.request.query_params.get('id', None)
@@ -35,7 +35,7 @@ class GroupCommentViewBase(mixins.ListModelMixin,
     def get(self, request, feedback_set, *args, **kwargs):
         """
         List comments
-
+        
         ---
         parameters:
             - name: ordering
@@ -55,5 +55,4 @@ class GroupCommentViewBase(mixins.ListModelMixin,
               description: group comment id
 
         """
-        self.feedback_set = feedback_set
         return self.list(request, *args, **kwargs)

@@ -41,7 +41,7 @@ def api_key_expired(**kwargs):
 
 def api_key_student_permission_read(**kwargs):
     """
-    Creates a api key that has student read persmission.
+    Creates a api key that has student read permission.
     Args:
         **kwargs:
 
@@ -51,9 +51,21 @@ def api_key_student_permission_read(**kwargs):
     return mommy.make('devilry_api.APIKey', student_permission=APIKey.STUDENT_PERMISSION_READ, **kwargs)
 
 
+def api_key_student_permission_write(**kwargs):
+    """
+    Creates a api key that has student write permission.
+    Args:
+        **kwargs:
+
+    Returns:
+        :obj:`~devilry_api.APIKey` api key
+    """
+    return mommy.make('devilry_api.APIKey', student_permission=APIKey.STUDENT_PERMISSION_WRITE, **kwargs)
+
+
 def api_key_examiner_permission_read(**kwargs):
     """
-    Creates a api key that has examiner read persmission.
+    Creates a api key that has examiner read permission.
     Args:
         **kwargs:
 
@@ -75,7 +87,7 @@ def api_key_examiner_permission_write(**kwargs):
 
 def api_key_admin_permission_read(**kwargs):
     """
-    Creates a api key that has admin read persmission.
+    Creates a api key that has admin read permission.
     Args:
         **kwargs:
 

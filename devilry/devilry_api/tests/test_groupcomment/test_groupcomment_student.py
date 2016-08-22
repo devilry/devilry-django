@@ -460,8 +460,114 @@ class TestGroupCommentFilters(api_test_helper.TestCaseMixin,
                        user_role=GroupComment.USER_ROLE_EXAMINER,
                        comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         candidate = core_mommy.candidate(feedbackset.group)
-        examiner = core_mommy.examiner(feedbackset.group)
         apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
         response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key, queryparams='?ordering=-id')
         self.assertEqual(200, response.status_code)
         self.assertEqual([comment['id'] for comment in response.data], [3, 2, 1])
+
+
+class TestPostComment(api_test_helper.TestCaseMixin,
+                      APITestCase):
+    viewclass = groupcomment_student.GroupCommentViewStudent
+
+    def test_unauthorized_401(self):
+        response = self.mock_post_request(feedbackset=1)
+        self.assertEqual(401, response.status_code)
+
+    def test_not_part_of_assignemnt_group(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=10)
+        candidate = core_mommy.candidate(group=mommy.make('core.AssignmentGroup'))
+        apikey = api_mommy.api_key_student_permission_write(user=candidate.relatedstudent.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={'text': 'hei'})
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(['Access denied Student not part of assignment group'], response.data['feedback_set'])
+
+    def test_post_comment_sanity(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=10)
+        candidate = core_mommy.candidate(group=feedbackset.group)
+        apikey = api_mommy.api_key_student_permission_write(user=candidate.relatedstudent.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={'text': 'hei'})
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.data['text'], 'hei')
+        self.assertEqual(response.data['user_role'], 'student')
+        self.assertEqual(response.data['visibility'], 'visible-to-everyone')
+        self.assertEqual(response.data['feedback_set'], 10)
+        self.assertEqual(response.data['id'], 1)
+        self.assertEqual(response.data['part_of_grading'], False)
+
+    def test_post_comment_no_text(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=10)
+        candidate = core_mommy.candidate(group=feedbackset.group)
+        apikey = api_mommy.api_key_student_permission_write(user=candidate.relatedstudent.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id)
+        self.assertEqual(400, response.status_code)
+
+    def test_post_user_role_cannot_be_examiner(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=10)
+        candidate = core_mommy.candidate(group=feedbackset.group)
+        apikey = api_mommy.api_key_student_permission_write(user=candidate.relatedstudent.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
+            'text': 'hei',
+            'user_role': 'examiner'
+        })
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.data['user_role'], 'student')
+
+    def test_post_user_role_cannot_be_admin(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=10)
+        candidate = core_mommy.candidate(group=feedbackset.group)
+        apikey = api_mommy.api_key_student_permission_write(user=candidate.relatedstudent.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
+            'text': 'hei',
+            'user_role': 'admin'
+        })
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.data['user_role'], 'student')
+
+    def test_post_visibility_cannot_be_private(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=10)
+        candidate = core_mommy.candidate(group=feedbackset.group)
+        apikey = api_mommy.api_key_student_permission_write(user=candidate.relatedstudent.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
+            'text': 'hei',
+            'visibility': 'private'
+        })
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.data['visibility'], 'visible-to-everyone')
+
+    def test_post_visibility_cannot_be_visible_to_examiner_and_admin(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=10)
+        candidate = core_mommy.candidate(group=feedbackset.group)
+        apikey = api_mommy.api_key_student_permission_write(user=candidate.relatedstudent.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
+            'text': 'hei',
+            'visibility': 'visible-to-examiner-and-admins'
+        })
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.data['visibility'], 'visible-to-everyone')
+
+    def test_post_part_of_grading_cannot_be_true(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=10)
+        candidate = core_mommy.candidate(group=feedbackset.group)
+        apikey = api_mommy.api_key_student_permission_write(user=candidate.relatedstudent.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
+            'text': 'hei',
+            'part_of_grading': True
+        })
+        self.assertEqual(201, response.status_code)
+        self.assertFalse(response.data['part_of_grading'])
+
+    def test_post_is_added_to_db(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=10)
+        candidate = core_mommy.candidate(group=feedbackset.group)
+        apikey = api_mommy.api_key_student_permission_write(user=candidate.relatedstudent.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={'text': 'hei'})
+        self.assertEqual(201, response.status_code)
+        comment = GroupComment.objects.get(id=response.data['id'])
+        self.assertEqual(response.data['id'], comment.id)
+        self.assertEqual(response.data['feedback_set'], comment.feedback_set.id)
+        self.assertEqual(response.data['published_datetime'], comment.published_datetime)
+        self.assertEqual(response.data['text'], comment.text)
+        self.assertEqual(response.data['visibility'], comment.visibility)
+        self.assertEqual(response.data['part_of_grading'], comment.part_of_grading)
+        self.assertEqual(response.data['user_role'], comment.user_role)

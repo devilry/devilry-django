@@ -1,4 +1,6 @@
+from rest_framework import status
 from rest_framework.generics import mixins
+from rest_framework.response import Response
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_api.group_comment.serializers.serializer_student import GroupCommentSerializerStudent
@@ -25,11 +27,18 @@ class GroupCommentViewStudent(mixins.CreateModelMixin,
 
     get.__doc__ = GroupCommentViewBase.get.__doc__
 
-    def post(self, request, feedbackset, *args, **kwargs):
+    def post(self, request, feedback_set, *args, **kwargs):
         """
         post a comment to a feedbackset
 
         ---
-
+        parameters:
+            - name: feedback_set
+              required: true
+              paramType: path
+              type: Int
+              description: feedbackset id
         """
-        super(GroupCommentViewStudent, self).create(request, *args, **kwargs)
+        request.data['feedback_set'] = feedback_set
+        request.data['user_role'] = GroupComment.USER_ROLE_STUDENT
+        return super(GroupCommentViewStudent, self).create(request, *args, **kwargs)
