@@ -10,7 +10,8 @@ class DuplicateBackendTypeError(Exception):
 
 class Registry(Singleton):
     """
-    Registry for subclasses of :class:`~devilry.devilry_ziputil.backends.backends_base.PythonZipFileBackend`.
+    Registry for subclasses of
+    :class:`~devilry.devilry_ziputil.backends.backends_base.PythonZipFileBackend`.
     """
     def __init__(self):
         super(Registry, self).__init__()
