@@ -1,7 +1,7 @@
 from rest_framework.generics import mixins
 
 from devilry.devilry_api.group_comment.serializers.serializer_examiner import GroupCommentSerializerExaminer
-from devilry.devilry_api.group_comment.views.groupcomment_base import GroupCommentViewBase
+from devilry.devilry_api.group_comment.views.groupcomment_base import BaseGroupCommentView
 from devilry.devilry_api.models import APIKey
 from devilry.devilry_api.permission.examiner_permission import ExaminerPermissionAPIKey
 from devilry.apps.core.models import AssignmentGroup
@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy
 
 class GroupCommentViewExaminer(mixins.CreateModelMixin,
                                mixins.DestroyModelMixin,
-                               GroupCommentViewBase):
+                               BaseGroupCommentView):
     permission_classes = (ExaminerPermissionAPIKey, )
     api_key_permissions = (APIKey.EXAMINER_PERMISSION_READ, APIKey.EXAMINER_PERMISSION_WRITE)
     serializer_class = GroupCommentSerializerExaminer
@@ -20,6 +20,9 @@ class GroupCommentViewExaminer(mixins.CreateModelMixin,
     def get_object(self):
         """
         This is only used to get a drafted comment
+
+        Returns:
+            :obj:`devilry_group.GroupComment`
         """
         if 'feedback_set' not in self.kwargs:
             raise ValidationError(ugettext_lazy('Url path parameter feedback_set required'))
@@ -39,6 +42,12 @@ class GroupCommentViewExaminer(mixins.CreateModelMixin,
         return comment
 
     def get_role_query_set(self):
+        """
+        Returns role queryset for examiner role
+
+        Returns:
+            :class:`~devilry_group.GroupComment` queryset
+        """
         assignment_group_queryset = AssignmentGroup.objects.filter_examiner_has_access(user=self.request.user)
         return GroupComment.objects.filter(feedback_set__group=assignment_group_queryset,
                                            comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT) \
@@ -47,7 +56,7 @@ class GroupCommentViewExaminer(mixins.CreateModelMixin,
     def get(self, request, feedback_set, *args, **kwargs):
         return super(GroupCommentViewExaminer, self).get(request, feedback_set, *args, **kwargs)
 
-    get.__doc__ = GroupCommentViewBase.get.__doc__
+    get.__doc__ = BaseGroupCommentView.get.__doc__
 
     def post(self, request, feedback_set, *args, **kwargs):
         """

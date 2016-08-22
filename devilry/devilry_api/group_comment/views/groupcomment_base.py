@@ -3,25 +3,59 @@ from rest_framework.filters import OrderingFilter
 from devilry.devilry_api.auth.authentication import TokenAuthentication
 
 
-class GroupCommentViewBase(mixins.ListModelMixin,
+class BaseGroupCommentView(mixins.ListModelMixin,
                            GenericAPIView):
     authentication_classes = (TokenAuthentication, )
     filter_backends = [OrderingFilter]
 
     @property
     def permission_classes(self):
+        """
+        Permission classes required
+
+        Example:
+            permission_classes = (IsAuthenticated, )
+
+        Raises:
+            :class:`NotImplementedError`
+        """
         raise NotImplementedError("please set permission_classes example: permission_classes = (IsAuthenticated, )")
 
     @property
     def api_key_permissions(self):
+        """
+        Should be a list with API key permissions :class:`devilry_api.APIKey`.
+
+        Example:
+            api_key_permissions = (APIKey.STUDENT_PERMISSION_WRITE, APIKey.STUDENT_PERMISSION_READ)
+
+        Raises:
+            :class:`NotImplementedError`
+        """
         raise NotImplementedError(
             "please set api_key_permission example: "
             "api_key_permissions = (APIKey.EXAMINER_PERMISSION_WRITE, APIKey.EXAMINER_PERMISSION_READ)")
 
     def get_role_query_set(self):
+        """
+        Returns queryset for role (examiner, student etc...).
+
+        should return a :class:`~apps.core.AssignmentGroup` queryset.
+
+        Raises:
+            :class:`NotImplementedError`
+
+        """
         raise NotImplementedError()
 
     def get_queryset(self):
+        """
+        Checks query parameters and applies them if given.
+
+        Returns:
+            :class:`~devilry_group.GroupComment` queryset.
+
+        """
         queryset = self.get_role_query_set()
         queryset = queryset.filter(feedback_set__id=self.kwargs['feedback_set'])
 
@@ -35,7 +69,7 @@ class GroupCommentViewBase(mixins.ListModelMixin,
     def get(self, request, feedback_set, *args, **kwargs):
         """
         List comments
-        
+
         ---
         parameters:
             - name: ordering

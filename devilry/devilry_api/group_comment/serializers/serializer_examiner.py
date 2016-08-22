@@ -13,11 +13,12 @@ class GroupCommentSerializerExaminer(serializer_base.GroupCommentSerializerBase)
     def validate(self, data):
         """
         validate data and ignore any other data
+
         Args:
             data:
 
         Returns:
-
+            dictionary with validated data
         """
         if 'text' not in data:
             raise serializers.ValidationError(ugettext_lazy('Data missing: ' 'text missing.'))

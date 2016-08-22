@@ -11,6 +11,7 @@ class GroupCommentSerializerStudent(serializer_base.GroupCommentSerializerBase):
 
     def validate(self, data):
         """
+        validate and ignore any other data
 
         Args:
             data: dictionary
@@ -55,7 +56,7 @@ class GroupCommentSerializerStudent(serializer_base.GroupCommentSerializerBase):
             validated_data: dictionary with validated data
 
         Returns:
-            :obj:`~devilry_group.GroupComment
+            :obj:`~devilry_group.GroupComment`
 
         """
         return GroupComment.objects.create(visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,

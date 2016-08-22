@@ -6,8 +6,13 @@ from devilry.devilry_group.models import GroupComment
 
 
 class GroupCommentSerializerBase(serializers.ModelSerializer):
+    #: Group Comment published on datetime
     published_datetime = serializers.SerializerMethodField()
+
+    #: Full name of user who posted GroupComment
     user_fullname = serializers.SerializerMethodField()
+
+    #: Short name of user who posted GroupComment
     user_shortname = serializers.SerializerMethodField()
 
     class Meta:
@@ -32,6 +37,9 @@ class GroupCommentSerializerBase(serializers.ModelSerializer):
                                 'periodadmin',
                                 'subjectadmin' or
                                 'departmentadmin'.
+
+        Raises:
+            :class:`NotImplementedError`
         """
         raise NotImplementedError("Please set devilry_role example: devilry_role = 'student'")
 
@@ -67,7 +75,7 @@ class GroupCommentSerializerBase(serializers.ModelSerializer):
             instance: :obj:`~devilry_group.GroupComment`
 
         Returns:
-            Full name or anonymized name of student user.
+            :attr:`~devilry_account.User.fullname` or anonymized name of student user.
 
         """
         anonymous = instance.feedback_set.group.parentnode \
@@ -84,7 +92,7 @@ class GroupCommentSerializerBase(serializers.ModelSerializer):
             instance: :obj:`~devilry_group.GroupComment`
 
         Returns:
-            Short name or anonymized name of student user.
+            :attr:`~devilry_account.shortname` or anonymized name of student user.
 
         """
         anonymous = instance.feedback_set.group.parentnode \
@@ -101,7 +109,7 @@ class GroupCommentSerializerBase(serializers.ModelSerializer):
             instance: :obj:`~devilry_group.GroupComment`
 
         Returns:
-            Full name or anonymized name of examiner user.
+            :attr:`~devilry_account.fullname` or anonymized name of examiner user.
 
         """
         anonymous = instance.feedback_set.group.parentnode \
@@ -118,7 +126,7 @@ class GroupCommentSerializerBase(serializers.ModelSerializer):
             instance: :obj:`~devilry_group.GroupComment`
 
         Returns:
-            Short name or anonymized name of examiner user.
+            :attr:`~devilry_account.shortname` or anonymized name of examiner user.
 
         """
         anonymous = instance.feedback_set.group.parentnode \
@@ -134,7 +142,7 @@ class GroupCommentSerializerBase(serializers.ModelSerializer):
             instance: :obj:`~devilry_group.GroupComment`
 
         Returns:
-            (DateTime)
+            :method:`~devilry_group.GroupComment.get_published_datetime`
 
         """
         return instance.get_published_datetime()
@@ -148,7 +156,7 @@ class GroupCommentSerializerBase(serializers.ModelSerializer):
             instance: :obj:`~devilry_group.GroupComment`
 
         Returns:
-            Full name of user.
+            :attr:`~devilry_account.User.fullname` or anonimized name of user.
 
         """
         if instance.user_role == GroupComment.USER_ROLE_STUDENT:
@@ -169,7 +177,7 @@ class GroupCommentSerializerBase(serializers.ModelSerializer):
             instance: :obj:`~devilry_group.GroupComment`
 
         Returns:
-            Short name of user.
+            :attr:`~devilry_account.User.shortname` or anonimized name of user.
 
         """
         if instance.user_role == GroupComment.USER_ROLE_STUDENT:
