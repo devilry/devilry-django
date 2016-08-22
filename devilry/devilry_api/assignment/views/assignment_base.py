@@ -27,8 +27,8 @@ class AssignmentListViewBase(ListAPIView):
         Example:
             api_key_permissions = (APIKey.STUDENT_PERMISSION_WRITE, APIKey.STUDENT_PERMISSION_READ)
 
-        Returns:
-            list with api keys
+        Raises:
+            :class:`NotImplementedError`
         """
         raise NotImplementedError(
             "please set api_key_permission example: "
@@ -38,8 +38,10 @@ class AssignmentListViewBase(ListAPIView):
         """
         Returns queryset for role (examiner, student etc...).
 
-        Returns:
-            :class:`~apps.core.Assignment` queryset.
+        should return a :class:`~apps.core.Assignment` queryset.
+
+        Raises:
+            :class:`NotImplementedError`
 
         """
         raise NotImplementedError()
