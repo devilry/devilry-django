@@ -1,9 +1,11 @@
-# Python imports
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 # Devilry/cradmin imports
 from devilry.devilry_examiner.cradminextensions import devilry_crmenu_examiner
 from devilry.devilry_group.cradmin_instances import crinstance_base
+from devilry.devilry_group.views import feedbackfeed_bulkfiledownload
+from devilry.devilry_group.views import feedbackfeed_download_files
 from devilry.devilry_group.views.examiner import feedbackfeed_examiner
 
 
@@ -24,7 +26,9 @@ class ExaminerCrInstance(crinstance_base.CrInstanceBase):
     """
     menuclass = Menu
     apps = [
-        ('feedbackfeed', feedbackfeed_examiner.App)
+        ('feedbackfeed', feedbackfeed_examiner.App),
+        ('feedbackfeed', feedbackfeed_bulkfiledownload.App),
+        ('feedbackfeed', feedbackfeed_download_files.App)
     ]
     id = 'devilry_group_examiner'
 

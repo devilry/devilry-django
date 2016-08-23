@@ -77,7 +77,7 @@ INSTALLED_APPS = [
     'devilry.devilry_student',
     'devilry.devilry_group.apps.DevilryGroupAppConfig',
     'devilry.devilry_gradeform',
-    'devilry.devilry_comment',
+    'devilry.devilry_comment.apps.DevilryCommentAppConfig',
     'devilry.devilry_i18n',
     'devilry.devilry_settings',
     'devilry.devilry_search',

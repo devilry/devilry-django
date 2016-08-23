@@ -1,0 +1,17 @@
+{% extends 'devilry_group/listbuilder_sidebar/base_sidebar_file_item_value.django.html' %}
+
+{% load devilry_group_tags %}
+{% load cradmin_tags %}
+{% load i18n %}
+
+{% block content %}
+    <dl>
+        <dt>
+{#            <span style="padding-left: 20px;">#}
+            <a href="{% cradmin_appurl 'groupcomment-file-download' me.groupcomment.id %}">
+                ({{ me.groupcomment.user }}){{ me.groupcomment.published_datetime }}
+            </a>
+{#            </span>#}
+        </dt>
+    </dl>
+{% endblock content %}

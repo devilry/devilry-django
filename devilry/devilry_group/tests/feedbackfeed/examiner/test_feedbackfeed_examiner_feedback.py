@@ -119,7 +119,7 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
         """
         NOTE: (works as it should)
         Checking that no more queries are executed even though the
-        :func:`devilry.devilry_group.timeline_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
+        :func:`devilry.devilry_group.feedbackfeed_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
         duplicates comment_file query.
         """
         testgroup = mommy.make('core.AssignmentGroup')
@@ -461,7 +461,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
         """
         NOTE: (works as it should)
         Checking that no more queries are executed even though the
-        :func:`devilry.devilry_group.timeline_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
+        :func:`devilry.devilry_group.feedbackfeed_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
         duplicates comment_file query.
         """
         testgroup = mommy.make('core.AssignmentGroup')

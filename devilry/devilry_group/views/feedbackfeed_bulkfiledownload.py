@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 # Python imports
 import os
 import zipfile
-import io
 
 # Django imports
 from django import http
@@ -9,6 +11,8 @@ from django.db import models
 from django.views import generic
 
 # Devilry/cradmin imports
+from django_cradmin import crapp
+from devilry.devilry_group import models as group_models
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group.models import GroupComment, ImageAnnotationComment
 
@@ -124,7 +128,10 @@ class BulkFileDownloadBaseView(generic.View):
         archivename = "{}{}".format(archivebasename, commentfile.filename)
         while archivename in files.keys():
             identical_filenames_counter += 1
-            archivename = "{}{}-{}{}".format(archivebasename, split_filename[0], identical_filenames_counter, split_filename[1])
+            archivename = "{}{}-{}{}".format(archivebasename,
+                                             split_filename[0],
+                                             identical_filenames_counter,
+                                             split_filename[1])
         return archivename
 
     def __optimize_queryset(self, queryset):
@@ -166,6 +173,12 @@ class BulkFileDownloadBaseView(generic.View):
                     - .....
             inf2100.oblig2.student3.student4/
                 - ....
+
+        Args:
+            queryset (QuerySet): The queryset to use.
+
+        Returns:
+            dict: Dictionary of :class:`~devilry.devilry_comment.models.CommentFile`s.
         """
         files = {}
         attemptcounter = 1
@@ -187,6 +200,9 @@ class BulkFileDownloadBaseView(generic.View):
         """
         Build a zip-archive with structure defined by get_filestructure() in memory using ZipBuffer, and yield chunks
         for streaming to response
+
+        Args:
+            queryset(QuerySet): The queryset to use.
         """
         sink = ZipBuffer()
         archive = zipfile.ZipFile(sink, "w")
@@ -204,9 +220,39 @@ class BulkFileDownloadBaseView(generic.View):
             yield chunk
 
     def get(self, request):
+        """
+        Generate a HttpResponse with a zipped collection of files.
+
+        Args:
+            request (HttpRequest): request for the view.
+
+        Returns:
+            HttpResponse: created response.
+        """
         queryset = self.get_queryset(request)
         if not queryset.exists():
             return http.Http404()  # TODO: fitting errmsg
         response = http.HttpResponse(self.generate_zipped_stream(queryset), content_type="application/zip")
         response['Content-Disposition'] = "attachment; filename={}".format(self.get_zipfilename(request))
         return response
+
+
+class FeedbackfeedBulkFileDownload(BulkFileDownloadBaseView):
+    """
+    View that implements :class:`~.BulkFileDownloadBaseView` for downloading all files
+    for an :class:`~devilry.apps.core.models.AssignmentGroup`.
+    """
+    def get_queryset(self, request):
+        return group_models.FeedbackSet.objects.filter(group=request.cradmin_role)
+
+    def get_zipfilename(self, request):
+        return 'deliveryfile.zip'
+
+
+class App(crapp.App):
+    appurls = [
+        crapp.Url(
+            r'^bulk-filedownload$',
+            FeedbackfeedBulkFileDownload.as_view(),
+            name='bulk-filedownload'),
+    ]

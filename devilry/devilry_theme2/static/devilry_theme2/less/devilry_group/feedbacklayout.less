@@ -22,6 +22,7 @@
     }
 }
 
+
 .devilry-group-feedbackfeed-sidebar {
   background: @devilry-feedbackfeed-focus-bg;
   padding: 10px 20px 10px 20px;
@@ -49,9 +50,6 @@
     text-transform: uppercase;
     font-size: @font-size-base;
     cursor: pointer;
-    //.devilry-group-feedbackfeed-sidebar-dropdownicon{
-    //  float: right;
-    //}
   }
 
   h4:hover {
@@ -61,23 +59,41 @@
     transition: color .2s ease-in-out;
   }
 
-  dl {
-    dt {
-      text-transform: uppercase;
-      font-weight: normal;
-      font-size: @font-size-small;
+  .devilry-group-feedbackfeed-sidebar-groupcomment{
+    dl{
+      dt{
+        padding-left: 20px;
+      }
     }
-    dd {
-      .devilry-group-feedbackfeed-sidebar-files {
-        word-break: break-all;
-        width: 100%;
-      }
-      i.after-deadline-icon{
-        color: @after-deadline-color;
-      }
+  }
 
-      i.examiner-file-icon{
-        color: @devilry-examiner-bgcolor;
+  .devilry-group-feedbackfeed-sidebar-uploaded-file{
+    dl{
+      dt{
+        padding-left: 20px;
+      }
+    }
+  }
+
+  dl {
+    .devilry-group-feedbackfeed-sidebar-filecontent {
+      dt {
+        text-transform: uppercase;
+        font-weight: normal;
+        font-size: @font-size-small;
+      }
+      dd {
+        .devilry-group-feedbackfeed-sidebar-files {
+          word-break: break-all;
+          width: 100%;
+        }
+        i.after-deadline-icon {
+          color: @after-deadline-color;
+        }
+
+        i.examiner-file-icon {
+          color: @devilry-examiner-bgcolor;
+        }
       }
     }
   }

@@ -4,8 +4,7 @@ from django_cradmin.apps.cradmin_resetpassword.views.email_sent import EmailSent
 from django_cradmin.apps.cradmin_resetpassword.views.reset import ResetPasswordView
 
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^begin',
         BeginPasswordResetView.as_view(),
         name="cradmin-resetpassword-begin"),
@@ -15,4 +14,4 @@ urlpatterns = patterns(
     url(r'^reset/(?P<token>.+)',
         ResetPasswordView.as_view(),
         name="cradmin-resetpassword-reset"),
-)
+]

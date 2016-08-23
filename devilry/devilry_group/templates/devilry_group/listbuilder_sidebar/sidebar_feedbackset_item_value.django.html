@@ -1,0 +1,15 @@
+{% extends 'devilry_group/listbuilder_sidebar/base_sidebar_file_item_value.django.html' %}
+
+{% load devilry_group_tags %}
+{% load cradmin_tags %}
+{% load i18n %}
+
+{% block content %}
+    <dl>
+        <dt>
+            {% blocktrans with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
+                {{ verbose_feedbackset }} deadline
+            {% endblocktrans %}
+        </dt>
+    </dl>
+{% endblock content %}
