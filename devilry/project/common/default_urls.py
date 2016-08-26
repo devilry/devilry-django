@@ -43,6 +43,7 @@ devilry_urls = [
     url(r'^devilry_bulkcreate_users/', include('devilry.devilry_bulkcreate_users.urls')),
     url(r'^devilry_examiner/', include('devilry.devilry_examiner.urls')),
     url(r'^devilry_detektor/', include('devilry.devilry_detektor.urls')),
+    url(r'^api/', include('devilry.devilry_api.urls')),
     url(r'^', include(crinstance_frontpage.CrAdminInstance.urls())),
     # url(r'^devilry_qualifiesforexam/', include('devilry.devilry_qualifiesforexam.urls')),
     # url(r'^devilry_qualifiesforexam_approved/', include('devilry.devilry_qualifiesforexam_approved.urls')),

@@ -88,6 +88,7 @@ class GroupCommentViewExaminer(mixins.CreateModelMixin,
                 - private
               description: comment visibility
         """
+        request.POST._mutable = True
         request.data['feedback_set'] = feedback_set
         request.data['user_role'] = GroupComment.USER_ROLE_EXAMINER
         return super(GroupCommentViewExaminer, self).create(request, *args, **kwargs)

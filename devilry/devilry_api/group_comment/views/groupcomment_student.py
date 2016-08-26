@@ -44,9 +44,11 @@ class GroupCommentViewStudent(mixins.CreateModelMixin,
               description: feedbackset id
             - name: text
               required: true
+              paramType: form
               type: String
               description: comment text
         """
+        request.POST._mutable = True
         request.data['feedback_set'] = feedback_set
         request.data['user_role'] = GroupComment.USER_ROLE_STUDENT
         return super(GroupCommentViewStudent, self).create(request, *args, **kwargs)
