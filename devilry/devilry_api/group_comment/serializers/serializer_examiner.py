@@ -72,7 +72,7 @@ class GroupCommentSerializerExaminer(serializer_base.GroupCommentSerializerBase)
         if value and ('visibility' not in self.context['request'].data or
                         self.context['request'].data['visibility'] != GroupComment.VISIBILITY_PRIVATE):
             raise serializers.ValidationError(ugettext_lazy('if part_of_grading = True, visibility has to be private'))
-        feedback_set = FeedbackSet.objects.get(id=self.context['request'].data['feedback_set'])
+        feedback_set = FeedbackSet.objects.get(id=self.initial_data['feedback_set'])
         if value and feedback_set.grading_published_datetime is not None:
             raise serializers.ValidationError(ugettext_lazy('Cannot post part of grading comment '
                                                             'when grading is published'))
