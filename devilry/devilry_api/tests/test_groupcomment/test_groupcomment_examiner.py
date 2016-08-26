@@ -582,8 +582,8 @@ class TestGroupCommentPost(api_test_helper.TestCaseMixin,
         examiner = core_mommy.examiner(group=mommy.make('core.AssignmentGroup'))
         apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
         response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={'text': 'hei'})
-        self.assertEqual(400, response.status_code)
-        self.assertEqual(['Access denied Examiner not part of assignment group'], response.data['feedback_set'])
+        self.assertEqual(403, response.status_code)
+        self.assertEqual('Access denied Examiner not part of assignment group', response.data['detail'])
 
     def test_part_of_assignment_group_old_period(self):
         group = mommy.make('core.AssignmentGroup',
@@ -592,8 +592,8 @@ class TestGroupCommentPost(api_test_helper.TestCaseMixin,
         examiner = core_mommy.examiner(group=group)
         apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
         response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={'text': 'hei'})
-        self.assertEqual(400, response.status_code)
-        self.assertEqual(['Access denied Examiner not part of assignment group'], response.data['feedback_set'])
+        self.assertEqual(403, response.status_code)
+        self.assertEqual('Access denied Examiner not part of assignment group', response.data['detail'])
 
     def test_post_comment_sanity(self):
         group = mommy.make('core.AssignmentGroup',

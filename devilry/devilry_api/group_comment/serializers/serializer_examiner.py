@@ -5,6 +5,7 @@ from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_api.group_comment.serializers import serializer_base
 from devilry.devilry_group.models import GroupComment
 from devilry.devilry_group.models import FeedbackSet
+from rest_framework.exceptions import PermissionDenied
 
 
 class GroupCommentSerializerExaminer(serializer_base.GroupCommentSerializerBase):
@@ -55,7 +56,7 @@ class GroupCommentSerializerExaminer(serializer_base.GroupCommentSerializerBase)
                 .filter_examiner_has_access(self.context['request'].user) \
                 .get(id=value.group.id)
         except AssignmentGroup.DoesNotExist:
-            raise serializers.ValidationError('Access denied ' 'Examiner not part of assignment group')
+            raise PermissionDenied('Access denied ' 'Examiner not part of assignment group')
         return value
 
     def validate_part_of_grading(self, value):
