@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext_lazy
 from rest_framework import serializers
+from rest_framework.exceptions import PermissionDenied
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_api.group_comment.serializers import serializer_base
@@ -46,7 +47,7 @@ class GroupCommentSerializerStudent(serializer_base.GroupCommentSerializerBase):
                 .filter_student_has_access(user=self.context['request'].user) \
                 .get(id=value.group.id)
         except AssignmentGroup.DoesNotExist:
-            raise serializers.ValidationError('Access denied ' 'Student not part of assignment group')
+            raise PermissionDenied('Access denied ' 'Student not part of assignment group')
         return value
 
     def create(self, validated_data):

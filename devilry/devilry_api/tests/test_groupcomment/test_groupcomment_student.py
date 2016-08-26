@@ -493,8 +493,8 @@ class TestPostComment(api_test_helper.TestCaseMixin,
         candidate = core_mommy.candidate(group=mommy.make('core.AssignmentGroup'))
         apikey = api_mommy.api_key_student_permission_write(user=candidate.relatedstudent.user)
         response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={'text': 'hei'})
-        self.assertEqual(400, response.status_code)
-        self.assertEqual(['Access denied Student not part of assignment group'], response.data['feedback_set'])
+        self.assertEqual(403, response.status_code)
+        self.assertEqual('Access denied Student not part of assignment group', response.data['detail'])
 
     def test_post_comment_sanity(self):
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=10)
