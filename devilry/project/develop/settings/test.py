@@ -25,7 +25,7 @@ MEDIA_ROOT = join(testfilesdir, "filestore")
 DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(testfilesdir, 'deliverystorehier')
 
 #: Where to store zipfiles for filedownloads
-DEVILRY_ZIPFILE_DIRECTORY = os.path.join(testfilesdir, 'devilry_zip/')
+DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(testfilesdir, 'devilry_compressed_archives/')
 
 if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' in MIDDLEWARE_CLASSES:
     MIDDLEWARE_CLASSES.remove('devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware')
