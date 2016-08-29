@@ -25,26 +25,26 @@ class TestZipBackend(TestCase):
 
     def setUp(self):
         # Set up a backend path for testing which can be removed after each test.
-        self.backend_path = 'devilry_testfiles/zipfiles/'
+        self.backend_path = 'devilry_testfiles/devilry_compressed_archives/'
 
     def tearDown(self):
         shutil.rmtree(self.backend_path, ignore_errors=False)
 
     def test_backend_path_without_zip_extension(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             testpath = 'testpath'
             backend = backend_mock.MockDevilryZipBackend(archive_path=testpath)
-            self.assertEquals(settings.DEVILRY_ZIPFILE_DIRECTORY+'testpath.zip', backend.get_path())
+            self.assertEquals(settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY+'testpath.zip', backend.get_path())
 
     def test_backend_path_with_zip_extension(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             testpath = 'testpath'
             backend = backend_mock.MockDevilryZipBackend(archive_path=testpath)
-            self.assertNotEquals(settings.DEVILRY_ZIPFILE_DIRECTORY+'testpath.zip.zip', backend.get_path())
-            self.assertEquals(settings.DEVILRY_ZIPFILE_DIRECTORY+'testpath.zip', backend.get_path())
+            self.assertNotEquals(settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY+'testpath.zip.zip', backend.get_path())
+            self.assertEquals(settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY+'testpath.zip', backend.get_path())
 
     def test_backend_open_archive_is_none(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             testpath = 'testpath'
             backend = backend_mock.MockDevilryZipBackend(archive_path=testpath)
             with self.assertRaisesMessage(ValueError, 'Archive does not exist at {}{}.zip'.format(
@@ -52,7 +52,7 @@ class TestZipBackend(TestCase):
                 backend.read_archive()
 
     def test_backend_open_readmode_false(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             backend = backend_mock.MockDevilryZipBackend(archive_path='testpath', readmode=False)
             with self.assertRaisesMessage(ValueError, 'Must be in readmode'):
                 backend.read_archive()
@@ -60,7 +60,7 @@ class TestZipBackend(TestCase):
     def test_backend_open_readmode_true(self):
         # Raises ValueError since the archive is None. This is just to test that the readmode
         # error doesnt kick in.
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             testpath = 'testpath'
             backend = backend_mock.MockDevilryZipBackend(archive_path=testpath, readmode=False)
             backend.readmode = True
@@ -69,13 +69,13 @@ class TestZipBackend(TestCase):
                 backend.read_archive()
 
     def test_backend_add_file_readmode_true(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             backend = backend_mock.MockDevilryZipBackend(archive_path='testpath')
             with self.assertRaisesMessage(ValueError, 'readmode must be False to add files.'):
                 backend.add_file('', None)
 
     def test_backend_close_archive_is_none(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             testpath = 'testpath'
             backend = backend_mock.MockDevilryZipBackend(archive_path=testpath)
             with self.assertRaisesMessage(ValueError, 'Archive does not exist at {}{}.zip'.format(
@@ -83,7 +83,7 @@ class TestZipBackend(TestCase):
                 backend.close_archive()
 
     def test_backend_size_archive_none(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             testpath = 'testpath'
             backend = backend_mock.MockDevilryZipBackend(archive_path=testpath)
             with self.assertRaisesMessage(ValueError, 'Archive does not exist at {}{}.zip'.format(
@@ -92,7 +92,7 @@ class TestZipBackend(TestCase):
 
     def test_backend_is_compressed(self):
         # Simply checks that the compressed archives size is less than the file written to it.
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
                 mockregistry = backend_registry.MockableRegistry.make_mockregistry(
                     backend_mock.MockDevilryZipBackend
                 )
@@ -118,7 +118,7 @@ class TestZipBackend(TestCase):
     def test_backend_open_after_close(self):
             # Test storage of zip archive locally
             # This test is mostly for testing the API and that files are stored correctly.
-            with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+            with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
                 mockregistry = backend_registry.MockableRegistry.make_mockregistry(
                     backend_mock.MockDevilryZipBackend
                 )
@@ -148,7 +148,7 @@ class TestZipBackend(TestCase):
     def test_backend_add_file(self):
             # Test storage of zip archive locally
             # This test is mostly for testing the API and that files are stored correctly.
-            with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+            with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
                 mockregistry = backend_registry.MockableRegistry.make_mockregistry(
                     backend_mock.MockDevilryZipBackend
                 )
@@ -175,7 +175,7 @@ class TestZipBackend(TestCase):
     def test_backend_add_file_deep_path(self):
             # Test storage of zip archive locally
             # This test is mostly for testing the API and that files are stored correctly.
-            with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+            with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
                 mockregistry = backend_registry.MockableRegistry.make_mockregistry(
                     backend_mock.MockDevilryZipBackend
                 )

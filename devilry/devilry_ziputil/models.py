@@ -27,7 +27,7 @@ class GenericMeta(models.Model):
 
 class CompressedArchiveMetaManager(models.Manager):
     """
-
+    Manager for class :class:`.CompressedArchiveMeta`.
     """
     def create_meta(self, instance, zipfile_backend):
         """
@@ -53,7 +53,7 @@ class CompressedArchiveMetaManager(models.Manager):
 
 class CompressedArchiveMeta(GenericMeta):
     """
-    Contains metadata about a compressed archive. Name of the archive, path to it and it's size.
+    Metadata about a compressed archive. Name of the archive, path to it and it's size.
     """
     objects = CompressedArchiveMetaManager()
 

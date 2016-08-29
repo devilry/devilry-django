@@ -73,7 +73,7 @@ class PythonZipFileBackend(BaseArchiveBackend):
 
     @classmethod
     def get_storage_location(cls):
-        return settings.DEVILRY_ZIPFILE_DIRECTORY
+        return settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY
 
     def __init__(self, **kwargs):
         super(PythonZipFileBackend, self).__init__(**kwargs)
