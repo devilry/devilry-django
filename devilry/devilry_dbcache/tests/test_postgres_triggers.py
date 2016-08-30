@@ -419,6 +419,76 @@ class TestCommentFileTriggers(test.TestCase):
         self.assertEqual(0, testgroup.cached_data.file_upload_count_examiner)
 
 
+class TestRecrateCacheData(test.TestCase):
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_feedbackset_count(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        feedbackset1_1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup1)
+
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        feedbackset2_1 = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
+
+        testgroup3 = mommy.make('core.AssignmentGroup')
+        feedbackset3_1 = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup3, is_last_in_group=None)
+        feedbackset3_2 = devilry_group_mommy_factories.feedbackset_new_attempt_published(group=testgroup3)
+
+        testgroup4 = mommy.make('core.AssignmentGroup')
+        feedbackset4_1 = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup4, is_last_in_group=None)
+        feedbackset4_2 = devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(group=testgroup4)
+
+        AssignmentGroupDbCacheCustomSql().recreate_data()
+
+        testgroup1_ = AssignmentGroup.objects.get(id=testgroup1.id)
+        testgroup2_ = AssignmentGroup.objects.get(id=testgroup2.id)
+        testgroup3_ = AssignmentGroup.objects.get(id=testgroup3.id)
+        testgroup4_ = AssignmentGroup.objects.get(id=testgroup4.id)
+
+        self.assertEqual(testgroup1.cached_data.feedbackset_count, testgroup1_.cached_data.feedbackset_count)
+        self.assertEqual(testgroup2.cached_data.feedbackset_count, testgroup2_.cached_data.feedbackset_count)
+        self.assertEqual(testgroup3.cached_data.feedbackset_count, testgroup3_.cached_data.feedbackset_count)
+        self.assertEqual(testgroup4.cached_data.feedbackset_count, testgroup4_.cached_data.feedbackset_count)
+
+
+    def test_create_commentfile_total_gives_correct_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
+        testcomment1 = mommy.make('devilry_group.GroupComment',
+                                  feedback_set=feedbackset,
+                                  comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                                  user_role=GroupComment.USER_ROLE_STUDENT,
+                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment1)
+        testcomment2 = mommy.make('devilry_group.GroupComment',
+                                  feedback_set=feedbackset,
+                                  comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                                  user_role=GroupComment.USER_ROLE_EXAMINER,
+                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment2)
+
+        testcomment3 = mommy.make('devilry_group.ImageAnnotationComment',
+                              feedback_set=feedbackset,
+                              comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
+                              user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
+                              visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        self.assertEqual(2, testgroup.cached_data.file_upload_count_total)
+
+        feedbackset_count = testgroup.cached_data.feedbackset_count
+        public_total_comment_count = testgroup.cached_data.public_total_comment_count
+        public_total_imageannotationcomment_count = testgroup.cached_data.public_total_imageannotationcomment_count
+
+        AssignmentGroupDbCacheCustomSql().recreate_data()
+
+        testgroup = AssignmentGroup.objects.get(id=testgroup.id)
+        self.assertEqual(feedbackset_count, testgroup.cached_data.feedbackset_count)
+        self.assertEqual(public_total_comment_count, testgroup.cached_data.public_total_comment_count)
+        self.assertEqual(public_total_imageannotationcomment_count,
+                         testgroup.cached_data.public_total_imageannotationcomment_count)
+
+
 class TimeExecution(object):
     def __init__(self, label):
         self.start_time = None
