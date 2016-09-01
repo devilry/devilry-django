@@ -1,8 +1,10 @@
 # Python imports
 import os
 import shutil
+from unittest import skip
 
 # Django imports
+
 from django.test import TestCase
 from django.conf import settings
 
@@ -11,6 +13,8 @@ from devilry.devilry_ziputil import backend_registry
 from devilry.devilry_ziputil.backends import backend_mock
 
 # Dummy text for compression tests
+from devilry.devilry_ziputil.backends.backends_base import PythonTarFileBackend
+
 lorem_ipsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In facilisis dignissim enim eu luctus. ' \
               'Vivamus volutpat porta interdum. Curabitur porttitor justo ut turpis eleifend tristique. Cras posuere ' \
               'mauris vitae risus luctus, ac hendrerit mi rhoncus. Nullam ultricies mollis elit. Aenean venenatis, ' \
@@ -34,14 +38,18 @@ class TestZipBackend(TestCase):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             testpath = 'testpath'
             backend = backend_mock.MockDevilryZipBackend(archive_path=testpath)
-            self.assertEquals(settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY+'testpath.zip', backend.get_path())
+            self.assertEquals(settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY+'testpath.zip', backend.archive_path)
 
     def test_backend_path_with_zip_extension(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             testpath = 'testpath'
             backend = backend_mock.MockDevilryZipBackend(archive_path=testpath)
-            self.assertNotEquals(settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY+'testpath.zip.zip', backend.get_path())
-            self.assertEquals(settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY+'testpath.zip', backend.get_path())
+            self.assertNotEquals(
+                    settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY+'testpath.zip.zip',
+                    backend.archive_path)
+            self.assertEquals(
+                    settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY+'testpath.zip',
+                    backend.archive_path)
 
     def test_backend_open_archive_is_none(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
@@ -80,7 +88,7 @@ class TestZipBackend(TestCase):
             backend = backend_mock.MockDevilryZipBackend(archive_path=testpath)
             with self.assertRaisesMessage(ValueError, 'Archive does not exist at {}{}.zip'.format(
                     self.backend_path, testpath)):
-                backend.close_archive()
+                backend.close()
 
     def test_backend_size_archive_none(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
@@ -108,7 +116,7 @@ class TestZipBackend(TestCase):
 
                 # Write to backend
                 backend.add_file('{}'.format(filename), open(filename, 'r'))
-                backend.close_archive()
+                backend.close()
 
                 # Read from created archive
                 backend.readmode = True
@@ -134,9 +142,8 @@ class TestZipBackend(TestCase):
 
                 # Write to backend
                 backend.add_file('{}'.format(filename), open(filename, 'r'))
-                backend.close_archive()
                 backend.add_file('{}'.format('testfile2.txt'), open(filename, 'r'))
-                backend.close_archive()
+                backend.close()
                 os.remove(f.name)
 
                 # Read from created archive
@@ -164,7 +171,7 @@ class TestZipBackend(TestCase):
 
                 # Write to backend
                 backend.add_file('{}'.format(filename), open(filename, 'r'))
-                backend.close_archive()
+                backend.close()
                 os.remove(f.name)
 
                 # Read from created archive
@@ -192,10 +199,149 @@ class TestZipBackend(TestCase):
 
                 # Write to backend
                 backend.add_file('{}'.format(filename), open(filename, 'r'))
-                backend.close_archive()
+                backend.close()
                 os.remove(f.name)
 
                 # Read from created archive
                 backend.readmode = True
                 archive = backend.get_archive()
                 self.assertEquals('testcontent', archive.read(archive.namelist()[0]))
+
+
+@skip('Skip tarfile tests until tarfile is complete(possible goal 3.1)')
+class TestTarFileBackend(TestCase):
+
+    def setUp(self):
+        # Set up a backend path for testing which can be removed after each test.
+        self.backend_path = 'devilry_testfiles/devilry_compressed_archives/'
+
+    def tearDown(self):
+        shutil.rmtree(self.backend_path, ignore_errors=False)
+
+    def test_deep_nesting(self):
+        nesting_levels = [
+            'test',
+            'test/dir1',
+            'test/dir2',
+
+            'test/dir1/dir1_dir1',
+            'test/dir1/dir1_dir2',
+            'test/dir1/dir1_dir1/test.txt',
+            'test/dir1/dir1_dir2/test.txt',
+
+            'test/dir2/dir2_dir1',
+            'test/dir2/dir2_dir1/test.txt'
+        ]
+
+        backend = PythonTarFileBackend(archive_path='test', archive_name='test', compression='')
+        backend.readmode = False
+
+        filename = 'test.txt'
+        f = open(filename, 'w')
+        f.write(lorem_ipsum)
+        f.close()
+
+        backend.add_file('dir1/dir1_dir1', open(filename, 'rb'))
+        backend.add_file('dir2/dir2_dir1/', open(filename, 'rb'))
+        backend.add_file('dir1/dir1_dir2/', open(filename, 'rb'))
+        backend.close()
+        os.remove(f.name)
+
+        backend.readmode = True
+        archive = backend.read_archive()
+
+        for member in archive.getmembers():
+            self.assertTrue(member.name in nesting_levels)
+
+    def test_uncompressed_size(self):
+        backend_uncompressed = PythonTarFileBackend(
+                archive_path='test_uncompressed',
+                archive_name='test_uncompressed',
+                compression='')
+        backend_uncompressed.readmode = False
+
+        backend_gz = PythonTarFileBackend(
+                archive_path='test_gz',
+                archive_name='test_gz',
+                compression='gz')
+        backend_gz.readmode = False
+
+        filename = 'test.txt'
+        f = open(filename, 'w')
+        f.write(lorem_ipsum)
+        f.close()
+
+        backend_uncompressed.add_file('', open(filename, 'r'))
+        backend_uncompressed.close()
+
+        backend_gz.add_file('', open(filename, 'r'))
+        backend_gz.close()
+
+        os.remove(f.name)
+
+        backend_uncompressed.readmode = True
+        backend_gz.readmode = True
+
+        self.assertTrue(backend_uncompressed.archive_size() > backend_gz.archive_size())
+
+    def test_gzip_size(self):
+        backend_uncompressed = PythonTarFileBackend(
+                archive_path='test_uncompressed',
+                archive_name='test_uncompressed',
+                compression='')
+        backend_uncompressed.readmode = False
+
+        backend_gz = PythonTarFileBackend(
+                archive_path='test_gz',
+                archive_name='test_gz',
+                compression='gz')
+        backend_gz.readmode = False
+
+        filename = 'test.txt'
+        f = open(filename, 'w')
+        f.write(lorem_ipsum)
+        f.close()
+
+        backend_uncompressed.add_file('', open(filename, 'r'))
+        backend_uncompressed.close()
+
+        backend_gz.add_file('', open(filename, 'r'))
+        backend_gz.close()
+
+        os.remove(f.name)
+
+        backend_uncompressed.readmode = True
+        backend_gz.readmode = True
+
+        self.assertTrue(backend_gz.archive_size() < backend_uncompressed.archive_size())
+
+    def test_bzip2_size(self):
+        backend_uncompressed = PythonTarFileBackend(
+                archive_path='test_uncompressed',
+                archive_name='test_uncompressed',
+                compression='')
+        backend_uncompressed.readmode = False
+
+        backend_bz2 = PythonTarFileBackend(
+                archive_path='test_gz',
+                archive_name='test_gz',
+                compression='bz2')
+        backend_bz2.readmode = False
+
+        filename = 'test.txt'
+        f = open(filename, 'w')
+        f.write(lorem_ipsum)
+        f.close()
+
+        backend_uncompressed.add_file('', open(filename, 'r'))
+        backend_uncompressed.close()
+
+        backend_bz2.add_file('', open(filename, 'r'))
+        backend_bz2.close()
+
+        os.remove(f.name)
+
+        backend_uncompressed.readmode = True
+        backend_bz2.readmode = True
+
+        self.assertTrue(backend_bz2.archive_size() < backend_uncompressed.archive_size())
