@@ -40,7 +40,7 @@ class GroupCommentCompressAction(batchregistry.Action):
         # Write files to archive
         for commentfile in commentfiles:
             zipfile_backend.add_file('{}'.format(commentfile.filename), commentfile.file.file)
-        zipfile_backend.close_archive()
+        zipfile_backend.close()
 
         # create archive meta entry
         from devilry.devilry_ziputil.models import CompressedArchiveMeta
@@ -94,7 +94,7 @@ class FeedbackSetCompressAction(batchregistry.Action):
                         else:
                             zipfile_backend.add_file('delivery/{}'.format(comment_file.filename),
                                                      comment_file.file.file)
-        zipfile_backend.close_archive()
+        zipfile_backend.close()
 
         # create archive meta entry
         from devilry.devilry_ziputil.models import CompressedArchiveMeta

@@ -152,7 +152,7 @@ class CompressedGroupCommentFileDownload(generic.View):
         # Write files to archive
         for commentfile in commentfiles:
             zipfile_backend.add_file('{}'.format(commentfile.filename), commentfile.file.file)
-        zipfile_backend.close_archive()
+        zipfile_backend.close()
 
         # Add zipped archive to response
         zipfile_backend.readmode = True
@@ -272,7 +272,7 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
                         else:
                             zipfile_backend.add_file('delivery/{}'.format(comment_file.filename),
                                                      comment_file.file.file)
-        zipfile_backend.close_archive()
+        zipfile_backend.close()
 
         # Add zipped archive to response
         zipfile_backend.readmode = True

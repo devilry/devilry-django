@@ -106,14 +106,14 @@ class TestCompressedGroupCommentFileDownload(TestCase):
     """
     def setUp(self):
         # Sets up a directory where files can be added. Is removed by tearDown.
-        self.backend_path = 'devilry_testfiles/devilry_zip/'
+        self.backend_path = 'devilry_testfiles/devilry_compressed_archives/'
 
     def tearDown(self):
         # Ignores errors if the path is not created.
         shutil.rmtree(self.backend_path, ignore_errors=True)
 
     def test_groupcomment_files_download(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             # Test download of all files for GroupComment.
             testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
             testcomment = mommy.make('devilry_group.GroupComment', user=testuser, user_role='student')
@@ -130,7 +130,7 @@ class TestCompressedGroupCommentFileDownload(TestCase):
             self.assertEquals(filecontents, 'testcontent')
 
     def test_groupcomment_files_download_two_users(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             testgroup = mommy.make('core.AssignmentGroup')
             testuser1 = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
             testuser2 = mommy.make(settings.AUTH_USER_MODEL, shortname='april@example.com', fullname='April Duck')
@@ -163,7 +163,7 @@ class TestCompressedGroupCommentFileDownload(TestCase):
             self.assertEquals(filecontents, 'testcontent')
 
     def test_groupcomment_download_user_not_in_group_404(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             # Test user can't download if not part of AssignmentGroup
             testgroup = mommy.make('core.AssignmentGroup')
             testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
@@ -179,7 +179,7 @@ class TestCompressedGroupCommentFileDownload(TestCase):
                 testdownloader.get(mockrequest, testcomment.id)
 
     def test_groupcomment_download_private_comment_404(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             # User cant download private comment unless the user created it.
             testgroup = mommy.make('core.AssignmentGroup')
             testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
@@ -204,14 +204,14 @@ class TestCompressedFeedbackSetFileDownload(TestCase):
     """
     def setUp(self):
         # Sets up a directory where files can be added. Is removed by tearDown.
-        self.backend_path = 'devilry_testfiles/devilry_zip/'
+        self.backend_path = 'devilry_testfiles/devilry_compressed_archives/'
 
     def tearDown(self):
         # Ignores errors if the path is not created.
         shutil.rmtree(self.backend_path, ignore_errors=True)
 
     def test_feedbackset_files_download(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             # Test download files from feedbackset
             testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
             testfeedbackset = mommy.make('devilry_group.FeedbackSet',
@@ -236,7 +236,7 @@ class TestCompressedFeedbackSetFileDownload(TestCase):
             self.assertEquals('student-testcontent', zipfileobject.read('delivery/testfile-student.txt'))
 
     def test_feedbackset_files_download_two_users(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             # Test download files from feedbackset
             testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
             testfeedbackset = mommy.make('devilry_group.FeedbackSet',
@@ -284,7 +284,7 @@ class TestCompressedFeedbackSetFileDownload(TestCase):
                 zipfileobject.read('delivery/testfile-private-examiner.txt')
 
     def test_feedbackset_files_download_after_deadline(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             # Test download files from feedbackset
             testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
             testfeedbackset = mommy.make('devilry_group.FeedbackSet',
@@ -308,7 +308,7 @@ class TestCompressedFeedbackSetFileDownload(TestCase):
             self.assertEquals('student-testcontent', zipfileobject.read('uploaded_after_deadline/testfile-student.txt'))
 
     def test_feedbackset_download_user_not_in_group_404(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             # Test user can't download if not part of AssignmentGroup
             testgroup = mommy.make('core.AssignmentGroup')
             testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
