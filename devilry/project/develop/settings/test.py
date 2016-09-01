@@ -24,7 +24,7 @@ if not exists(logdir):
 MEDIA_ROOT = join(testfilesdir, "filestore")
 DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(testfilesdir, 'deliverystorehier')
 
-#: Where to store zipfiles for filedownloads
+#: Where to store compressed archives for download.
 DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(testfilesdir, 'devilry_compressed_archives/')
 
 if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' in MIDDLEWARE_CLASSES:
