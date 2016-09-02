@@ -27,7 +27,7 @@ class BaseFeedbacksetView(mixins.ListModelMixin,
         Should be a list with API key permissions :class:`devilry_api.APIKey`.
 
         Example:
-            api_key_permissions = (APIKey.STUDENT_PERMISSION_WRITE, APIKey.STUDENT_PERMISSION_READ)
+            api_key_permissions = (:attr:`APIKey.STUDENT_PERMISSION_WRITE`, :attr:`APIKey.STUDENT_PERMISSION_READ`)
 
         Raises:
             :class:`NotImplementedError`

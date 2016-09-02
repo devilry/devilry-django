@@ -21,6 +21,7 @@ class FeedbacksetViewExaminer(mixins.CreateModelMixin,
 
     def get_object(self):
         """
+
         Returns a :obj:`devilry_group.Feedbackset` with id passed in queryparams
 
         Returns:

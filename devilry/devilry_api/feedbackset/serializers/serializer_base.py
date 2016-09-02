@@ -23,19 +23,19 @@ class BaseFeedbacksetSerializer(serializers.Serializer):
     FEEDBACKSET_CHOICES = FeedbackSet.FEEDBACKSET_TYPE_CHOICES
 
     #: Id of feedbackset.
-    id = serializers.IntegerField(required=False)
+    id = serializers.IntegerField(required=False, read_only=True)
 
     #: Id of related group.
     group_id = serializers.IntegerField(required=True)
 
     #: Feedbackset created datetime.
-    created_datetime = serializers.DateTimeField(required=False)
+    created_datetime = serializers.DateTimeField(read_only=True)
 
     #: Feedbackset type
     feedbackset_type = serializers.ChoiceField(choices=FEEDBACKSET_CHOICES, required=True)
 
     #: is last in group
-    is_last_in_group = serializers.BooleanField(required=False)
+    is_last_in_group = serializers.BooleanField(read_only=True)
 
     #: Feedbackset deadline datetime
     deadline_datetime = DeadlineDatetime(required=True)
@@ -76,7 +76,7 @@ class BaseFeedbacksetSerializer(serializers.Serializer):
                                             relatedexaminer__user=instance.created_by)
 
         except Examiner.DoesNotExist:
-            return 'Admin'
+            return None
         if anonymous:
             return examiner.get_anonymous_name()
         return instance.created_by.fullname

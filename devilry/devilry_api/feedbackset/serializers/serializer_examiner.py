@@ -64,7 +64,7 @@ class FeedbacksetSerializerExaminer(serializer_base.BaseFeedbacksetSerializer):
     def validate(self, data):
         """
         Checks existence of required data and makes sure that any other data than group,
-        and feedbackset_type is ignored, rest of the data will be set automatically.
+        deadline_datetime and feedbackset_type is ignored, rest of the data will be set automatically.
 
         Returns:
             dict with group, deadline_datetime and feedbackset_type

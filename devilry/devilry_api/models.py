@@ -131,6 +131,7 @@ class APIKey(models.Model):
     #: Constant for the :obj:`~.APIKey.admin_permission` "no permission" choice.
     ADMIN_NO_PERMISSION = 'admin-no-permission'
 
+
     #: Choices for :obj:`.APIKey.admin_permission'.
     ADMIN_PERMISSION_CHOICES = [
         (
