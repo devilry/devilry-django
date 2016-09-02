@@ -1,16 +1,18 @@
 # -​*- coding: utf-8 -*​-
 from __future__ import unicode_literals
 
+import datetime
+
 from model_mommy import mommy
 from rest_framework.test import APITestCase
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
-from devilry.devilry_api import devilry_api_mommy_factories as api_mommy
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
-from devilry.devilry_api.tests.mixins import test_student_mixins, api_test_helper, test_common_mixins
-from devilry.devilry_api.group_comment.views import groupcomment_student
-from devilry.devilry_group.models import GroupComment
 from devilry.apps.core.models import Assignment
+from devilry.devilry_api import devilry_api_mommy_factories as api_mommy
+from devilry.devilry_api.group_comment.views import groupcomment_student
+from devilry.devilry_api.tests.mixins import test_student_mixins, api_test_helper, test_common_mixins
+from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group.models import GroupComment
 
 
 class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
@@ -584,3 +586,14 @@ class TestPostComment(api_test_helper.TestCaseMixin,
         self.assertEqual(response.data['visibility'], comment.visibility)
         self.assertEqual(response.data['part_of_grading'], comment.part_of_grading)
         self.assertEqual(response.data['user_role'], comment.user_role)
+
+    def test_post_created_datetime_future(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=10)
+        candidate = core_mommy.candidate(group=feedbackset.group)
+        apikey = api_mommy.api_key_student_permission_write(user=candidate.relatedstudent.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
+            'text': 'hei',
+            'created_datetime': datetime.datetime.now() + datetime.timedelta(days=1)
+        })
+        self.assertEqual(201, response.status_code)
+        self.assertLess(response.data['created_datetime'], datetime.datetime.now().isoformat())
