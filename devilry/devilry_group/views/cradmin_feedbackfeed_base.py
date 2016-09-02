@@ -262,7 +262,6 @@ class FeedbackFeedBaseView(create.CreateView):
             return False
 
         for temporaryfile in temporaryfilecollection.files.all():
-            print "creating commentfile for file: {}".format(temporaryfile.filename)
             groupcomment.add_commentfile_from_temporary_file(tempfile=temporaryfile)
 
         return True
