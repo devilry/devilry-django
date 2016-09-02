@@ -59,7 +59,7 @@ The assignment examiner api will list all assignments which an examiner has acce
 
 Period admin
 ============
-**Comming soon**
+**Coming soon**
 The assignment period admin api will list all assignments which a period admin has access to.
 In addition to that a period admin will also be able to:
 
@@ -75,7 +75,7 @@ Other features that we should consider:
 
 Subject admin
 =============
-**Comming soon**
+**Coming soon**
 Has same privileges as period admin, but in addition to that a subject admin has also access to semi anonymous exams.
 
 
@@ -107,7 +107,7 @@ The assignment group examiner api will list all assignments groups which an exam
 
 Period admin
 ============
-**Comming soon**
+**Coming soon**
 The assignment group period admin api will list all assignment groups which a period admin has access to.
 In additon to that a period admin will also be able to:
 
@@ -118,7 +118,7 @@ In additon to that a period admin will also be able to:
 
 Subject admin
 =============
-**Comming soon**
+**Coming soon**
 Has same privileges as period admin, but in addition to that a subject admin has also access to semi anonymous exams.
 
 
@@ -154,7 +154,7 @@ In addition to that an examiner will also be able to:
 
 Period admin
 ============
-**Comming soon**
+**Coming soon**
 The feedbackset period admin api will list all feedbacksets which a period admin has access to.
 In addition to that a period admin will also be able to:
 
@@ -164,7 +164,7 @@ In addition to that a period admin will also be able to:
 
 Subject admin
 =============
-**Comming soon**
+**Coming soon**
 Has same previleges as period admin, but in addition to that a subject admin has also access to semi anonymous exams.
 
 
@@ -202,7 +202,7 @@ In the group comment examiner api an examiner will be able to:
 
 Period admin
 ============
-**Comming soon**
+**Coming soon**
 In the group comment period admin api a period admin should be able to:
 
 - View all comments, but not an examiners drafted comments.
@@ -210,5 +210,5 @@ In the group comment period admin api a period admin should be able to:
 
 Subject admin
 =============
-**Comming soon**
+**Coming soon**
 Has same previleges as period admin, but in addition to that a subject admin has also access to semi anonymous exams.
