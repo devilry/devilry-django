@@ -340,7 +340,7 @@ class TestFeedbackfeedAdminPermissions(TestCase, TestCaseMixin):
         admin = mommy.make(settings.AUTH_USER_MODEL)
         permissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
                                      permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_SUBJECTADMIN,
-                                     subject=subject1)
+                                     subject=subject2)
         mommy.make('devilry_account.PermissionGroupUser',
                    user=admin,
                    permissiongroup=permissiongroup.permissiongroup)
