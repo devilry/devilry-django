@@ -11,7 +11,7 @@ from devilry.devilry_api.tests.mixins import test_examiner_mixins, api_test_help
 from devilry.devilry_group.models import FeedbackSet
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.apps.core import mommy_recipes
-
+from devilry.apps.core.models import Assignment
 
 class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                             test_examiner_mixins.TestAuthAPIKeyExaminerMixin,
@@ -119,6 +119,87 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['created_by_fullname'], 'Thor')
+
+
+class TestFeedbacksetAnonymization(api_test_helper.TestCaseMixin,
+                                   APITestCase):
+    viewclass = feedbackset_examiner.FeedbacksetViewExaminer
+
+    def test_anonymization_off(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                                        anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF))
+        examiner = devilry_core_mommy_factories.examiner(group, fullname='Donald')
+        request_examiner = devilry_core_mommy_factories.examiner(group, fullname='Thor')
+        mommy.make('devilry_group.Feedbackset', group=group, created_by=examiner.relatedexaminer.user)
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(
+            user=request_examiner.relatedexaminer.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data[0]['created_by_fullname'], 'Donald')
+
+    def test_anonymization_semi(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                                        anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
+        examiner = devilry_core_mommy_factories.examiner(group, fullname='Donald')
+        request_examiner = devilry_core_mommy_factories.examiner(group, fullname='Thor')
+        mommy.make('devilry_group.Feedbackset', group=group, created_by=examiner.relatedexaminer.user)
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(
+            user=request_examiner.relatedexaminer.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data[0]['created_by_fullname'], 'Donald')
+
+    def test_anonymization_fully(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                                        anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
+        examiner = devilry_core_mommy_factories.examiner(group, fullname='Donald')
+        request_examiner = devilry_core_mommy_factories.examiner(group, fullname='Thor')
+        mommy.make('devilry_group.Feedbackset', group=group, created_by=examiner.relatedexaminer.user)
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(
+            user=request_examiner.relatedexaminer.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data[0]['created_by_fullname'], 'Donald')
+
+    def test_feeedbackset_first_anonymization_off(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                                        anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF))
+        request_examiner = devilry_core_mommy_factories.examiner(group, fullname='Thor')
+        mommy.make('devilry_group.Feedbackset', group=group)
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(
+            user=request_examiner.relatedexaminer.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data[0]['created_by_fullname'], None)
+
+    def test_feeedbackset_first__anonymization_semi(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                                        anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS))
+        request_examiner = devilry_core_mommy_factories.examiner(group, fullname='Thor')
+        mommy.make('devilry_group.Feedbackset', group=group)
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(
+            user=request_examiner.relatedexaminer.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data[0]['created_by_fullname'], None)
+
+    def test_feeedbackset_first__anonymization_fully(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                                        anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS))
+        request_examiner = devilry_core_mommy_factories.examiner(group, fullname='Thor')
+        mommy.make('devilry_group.Feedbackset', group=group)
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(
+            user=request_examiner.relatedexaminer.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data[0]['created_by_fullname'], None)
+
 
 
 class TestFeedbacksetFilters(api_test_helper.TestCaseMixin,

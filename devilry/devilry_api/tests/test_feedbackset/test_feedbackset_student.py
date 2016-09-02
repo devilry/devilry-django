@@ -151,6 +151,36 @@ class TestFeedbacksetAnonymization(api_test_helper.TestCaseMixin,
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['created_by_fullname'], 'Anonymous ID missing')
 
+    def test_anonymization_off_feedbackset_created_by_admins(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        candidate = devilry_core_mommy_factories.candidate(group=group)
+        group_mommy.feedbackset_first_attempt_published(is_last_in_group=None, group=group)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data[0]['created_by_fullname'], None)
+
+    def test_anonymization_semi_feedbackset_created_by_admins(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        candidate = devilry_core_mommy_factories.candidate(group=group)
+        group_mommy.feedbackset_first_attempt_published(is_last_in_group=None, group=group)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data[0]['created_by_fullname'], None)
+
+    def test_anonymization_feedbackset_created_by_admins(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        candidate = devilry_core_mommy_factories.candidate(group=group)
+        group_mommy.feedbackset_first_attempt_published(is_last_in_group=None, group=group)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data[0]['created_by_fullname'], None)
+
 
 class TestFeedbacksetFilters(api_test_helper.TestCaseMixin,
                              APITestCase):
