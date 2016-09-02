@@ -12,9 +12,9 @@ The devilry_api is built on django rest framework and documented with swagger.
 For swagger docs see /api/docs.
 
 
-#################
-What is a APIKey?
-#################
+##################
+What is an APIKey?
+##################
 The APIKey has a foreign key to a user and stores information of its purpose and permission level.
 It also has a key type which tells how long a key last from it's created datetime.
 There are three types of permission classes, admin-, examiner- and student permission.
@@ -189,7 +189,7 @@ In the group comment examiner api an examiner will be able to:
 * Post comments which is either visible to everyone, examiners and admins or private for drafts.
 
 .. automodule:: devilry.devilry.feedbackset.vies.groupcomment_examiner
-:members:
+    :members:
 
 
 Period admin
