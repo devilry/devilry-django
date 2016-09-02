@@ -62,10 +62,12 @@ Period admin
 **Comming soon**
 The assignment period admin api will list all assignments which a period admin has access to.
 In addition to that a period admin will also be able to:
+
 - Create an assignment with anonimization mode off.
 - update all properties except anonimization mode.
 - Delete an assignment if there is no child content other than basic initialization content,
   for instance a period admin should not be able to delete an assignment if there is a comment on a feedback set.
+
 Other features that we should consider:
 - Dry runs show whats being deleted?
 
@@ -107,6 +109,7 @@ Period admin
 **Comming soon**
 The assignment group period admin api will list all assignment groups which a period admin has access to.
 In additon to that a period admin will also be able to:
+
 - Create assignment group.
 - Add examiners and students to assignment group.
 - Delete assignment group if there is no students in assignment group.
@@ -140,6 +143,7 @@ Examiner
 ========
 The feedbackset examiner api will list all feedback sets which an exminer has access to.
 In addition to that an examiner will also be able to:
+
 - Create a new feedbackset (if the old feedbackset has expired and grading is published?)
 - Publish a feedbackset with grading points. **Cooming soon**
 
@@ -152,6 +156,7 @@ Period admin
 **Comming soon**
 The feedbackset period admin api will list all feedbacksets which a period admin has access to.
 In addition to that a period admin will also be able to:
+
 - Create feedbackset.
 - Update feedbackset.
 
@@ -175,6 +180,7 @@ Group Comment
 Student
 =======
 In the group comment student api a student will be able to:
+
 - View all comments which is Visible to everyone.
 - Post comments which is visible to everyone and not part_of_grading comments.
 
@@ -185,6 +191,7 @@ In the group comment student api a student will be able to:
 Examiner
 ========
 In the group comment examiner api an examiner will be able to:
+
 - View all comments but not other examiners private comments.
 - Post comments which is either visible to everyone, examiners and admins or private for drafts.
 
@@ -196,6 +203,7 @@ Period admin
 ============
 **Comming soon**
 In the group comment period admin api a period admin should be able to:
+
 - View all comments, but not an examiners drafted comments.
 - Post comments with visibility to everyone or visible to examiners and admins.
 
