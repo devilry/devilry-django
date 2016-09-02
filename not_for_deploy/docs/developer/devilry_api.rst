@@ -69,7 +69,8 @@ In addition to that a period admin will also be able to:
   for instance a period admin should not be able to delete an assignment if there is a comment on a feedback set.
 
 Other features that we should consider:
-- Dry runs show whats being deleted?
+
+- Dry runs (show whats being deleted?)
 
 
 Subject admin
