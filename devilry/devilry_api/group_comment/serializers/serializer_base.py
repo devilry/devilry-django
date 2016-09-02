@@ -27,6 +27,7 @@ class GroupCommentSerializerBase(serializers.ModelSerializer):
             'user_fullname',
             'user_shortname',
             'user_role',
+            'created_datetime'
         ]
 
     @property
