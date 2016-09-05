@@ -13,7 +13,8 @@ API_KEY_ALLOWED_METHODS = {
 
 class PeriodAdminPermissionAPIKey(BaseIsAuthenticatedAPIKey):
     """
-    Permission for period admin
+    Permission for period admin,
+    TODO: check if request user is period admin?
     """
 
     def has_permission(self, request, view):
