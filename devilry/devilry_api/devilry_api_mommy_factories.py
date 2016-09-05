@@ -95,3 +95,15 @@ def api_key_admin_permission_read(**kwargs):
         :obj:`~devilry_api.APIKey` api key
     """
     return mommy.make('devilry_api.APIKey', admin_permission=APIKey.ADMIN_PERMISSION_READ, **kwargs)
+
+
+def api_key_admin_permission_write(**kwargs):
+    """
+    Creates a api key that has admin write permission.
+    Args:
+        **kwargs:
+
+    Returns:
+        :obj:`~devilry_api.APIKey` api key
+    """
+    return mommy.make('devilry_api.APIKey', admin_permission=APIKey.ADMIN_PERMISSION_WRITE, **kwargs)

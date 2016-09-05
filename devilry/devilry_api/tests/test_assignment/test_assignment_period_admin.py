@@ -1,6 +1,8 @@
 from model_mommy import mommy
 from rest_framework.test import APITestCase
 
+from devilry.apps.core.models import Assignment
+from devilry.apps.core import mommy_recipes as core_recipes
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.devilry_api import devilry_api_mommy_factories as api_mommy
 from devilry.devilry_api.assignment.views import assignment_period_admin
@@ -185,3 +187,110 @@ class TestPeriodAdminAssignmentViewFilters(api_test_helper.TestCaseMixin,
         assignment_publishing_time = [assignment['short_name'] for assignment in response.data]
         self.assertListEqual([assignment2.short_name,
                               assignment1.short_name], assignment_publishing_time)
+
+
+class TestPeriodAdminAssignmentViewPost(api_test_helper.TestCaseMixin,
+                                        APITestCase):
+    viewclass = assignment_period_admin.PeriodAdminAssignmentView
+
+    def test_unauthorized_401(self):
+        response = self.mock_post_request()
+        self.assertEqual(401, response.status_code)
+
+    def test_not_part_of_period(self):
+        mommy.make('core.Period', id=11)
+        period_admin = core_mommy.period_admin(period=mommy.make('core.Period'))
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_post_request(apikey=apikey.key, data={
+            'period_id': 10,
+            'short_name': 'assignment1',
+            'long_name': 'The best assignment',
+            'publishing_time': core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME
+        })
+        self.assertEqual(403, response.status_code)
+        self.assertEqual('Access denied Period admin not part of period.', response.data['detail'])
+
+    def test_period_id_missing(self):
+        period_admin = core_mommy.period_admin(period=mommy.make('core.Period', id=10))
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_post_request(apikey=apikey.key, data={
+            'short_name': 'assignment1',
+            'long_name': 'The best assignment',
+            'publishing_time': core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME
+        })
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(['This field is required.'], response.data['period_id'])
+
+    def test_short_name_missing(self):
+        period_admin = core_mommy.period_admin(period=mommy.make('core.Period', id=10))
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_post_request(apikey=apikey.key, data={
+            'period_id': 10,
+            'long_name': 'The best assignment',
+            'publishing_time': core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME
+        })
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(['This field is required.'], response.data['short_name'])
+
+    def test_long_name_missing(self):
+        period_admin = core_mommy.period_admin(period=mommy.make('core.Period', id=10))
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_post_request(apikey=apikey.key, data={
+            'period_id': 10,
+            'short_name': 'assignment1',
+            'publishing_time': core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME
+        })
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(['This field is required.'], response.data['long_name'])
+
+    def test_publishing_time_missing(self):
+        period_admin = core_mommy.period_admin(period=mommy.make('core.Period', id=10))
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_post_request(apikey=apikey.key, data={
+            'period_id': 10,
+            'short_name': 'assignment1',
+            'long_name': 'The best assignment',
+        })
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(['This field is required.'], response.data['publishing_time'])
+
+    def test_post_assignment_sanity(self):
+        period_admin = core_mommy.period_admin(period=mommy.make('core.Period', id=10,
+                                                                 short_name='spriiiiing',
+                                                                 parentnode__short_name='duck1010'))
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_post_request(apikey=apikey.key, data={
+            'period_id': 10,
+            'short_name': 'assignment1',
+            'long_name': 'The best assignment',
+            'publishing_time': core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME
+        })
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.data['anonymizationmode'], Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertEqual(response.data['short_name'], 'assignment1')
+        self.assertEqual(response.data['long_name'], 'The best assignment')
+        self.assertEqual(response.data['publishing_time'],
+                         core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME.isoformat())
+        self.assertEqual(response.data['period_id'], 10)
+        self.assertEqual(response.data['period_short_name'], 'spriiiiing')
+        self.assertEqual(response.data['subject_short_name'], 'duck1010')
+
+    def test_post_assignment_created_in_db(self):
+        period_admin = core_mommy.period_admin(period=mommy.make('core.Period', id=10))
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_post_request(apikey=apikey.key, data={
+            'period_id': 10,
+            'short_name': 'assignment1',
+            'long_name': 'The best assignment',
+            'publishing_time': core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME
+        })
+        self.assertEqual(201, response.status_code)
+        assignment = Assignment.objects.get(id=response.data['id'])
+        self.assertEqual(response.data['period_id'], assignment.parentnode.id)
+        self.assertEqual(response.data['id'], assignment.id)
+        self.assertEqual(response.data['short_name'], assignment.short_name)
+        self.assertEqual(response.data['long_name'], assignment.long_name)
+        self.assertEqual(response.data['publishing_time'], assignment.publishing_time.isoformat())
+        self.assertEqual(response.data['anonymizationmode'], assignment.anonymizationmode)
+        self.assertEqual(response.data['period_short_name'], assignment.parentnode.short_name)
+        self.assertEqual(response.data['subject_short_name'], assignment.parentnode.parentnode.short_name)

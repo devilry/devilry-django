@@ -76,3 +76,18 @@ def candidate(group=None, shortname=None, fullname=None,
                                                   **user_kwargs),
                                   **relatedstudent_kwargs)
     )
+
+
+def period_admin(period=None, shortname=None, fullname=None):
+    user_kwargs = {}
+    if shortname:
+        user_kwargs['shortname'] = shortname
+    if fullname:
+        user_kwargs['fullname'] = fullname
+    permissiongroup = mommy.make('devilry_account.PermissionGroup', grouptype='periodadmin')
+    mommy.make('devilry_account.PeriodPermissionGroup',
+               period=period,
+               permissiongroup=permissiongroup)
+    return mommy.make('devilry_account.PermissionGroupUser',
+                      permissiongroup=permissiongroup,
+                      user=mommy.make(settings.AUTH_USER_MODEL, **user_kwargs))

@@ -12,6 +12,7 @@ from devilry.devilry_api.group_comment.views import groupcomment_examiner
 from devilry.devilry_group.models import GroupComment
 from devilry.apps.core.models import Assignment
 
+
 class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                              test_examiner_mixins.TestAuthAPIKeyExaminerMixin,
                              api_test_helper.TestCaseMixin,
