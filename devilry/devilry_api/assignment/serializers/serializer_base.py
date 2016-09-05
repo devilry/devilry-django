@@ -6,7 +6,7 @@ from rest_framework import serializers
 from devilry.apps.core.models.assignment_group import Assignment
 
 
-class AssignmentModelSerializer(serializers.ModelSerializer):
+class BaseAssignmentSerializer(serializers.ModelSerializer):
     #: Related subject short name.
     subject_short_name = serializers.SerializerMethodField()
 

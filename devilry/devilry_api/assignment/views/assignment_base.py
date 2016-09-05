@@ -4,13 +4,10 @@ from __future__ import unicode_literals
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import ListAPIView
 
-from devilry.devilry_api.assignment.serializers import (
-    AssignmentModelSerializer)
 from devilry.devilry_api.auth.authentication import TokenAuthentication
 
 
 class AssignmentListViewBase(ListAPIView):
-    serializer_class = AssignmentModelSerializer
     authentication_classes = (TokenAuthentication, )
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['parentnode__parentnode__short_name', 'parentnode__short_name', 'short_name']
