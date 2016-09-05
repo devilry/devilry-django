@@ -7,7 +7,7 @@ from rest_framework.generics import ListAPIView
 from devilry.devilry_api.auth.authentication import TokenAuthentication
 
 
-class AssignmentListViewBase(ListAPIView):
+class BaseAssignmentView(ListAPIView):
     authentication_classes = (TokenAuthentication, )
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['parentnode__parentnode__short_name', 'parentnode__short_name', 'short_name']
@@ -124,4 +124,4 @@ class AssignmentListViewBase(ListAPIView):
               description: assignment id filter
 
         """
-        return super(AssignmentListViewBase, self).get(request, *args, **kwargs)
+        return super(BaseAssignmentView, self).get(request, *args, **kwargs)

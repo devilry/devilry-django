@@ -3,12 +3,12 @@ from __future__ import unicode_literals
 
 from devilry.apps.core.models.assignment_group import Assignment
 from devilry.devilry_api.assignment.serializers.serializer_student import StudentAssignmentSerializer
-from devilry.devilry_api.assignment.views.assignment_base import AssignmentListViewBase
+from devilry.devilry_api.assignment.views.assignment_base import BaseAssignmentView
 from devilry.devilry_api.models import APIKey
 from devilry.devilry_api.permission.student_permission import StudentPermissionAPIKey
 
 
-class AssignmentListView(AssignmentListViewBase):
+class AssignmentListView(BaseAssignmentView):
     """
     List view for assignments as an candidate
 
@@ -31,4 +31,4 @@ class AssignmentListView(AssignmentListViewBase):
     def get(self, request, *args, **kwargs):
         return super(AssignmentListView, self).get(request, *args, **kwargs)
 
-    get.__doc__ = AssignmentListViewBase.get.__doc__
+    get.__doc__ = BaseAssignmentView.get.__doc__
