@@ -14,7 +14,7 @@ from wsgiref.util import FileWrapper
 from django_cradmin import crapp
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
-from devilry.devilry_ziputil import backend_registry
+from devilry.devilry_compressionutil import backend_registry
 
 
 class FileDownloadFeedbackfeedView(generic.View):
@@ -248,7 +248,7 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
         )
 
         # Get backend and path
-        from devilry.devilry_ziputil import backend_registry
+        from devilry.devilry_compressionutil import backend_registry
         zipfile_backend_class = backend_registry.Registry.get_instance().get('devilry_group_local')
         zipfile_path = '{}/{}/{}'.format(feedbackset.group.id,
                                          feedbackset.id,

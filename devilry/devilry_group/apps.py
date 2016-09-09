@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.apps import AppConfig
 
-from devilry.devilry_ziputil import backend_registry
+from devilry.devilry_compressionutil import backend_registry
 from ievv_opensource.ievv_batchframework import batchregistry
 from devilry.devilry_group import tasks
 

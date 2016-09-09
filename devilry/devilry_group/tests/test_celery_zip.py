@@ -14,7 +14,7 @@ from django.utils import timezone
 
 # Devilry imports
 from devilry.devilry_group import tasks
-from devilry.devilry_ziputil import models as zipmodels
+from devilry.devilry_compressionutil import models as archivemodels
 
 
 class DummyAction(batchregistry.Action):
@@ -53,7 +53,7 @@ class TestCompressedGroupCommentFileDownload(TestCompressed):
                                                       context_object=testcomment,
                                                       test='test')
 
-            archive_meta = zipmodels.CompressedArchiveMeta.objects.get(content_object_id=testcomment.id)
+            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testcomment.id)
             self.assertIsNotNone(archive_meta)
             self.assertTrue(os.path.exists(archive_meta.archive_path))
 
@@ -83,6 +83,6 @@ class TestCompressedFeedbackSetFileDownload(TestCompressed):
                     context_object=testfeedbackset,
                     test='test')
 
-            archive_meta = zipmodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
+            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
             self.assertIsNotNone(archive_meta)
             self.assertTrue(os.path.exists(archive_meta.archive_path))

@@ -16,7 +16,7 @@ from ievv_opensource.ievv_batchframework import batchregistry
 from django_cradmin import crapp
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
-from devilry.devilry_ziputil import models as zipmodels
+from devilry.devilry_compressionutil import models as archivemodels
 from devilry.devilry_group.utils import download_response
 
 
@@ -84,7 +84,7 @@ class CompressedGroupCommentFileDownload(generic.TemplateView):
 
         # Check if archive exists
         try:
-            archive_meta = zipmodels.CompressedArchiveMeta.objects.get(content_object_id=groupcomment_id)
+            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=groupcomment_id)
         except ObjectDoesNotExist:
             # Run actiongroup.
             batchregistry.Registry.get_instance().run(
@@ -129,7 +129,7 @@ class CompressedFeedbackSetFileDownloadView(generic.TemplateView):
 
         # Check if archive exists
         try:
-            archive_meta = zipmodels.CompressedArchiveMeta.objects.get(content_object_id=feedbackset_id)
+            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=feedbackset_id)
         except ObjectDoesNotExist:
             # Run actiongroup
             batchregistry.Registry.get_instance().run(

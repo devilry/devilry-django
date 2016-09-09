@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 from django_cradmin import crapp
 
 # Devilry imports
-from devilry.devilry_ziputil import models as zipmodels
+from devilry.devilry_compressionutil import models as archivemodels
 from devilry.devilry_group.utils import download_response
 
 
@@ -24,7 +24,7 @@ class WaitForDownload(TemplateView):
         """
         """
         object_id = int(self.kwargs.get('pk'))
-        archive_meta = zipmodels.CompressedArchiveMeta.objects.get(content_object_id=object_id)
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=object_id)
         if archive_meta is not None:
             self.status = 'FINISHED'
             return download_response.download_response(

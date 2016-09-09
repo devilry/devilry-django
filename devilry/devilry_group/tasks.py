@@ -22,7 +22,7 @@ class GroupCommentCompressAction(batchregistry.Action):
         )
 
         # Get backend and path
-        from devilry.devilry_ziputil import backend_registry
+        from devilry.devilry_compressionutil import backend_registry
         zipfile_backend_class = backend_registry.Registry.get_instance().get('devilry_group_local')
         zipfile_path = '{}/{}/{}/{}'.format(groupcomment.feedback_set.group.id,
                                             groupcomment.feedback_set.id,
@@ -43,7 +43,7 @@ class GroupCommentCompressAction(batchregistry.Action):
         zipfile_backend.close()
 
         # create archive meta entry
-        from devilry.devilry_ziputil.models import CompressedArchiveMeta
+        from devilry.devilry_compressionutil.models import CompressedArchiveMeta
         CompressedArchiveMeta.objects.create_meta(
                 instance=groupcomment,
                 zipfile_backend=zipfile_backend
@@ -68,7 +68,7 @@ class FeedbackSetCompressAction(batchregistry.Action):
         )
 
         # Get backend and path
-        from devilry.devilry_ziputil import backend_registry
+        from devilry.devilry_compressionutil import backend_registry
         zipfile_backend_class = backend_registry.Registry.get_instance().get('devilry_group_local')
         zipfile_path = '{}/{}/{}'.format(feedbackset.group.id,
                                          feedbackset.id,
@@ -97,7 +97,7 @@ class FeedbackSetCompressAction(batchregistry.Action):
         zipfile_backend.close()
 
         # create archive meta entry
-        from devilry.devilry_ziputil.models import CompressedArchiveMeta
+        from devilry.devilry_compressionutil.models import CompressedArchiveMeta
         CompressedArchiveMeta.objects.create_meta(
                 instance=feedbackset,
                 zipfile_backend=zipfile_backend

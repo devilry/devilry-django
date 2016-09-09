@@ -1,6 +1,6 @@
 import os
 
-from devilry.devilry_ziputil.backends import backends_base
+from devilry.devilry_compressionutil.backends import backends_base
 
 
 class DevilryGroupZipBackend(backends_base.PythonZipFileBackend):
