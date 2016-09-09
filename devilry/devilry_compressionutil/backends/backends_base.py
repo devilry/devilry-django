@@ -105,11 +105,10 @@ class PythonZipFileBackend(BaseArchiveBackend):
         Sets :obj:`~.PythonZipFileBackend.archive_path` to full path by prepending the backend storage location
         to the archive_path. Also adds .zip extension
         """
+        self.archive_path = os.path.join(PythonZipFileBackend.storage_location, self.archive_path)
         if not self.archive_path.endswith('.zip'):
             self.archive_name += '.zip'
-            self.archive_path = PythonZipFileBackend.storage_location + self.archive_path + '.zip'
-        else:
-            self.archive_path = PythonZipFileBackend.storage_location + self.archive_path
+            self.archive_path += '.zip'
 
     def add_file(self, path, filelike_obj):
         """
@@ -202,10 +201,9 @@ class PythonTarFileBackend(BaseArchiveBackend):
         Sets :obj:`~.PythonZipFileBackend.archive_path` to full path by prepending the backend storage location
         to the archive_path. Also adds .zip extension
         """
-        if self.__compression == '':
-            self.archive_path = PythonTarFileBackend.storage_location + self.archive_path + '.tar'
-        else:
-            self.archive_path = PythonTarFileBackend.storage_location + self.archive_path + '.tar.' + self.__compression
+        self.archive_path = os.path.join(PythonTarFileBackend.storage_location, self.archive_path + '.tar')
+        if self.__compression != '':
+            self.archive_path += self.__compression
 
     def __check_compression_support(self):
         """
@@ -232,12 +230,13 @@ class PythonTarFileBackend(BaseArchiveBackend):
         self.__check_compression_support()
 
         # Create path inside __tempdir
-        sub_path = os.path.join(self.__temp_path, path, '')
+        folderpath, filename = os.path.split(path)
+        sub_path = os.path.join(self.__temp_path, folderpath, '')
         if not os.path.exists(sub_path):
             os.makedirs(sub_path)
 
         # Write file to temp directory.
-        new_temp_file = open('{}{}'.format(sub_path, filelike_obj.name), 'a+')
+        new_temp_file = open('{}{}'.format(sub_path, filename), 'a+')
         new_temp_file.write(filelike_obj.read())
         new_temp_file.close()
 

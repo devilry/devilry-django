@@ -1,3 +1,5 @@
+import os
+
 import mock
 import shutil
 
@@ -11,16 +13,22 @@ from devilry.devilry_compressionutil.backends.backend_mock import MockDevilryZip
 
 class TestCompressedFileMeta(TestCase):
 
+    def setUp(self):
+        self.backend_path = os.path.join('devilry_testfiles', 'devilry_compressed_archives', '')
+
+    def tearDown(self):
+        if os.path.exists(self.backend_path):
+            shutil.rmtree(self.backend_path, ignore_errors=False)
+
     def test_manager_create_meta(self):
-        backend_path = 'devilry_testfiles/devilry_compressed_archives/'
-        archivepath = backend_path + 'path/test.zip'
-        testcomment = mommy.make('devilry_group.GroupComment', user__shortname='user@example.com')
-        mock_backend = MockDevilryZipBackend(archive_path=archivepath)
-        mock_backend.archive_size = mock.MagicMock(return_value=1)
-        CompressedArchiveMeta.objects.create_meta(instance=testcomment, zipfile_backend=mock_backend)
-        shutil.rmtree(backend_path, ignore_errors=False)
-        archive_meta = CompressedArchiveMeta.objects.get(content_object_id=testcomment.id)
-        self.assertEquals(archive_meta.archive_path, '{}{}'.format(mock_backend.storage_location, archivepath))
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
+            testcomment = mommy.make('devilry_group.GroupComment', user__shortname='user@example.com')
+            archivepath = 'test.zip'
+            mock_backend = MockDevilryZipBackend(archive_path=archivepath)
+            mock_backend.archive_size = mock.MagicMock(return_value=1)
+            CompressedArchiveMeta.objects.create_meta(instance=testcomment, zipfile_backend=mock_backend)
+            archive_meta = CompressedArchiveMeta.objects.get(content_object_id=testcomment.id)
+            self.assertEquals(archive_meta.archive_path, os.path.join(self.backend_path, archivepath))
 
     def test_generic_foreignkey_comment(self):
         testcomment = mommy.make('devilry_comment.Comment')
