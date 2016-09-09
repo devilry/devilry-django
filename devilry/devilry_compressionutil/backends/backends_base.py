@@ -128,7 +128,7 @@ class PythonZipFileBackend(BaseArchiveBackend):
 
     def read_archive(self):
         """
-        Open archive in readmode as fileobject.
+        Open archive in binary readmode as fileobject.
 
         ``readmode`` must be set to ``True`` with ``instance_of_this_class.readmode = True``.
 

@@ -1,5 +1,5 @@
-from devilry.devilry_ziputil.backends.backends_base import PythonZipFileBackend
-from devilry.devilry_ziputil.backends.backends_base import PythonTarFileBackend
+from devilry.devilry_compressionutil.backends.backends_base import PythonZipFileBackend
+from devilry.devilry_compressionutil.backends.backends_base import PythonTarFileBackend
 
 
 class MockDevilryZipBackend(PythonZipFileBackend):

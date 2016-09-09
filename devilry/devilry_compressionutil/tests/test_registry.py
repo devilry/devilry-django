@@ -2,8 +2,8 @@
 from django.test import TestCase
 
 # Devilry imports
-from devilry.devilry_ziputil import backend_registry
-from devilry.devilry_ziputil.backends import backend_mock
+from devilry.devilry_compressionutil import backend_registry
+from devilry.devilry_compressionutil.backends import backend_mock
 
 
 class TestBackendRegistry(TestCase):

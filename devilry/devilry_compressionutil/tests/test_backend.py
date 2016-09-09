@@ -4,16 +4,15 @@ import shutil
 from unittest import skip
 
 # Django imports
-
 from django.test import TestCase
 from django.conf import settings
 
 # Devilry imports
-from devilry.devilry_ziputil import backend_registry
-from devilry.devilry_ziputil.backends import backend_mock
+from devilry.devilry_compressionutil import backend_registry
+from devilry.devilry_compressionutil.backends import backend_mock
+from devilry.devilry_compressionutil.backends.backends_base import PythonTarFileBackend
 
 # Dummy text for compression tests
-from devilry.devilry_ziputil.backends.backends_base import PythonTarFileBackend
 
 lorem_ipsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In facilisis dignissim enim eu luctus. ' \
               'Vivamus volutpat porta interdum. Curabitur porttitor justo ut turpis eleifend tristique. Cras posuere ' \
@@ -168,7 +167,6 @@ class TestZipBackend(TestCase):
                 f = open(filename, 'w')
                 f.write('testcontent')
                 f.close()
-
                 # Write to backend
                 backend.add_file('{}'.format(filename), open(filename, 'r'))
                 backend.close()
