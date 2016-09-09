@@ -146,6 +146,7 @@ class CompressedGroupCommentFileDownload(generic.View):
         # Get backend instance
         zipfile_backend = zipfile_backend_class(
                 archive_path=zipfile_path,
+                archive_name=archivename,
                 readmode=False
         )
 
@@ -257,6 +258,7 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
         # Get backend instance
         zipfile_backend = zipfile_backend_class(
             archive_path=zipfile_path,
+            archive_name=archivename,
             readmode=False
         )
 
