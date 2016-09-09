@@ -82,7 +82,7 @@ class CompressedGroupCommentFileDownload(generic.TemplateView):
         if groupcomment.visibility != group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
             raise Http404()
 
-        # Check if archive exists
+        # Try to fetch archive meta
         try:
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=groupcomment_id)
         except ObjectDoesNotExist:

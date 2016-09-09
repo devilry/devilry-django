@@ -6,7 +6,6 @@ import shutil
 from model_mommy import mommy
 from ievv_opensource.ievv_batchframework import batchregistry
 
-
 # Django imports
 from django.test import TestCase
 from django.core.files.base import ContentFile
@@ -25,7 +24,7 @@ class DummyAction(batchregistry.Action):
 class TestCompressed(TestCase):
     def setUp(self):
         # Sets up a directory where files can be added. Is removed by tearDown.
-        self.backend_path = 'devilry_testfiles/devilry_zip/'
+        self.backend_path = os.path.join('devilry_testfiles', 'devilry_compressed_archives', '')
 
     def tearDown(self):
         # Ignores errors if the path is not created.
@@ -35,7 +34,7 @@ class TestCompressed(TestCase):
 class TestCompressedGroupCommentFileDownload(TestCompressed):
 
     def test_batchframework(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             testcomment = mommy.make('devilry_group.GroupComment',
                                      user_role='student',
                                      user__shortname='testuser@example.com')
@@ -61,7 +60,7 @@ class TestCompressedGroupCommentFileDownload(TestCompressed):
 class TestCompressedFeedbackSetFileDownload(TestCompressed):
 
     def test_batchframework(self):
-        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             testfeedbackset = mommy.make('devilry_group.FeedbackSet',
                                          deadline_datetime=timezone.now() + timezone.timedelta(days=1))
             testcomment = mommy.make('devilry_group.GroupComment',
