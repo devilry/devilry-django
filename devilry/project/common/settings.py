@@ -75,7 +75,7 @@ INSTALLED_APPS = [
     'devilry.devilry_header',
     'devilry.devilry_frontpage',
     'devilry.devilry_student',
-    'devilry.devilry_ziputil',
+    'devilry.devilry_compressionutil',
     'devilry.devilry_group.apps.DevilryGroupAppConfig',
     'devilry.devilry_gradeform',
     'devilry.devilry_comment.apps.DevilryCommentAppConfig',
