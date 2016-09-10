@@ -30,6 +30,14 @@ class BaseArchiveBackend(object):
         self.readmode = readmode
         self.__closed = False
 
+    def get_storage_location(self):
+        """
+
+        Returns:
+
+        """
+        return settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY
+
     def _create_path_if_not_exists(self):
         """
         Create path if given path does not exist.
@@ -93,7 +101,6 @@ class PythonZipFileBackend(BaseArchiveBackend):
     #: A unique string ID for the subclasses to use that describes what kind of backend that
     #: is used and is the identifier for a registry-class. Example IDs ``s3``, ``heroku`` etc.
     backend_id = None
-    storage_location = settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY
 
     def __init__(self, **kwargs):
         super(PythonZipFileBackend, self).__init__(**kwargs)
@@ -105,7 +112,7 @@ class PythonZipFileBackend(BaseArchiveBackend):
         Sets :obj:`~.PythonZipFileBackend.archive_path` to full path by prepending the backend storage location
         to the archive_path. Also adds .zip extension
         """
-        self.archive_path = os.path.join(PythonZipFileBackend.storage_location, self.archive_path)
+        self.archive_path = os.path.join(self.get_storage_location(), self.archive_path)
         if not self.archive_path.endswith('.zip'):
             self.archive_name += '.zip'
             self.archive_path += '.zip'
@@ -175,7 +182,6 @@ class PythonTarFileBackend(BaseArchiveBackend):
     #: Compression formats supported.
     compression_formats = ['', 'gz', 'bz2']
     backend_id = None
-    storage_location = settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY
 
     def __init__(self, stream=False, compression='', **kwargs):
         """
@@ -188,7 +194,7 @@ class PythonTarFileBackend(BaseArchiveBackend):
         """
         super(PythonTarFileBackend, self).__init__(**kwargs)
         self.__temp_path = os.path.join(
-                '{}{}{}'.format(PythonTarFileBackend.storage_location, 'tempdir', self.archive_name), ''
+                '{}{}{}'.format(self.get_storage_location(), 'tempdir', self.archive_name), ''
         )
         os.makedirs(self.__temp_path)
         self.__stream = stream

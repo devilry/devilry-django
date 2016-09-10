@@ -10,7 +10,6 @@ import devilry
 from .projectspecific_settings import *  # noqa
 from .django_cradmin_settings import *  # noqa
 
-
 DEBUG = False
 EXTJS4_DEBUG = DEBUG
 TEMPLATE_DEBUG = DEBUG

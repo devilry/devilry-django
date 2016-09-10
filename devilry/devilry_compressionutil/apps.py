@@ -1,7 +1,7 @@
 from django.apps import AppConfig
 
 
-class CompressionUtilAppConfig(AppConfig):
+class DevilryCompressionUtilAppConfig(AppConfig):
     name = 'devilry.devilry_compressionutil'
     verbose_name = 'Devilry compression utilities'
 
