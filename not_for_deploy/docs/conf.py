@@ -11,22 +11,13 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+import django
 import os
 import datetime
 
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
-#sys.path.append(os.path.abspath('..'))
-
-# Setup django settings module for autodoc
-
 os.environ['DJANGO_SETTINGS_MODULE'] = 'devilry.project.develop.settings.docs'
-
+django.setup()
 import devilry
-
-
 
 # -- General configuration -----------------------------------------------------
 

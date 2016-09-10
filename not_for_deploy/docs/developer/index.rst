@@ -37,7 +37,6 @@ API and utilities
     devilry_core_tags
     core.deliverystore
     devilry.utils
-    devilry_ziputil
 
 
 ***************
@@ -68,6 +67,7 @@ Apps
     devilry_search
     devilry_account
     devilry_group
+    devilry_compressionutil
 
 
 ******************************

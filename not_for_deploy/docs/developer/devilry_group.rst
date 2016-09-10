@@ -35,7 +35,7 @@ attempts if the student failed on the first delivery. See the model API below.
 Datamodel API
 *************
 
-.. currentmodule:: devilry.devilry_group.models
+.. currentmodule:: devilry.devilry_group
 
 .. automodule:: devilry.devilry_group.models
     :members:
@@ -45,37 +45,37 @@ Datamodel API
 Views API
 *********
 
-.. currentmodule:: devilry.devilry_group.cradmin_feedbackfeed_base
+.. currentmodule:: devilry.devilry_group.views
 
 .. automodule:: devilry.devilry_group.views.cradmin_feedbackfeed_base
-:members:
+    :members:
 
 
 Examiner view
 =============
 
-.. currentmodule:: devilry.devilry_group.feedbackfeed_examiner
+.. py:currentmodule:: devilry.devilry_group.views.examiner
 
-.. automodule:: devilry.devilry_group.views.feedbackfeed_examiner
-:members:
+.. automodule:: devilry.devilry_group.views.examiner.feedbackfeed_examiner
+    :members:
 
 
 Admin view
 ==========
 
-.. currentmodule:: devilry.devilry_group.feedbackfeed_admin
+.. currentmodule:: devilry.devilry_group.views
 
-.. automodule:: devilry.devilry_group.views.feedbackfeed_admin
-:members:
+.. automodule:: devilry.devilry_group.views.admin.feedbackfeed_admin
+    :members:
 
 
 Student view
 ============
 
-.. currentmodule:: devilry.devilry_group.feedbackfeed_student
+.. currentmodule:: devilry.devilry_group.views
 
-.. automodule:: devilry.devilry_group.views.feedbackfeed_student
-:members:
+.. automodule:: devilry.devilry_group.views.student.feedbackfeed_student
+    :members:
 
 
 
@@ -83,9 +83,9 @@ Student view
 Using ListBuilder to render the feedbackfeed.
 *********************************************
 
-.. currentmodule:: devilry.devilry_cradmin.feedbackfeed
+.. currentmodule:: devilry.devilry_cradmin.devilry_listbuilder
 
-.. automodule:: devilry.devilry_cradmin.devilry_listbuilder.feedbackfeed
+.. automodule:: devilry.devilry_cradmin.devilry_listbuilder.feedbackfeed_timeline
     :members:
 
 
@@ -95,19 +95,21 @@ Writing tests
 In most cases, just using ``model_mommy`` (mommy.make) should be enough,
 but we provide some factory-methods that makes this a bit easier.
 
-Example - create a group with two "attempts"::
+Example - create a group with two "attempts"
+
+.. code-block:: python
 
     testgroup = mommy.make('core.AssignmentGroup',
-                           parentnode__first_deadline=timezone.now() - timedelta(days=10)
-    devilry_group_mommy_factories.feedbackset_first_attempt_published(
-        group=testgroup,
-        grading_points=10,
-        deadline_datetime=timezone.now() - timedelta(days=10),
-        is_last_in_group=False)
-    devilry_group_mommy_factories.feedbackset_new_attempt_published(
-        group=testgroup,
-        grading_points=20,
-        is_last_in_group=True)
+                               parentnode__first_deadline=timezone.now() - timedelta(days=10)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup,
+            grading_points=10,
+            deadline_datetime=timezone.now() - timedelta(days=10),
+            is_last_in_group=False)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=testgroup,
+            grading_points=20,
+            is_last_in_group=True)
 
 
 
