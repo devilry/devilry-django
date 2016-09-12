@@ -214,6 +214,14 @@ class FeedbackSet(models.Model):
         default=FEEDBACKSET_TYPE_FIRST_ATTEMPT,
     )
 
+    #: Field can be set to ``True`` if a situation requires the :obj:`~.FeedbackSet` to not be counted as neither
+    #: passed or failed but should be ignored, due to e.g sickness or something else. A reason for
+    #: the :obj:`~.FeedbackSet` to be ignored must be provided in the :attr:`~FeedbackSet.ignored_reason`.
+    ignored = models.BooleanField(default=False)
+
+    #: The reason for the :obj:`~FeedackSet` to be ignored.
+    ignored_reason = models.TextField(null=False, blank=True, default='')
+
     #: The User that created the feedbackset. Only used as metadata
     #: for superusers (for debugging).
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="created_feedbacksets")
@@ -279,28 +287,43 @@ class FeedbackSet(models.Model):
         Check for situations that should result in error.
 
         :raises: ValidationError:
-            Error occurs if :obj:`~.FeedbackSet.grading_published_datetime` has a datetime but
+            Error occurs if :attr:`~.FeedbackSet.ignored` is ``True`` and :obj:`~.FeedbackSet.ignored_reason` is blank.
+            |
+            Error occurs if :attr:`~.FeedbackSet.ignored_reason` is filled and :attr:`~.FeedbackSet.ignored`
+            is ``True``.
+            |
+            Error occurs if :attr:`~.FeedbackSet.grading_published_datetime` has a datetime but
             :obj:`~.FeedbackSet.grading_published_by` is ``None``.
             |
-            Error occurs if :obj:`~.FeedbackSet.grading_published_datetime` has a datetime but
+            Error occurs if :attr:`~.FeedbackSet.grading_published_datetime` has a datetime but
             :obj:`~.FeedbackSet.grading_points` is ``None``.
             |
-            Error occurs if :obj:`~.FeedbackSet.is_last_in_group` is ``None``.
+            Error occurs if :attr:`~.FeedbackSet.is_last_in_group` is ``None``.
         """
-        if self.grading_published_datetime is not None and self.grading_published_by is None:
+        if self.ignored and len(self.ignored_reason) == 0:
             raise ValidationError({
-                'grading_published_datetime': ugettext_lazy('An assignment can not be published '
-                                                            'without being published by someone.'),
+                'ignored': ugettext_lazy('FeedbackSet can not be ignored without a reason')
             })
-        if self.grading_published_datetime is not None and self.grading_points is None:
+        elif len(self.ignored_reason) > 0 and not self.ignored:
             raise ValidationError({
-                'grading_published_datetime': ugettext_lazy('An assignment can not be published '
-                                                            'without providing "points".'),
+                'ignored_reason': ugettext_lazy('FeedbackSet can not have a ignored reason '
+                                                'without being set to ignored.')
             })
-        if self.is_last_in_group is False:
-            raise ValidationError({
-                'is_last_in_group': 'is_last_in_group can not be false.'
-            })
+        else:
+            if self.grading_published_datetime is not None and self.grading_published_by is None:
+                raise ValidationError({
+                    'grading_published_datetime': ugettext_lazy('An assignment can not be published '
+                                                                'without being published by someone.'),
+                })
+            if self.grading_published_datetime is not None and self.grading_points is None:
+                raise ValidationError({
+                    'grading_published_datetime': ugettext_lazy('An assignment can not be published '
+                                                                'without providing "points".'),
+                })
+            if self.is_last_in_group is False:
+                raise ValidationError({
+                    'is_last_in_group': 'is_last_in_group can not be false.'
+                })
 
     def current_deadline(self, assignment=None):
         """

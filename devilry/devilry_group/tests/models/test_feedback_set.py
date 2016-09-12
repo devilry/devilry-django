@@ -138,6 +138,17 @@ class TestFeedbackSetModel(TestCase):
         self.assertFalse(result)
         self.assertEquals(msg, 'Cannot publish feedback without a deadline.')
 
+    def test_feedbackset_ignored_without_reason(self):
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet', ignored=True)
+        with self.assertRaisesMessage(ValidationError, 'FeedbackSet can not be ignored without a reason'):
+            test_feedbackset.full_clean()
+
+    def test_feedbackset_not_ignored_with_reason(self):
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet', ignored_reason='dewey was sick!')
+        with self.assertRaisesMessage(ValidationError,
+                                      'FeedbackSet can not have a ignored reason without being set to ignored.'):
+            test_feedbackset.full_clean()
+
     def test_feedbackset_publish_published_by_is_none(self):
         grading_points = 10
         test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
