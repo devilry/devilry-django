@@ -593,9 +593,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     @property
     def publishing_time_is_in_future(self):
         """
-
-        Returns: ``True``if ``publishing_time``is in the future
-
+        Returns ``True`` if ``publishing_time`` is in the future.
         """
         if self.publishing_time > datetime.now():
             return True
@@ -604,9 +602,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     @property
     def is_published(self):
         """
-
-        Returns: ``True``if ``publishing_time``is in the past
-
+        Returns ``True`` if ``publishing_time`` is in the past.
         """
         if self.publishing_time < datetime.now():
             return True
@@ -615,7 +611,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     @property
     def students_can_create_groups_now(self):
         """
-        Return ``True`` if :attr:`students_can_create_groups` is ``True``, and
+        Returns ``True`` if :attr:`students_can_create_groups` is ``True``, and
         :attr:`students_can_not_create_groups_after` is in the future or ``None``.
         """
         return self.students_can_create_groups and (
