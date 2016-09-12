@@ -143,7 +143,7 @@ class TestZipBackend(TestCase):
 
                 # Read from created archive
                 backend.readmode = True
-                archive = backend.get_archive()
+                archive = backend.read_archive()
                 self.assertEquals('testcontent', archive.read(archive.namelist()[0]))
 
     def test_read_archive(self):
@@ -169,7 +169,7 @@ class TestZipBackend(TestCase):
 
                 # Read from created archive
                 backend.readmode = True
-                archive = backend.get_archive()
+                archive = backend.read_archive()
                 self.assertEquals('testcontent', archive.read(archive.namelist()[0]))
                 self.assertEquals('testcontent', archive.read(archive.namelist()[1]))
 
@@ -217,8 +217,8 @@ class TestTarFileBackend(TestCase):
         # Set up a backend path for testing which can be removed after each test.
         self.backend_path = os.path.join('devilry_testfiles', 'devilry_compressed_archives', '')
 
-    # def tearDown(self):
-    #     shutil.rmtree(self.backend_path, ignore_errors=False)
+    def tearDown(self):
+        shutil.rmtree(self.backend_path, ignore_errors=False)
 
     def test_add_file(self):
         backend = PythonTarFileBackend(archive_path='test', archive_name='test', compression='')

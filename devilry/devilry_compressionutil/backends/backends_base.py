@@ -1,8 +1,10 @@
+# Python imports
 import os
 import zipfile
 import tarfile
 import shutil
 
+# Django imports
 from django.conf import settings
 
 
@@ -12,6 +14,11 @@ class BaseArchiveBackend(object):
 
     All backends must implement this class.
     """
+
+    #: A unique string ID for the subclasses to use that describes what kind of backend that
+    #: is used and is the identifier for a registry-class. Example IDs ``s3``, ``heroku`` etc.
+    backend_id = None
+
     class Meta:
         abstract = True
 
@@ -32,9 +39,10 @@ class BaseArchiveBackend(object):
 
     def get_storage_location(self):
         """
+        Get the storage location for archives.
 
         Returns:
-
+            str: Location specified in settings ``DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY``.
         """
         return settings.DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY
 
@@ -46,48 +54,81 @@ class BaseArchiveBackend(object):
         if not os.path.exists(archivedirname):
             os.makedirs(archivedirname)
 
-    def add_file(self, path, filelike_obj):
+    def read_binary(self):
         """
-        Add files to archive.
+        Opens archive in read binary mode.
+        Best suited for non-text files like images, videos etc or when serving file for download.
+
+        Returns:
+            file: file object in read binary mode.
+
+        Raises:
+            ValueError: If archive is ``None``, or ``readmode`` is False.
         """
-        # self._create_path_if_not_exists()
-        raise NotImplementedError()
+        if self.archive is None:
+            raise ValueError('Archive is None')
+        if not self.readmode:
+            raise ValueError('Must be in readmode')
+        return open(self.archive_path, 'rb')
 
     def close(self):
         """
-        Close zipfile when done with adding files to it.
+        Close archive when done with adding files to it.
+
+        Raises:
+            ValueError: If ``archive`` is ``None``.
         """
         if not self.archive:
             raise ValueError('Archive does not exist at {}'.format(self.archive_path))
         self.__closed = True
         self.archive.close()
 
-    def open_archive(self):
-        if not self.readmode:
-                raise ValueError('Must be in readmode')
-        if not self.archive:
-            raise ValueError('Archive does not exist at {}'.format(self.archive_path))
-        return self.archive.open(self.archive_path, 'r')
-
-    def read_archive(self):
-        if not self.readmode:
-                raise ValueError('Must be in readmode')
-        if not self.archive:
-            raise ValueError('Archive does not exist at {}'.format(self.archive_path))
-        return open(self.archive_path, mode='rb')
-
-    def get_archive(self):
-        """
-        Get the archive for compressed files.
-        """
-        raise NotImplementedError()
-
     def archive_size(self):
+        """
+        Get size of archive. Uses ``os.stat``.
+
+        Returns:
+            int: size of archive.
+
+        Raises:
+            ValueError: If not in ``readmode`` or ``archive`` is ``None``.
+        """
         if not self.readmode:
             raise ValueError('Must be in readmode')
         if not self.archive:
             raise ValueError('Archive does not exist at {}'.format(self.archive_path))
         return os.stat(self.archive_path).st_size
+
+    def add_file(self, path, filelike_obj):
+        """
+        Add file to archive.
+
+        Args:
+            path (str): Path to the file inside the archive.
+            filelike_obj: An object with method ``read()``.
+
+        Raises:
+            NotImplementedError: If not implemented by subclass.
+        """
+        raise NotImplementedError()
+
+    def read_archive(self):
+        """
+        Should return a object of the underlying compression tool in readmode.
+
+        Raises:
+            NotImplementedError: If not implemented by subclass.
+        """
+        raise NotImplementedError()
+
+    def get_archive(self):
+        """
+        Get the archive for compressed files.
+
+        Raises:
+            NotImplementedError: If not implemented by subclass
+        """
+        raise NotImplementedError()
 
 
 class PythonZipFileBackend(BaseArchiveBackend):
@@ -97,11 +138,6 @@ class PythonZipFileBackend(BaseArchiveBackend):
 
     This class should be subclassed by backend-specific classes(backends for Heroku, S3, etc).
     """
-
-    #: A unique string ID for the subclasses to use that describes what kind of backend that
-    #: is used and is the identifier for a registry-class. Example IDs ``s3``, ``heroku`` etc.
-    backend_id = None
-
     def __init__(self, **kwargs):
         super(PythonZipFileBackend, self).__init__(**kwargs)
         self.__add_path_extension()
@@ -119,11 +155,14 @@ class PythonZipFileBackend(BaseArchiveBackend):
 
     def add_file(self, path, filelike_obj):
         """
-        Add files to archive. This function is used for writing to the archive.
+        Add files to archive.
 
         Args:
-            path: Path to the file inside the Zip-archive.
+            path (str): Path to the file inside the Zip-archive.
             filelike_obj: An object with method ``read()``
+
+        Raises:
+            ValueError: If ``readmode`` is set to ``True``, must be ``False`` to add files.
         """
         if self.readmode is True:
             raise ValueError('readmode must be False to add files.')
@@ -134,43 +173,16 @@ class PythonZipFileBackend(BaseArchiveBackend):
 
     def read_archive(self):
         """
-        Open archive in binary readmode as fileobject.
-
-        ``readmode`` must be set to ``True`` with ``instance_of_this_class.readmode = True``.
-
-        Returns:
-            File object: Python fileobject.
-
-        Raises:
-            ValueError: Error when either archive does not exists, or ``readmode`` is ``False``.
-        """
-        if not self.readmode:
-            raise ValueError('Must be in readmode')
-        if not self.archive:
-            raise ValueError('Archive does not exist at {}'.format(self.archive_path))
-        return open(self.archive_path, mode='rb')
-
-    def get_archive(self):
-        """
-        Get the zipped archive.
+        Get the zipped archive as :obj:`~ZipFile` in readmode.
 
         Returns:
             ZipFile: The zipped archive.
         """
-        return zipfile.ZipFile(self.archive_path, 'r', allowZip64=True)
-
-    def archive_size(self):
-        """
-        Get size of archive.
-
-        Returns:
-            int: size of archive.
-        """
         if not self.readmode:
             raise ValueError('Must be in readmode')
         if not self.archive:
             raise ValueError('Archive does not exist at {}'.format(self.archive_path))
-        return os.stat(self.archive_path).st_size
+        return zipfile.ZipFile(self.archive_path, 'r', allowZip64=True)
 
 
 class PythonTarFileBackend(BaseArchiveBackend):
@@ -181,7 +193,6 @@ class PythonTarFileBackend(BaseArchiveBackend):
 
     #: Compression formats supported.
     compression_formats = ['', 'gz', 'bz2']
-    backend_id = None
 
     def __init__(self, stream=False, compression='', **kwargs):
         """
@@ -207,7 +218,7 @@ class PythonTarFileBackend(BaseArchiveBackend):
         Sets :obj:`~.PythonZipFileBackend.archive_path` to full path by prepending the backend storage location
         to the archive_path. Also adds .zip extension
         """
-        self.archive_path = os.path.join(PythonTarFileBackend.storage_location, self.archive_path + '.tar')
+        self.archive_path = os.path.join(self.get_storage_location(), self.archive_path + '.tar')
         if self.__compression != '':
             self.archive_path += self.__compression
 
@@ -291,11 +302,10 @@ class PythonTarFileBackend(BaseArchiveBackend):
         """
         self.archive = tarfile.open(self.archive_path, mode='w' + self.__get_mode())
         self.archive.add(self.__temp_path, arcname=self.archive_name)
-        self.archive.close()
 
         # Remove temp directory.
         shutil.rmtree(self.__temp_path, ignore_errors=False)
-        self.archive.close()
+        super(PythonTarFileBackend, self).close()
 
     def get_archive(self):
         """

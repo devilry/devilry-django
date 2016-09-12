@@ -71,4 +71,4 @@ class CompressedArchiveMeta(GenericMeta):
     archive_size = models.PositiveIntegerField(null=False, blank=False)
 
     def __unicode__(self):
-        return self.get_full_path()
+        return self.archive_path
