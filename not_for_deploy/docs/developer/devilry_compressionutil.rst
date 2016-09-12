@@ -42,7 +42,6 @@ Create a backend for your app that you will use to compress the files by subclas
 
        def __init__(self, **kwargs):
            super(YourAppZipBackend, self).__init__(**kwargs)
-           # Create path to archive storage if it does not exist.
 
 **Load backend to registry**
 
@@ -120,15 +119,15 @@ Datamodel API for caching metainfo about a archive
 **************************************************
 .. currentmodule:: devilry.devilry_compressionutil.models
 
-
 .. automodule:: devilry.devilry_compressionutil.models
     :members:
 
 
+********************
 Backend base classes
-====================
-.. currentmodule:: devilry.devilry_compressionutil.views
+********************
+.. currentmodule:: devilry.devilry_compressionutil.backends
 
-.. automodule:: devilry.devilry_compressionutil.views.backends_base
+.. automodule:: devilry.devilry_compressionutil.backends.backends_base
     :members:
 
