@@ -146,7 +146,7 @@ class CompressedFeedbackSetFileDownloadView(generic.TemplateView):
             )
 
         return HttpResponseRedirect(
-                self.request.cradmin_app.reverse_appurl('wait-for-download', feedbackset_id))
+                self.request.cradmin_app.reverse_appurl('wait-for-download', pk=feedbackset_id))
 
 
 class App(crapp.App):
