@@ -15,8 +15,7 @@ class BaseArchiveBackend(object):
     All backends must implement this class.
     """
 
-    #: A unique string ID for the subclasses to use that describes what kind of backend that
-    #: is used and is the identifier for a registry-class. Example IDs ``s3``, ``heroku`` etc.
+    #: A unique string ID for the subclasses to use that describes what kind of backend it is.
     backend_id = None
 
     class Meta:
@@ -105,7 +104,7 @@ class BaseArchiveBackend(object):
 
         Args:
             path (str): Path to the file inside the archive.
-            filelike_obj: An object with method ``read()``.
+            filelike_obj: An object which implements function ``read()``.
 
         Raises:
             NotImplementedError: If not implemented by subclass.
