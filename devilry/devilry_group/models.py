@@ -222,6 +222,9 @@ class FeedbackSet(models.Model):
     #: The reason for the :obj:`~FeedackSet` to be ignored.
     ignored_reason = models.TextField(null=False, blank=True, default='')
 
+    #: The datetime for when the :obj:`~.FeedbackSet` was ignored.
+    ignored_datetime = models.DateTimeField(null=True, blank=True)
+
     #: The User that created the feedbackset. Only used as metadata
     #: for superusers (for debugging).
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="created_feedbacksets")
@@ -308,6 +311,11 @@ class FeedbackSet(models.Model):
             raise ValidationError({
                 'ignored_reason': ugettext_lazy('FeedbackSet can not have a ignored reason '
                                                 'without being set to ignored.')
+            })
+        elif self.ignored and (self.grading_published_datetime or self.grading_points or self.grading_published_by):
+            raise ValidationError({
+                'ignored': ugettext_lazy('Ignored FeedbackSet can not have grading_published_datetime, '
+                                         'grading_points or grading_published_by set.')
             })
         else:
             if self.grading_published_datetime is not None and self.grading_published_by is None:

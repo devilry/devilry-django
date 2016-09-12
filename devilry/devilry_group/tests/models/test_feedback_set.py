@@ -149,6 +149,36 @@ class TestFeedbackSetModel(TestCase):
                                       'FeedbackSet can not have a ignored reason without being set to ignored.'):
             test_feedbackset.full_clean()
 
+    def test_feedbackset_ignored_with_grading_published(self):
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      ignored=True,
+                                      ignored_reason='test',
+                                      grading_published_datetime=timezone.now())
+        with self.assertRaisesMessage(ValidationError,
+                                      'Ignored FeedbackSet can not have grading_published_datetime, '
+                                      'grading_points or grading_published_by set.'):
+            test_feedbackset.full_clean()
+
+    def test_feedbackset_ignored_with_grading_published_by(self):
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      ignored=True,
+                                      ignored_reason='test',
+                                      grading_published_by=mommy.make(settings.AUTH_USER_MODEL))
+        with self.assertRaisesMessage(ValidationError,
+                                      'Ignored FeedbackSet can not have grading_published_datetime, '
+                                      'grading_points or grading_published_by set.'):
+            test_feedbackset.full_clean()
+
+    def test_feedbackset_ignored_with_grading_points(self):
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      ignored=True,
+                                      ignored_reason='test',
+                                      grading_points=10)
+        with self.assertRaisesMessage(ValidationError,
+                                      'Ignored FeedbackSet can not have grading_published_datetime, '
+                                      'grading_points or grading_published_by set.'):
+            test_feedbackset.full_clean()
+
     def test_feedbackset_publish_published_by_is_none(self):
         grading_points = 10
         test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
