@@ -58,9 +58,6 @@ class FeedbackSetCompressAction(batchregistry.Action):
     A task than will be run by `ievv_opensource`s batchframework in celery.
     """
     def execute(self):
-        """
-
-        """
         feedbackset = self.kwargs.get('context_object')
 
         archivename = '{}-{}-delivery.zip'.format(

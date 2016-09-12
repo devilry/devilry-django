@@ -106,7 +106,7 @@ class CompressedGroupCommentFileDownload(generic.View):
 
         # Add zipped archive to response
         zipfile_backend.readmode = True
-        filewrapper = FileWrapper(zipfile_backend.read_archive())
+        filewrapper = FileWrapper(zipfile_backend.read_binary())
         response = http.HttpResponse(filewrapper, content_type='application/zip')
         response['content-disposition'] = 'attachment; filename=%s' % archivename.encode('ascii', 'replace')
         response['content-length'] = zipfile_backend.archive_size()
@@ -169,7 +169,7 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
 
         # Add zipped archive to response
         zipfile_backend.readmode = True
-        filewrapper = FileWrapper(zipfile_backend.read_archive())
+        filewrapper = FileWrapper(zipfile_backend.read_binary())
         response = http.HttpResponse(filewrapper, content_type='application/zip')
         response['content-disposition'] = 'attachment; filename=%s' % archivename.encode('ascii', 'replace')
         response['content-length'] = zipfile_backend.archive_size()

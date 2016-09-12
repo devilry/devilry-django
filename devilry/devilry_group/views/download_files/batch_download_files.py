@@ -86,7 +86,7 @@ class CompressedGroupCommentFileDownload(generic.TemplateView):
         try:
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=groupcomment_id)
         except ObjectDoesNotExist:
-            # Run actiongroup.
+            # Run actiongroup batchjob.
             batchregistry.Registry.get_instance().run(
                 actiongroup_name='batchframework_compress_groupcomment',
                 context_object=groupcomment,
@@ -94,8 +94,8 @@ class CompressedGroupCommentFileDownload(generic.TemplateView):
         else:
             # Send response.
             return download_response.download_response(
-                    content_path=archive_meta.get_full_path(),
-                    content_name=archive_meta.archive_path,
+                    content_path=archive_meta.archive_path,
+                    content_name=archive_meta.archive_name,
                     content_type='application/zip',
                     content_size=archive_meta.archive_size
             )
@@ -113,7 +113,7 @@ class CompressedFeedbackSetFileDownloadView(generic.TemplateView):
         """Download all files for a feedbackset into zipped folder.
 
         Args:
-            request (HttpRequest): Request from client..
+            request (HttpRequest): Request from client.
 
         Returns:
             Response: redirects to wait-for-download view,
@@ -139,8 +139,8 @@ class CompressedFeedbackSetFileDownloadView(generic.TemplateView):
         else:
             # Send response
             return download_response.download_response(
-                    content_path=archive_meta.get_full_path(),
-                    content_name=archive_meta.archive_path,
+                    content_path=archive_meta.archive_path,
+                    content_name=archive_meta.archive_name,
                     content_type='application/zip',
                     content_size=archive_meta.archive_size
             )

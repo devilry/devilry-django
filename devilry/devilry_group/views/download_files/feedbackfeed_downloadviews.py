@@ -1,7 +1,4 @@
-from wsgiref.util import FileWrapper
-
 # Django imports
-from django import http
 from django.views.generic import TemplateView
 from django_cradmin import crapp
 
