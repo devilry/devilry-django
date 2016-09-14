@@ -1,13 +1,28 @@
 {% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
 
+{% load devilry_account_tags %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block pageheader-inner %}
+{% endblock pageheader-inner %}
+
 {% block content %}
     <div class="container">
         <div class="row">
             <div class="col-sm-8 col-sm-pull-4">
-                <a href="#">{{ plugin1 }}</a><br>
-                <a href="#">{{ plugin2 }}</a><br>
-                <a href="#">{{ plugin3 }}</a><br>
-                <a href="#">{{ plugin4 }}</a><br>
+                <h1>{{ headline }}</h1>
+                <br><br>
+                <ul>
+                    {% for plugin in plugins %}
+                        <a href="#">
+                            <strong>{{ plugin.get_human_readable_name }}</strong>
+                        </a>
+                        <p class="muted"> <small>{{ plugin.get_description }}</small></p>
+                        <br>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     </div>

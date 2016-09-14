@@ -4,10 +4,12 @@ from django.views.generic import ListView
 
 # CrAdmin imports
 from django_cradmin import crapp
-from django_cradmin.viewhelpers import create
+
+# Devilry imports
+from devilry.devilry_qualifiesforexam import plugintyperegistry
 
 
-class SelectPluginView(create.CreateView):
+class SelectPluginView(ListView):
 
     template_name = 'devilry_qualifiesforexam/selectplugin.django.html'
 
@@ -17,10 +19,14 @@ class SelectPluginView(create.CreateView):
     def get_context_data(self, **kwargs):
         context_data = super(SelectPluginView, self).get_context_data(**kwargs)
         context_data['devilry_role'] = self.request.cradmin_instance.is_admin()
-        context_data['plugin1'] = 'This is plugin 1'
-        context_data['plugin2'] = 'This is plugin 2'
-        context_data['plugin3'] = 'This is plugin 3'
-        context_data['plugin4'] = 'This is plugin 4'
+        context_data['headline'] = 'How do students qualify for final exams?'
+
+        plugins = []
+        for plugin_class in plugintyperegistry.Registry.get_instance():
+            plugin = plugin_class()
+            plugins.append(plugin)
+
+        context_data['plugins'] = plugins
 
         return context_data
 
