@@ -12,7 +12,9 @@ from django_cradmin import crinstance, crmenu
 # Devilry imports
 from devilry.apps.core import models as core_models
 from devilry.devilry_account.models import PeriodPermissionGroup
-from devilry.devilry_qualifiesforexam.views import selecplugin_view
+from devilry.devilry_qualifiesforexam.views import pluginselection_view
+from devilry.devilry_qualifiesforexam.views.plugin_views import plugin_select
+from devilry.devilry_qualifiesforexam.views.plugin_views import plugin_points
 
 
 class Menu(crmenu.Menu):
@@ -22,7 +24,7 @@ class Menu(crmenu.Menu):
         period = self.request.cradmin_role
         self.add_headeritem(
             label=period.subject.long_name,
-            url=self.appindex_url('selectplugin'))
+            url=self.appindex_url('pluginselection'))
 
 
 class CrInstance(crinstance.BaseCrAdminInstance):
@@ -34,7 +36,9 @@ class CrInstance(crinstance.BaseCrAdminInstance):
 
     menuclass = Menu
     apps = [
-        ('selectplugin', selecplugin_view.App)
+        ('pluginselection', pluginselection_view.App),
+        ('select-plugin', plugin_select.App),
+        ('points-plugin', plugin_points.App)
     ]
 
     id = 'devilry_qualifiesforexam'
