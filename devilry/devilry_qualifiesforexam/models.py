@@ -39,7 +39,7 @@ class Status(models.Model):
         verbose_name = _('Qualified for final exam status')
         verbose_name_plural = _('Qualified for final exam statuses')
 
-    def getStatusText(self):
+    def get_status_text(self):
         return self.STATUS_CHOICES_DICT[self.status]
 
     def clean(self):
@@ -51,7 +51,8 @@ class Status(models.Model):
             raise ValidationError('Message can not be empty when status is ``notready``.')
         if self.status != 'notready':
             if not self.plugin and not self.message:
-                raise ValidationError('A ``message`` is required when no ``plugin`` is specified. The message should explain why a plugin is not used.')
+                raise ValidationError('A ``message`` is required when no ``plugin`` is specified. '
+                                      'The message should explain why a plugin is not used.')
         if self.status == 'notready':
             if self.plugin:
                 raise ValidationError('``plugin`` is not allowed when status is ``notready``.')
