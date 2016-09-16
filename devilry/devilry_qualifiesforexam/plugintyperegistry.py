@@ -5,14 +5,14 @@ from __future__ import unicode_literals
 from ievv_opensource.utils.singleton import Singleton
 
 
-class DuplicatePageTypeError(Exception):
+class DuplicatePluginTypeError(Exception):
     """
     Exception raised when trying to add multiple :class:`.PageType`
     with the same :meth:`~.PageType.get_pagetypeid` to the :class:`.Registry`.
     """
 
 
-class PluginType:
+class PluginType(object):
     """
     Defines a PluginType in the :class:`.Registry`
     """
@@ -43,7 +43,7 @@ class PluginType:
 
     def __init__(self):
         if self.__class__.get_plugintypeid() is None:
-            raise ValueError('pagetypeid is required')
+            raise ValueError('plugintypeid is required')
 
     def get_human_readable_name(self):
         """
@@ -54,6 +54,15 @@ class PluginType:
             str: :obj:`~.PluginType.human_readable_name` or :obj:`~.PluginType.plugintypeid`.
         """
         return self.human_readable_name or self.__class__.get_plugintypeid()
+
+    def get_plugin_view_class(self):
+        """
+        Get the view class the plugin should use.
+
+        Returns:
+
+        """
+        raise NotImplementedError()
 
     def get_description(self):
         """
@@ -67,7 +76,7 @@ class PluginType:
 
 class Registry(Singleton):
     """
-    Registry of `qualifies for exam` plugins as  page types. Each PageType is added as a :class:`.PageType` object.
+    Registry of `qualifies for exam` plugins as plugin types. Each PluginType is added as a :class:`.PluginType` object.
     """
     def __init__(self):
         super(Registry, self).__init__()
@@ -84,11 +93,11 @@ class Registry(Singleton):
             registryplugin (:class:`.PageType`): plugin.
         """
         if registryplugin.plugintypeid in self._plugintypeclasses:
-            raise DuplicatePageTypeError('Duplicate pagetypeid in {}: {}'.format(
+            raise DuplicatePluginTypeError('Duplicate plugintypeid in {}: {}'.format(
                     self.__get_classpath(),
                     registryplugin.plugintypeid
             ))
-        self._plugintypeclasses[registryplugin.get_plugintypeid] = registryplugin
+        self._plugintypeclasses[registryplugin.get_plugintypeid()] = registryplugin
 
     def __getitem__(self, plugintypeid):
         return self._plugintypeclasses[plugintypeid]
@@ -112,6 +121,43 @@ class Registry(Singleton):
             yield registryplugin.get_plugintypeid
 
 
+class PluginTypeSubclassFactory(object):
+    """
+    Creates a instance of :class:`.PluginType` for use in tests.
+    """
+    @classmethod
+    def make_subclass(cls,
+                      classname,
+                      plugintypeid,
+                      human_readable_name=None,
+                      description='Description not available',
+                      plugin_view_class=None):
+        """
+        Creates a subclass of :class:`.PluginType` with required arguments.
+
+        Args:
+            classname: Name of the subclass.
+            plugintypeid: Required plugintypeid.
+            human_readable_name: (optional).
+            description: What the plugin is for(optional).
+            plugin_view_class: The view class for the plugin(optional).
+
+        Returns:
+
+        """
+
+        def get_plugin_view_class(self):
+            return plugin_view_class
+
+        plugin_subclass = type(classname, (PluginType,), {
+            'plugintypeid': plugintypeid,
+            'human_readable_name': human_readable_name,
+            'description': description,
+            'get_plugin_view_class': get_plugin_view_class
+        })
+        return plugin_subclass
+
+
 class MockableRegistry(Registry):
     """
     A non-singleton version of :class:`.Registry` for use in tests.
@@ -121,18 +167,18 @@ class MockableRegistry(Registry):
         super(MockableRegistry, self).__init__()
 
     @classmethod
-    def make_mockregistry(cls, *pagetype_classes):
+    def make_mockregistry(cls, *plugintype_classes):
         """
         Shortcut for making a mock registry.
 
         Args:
-            *pagetype_classes: :class:`.PageType` classes.
+            *plugintype_classes: :class:`.PluginType` classes to add.
 
 
         Returns:
             An object of this class with the requested :class:`.PluginType` classes registered.
         """
         mockregistry = cls()
-        for pagetype_class in pagetype_classes:
+        for pagetype_class in plugintype_classes:
             mockregistry.add(pagetype_class())
         return mockregistry
