@@ -6,24 +6,16 @@
 {% load cradmin_tags %}
 
 {% block pageheader-inner %}
+    {{ block.super }}
+    <h1>{{ headline }}</h1>
+    <p class="devilry-page-subheader">
+        {% trans help_text %}
+    </p>
 {% endblock pageheader-inner %}
 
 {% block content %}
+    {{ block.super }}
     <div class="container">
-        <div class="row">
-            <div class="col-sm-8 col-sm-pull-4">
-                <h1>{{ headline }}</h1>
-                <br><br>
-                <ul>
-                    {% for plugin in plugins %}
-                        <a href="#">
-                            <strong>{{ plugin.get_human_readable_name }}</strong>
-                        </a>
-                        <p class="muted"> <small>{{ plugin.get_description }}</small></p>
-                        <br>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
+        {% cradmin_render_renderable plugin_listbuilder_list %}
     </div>
 {% endblock content %}
