@@ -12,9 +12,7 @@ from django_cradmin import crinstance, crmenu
 # Devilry imports
 from devilry.apps.core import models as core_models
 from devilry.devilry_account.models import PeriodPermissionGroup
-from devilry.devilry_qualifiesforexam.views import pluginselection_view
-from devilry.devilry_qualifiesforexam.views.plugin_views import plugin_select
-from devilry.devilry_qualifiesforexam.views.plugin_views import plugin_points
+from devilry.devilry_qualifiesforexam import cradmin_app
 
 
 class Menu(crmenu.Menu):
@@ -22,23 +20,19 @@ class Menu(crmenu.Menu):
 
     def build_menu(self):
         period = self.request.cradmin_role
-        self.add_headeritem(
-            label=period.subject.long_name,
-            url=self.appindex_url('pluginselection'))
 
 
 class CrInstance(crinstance.BaseCrAdminInstance):
     """
     CrInstance that defines access rights and role management for this app.
     """
+
     roleclass = core_models.Period
     rolefrontpage_appname = 'qualifiesforexam'
 
     menuclass = Menu
     apps = [
-        ('pluginselection', pluginselection_view.App),
-        ('select-plugin', plugin_select.App),
-        ('points-plugin', plugin_points.App)
+        ('qualifiesforexam', cradmin_app.App)
     ]
 
     id = 'devilry_qualifiesforexam'
@@ -124,3 +118,6 @@ class CrInstance(crinstance.BaseCrAdminInstance):
             .order_by(
                 Lower(Concat('relatedstudent__user__fullname',
                              'relatedstudent__user__shortname')))
+
+    def get_titletext_for_role(self, role):
+        return str(role)
