@@ -1,17 +1,29 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-# CrAdmin imports
-from django.views.generic import TemplateView
-from django_cradmin import crapp
-
 # Devilry imports
 from devilry.devilry_qualifiesforexam.views import plugin_mixin
-from devilry.devilry_qualifiesforexam.views import base_formview
+from devilry.devilry_qualifiesforexam.views.plugin_base_views import base_multiselect_view
+from devilry.apps.core import models as core_models
 
 
-class PluginSelectAssignmentsView(TemplateView, plugin_mixin.PluginMixin):
-    """
+class PluginForm(base_multiselect_view.SelectedQualificationForm):
+    qualification_modelclass = core_models.Assignment
+    invalid_qualification_item_message = 'Invalid qualification items was selected.'
 
-    """
-    template_name = 'devilry_qualifiesforexam_plugin_approved/base.django.html'
+    def __init__(self, *args, **kwargs):
+        selectable_qualification_items_queryset = kwargs.pop('selectable_items_queryset')
+        super(PluginForm, self).__init__(*args, **kwargs)
+        self.fields['selected_items'].queryset = selectable_qualification_items_queryset
+
+
+class PluginSelectAssignmentsView(base_multiselect_view.QualificationItemListView, plugin_mixin.PluginMixin):
+    model = core_models.Assignment
+
+    def get_queryset_for_role(self, role):
+        queryset = super(PluginSelectAssignmentsView, self).get_queryset_for_role(role)
+        queryset = queryset.filter(parentnode__id=role.id)
+        return queryset
+
+    def get_form_class(self):
+        return PluginForm
