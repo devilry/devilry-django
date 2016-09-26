@@ -27,3 +27,13 @@ class PluginSelectAssignmentsView(base_multiselect_view.QualificationItemListVie
 
     def get_form_class(self):
         return PluginForm
+
+    def get_inititially_selected_queryset(self):
+        """
+        Select all assignments as must be approved by default.
+        The user can then deselect desired items.
+
+        Returns:
+            QuerySet: Assignments for the role.
+        """
+        return self.get_queryset_for_role(self.request.cradmin_role)
