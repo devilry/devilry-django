@@ -1,6 +1,8 @@
 from datetime import datetime
 from django import forms
+from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.http import Http404
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
@@ -113,4 +115,6 @@ class AssignmentAssemblyView(ListView):
         context['cachelanguages'] = self.cachelanguages
         context['active_language'] = self.language
         context['assignment'] = self._get_assignment()
+        if hasattr(settings, 'DEVILRY_DETEKTOR_DISABLED'):
+            context['detektor_disabled'] = getattr(settings, 'DEVILRY_DETEKTOR_DISABLED')
         return context
