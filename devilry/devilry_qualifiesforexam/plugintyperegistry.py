@@ -59,8 +59,7 @@ class PluginType(object):
         """
         Get the view class the plugin should use.
 
-        Returns:
-
+        This is the first view the user is sent to when selecting the plugin.
         """
         raise NotImplementedError()
 
@@ -180,5 +179,5 @@ class MockableRegistry(Registry):
         """
         mockregistry = cls()
         for pagetype_class in plugintype_classes:
-            mockregistry.add(pagetype_class())
+            mockregistry.add(pagetype_class)
         return mockregistry

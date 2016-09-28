@@ -2,20 +2,21 @@
 from __future__ import unicode_literals
 
 # Django imports
-from django.db.models.functions import Lower, Concat
+from django.http import Http404
 from django.db import models as db_models
+from django.db.models.functions import Lower, Concat
 
 # CrAdmin imports
-from django.http import Http404
-from django_cradmin import crinstance, crmenu
+from django_cradmin import crinstance
 
 # Devilry imports
+from devilry.devilry_cradmin import devilry_crmenu
 from devilry.apps.core import models as core_models
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_qualifiesforexam import cradmin_app
 
 
-class Menu(crmenu.Menu):
+class Menu(devilry_crmenu.Menu):
     devilry_role = 'admin'
 
     def build_menu(self):
@@ -29,8 +30,8 @@ class CrInstance(crinstance.BaseCrAdminInstance):
 
     roleclass = core_models.Period
     rolefrontpage_appname = 'qualifiesforexam'
-
     menuclass = Menu
+
     apps = [
         ('qualifiesforexam', cradmin_app.App)
     ]
