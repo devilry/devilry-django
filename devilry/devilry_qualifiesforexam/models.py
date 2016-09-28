@@ -1,4 +1,6 @@
-from django.conf import settings
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
@@ -19,19 +21,53 @@ class PeriodTag(models.Model):
 
 
 class Status(models.Model):
-    READY, ALMOSTREADY, NOTREADY = ('ready', 'almostready', 'notready')
-    STATUS_CHOICES = (
+
+    #: The list of qualified students are ready for export.
+    #: Usually this means that all students have received a feedback
+    #: on their assignments.
+    READY = 'ready'
+
+    #: Most students are ready for export.
+    #: Almost all students have received a feedback on their assignments.
+    ALMOSTREADY = 'almostready'
+
+    #: Students have pending feedbacks.
+    #: This should be used when students students are awaiting feedback on assignments.
+    #: Typically the status is ``not ready`` if no students(or just a few) have received
+    #: a feedback on the last assignment.
+    NOTREADY = 'notready'
+
+    #: Choice list for status on the qualification list.
+    STATUS_CHOICES = [
         (READY, _('Ready for export')),
         (ALMOSTREADY, _('Most students are ready for export')),
         (NOTREADY, _('Not ready for export (retracted)')),
-    )
-    STATUS_CHOICES_DICT = dict(STATUS_CHOICES)
+    ]
+
+    #: The status of the qualification list.
+    #: Note: The statuses does not represent any final state in the system, and
+    #: the admin can use these statuses as they see fit
+    status = models.CharField(
+            max_length=30,
+            blank=False,
+            choices=STATUS_CHOICES)
+
+    #: Period the qualifications are for.
     period = models.ForeignKey(Period, related_name='qualifiedforexams_status')
-    status = models.SlugField(max_length=30, blank=False, choices=STATUS_CHOICES)
+
+    #: Status created datetime. This is changed if the list updated.
     createtime = models.DateTimeField(auto_now_add=True)
-    message = models.TextField(blank=True)
+
+    #: Message provided with the qualification list.
+    message = models.TextField(blank=True, default='')
+
+    #: The user that create the qualification list(an admin).
     user = models.ForeignKey(User)
+
+    #: The plugin used.
     plugin = models.CharField(max_length=500, null=True, blank=True)
+
+    #: The datetime when the list was exported.
     exported_timestamp = models.DateTimeField(null=True, blank=True)
 
     class Meta:
@@ -43,10 +79,6 @@ class Status(models.Model):
         return self.STATUS_CHOICES_DICT[self.status]
 
     def clean(self):
-        if not self.message:
-            self.message = ''
-        if isinstance(self.message, (str, unicode)) and self.message.strip() == '':
-            self.message = ''
         if self.status == 'notready' and not self.message:
             raise ValidationError('Message can not be empty when status is ``notready``.')
         if self.status != 'notready':
