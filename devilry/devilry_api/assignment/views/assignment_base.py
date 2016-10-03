@@ -2,12 +2,13 @@
 from __future__ import unicode_literals
 
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import mixins, GenericAPIView
 
 from devilry.devilry_api.auth.authentication import TokenAuthentication
 
 
-class BaseAssignmentView(ListAPIView):
+class BaseAssignmentView(mixins.ListModelMixin,
+                         GenericAPIView):
     authentication_classes = (TokenAuthentication, )
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['parentnode__parentnode__short_name', 'parentnode__short_name', 'short_name']
@@ -124,4 +125,4 @@ class BaseAssignmentView(ListAPIView):
               description: assignment id filter
 
         """
-        return super(BaseAssignmentView, self).get(request, *args, **kwargs)
+        return super(BaseAssignmentView, self).list(request, *args, **kwargs)

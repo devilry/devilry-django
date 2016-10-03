@@ -6,6 +6,22 @@ from rest_framework import serializers
 from devilry.apps.core.models.assignment_group import Assignment
 
 
+class PeriodId(serializers.IntegerField):
+
+    def get_attribute(self, instance):
+        """
+        Get related period id
+
+        Args:
+            instance: :obj:`~apps.core.Assignment`
+
+        Returns:
+            id of related period
+
+        """
+        return instance.parentnode.id
+
+
 class BaseAssignmentSerializer(serializers.ModelSerializer):
     #: Related subject short name.
     subject_short_name = serializers.SerializerMethodField()
@@ -13,10 +29,14 @@ class BaseAssignmentSerializer(serializers.ModelSerializer):
     #: Related period short_name
     period_short_name = serializers.SerializerMethodField()
 
+    #: Related period id
+    period_id = PeriodId(required=True)
+
     class Meta:
         model = Assignment
         fields = [
             'id',
+            'period_id',
             'long_name',
             'short_name',
             'period_short_name',
