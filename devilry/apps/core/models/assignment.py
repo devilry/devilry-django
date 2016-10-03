@@ -73,6 +73,24 @@ class AssignmentQuerySet(models.QuerySet):
                 )
             )
 
+    def filter_user_is_period_admin(self, user):
+        """
+        Filter the queryset to only include :class:`.Assignment` objects where the
+        given ``user`` is in a :class:`.devilry.devilry_account.models.PeriodPermissionGroup`.
+
+        Args:
+            user: A user ojbect
+        """
+        periodids_where_is_admin_queryset = PeriodPermissionGroup.objects \
+            .filter(models.Q(permissiongroup__users=user)) \
+            .values_list('period_id', flat=True)
+        return self.filter(
+            models.Q(
+                models.Q(anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF) &
+                models.Q(parentnode_id__in=periodids_where_is_admin_queryset)
+            )
+        )
+
     def filter_user_is_examiner(self, user):
         """
         Filter all :class:`.Assignment` objects where the given user is examiner.

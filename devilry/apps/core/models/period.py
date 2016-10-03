@@ -68,6 +68,19 @@ class PeriodQuerySet(models.QuerySet):
                 models.Q(parentnode_id__in=subjectids_where_is_admin_queryset)
             )
 
+    def filter_user_is_period_admin(self, user):
+        """
+        Filter the queryset to only include :class:`.Period` objects where the
+        given ``user`` is in a :class:`.devilry.devilry_account.models.PeriodPermissionGroup`.
+
+        Args:
+            user: A User object.
+        """
+        periodids_where_is_admin_queryset = PeriodPermissionGroup.objects \
+            .filter(models.Q(permissiongroup__users=user)) \
+            .values_list('period_id', flat=True)
+        return self.filter(id__in=periodids_where_is_admin_queryset)
+
     def extra_annotate_with_user_qualifies_for_final_exam(self, user):
         """
         Annotate the queryset with ``user_qualifies_for_final_exam`` - ``True`` if the user
