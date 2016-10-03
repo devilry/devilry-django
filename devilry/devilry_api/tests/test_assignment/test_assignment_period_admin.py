@@ -20,6 +20,30 @@ class TestPeriodAdminAssignmentview(test_common_mixins.TestReadOnlyPermissionMix
         response = self.mock_get_request()
         self.assertEqual(401, response.status_code)
 
+    def test_period_admin_not_part_of_permission_group(self):
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', id=10)
+        period_admin = core_mommy.period_admin(period=mommy.make('core.Period'))
+        apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
+        response = self.mock_get_request(apikey=apikey.key, queryparams='?id=10')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 0)
+
+    def test_period_admin_old_period(self):
+        assingment = mommy.make_recipe('devilry.apps.core.assignment_oldperiod_start', id=10)
+        period_admin = core_mommy.period_admin(period=assingment.parentnode)
+        apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
+        response = self.mock_get_request(apikey=apikey.key, queryparams='?id=10')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+
+    def test_period_admin_future_period(self):
+        assingment = mommy.make_recipe('devilry.apps.core.assignment_futureperiod_start', id=10)
+        period_admin = core_mommy.period_admin(period=assingment.parentnode)
+        apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
+        response = self.mock_get_request(apikey=apikey.key, queryparams='?id=10')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+
     def test_sanity(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
