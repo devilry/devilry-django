@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 # Devilry imports
-from devilry.devilry_qualifiesforexam.from_devilry_utils.groups_groupedby_relatedstudent_and_assignments import \
+from devilry.devilry_qualifiesforexam.utils.groups_groupedby_relatedstudent_and_assignments import \
     GroupsGroupedByRelatedStudentAndAssignment
 
 
