@@ -7,8 +7,7 @@ from model_mommy import mommy
 from devilry.devilry_group.models import FeedbackSet
 
 
-def feedbackset_first_attempt_published(grading_published_datetime=None, grading_points=1,
-                                    **kwargs):
+def feedbackset_first_attempt_published(grading_published_datetime=None, grading_points=1, **kwargs):
     """
     Creates a published FeedbackSet with ``feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT``
     using ``mommy.make('devilry_group.FeedbackSet)``.
