@@ -9,15 +9,18 @@ from devilry.devilry_qualifiesforexam.utils.groups_groupedby_relatedstudent_and_
 class PeriodResultsCollector(object):
     """
     Collects the results on a period for students.
-    """
 
+    This class must be subclassed for each plugin handling it's requirement for qualifying students.
+    """
     def __init__(self, period, qualifying_assignment_ids=None):
         """
         Args:
             period: The period the results are collected for.
+            qualifying_assignment_ids: IDs for the Assignments as student is required to
+                pass to be able to qualify for final exam.
         """
         self.period = period
-        self.qualifying_assignment_ids = qualifying_assignment_ids
+        self.qualifying_assignment_ids = qualifying_assignment_ids or []
 
     def student_qualifies_for_exam(self, aggregated_relstudentinfo):
         """
@@ -31,21 +34,17 @@ class PeriodResultsCollector(object):
         """
         raise NotImplementedError()
 
-    def get_aggregated_relatedstudentinfo_list(self):
+    def get_relatedstudents_that_qualify_for_exam(self):
         """
-        Get a list of :class:`AggregatedRelatedStudentInfo` objects.
-        """
-        grouper = GroupsGroupedByRelatedStudentAndAssignment(period=self.period)
-        studentinfo_list = []
-        for relatedstudent_id, aggregatedstudentinfo in grouper.result.iteritems():
-            studentinfo_list.append(aggregatedstudentinfo)
-        return studentinfo_list
+        Get list of all relatedstudent IDs for all students that qualify for the exam.
+        Returns:
 
-    def get_related_students_results(self):
         """
-        Get dictionary with relatedstudent.id as key and :class:`AggregatedRelatedStudentInfo` as value.
-        """
+        passing_relatedstudentids = []
         grouper = GroupsGroupedByRelatedStudentAndAssignment(
-                period=self.period,
-                qualifying_assignment_ids=self.qualifying_assignment_ids)
-        return grouper.result
+            self.period,
+        )
+        for aggregated_relstudentinfo in grouper.iter_relatedstudents_with_results():
+            if self.student_qualifies_for_exam(aggregated_relstudentinfo):
+                passing_relatedstudentids.append(aggregated_relstudentinfo.relatedstudent.id)
+        return passing_relatedstudentids

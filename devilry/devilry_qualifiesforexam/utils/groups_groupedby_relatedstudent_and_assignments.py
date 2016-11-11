@@ -1,6 +1,7 @@
 from devilry.utils import OrderedDict
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.models import FeedbackSet
+import json
 
 
 # class GroupList(list):
@@ -61,6 +62,37 @@ from devilry.devilry_group.models import FeedbackSet
 #         return [self._serialize_group(group) for group in self]
 
 
+class FeedbackSetList(list):
+
+    def append(self, p_object):
+        """
+
+        Args:
+            p_object:
+
+        Returns:
+
+        """
+        if not isinstance(p_object, FeedbackSet):
+            raise ValueError('Appended object must be instance of FeedbackSet')
+        super(FeedbackSetList, self).append(p_object)
+
+    def get_feedbackset_with_most_points(self):
+        """
+        Get the :obj:`~.devilry.devilry_group.models.FeedbackSet` with the most points.
+
+        Returns:
+             :obj:`~.devilry.devilry_group.models.FeedbackSet` or None.
+        """
+        best = None
+        for feedbackset in self:
+            if not best:
+                best = feedbackset
+            elif best.grading_points < feedbackset.grading_points:
+                best = feedbackset
+        return best
+
+
 class GroupFeedbackSetList(list):
     """
     A list of tuples containing :class:`devilry.apps.core.models.AssignmentGroup` and
@@ -87,6 +119,21 @@ class GroupFeedbackSetList(list):
         if not isinstance(group, AssignmentGroup) or not isinstance(feedbackset, FeedbackSet):
             raise ValueError('Objects in tuple must be of (AssignmentGroup, FeedbackSet) in that order.')
         super(GroupFeedbackSetList, self).append(p_object)
+
+    def get_feedbackset_with_most_points(self):
+        """
+        Get the :obj:`~.devilry.devilry_group.models.FeedbackSet` with the most points.
+
+        Returns:
+             :obj:`~.devilry.devilry_group.models.FeedbackSet` or None.
+        """
+        best = None
+        for group, feedbackset in self:
+            if not best:
+                best = feedbackset
+            elif best.grading_points < feedbackset.grading_points:
+                best = feedbackset
+        return best
 
     def _serialize_feedbackset(self, feedbackset):
         """
@@ -279,13 +326,13 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
     Provides an easy-to-use API for overviews over the results of all students
     in a period.
     """
-    def __init__(self, period, qualifying_assignment_ids=None):
+    def __init__(self, period):
         #: The period the result info gathering is for.
         self.period = period
 
         #: The assignments that a student must pass.
         #: If ``None`` or all ids are passed, all assignments must be passed.
-        self.qualifying_assignment_ids = qualifying_assignment_ids
+        # self.qualifying_assignment_ids = qualifying_assignment_ids
 
         #: All :obj:`devilry.apps.core.Assignment`s in `qualifying_assigment_ids` for the `period`.
         self.assignments = []
@@ -313,12 +360,13 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         Override for custom ordering or if you need to optimize the query for
         your usecase (``select_related``, ``prefetch_related``, etc.)
         """
-        assignment_queryset = self.period.assignments.all().order_by('publishing_time')
-        if self.qualifying_assignment_ids is not None:
-            assignment_queryset = assignment_queryset\
-                .filter(id__in=self.qualifying_assignment_ids)\
-                .order_by('publishing_time')
-        return assignment_queryset
+        # assignment_queryset = self.period.assignments.all().order_by('publishing_time')
+        # if self.qualifying_assignment_ids is not None:
+        #     assignment_queryset = assignment_queryset\
+        #         .filter(id__in=self.qualifying_assignment_ids)\
+        #         .order_by('publishing_time')
+        # return assignment_queryset
+        return self.period.assignments.all().order_by('publishing_time')
 
     def get_relatedstudents_queryset(self):
         """
@@ -351,8 +399,8 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
             QuerySet: QuerySet of AssignmentGroups.
         """
         groupqry = AssignmentGroup.objects.filter(parentnode__parentnode=self.period)
-        if self.qualifying_assignment_ids is not None:
-            groupqry = groupqry.filter(parentnode__id__in=self.qualifying_assignment_ids)
+        # if self.qualifying_assignment_ids is not None:
+        #     groupqry = groupqry.filter(parentnode__id__in=self.qualifying_assignment_ids)
         groupqry = groupqry.select_related('parentnode', 'parentnode__parentnode')
         groupqry = groupqry.prefetch_related('candidates', 'candidates__relatedstudent', 'feedbackset_set')
         return groupqry

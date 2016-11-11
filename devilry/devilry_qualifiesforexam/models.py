@@ -29,6 +29,7 @@ class Status(models.Model):
 
     #: Most students are ready for export.
     #: Almost all students have received a feedback on their assignments.
+    #: TODO: Remove
     ALMOSTREADY = 'almostready'
 
     #: Students have pending feedbacks.
@@ -59,6 +60,7 @@ class Status(models.Model):
     createtime = models.DateTimeField(auto_now_add=True)
 
     #: Message provided with the qualification list.
+    #: Retracted message.
     message = models.TextField(blank=True, default='')
 
     #: The user that create the qualification list(an admin).
@@ -68,6 +70,7 @@ class Status(models.Model):
     plugin = models.CharField(max_length=500, null=True, blank=True)
 
     #: The datetime when the list was exported.
+    #: If this is null, this is considered a draft for preview before it's saved.
     exported_timestamp = models.DateTimeField(null=True, blank=True)
 
     class Meta:
@@ -105,8 +108,13 @@ class Status(models.Model):
 
 
 class QualifiesForFinalExam(models.Model):
+    #:
     relatedstudent = models.ForeignKey(RelatedStudent)
+
+    #:
     status = models.ForeignKey(Status, related_name='students')
+
+    #:
     qualifies = models.NullBooleanField()
 
     class Meta:

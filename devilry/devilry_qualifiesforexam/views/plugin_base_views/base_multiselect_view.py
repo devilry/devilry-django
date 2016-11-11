@@ -4,10 +4,50 @@ from __future__ import unicode_literals
 # Django imports
 from django import forms
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 
 # CrAdmin imports
 from django_cradmin.viewhelpers import multiselect2
 from django_cradmin.viewhelpers import multiselect2view
+
+# Devilry imports
+from devilry.devilry_qualifiesforexam.models import Status
+from devilry.devilry_qualifiesforexam.models import QualifiesForFinalExam
+
+
+def create_sessionkey(pluginsessionid):
+    return 'qualifiesforexam-{}'.format(pluginsessionid)
+
+
+def create_settings_sessionkey(pluginsessionid):
+    return '{}-settings'.format(create_sessionkey(pluginsessionid))
+
+
+class PreviewData(object):
+    def __init__(self, passing_relatedstudentids):
+        self.passing_relatedstudentids = passing_relatedstudentids
+
+    def __str__(self):
+        return 'PreviewData(passing_relatedstudentids={0!r})'.format(self.passing_relatedstudentids)
+
+    def serialize(self):
+        return {
+            'passing_relatedstudentids': list(self.passing_relatedstudentids)
+        }
+
+
+class QualifiedForExamPluginViewMixin(object):
+    pluginid = None
+
+    def get_plugin_input_and_authenticate(self):
+        self.period = self.request.cradmin_role
+        self.pluginsessionid = self.request.session['pluginsessionid']
+
+    def save_plugin_output(self, *args, **kwargs):
+        self.request.session[create_sessionkey(self.pluginsessionid)] = PreviewData(*args, **kwargs).serialize()
+
+    def save_settings_in_session(self, data):
+        self.request.session[create_settings_sessionkey(self.pluginsessionid)] = data
 
 
 class SelectedQualificationForm(forms.Form):
@@ -110,7 +150,7 @@ class QualificationItemTargetRenderer(multiselect2.target_renderer.Target):
         return 'No {} selected'.format(self.descriptive_item_name)
 
 
-class QualificationItemListView(multiselect2view.ListbuilderView):
+class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForExamPluginViewMixin):
     """
     Abstract multiselect view.
 
@@ -165,13 +205,12 @@ class QualificationItemListView(multiselect2view.ListbuilderView):
     def get_form_kwargs(self):
         kwargs = super(QualificationItemListView, self).get_form_kwargs()
         kwargs['selectable_items_queryset'] = self.get_queryset_for_role(self.request.cradmin_role)
-        # print 'get_form_kwargs'
-        # print kwargs['selectable_items_queryset']
         return kwargs
 
     def form_valid(self, form):
-        qualification_item_names = ['"{}"'.format(item) for item in form.cleaned_data['selected_items']]
+        qualification_item_ids = ['"{}:{}"'.format(item, item.id) for item in form.cleaned_data['selected_items']]
         messages.success(
             self.request,
-            'POST OK. Selected: {}'.format(', '.join(qualification_item_names)))
-        return None
+            'POST OK. Selected: {}'.format(', '.join(qualification_item_ids)))
+        print qualification_item_ids
+        return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl('preview'))

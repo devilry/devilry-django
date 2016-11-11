@@ -1,0 +1,43 @@
+{% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
+
+{% block content %}
+    <div class="container">
+        <h1>Students on {{ period }}</h1>
+        <h2>Preview and confirm</h2>
+        <p> This table shows the result of your choices</p>
+        {{ block.super }}
+        <table style="font-family: arial, sans-serif; border-collapse: collapse; width: 100%;">
+            <tr>
+                <th style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
+                    <h4>Student</h4>
+                </th>
+                <th style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
+                    <h4>Qualifies for final exams</h4>
+                </th>
+            </tr>
+            {% for relatedstudent in relatedstudents %}
+                <tr>
+
+                    <td style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
+                        <h5> {{ relatedstudent.user.shortname }} </h5>
+                    </td>
+                    {% if relatedstudent.id in passing_relatedstudentids %}
+                        <td style="border: 1px solid #dddddd; text-align: left; padding: 8px; color: #00FF00;">
+                            <h5>YES</h5>
+                        </td>
+                    {% else %}
+                        <td style="border: 1px solid #dddddd; text-align: left; padding: 8px; color: #FF0000;">
+                            <h4>NO</h4>
+                        </td>
+                    {% endif %}
+
+                    {% for assignment_ids, groupfeedbacksetlist in student.assignments.iteritems %}
+                       <td style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
+                           <h4>{{ assignment_ids }}</h4>
+                       </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock content %}
