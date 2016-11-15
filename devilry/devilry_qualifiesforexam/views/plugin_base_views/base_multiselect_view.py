@@ -169,8 +169,9 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         Check if a :class:`~.devilry_qualifiesforexam.models.Status` with ``status`` set to
         ``ready`` exists for the period. If it exists, redirect to the final export view.
         """
-        try:
-            if status_models.Status.get_current_status(self.request.cradmin_role).status == status_models.Status.READY:
+        status = status_models.Status.objects.order_by('-createtime').first()
+        if status:
+            if status_models.Status.objects.order_by('-createtime').first().status == status_models.Status.READY:
                 # Currently raise Http404, add redirect to view later
                 return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
                     viewname='show-status',
@@ -178,8 +179,6 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
                         'roleid': self.request.cradmin_role.id
                     }
                 ))
-        except status_models.Status.DoesNotExist:
-            pass
         return super(QualificationItemListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset_for_role(self, role):
