@@ -1,0 +1,20 @@
+{% extends "devilry_qualifiesforexam/base.django.html" %}
+
+{% block content %}
+    <div class="container">
+        <h1>Qualified for final exams</h1>
+        {% if status == 'ready' %}
+            <p>
+                Status: <span class="label label-success">Ready for export</span>
+                Saved {{ saved_date }} by {{ saved_by }}
+            </p>
+        {% else %}
+            <span class="label label-warning">Not ready for export</span>
+        {% endif %}
+        <h5>{{ num_students_qualify }}/{{ num_students }} students qualify for final exam</h5>
+        <br>
+        <br>
+        {% include "devilry_qualifiesforexam/includes/qualification_table.django.html" %}
+    </div>
+
+{% endblock content %}

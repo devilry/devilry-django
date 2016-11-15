@@ -63,6 +63,7 @@ Apps
 
     devilry_subjectadmin
     devilry_qualifiesforexam
+    devilry_qualifiesforexam2
     devilry_gradingsystem
     devilry_search
     devilry_account

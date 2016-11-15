@@ -8743,3 +8743,42 @@ ul.devilry-admin-assigments-students-and-examiners li h3 {
 ul.devilry-admin-assigments-students-and-examiners li p {
   font-size: 14px;
 }
+.devilry-qualifiesforexam-cellbase {
+  border-top: 1px solid #dddddd;
+  padding-left: 8px;
+  text-align: center;
+}
+.devilry-qualifiesforexam-table {
+  border-top: 1px solid #dddddd;
+  padding-left: 8px;
+  text-align: center;
+  border-collapse: collapse;
+  width: 100%;
+}
+.devilry-qualifiesforexam-table tr:nth-child(even) {
+  background-color: #eeeeee;
+}
+.devilry-qualifiesforexam-table th {
+  border-top: 1px solid #dddddd;
+  padding-left: 8px;
+  text-align: center;
+}
+.devilry-qualifiesforexam-table tr:hover td {
+  background-color: #dddddd;
+}
+.devilry-qualifiesforexam-cell-studentinfo {
+  border-top: 1px solid #dddddd;
+  padding-left: 8px;
+  text-align: center;
+  text-align: left;
+}
+.devilry-qualifiesforexam-cell-qualify {
+  border-top: 1px solid #dddddd;
+  padding-left: 8px;
+  text-align: center;
+}
+.devilry-qualifiesforexam-cell-assignmentinfo {
+  border-top: 1px solid #dddddd;
+  padding-left: 8px;
+  text-align: center;
+}
