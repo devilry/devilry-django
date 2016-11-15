@@ -29,7 +29,7 @@ class Status(models.Model):
 
     #: Most students are ready for export.
     #: Almost all students have received a feedback on their assignments.
-    #: TODO: Remove
+    #: TODO: Legacy, to be removed.
     ALMOSTREADY = 'almostready'
 
     #: Students have pending feedbacks.
@@ -63,7 +63,7 @@ class Status(models.Model):
     #: Retracted message.
     message = models.TextField(blank=True, default='')
 
-    #: The user that create the qualification list(an admin).
+    #: The user that created the qualification list(an admin).
     user = models.ForeignKey(User)
 
     #: The plugin used.
@@ -108,13 +108,13 @@ class Status(models.Model):
 
 
 class QualifiesForFinalExam(models.Model):
-    #:
+    #: The related :obj:`~.devilry.apps.core.RelatedStudent` the qualification is for.
     relatedstudent = models.ForeignKey(RelatedStudent)
 
-    #:
+    #: The related :obj:`~.Status` for this student.
     status = models.ForeignKey(Status, related_name='students')
 
-    #:
+    #: ``True`` if the student qualifies for the exam, else ``False``.
     qualifies = models.NullBooleanField()
 
     class Meta:
@@ -125,3 +125,6 @@ class QualifiesForFinalExam(models.Model):
             raise ValidationError('Only the ``almostready`` status allows marking students as not ready for export.')
         if self.status.status == 'notready':
             raise ValidationError('Status ``notready`` does not allow marking qualified students.')
+
+    def __unicode__(self):
+        return u'{}-{}-{}'.format(self.relatedstudent, self.status, self.qualifies)
