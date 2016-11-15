@@ -14,6 +14,9 @@
         <h5>{{ num_students_qualify }}/{{ num_students }} students qualify for final exam</h5>
         <br>
         <br>
+        {{ block.super }}
+        <br>
+        <br>
         {% include "devilry_qualifiesforexam/includes/qualification_table.django.html" %}
     </div>
 
