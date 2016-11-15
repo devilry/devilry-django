@@ -75,7 +75,6 @@ class TestQualificationPreviewView(test.TestCase, cradmin_testhelpers.TestCaseMi
                     'back': 'unused value',
                 }
             })
-
         self.assertEquals(mockresponse.response.status_code, 302)
 
     def test_post_save_status(self):

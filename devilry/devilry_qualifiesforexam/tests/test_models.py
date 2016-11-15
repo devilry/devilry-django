@@ -32,7 +32,7 @@ class TestStatus(test.TestCase):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
         with self.assertRaisesMessage(status_models.Status.DoesNotExist,
                                       'The period with id={} has no statuses'.format(testperiod.id)):
-            status_models.Status.get_current_status(testperiod)
+            status_models.Status.objects.get_last_status_in_period(period=testperiod)
 
     def test_get_current_status(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
@@ -44,7 +44,7 @@ class TestStatus(test.TestCase):
                                  period=testperiod,
                                  status=status_models.Status.READY,
                                  plugin='plugin')
-        current_status = status_models.Status.get_current_status(testperiod)
+        current_status = status_models.Status.objects.get_last_status_in_period(period=testperiod)
         self.assertEquals(current_status, last_status)
 
     def test_get_qualified_students(self):
