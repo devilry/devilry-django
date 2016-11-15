@@ -23,6 +23,7 @@ class PluginForm(base_multiselect_view.SelectedQualificationForm):
 
 class PluginSelectAssignmentsView(base_multiselect_view.QualificationItemListView, plugin_mixin.PluginMixin):
     model = core_models.Assignment
+    plugintypeid = 'devilry_qualifiesforexam_plugin_approved.plugin_select_assignments'
 
     def get(self, request, *args, **kwargs):
         return super(PluginSelectAssignmentsView, self).get(request, *args, **kwargs)
@@ -35,9 +36,9 @@ class PluginSelectAssignmentsView(base_multiselect_view.QualificationItemListVie
     def get_form_class(self):
         return PluginForm
 
-    def get_inititially_selected_queryset(self):
+    def get_initially_selected_queryset(self):
         """
-        Select all assignments as must be approved by default.
+        Select all assignments that must be approved by default.
         The user can then deselect desired assignments.
 
         Returns:
@@ -57,4 +58,5 @@ class PluginSelectAssignmentsView(base_multiselect_view.QualificationItemListVie
         # Attach collected data to session.
         self.request.session['qualifying_assignmentids'] = qualifying_assignmentids
         self.request.session['passing_relatedstudentids'] = passing_relatedstudentids
+        self.request.session['plugintypeid'] = PluginSelectAssignmentsView.plugintypeid
         return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl('preview'))
