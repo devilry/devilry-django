@@ -11,7 +11,7 @@ from django_cradmin.viewhelpers import multiselect2
 from django_cradmin.viewhelpers import multiselect2view
 
 # Devilry imports
-from devilry.devilry_qualifiesforexam.models import Status
+from devilry.devilry_qualifiesforexam import models as status_models
 from devilry.devilry_qualifiesforexam.models import QualifiesForFinalExam
 
 
@@ -164,6 +164,24 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
     model = None
     value_renderer_class = SelectableQualificationItemValue
 
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Check if a :class:`~.devilry_qualifiesforexam.models.Status` with ``status`` set to
+        ``ready`` exists for the period. If it exists, redirect to the final export view.
+        """
+        try:
+            if status_models.Status.get_current_status(self.request.cradmin_role).status == status_models.Status.READY:
+                # Currently raise Http404, add redirect to view later
+                return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
+                    viewname='show-status',
+                    kwargs={
+                        'roleid': self.request.cradmin_role.id
+                    }
+                ))
+        except status_models.Status.DoesNotExist:
+            pass
+        return super(QualificationItemListView, self).dispatch(request, *args, **kwargs)
+
     def get_queryset_for_role(self, role):
         """
         Get a queryset all the objects for :obj:`.QualificationItemListView.model`
@@ -212,5 +230,4 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         messages.success(
             self.request,
             'POST OK. Selected: {}'.format(', '.join(qualification_item_ids)))
-        print qualification_item_ids
         return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl('preview'))
