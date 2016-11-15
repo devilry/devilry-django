@@ -203,9 +203,7 @@ class TestAggregatedRelatedStudentInfoSerializers(test.TestCase, TestPluginHelpe
         dataset_dict = self._build_data_set()
         grouper = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
             period=dataset_dict['testperiod'],
-            qualifying_assignment_ids=[
-                dataset_dict['testassignments'][0].id
-            ])
+        )
         serialized_user = grouper.result.values()[0].serialize()['user']
         self.assertEquals(serialized_user['id'], dataset_dict['student_user'].id)
         self.assertEquals(serialized_user['username'], dataset_dict['student_user'].shortname)
@@ -215,10 +213,8 @@ class TestAggregatedRelatedStudentInfoSerializers(test.TestCase, TestPluginHelpe
         # Test serialization of relatedstudent.
         dataset_dict = self._build_data_set()
         grouper = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
-            period=dataset_dict['testperiod'],
-            qualifying_assignment_ids=[
-                dataset_dict['testassignments'][0].id
-            ])
+            period=dataset_dict['testperiod']
+        )
         serialized_relatedstudent = grouper.result.values()[0].serialize()['relatedstudent']
         self.assertEquals(serialized_relatedstudent['id'], dataset_dict['relatedstudent'].id)
         self.assertEquals(serialized_relatedstudent['tags'], dataset_dict['relatedstudent'].tags)
@@ -229,9 +225,7 @@ class TestAggregatedRelatedStudentInfoSerializers(test.TestCase, TestPluginHelpe
         dataset_dict = self._build_data_set()
         grouper = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
             period=dataset_dict['testperiod'],
-            qualifying_assignment_ids=[
-                dataset_dict['testassignments'][0].id
-            ])
+        )
         serialized_groups_by_assignment = grouper.result.values()[0].serialize()['groups_by_assignment']
         self.assertEquals(serialized_groups_by_assignment[0]['assignmentid'], dataset_dict['testassignments'][0].id)
 
@@ -268,37 +262,6 @@ class TestGroupsGroupedByRelatedStudentAndAssignment(test.TestCase, TestPluginHe
         self.assertIn(testassignments[1].id, retreived_assignment_ids)
         self.assertIn(testassignments[2].id, retreived_assignment_ids)
 
-    def test_assignment_ids_filtering(self):
-        # Test that the grouper only fetches the qualifying Assignments.
-        dataset_dict = self._build_data_set()
-        testassignments = dataset_dict['testassignments']
-        grouper = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
-                period=dataset_dict['testperiod'],
-                qualifying_assignment_ids=[
-                    testassignments[0].id,
-                    testassignments[1].id
-                ])
-        retreived_assignment_ids = [assignment.id for assignment in grouper.assignments]
-        self.assertIn(testassignments[0].id, retreived_assignment_ids)
-        self.assertIn(testassignments[1].id, retreived_assignment_ids)
-        self.assertEquals(len(retreived_assignment_ids), 2)
-
-    def test_assignmentgroup_ids_filtering(self):
-        # Test that the grouper only fetches the AssignmentGroups for the qualifying Assignments.
-        dataset_dict = self._build_data_set()
-        testassignments = dataset_dict['testassignments']
-        testgroups = dataset_dict['testgroups']
-        grouper = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
-                period=dataset_dict['testperiod'],
-                qualifying_assignment_ids=[
-                    testassignments[0].id,
-                    testassignments[1].id
-                ])
-        retreived_group_ids = [group.id for group in grouper.groups]
-        self.assertIn(testgroups[0].id, retreived_group_ids)
-        self.assertIn(testgroups[1].id, retreived_group_ids)
-        self.assertEquals(len(retreived_group_ids), 2)
-
     def test_student_qualifies(self):
         dataset_dict = self._build_data_set()
         resultinfo = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
@@ -332,10 +295,7 @@ class TestGroupsGroupedByRelatedStudentAndAssignment(test.TestCase, TestPluginHe
         testassignments = dataset_dict['testassignments']
         resultinfo = groups_groupedby_relatedstudent_and_assignments.GroupsGroupedByRelatedStudentAndAssignment(
             period=dataset_dict['testperiod'],
-            qualifying_assignment_ids=[
-                testassignments[0].id,
-                testassignments[1].id
-            ]).result
+        ).result
         for aggregatedstudentinfo in resultinfo.itervalues():
             self.assertTrue(aggregatedstudentinfo.student_qualifies())
 
