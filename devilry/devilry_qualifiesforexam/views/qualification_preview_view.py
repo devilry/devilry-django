@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from crispy_forms import layout
+
 # Django imports
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
@@ -8,7 +10,7 @@ from django.db import models
 from django import forms
 
 # CrAdmin imports
-from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
+from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit, CollapsedSectionLayout, CradminSubmitButton
 from django_cradmin.viewhelpers import formbase
 
 # Devilry imports
@@ -16,7 +18,7 @@ from devilry.devilry_qualifiesforexam import models as status_models
 from devilry.apps.core import models as core_models
 
 
-class MyForm(forms.Form):
+class QualificationForm(forms.Form):
     pass
 
 
@@ -55,7 +57,24 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
     This view lists all the students on the course for this period.
     """
     template_name = 'devilry_qualifiesforexam/preview.django.html'
-    form_class = MyForm
+    form_class = QualificationForm
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Check if a :class:`~.devilry_qualifiesforexam.models.Status` with ``status`` set to
+        ``ready`` exists for the period. If it exists, redirect to the final export view.
+        """
+        status = status_models.Status.objects.order_by('-createtime').first()
+        if status:
+            if status_models.Status.objects.order_by('-createtime').first().status == status_models.Status.READY:
+                # Currently raise Http404, add redirect to view later
+                return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
+                    viewname='show-status',
+                    kwargs={
+                        'roleid': self.request.cradmin_role.id
+                    }
+                ))
+        return super(QualificationPreviewView, self).dispatch(request, *args, **kwargs)
 
     def get_buttons(self):
         return [
@@ -109,7 +128,9 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
     def form_valid(self, form):
         passing_relatedstudentids = set(self.request.session['passing_relatedstudentids'])
         plugintypeid = self.request.session['plugintypeid']
-
+        del self.request.session['passing_relatedstudentids']
+        del self.request.session['plugintypeid']
+        del self.request.session['qualifying_assignmentids']
         if 'save' in self.request.POST:
             status = self._create_status(plugintypeid)
             self._bulk_create_relatedstudents(status, passing_relatedstudentids)
@@ -129,59 +150,57 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
             ))
 
 
+class QualificationStatusForm(forms.ModelForm):
+    class Meta:
+        model = status_models.Status
+        fields = ['status', 'message']
+
+    def __init__(self, *args, **kwargs):
+        super(QualificationStatusForm, self).__init__(*args, **kwargs)
+        self.fields['my_choice_field'] = forms.ChoiceField()
+
+
 class QualificationStatusPreview(AbstractQualificationPreviewView):
     """
     View for showing the current :class:`~.devilry.devilry_qualifiesforexam.models.Status` of the
     qualifications list.
     """
     template_name = 'devilry_qualifiesforexam/show_status.html'
-    form_class = MyForm
+    form_class = QualificationStatusForm
 
-    def _get_qualifiesforexam_queryset(self):
-        """
-        """
-        return status_models.QualifiesForFinalExam.objects\
-            .select_related('relatedstudent')\
-            .order_by('relatedstudent__user__fullname',
-                      'relatedstudent__user__shortname')
-
-    def get_queryset_for_role(self):
-        """
-        Prefetches whats need for to print the
-        """
-        return status_models.Status.objects\
-            .select_related('period')\
-            .prefetch_related(
-                models.Prefetch(
-                        'students',
-                        queryset=self._get_qualifiesforexam_queryset()))
-
-    def _get_qualifyingstudentids(self, qualifiesforexam):
-        """
-        """
-        qualifyingids = []
-        for qualifying_student in qualifiesforexam:
-            if qualifying_student.qualifies:
-                qualifyingids.append(qualifying_student.relatedstudent.id)
-        return qualifyingids
+    def get_buttons(self):
+        return [
+            PrimarySubmit('retract', _('Retract')),
+        ]
 
     def _get_relatedstudents(self, period):
         """
-        Get all RelatedStudents for Period.
+        Get all RelatedStudents for Period and select related user
+        for :class:'~.devilry.apps.core.models.RelatedStudent'.
+
+        Args:
+            period: Period to fetch students for.
+
+        Returns:
+            QuerySet of :class:'~.devilry.apps.core.models.RelatedStudent' for ``period``.
         """
-        return core_models.RelatedStudent.objects.filter(period=period)
+        return core_models.RelatedStudent.objects.filter(period=period)\
+            .select_related('user')\
+            .order_by('user__fullname')
 
     def get_context_data(self, **kwargs):
         context_data = super(QualificationStatusPreview, self).get_context_data(**kwargs)
 
-        current_status = self.get_queryset_for_role()[0].get_current_status(self.request.cradmin_role)
+        current_status = status_models.Status.objects.get_last_status_in_period(period=self.request.cradmin_role)
+
+        # Set status info
         context_data['saved_by'] = current_status.user
         context_data['period'] = current_status.period
-
         context_data['saved_date'] = current_status.createtime
         context_data['status'] = current_status.status
 
-        qualifiesforexam = current_status.students.all()
+        # Generate student info
+        qualifiesforexam = list(current_status.students.all())
         qualifying_studentids = [q.relatedstudent.id for q in qualifiesforexam if q.qualifies]
         relatedstudents = self._get_relatedstudents(self.request.cradmin_role)
         context_data['passing_relatedstudentids'] = qualifying_studentids
@@ -189,3 +208,13 @@ class QualificationStatusPreview(AbstractQualificationPreviewView):
         context_data['relatedstudents'] = relatedstudents
         context_data['num_students'] = len(relatedstudents)
         return context_data
+
+    def form_valid(self, form):
+        if 'retract' in self.request.POST:
+            print form.status
+            return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
+                viewname='show-status',
+                kwargs={
+                    'roleid': self.request.cradmin_role.id
+                }
+            ))
