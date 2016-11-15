@@ -25,5 +25,10 @@ class App(crapp.App):
             r'preview$',
             qualification_preview_view.QualificationPreviewView.as_view(),
             name='preview'
+        ),
+        crapp.Url(
+            r'showstatus$',
+            qualification_preview_view.QualificationStatusPreview.as_view(),
+            name='show-status'
         )
     ]
