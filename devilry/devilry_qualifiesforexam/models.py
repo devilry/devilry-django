@@ -20,7 +20,52 @@ class PeriodTag(models.Model):
     deadlinetag = models.ForeignKey(DeadlineTag)
 
 
+class StatusQuerySet(models.QuerySet):
+    """
+    QuerySet-manager for :class:`~.Status`.
+    """
+
+    def _get_qualifiesforexam_queryset(self):
+        """
+        Get :class:`~.QualifiesForFinalExam` and fetch the
+        related :class:`~.devilry.apps.core.models.RelatedStudent` with select_related.
+
+        Returns:
+            QuerySet of :class:`~.QualifiesForFinalExam` objects.
+        """
+        return QualifiesForFinalExam.objects\
+            .select_related('relatedstudent')
+
+    def get_last_status_in_period(self, period):
+        """
+        Get the last :class:`~.Status` for the period.
+
+        Prefetches all :class:`~.QualifiesForFinalExam` for the :class:`~.Status` objects and
+        selects the last status.
+
+        Args:
+            period: current period.
+
+        Returns:
+            The latest :class:`~.Status`.
+
+        """
+        latest_status = period.qualifiedforexams_status\
+            .select_related('period')\
+            .prefetch_related(
+                models.Prefetch(
+                        'students',
+                        queryset=self._get_qualifiesforexam_queryset()))\
+            .order_by('-createtime').first()
+        if latest_status is None:
+            raise Status.DoesNotExist('The period with id={} has no statuses'.format(period.id))
+        return latest_status
+
+
 class Status(models.Model):
+
+    #: Sets :class:`~.StatusQuerySet` as manager for model.
+    objects = StatusQuerySet.as_manager()
 
     #: The list of qualified students are ready for export.
     #: Usually this means that all students have received a feedback
@@ -92,12 +137,12 @@ class Status(models.Model):
             if self.plugin:
                 raise ValidationError('``plugin`` is not allowed when status is ``notready``.')
 
-    @classmethod
-    def get_current_status(cls, period):
-        latest = period.qualifiedforexams_status.all().order_by('-createtime')[:1]
-        if len(latest) == 0:
-            raise cls.DoesNotExist('The period with id={0} has no statuses'.format(period.id))
-        return latest[0]
+    # @classmethod
+    # def get_current_status(cls, period):
+    #     latest = period.qualifiedforexams_status.all().order_by('-createtime')[:1]
+    #     if len(latest) == 0:
+    #         raise cls.DoesNotExist('The period with id={0} has no statuses'.format(period.id))
+    #     return latest[0]
 
     def get_qualified_students(self):
         return self.students.filter(qualifies=True)
