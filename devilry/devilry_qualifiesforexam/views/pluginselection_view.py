@@ -30,8 +30,9 @@ class SelectPluginView(TemplateView):
                 A :class:`devilry.devilry_qualifiesforexam.listbuilder import plugin_listbuilder_list.PluginListBuilderList`.
         """
         listbuilder_class = plugin_listbuilder_list.PluginListBuilderList
-        return listbuilder_class.from_plugin_registry(plugintyperegistry.Registry.get_instance(),
-                                                      roleid=self.request.cradmin_role.id)
+        return listbuilder_class.from_plugin_registry(
+                pluginregistry=plugintyperegistry.Registry.get_instance(),
+                roleid=self.request.cradmin_role.id)
 
     def get_context_data(self, **kwargs):
         context_data = super(SelectPluginView, self).get_context_data(**kwargs)

@@ -12,7 +12,6 @@ from django_cradmin.viewhelpers import multiselect2view
 
 # Devilry imports
 from devilry.devilry_qualifiesforexam import models as status_models
-from devilry.devilry_qualifiesforexam.models import QualifiesForFinalExam
 
 
 def create_sessionkey(pluginsessionid):
@@ -172,7 +171,6 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         status = status_models.Status.objects.order_by('-createtime').first()
         if status:
             if status_models.Status.objects.order_by('-createtime').first().status == status_models.Status.READY:
-                # Currently raise Http404, add redirect to view later
                 return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
                     viewname='show-status',
                     kwargs={
