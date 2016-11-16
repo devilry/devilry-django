@@ -31,5 +31,3 @@ class TestPluginListBuilderList(test.TestCase):
 
         self.assertEquals(plugintypeclass().get_plugintypeid(),
                           listbuilder_list.renderable_list[0].inneritem.value.get_plugintypeid())
-
-
