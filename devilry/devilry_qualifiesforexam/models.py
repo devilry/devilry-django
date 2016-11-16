@@ -36,7 +36,7 @@ class StatusQuerySet(models.QuerySet):
         return QualifiesForFinalExam.objects\
             .select_related('relatedstudent')
 
-    def get_last_status_in_period(self, period):
+    def get_last_status_in_period(self, period, prefetch_relations=True):
         """
         Get the last :class:`~.Status` for the period.
 
@@ -45,18 +45,22 @@ class StatusQuerySet(models.QuerySet):
 
         Args:
             period: current period.
+            prefetch_relations: Prefetches the period for the Status and the
+                related :class:`~.QualifiesForFinalExam`.
 
         Returns:
             The latest :class:`~.Status`.
-
         """
-        latest_status = period.qualifiedforexams_status\
-            .select_related('period')\
-            .prefetch_related(
-                models.Prefetch(
-                        'students',
-                        queryset=self._get_qualifiesforexam_queryset()))\
-            .order_by('-createtime').first()
+        if prefetch_relations:
+            latest_status = period.qualifiedforexams_status\
+                .select_related('period')\
+                .prefetch_related(
+                    models.Prefetch(
+                            'students',
+                            queryset=self._get_qualifiesforexam_queryset()))\
+                .order_by('-createtime').first()
+        else:
+            latest_status = period.qualifiedforexams_status.order_by('-createtime').first()
         if latest_status is None:
             raise Status.DoesNotExist('The period with id={} has no statuses'.format(period.id))
         return latest_status
@@ -70,6 +74,8 @@ class Status(models.Model):
     #: The list of qualified students are ready for export.
     #: Usually this means that all students have received a feedback
     #: on their assignments.
+    #:
+    #: This should be the default when creating a new Status for a Period.
     READY = 'ready'
 
     #: Most students are ready for export.
@@ -104,8 +110,8 @@ class Status(models.Model):
     #: Status created datetime. This is changed if the list updated.
     createtime = models.DateTimeField(auto_now_add=True)
 
-    #: Message provided with the qualification list.
-    #: Retracted message.
+    #: Message provided with the qualification list of why
+    #: it was retracted.
     message = models.TextField(blank=True, default='')
 
     #: The user that created the qualification list(an admin).
@@ -136,13 +142,6 @@ class Status(models.Model):
         if self.status == 'notready':
             if self.plugin:
                 raise ValidationError('``plugin`` is not allowed when status is ``notready``.')
-
-    # @classmethod
-    # def get_current_status(cls, period):
-    #     latest = period.qualifiedforexams_status.all().order_by('-createtime')[:1]
-    #     if len(latest) == 0:
-    #         raise cls.DoesNotExist('The period with id={0} has no statuses'.format(period.id))
-    #     return latest[0]
 
     def get_qualified_students(self):
         return self.students.filter(qualifies=True)
