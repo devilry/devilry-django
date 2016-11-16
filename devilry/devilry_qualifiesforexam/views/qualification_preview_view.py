@@ -1,17 +1,16 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-from crispy_forms import layout
+# # -*- coding: utf-8 -*-
+# from __future__ import unicode_literals
 
 # Django imports
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
-from django.db import models
 from django import forms
 
 # CrAdmin imports
-from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit, CollapsedSectionLayout, CradminSubmitButton
+from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
 from django_cradmin.viewhelpers import formbase
+from django_cradmin.viewhelpers import update
 
 # Devilry imports
 from devilry.devilry_qualifiesforexam import models as status_models
@@ -67,7 +66,6 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
         status = status_models.Status.objects.order_by('-createtime').first()
         if status:
             if status_models.Status.objects.order_by('-createtime').first().status == status_models.Status.READY:
-                # Currently raise Http404, add redirect to view later
                 return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
                     viewname='show-status',
                     kwargs={
@@ -150,14 +148,8 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
             ))
 
 
-class QualificationStatusForm(forms.ModelForm):
-    class Meta:
-        model = status_models.Status
-        fields = ['status', 'message']
-
-    def __init__(self, *args, **kwargs):
-        super(QualificationStatusForm, self).__init__(*args, **kwargs)
-        self.fields['my_choice_field'] = forms.ChoiceField()
+class QualificationStatusForm(forms.Form):
+    pass
 
 
 class QualificationStatusPreview(AbstractQualificationPreviewView):
@@ -211,10 +203,78 @@ class QualificationStatusPreview(AbstractQualificationPreviewView):
 
     def form_valid(self, form):
         if 'retract' in self.request.POST:
-            print form.status
+            current_status = status_models.Status.objects.get_last_status_in_period(
+                    period=self.request.cradmin_role,
+                    prefetch_relations=False)
             return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
-                viewname='show-status',
+                viewname='retract-status',
                 kwargs={
-                    'roleid': self.request.cradmin_role.id
+                    'pk': current_status.id
                 }
             ))
+
+
+class RetractStatusForm(forms.ModelForm):
+    """
+    Form for providing a retracted-message for the status
+    """
+    class Meta:
+        fields = ['message']
+        model = status_models.Status
+
+    @classmethod
+    def get_field_layout(cls):
+        return ['message']
+
+
+class StatusRetractView(update.UpdateView):
+    """
+    Simple model-update view.
+
+    This view is for providing a message of why the status was retracted.
+    """
+    model = status_models.Status
+
+    def get_pagetitle(self):
+        return 'Why is the status retracted?'
+
+    def get_form_class(self):
+        return RetractStatusForm
+
+    def get_field_layout(self):
+        """
+        Override get field layout as we're using ``AceMarkdownWidget`` to define
+        the form field in our form class :class:`~.EditGroupCommentForm`.
+
+        Returns:
+            list: List extended with the field layout of :class:`~.EditGroupCommentForm`.
+        """
+        field_layout = []
+        field_layout.extend(self.get_form_class().get_field_layout())
+        return field_layout
+
+    def get_queryset_for_role(self, role):
+        role_name = self.request.cradmin_instance.is_admin()
+        if not role_name:
+            raise PermissionDenied
+        return role.qualifiedforexams_status
+
+    def get_object(self, queryset=None):
+        return status_models.Status.objects.get(id=self.kwargs.get('pk'), period=self.request.cradmin_role)
+
+    def save_object(self, form, commit=True):
+        status = super(StatusRetractView, self).save_object(form=form, commit=False)
+        status.status = status_models.Status.NOTREADY
+        status.plugin = None
+        status = super(StatusRetractView, self).save_object(form=form, commit=commit)
+        return status
+
+    def get_success_url(self):
+        if self.get_submit_save_and_continue_edititing_button_name() in self.request.POST:
+            return self.request.cradmin_app.reverse_appurl(
+
+            )
+        return self.request.cradmin_app.reverse_appindexurl()
+
+    def get_form_invalid_message(self, form):
+        return 'Cannot retract status without a message.'
