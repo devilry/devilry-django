@@ -1,0 +1,42 @@
+.devilry-qualifiesforexam-cellbase {
+  border-top: 1px solid #dddddd;
+  padding-left: 8px;
+  text-align: center;
+}
+
+
+.devilry-qualifiesforexam-table {
+  .devilry-qualifiesforexam-cellbase;
+  border-collapse: collapse;
+  width: 100%;
+
+  tr:nth-child(even) {
+    background-color: #eeeeee;
+  }
+
+  th {
+    .devilry-qualifiesforexam-cellbase;
+  }
+
+  tr:hover {
+    // Only change color on table data, not headers
+    td {
+      background-color: #dddddd;
+    }
+  }
+}
+
+.devilry-qualifiesforexam-cell-studentinfo {
+  .devilry-qualifiesforexam-cellbase;
+  text-align: left;
+}
+
+.devilry-qualifiesforexam-cell-qualify {
+  .devilry-qualifiesforexam-cellbase;
+  text-align: center;
+}
+
+.devilry-qualifiesforexam-cell-assignmentinfo {
+  .devilry-qualifiesforexam-cellbase;
+  text-align: center;
+}
