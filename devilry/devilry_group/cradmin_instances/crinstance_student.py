@@ -33,7 +33,6 @@ class StudentCrInstance(crinstance_base.CrInstanceBase):
         ('projectgroup', projectgroupapp.App),
         ('feedbackfeed', feedbackfeed_student.App),
         ('feedbackfeed', feedbackfeed_bulkfiledownload.App),
-        # ('feedbackfeed', feedbackfeed_download_files.App),
         ('feedbackfeed', feedbackfeed_downloadviews.App),
         ('feedbackfeed', batch_download_files.App)
     ]
