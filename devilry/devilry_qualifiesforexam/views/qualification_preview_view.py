@@ -84,7 +84,6 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
         context_data = super(QualificationPreviewView, self).get_context_data()
         context_data['period'] = self.request.cradmin_role
         context_data['relatedstudents'] = self.get_relatedstudents_queryset(self.request.cradmin_role)
-        context_data['qualifying_assignmentids'] = set(self.request.session['qualifying_assignmentids'])
         context_data['passing_relatedstudentids'] = set(self.request.session['passing_relatedstudentids'])
 
         return context_data
@@ -128,7 +127,6 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
         plugintypeid = self.request.session['plugintypeid']
         del self.request.session['passing_relatedstudentids']
         del self.request.session['plugintypeid']
-        del self.request.session['qualifying_assignmentids']
         if 'save' in self.request.POST:
             status = self._create_status(plugintypeid)
             self._bulk_create_relatedstudents(status, passing_relatedstudentids)

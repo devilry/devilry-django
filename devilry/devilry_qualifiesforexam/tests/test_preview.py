@@ -48,7 +48,6 @@ class TestQualificationPreviewViewTableRendering(test.TestCase, cradmin_testhelp
             cradmin_role=testperiod,
             requestuser=admin_user,
             sessionmock={
-                'qualifying_assignmentids': [],
                 'passing_relatedstudentids': [],
                 'plugintypeid': 'someplugin_id'
             })
@@ -63,7 +62,6 @@ class TestQualificationPreviewViewTableRendering(test.TestCase, cradmin_testhelp
             cradmin_role=testperiod,
             requestuser=admin_user,
             sessionmock={
-                'qualifying_assignmentids': [],
                 'passing_relatedstudentids': [],
                 'plugintypeid': 'someplugin_id'
             })
@@ -78,7 +76,6 @@ class TestQualificationPreviewViewTableRendering(test.TestCase, cradmin_testhelp
             cradmin_role=testperiod,
             requestuser=admin_user,
             sessionmock={
-                'qualifying_assignmentids': [],
                 'passing_relatedstudentids': [],
                 'plugintypeid': 'someplugin_id'
             })
@@ -93,7 +90,6 @@ class TestQualificationPreviewViewTableRendering(test.TestCase, cradmin_testhelp
             cradmin_role=testperiod,
             requestuser=admin_user,
             sessionmock={
-                'qualifying_assignmentids': [],
                 'passing_relatedstudentids': [],
                 'plugintypeid': 'someplugin_id'
             })
@@ -108,7 +104,6 @@ class TestQualificationPreviewViewTableRendering(test.TestCase, cradmin_testhelp
             cradmin_role=testperiod,
             requestuser=admin_user,
             sessionmock={
-                'qualifying_assignmentids': [],
                 'passing_relatedstudentids': [],
                 'plugintypeid': 'someplugin_id'
             })
@@ -123,7 +118,6 @@ class TestQualificationPreviewViewTableRendering(test.TestCase, cradmin_testhelp
             cradmin_role=testperiod,
             requestuser=admin_user,
             sessionmock={
-                'qualifying_assignmentids': [],
                 'passing_relatedstudentids': [],
                 'plugintypeid': 'someplugin_id'
             })
@@ -144,7 +138,6 @@ class TestQualificationPreviewViewTableRendering(test.TestCase, cradmin_testhelp
             cradmin_role=testperiod,
             requestuser=admin_user,
             sessionmock={
-                'qualifying_assignmentids': [],
                 'passing_relatedstudentids': [],
                 'plugintypeid': 'someplugin_id'
             })
@@ -166,7 +159,6 @@ class TestQualificationPreviewViewTableRendering(test.TestCase, cradmin_testhelp
             cradmin_role=testperiod,
             requestuser=admin_user,
             sessionmock={
-                'qualifying_assignmentids': [],
                 'passing_relatedstudentids': [relatedstudent.id],
                 'plugintypeid': 'someplugin_id'
             })
@@ -189,7 +181,6 @@ class TestQualificationPreviewViewPost(test.TestCase, cradmin_testhelpers.TestCa
             cradmin_role=testperiod,
             requestuser=admin_user,
             sessionmock={
-                'qualifying_assignmentids': [],
                 'passing_relatedstudentids': passing_studentids,
                 'plugintypeid': 'someplugin_id'
             },
@@ -224,7 +215,6 @@ class TestQualificationPreviewViewPost(test.TestCase, cradmin_testhelpers.TestCa
             cradmin_role=testperiod,
             requestuser=admin_user,
             sessionmock={
-                'qualifying_assignmentids': [],
                 'passing_relatedstudentids': passing_studentids,
                 'plugintypeid': 'someplugin_id'
             },
@@ -250,7 +240,6 @@ class TestQualificationPreviewViewPost(test.TestCase, cradmin_testhelpers.TestCa
             cradmin_role=testperiod,
             requestuser=admin_user,
             sessionmock={
-                'qualifying_assignmentids': [],
                 'passing_relatedstudentids': passing_studentids,
                 'plugintypeid': 'someplugin_id'
             },
@@ -276,7 +265,6 @@ class TestQualificationPreviewViewPost(test.TestCase, cradmin_testhelpers.TestCa
             cradmin_role=testperiod,
             requestuser=admin_user,
             sessionmock={
-                'qualifying_assignmentids': [],
                 'passing_relatedstudentids': passing_studentids,
                 'plugintypeid': 'someplugin_id'
             },
@@ -304,7 +292,6 @@ class TestQualificationPreviewViewPost(test.TestCase, cradmin_testhelpers.TestCa
             cradmin_role=testperiod,
             requestuser=admin_user,
             sessionmock={
-                'qualifying_assignmentids': [],
                 'passing_relatedstudentids': passing_studentids,
                 'plugintypeid': 'someplugin_id'
             },
