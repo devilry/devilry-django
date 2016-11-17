@@ -295,7 +295,6 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         ).get_relatedstudents_that_qualify_for_exam()
 
         # Attach collected data to session.
-        self.request.session['qualifying_assignmentids'] = qualifying_assignmentids
         self.request.session['passing_relatedstudentids'] = passing_relatedstudentids
         self.request.session['plugintypeid'] = QualificationItemListView.plugintypeid
         return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl('preview'))
