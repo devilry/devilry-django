@@ -8,15 +8,15 @@ from django import test
 from model_mommy import mommy
 from devilry.project.common import settings
 from devilry.devilry_group import devilry_group_mommy_factories
-from devilry.devilry_qualifiesforexam.tests.test_pluginhelpers import TestPluginHelper
-from devilry.devilry_qualifiesforexam_plugin_approved.resultscollector import PeriodResultSetCollector
+from devilry.devilry_qualifiesforexam.tests import test_pluginhelpers
+from devilry.devilry_qualifiesforexam_plugin_approved import resultscollector
 
 
-class TestPeriodResultSetCollector(test.TestCase, TestPluginHelper):
+class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginHelper):
 
     def test_student_pass_with_all_assignments_qualify(self):
         data_dict = self._build_data_set()
-        collector = PeriodResultSetCollector(period=data_dict['testperiod'])
+        collector = resultscollector.PeriodResultSetCollector(period=data_dict['testperiod'])
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
         self.assertEquals(len(qualifying_studentids), 1)
         self.assertEquals(qualifying_studentids[0], data_dict['relatedstudent'].id)
@@ -25,13 +25,13 @@ class TestPeriodResultSetCollector(test.TestCase, TestPluginHelper):
         data_dict = self._build_data_set()
         data_dict['testfeedbacksets'][0].grading_points = 0
         data_dict['testfeedbacksets'][0].save()
-        collector = PeriodResultSetCollector(period=data_dict['testperiod'])
+        collector = resultscollector.PeriodResultSetCollector(period=data_dict['testperiod'])
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
         self.assertEquals(len(qualifying_studentids), 0)
 
     def test_student_pass_with_subset_of_assignments_qualify(self):
         data_dict = self._build_data_set()
-        collector = PeriodResultSetCollector(
+        collector = resultscollector.PeriodResultSetCollector(
             period=data_dict['testperiod'],
             qualifying_assignment_ids=[
                 data_dict['testassignments'][0].id,
@@ -46,7 +46,7 @@ class TestPeriodResultSetCollector(test.TestCase, TestPluginHelper):
         data_dict = self._build_data_set()
         data_dict['testfeedbacksets'][1].grading_points = 0
         data_dict['testfeedbacksets'][1].save()
-        collector = PeriodResultSetCollector(
+        collector = resultscollector.PeriodResultSetCollector(
             period=data_dict['testperiod'],
             qualifying_assignment_ids=[
                 data_dict['testassignments'][0].id,
@@ -62,7 +62,7 @@ class TestPeriodResultSetCollector(test.TestCase, TestPluginHelper):
         # set FeedbackSet.grading_points on the Assignment that's NOT qualifying
         data_dict['testfeedbacksets'][2].grading_points = 0
         data_dict['testfeedbacksets'][2].save()
-        collector = PeriodResultSetCollector(
+        collector = resultscollector.PeriodResultSetCollector(
             period=data_dict['testperiod'],
             qualifying_assignment_ids=[
                 data_dict['testassignments'][0].id,
@@ -95,7 +95,7 @@ class TestPeriodResultSetCollector(test.TestCase, TestPluginHelper):
         mommy.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup2)
         mommy.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup3)
 
-        collector = PeriodResultSetCollector(period=data_dict['testperiod'])
+        collector = resultscollector.PeriodResultSetCollector(period=data_dict['testperiod'])
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
         self.assertEquals(len(qualifying_studentids), 2)
         self.assertTrue(relatedstudent.id in qualifying_studentids)
@@ -124,7 +124,7 @@ class TestPeriodResultSetCollector(test.TestCase, TestPluginHelper):
         mommy.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup2)
         mommy.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assigngroup3)
 
-        collector = PeriodResultSetCollector(period=data_dict['testperiod'])
+        collector = resultscollector.PeriodResultSetCollector(period=data_dict['testperiod'])
         qualifying_studentids = collector.get_relatedstudents_that_qualify_for_exam()
         self.assertEquals(len(qualifying_studentids), 1)
         self.assertTrue(relatedstudent.id not in qualifying_studentids)
