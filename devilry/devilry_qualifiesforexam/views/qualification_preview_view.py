@@ -101,7 +101,6 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
                 user=self.request.user,
                 plugin=plugintypeid
         )
-        status.full_clean()
         return status
 
     def _bulk_create_relatedstudents(self, status, passing_relatedstudentids):

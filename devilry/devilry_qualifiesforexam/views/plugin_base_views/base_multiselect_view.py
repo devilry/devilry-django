@@ -24,7 +24,7 @@ class QualifiedForExamPluginViewMixin(object):
 
 class SelectedQualificationForm(forms.Form):
     """
-    Subclass this and provide the desired functionality.
+    Subclass this if extra fields needs to be added.
     """
     qualification_modelclass = core_models.Assignment
     invalid_qualification_item_message = 'Invalid qualification items was selected.'
@@ -249,7 +249,7 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
 
     def get_period_result_collector_class(self):
         """
-        Must be implemented by subclass.
+        Must be implemented by subclass if needed.
 
         Returns:
             A subclass of :class:`~.devilry.devilry_qualifiesforexam.pluginshelper.PeriodResultsCollector`
