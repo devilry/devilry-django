@@ -21,6 +21,9 @@ class PeriodResultsCollector(object):
         """
         self.period = period
         self.qualifying_assignment_ids = qualifying_assignment_ids or []
+        self.grouper = GroupsGroupedByRelatedStudentAndAssignment(
+            self.period,
+        )
 
     def student_qualifies_for_exam(self, aggregated_relstudentinfo):
         """
@@ -41,10 +44,7 @@ class PeriodResultsCollector(object):
 
         """
         passing_relatedstudentids = []
-        grouper = GroupsGroupedByRelatedStudentAndAssignment(
-            self.period,
-        )
-        for aggregated_relstudentinfo in grouper.iter_relatedstudents_with_results():
+        for aggregated_relstudentinfo in self.grouper.iter_relatedstudents_with_results():
             if self.student_qualifies_for_exam(aggregated_relstudentinfo):
                 passing_relatedstudentids.append(aggregated_relstudentinfo.relatedstudent.id)
         return passing_relatedstudentids
