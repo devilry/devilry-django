@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect
 from devilry.devilry_qualifiesforexam.views.plugin_base_views import base_multiselect_view
 from devilry.apps.core import models as core_models
 from devilry.devilry_qualifiesforexam_plugin_approved import resultscollector
+from devilry.devilry_qualifiesforexam.views import plugin_mixin
 
 
 class PluginForm(base_multiselect_view.SelectedQualificationForm):
@@ -20,7 +21,7 @@ class PluginForm(base_multiselect_view.SelectedQualificationForm):
         self.fields['selected_items'].queryset = selectable_qualification_items_queryset
 
 
-class PluginSelectAssignmentsView(base_multiselect_view.QualificationItemListView):
+class PluginSelectAssignmentsView(base_multiselect_view.QualificationItemListView, plugin_mixin.PluginMixin):
     model = core_models.Assignment
     plugintypeid = 'devilry_qualifiesforexam_plugin_approved.plugin_select_assignments'
 
