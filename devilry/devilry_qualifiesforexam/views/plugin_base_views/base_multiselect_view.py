@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 
 # Django imports
 from django import forms
-from django.contrib import messages
 from django.http import HttpResponseRedirect
 
 # CrAdmin imports
@@ -12,57 +11,26 @@ from django_cradmin.viewhelpers import multiselect2view
 
 # Devilry imports
 from devilry.devilry_qualifiesforexam import models as status_models
-
-
-def create_sessionkey(pluginsessionid):
-    return 'qualifiesforexam-{}'.format(pluginsessionid)
-
-
-def create_settings_sessionkey(pluginsessionid):
-    return '{}-settings'.format(create_sessionkey(pluginsessionid))
-
-
-class PreviewData(object):
-    def __init__(self, passing_relatedstudentids):
-        self.passing_relatedstudentids = passing_relatedstudentids
-
-    def __str__(self):
-        return 'PreviewData(passing_relatedstudentids={0!r})'.format(self.passing_relatedstudentids)
-
-    def serialize(self):
-        return {
-            'passing_relatedstudentids': list(self.passing_relatedstudentids)
-        }
+from devilry.apps.core import models as core_models
 
 
 class QualifiedForExamPluginViewMixin(object):
-    pluginid = None
+    plugintypeid = None
 
     def get_plugin_input_and_authenticate(self):
         self.period = self.request.cradmin_role
         self.pluginsessionid = self.request.session['pluginsessionid']
 
-    def save_plugin_output(self, *args, **kwargs):
-        self.request.session[create_sessionkey(self.pluginsessionid)] = PreviewData(*args, **kwargs).serialize()
-
-    def save_settings_in_session(self, data):
-        self.request.session[create_settings_sessionkey(self.pluginsessionid)] = data
-
 
 class SelectedQualificationForm(forms.Form):
     """
-    Abstract form class.
-
     Subclass this and provide the desired functionality.
     """
-    class Meta:
-        abstract = True
-
-    qualification_modelclass = None
+    qualification_modelclass = core_models.Assignment
     invalid_qualification_item_message = 'Invalid qualification items was selected.'
 
     #: The items selected as ModelMultipleChoiceField.
-    #: If some or all items should be selected by defualt, override this.
+    #: If some or all items should be selected by default, override this.
     selected_items = forms.ModelMultipleChoiceField(
 
         # No items are selectable by default.
@@ -74,6 +42,11 @@ class SelectedQualificationForm(forms.Form):
             'invalid_choice': invalid_qualification_item_message,
         }
     )
+
+    def __init__(self, *args, **kwargs):
+        selectable_qualification_items_queryset = kwargs.pop('selectable_items_queryset')
+        super(SelectedQualificationForm, self).__init__(*args, **kwargs)
+        self.fields['selected_items'].queryset = selectable_qualification_items_queryset
 
 
 class SelectedQualificationItem(multiselect2.selected_item_renderer.SelectedItem):
@@ -123,9 +96,7 @@ class QualificationItemTargetRenderer(multiselect2.target_renderer.Target):
     selected_target_renderer = SelectedQualificationItem
 
     #: A descriptive name for the items selected.
-    #: This defaults to 'items', but should be overridden with a
-    #: name describing the exact items that are selectable.
-    descriptive_item_name = 'items'
+    descriptive_item_name = 'assignments'
 
     def get_submit_button_text(self):
         """
@@ -151,16 +122,68 @@ class QualificationItemTargetRenderer(multiselect2.target_renderer.Target):
 
 class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForExamPluginViewMixin):
     """
-    Abstract multiselect view.
+    This class provides a basic multiselect preset.
 
-    This view must be subclassed and attribute ``model`` must be set.
+    By default, this class uses :class:`~.devilry.devilry.apps.core.models.Assignment` as model. This
+    means that this class lists all the ``Assignments`` for the ``Period`` as selectable items and all items
+    are selected by default.
+
+    If you only want to list ``Assignment`` as selectable items and no extra fields needs to be added to the form, just
+    subclass this and override :meth:`~.get_period_result_collector_class`.
+
+    Examples:
+        Here's an example of a plugin view that uses ``Assignment`` as listing values and nothing else::
+
+            from devilry.devilry_qualifiesforexam.views.plugin_base_views import base_multiselect_view
+            from devilry.devilry_qualifiesforexam.views import plugin_mixin
+
+
+            class PluginSelectAssignmentsView(base_multiselect_view.QualificationItemListView, plugin_mixin.PluginMixin):
+                plugintypeid = 'devilry_qualifiesforexam_plugin_approved.plugin_select_assignments'
+
+                def get_period_result_collector_class(self):
+                    return some_result_collector_for_the_plugin
+
+        Here's an example that uses ``Assignment`` as selectable items but an extra field is added, to
+        achieve this, the base form and target renderer must be subclassed::
+
+            from devilry.devilry_qualifiesforexam.views.plugin_base_views import base_multiselect_view
+            from devilry.devilry_qualifiesforexam_plugin_points import resultscollector
+            from devilry.devilry_qualifiesforexam.views import plugin_mixin
+
+
+            class PluginSelectAssignmentsAndPoints(base_multiselect_view.SelectedQualificationForm):
+                min_points_to_achieve = forms.IntegerField(
+                        min_value=0,
+                        required=False,
+                )
+
+
+            class WithPointsFormDataTargetRenderer(base_multiselect_view.QualificationItemTargetRenderer):
+                def get_field_layout(self):
+                    return [
+                        'min_points_to_achieve'
+                    ]
+
+
+            class PluginSelectAssignmentsAndPointsView(base_multiselect_view.QualificationItemListView, plugin_mixin.PluginMixin):
+                plugintypeid = 'devilry_qualifiesforexam_plugin_approved.plugin_select_assignments_and_points'
+
+                def get_period_result_collector_class(self):
+                    return resultscollector.PeriodResultSetCollector
+
+                def get_form_class(self):
+                    return PluginSelectAssignmentsAndPoints
+
+                def get_target_renderer_class(self):
+                    return WithPointsFormDataTargetRenderer
+
     """
     class Meta:
         abstract = True
 
     #: The model represented as a selectable item.
-    #: This attribute has to be set in the subclass.
-    model = None
+    model = core_models.Assignment
     value_renderer_class = SelectableQualificationItemValue
 
     def dispatch(self, request, *args, **kwargs):
@@ -181,18 +204,25 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
 
     def get_queryset_for_role(self, role):
         """
-        Get a queryset all the objects for :obj:`.QualificationItemListView.model`
+        Get a queryset of all the objects for :obj:`.QualificationItemListView.model`
 
         This can be be customized with a call to super, and the
         filtering needed.
 
         Args:
-            role: The cradmin role.
+            role: The cradmin_role(Period).
 
         Returns:
             QuerySet: queryset of from specified model.
         """
-        return self.model.objects.all()
+        queryset = self.model.objects.all()
+        return queryset.filter(parentnode__id=role.id)
+
+    def get_inititially_selected_queryset(self):
+        """
+
+        """
+        return self.get_queryset_for_role(self.request.cradmin_role)
 
     def get_target_renderer_class(self):
         """
@@ -202,7 +232,7 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         this method by returning the subclass.
 
         Returns:
-            QualificationItemTargetRenderer: Or subclass of this.
+            :class:`~.QualificationItemTargetRenderer`
         """
         return QualificationItemTargetRenderer
 
@@ -215,7 +245,31 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         Raises:
             NotImplementedError: If not implemented by subclass.
         """
+        return SelectedQualificationForm
+
+    def get_period_result_collector_class(self):
+        """
+        Must be implemented by subclass.
+
+        Returns:
+            A subclass of :class:`~.devilry.devilry_qualifiesforexam.pluginshelper.PeriodResultsCollector`
+
+        Raises:
+            NotImplementedError
+        """
         raise NotImplementedError
+
+    def get_qualifying_itemids(self, posted_form):
+        """
+        Get the ID of the items that qualify.
+
+        Args:
+            posted_form: The posted form containing the items selected.
+
+        Returns:
+            List of ``self.model.id``s that were selected.
+        """
+        return [item.id for item in posted_form.cleaned_data['selected_items']]
 
     def get_form_kwargs(self):
         kwargs = super(QualificationItemListView, self).get_form_kwargs()
@@ -223,8 +277,25 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         return kwargs
 
     def form_valid(self, form):
-        qualification_item_ids = ['"{}:{}"'.format(item, item.id) for item in form.cleaned_data['selected_items']]
-        messages.success(
-            self.request,
-            'POST OK. Selected: {}'.format(', '.join(qualification_item_ids)))
+        """
+        Provides some basic functionality. If custom fields are added to the form,
+        this function must be overridden in subclass to handel that posted data.
+
+        Args:
+            form: Posted form with ids of selected items.
+        """
+        # Collect qualifying Assignment IDs
+        qualifying_assignmentids = self.get_qualifying_itemids(posted_form=form)
+
+        # Collect ids for relatedstudents that qualify
+        collector_class = self.get_period_result_collector_class()
+        passing_relatedstudentids = collector_class(
+                period=self.request.cradmin_role,
+                qualifying_assignment_ids=qualifying_assignmentids
+        ).get_relatedstudents_that_qualify_for_exam()
+
+        # Attach collected data to session.
+        self.request.session['qualifying_assignmentids'] = qualifying_assignmentids
+        self.request.session['passing_relatedstudentids'] = passing_relatedstudentids
+        self.request.session['plugintypeid'] = QualificationItemListView.plugintypeid
         return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl('preview'))
