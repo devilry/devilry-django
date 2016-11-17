@@ -6,7 +6,6 @@ from django_cradmin.crinstance import reverse_cradmin_url
 from django_cradmin.viewhelpers import listbuilder
 
 # Devilry imports
-from devilry.devilry_qualifiesforexam import plugintyperegistry
 from devilry.devilry_cradmin import devilry_listbuilder
 
 
