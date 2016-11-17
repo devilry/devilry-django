@@ -139,13 +139,7 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
                 }
             ))
         elif 'back' in self.request.POST:
-            return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
-                viewname='configure-plugin',
-                kwargs={
-                    'roleid': self.request.cradmin_role.id,
-                    'plugintypeid': plugintypeid
-                }
-            ))
+            return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
 
 
 class QualificationStatusForm(forms.Form):
