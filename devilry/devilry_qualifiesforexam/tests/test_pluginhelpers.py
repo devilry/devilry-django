@@ -17,7 +17,9 @@ from devilry.devilry_group import devilry_group_mommy_factories
 
 class TestPluginHelper:
 
-    def _build_data_set(self, grading_plugin=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED):
+    def _build_data_set(self, grading_plugin=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
+                        min_points=1,
+                        max_points=1):
         """
         Creates a default dataset for a Period with:
         3 Assignments,
@@ -46,22 +48,22 @@ class TestPluginHelper:
                              long_name='Assignment 1',
                              parentnode=testperiod,
                              grading_system_plugin_id=grading_plugin,
-                             max_points=1,
-                             passing_grade_min_points=1)
+                             max_points=max_points,
+                             passing_grade_min_points=min_points)
         assign2 = mommy.make('core.Assignment',
                              short_name='assignment2',
                              long_name='Assignment 2',
                              parentnode=testperiod,
                              grading_system_plugin_id=grading_plugin,
-                             max_points=1,
-                             passing_grade_min_points=1)
+                             max_points=max_points,
+                             passing_grade_min_points=min_points)
         assign3 = mommy.make('core.Assignment',
                              short_name='assignment3',
                              long_name='Assignment 3',
                              parentnode=testperiod,
                              grading_system_plugin_id=grading_plugin,
-                             max_points=1,
-                             passing_grade_min_points=1)
+                             max_points=max_points,
+                             passing_grade_min_points=min_points)
 
         # Create AssignmentGroups
         assigngroup1 = mommy.make('core.AssignmentGroup', parentnode=assign1)
