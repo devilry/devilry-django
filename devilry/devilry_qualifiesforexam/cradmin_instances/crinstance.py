@@ -60,65 +60,20 @@ class CrInstance(crinstance.BaseCrAdminInstance):
         )
         if role is None:
             raise Http404
-        return True
+        return role
 
     def get_rolequeryset(self):
         """
-        Get queryset of :class:`~devilry.apps.core.models.Period` that belongs to a Period
-        with related :class:`~devilry.apps.core.models.Candidate`s.
+        Get queryset of :class:`~devilry.apps.core.models.Period` with join on the ``Periods``s
+        related :class:`~devilry.apps.core.models.Subject`.
 
         Returns:
             QuerySet: A queryset of :class:`~devilry.apps.core.models.Period`
 
         """
-        queryset = core_models.Period.objects\
+        return core_models.Period.objects\
             .select_related('parentnode')\
-            .prefetch_related(
-                db_models.Prefetch('assignments',
-                                   queryset=self.__get_assignment_queryset()))
-        return queryset.filter_user_is_admin(user=self.request.user)
-
-    def __get_assignment_queryset(self):
-        """
-        Prefetch related Assignments.
-
-        Returns:
-            QuerySet: A queryset of :class:`~devilry.apps.core.models.Assignment`s
-        """
-        return core_models.Assignment.objects\
-            .select_related('parentnode__parentnode')\
-            .prefetch_related(
-                db_models.Prefetch('assignmentgroups',
-                                   queryset=self.__get_assignmentgroup_queryset()))
-
-    def __get_assignmentgroup_queryset(self):
-        """
-        Prefetch related AssignmentGroups
-
-        Returns:
-            QuerySet: A queryset of :class:`~devilry.apps.core.models.AssignmentGroup`s.
-        """
-        return core_models.AssignmentGroup.objects\
-            .select_related('parentnode__parentnode__parentnode')\
-            .prefetch_related(
-                db_models.Prefetch('candidates',
-                                   queryset=self.__get_candidate_queryset()))
-
-    def __get_candidate_queryset(self):
-        """
-        Prefetch related :class:`~devilry.apps.core.models.Candidate`s for the period.
-
-        Returns:
-            QuerySet: A queryset of :class:`~devilry.apps.core.models.Candidates`s.
-        """
-        # return core_models.Candidate.objects\
-        #     .select_related('assignment_group__parentnode__parentnode')\
-        #     .prefetch_related(db_models.Prefetch('relatedstudent'))
-        return core_models.Candidate.objects\
-            .select_related('relatedstudent')\
-            .order_by(
-                Lower(Concat('relatedstudent__user__fullname',
-                             'relatedstudent__user__shortname')))
+            .filter_user_is_admin(user=self.request.user)
 
     def get_titletext_for_role(self, role):
         return str(role)

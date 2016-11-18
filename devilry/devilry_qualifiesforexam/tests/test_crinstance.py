@@ -7,8 +7,8 @@ import mock
 from model_mommy import mommy
 
 # Devilry imports
-from devilry.devilry_qualifiesforexam.cradmin_instances import crinstance
 from devilry.project.common import settings
+from devilry.devilry_qualifiesforexam.cradmin_instances import crinstance
 
 
 class TestCrInstance(test.TestCase):
@@ -27,7 +27,7 @@ class TestCrInstance(test.TestCase):
         self.assertEquals(1, len(rolequeryset))
         self.assertIn(testperiod, rolequeryset)
 
-    def test_admin_has_access(self):
+    def test_admin_on_period(self):
         # testperiod_access should show up in the queryset.
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
         testadmin = mommy.make(settings.AUTH_USER_MODEL)
@@ -45,7 +45,7 @@ class TestCrInstance(test.TestCase):
         self.assertEquals(1, len(rolequeryset))
         self.assertIn(testperiod, rolequeryset)
 
-    def test_admin_no_access(self):
+    def test_admin_not_admin_on_period(self):
         # testperiod_access should show up in the queryset.
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
         testadmin = mommy.make(settings.AUTH_USER_MODEL)
@@ -58,35 +58,30 @@ class TestCrInstance(test.TestCase):
 
         self.assertEquals(0, len(rolequeryset))
 
-    # def test_get_rolequeryset_num_queries(self):
-    #     testsubject = mommy.make('core.Subject', short_name='Duck1010')
-    #     testperiod1 = mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject)
-    #     testassignment1 = mommy.make('core.Assignment', parentnode=testperiod1, short_name='Assignment1')
-    #     testassignment2 = mommy.make('core.Assignment', parentnode=testperiod1, short_name='Assignment2')
-    #     testassignment3 = mommy.make('core.Assignment', parentnode=testperiod1, short_name='Assignment3')
-    #     mommy.make('core.Candidate',
-    #                assignment_group__parentnode=testassignment1,
-    #                relatedstudent__period=testperiod1,
-    #                _quantity=20)
-    #     mommy.make('core.Candidate',
-    #                assignment_group__parentnode=testassignment2,
-    #                relatedstudent__period=testperiod1,
-    #                _quantity=20)
-    #     mommy.make('core.Candidate',
-    #                assignment_group__parentnode=testassignment3,
-    #                relatedstudent__period=testperiod1,
-    #                _quantity=20)
-    #
-    #     mockrequest = mock.MagicMock()
-    #     mockrequest.cradmin_role = testperiod1
-    #     testcrinstance = crinstance.CrInstance(request=mockrequest)
-    #
-    #     with self.assertNumQueries(6):
-    #         rolequeryset = testcrinstance.get_rolequeryset()
-    #
-    #         for period in rolequeryset.all():
-    #             for assignment in period.assignments.all():
-    #                 for assignmentgroup in assignment.assignmentgroups.all():
-    #                     # candidates = assignmentgroup.candidates.all()
-    #                     for candidate in assignmentgroup.candidates.all():
-    #                         print candidate
+    def test_get_rolequeryset_num_queries(self):
+        # User is admin on two subjects the same semester.
+        # CrInstance.get_rolequeryset() filters the period the admin has access to and joins the
+        # related subject with select_related.
+        testsubject1 = mommy.make('core.Subject', short_name='Duck1010')
+        testsubject2 = mommy.make('core.Subject', short_name='Duck1100')
+        mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject1)
+        mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject2)
+
+        testadmin = mommy.make(settings.AUTH_USER_MODEL)
+        subjectpermissiongroup1 = mommy.make('devilry_account.SubjectPermissionGroup', subject=testsubject1)
+        subjectpermissiongroup2 = mommy.make('devilry_account.SubjectPermissionGroup', subject=testsubject2)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testadmin,
+                   permissiongroup=subjectpermissiongroup1.permissiongroup)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testadmin,
+                   permissiongroup=subjectpermissiongroup2.permissiongroup)
+        mockrequest = mock.MagicMock()
+        mockrequest.user = testadmin
+        testcrinstance = crinstance.CrInstance(request=mockrequest)
+        with self.assertNumQueries(1):
+            rolequeryset = testcrinstance.get_rolequeryset()
+            # Iterate to evaluate the number of queries
+            subjects = [testsubject1, testsubject2]
+            for period in rolequeryset.all():
+                self.assertIn(period.parentnode, subjects)
