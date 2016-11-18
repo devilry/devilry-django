@@ -8782,3 +8782,74 @@ ul.devilry-admin-assigments-students-and-examiners li p {
   padding-left: 8px;
   text-align: center;
 }
+.devilry-qualifiesforexam-plugin-spacing {
+  border: 2px solid #dddddd;
+  padding: 3px;
+  margin: 3px 3px 3px 3px;
+}
+.devilry-qualifiesforexam-plugin-spacing a {
+  color: #7e4a75;
+  text-decoration: none;
+}
+.devilry-qualifiesforexam-plugin-spacing a:hover {
+  color: #7e4a75;
+  text-decoration: underline;
+}
+.devilry-qualifiesforexam-plugin-spacing a.btn {
+  text-decoration: none;
+}
+.devilry-qualifiesforexam-plugin-spacing .btn.btn-primary,
+.devilry-qualifiesforexam-plugin-spacing .btn.btn-success {
+  background: #fff;
+  border-color: #7e4a75;
+  color: #7e4a75;
+}
+.devilry-qualifiesforexam-plugin-spacing .btn.btn-primary:hover,
+.devilry-qualifiesforexam-plugin-spacing .btn.btn-success:hover,
+.devilry-qualifiesforexam-plugin-spacing .btn.btn-primary:focus,
+.devilry-qualifiesforexam-plugin-spacing .btn.btn-success:focus {
+  background: #7e4a75;
+  border-color: #7e4a75;
+  color: #fff;
+}
+.devilry-qualifiesforexam-plugin-spacing .btn.btn-default {
+  background: #ebd9e8;
+  border-color: #ebd9e8;
+  color: #000000;
+}
+.devilry-qualifiesforexam-plugin-spacing .btn.btn-default:hover,
+.devilry-qualifiesforexam-plugin-spacing .btn.btn-default:focus {
+  background: #d9b4d3;
+  border-color: #d9b4d3;
+  color: #000000;
+}
+.devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link {
+  text-decoration: none;
+}
+.devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription {
+  color: #000000;
+}
+.devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
+  color: #7e4a75;
+}
+.devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+  border-color: #7e4a75;
+}
+.devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+  color: #d1d1d1;
+}
+.devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
+  color: #7e4a75;
+}
+.devilry-qualifiesforexam-plugin-spacing nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+  border-bottom: 6px solid #B568A9;
+}
+@media (min-width: 992px) {
+  .devilry-qualifiesforexam-plugin-spacing nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
+    height: 66px;
+  }
+}
+.devilry-qualifiesforexam-plugin-spacing:hover {
+  background-color: #cccccc;
+  cursor: pointer;
+}
