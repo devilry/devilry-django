@@ -2,11 +2,11 @@
 from __future__ import unicode_literals
 
 # Django imports
-from django.http import Http404
 from django.db import models as db_models
 from django.db.models.functions import Lower, Concat
 
 # CrAdmin imports
+from django.http import Http404
 from django_cradmin import crinstance
 
 # Devilry imports
@@ -46,7 +46,7 @@ class CrInstance(crinstance.BaseCrAdminInstance):
         """
         Checks if the user has access.
 
-        A user must be an admin for this Period to gain access to this app.
+        A user must be an admin for this Period or above to gain access to this app.
 
         Returns:
             str: The role of the user.
@@ -60,7 +60,7 @@ class CrInstance(crinstance.BaseCrAdminInstance):
         )
         if role is None:
             raise Http404
-        return role
+        return True
 
     def get_rolequeryset(self):
         """

@@ -3,7 +3,7 @@
 
 # Django imports
 from django.core.exceptions import PermissionDenied, ValidationError
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 
@@ -25,6 +25,13 @@ class AbstractQualificationPreviewView(formbase.FormView):
     """
     Abstract superclass for preview views
     """
+
+    def _authenticate(self):
+        self.request.cradmin_instance.is_admin()
+
+    def dispatch(self, request, *args, **kwargs):
+        self._authenticate()
+        return super(AbstractQualificationPreviewView, self).dispatch(request, *args, **kwargs)
 
     @classmethod
     def deserialize_preview(cls, serialized):
@@ -58,10 +65,13 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
     template_name = 'devilry_qualifiesforexam/preview.django.html'
     form_class = QualificationForm
 
-    def dispatch(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         """
         Check if a :class:`~.devilry_qualifiesforexam.models.Status` with ``status`` set to
         ``ready`` exists for the period. If it exists, redirect to the final export view.
+
+        Args:
+            request: ``HttpRequest`` with the attached cradmin_role.
         """
         status = status_models.Status.objects.order_by('-createtime').first()
         if status:
@@ -72,7 +82,7 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
                         'roleid': self.request.cradmin_role.id
                     }
                 ))
-        return super(QualificationPreviewView, self).dispatch(request, *args, **kwargs)
+        return super(QualificationPreviewView, self).get(request, *args, **kwargs)
 
     def get_buttons(self):
         return [

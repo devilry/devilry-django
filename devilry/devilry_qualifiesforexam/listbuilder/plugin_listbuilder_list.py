@@ -71,6 +71,17 @@ class PluginItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
             }
         )
 
+    def get_extra_css_classes_list(self):
+        css_classes_list = super(PluginItemFrame, self).get_extra_css_classes_list()
+        css_classes_list.append('devilry-qualifiesforexam-plugin-spacing')
+        # css_classes_list.append('django-cradmin-listbuilder-itemvalue'
+        #                         ' django-cradmin-listbuilder-itemvalue-focusbox'
+        #                         ' django-cradmin-listbuilder-itemvalue-titledescription'
+        #                         ' devilry-frontpage-listbuilder-roleselect-itemvalue'
+        #                         ' devilry-frontpage-listbuilder-roleselect-itemvalue-anyadmin')
+        # css_classes_list.append('devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin')
+        return css_classes_list
+
 
 class PluginItemValue(listbuilder.base.ItemValueRenderer):
     """

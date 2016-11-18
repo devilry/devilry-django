@@ -26,8 +26,8 @@ class SelectPluginView(TemplateView):
         Override this to use a mockable registry for testing.
 
         Returns:
-            List:
-                A :class:`devilry.devilry_qualifiesforexam.listbuilder import plugin_listbuilder_list.PluginListBuilderList`.
+            A :class:`devilry.devilry_qualifiesforexam.listbuilder.plugin_listbuilder_list.PluginListBuilderList`
+            instance.
         """
         listbuilder_class = plugin_listbuilder_list.PluginListBuilderList
         return listbuilder_class.from_plugin_registry(
