@@ -44,7 +44,7 @@ devilry_urls = [
     url(r'^devilry_examiner/', include('devilry.devilry_examiner.urls')),
     url(r'^devilry_detektor/', include('devilry.devilry_detektor.urls')),
     url(r'^', include(crinstance_frontpage.CrAdminInstance.urls())),
-    url(r'^devilry_qualifiesforexam/', include('devilry.devilry_qualifiesforexam.urls')),
+    # url(r'^devilry_qualifiesforexam/', include('devilry.devilry_qualifiesforexam.urls')),
     # url(r'^devilry_qualifiesforexam_approved/', include('devilry.devilry_qualifiesforexam_approved.urls')),
     # url(r'^devilry_qualifiesforexam_points/', include('devilry.devilry_qualifiesforexam_points.urls')),
     # url(r'^devilry_qualifiesforexam_select/', include('devilry.devilry_qualifiesforexam_select.urls')),
