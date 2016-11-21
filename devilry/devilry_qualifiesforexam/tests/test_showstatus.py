@@ -2,9 +2,11 @@
 from __future__ import unicode_literals
 
 # 3rd party imports
+import mock
 from model_mommy import mommy
 
 # Django imports
+from django.http import Http404
 from django import test
 
 # CrAdmin imports

@@ -1,17 +1,21 @@
 {% extends "devilry_qualifiesforexam/base.django.html" %}
 
+{% load i18n %}
+
 {% block content %}
     <div class="container">
-        <h1>Qualified for final exams</h1>
+        <h1>
+            {% trans "Qualified for final exams" %}
+        </h1>
         {% if status == 'ready' %}
             <p>
                 Status: <span class="label label-success">Ready for export</span>
-                Saved {{ saved_date }} by {{ saved_by }}
+                {% trans "Saved by" %} {{ saved_by }} {{ saved_date }}
             </p>
         {% else %}
             <span class="label label-warning">Not ready for export</span>
         {% endif %}
-        <h5>{{ num_students_qualify }}/{{ num_students }} students qualify for final exam</h5>
+        <h5>{{ num_students_qualify }}/{{ num_students }} {% trans "students qualify for final exam" %}</h5>
         <br>
         <br>
         {{ block.super }}

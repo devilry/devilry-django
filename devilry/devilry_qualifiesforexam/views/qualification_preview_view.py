@@ -2,10 +2,10 @@
 # from __future__ import unicode_literals
 
 # Django imports
-from django.core.exceptions import PermissionDenied, ValidationError
-from django.http import HttpResponseRedirect, Http404
-from django.utils.translation import ugettext_lazy as _
 from django import forms
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseRedirect
+from django.utils.translation import ugettext_lazy as _
 
 # CrAdmin imports
 from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
@@ -26,12 +26,12 @@ class AbstractQualificationPreviewView(formbase.FormView):
     Abstract superclass for preview views
     """
 
-    def _authenticate(self):
-        self.request.cradmin_instance.is_admin()
-
-    def dispatch(self, request, *args, **kwargs):
-        self._authenticate()
-        return super(AbstractQualificationPreviewView, self).dispatch(request, *args, **kwargs)
+    # def _authenticate(self):
+    #     self.request.cradmin_instance.is_admin()
+    #
+    # def dispatch(self, request, *args, **kwargs):
+    #     self._authenticate()
+    #     return super(AbstractQualificationPreviewView, self).dispatch(request, *args, **kwargs)
 
     @classmethod
     def deserialize_preview(cls, serialized):
@@ -75,7 +75,7 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
         """
         status = status_models.Status.objects.order_by('-createtime').first()
         if status:
-            if status_models.Status.objects.order_by('-createtime').first().status == status_models.Status.READY:
+            if status.status == status_models.Status.READY:
                 return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
                     viewname='show-status',
                     kwargs={

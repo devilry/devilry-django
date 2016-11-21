@@ -14,10 +14,9 @@ from django_cradmin import cradmin_testhelpers
 from devilry.project.common import settings
 from devilry.devilry_qualifiesforexam.views import qualification_preview_view
 from devilry.devilry_qualifiesforexam import models as status_models
-from devilry.devilry_qualifiesforexam.tests import test_pluginhelpers
 
 
-class TestQualificationPreviewViewRedirects(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+class TestQualificationPreviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = qualification_preview_view.QualificationPreviewView
 
     def test_redirect_to_status_view_if_status_ready_exists_for_period(self):

@@ -2,21 +2,40 @@
 from __future__ import unicode_literals
 
 # Django imports
-from django.utils.translation import pgettext_lazy
 from django.views.generic import TemplateView
+from django.http import HttpResponseRedirect
 
 # Devilry imports
 from devilry.devilry_qualifiesforexam.listbuilder import plugin_listbuilder_list
 from devilry.devilry_qualifiesforexam import plugintyperegistry
+from devilry.devilry_qualifiesforexam import models as status_models
 
 
 class SelectPluginView(TemplateView):
     """
+    Lists registered plugins.
 
+    If a :class:`~.devilry.devilry_qualifiesforexam.models.Status` already exists for this period,
+    the request will be redirected to a show status view.
     """
     template_name = 'devilry_qualifiesforexam/selectplugin.django.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Redirect to show status if a ready status already exists.
+        """
+        status = status_models.Status.objects.order_by('-createtime').first()
+        if status and status.status == status_models.Status.READY:
+                return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
+                    viewname='show-status',
+                    kwargs={
+                        'roleid': self.request.cradmin_role.id
+                    }
+                ))
+        return super(SelectPluginView, self).dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
+        print 'get instance queryset'
         return self.request.cradmin_instance.get_rolequeryset()
 
     def get_plugin_listbuilder_list(self):
@@ -36,7 +55,6 @@ class SelectPluginView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context_data = super(SelectPluginView, self).get_context_data(**kwargs)
-        context_data['devilry_role'] = self.request.cradmin_instance.is_admin()
         context_data['headline'] = 'How do students qualify for final exams?'
         context_data['help_text'] = 'Select one of the options from the list. Each option starts a wizard ' \
                                     'that ends with a preview of the results before you get the option to save'

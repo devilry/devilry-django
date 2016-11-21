@@ -1,11 +1,9 @@
-
 # 3rd party imports
 import mock
 from model_mommy import mommy
 
 # Django imports
 from django import test
-from django.http import Http404
 
 # CrAdmin imports
 from django_cradmin import cradmin_testhelpers
@@ -14,7 +12,6 @@ from django_cradmin import cradmin_testhelpers
 from devilry.project.common import settings
 from devilry.devilry_qualifiesforexam.views import pluginselection_view
 from devilry.devilry_qualifiesforexam import plugintyperegistry
-from devilry.devilry_qualifiesforexam.cradmin_instances import crinstance
 from devilry.devilry_qualifiesforexam.listbuilder import plugin_listbuilder_list
 
 
@@ -70,31 +67,15 @@ class TestPluginSelectionView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    permissiongroup=periodpermissiongroup.permissiongroup)
         return testadmin, period
 
-    def test_raise_http404(self):
-        # Make sure http404 is raised when user is not at least admin on period.
-        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
-        testuser_nopermission = mommy.make(settings.AUTH_USER_MODEL)
-
-        mockrequest = mock.MagicMock()
-        mockrequest.cradmin_role = testperiod
-        mockrequest.user = testuser_nopermission
-        testcrinstance = crinstance.CrInstance(request=mockrequest)
-
-        with self.assertRaises(Http404):
-            self.mock_http200_getrequest_htmls(cradmin_instance=testcrinstance,
-                                               cradmin_role=testperiod,
-                                               requestuser=testuser_nopermission)
-
     def test_list_no_plugins(self):
         # No plugins are added, make sure no plugins are listed.
         testadmin, testperiod = self.__create_period_admin()
         mockrequest = mock.MagicMock()
         mockrequest.cradmin_role = testperiod
         mockrequest.user = testadmin
-        testcrinstance = crinstance.CrInstance(request=mockrequest)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_instance=testcrinstance,
-                                                          cradmin_role=testperiod,
-                                                          requestuser=testadmin)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod,
+                requestuser=testadmin)
         self.assertFalse(mockresponse.selector.exists('devilry-django-cradmin-listbuilder-itemframe-goforward'))
 
     def test_list_single_plugin(self):
@@ -103,7 +84,6 @@ class TestPluginSelectionView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockrequest = mock.MagicMock()
         mockrequest.cradmin_role = testperiod
         mockrequest.user = testadmin
-        testcrinstance = crinstance.CrInstance(request=mockrequest)
 
         # Create a PluginType subclass
         testplugin = plugintyperegistry.PluginTypeSubclassFactory.make_subclass(
@@ -112,7 +92,6 @@ class TestPluginSelectionView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.viewclass.plugin_classes = [testplugin]
 
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_instance=testcrinstance,
                 cradmin_role=testperiod,
                 requestuser=testadmin)
         self.assertTrue(mockresponse.selector.one('.devilry-django-cradmin-listbuilder-itemframe-goforward'))
@@ -123,7 +102,6 @@ class TestPluginSelectionView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockrequest = mock.MagicMock()
         mockrequest.cradmin_role = testperiod
         mockrequest.user = testadmin
-        testcrinstance = crinstance.CrInstance(request=mockrequest)
 
         # Create a PluginType subclasses
         testplugin1 = plugintyperegistry.PluginTypeSubclassFactory.make_subclass(
@@ -138,7 +116,6 @@ class TestPluginSelectionView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.viewclass.plugin_classes = [testplugin1, testplugin2, testplugin3]
 
         mockresponse = self.mock_http200_getrequest_htmls(
-                cradmin_instance=testcrinstance,
                 cradmin_role=testperiod,
                 requestuser=testadmin)
         self.assertEquals(3, len(mockresponse.selector.list('.devilry-django-cradmin-listbuilder-itemframe-goforward')))
