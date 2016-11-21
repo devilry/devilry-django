@@ -19,6 +19,8 @@ class PluginSelectAssignmentsAndPoints(base_multiselect_view.SelectedQualificati
     min_points_to_achieve = forms.IntegerField(
             min_value=0,
             required=False,
+            help_text='If no points are given, the sum of all the qualifying assignments minimun points is needed '
+                      'to qualify.',
     )
 
 
@@ -45,9 +47,13 @@ class PluginSelectAssignmentsAndPointsView(base_multiselect_view.QualificationIt
     def get_target_renderer_class(self):
         return WithPointsFormDataTargetRenderer
 
+    def get_pagetitle(self):
+        return 'Select assignments'
+
     def form_valid(self, form):
         # Collect qualifying Assignment IDs
         qualifying_assignmentids = self.get_qualifying_itemids(posted_form=form)
+        print 'Qualifying assignment IDs: {}'.format(qualifying_assignmentids)
 
         # Points to achieve.
         min_points_to_achieve = form.cleaned_data['min_points_to_achieve']
