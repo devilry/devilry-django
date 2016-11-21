@@ -8783,7 +8783,6 @@ ul.devilry-admin-assigments-students-and-examiners li p {
   text-align: center;
 }
 .devilry-qualifiesforexam-plugin-spacing {
-  border: 2px solid #dddddd;
   padding: 3px;
   margin: 3px 3px 3px 3px;
 }
@@ -8850,6 +8849,5 @@ ul.devilry-admin-assigments-students-and-examiners li p {
   }
 }
 .devilry-qualifiesforexam-plugin-spacing:hover {
-  background-color: #cccccc;
   cursor: pointer;
 }
