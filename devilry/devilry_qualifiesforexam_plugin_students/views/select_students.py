@@ -37,6 +37,9 @@ class PluginSelectStudentsView(base_multiselect_view.QualificationItemListView, 
     def get_form_class(self):
         return StudentQualificationForm
 
+    def get_pagetitle(self):
+        return 'Select students'
+
     def form_valid(self, form):
         self.request.session['passing_relatedstudentids'] = self.get_qualifying_itemids(posted_form=form)
         self.request.session['plugintypeid'] = PluginSelectStudentsView.plugintypeid
