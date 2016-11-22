@@ -6,6 +6,7 @@ from django_cradmin import crapp
 
 # Devilry imports
 from .views import pluginselection_view
+from .views import list_statuses_view
 from .views import proxyview
 from .views import qualification_preview_view
 
@@ -14,8 +15,19 @@ class App(crapp.App):
     appurls = [
         crapp.Url(
             r'^$',
+            list_statuses_view.ListStatusesView.as_view(),
+            name=crapp.INDEXVIEW_NAME
+        ),
+        crapp.Url(
+            r'^filter/(?P<filters_string>.+)?$',
+            list_statuses_view.ListStatusesView.as_view(),
+            name='filter'
+        ),
+        crapp.Url(
+            r'^select-plugin$',
             pluginselection_view.SelectPluginView.as_view(),
-            name=crapp.INDEXVIEW_NAME),
+            name='select-plugin'
+        ),
         crapp.Url(
             r'^configure-plugin/(?P<plugintypeid>[a-z0-9._]+)$',
             proxyview.PluginProxyView.as_view(),

@@ -6,8 +6,8 @@
 
 {% block content %}
     <h2>
-    <span>Status</span>
-    <span>{{ me.status.createtime }}</span>
+        <span class="devilry-qualifiesforexam-status-description-name">Status</span>
+        <span class="devilry-qualifiesforexam-status-description-date">{{ me.status.createtime }}</span>
     </h2>
     {% if me.status.status == 'ready' %}
         <h2>

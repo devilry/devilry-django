@@ -1,10 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
 
-</body>
-</html>
+{% load devilry_account_tags %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block title %}
+    {{ request.cradmin_role.get_path }}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1 class="devilry-qualifiesforexam-list-statuses-heading">{{ headline }}</h1>
+{% endblock pageheader-inner %}
+
+{% block listbuilderview_buttons %}
+    <p class="devilry-buttonbar">
+        <a id="devilry_admin_period_createassignment_link"
+                class="btn btn-primary"
+                href="{% cradmin_instance_url 'qualifiesforexam' 'select-plugin' %}">
+            {% trans "Create new status" %}
+        </a>
+    </p>
+{% endblock listbuilderview_buttons %}
+
+{% block content %}
+    {{ block.super }}
+
+{% endblock content %}
+
