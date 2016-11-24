@@ -39,12 +39,12 @@ class App(crapp.App):
             name='preview'
         ),
         crapp.Url(
-            r'showstatus$',
-            qualification_preview_view.QualificationStatusPreview.as_view(),
+            r'showstatus/(?P<statusid>\d+)$',
+            qualification_preview_view.QualificationStatusView.as_view(),
             name='show-status'
         ),
         crapp.Url(
-            r'^retract-status/(?P<pk>\d+)$',
+            r'^retract-status/(?P<statusid>\d+)$',
             qualification_preview_view.StatusRetractView.as_view(),
             name='retract-status'),
     ]

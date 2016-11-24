@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+# Django imports
+from django.db import models
+
 # CrAdmin imports
 from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import listbuilder
@@ -11,6 +14,7 @@ from django_cradmin.viewhelpers import listfilter
 # Devilry imports
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_qualifiesforexam import models as status_models
+from devilry.apps.core import models as core_models
 
 
 class StatusItemValue(listbuilder.itemvalue.TitleDescription):
@@ -29,7 +33,10 @@ class StatusItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
             instanceid='devilry_admin_periodadmin',
             roleid=self.status.period.id,
             appname='qualifiesforexam',
-            viewname='show-status'
+            viewname='show-status',
+            kwargs={
+                'statusid': self.status.id
+            }
         )
 
     def get_extra_css_classes_list(self):
@@ -39,14 +46,14 @@ class StatusItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
 class OrderStatusFilter(listfilter.django.single.select.AbstractOrderBy):
     def get_ordering_options(self):
         return [
-            ('', {
-                'label': 'Created (descending)',
-                'order_by': ['-createtime']
+            ('status (ready)', {
+                'label': 'Status (ready)',
+                'order_by': ['-status']
             }),
-            ('created_ascending', {
-                'label': 'Created (ascending)',
-                'order_by': ['createtime']
-            }),
+            ('status (not ready)', {
+                'label': 'Status (not ready)',
+                'order_by': ['status']
+            })
         ]
 
 
@@ -63,12 +70,6 @@ class ListStatusesView(listbuilderview.FilterListMixin, listbuilderview.View):
     value_renderer_class = StatusItemValue
 
     def add_filterlist_items(self, filterlist):
-        filterlist.append(listfilter.django.single.textinput.Search(
-            slug='search',
-            label='Search',
-            modelfields=['status'],
-            label_is_screenreader_only=True
-        ))
         filterlist.append(OrderStatusFilter(
             slug='orderby', label='Order by'))
 
@@ -78,7 +79,14 @@ class ListStatusesView(listbuilderview.FilterListMixin, listbuilderview.View):
 
     def get_unfiltered_queryset_for_role(self, role):
         period = self.request.cradmin_role
-        return status_models.Status.objects.filter(period=period)
+        period_queryset = core_models.Period.objects.prefetch_related(
+            models.Prefetch(
+                    'qualifiedforexams_status',
+                    queryset=status_models.Status.objects.filter(period=period)
+            )
+        ).get(id=period.id)
+        # return status_models.Status.objects.filter(period=period)
+        return period_queryset.qualifiedforexams_status.all()
 
     def get_no_items_message(self):
         return 'No status has been created for this period yet.'

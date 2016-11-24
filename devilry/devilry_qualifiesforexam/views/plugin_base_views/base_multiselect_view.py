@@ -17,9 +17,8 @@ from devilry.apps.core import models as core_models
 class QualifiedForExamPluginViewMixin(object):
     plugintypeid = None
 
-    def get_plugin_input_and_authenticate(self):
-        self.period = self.request.cradmin_role
-        self.pluginsessionid = self.request.session['pluginsessionid']
+    def get_plugintypeid(self):
+        return self.plugintypeid
 
 
 class SelectedQualificationForm(forms.Form):
@@ -191,15 +190,16 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         Check if a :class:`~.devilry_qualifiesforexam.models.Status` with ``status`` set to
         ``ready`` exists for the period. If it exists, redirect to the final export view.
         """
-        status = status_models.Status.objects.order_by('-createtime').first()
-        if status:
-            if status_models.Status.objects.order_by('-createtime').first().status == status_models.Status.READY:
-                return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
-                    viewname='show-status',
-                    kwargs={
-                        'roleid': self.request.cradmin_role.id
-                    }
-                ))
+        period = self.request.cradmin_role
+        status = status_models.Status.objects.get_last_status_in_period(period=period)
+        if status and status.status == status_models.Status.READY:
+            return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
+                viewname='show-status',
+                kwargs={
+                    'roleid': self.request.cradmin_role.id,
+                    'statusid': status.id
+                }
+            ))
         return super(QualificationItemListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset_for_role(self, role):
@@ -219,9 +219,6 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         return queryset.filter(parentnode__id=role.id)
 
     def get_inititially_selected_queryset(self):
-        """
-
-        """
         return self.get_queryset_for_role(self.request.cradmin_role)
 
     def get_target_renderer_class(self):
@@ -296,5 +293,5 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
 
         # Attach collected data to session.
         self.request.session['passing_relatedstudentids'] = passing_relatedstudentids
-        self.request.session['plugintypeid'] = QualificationItemListView.plugintypeid
+        self.request.session['plugintypeid'] = self.get_plugintypeid()
         return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl('preview'))
