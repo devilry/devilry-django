@@ -92,26 +92,9 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
         statuses = mockresponse.selector.list('.devilry-qualifiesforexam-list-statuses-statusitemframe')
         self.assertEquals(len(statuses), 5)
 
-    def test_filterview_status_default_descending_ordering_in_list(self):
-        testperiod = mommy.make('core.Period')
-        st1 = mommy.make('devilry_qualifiesforexam.Status',
-                         period=testperiod,
-                         status=status_models.Status.READY)
-        st1.createtime = timezone.now() + timezone.timedelta(hours=1)
-        st1.save()
-
-        st2 = mommy.make('devilry_qualifiesforexam.Status',
-                         period=testperiod,
-                         status=status_models.Status.READY)
-        st2.createtime = timezone.now() + timezone.timedelta(hours=2)
-        st2.save()
-        st3 = mommy.make('devilry_qualifiesforexam.Status',
-                         period=testperiod,
-                         status=status_models.Status.READY)
-        st3.createtime = timezone.now() + timezone.timedelta(hours=3)
-        st3.save()
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
-        status_dates = mockresponse.selector.list('.devilry-qualifiesforexam-status-description-date')
-        self.assertEquals(status_dates[0].alltext_normalized, st3.createtime.strftime('%A %B %d, %Y, %H:%M'))
-        self.assertEquals(status_dates[1].alltext_normalized, st2.createtime.strftime('%A %B %d, %Y, %H:%M'))
-        self.assertEquals(status_dates[2].alltext_normalized, st1.createtime.strftime('%A %B %d, %Y, %H:%M'))
+    def test_status_for_other_periods_not_listed(self):
+        testperiod1 = mommy.make('core.Period')
+        testperiod2 = mommy.make('core.Period')
+        mommy.make('devilry_qualifiesforexam.Status', period=testperiod2, status=status_models.Status.READY)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod1)
+        self.assertEquals(len(mockresponse.selector.list('.devilry-qualifiesforexam-list-statuses-statusitemframe')), 0)

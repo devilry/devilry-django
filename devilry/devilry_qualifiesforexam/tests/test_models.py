@@ -30,9 +30,8 @@ class TestStatus(test.TestCase):
 
     def test_get_current_status_no_status_for_period(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
-        with self.assertRaisesMessage(status_models.Status.DoesNotExist,
-                                      'The period with id={} has no statuses'.format(testperiod.id)):
-            status_models.Status.objects.get_last_status_in_period(period=testperiod)
+        last_status = status_models.Status.objects.get_last_status_in_period(period=testperiod)
+        self.assertIsNone(last_status)
 
     def test_get_current_status(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
