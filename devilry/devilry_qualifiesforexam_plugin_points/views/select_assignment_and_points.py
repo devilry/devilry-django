@@ -53,7 +53,6 @@ class PluginSelectAssignmentsAndPointsView(base_multiselect_view.QualificationIt
     def form_valid(self, form):
         # Collect qualifying Assignment IDs
         qualifying_assignmentids = self.get_qualifying_itemids(posted_form=form)
-        print 'Qualifying assignment IDs: {}'.format(qualifying_assignmentids)
 
         # Points to achieve.
         min_points_to_achieve = form.cleaned_data['min_points_to_achieve']
