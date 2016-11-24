@@ -8762,6 +8762,7 @@ ul.devilry-admin-assigments-students-and-examiners li p {
   border-top: 1px solid #dddddd;
   padding-left: 8px;
   text-align: center;
+  text-align: left;
 }
 .devilry-qualifiesforexam-table tr:hover td {
   background-color: #dddddd;
@@ -8776,11 +8777,13 @@ ul.devilry-admin-assigments-students-and-examiners li p {
   border-top: 1px solid #dddddd;
   padding-left: 8px;
   text-align: center;
+  text-align: left;
 }
 .devilry-qualifiesforexam-cell-assignmentinfo {
   border-top: 1px solid #dddddd;
   padding-left: 8px;
   text-align: center;
+  text-align: left;
 }
 .devilry-qualifiesforexam-plugin-spacing {
   padding: 3px;
