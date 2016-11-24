@@ -61,8 +61,6 @@ class StatusQuerySet(models.QuerySet):
                 .order_by('-createtime').first()
         else:
             latest_status = period.qualifiedforexams_status.order_by('-createtime').first()
-        if latest_status is None:
-            raise Status.DoesNotExist('The period with id={} has no statuses'.format(period.id))
         return latest_status
 
 
