@@ -1,19 +1,14 @@
 # # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-# 3rd party imports
-from crispy_forms import layout
-
 # Django imports
 from django import forms
+from django.views import generic
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
-from django.utils.translation import ugettext_lazy as _
 from django.db import models
 
 # CrAdmin imports
-from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit, CollapsedSectionLayout
-from django_cradmin.viewhelpers import formbase
 from django_cradmin.viewhelpers import update
 
 # Devilry imports
@@ -21,34 +16,11 @@ from devilry.devilry_qualifiesforexam import models as status_models
 from devilry.apps.core import models as core_models
 
 
-class QualificationForm(forms.Form):
-    pass
-
-
-class AbstractQualificationPreviewView(formbase.FormView):
+class AbstractQualificationPreviewView(generic.FormView):
     """
     Abstract superclass for preview views
     """
-
-    @classmethod
-    def deserialize_preview(cls, serialized):
-        pass
-
-    def serialize_preview(self, form):
-        pass
-
-    def get_buttons(self):
-        buttons = super(AbstractQualificationPreviewView, self).get_buttons()
-        buttons.append(DefaultSubmit('back', _('Back')))
-        return buttons
-
-    def get_button_layout(self):
-        return [
-            layout.Div(*self.get_buttons(), css_class='devilry-dashboard-container')
-        ]
-
-    def get_field_layout(self):
-        return []
+    form_class = forms.Form
 
     def get_relatedstudents_queryset(self, period):
         """
@@ -75,7 +47,6 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
     This view lists all the students on the course for this period.
     """
     template_name = 'devilry_qualifiesforexam/preview.django.html'
-    form_class = QualificationForm
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -97,11 +68,6 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
         if 'plugintypeid' not in request.session or 'passing_relatedstudentids' not in request.session:
             return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
         return super(QualificationPreviewView, self).dispatch(request, *args, **kwargs)
-
-    def get_buttons(self):
-        buttons = super(QualificationPreviewView, self).get_buttons()
-        buttons.append(PrimarySubmit('save', _('Save')))
-        return buttons
 
     def get_context_data(self, **kwargs):
         context_data = super(QualificationPreviewView, self).get_context_data()
@@ -165,52 +131,36 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
         return super(QualificationPreviewView, self).form_valid(form)
 
 
-class QualificationStatusForm(forms.Form):
-    pass
-
-
 class QualificationStatusView(AbstractQualificationPreviewView):
     """
     View for showing the current :class:`~.devilry.devilry_qualifiesforexam.models.Status` of the
     qualifications list.
     """
     template_name = 'devilry_qualifiesforexam/show_status.html'
-    form_class = QualificationStatusForm
 
     def dispatch(self, request, *args, **kwargs):
         self.status = status_models.Status.objects.get(id=kwargs.get('statusid'))
         return super(QualificationStatusView, self).dispatch(request, *args, **kwargs)
 
-    def get_buttons(self):
-        buttons = super(QualificationStatusView, self).get_buttons()
-        if self.status.status == status_models.Status.READY:
-            buttons.append(PrimarySubmit('retract', _('Retract'), css_class='btn btn-primary'))
-        return buttons
-
-    def get_button_layout(self):
-        return [
-            layout.Div(*self.get_buttons(), css_class='devilry-dashboard-container')
-        ]
-
     def _get_qualifiesforexam_queryset(self):
         """
-        Join `~.devilry.apps.core.models.User` with
-        `~.devilry.deviry_qualifiesforexam.models.QualifiesForFinalExam`
+        Join :class:`~.devilry.apps.core.models.User` with
+        :class:`~.devilry.deviry_qualifiesforexam.models.QualifiesForFinalExam`
 
         Returns:
-            queryset: of `~.devilry.deviry_qualifiesforexam.models.QualifiesForFinalExam`.
+            QuerySet: of :obj:`~.devilry.deviry_qualifiesforexam.models.QualifiesForFinalExam`.
         """
         return status_models.QualifiesForFinalExam.objects\
             .select_related('relatedstudent__user')
 
     def _get_status(self):
         """
-        Join tables for `~.devilry.deviry_qualifiesforexam.models.Status` such as
+        Join tables for :class:`~.devilry.deviry_qualifiesforexam.models.Status` such as
         qualification results for the ``RelatedStudent``s on the period and their related user
         which info will be used in the view.
 
         Returns:
-            status: `~.devilry.deviry_qualifiesforexam.models.Status`.
+            :obj:`~.devilry.deviry_qualifiesforexam.models.Status`: current status.
         """
         status = status_models.Status.objects\
             .select_related('period')\
@@ -236,16 +186,6 @@ class QualificationStatusView(AbstractQualificationPreviewView):
         context_data['num_students'] = len(relatedstudents)
         return context_data
 
-    def form_valid(self, form):
-        if 'retract' in self.request.POST:
-            return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
-                viewname='retract-status',
-                kwargs={
-                    'statusid': self.status.id
-                }
-            ))
-        return super(QualificationStatusView, self).form_valid(form)
-
 
 class RetractStatusForm(forms.ModelForm):
     """
@@ -267,7 +207,7 @@ class StatusRetractView(update.UpdateView):
     """
     Simple model-update view.
 
-    This view is for providing a message of why the status was retracted.
+    Model-view for retracting a :obj:`~.devilry.deviry_qualifiesforexam.models.Status`
     """
     model = status_models.Status
 
