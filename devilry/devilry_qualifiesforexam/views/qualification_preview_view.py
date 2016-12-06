@@ -46,7 +46,7 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
 
     This view lists all the students on the course for this period.
     """
-    template_name = 'devilry_qualifiesforexam/preview.django.html'
+    template_name = 'devilry_qualifiesforexam/status_preview.django.html'
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -136,7 +136,7 @@ class QualificationStatusView(AbstractQualificationPreviewView):
     View for showing the current :class:`~.devilry.devilry_qualifiesforexam.models.Status` of the
     qualifications list.
     """
-    template_name = 'devilry_qualifiesforexam/show_status.html'
+    template_name = 'devilry_qualifiesforexam/status_show.html'
 
     def dispatch(self, request, *args, **kwargs):
         self.status = status_models.Status.objects.get(id=kwargs.get('statusid'))
