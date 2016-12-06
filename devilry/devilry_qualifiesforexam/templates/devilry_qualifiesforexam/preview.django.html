@@ -11,20 +11,19 @@
             <p> This table shows the result of your choices</p>
         </div>
 
-{#        <div class="devilry-dashboard-container">#}
-            <p class="devilry-buttonbar">
-                {# Add back button #}
-                <form action="" method="post">
-                    <a id="devilry_qualifiesforexam_back_index_button" class="btn btn-primary"
-                       href="{% cradmin_instance_url appname='qualifiesforexam' viewname='configure-plugin' plugintypeid=plugintypeid %}">
-                        {% trans "Back" %}
-                    </a>
-                    <button id="devilry_qualifiesforexam_save_button" type="submit" value="Save" name="save" class="btn btn-primary">
-                        {% trans "Save" %}
-                    </button>
-                </form>
-            </p>
-{#        </div>#}
+        <p class="devilry-buttonbar">
+            {# Add back button #}
+            <form action="" method="post">
+                {% csrf_token %}
+                <a id="devilry_qualifiesforexam_back_index_button" class="btn btn-primary"
+                   href="{% cradmin_instance_url appname='qualifiesforexam' viewname='configure-plugin' plugintypeid=plugintypeid %}">
+                    {% trans "Back" %}
+                </a>
+                <button id="devilry_qualifiesforexam_save_button" type="submit" value="Save" name="save" class="btn btn-primary">
+                    {% trans "Save" %}
+                </button>
+            </form>
+        </p>
 
         {% include "devilry_qualifiesforexam/includes/qualification_table.django.html" %}
     </div>

@@ -20,6 +20,7 @@
             <h5>{{ num_students_qualify }}/{{ num_students }} {% trans "students qualify for final exam" %}</h5>
         </div>
 
+        {# Show the retracted message if Status is notready #}
         {% if status.status == 'notready' %}
             <div class="devilry-dashboard-container">
                 <h2>{% trans "Status retracted reason" %}:</h2>
@@ -29,25 +30,23 @@
             </div>
         {% endif %}
 
-{#        <div class="devilry-dashboard-container">#}
-            <p class="devilry-buttonbar">
+        <p class="devilry-buttonbar">
 
-                {# Add back button #}
-                {{ block.super }}
+            {# Add back button #}
+            {{ block.super }}
 
-                {# Adds template specific buttons #}
-                {% if status.status == 'ready' %}
-                    <a id="devilry_qualifiesforexam_retract_link" class="btn btn-primary"
-                       href="{% cradmin_instance_url 'qualifiesforexam' 'retract-status' status.id %}">
-                        {% trans "Retract" %}
-                    </a>
-                    <a id="devilry_qualifiesforexam_print_link" class="btn btn-primary" onclick="alert('TODO: Create plaintext formatted list');">
-                        {% trans "print" %}
-                    </a>
-                {% endif %}
-            </p>
+            {# Adds template specific buttons #}
+            {% if status.status == 'ready' %}
+                <a id="devilry_qualifiesforexam_retract_link" class="btn btn-primary"
+                   href="{% cradmin_instance_url 'qualifiesforexam' 'retract-status' status.id %}">
+                    {% trans "Retract" %}
+                </a>
+                <a id="devilry_qualifiesforexam_print_link" class="btn btn-primary" onclick="alert('TODO: Create plaintext formatted list');">
+                    {% trans "print" %}
+                </a>
+            {% endif %}
+        </p>
 
-{#        </div>#}
         {% include "devilry_qualifiesforexam/includes/qualification_table.django.html" %}
     </div>
 {% endblock content %}
