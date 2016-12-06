@@ -7,7 +7,6 @@ from model_mommy import mommy
 
 # Django imports
 from django import test
-from django.utils import timezone
 
 # CrAdmin imports
 from django_cradmin import cradmin_testhelpers
@@ -67,7 +66,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
                 'Status')
         self.assertEquals(
                 mockresponse.selector.one('.devilry-qualifiesforexam-status-description-date').alltext_normalized,
-                teststatus.createtime.strftime('%A %B %d, %Y, %H:%M'))
+                teststatus.createtime.strftime('%A %B %-d, %Y, %H:%M'))
 
     def test_status_ready_in_list(self):
         testperiod = mommy.make('core.Period')
