@@ -14,6 +14,7 @@ from django_cradmin.viewhelpers import update
 # Devilry imports
 from devilry.devilry_qualifiesforexam import models as status_models
 from devilry.apps.core import models as core_models
+from devilry.devilry_qualifiesforexam.tablebuilder import tablebuilder
 
 
 class AbstractQualificationPreviewView(generic.FormView):
@@ -35,6 +36,23 @@ class AbstractQualificationPreviewView(generic.FormView):
         return core_models.RelatedStudent.objects.filter(period=period)\
             .select_related('user')\
             .order_by('user__fullname')
+
+    def _get_tablebuilder(self, relatedstudents, qualifying_studentids):
+        """
+
+        Args:
+            relatedstudents:
+            qualifying_studentids:
+
+        Returns:
+
+        """
+        rows = []
+        for relatedstudent in relatedstudents:
+            row_items = [relatedstudent, 'yes' if relatedstudent.id in qualifying_studentids else 'no']
+            rows.append(row_items)
+        builder = tablebuilder.QualifiesTableBuilderTable.from_qualifying_items(row_items_list=rows)
+        return builder
 
     def form_valid(self, form):
         return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
@@ -73,8 +91,12 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
         context_data = super(QualificationPreviewView, self).get_context_data()
         context_data['period'] = self.request.cradmin_role
         context_data['plugintypeid'] = self.request.session['plugintypeid']
-        context_data['relatedstudents'] = self.get_relatedstudents_queryset(self.request.cradmin_role)
-        context_data['passing_relatedstudentids'] = set(self.request.session['passing_relatedstudentids'])
+        # context_data['relatedstudents'] = self.get_relatedstudents_queryset(self.request.cradmin_role)
+        # context_data['passing_relatedstudentids'] = set(self.request.session['passing_relatedstudentids'])
+        context_data['table'] = self._get_tablebuilder(
+                relatedstudents=self.get_relatedstudents_queryset(self.request.cradmin_role),
+                qualifying_studentids=set(self.request.session['passing_relatedstudentids'])
+        )
 
         return context_data
 
@@ -171,6 +193,14 @@ class QualificationStatusView(AbstractQualificationPreviewView):
             .get(id=self.status.id)
         return status
 
+    # def _get_tablebuilder(self, relatedstudents, qualifying_studentids):
+    #     rows = []
+    #     for relatedstudent in relatedstudents:
+    #         row_items = [relatedstudent, 'yes' if relatedstudent.id in qualifying_studentids else 'no']
+    #         rows.append(row_items)
+    #     builder = tablebuilder.QualifiesTableBuilderTable.from_qualifying_items(row_items_list=rows)
+    #     return builder
+
     def get_context_data(self, **kwargs):
         context_data = super(QualificationStatusView, self).get_context_data(**kwargs)
         current_status = self._get_status()
@@ -180,10 +210,14 @@ class QualificationStatusView(AbstractQualificationPreviewView):
         qualifiesforexam = list(current_status.students.all())
         qualifying_studentids = [q.relatedstudent.id for q in qualifiesforexam if q.qualifies]
         relatedstudents = self.get_relatedstudents_queryset(self.request.cradmin_role)
-        context_data['passing_relatedstudentids'] = qualifying_studentids
+        # context_data['passing_relatedstudentids'] = qualifying_studentids
         context_data['num_students_qualify'] = len(qualifying_studentids)
-        context_data['relatedstudents'] = relatedstudents
+        # context_data['relatedstudents'] = relatedstudents
         context_data['num_students'] = len(relatedstudents)
+        context_data['table'] = self._get_tablebuilder(
+                relatedstudents=relatedstudents,
+                qualifying_studentids=qualifying_studentids
+        )
         return context_data
 
 
