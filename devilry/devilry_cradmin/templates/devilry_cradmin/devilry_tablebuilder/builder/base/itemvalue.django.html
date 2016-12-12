@@ -1,0 +1,7 @@
+{% block outer-wrapper %}
+    <{{ me.get_wrapper_htmltag }} class="{{ me.get_css_classes_string }}">
+        {% block content %}
+            {{ me.value }}
+        {% endblock content %}
+    </{{ me.get_wrapper_htmltag }}>
+{% endblock outer-wrapper %}
