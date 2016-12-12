@@ -65,29 +65,6 @@ class ColumnItemRenderer(AbstractItemRenderer):
         return ['devilry-tablebuilder-columnitem']
 
 
-class ItemFrameRenderer(AbstractContainerRenderer):
-    """
-    Provides a frame around the item.
-
-    This is typically subclassed to:
-
-    - Add visually highlighted frames for items.
-    - Add checkbox for each item.
-    - Make the item clickable(via an ``a``-tag or javascript).
-
-    Attributes:
-        inneritem: The renderable this frame wraps. An object of :class:`.AbstractContainer` or subclass.
-    """
-    template_name = 'devilry_cradmin/devilry_tablebuilder/builder/base/itemframe.django.html'
-
-    def __init__(self, inneritem, **kwargs):
-        # super(ItemFrameRenderer, self).__init__(inneritem.value, **kwargs)
-        self.inneritem = inneritem
-
-    def get_base_css_classes_list(self):
-        return ['devilry-tablebuilder-itemframe']
-
-
 class RowRenderer(AbstractContainerRenderer):
     """
     A row that renders its data for each column.

@@ -24,7 +24,6 @@ class QualifiesTableBuilderTable(tablebuilderbase.Table):
 
         Returns:
             Instance of :class:`~.devilry.devilry_cradmin.devilry_tablebuilder.base.Table`.
-
         """
         header_row = QualificationRowRenderer()
         header_row.extend([
@@ -38,22 +37,13 @@ class QualifiesTableBuilderTable(tablebuilderbase.Table):
                 QualificationStudentInfoCellRenderer(value=row_items[0]),
                 QualificationStatusCellRenderer(value=row_items[1])
             ])
-            fr = QualificationFrameRenderer(inneritem=row_renderer)
-            tablebuilder_table.append(row_renderer=fr)
+            tablebuilder_table.append(row_renderer=row_renderer)
         return tablebuilder_table
 
     def get_extra_css_classes_list(self):
         css_list = super(QualifiesTableBuilderTable, self).get_extra_css_classes_list()
         css_list.append('devilry-qualifiesforexam-table')
         return css_list
-
-
-class QualificationFrameRenderer(tablebuilderbase.ItemFrameRenderer):
-    def get_extra_css_classes_list(self):
-        # print 'frame'
-        css_classes_list = super(QualificationFrameRenderer, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-qualifiesforexam-row-hover')
-        return css_classes_list
 
 
 class QualificationRowRenderer(tablebuilderbase.RowRenderer):

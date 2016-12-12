@@ -8763,6 +8763,9 @@ ul.devilry-admin-assigments-students-and-examiners li p {
   padding-left: 8px;
   text-align: left;
 }
+.devilry-qualifiesforexam-table tr:hover td {
+  background-color: #dddddd;
+}
 .devilry-qualifiesforexam-row-hover tr:hover td {
   background-color: #dddddd;
 }
