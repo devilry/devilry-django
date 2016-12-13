@@ -6,7 +6,9 @@ from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 class TestAssignmentFiltersStudentMixin(object):
     def test_filter_search_subject_short_name_not_found(self):
         assignment = mommy.make('core.Assignment',
-                                parentnode__parentnode__short_name='duckduck1010')
+                                parentnode__parentnode__short_name='duckduck1010',
+                                parentnode__short_name='456',
+                                short_name='456')
         candidate = mommy.make('core.Candidate',
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
@@ -28,7 +30,9 @@ class TestAssignmentFiltersStudentMixin(object):
 
     def test_filter_search_period_short_name_not_found(self):
         assignment = mommy.make('core.Assignment',
-                                parentnode__short_name='asd')
+                                parentnode__short_name='asd',
+                                parentnode__parentnode__short_name='456',
+                                short_name='456')
         candidate = mommy.make('core.Candidate',
                                assignment_group__parentnode=assignment)
         apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=candidate.relatedstudent.user)
@@ -97,7 +101,10 @@ class TestAssignmentFiltersExaminerMixin(object):
 
     def test_filter_search_subject_short_name_not_found(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       parentnode__parentnode__short_name='duckduck1010')
+                                       parentnode__parentnode__short_name='duckduck1010',
+                                       parentnode__short_name='456',
+                                       short_name='456'
+                                       )
         examiner = mommy.make('core.Examiner',
                               relatedexaminer=mommy.make('core.RelatedExaminer', active=True),
                               assignmentgroup__parentnode=assignment)
@@ -121,7 +128,10 @@ class TestAssignmentFiltersExaminerMixin(object):
 
     def test_filter_search_period_short_name_not_found(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       parentnode__short_name='asd')
+                                       parentnode__short_name='asd',
+                                       parentnode__parentnode__short_name='456',
+                                       short_name='456'
+                                       )
         examiner = mommy.make('core.Examiner',
                               relatedexaminer=mommy.make('core.RelatedExaminer', active=True),
                               assignmentgroup__parentnode=assignment)
@@ -218,7 +228,10 @@ class TestAssignmentFiltersPeriodAdminMixin(object):
 
     def test_filter_search_period_short_name_not_found(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       parentnode__short_name='asd')
+                                       parentnode__short_name='asd',
+                                       parentnode__parentnode__short_name='456',
+                                       short_name='456'
+                                       )
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
         apikey = devilry_api_mommy_factories.api_key_admin_permission_read(user=period_admin.user)
         response = self.mock_get_request(apikey=apikey.key,

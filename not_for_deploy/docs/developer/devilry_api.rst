@@ -146,7 +146,7 @@ The feedbackset examiner api will list all feedback sets which an exminer has ac
 In addition to that an examiner will also be able to:
 
 - Create a new feedbackset (if the old feedbackset has expired and grading is published?)
-- Publish a feedbackset with grading points. **Cooming soon**
+- Publish a feedbackset with grading points
 
 .. automodule:: devilry.devilry_api.feedbackset.views.feedbackset_examiner
     :members:

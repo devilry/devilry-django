@@ -66,9 +66,22 @@ class FeedbacksetSerializerExaminer(serializer_base.BaseFeedbacksetSerializer):
         Checks existence of required data and makes sure that any other data than group,
         deadline_datetime and feedbackset_type is ignored, rest of the data will be set automatically.
 
+        If it's a partial update we'll return grading_points from query parameter in a dictionary
+
         Returns:
             dict with group, deadline_datetime and feedbackset_type
         """
+        validated_data = dict()
+
+        # For partial we don't need to check validation
+        if self.partial:
+            grading_points = self.context['request'].query_params.get('grading_points', None)
+            if not grading_points:
+                raise serializers.ValidationError(ugettext_lazy('Data missing'
+                                                                'grading_points missing in query parameter.'))
+            validated_data['grading_points'] = grading_points
+            return validated_data
+
         # checks existence
         if 'group_id' not in data:
             raise serializers.ValidationError(ugettext_lazy('Data missing: ' 'group_id missing.'))
@@ -78,7 +91,6 @@ class FeedbacksetSerializerExaminer(serializer_base.BaseFeedbacksetSerializer):
             raise serializers.ValidationError(ugettext_lazy('Data missing: ' 'deadline_datetime missing.'))
 
         # ignore any other data
-        validated_data = dict()
         validated_data['group_id'] = data['group_id']
         validated_data['feedbackset_type'] = data['feedbackset_type']
         validated_data['deadline_datetime'] = data['deadline_datetime']
@@ -110,3 +122,17 @@ class FeedbacksetSerializerExaminer(serializer_base.BaseFeedbacksetSerializer):
         """
         self.__set_is_last_in_group_false_in_previous_feedbackset(validated_data['group_id'])
         return FeedbackSet.objects.create(created_by=self.context['request'].user, **validated_data)
+
+    def update(self, instance, validated_data):
+        """
+        Publishes a :obj:`~devilry_group.Feedbackset`
+
+        Args:
+            instance: :obj:`~devilry_group.Feedbackset` instance to publish
+            validated_data: validated dictionary containing grading_points from query parameter
+
+        Returns:
+            :obj:`~devilry_group.Feedbackset`
+        """
+        instance.publish(self.context['request'].user, validated_data['grading_points'])
+        return instance

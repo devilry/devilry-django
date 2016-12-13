@@ -13,6 +13,7 @@ from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.apps.core import mommy_recipes
 from devilry.apps.core.models import Assignment
 
+
 class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                             test_examiner_mixins.TestAuthAPIKeyExaminerMixin,
                             api_test_helper.TestCaseMixin,
@@ -201,7 +202,6 @@ class TestFeedbacksetAnonymization(api_test_helper.TestCaseMixin,
         self.assertEqual(response.data[0]['created_by_fullname'], None)
 
 
-
 class TestFeedbacksetFilters(api_test_helper.TestCaseMixin,
                              APITestCase):
     viewclass = feedbackset_examiner.FeedbacksetViewExaminer
@@ -229,7 +229,7 @@ class TestFeedbacksetFilters(api_test_helper.TestCaseMixin,
     def test_filter_group_id_not_found(self):
         group = mommy.make('core.AssignmentGroup',
                            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__id=10, group=group)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=10, group=group)
         examiner = devilry_core_mommy_factories.examiner(group=feedbackset.group)
         apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
         response = self.mock_get_request(apikey=apikey.key, queryparams='?group_id=20')
@@ -429,3 +429,60 @@ class TestFeedbacksetPost(api_test_helper.TestCaseMixin,
         self.assertEqual(response.data['created_datetime'], feedbackset.created_datetime.isoformat())
         self.assertEqual(response.data['is_last_in_group'], feedbackset.is_last_in_group)
         self.assertEqual(response.data['created_by_fullname'], examiner.relatedexaminer.user.fullname)
+
+
+class TestFeedbacksetPatchPublishFeedbackset(api_test_helper.TestCaseMixin, APITestCase):
+    viewclass = feedbackset_examiner.FeedbacksetViewExaminer
+
+    def test_unauthorized_401(self):
+        response = self.mock_patch_request()
+        self.assertEqual(401, response.status_code)
+
+    def test_publish_feedbackset_id_missing(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        group_mommy.feedbackset_first_attempt_unpublished(id=11, group=group)
+        examiner = devilry_core_mommy_factories.examiner(group, fullname="Tor med hammern")
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_patch_request(
+            apikey=apikey.key)
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(response.data['detail'], 'query parameter "id" required')
+
+    def test_publish_feedbackset_grading_points_missing(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        group_mommy.feedbackset_first_attempt_unpublished(id=11, group=group)
+        examiner = devilry_core_mommy_factories.examiner(group, fullname="Tor med hammern")
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_patch_request(
+            apikey=apikey.key,
+            queryparams='?id=11')
+        self.assertEqual(400, response.status_code)
+
+    def test_publish_feedbackset_not_part_of_group_404(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        group_mommy.feedbackset_first_attempt_unpublished(id=11, group=group)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        examiner = devilry_core_mommy_factories.examiner(feedbackset.group, fullname="Tor med hammern")
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_patch_request(
+            apikey=apikey.key,
+            queryparams='?id=11&grading_points=1')
+        self.assertEqual(404, response.status_code)
+
+    def test_publish_feedbackset_sanity(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        group_mommy.feedbackset_first_attempt_unpublished(id=11, group=group)
+        examiner = devilry_core_mommy_factories.examiner(group, fullname="Tor med hammern")
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_patch_request(
+            apikey=apikey.key,
+            queryparams='?id=11&grading_points=1')
+        self.assertEqual(200, response.status_code)
+        feedbackset = FeedbackSet.objects.get(id=11)
+        self.assertEqual(feedbackset.grading_published_by, examiner.relatedexaminer.user)
+        self.assertEqual(feedbackset.grading_points, 1)
+        self.assertIsNotNone(feedbackset.grading_published_datetime)

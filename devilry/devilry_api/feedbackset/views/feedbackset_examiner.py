@@ -29,7 +29,7 @@ class FeedbacksetViewExaminer(mixins.CreateModelMixin,
         """
         id = self.request.query_params.get('id', None)
         if not id:
-            raise exceptions.ParseError(ugettext_lazy('query paramter "id" required'))
+            raise exceptions.ParseError(ugettext_lazy('query parameter "id" required'))
 
         instance = self.get_queryset().first()
         if not instance:
@@ -79,17 +79,23 @@ class FeedbacksetViewExaminer(mixins.CreateModelMixin,
 
     def patch(self, request, *args, **kwargs):
         """
-            Publish feedbackset
+        Publish feedbackset
 
-            ---
-            parameters:
-                - name: id
-                  required: true
-                  paramType: query
-                  type: int
-                  description: id for feedbackset to publish
+        grading_points is sent from query parameter, maybe should be in from?
+        ---
+        parameters:
+            - name: id
+              required: true
+              paramType: query
+              type: int
+              description: id for feedbackset to publish
+            - name: grading_points
+              required: true
+              paramType: query
+              type: int
+              description: points for feedbackset
 
-            """
+        """
         return super(FeedbacksetViewExaminer, self).partial_update(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
