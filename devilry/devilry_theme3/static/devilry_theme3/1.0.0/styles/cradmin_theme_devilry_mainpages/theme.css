@@ -6900,6 +6900,22 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
 .django-cradmin-loadmorepager-target.django-cradmin-loadmorepager-target-reloading-page1 input {
   display: none;
 }
+/*
+* Adding media query for screeens smaller than width 760/768px and height 1024px.
+*/
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+  /*
+	 * Display table elements as blocks
+	 */
+  table.devilry-tablebuilder-table,
+  thead,
+  tbody,
+  th.devilry-tablebuilder-header,
+  tr.devilry-tablebuilder-row,
+  td.devilry-tablebuilder-data {
+    display: block;
+  }
+}
 nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle {
   line-height: 50px;
   height: 50px;
@@ -8745,42 +8761,46 @@ ul.devilry-admin-assigments-students-and-examiners li p {
 }
 .devilry-qualifiesforexam-cellbase {
   border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
   padding-left: 8px;
   text-align: left;
 }
-.devilry-qualifiesforexam-table {
+table.devilry-qualifiesforexam-table {
   border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
   padding-left: 8px;
   text-align: left;
   border-collapse: collapse;
   width: 100%;
 }
-.devilry-qualifiesforexam-table tr:nth-child(even) {
+table.devilry-qualifiesforexam-table tr.devilry-tablebuilder-row:nth-child(even) {
   background-color: #eeeeee;
 }
-.devilry-qualifiesforexam-table th {
+table.devilry-qualifiesforexam-table th {
   border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
   padding-left: 8px;
   text-align: left;
+  border: 0;
 }
-.devilry-qualifiesforexam-table tr:hover td {
-  background-color: #dddddd;
-}
-.devilry-qualifiesforexam-row-hover tr:hover td {
+table.devilry-qualifiesforexam-table tr.devilry-tablebuilder-row:hover td {
   background-color: #dddddd;
 }
 .devilry-qualifiesforexam-cell-studentinfo {
   border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
   padding-left: 8px;
   text-align: left;
 }
 .devilry-qualifiesforexam-cell-qualify {
   border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
   padding-left: 8px;
   text-align: left;
 }
 .devilry-qualifiesforexam-cell-assignmentinfo {
   border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
   padding-left: 8px;
   text-align: left;
 }

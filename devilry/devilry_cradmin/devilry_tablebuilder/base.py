@@ -7,16 +7,21 @@ from django_cradmin.renderable import AbstractRenderableWithCss
 
 class AbstractContainerRenderer(AbstractRenderableWithCss):
     """
-    Superclass for all objects table-related elements, such as rows and columnitems.
+    Base superclass for all table-related elements, such as rows and columnitems.
 
     This class only defines the inheritance starting point for the elements
     that the tablebuilder consists of.
+
+    This is mainly used by classes that does not render items directly, but provides an iterator over subclasses of
+    :class:`.AbstractContainerRenderer` or :class:`.AbstractItemRenderer`.
     """
 
 
 class AbstractItemRenderer(AbstractContainerRenderer):
     """
+    Superclass for classes that renders an item.
 
+    By item, we mean the actual model, string etc. that should be rendered.
     """
 
     #: If this is specified, we will add an attribute with this name
@@ -31,7 +36,7 @@ class AbstractItemRenderer(AbstractContainerRenderer):
     def __init__(self, value, **kwargs):
         """
         Args:
-            value: The value to render.
+            value: The value to render, typically a model or some datatype with information.
         """
         self.value = value
         self.kwargs = kwargs
@@ -39,30 +44,32 @@ class AbstractItemRenderer(AbstractContainerRenderer):
             setattr(self, self.valuealias, self.value)
 
 
-class ColumnHeaderRenderer(AbstractItemRenderer):
+class DataHeaderRenderer(AbstractItemRenderer):
     """
+    Class for rendering a header item.
 
+    This adds the opening and closing ``<th>``-tag around the item to be rendered.
     """
-    template_name = 'devilry_cradmin/devilry_tablebuilder/builder/base/header_itemvalue.django.html'
+    template_name = 'devilry_cradmin/devilry_tablebuilder/header_itemvalue.django.html'
 
     def get_wrapper_htmltag(self):
         return 'th'
 
     def get_base_css_classes_list(self):
-        return ['devilry-tablebuilder-headeritem']
+        return ['devilry-tablebuilder-header']
 
 
-class ColumnItemRenderer(AbstractItemRenderer):
+class DataItemRenderer(AbstractItemRenderer):
     """
 
     """
-    template_name = 'devilry_cradmin/devilry_tablebuilder/builder/base/itemvalue.django.html'
+    template_name = 'devilry_cradmin/devilry_tablebuilder/itemvalue.django.html'
 
     def get_wrapper_htmltag(self):
         return 'td'
 
     def get_base_css_classes_list(self):
-        return ['devilry-tablebuilder-columnitem']
+        return ['devilry-tablebuilder-data']
 
 
 class RowRenderer(AbstractContainerRenderer):
@@ -72,7 +79,7 @@ class RowRenderer(AbstractContainerRenderer):
     Attributes:
         renderable_data_list: A list of objects of :class:`.ColumnItemRenderer` or subclass.
     """
-    template_name = 'devilry_cradmin/devilry_tablebuilder/builder/base/row.django.html'
+    template_name = 'devilry_cradmin/devilry_tablebuilder/row.django.html'
 
     def __init__(self):
         super(RowRenderer, self).__init__()
@@ -91,7 +98,7 @@ class RowRenderer(AbstractContainerRenderer):
         self.renderable_data_list.extend(renderable_iterable)
 
     def get_base_css_classes_list(self):
-        return ['devilry-tablebuilder-rowitem']
+        return ['devilry-tablebuilder-row']
 
 
 class Table(AbstractRenderableWithCss):
@@ -101,7 +108,7 @@ class Table(AbstractRenderableWithCss):
     Attributes:
         renderable_rows_list: A list of objects of :class:`.RowRenderer` or subclass objects.
     """
-    template_name = 'devilry_cradmin/devilry_tablebuilder/builder/base/table.django.html'
+    template_name = 'devilry_cradmin/devilry_tablebuilder/table.django.html'
 
     def __init__(self, table_headers=None, table_footers=None):
         """

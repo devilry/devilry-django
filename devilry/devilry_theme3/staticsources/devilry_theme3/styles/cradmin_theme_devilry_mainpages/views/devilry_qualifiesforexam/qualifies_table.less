@@ -1,33 +1,27 @@
 .devilry-qualifiesforexam-cellbase {
   border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
   padding-left: 8px;
   text-align: left;
 }
 
 
-.devilry-qualifiesforexam-table {
+table.devilry-qualifiesforexam-table {
   .devilry-qualifiesforexam-cellbase;
   border-collapse: collapse;
   width: 100%;
 
-  tr:nth-child(even) {
+  tr.devilry-tablebuilder-row:nth-child(even) {
     background-color: #eeeeee;
   }
 
   th {
     .devilry-qualifiesforexam-cellbase;
+    border: 0; // Remove bordelines between header elements.
   }
 
-  tr:hover {
+  tr.devilry-tablebuilder-row:hover {
     // Only change color on table data, not headers
-    td {
-      background-color: #dddddd;
-    }
-  }
-}
-
-.devilry-qualifiesforexam-row-hover {
-  tr:hover {
     td {
       background-color: #dddddd;
     }

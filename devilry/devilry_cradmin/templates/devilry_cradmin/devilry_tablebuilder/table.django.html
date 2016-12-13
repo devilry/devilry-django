@@ -12,9 +12,9 @@
         </thead>
         <tbody>
             {% for renderable in me.iter_renderables %}
-                {% block list-item %}
+                {% block body-list-item %}
                     {% cradmin_render_renderable renderable %}
-                {% endblock list-item %}
+                {% endblock %}
             {% endfor %}
         </tbody>
         <tfoot>

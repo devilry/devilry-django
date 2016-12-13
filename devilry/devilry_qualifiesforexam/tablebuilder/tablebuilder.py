@@ -53,7 +53,7 @@ class QualificationRowRenderer(tablebuilderbase.RowRenderer):
         return css_classes_list
 
 
-class QualificationHeaderRenderer(tablebuilderbase.ColumnHeaderRenderer):
+class QualificationHeaderRenderer(tablebuilderbase.DataHeaderRenderer):
     template_name = 'devilry_qualifiesforexam/tablebuilder/tableheader_valueitem.django.html'
     valuealias = 'header_description'
 
@@ -63,7 +63,7 @@ class QualificationHeaderRenderer(tablebuilderbase.ColumnHeaderRenderer):
         return css_classes_list
 
 
-class QualificationStudentInfoCellRenderer(tablebuilderbase.ColumnItemRenderer):
+class QualificationStudentInfoCellRenderer(tablebuilderbase.DataItemRenderer):
     template_name = 'devilry_qualifiesforexam/tablebuilder/relatedstudent_valueitem.django.html'
     valuealias = 'relatedstudent'
 
@@ -73,7 +73,7 @@ class QualificationStudentInfoCellRenderer(tablebuilderbase.ColumnItemRenderer):
         return css_classes_list
 
 
-class QualificationStatusCellRenderer(tablebuilderbase.ColumnItemRenderer):
+class QualificationStatusCellRenderer(tablebuilderbase.DataItemRenderer):
     template_name = 'devilry_qualifiesforexam/tablebuilder/qualificationstatus_valueitem.django.html'
     valuealias = 'result'
 
