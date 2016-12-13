@@ -119,8 +119,6 @@ class Table(AbstractRenderableWithCss):
         self.renderable_rows_theader = []
         self.renderable_rows_list = []
         self.renderable_rows_tfooter = []
-        # if table_headers:
-        #     self.renderable_rows_list.append(table_headers)
         if table_headers:
             self.renderable_rows_theader.append(table_headers)
         if table_footers:
