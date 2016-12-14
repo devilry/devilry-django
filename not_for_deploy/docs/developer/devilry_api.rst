@@ -59,13 +59,12 @@ The assignment examiner api will list all assignments which an examiner has acce
 
 Period admin
 ============
-**Coming soon**
 The assignment period admin api will list all assignments which a period admin has access to.
 In addition to that a period admin will also be able to:
 
 - Create an assignment with anonimization mode off.
 - update all properties except anonimization mode.
-- Delete an assignment if there is no child content other than basic initialization content,
+- Delete an assignment (**Coming soon**) if there is no child content other than basic initialization content,
   for instance a period admin should not be able to delete an assignment if there is a comment on a feedback set.
 
 Other features that we should consider:
