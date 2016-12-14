@@ -41,7 +41,8 @@
                    href="{% cradmin_instance_url 'qualifiesforexam' 'retract-status' status.id %}">
                     {% trans "Retract" %}
                 </a>
-                <a id="devilry_qualifiesforexam_print_link" class="btn btn-primary" onclick="alert('TODO: Create plaintext formatted list');">
+                <a id="devilry_qualifiesforexam_print_link" class="btn btn-primary"
+                    href="{% cradmin_instance_url 'qualifiesforexam' 'print-status' status.id %}">
                     {% trans "print" %}
                 </a>
             {% endif %}

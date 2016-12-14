@@ -44,7 +44,13 @@ class App(crapp.App):
             name='show-status'
         ),
         crapp.Url(
+            r'print-status/(?P<statusid>\d+)$',
+            qualification_preview_view.PrintStatusView.as_view(),
+            name='print-status'
+        ),
+        crapp.Url(
             r'^retract-status/(?P<statusid>\d+)$',
             qualification_preview_view.StatusRetractView.as_view(),
-            name='retract-status'),
+            name='retract-status'
+        )
     ]

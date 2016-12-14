@@ -112,7 +112,7 @@ class TestQualificationStatusView(test.TestCase, cradmin_testhelpers.TestCaseMix
                    status=teststatus,
                    qualifies=False,
                    _quantity=10)
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(4):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,
                 requestuser=admin_user,

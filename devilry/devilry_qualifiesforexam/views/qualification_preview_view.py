@@ -39,13 +39,14 @@ class AbstractQualificationPreviewView(generic.FormView):
 
     def _get_tablebuilder(self, relatedstudents, qualifying_studentids):
         """
+        Creates a :obj:`~.devilry.devilry_qualifiesforexam.tablebuilder.tablebuilder.QualifiesTableBuilderTable`.
 
         Args:
-            relatedstudents:
-            qualifying_studentids:
+            relatedstudents: All relatedstudents for a period.
+            qualifying_studentids: relatedstudent IDs for students that are qualified to take the final exam.
 
         Returns:
-
+            :obj:`~.devilry.devilry_qualifiesforexam.tablebuilder.tablebuilder.QualifiesTableBuilderTable` instance.
         """
         rows = []
         for relatedstudent in relatedstudents:
@@ -151,21 +152,15 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
         return super(QualificationPreviewView, self).form_valid(form)
 
 
-class QualificationStatusView(AbstractQualificationPreviewView):
+class PrefetchStatusInfoMixin(object):
     """
-    View for showing the current :class:`~.devilry.devilry_qualifiesforexam.models.Status` of the
-    qualifications list.
+    Mixin that joins and prefetches all the information we need of a
+    :class:`~.devilry.deviry_qualifiesforexam.models.Status`.
     """
-    template_name = 'devilry_qualifiesforexam/status_show.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        self.status = status_models.Status.objects.get(id=kwargs.get('statusid'))
-        return super(QualificationStatusView, self).dispatch(request, *args, **kwargs)
-
     def _get_qualifiesforexam_queryset(self):
         """
         Join :class:`~.devilry.apps.core.models.User` with
-        :class:`~.devilry.deviry_qualifiesforexam.models.QualifiesForFinalExam`
+        :class:`~.devilry.deviry_qualifiesforexam.models.QualifiesForFinalExam`.
 
         Returns:
             QuerySet: of :obj:`~.devilry.deviry_qualifiesforexam.models.QualifiesForFinalExam`.
@@ -173,11 +168,14 @@ class QualificationStatusView(AbstractQualificationPreviewView):
         return status_models.QualifiesForFinalExam.objects\
             .select_related('relatedstudent__user')
 
-    def _get_status(self):
+    def _get_status(self, statusid):
         """
         Join tables for :class:`~.devilry.deviry_qualifiesforexam.models.Status` such as
         qualification results for the ``RelatedStudent``s on the period and their related user
-        which info will be used in the view.
+        which info will be used.
+
+        Args:
+            statusid: Id of the Status to fetch.
 
         Returns:
             :obj:`~.devilry.deviry_qualifiesforexam.models.Status`: current status.
@@ -188,12 +186,20 @@ class QualificationStatusView(AbstractQualificationPreviewView):
                 models.Prefetch(
                     'students',
                     queryset=self._get_qualifiesforexam_queryset()))\
-            .get(id=self.status.id)
+            .get(id=statusid)
         return status
+
+
+class QualificationStatusView(PrefetchStatusInfoMixin, AbstractQualificationPreviewView):
+    """
+    View for showing the current :class:`~.devilry.devilry_qualifiesforexam.models.Status` of the
+    qualifications list.
+    """
+    template_name = 'devilry_qualifiesforexam/status_show.html'
 
     def get_context_data(self, **kwargs):
         context_data = super(QualificationStatusView, self).get_context_data(**kwargs)
-        current_status = self._get_status()
+        current_status = self._get_status(statusid=self.kwargs['statusid'])
         context_data['status'] = current_status
 
         # Add RelatedStudents to list and the IDs of the relatedstudents that qualify.
@@ -206,6 +212,33 @@ class QualificationStatusView(AbstractQualificationPreviewView):
                 relatedstudents=relatedstudents,
                 qualifying_studentids=qualifying_studentids
         )
+        return context_data
+
+
+class PrintStatusView(PrefetchStatusInfoMixin, generic.TemplateView):
+    """
+    A printer-friendly view.
+
+    Fetches students and presents a print-page of students that are qualified and not qualified to take the
+    final exam.
+    """
+    template_name = 'devilry_qualifiesforexam/print_view.html'
+
+    def get_context_data(self, **kwargs):
+        context_data = super(PrintStatusView, self).get_context_data(**kwargs)
+        status = self._get_status(self.kwargs['statusid'])
+        qualifying_students = []
+        nonqualifying_students = []
+
+        # Add qualifying and non-qualifying students
+        for qualification in list(status.students.all()):
+            if qualification.qualifies:
+                qualifying_students.append(qualification.relatedstudent)
+            else:
+                nonqualifying_students.append(qualification.relatedstudent)
+        context_data['period'] = status.period
+        context_data['qualifying_students'] = qualifying_students
+        context_data['nonqualifying_students'] = nonqualifying_students
         return context_data
 
 
