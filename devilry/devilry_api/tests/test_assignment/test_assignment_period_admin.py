@@ -1,7 +1,8 @@
 from model_mommy import mommy
 from rest_framework.test import APITestCase
 
-from devilry.apps.core.models import Assignment
+from devilry.apps.core.models.assignment import Assignment
+from devilry.apps.core.models import deliverytypes
 from devilry.apps.core import mommy_recipes as core_recipes
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.devilry_api import devilry_api_mommy_factories as api_mommy
@@ -318,3 +319,238 @@ class TestPeriodAdminAssignmentViewPost(api_test_helper.TestCaseMixin,
         self.assertEqual(response.data['anonymizationmode'], assignment.anonymizationmode)
         self.assertEqual(response.data['period_short_name'], assignment.parentnode.short_name)
         self.assertEqual(response.data['subject_short_name'], assignment.parentnode.parentnode.short_name)
+
+
+class TestPeriodAdminAssignmentViewPatch(api_test_helper.TestCaseMixin,
+                                         APITestCase):
+    viewclass = assignment_period_admin.PeriodAdminAssignmentView
+
+    def test_unauthorized_401(self):
+        response = self.mock_patch_request()
+        self.assertEqual(401, response.status_code)
+
+    def test_patch_not_part_of_period(self):
+        mommy.make('core.Assignment', id=11, parentnode=mommy.make('core.Period'))
+        period_admin = core_mommy.period_admin(period=mommy.make('core.Period'))
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, queryparams='?id=11', data={
+            'short_name': 'assignment1',
+            'long_name': 'The best assignment',
+            'publishing_time': core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME
+        })
+        self.assertEqual(403, response.status_code)
+
+    def test_patch_not_allowed_to_change_anything_semi_anonymous(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period,
+                   anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'anonymizationmode': Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS
+        }, queryparams='?id=11')
+        self.assertEqual(403, response.status_code)
+
+    def test_patch_not_allowed_to_change_anything_fully_anonymoyus(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period,
+                   anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'anonymizationmode': Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS
+        }, queryparams='?id=11')
+        self.assertEqual(403, response.status_code)
+
+    def test_patch_not_allowed_to_change_anonymization_mode(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period,
+                   anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'anonymizationmode': Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS
+        }, queryparams='?id=11')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data['anonymizationmode'], Assignment.ANONYMIZATIONMODE_OFF)
+
+    def test_patch_short_name(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period, short_name='Cool')
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'short_name': 'assignment1'
+        }, queryparams='?id=11')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data['short_name'], 'assignment1')
+
+    def test_patch_long_name(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period, long_name='Cool')
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'long_name': 'Assignment 1'
+        }, queryparams='?id=11')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data['long_name'], 'Assignment 1')
+
+    def test_patch_publishing_time(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period,
+                   publishing_time=core_recipes.ASSIGNMENT_ACTIVEPERIOD_START_FIRST_DEADLINE)
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'publishing_time': core_recipes.ASSIGNMENT_ACTIVEPERIOD_END_PUBLISHING_TIME
+        }, queryparams='?id=11')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data['publishing_time'],
+                         core_recipes.ASSIGNMENT_ACTIVEPERIOD_END_PUBLISHING_TIME.isoformat())
+
+    def test_patch_students_can_see_points(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period, students_can_see_points=False)
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'students_can_see_points': True
+        }, queryparams='?id=11')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data['students_can_see_points'], True)
+
+    def test_patch_delivery_types(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period,
+                   delivery_types=deliverytypes.NON_ELECTRONIC)
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'delivery_types': deliverytypes.ELECTRONIC
+        }, queryparams='?id=11')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data['delivery_types'], deliverytypes.ELECTRONIC)
+
+    def test_patch_deadline_handling(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period,
+                   deadline_handling=0)
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'deadline_handling': 1
+        }, queryparams='?id=11')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data['deadline_handling'], 1)
+
+    def test_patch_scale_points_percent(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period,
+                   scale_points_percent=100)
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'scale_points_percent': 50
+        }, queryparams='?id=11')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data['scale_points_percent'], 50)
+
+    def test_patch_first_deadline(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period,
+                   first_deadline=core_recipes.ASSIGNMENT_ACTIVEPERIOD_START_FIRST_DEADLINE)
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'first_deadline': core_recipes.ASSIGNMENT_ACTIVEPERIOD_END_PUBLISHING_TIME
+        }, queryparams='?id=11')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data['first_deadline'],
+                         core_recipes.ASSIGNMENT_ACTIVEPERIOD_END_PUBLISHING_TIME.isoformat())
+
+    def test_patch_max_points(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period,
+                   max_points=1)
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'max_points': 101
+        }, queryparams='?id=11')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data['max_points'], 101)
+
+    def test_patch_passing_grade_min_points(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period,
+                   passing_grade_min_points=1)
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'passing_grade_min_points': 101
+        }, queryparams='?id=11')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data['passing_grade_min_points'], 101)
+
+    def test_patch_grading_system_plugin_id(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period,
+                   grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'grading_system_plugin_id': Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS
+        }, queryparams='?id=11')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data['grading_system_plugin_id'], Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
+
+    def test_patch_points_to_grade_mapper(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period,
+                   points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'points_to_grade_mapper': Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS
+        }, queryparams='?id=11')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data['grading_system_plugin_id'], Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)
+
+    def test_patch_students_can_create_groups(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period,
+                   students_can_create_groups=False)
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'students_can_create_groups': True
+        }, queryparams='?id=11')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data['students_can_create_groups'], True)
+
+    def test_students_can_not_create_groups_after(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period,
+                   students_can_not_create_groups_after=None)
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'students_can_not_create_groups_after': core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME
+        }, queryparams='?id=11')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data['students_can_not_create_groups_after'],
+                         core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME.isoformat())
+
+    def test_patch_feedback_workflow(self):
+        period = mommy.make('core.Period')
+        mommy.make('core.Assignment', id=11, parentnode=period, feedback_workflow='')
+        period_admin = core_mommy.period_admin(period=period)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_patch_request(apikey=apikey.key, data={
+            'feedback_workflow': 'trusted-cooperative-feedback-editing'
+        }, queryparams='?id=11')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.data['feedback_workflow'],
+                         'trusted-cooperative-feedback-editing')
+

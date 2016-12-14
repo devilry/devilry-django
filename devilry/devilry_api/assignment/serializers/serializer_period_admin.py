@@ -4,14 +4,15 @@ from rest_framework.exceptions import PermissionDenied
 
 from devilry.devilry_api.assignment.serializers.serializer_base import BaseAssignmentSerializer
 from devilry.apps.core.models import Period, Assignment
-from devilry.devilry_account.models import PeriodPermissionGroup
+
 
 class PeriodAdminAssignmentSerializer(BaseAssignmentSerializer):
     """
     Period admin assignment serializer
     """
     class Meta(BaseAssignmentSerializer.Meta):
-        read_only_fields = ('anonymizationmode', 'id')
+        read_only_fields = ('anonymizationmode', 'id',
+                            'period_short_name', 'subject_short_name', 'period_id')
         fields = BaseAssignmentSerializer.Meta.fields + [
             'students_can_see_points',
             'delivery_types',
@@ -29,7 +30,7 @@ class PeriodAdminAssignmentSerializer(BaseAssignmentSerializer):
 
     def validate(self, data):
         """
-        pop period id to parentnode
+        pop period id to parentnode or just return data if partial
         Args:
             data: dictionary
 
@@ -37,6 +38,9 @@ class PeriodAdminAssignmentSerializer(BaseAssignmentSerializer):
             dictionary with validated data
 
         """
+        if self.partial:
+            return data
+
         data['parentnode'] = data.pop('period_id')
         return data
 

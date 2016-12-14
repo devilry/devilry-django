@@ -1,4 +1,6 @@
 from rest_framework.generics import mixins
+from rest_framework.exceptions import PermissionDenied, ParseError
+from django.utils.translation import ugettext_lazy
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_api.assignment.serializers.serializer_period_admin import PeriodAdminAssignmentSerializer
@@ -8,6 +10,7 @@ from devilry.devilry_api.permission.period_admin_permission import PeriodAdminPe
 
 
 class PeriodAdminAssignmentView(mixins.CreateModelMixin,
+                                mixins.UpdateModelMixin,
                                 BaseAssignmentView):
     """
     Period admin view
@@ -15,6 +18,23 @@ class PeriodAdminAssignmentView(mixins.CreateModelMixin,
     serializer_class = PeriodAdminAssignmentSerializer
     api_key_permissions = (APIKey.ADMIN_PERMISSION_READ, APIKey.ADMIN_PERMISSION_WRITE)
     permission_classes = (PeriodAdminPermissionAPIKey, )
+
+    def get_object(self):
+        """
+        Checks the required query parameter id, and returns the instance
+        if instance exists return, otherwise raise Permission denied
+
+        Returns:
+            :obj:`devilry_group:Assignment`
+        """
+        id = self.request.query_params.get('id', None)
+        if not id:
+            raise ParseError(ugettext_lazy('query parameter "id" required'))
+
+        instance = self.get_queryset().first()
+        if not instance:
+            raise PermissionDenied()
+        return instance
 
     def get_role_queryset(self):
         """
@@ -60,3 +80,17 @@ class PeriodAdminAssignmentView(mixins.CreateModelMixin,
 
         """
         return super(PeriodAdminAssignmentView, self).create(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        """
+        Updates assignment with anonimization mode off.
+
+        ---
+        parameters:
+            - name: id
+              required: true
+              paramType: query
+              type: int
+              description: id of assignment to update
+        """
+        return super(PeriodAdminAssignmentView, self).partial_update(request, *args, **kwargs)
