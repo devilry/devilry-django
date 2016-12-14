@@ -515,7 +515,7 @@ class TestPeriodAdminAssignmentViewPatch(api_test_helper.TestCaseMixin,
             'points_to_grade_mapper': Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS
         }, queryparams='?id=11')
         self.assertEqual(200, response.status_code)
-        self.assertEqual(response.data['grading_system_plugin_id'], Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)
+        self.assertEqual(response.data['points_to_grade_mapper'], Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)
 
     def test_patch_students_can_create_groups(self):
         period = mommy.make('core.Period')
