@@ -553,4 +553,3 @@ class TestPeriodAdminAssignmentViewPatch(api_test_helper.TestCaseMixin,
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data['feedback_workflow'],
                          'trusted-cooperative-feedback-editing')
-
