@@ -40,7 +40,9 @@ class PeriodResultsCollector(object):
     def get_relatedstudents_that_qualify_for_exam(self):
         """
         Get list of all relatedstudent IDs for all students that qualify for the exam.
+
         Returns:
+            list: A list of :obj:`~.devilry.apps.core.models.RelatedStudent.id`s.
 
         """
         passing_relatedstudentids = []

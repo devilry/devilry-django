@@ -65,9 +65,6 @@ class SelectedQualificationItem(multiselect2.selected_item_renderer.SelectedItem
 
 
 class SelectableQualificationItemValue(multiselect2.listbuilder_itemvalues.ItemValue):
-    """
-
-    """
     selected_item_renderer_class = SelectedQualificationItem
 
     def get_inputfield_name(self):
@@ -276,7 +273,7 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
     def form_valid(self, form):
         """
         Provides some basic functionality. If custom fields are added to the form,
-        this function must be overridden in subclass to handel that posted data.
+        this function must be overridden in subclass to handle the posted data.
 
         Args:
             form: Posted form with ids of selected items.
