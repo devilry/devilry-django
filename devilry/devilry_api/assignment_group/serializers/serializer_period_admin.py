@@ -52,12 +52,16 @@ class AssignmentGroupModelSerializer(serializer_base.BaseAssignmentGroupSerializ
 
     def validate(self, data):
         """
+        Checks that request user is period admin for assignment
 
         Args:
-            data:
+            data: request data
+
+        Raises:
+            :class:`rest_framework.exceptions.PermissionDenied`
 
         Returns:
-
+            dictionary with validated data
         """
         validated_data = dict()
         validated_data['parentnode'] = Assignment.objects \
@@ -69,4 +73,13 @@ class AssignmentGroupModelSerializer(serializer_base.BaseAssignmentGroupSerializ
         return validated_data
 
     def create(self, validated_data):
+        """
+        Creates a new Assignment group
+
+        Args:
+            validated_data: validated data
+
+        Returns:
+            :obj:`devilry_group.AssignmentGroup`
+        """
         return AssignmentGroup.objects.create(**validated_data)

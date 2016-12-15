@@ -106,13 +106,12 @@ The assignment group examiner api will list all assignments groups which an exam
 
 Period admin
 ============
-**Coming soon**
 The assignment group period admin api will list all assignment groups which a period admin has access to.
 In additon to that a period admin will also be able to:
 
 - Create assignment group.
-- Add examiners and students to assignment group.
-- Delete assignment group if there is no students in assignment group.
+- Add examiners and students to assignment group.(**Coming soon**)
+- Delete assignment group if there is no students in assignment group. (**Coming soon**)
 
 
 Subject admin

@@ -313,4 +313,3 @@ class TestPeriodAdminAssignmentGroupPost(api_test_helper.TestCaseMixin,
         self.assertIsNotNone(group)
         self.assertEqual(group.name, 'Cool group')
 
-    
