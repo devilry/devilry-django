@@ -80,6 +80,6 @@ class AssignmentGroupModelSerializer(serializer_base.BaseAssignmentGroupSerializ
             validated_data: validated data
 
         Returns:
-            :obj:`devilry_group.AssignmentGroup`
+            :obj:`~apps.core.AssignmentGroup`
         """
         return AssignmentGroup.objects.create(**validated_data)

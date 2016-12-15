@@ -313,3 +313,77 @@ class TestPeriodAdminAssignmentGroupPost(api_test_helper.TestCaseMixin,
         self.assertIsNotNone(group)
         self.assertEqual(group.name, 'Cool group')
 
+
+class TestPeriodAdminDelete(api_test_helper.TestCaseMixin,
+                            APITestCase):
+    viewclass = AssignmentGroupViewPeriodAdmin
+
+    def test_unauthorized_401(self):
+        response = self.mock_delete_request()
+        self.assertEqual(response.status_code, 401)
+
+    def test_delete_anonymization_semi_anonymous(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.AssignmentGroup', parentnode=assignment, id=1337)
+        period_admin = core_mommy.period_admin(period=mommy.make('core.Period'))
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_delete_request(
+            apikey=apikey.key,
+            queryparams='?id=1337'
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data['detail'], 'Assignment group with id: 1337 not found.')
+
+    def test_delete_anonymization_fully_anonymous(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        mommy.make('core.AssignmentGroup', parentnode=assignment, id=1337)
+        period_admin = core_mommy.period_admin(period=mommy.make('core.Period'))
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_delete_request(
+            apikey=apikey.key,
+            queryparams='?id=1337'
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data['detail'], 'Assignment group with id: 1337 not found.')
+
+    def test_delete_not_in_period(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mommy.make('core.AssignmentGroup', parentnode=assignment, id=1337)
+        period_admin = core_mommy.period_admin(period=mommy.make('core.Period'))
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_delete_request(
+            apikey=apikey.key,
+            queryparams='?id=1337'
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data['detail'], 'Assignment group with id: 1337 not found.')
+
+    def test_not_allowed_to_delete(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment, id=1337)
+        core_mommy.candidate(group)
+        period_admin = core_mommy.period_admin(period=assignment.parentnode)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_delete_request(
+            apikey=apikey.key,
+            queryparams='?id=1337'
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data['detail'], 'Permission denied: cannot delete assignment group.')
+        group_db = AssignmentGroup.objects.filter(id=1337).first()
+        self.assertIsNotNone(group_db)
+
+    def test_delete_in_db(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mommy.make('core.AssignmentGroup', parentnode=assignment, id=1337)
+        period_admin = core_mommy.period_admin(period=assignment.parentnode)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_delete_request(
+            apikey=apikey.key,
+            queryparams='?id=1337'
+        )
+        self.assertEqual(response.status_code, 204)
+        group = AssignmentGroup.objects.filter(id=1337).first()
+        self.assertIsNone(group)

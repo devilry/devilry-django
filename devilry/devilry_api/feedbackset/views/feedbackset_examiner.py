@@ -26,6 +26,9 @@ class FeedbacksetViewExaminer(mixins.CreateModelMixin,
 
         Returns:
             :obj:`devilry_group.Feedbackset`
+
+        Raises:
+            :class:`rest_framework.exceptions.NotFound`
         """
         id = self.request.query_params.get('id', None)
         if not id:
