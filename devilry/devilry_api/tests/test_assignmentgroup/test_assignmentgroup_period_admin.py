@@ -235,12 +235,12 @@ class TestPeriodAdminAssignmentViewFilters(api_test_helper.TestCaseMixin,
     def test_filter_id_found(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
-        mommy.make('core.AssignmentGroup', parentnode=assignment, id=1337)
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment, id=1337)
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
         response = self.mock_get_request(apikey=apikey.key,
                                          queryparams='?id=1337')
         self.assertEqual(200, response.status_code)
-        self.assertEqual(response.data[0]['id'], assignment.id)
+        self.assertEqual(response.data[0]['id'], group.id)
 
     def test_ordering_name_asc(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
