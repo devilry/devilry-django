@@ -97,13 +97,28 @@ class BaseExaminerSerializer(serializers.Serializer):
         return instance.relatedexaminer.user.shortname
 
 
+class AssignmentIdField(serializers.IntegerField):
+
+    def get_attribute(self, instance):
+        """
+        returns the assignemnt id of the assignment group
+
+        Args:
+            instance: :obj:`devilry_group.AssignmentGroup`
+
+        Returns:
+            :attr:`devilry_group.Assignment.id`
+        """
+        return instance.parentnode.id
+
+
 class BaseAssignmentGroupSerializer(serializers.ModelSerializer):
 
     #: Related assignment short name.
     assignment_short_name = serializers.SerializerMethodField()
 
     #: Related assignment id.
-    assignment_id = serializers.SerializerMethodField()
+    assignment_id = AssignmentIdField()
 
     #: Related subject name.
     subject_short_name = serializers.SerializerMethodField()
@@ -112,22 +127,22 @@ class BaseAssignmentGroupSerializer(serializers.ModelSerializer):
     period_short_name = serializers.SerializerMethodField()
 
     #: set to ``True`` if waiting for feedback.
-    is_waiting_for_feedback = serializers.BooleanField()
+    is_waiting_for_feedback = serializers.BooleanField(required=False)
 
     #: set to ``True`` if waiting for deliveries.
-    is_waiting_for_deliveries = serializers.BooleanField()
+    is_waiting_for_deliveries = serializers.BooleanField(required=False)
 
     #: set to ``True`` if corrected
-    is_corrected = serializers.BooleanField()
+    is_corrected = serializers.BooleanField(required=False)
 
-    def get_assignment_id(self, instance):
-        """
-        Returns related assignment id.
-
-        Returns:
-            :attr:`apps.core.Assignment.id`
-        """
-        return instance.parentnode.id
+    # def get_assignment_id(self, instance):
+    #     """
+    #     Returns related assignment id.
+    #
+    #     Returns:
+    #         :attr:`apps.core.Assignment.id`
+    #     """
+    #     return instance.parentnode.id
 
     def get_assignment_short_name(self, instance):
         """

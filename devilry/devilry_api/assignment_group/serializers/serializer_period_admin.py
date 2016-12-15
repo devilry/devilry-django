@@ -1,4 +1,8 @@
-from devilry.apps.core.models import AssignmentGroup
+from django.utils.translation import ugettext_lazy
+from rest_framework.exceptions import PermissionDenied
+
+
+from devilry.apps.core.models import AssignmentGroup, Assignment
 from devilry.devilry_api.assignment_group.serializers import serializer_base
 
 
@@ -18,12 +22,17 @@ class ExaminerSerializer(serializer_base.BaseExaminerSerializer):
 
 class AssignmentGroupModelSerializer(serializer_base.BaseAssignmentGroupSerializer):
     #: Candidates in assignment group
-    candidates = CandidateSerializer(many=True)
+    candidates = CandidateSerializer(many=True, required=False)
 
     #: Examiners in assignment group
-    examiners = ExaminerSerializer(many=True)
+    examiners = ExaminerSerializer(many=True, required=False)
 
     class Meta:
+        read_only_fields = ('candidates',
+                            'examiners',
+                            'is_waiting_for_feedback',
+                            'is_waiting_for_deliveries',
+                            'is_corrected',)
         model = AssignmentGroup
         fields = [
             'id',
@@ -40,3 +49,24 @@ class AssignmentGroupModelSerializer(serializer_base.BaseAssignmentGroupSerializ
             'candidates',
             'examiners',
         ]
+
+    def validate(self, data):
+        """
+
+        Args:
+            data:
+
+        Returns:
+
+        """
+        validated_data = dict()
+        validated_data['parentnode'] = Assignment.objects \
+            .filter_user_is_period_admin(self.context['request'].user) \
+            .filter(id=data.pop('assignment_id')).first()
+        if validated_data['parentnode'] is None:
+            raise PermissionDenied(ugettext_lazy('Permission denied: not part of period'))
+        validated_data['name'] = data['name']
+        return validated_data
+
+    def create(self, validated_data):
+        return AssignmentGroup.objects.create(**validated_data)

@@ -1,6 +1,7 @@
 from model_mommy import mommy
 from rest_framework.test import APITestCase
 
+from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core import mommy_recipes as core_recipes
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.devilry_api import devilry_api_mommy_factories as api_mommy
@@ -261,3 +262,55 @@ class TestPeriodAdminAssignmentViewFilters(api_test_helper.TestCaseMixin,
         response = self.mock_get_request(apikey=apikey.key, queryparams='?ordering=-name')
         self.assertEqual(200, response.status_code)
         self.assertListEqual(['BBB', 'AAA'], [group['name'] for group in response.data])
+
+
+class TestPeriodAdminAssignmentGroupPost(api_test_helper.TestCaseMixin,
+                                         APITestCase):
+    viewclass = AssignmentGroupViewPeriodAdmin
+
+    def test_unauthorized_401(self):
+        response = self.mock_post_request()
+        self.assertEqual(response.status_code, 401)
+
+    def test_not_part_of_period(self):
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', id=1337)
+        period_admin = core_mommy.period_admin(period=mommy.make('core.Period'))
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_post_request(
+            apikey=apikey.key,
+            data={
+                'assignment_id': 1337,
+                'name': 'Cool group'
+            })
+        self.assertEqual(response.data['detail'], 'Permission denied: not part of period')
+        self.assertEqual(response.status_code, 403)
+
+    def test_assignment_id_missing(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', id=1337)
+        period_admin = core_mommy.period_admin(period=assignment.parentnode)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_post_request(
+            apikey=apikey.key,
+            data={
+                'name': 'Cool group'
+            })
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['assignment_id'], ['This field is required.'])
+
+    def test_created_in_db(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', id=1337)
+        period_admin = core_mommy.period_admin(period=assignment.parentnode)
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_post_request(
+            apikey=apikey.key,
+            data={
+                'assignment_id': 1337,
+                'name': 'Cool group'
+            })
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['name'], 'Cool group')
+        group = AssignmentGroup.objects.filter(parentnode__id=1337).first()
+        self.assertIsNotNone(group)
+        self.assertEqual(group.name, 'Cool group')
+
+    
