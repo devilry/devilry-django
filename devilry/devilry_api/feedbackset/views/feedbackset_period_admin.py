@@ -21,4 +21,3 @@ class FeedbacksetViewPeriodAdmin(FeedbacksetViewExaminer):
         """
         assignment_group_queryset = AssignmentGroup.objects.filter_user_is_period_admin(user=self.request.user)
         return FeedbackSet.objects.filter(group=assignment_group_queryset)
-    
