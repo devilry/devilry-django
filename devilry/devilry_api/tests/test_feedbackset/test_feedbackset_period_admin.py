@@ -7,6 +7,7 @@ from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_api.tests.mixins import test_period_admin_mixins, api_test_helper, test_common_mixins
 from devilry.devilry_api.feedbackset.views.feedbackset_period_admin import FeedbacksetViewPeriodAdmin
 from devilry.devilry_group.models import FeedbackSet
+from devilry.apps.core.models import Assignment
 
 
 class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
@@ -18,6 +19,28 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
     def test_unauthorized_401(self):
         response = self.mock_get_request()
         self.assertEqual(401, response.status_code)
+
+    def test_anonymization_mode_semi_anonymous_no_access(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        mommy.make('devilry_group.Feedbackset', group=group)
+        period_admin = core_mommy.period_admin(period=assignment.parentnode)
+        apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(len(response.data), 0)
+
+    def test_anonymization_mode_fully_anonymous_no_access(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        mommy.make('devilry_group.Feedbackset', group=group)
+        period_admin = core_mommy.period_admin(period=assignment.parentnode)
+        apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(len(response.data), 0)
 
     def test_sanity(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
