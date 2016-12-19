@@ -163,7 +163,7 @@ class TestFeedbacksetFilters(api_test_helper.TestCaseMixin,
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
         response = self.mock_get_request(apikey=apikey.key, queryparams='?group_id=10')
         self.assertEqual(200, response.status_code)
-        self.assertEqual(response.data[0]['group_iod'], group.id)
+        self.assertEqual(response.data[0]['group_id'], group.id)
 
     def test_filter_ordering_id_asc(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
