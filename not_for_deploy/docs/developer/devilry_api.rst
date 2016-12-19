@@ -152,13 +152,13 @@ In addition to that an examiner will also be able to:
 
 Period admin
 ============
-**Coming soon**
 The feedbackset period admin api will list all feedbacksets which a period admin has access to.
 In addition to that a period admin will also be able to:
 
 - Create feedbackset.
 - Update feedbackset.
 
+**NOTE**: When a feedbackset is created by a period admin created_by_fullname is set to None.
 
 Subject admin
 =============
