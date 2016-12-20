@@ -110,7 +110,6 @@ The assignment group period admin api will list all assignment groups which a pe
 In additon to that a period admin will also be able to:
 
 - Create assignment group.
-- Add examiners and students to assignment group.(**Coming soon**)
 - Delete assignment group if there is no students in assignment group.
 
 
@@ -118,6 +117,43 @@ Subject admin
 =============
 **Coming soon**
 Has same privileges as period admin, but in addition to that a subject admin has also access to semi anonymous exams.
+
+
+############
+Examiner API
+############
+.. py:currentmodule:: devilry.devilry_api.examiner
+
+
+Period admin
+============
+**Coming soon**
+- List examiners for a given assignment group
+- Add examiners to a assignment group
+- Remove examiners from a assignment group
+
+Subject admin
+=============
+**Coming soon**
+Has same previleges as period admin, but also for assignment groups in semi anonymous assignments
+
+
+#############
+Candidate API
+#############
+.. py:currentmodule:: devilry.devilry_api.candidate
+
+Period admin
+============
+**Coming soon**
+- List candidates for a given assignment group
+- Add candidates to a assignment group
+- Remove candidates from a assignment group
+
+Subject admin
+=============
+**Coming soon**
+Has same previleges as period admin, but also for assignment groups in semi anonymous assignments
 
 
 ###############
