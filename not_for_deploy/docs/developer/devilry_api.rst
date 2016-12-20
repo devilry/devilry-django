@@ -200,11 +200,11 @@ In the group comment examiner api an examiner will be able to:
 
 Period admin
 ============
-**Coming soon**
 In the group comment period admin api a period admin should be able to:
 
 - View all comments, but not an examiners drafted comments.
 - Post comments with visibility to everyone or visible to examiners and admins.
+    Since user role admin is not valid for a group comment this should not be supported?
 
 Subject admin
 =============

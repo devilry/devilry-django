@@ -161,7 +161,6 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
         apikey = api_mommy.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
         mommy.make('devilry_group.GroupComment',
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                   user=examiner.relatedexaminer.user,
                    feedback_set=feedbackset,
                    user_role=GroupComment.USER_ROLE_STUDENT,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
