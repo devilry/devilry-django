@@ -5,7 +5,7 @@ django-debug-toolbar==1.4
 
 # django_dbdev==0.9.4
 django_dbdev==1.0.0
-model-mommy==1.2.4
+model-mommy==1.2.6
 
 # Required by the soupselect tests
 BeautifulSoup==3.2.1
@@ -33,6 +33,11 @@ mock==1.0.1
 fabric==1.8.3
 
 elasticsearch-dsl==0.0.4
+
+# For celery
+celery==3.1.20
+django-celery==3.1.17
+redis==2.10.5
 
 #-e libs/django_cradmin
 #-e libs/ievv_opensource

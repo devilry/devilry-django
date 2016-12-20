@@ -13,8 +13,7 @@ class TestFeedbackSetModel(TestCase):
 
     def test_feedbackset_group(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = mommy.make('devilry_group.FeedbackSet',
-                                 group=testgroup)
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
         self.assertEquals(feedbackset.group, testgroup)
 
     def test_feedbackset_is_last_in_group_default_true(self):
@@ -138,6 +137,47 @@ class TestFeedbackSetModel(TestCase):
         result, msg = test_feedbackset.publish(published_by=testuser, grading_points=grading_points)
         self.assertFalse(result)
         self.assertEquals(msg, 'Cannot publish feedback without a deadline.')
+
+    def test_feedbackset_ignored_without_reason(self):
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet', ignored=True)
+        with self.assertRaisesMessage(ValidationError, 'FeedbackSet can not be ignored without a reason'):
+            test_feedbackset.full_clean()
+
+    def test_feedbackset_not_ignored_with_reason(self):
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet', ignored_reason='dewey was sick!')
+        with self.assertRaisesMessage(ValidationError,
+                                      'FeedbackSet can not have a ignored reason without being set to ignored.'):
+            test_feedbackset.full_clean()
+
+    def test_feedbackset_ignored_with_grading_published(self):
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      ignored=True,
+                                      ignored_reason='test',
+                                      grading_published_datetime=timezone.now())
+        with self.assertRaisesMessage(ValidationError,
+                                      'Ignored FeedbackSet can not have grading_published_datetime, '
+                                      'grading_points or grading_published_by set.'):
+            test_feedbackset.full_clean()
+
+    def test_feedbackset_ignored_with_grading_published_by(self):
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      ignored=True,
+                                      ignored_reason='test',
+                                      grading_published_by=mommy.make(settings.AUTH_USER_MODEL))
+        with self.assertRaisesMessage(ValidationError,
+                                      'Ignored FeedbackSet can not have grading_published_datetime, '
+                                      'grading_points or grading_published_by set.'):
+            test_feedbackset.full_clean()
+
+    def test_feedbackset_ignored_with_grading_points(self):
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      ignored=True,
+                                      ignored_reason='test',
+                                      grading_points=10)
+        with self.assertRaisesMessage(ValidationError,
+                                      'Ignored FeedbackSet can not have grading_published_datetime, '
+                                      'grading_points or grading_published_by set.'):
+            test_feedbackset.full_clean()
 
     def test_feedbackset_publish_published_by_is_none(self):
         grading_points = 10

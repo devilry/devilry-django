@@ -7,9 +7,11 @@
 {% block content %}
     <dl>
         <dt>
-            {% blocktrans with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
-                {{ verbose_feedbackset }} deadline
-            {% endblocktrans %}
+            <a href="{% cradmin_appurl 'feedbackset-file-download' me.feedbackset.id %}">
+                {% blocktrans with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
+                    {{ verbose_feedbackset }} deadline
+                {% endblocktrans %}
+            </a>
         </dt>
     </dl>
 {% endblock content %}

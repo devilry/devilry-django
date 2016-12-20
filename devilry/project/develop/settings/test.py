@@ -1,19 +1,31 @@
 from .base import *  # noqa
 
+
+###############################################################################
+#
+# Celery
+#
+###############################################################################
 CELERY_ALWAYS_EAGER = False
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 CELERY_EAGER_TRANSACTION = True
 BROKER_BACKEND = 'memory'
 
-developfilesdir = 'devilry_testfiles'
-if not exists(developfilesdir):
-    os.mkdir(developfilesdir)
-logdir = join(developfilesdir, 'log')
+# ievv_batchframework celery mode.
+# We want to set the task to be run as syncronous as this make testing easier.
+IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS = True
+
+testfilesdir = 'devilry_testfiles'
+if not exists(testfilesdir):
+    os.mkdir(testfilesdir)
+logdir = join(testfilesdir, 'log')
 if not exists(logdir):
     os.mkdir(logdir)
-MEDIA_ROOT = join(developfilesdir, "filestore")
-DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(developfilesdir, 'deliverystorehier')
+MEDIA_ROOT = join(testfilesdir, "filestore")
+DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(testfilesdir, 'deliverystorehier')
 
+#: Where to store compressed archives for download.
+DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(testfilesdir, 'devilry_compressed_archives', '')
 
 if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' in MIDDLEWARE_CLASSES:
     MIDDLEWARE_CLASSES.remove('devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware')

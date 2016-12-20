@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 # Python imports
 import json
 import datetime
+from xml.sax.saxutils import quoteattr
 
 # Django imports
 from django import forms
@@ -25,7 +26,6 @@ from django_cradmin.viewhelpers import create
 
 # 3rd party imports
 from crispy_forms import layout
-from xml.sax.saxutils import quoteattr
 
 
 class GroupCommentForm(forms.ModelForm):
@@ -48,6 +48,7 @@ class GroupCommentForm(forms.ModelForm):
 class FeedbackFeedBaseView(create.CreateView):
     """
     Base feedbackfeed view.
+
     The feedbackfeed view handles the options a certain devilryrole(``student``, ``examiner``, 'someadmin') should have
     when the feedbackfeed view is rendered. Specialized views for each devilryrole must subclasses this class.
     """
@@ -217,7 +218,8 @@ class FeedbackFeedBaseView(create.CreateView):
     def save_object(self, form, commit=False):
         """
         How post of the should be handled. This can be handled more specifically in subclasses.
-        Should add a call to super in the subclass implementation on override.
+
+        Add call to super in the subclass implementation on override.
 
         Args:
             form (GroupCommentForm): Form thats passed on post.
@@ -262,7 +264,6 @@ class FeedbackFeedBaseView(create.CreateView):
             return False
 
         for temporaryfile in temporaryfilecollection.files.all():
-            print "creating commentfile for file: {}".format(temporaryfile.filename)
             groupcomment.add_commentfile_from_temporary_file(tempfile=temporaryfile)
 
         return True

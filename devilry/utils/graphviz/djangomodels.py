@@ -1,7 +1,7 @@
 from inspect import getmodule
 import re
 
-from django.utils.importlib import import_module
+from importlib import import_module
 from django.db.models import fields
 from django.db.models.base import ModelBase
 

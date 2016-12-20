@@ -5,6 +5,8 @@ from .base import *
 # MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.project.develop.middleware.FakeLoginMiddleware']
 # HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
+#: Where to store compressed archives for filedownloads
+DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(developfilesdir, 'devilry_compressed_archives', '')
 
 # The if's below is just to make it easy to toggle these settings on and off during development
 profiler_middleware = False
@@ -55,20 +57,18 @@ HAYSTACK_CONNECTIONS = {  # Whoosh
 # }
 
 
-
 ##################################################################################
 # Celery
 ##################################################################################
-CELERY_ALWAYS_EAGER = True
+CELERY_ALWAYS_EAGER = False
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 CELERY_EAGER_TRANSACTION = True
 
 ## For testing celery
 ## - Se the "Developing and testing Celery background tasks" chapter of the developer docs.
-CELERY_ALWAYS_EAGER = True
-BROKER_URL = 'amqp://'
-CELERY_RESULT_BACKEND = 'amqp://'
-
+# CELERY_ALWAYS_EAGER = False
+# BROKER_URL = 'amqp://'
+# CELERY_RESULT_BACKEND = 'amqp://'
 
 
 ######################################################
@@ -96,7 +96,6 @@ CELERY_RESULT_BACKEND = 'amqp://'
 # DEVILRY_HELP_PAGE_FOOTER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
 # DEVILRY_PROFILEPAGE_HEADER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
 # DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
-
 
 DEVILRY_ELASTICSEARCH_HOSTS = [
     {"host": "localhost", "port": 9491}
@@ -163,11 +162,15 @@ IEVVTASKS_DEVRUN_RUNNABLES = {
     'default': ievvdevrun.config.RunnableThreadList(
         ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
         ievvdevrun.runnables.django_runserver.RunnableThread(),
+        ievvdevrun.runnables.redis_server.RunnableThread(),
+        ievvdevrun.runnables.celery_worker.RunnableThread(app='devilry.project.common'),
     ),
     'design': ievvdevrun.config.RunnableThreadList(
         ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
         ievvdevrun.runnables.django_runserver.RunnableThread(),
         ievvdevrun.runnables.ievv_buildstatic.RunnableThread(),
+        ievvdevrun.runnables.redis_server.RunnableThread(),
+        ievvdevrun.runnables.celery_worker.RunnableThread(app='devilry.project.common'),
     ),
 }
 

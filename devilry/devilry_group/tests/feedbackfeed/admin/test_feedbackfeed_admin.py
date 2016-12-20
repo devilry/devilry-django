@@ -1,14 +1,17 @@
 import mock
 from django import http
 from django.conf import settings
+from django.http import Http404
 from django.test import TestCase
 from django.utils import timezone
+from django_cradmin.cradmin_testhelpers import TestCaseMixin
 from model_mommy import mommy
 
 # devilry imports
 from devilry.apps.core import models as core_models
 from devilry.devilry_account import models as account_models
 from devilry.devilry_account.models import PeriodPermissionGroup
+from devilry.devilry_group.cradmin_instances import crinstance_admin
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
 from devilry.devilry_group.views.admin import feedbackfeed_admin
 from devilry.devilry_group import models
@@ -299,3 +302,55 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar'))
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar-uploaded-files'))
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar-deadlines'))
+
+
+class TestFeedbackfeedAdminPermissions(TestCase, TestCaseMixin):
+    """
+    "End"-testing for view permission. The PermissionGroups are also
+    tested in tests/crinstance/test_crinstance_admin.py.
+    """
+    viewclass = feedbackfeed_admin.AdminFeedbackFeedView
+
+    def test_get_periodadmin_no_access(self):
+        # Periodadmin does not have access to view when the user is not periodadmin for that period.
+        period1 = mommy.make('core.Period')
+        period2 = mommy.make('core.Period')
+        admin = mommy.make(settings.AUTH_USER_MODEL)
+        permissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                     permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_PERIODADMIN,
+                                     period=period2)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=admin,
+                   permissiongroup=permissiongroup.permissiongroup)
+
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period1)
+
+        mockrequest = mock.MagicMock()
+        mockrequest.user = admin
+        mockrequest.cradmin_role = testgroup
+        crinstance = crinstance_admin.AdminCrInstance(request=mockrequest)
+
+        with self.assertRaises(Http404):
+            self.mock_getrequest(cradmin_role=testgroup, cradmin_instance=crinstance)
+
+    def test_get_subjectadmin_no_access(self):
+        # Subjectadmin does not have access to view when the user is not subjectadmin for that perdiod
+        subject1 = mommy.make('core.Subject')
+        subject2 = mommy.make('core.Subject')
+        admin = mommy.make(settings.AUTH_USER_MODEL)
+        permissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                     permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                                     subject=subject2)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=admin,
+                   permissiongroup=permissiongroup.permissiongroup)
+
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode__parentnode=subject1)
+
+        mockrequest = mock.MagicMock()
+        mockrequest.user = admin
+        mockrequest.cradmin_role = testgroup
+        crinstance = crinstance_admin.AdminCrInstance(request=mockrequest)
+
+        with self.assertRaises(Http404):
+            self.mock_getrequest(cradmin_role=testgroup, cradmin_instance=crinstance)

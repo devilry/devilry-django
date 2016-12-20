@@ -3,11 +3,12 @@
 from __future__ import unicode_literals
 
 # Devilry/cradmin imports
+from django.http import Http404
 from django_cradmin import crmenu
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_group.cradmin_instances import crinstance_base
 from devilry.devilry_group.views.admin import feedbackfeed_admin
-from devilry.devilry_group.views import feedbackfeed_bulkfiledownload
+from devilry.devilry_group.views.download_files import feedbackfeed_bulkfiledownload
 
 
 class Menu(crmenu.Menu):
@@ -55,7 +56,7 @@ class AdminCrInstance(crinstance_base.CrInstanceBase):
             str: ``departmentadmin``, ``subjectadmin`` or ``periodadmin`` as devilryrole.
 
         Raises:
-            ValueError: If the devilryrole returned is ``None``.
+            Http404: raised when user is not admin associated with this course.
         """
         assignment = self.request.cradmin_role.assignment
         devilryrole = PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
@@ -63,8 +64,7 @@ class AdminCrInstance(crinstance_base.CrInstanceBase):
             period=assignment.period
         )
         if devilryrole is None:
-            raise ValueError('Could not find a devilryrole for request.user. This must be a bug in '
-                             'get_rolequeryset().')
+            raise Http404
         return devilryrole
 
     def get_devilryrole_for_requestuser(self):

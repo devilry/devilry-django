@@ -38,7 +38,8 @@ class SidebarListBuilderList(listbuilder.base.List):
         Args:
             feedbackset_dict (dict): Dictionary containing FeedbackSet data.
         """
-        self.append(renderable=FeedbackSetItemValue(value=feedbackset_dict['feedbackset_num']))
+        self.append(renderable=FeedbackSetItemValue(value=feedbackset_dict['feedbackset'],
+                                                    feedbackset_num=feedbackset_dict['feedbackset_num']))
         valuerenderer = GroupCommentListBuilderList.from_groupcomments(
                 comment_list=feedbackset_dict['comments'])
         self.append(renderable=valuerenderer)
@@ -106,12 +107,13 @@ class FileListBuilderList(listbuilder.base.List):
 
 class FeedbackSetItemValue(listbuilder.base.ItemValueRenderer):
     """Renderable for a FeedbackSet.
-
-    Attributes:
-        valuealias (int): A FeedbackSets chronological order.
     """
-    valuealias = 'feedbackset_num'
+    valuealias = 'feedbackset'
     template_name = 'devilry_group/listbuilder_sidebar/sidebar_feedbackset_item_value.django.html'
+
+    def __init__(self, value, feedbackset_num=None):
+        super(FeedbackSetItemValue, self).__init__(value=value)
+        self.feedbackset_num = feedbackset_num
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(FeedbackSetItemValue, self).get_extra_css_classes_list()
@@ -121,9 +123,6 @@ class FeedbackSetItemValue(listbuilder.base.ItemValueRenderer):
 
 class GroupCommentItemValue(listbuilder.base.ItemValueRenderer):
     """Renderable for a GroupComment.
-
-    Attributes:
-        valuealias (:obj:`~devilry.devilry_group.models.GroupComment`): Instance.
     """
     valuealias = 'groupcomment'
     template_name = 'devilry_group/listbuilder_sidebar/sidebar_comment_item_value.django.html'

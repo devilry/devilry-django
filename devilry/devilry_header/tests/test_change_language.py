@@ -5,7 +5,6 @@ from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.project.develop.testhelpers.login import LoginTestCaseMixin
 
 
-
 class TestChangeLanguage(TestCase, LoginTestCaseMixin):
     def setUp(self):
         self.url = reverse('devilry_change_language')
@@ -25,7 +24,7 @@ class TestChangeLanguage(TestCase, LoginTestCaseMixin):
                 'redirect_url': '/successtest'
             })
             self.assertEquals(response.status_code, 302)
-            self.assertEquals(response['Location'], 'http://testserver/successtest')
+            self.assertEquals(response['Location'], '/successtest')
             testuser.reload_from_db()
             self.assertEquals(testuser.user.languagecode, 'en')
 

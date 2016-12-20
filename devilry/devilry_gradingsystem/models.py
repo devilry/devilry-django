@@ -23,7 +23,7 @@ class FeedbackDraft(models.Model):
     delivery = models.ForeignKey(Delivery, related_name='devilry_gradingsystem_feedbackdraft_set')
     feedbacktext_editor = models.CharField(
         default=DEFAULT_FEEDBACKTEXT_EDITOR,
-        max_length='20',
+        max_length=20,
         choices=(
             ('devilry-markdown', 'Markdown editor'),
             ('wysiwyg-html', 'WYSIWYG html')

@@ -86,7 +86,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
-                        "#devilry_admin_assignment_published_publishnow_form input")['value'],
+                        '#devilry_admin_assignment_published_publishnow_form input[type="submit"]')['value'],
                 'Publish now'
         )
         self.assertEqual(

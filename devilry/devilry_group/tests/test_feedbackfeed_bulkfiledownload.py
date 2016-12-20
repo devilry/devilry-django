@@ -8,7 +8,7 @@ from model_mommy import mommy
 
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import models as groupmodels
-from devilry.devilry_group.views import feedbackfeed_bulkfiledownload
+from devilry.devilry_group.views.download_files import feedbackfeed_bulkfiledownload
 
 
 class BulkDownloadTestClass(feedbackfeed_bulkfiledownload.BulkFileDownloadBaseView):

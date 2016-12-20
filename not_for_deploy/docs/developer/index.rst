@@ -67,6 +67,7 @@ Apps
     devilry_search
     devilry_account
     devilry_group
+    devilry_compressionutil
 
 
 ******************************

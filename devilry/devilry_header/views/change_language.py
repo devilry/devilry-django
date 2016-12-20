@@ -9,7 +9,7 @@ class ChangeLanguageForm(forms.Form):
     languagecode = forms.ChoiceField(
         choices=settings.LANGUAGES
     )
-    redirect_url=forms.CharField()
+    redirect_url = forms.CharField()
 
 
 class ChangeLanguageView(View):
