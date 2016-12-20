@@ -148,6 +148,7 @@ Candidate API
 Period admin
 ============
 **Coming soon**
+
 - List candidates for a given assignment group
 - Add candidates to a assignment group
 - Remove candidates from a assignment group
