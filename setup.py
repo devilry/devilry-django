@@ -37,7 +37,7 @@ setup(
         'anyjson==0.3.3',
         'billiard==3.3.0.19',
         'celery==3.1.17',
-        'kombu==3.0.24',
+        'kombu==3.0.35',
         'python-dateutil==1.5',
         'pytz==2012j',
         'django-celery-transactions==0.2.0',
@@ -52,5 +52,7 @@ setup(
         'elasticsearch==1.6.0',
         'django_cradmin==1.1.1',
         'ievv_opensource==1.1.3',
+        'django-rest-swagger==0.3.8',
+        'djangorestframework==3.3.3',
     ]
 )
