@@ -128,6 +128,7 @@ Examiner API
 Period admin
 ============
 **Coming soon**
+
 - List examiners for a given assignment group
 - Add examiners to a assignment group
 - Remove examiners from a assignment group
@@ -135,6 +136,7 @@ Period admin
 Subject admin
 =============
 **Coming soon**
+
 Has same previleges as period admin, but also for assignment groups in semi anonymous assignments
 
 
