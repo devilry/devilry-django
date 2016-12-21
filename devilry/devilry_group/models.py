@@ -181,7 +181,7 @@ class FeedbackSet(models.Model):
     #: The AssignmentGroup that owns this feedbackset.
     group = models.ForeignKey(assignment_group.AssignmentGroup)
 
-    #: Is the last feedbackset for :obj:`~.FeedbackSet.group`? Must be None or True.
+    #: Is the last feedbackset for :obj:`~.FeedbackSet.group` Must be None or True.
     is_last_in_group = models.NullBooleanField(default=True)
 
     #: This means the feedbackset is basically the first feedbackset.
@@ -219,7 +219,7 @@ class FeedbackSet(models.Model):
     #: the :obj:`~.FeedbackSet` to be ignored must be provided in the :attr:`~FeedbackSet.ignored_reason`.
     ignored = models.BooleanField(default=False)
 
-    #: The reason for the :obj:`~FeedackSet` to be ignored.
+    #: The reason for the :obj:`~FeedbackSet` to be ignored.
     ignored_reason = models.TextField(null=False, blank=True, default='')
 
     #: The datetime for when the :obj:`~.FeedbackSet` was ignored.
@@ -335,18 +335,24 @@ class FeedbackSet(models.Model):
 
     def current_deadline(self, assignment=None):
         """
-        If the :obj:`~.FeedbackSet.feedbackset_type` is ``FEEDBACKSET_TYPE_FIRST_ATTEMPT``, the
-        deadline datetime is the Assignments' first_deadline, else it's :obj:`~.FeedbackSet.deadline_datetime`.
+        If :obj:`~.FeedbackSet.feedbackset_type` IS :obj:`~.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT`, it will try to
+        return :obj:`~.FeedbackSet.deadline_datetime` if not ``None``, else it will try to return ``first_deadline`` in
+        :class:`~devilry.apps.core.models.assignment.Assignment`
 
-        :param assignment: Optional argument.
-        :return: A deadline datetime or None
+        If :obj:`~.FeedbackSet.feedbackset_type` IS NOT :obj:`~.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT`,
+        :obj:`~.FeedbackSet.deadline_datetime` will be returned without checking ``first_deadline`` in
+        :class:`~devilry.apps.core.models.assignment.Assignment`.
+
+        Args:
+            assignment: Uses first_deadline of this assignment if not ``None``.
+
+        Returns:
+            datetime or ``None``.
         """
-        if assignment is None:
-            first_deadline = self.group.assignment.first_deadline
-        else:
-            first_deadline = assignment.first_deadline
         if self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
-            return first_deadline or self.deadline_datetime
+            if assignment:
+                return self.deadline_datetime or assignment.first_deadline
+            return self.deadline_datetime or self.group.assignment.first_deadline
         return self.deadline_datetime
 
     def __get_drafted_comments(self, user):
