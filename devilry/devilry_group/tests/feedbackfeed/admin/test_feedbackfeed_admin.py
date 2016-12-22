@@ -87,7 +87,42 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
 
+    def test_get_feedbackfeed_periodadmin_raise_404_semi_anonymous(self):
+        # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
+        # It's easier to read if we mock the return value rather than creating a
+        # permission group(this crinstance-function with permission groups is tested separately for the instance)
+        testperiod = mommy.make('core.Period')
+        testassignment = mommy.make('core.Assignment',
+                                    parentnode=testperiod,
+                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        mockrequest = mock.MagicMock()
+        mockrequest.cradmin_instance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
+        with self.assertRaisesMessage(http.Http404, ''):
+            self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup,
+                                 cradmin_instance=mockrequest.cradmin_instance)
+
+    def test_get_feedbackfeed_periodadmin_raise_404_fully_anonymous(self):
+        # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
+        # It's easier to read if we mock the return value rather than creating a
+        # permission group(this crinstance-function with permission groups is tested separately for the instance)
+        testperiod = mommy.make('core.Period')
+        testassignment = mommy.make('core.Assignment',
+                                    parentnode=testperiod,
+                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        mockrequest = mock.MagicMock()
+        mockrequest.cradmin_instance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
+        with self.assertRaisesMessage(http.Http404, ''):
+            self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup,
+                                 cradmin_instance=mockrequest.cradmin_instance)
+
     def test_get_feedbackfeed_subjectadmin_can_see_student_name_semi_anonymous(self):
+        # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
+        # It's easier to read if we mock the return value rather than creating a
+        # permission group(this crinstance-function with permission groups is tested separately for the instance)
         testassignment = mommy.make('core.Assignment',
                                     anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -102,41 +137,23 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         mockrequest.cradmin_instance.get_devilryrole_for_requestuser.return_value = 'subjectadmin'
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                           cradmin_instance=mockrequest.cradmin_instance)
+
         self.assertFalse(mockresponse.selector.exists('.devilry-core-candidate-anonymous-name'))
         self.assertTrue(mockresponse.selector.exists('.devilry-user-verbose-inline'))
 
-    def test_get_feedbackfeed_periodadmin_raise_404_fully_anonymous(self):
-        # creates a user in period permission group
-        testperiod = mommy.make('core.Period')
-        testassignment = mommy.make('core.Assignment',
-                                    parentnode=testperiod,
-                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-        mommy.make('devilry_account.PermissionGroupUser',
-                   user=testuser,
-                   permissiongroup=mommy.make(
-                       'devilry_account.PeriodPermissionGroup',
-                       permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_PERIODADMIN,
-                       period=testperiod).permissiongroup)
-        with self.assertRaisesMessage(http.Http404, ''):
-            self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup)
-
     def test_get_feedbackfeed_subjectadmin_raise_404_fully_anonymous(self):
-        # creates a user in subject permission group
-        testsubject = mommy.make('core.Subject')
+        # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
+        # It's easier to read if we mock the return value rather than creating a
+        # permission group(this crinstance-function with permission groups is tested separately for the instance)
         testassignment = mommy.make('core.Assignment',
                                     anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-        mommy.make('devilry_account.PermissionGroupUser',
-                   user=testuser,
-                   permissiongroup=mommy.make(
-                       'devilry_account.SubjectPermissionGroup',
-                       permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_SUBJECTADMIN,
-                       subject=testsubject).permissiongroup)
+        mockrequest = mock.MagicMock()
+        mockrequest.cradmin_instance.get_devilryrole_for_requestuser.return_value = 'subjectadmin'
         with self.assertRaisesMessage(http.Http404, ''):
-            self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup)
+            self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup,
+                                 cradmin_instance=mockrequest.cradmin_instance)
 
     def test_get_feedbackfeed_admin_wysiwyg_get_comment_choise_add_comment_for_examiners_and_admins_button(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet')
