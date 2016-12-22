@@ -722,6 +722,24 @@ class TestGroupCommentPost(api_test_helper.TestCaseMixin,
         self.assertFalse(response.data['part_of_grading'])
         self.assertEqual(response.data['user_role'], GroupComment.USER_ROLE_EXAMINER)
 
+    def test_post_comment_created_in_db(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group, id=10)
+        examiner = core_mommy.examiner(group=group)
+        apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
+        response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
+            'text': 'hei',
+            'visibility': GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
+        })
+        self.assertEqual(201, response.status_code)
+        comment = GroupComment.objects.get(id=response.data['id'])
+        self.assertEqual(comment.text, 'hei')
+        self.assertEqual(comment.feedback_set.id, 10)
+        self.assertEqual(comment.visibility, GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        self.assertFalse(comment.part_of_grading)
+        self.assertEqual(comment.user_role, GroupComment.USER_ROLE_EXAMINER)
+
 
 class TestGroupCommentDeleteDraft(api_test_helper.TestCaseMixin,
                                   APITestCase):

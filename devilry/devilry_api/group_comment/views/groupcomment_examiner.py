@@ -61,6 +61,15 @@ class GroupCommentViewExaminer(mixins.CreateModelMixin,
     get.__doc__ = BaseGroupCommentView.get.__doc__
 
     def create(self, feedback_set, request, *args, **kwargs):
+        """
+        Creates a feedbackset
+        Args:
+            feedback_set: :attr:`~devilry_grup.FeedbackSet.id`
+            request: request object
+
+        Returns:
+            Returns http 201 response or exception is raised
+        """
         data = dict(request.data)
         data['feedback_set'] = feedback_set
         data['user_role'] = GroupComment.USER_ROLE_EXAMINER

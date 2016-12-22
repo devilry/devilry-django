@@ -185,7 +185,7 @@ class GroupCommentSerializerBase(serializers.ModelSerializer):
             return self.__student_shortname_anonymization(instance)
         elif instance.user_role == GroupComment.USER_ROLE_EXAMINER:
             return self.__examiner_shortname_anonymization(instance)
-        elif instance.user_role is GroupComment.USER_ROLE_ADMIN:
+        elif instance.user_role == GroupComment.USER_ROLE_ADMIN:
             #TODO: admin name
             return 'Admin'
         raise serializers.ValidationError(ugettext_lazy('Not valid user role'))

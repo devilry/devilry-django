@@ -1,4 +1,6 @@
 from rest_framework.generics import mixins
+from rest_framework.response import Response
+from rest_framework import status
 
 
 from devilry.devilry_api.group_comment.views.groupcomment_base import BaseGroupCommentView
@@ -24,10 +26,55 @@ class GroupCommentViewPeriodAdmin(mixins.CreateModelMixin,
         """
         assignment_group_queryset = AssignmentGroup.objects.filter_user_is_period_admin(user=self.request.user)
         return GroupComment.objects.filter(feedback_set__group=assignment_group_queryset,
-                                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT) \
+                                           comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT) \
             .exclude_private_comments_from_other_users(user=self.request.user)
 
     def get(self, request, feedback_set, *args, **kwargs):
         return super(GroupCommentViewPeriodAdmin, self).get(request, feedback_set, *args, **kwargs)
 
     get.__doc__ = BaseGroupCommentView.get.__doc__
+
+    def create(self, feedback_set, request, *args, **kwargs):
+        """
+        Creates a feedbackset
+        Args:
+            feedback_set: :attr:`~devilry_grup.FeedbackSet.id`
+            request: request object
+
+        Returns:
+            Returns http 201 response or exception is raised
+        """
+        data = dict(request.data)
+        data['feedback_set'] = feedback_set
+        data['user_role'] = GroupComment.USER_ROLE_ADMIN
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def post(self, request, feedback_set, *args, **kwargs):
+        """
+        post a comment to a feedbackset
+
+        ---
+        parameters:
+            - name: feedback_set
+              required: true
+              paramType: path
+              type: Int
+              description: feedbackset id
+            - name: text
+              paramType: form
+              required: true
+              type: String
+              description: comment text
+            - name: visibility
+              required: false
+              paramType: form
+              enum:
+                - visible-to-everyone
+                - visible-to-examiner-and-admins
+              description: comment visibility
+        """
+        return self.create(feedback_set, request, *args, **kwargs)

@@ -16,7 +16,10 @@ class GroupCommentSerializerExaminer(serializer_base.GroupCommentSerializerBase)
         validate data and ignore any other data
 
         Args:
-            data:
+            data: request data
+
+        Raises:
+            :class:`~rest_framework.serializers.ValidationError`
 
         Returns:
             dictionary with validated data
@@ -45,7 +48,10 @@ class GroupCommentSerializerExaminer(serializer_base.GroupCommentSerializerBase)
         """
         Make sure that examiner has access to feedbackset
         Args:
-            value: :obj:`~devilry_group.Feedbackset`
+            value: :obj:`~devilry_group.FeedbackSet`
+
+        Raises:
+            :class:`~rest_framework.exceptions.PermissionDenied`
 
         Returns:
             :obj:`~devilry_group.Feedbackset`
