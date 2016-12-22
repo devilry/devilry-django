@@ -55,7 +55,9 @@ class GroupCommentViewPeriodAdmin(mixins.CreateModelMixin,
 
     def post(self, request, feedback_set, *args, **kwargs):
         """
-        post a comment to a feedbackset
+        post a comment to a feedbackset.
+        Period admin cannot post part of grading comments,
+        only comments with visibility to everyone and examiner and admins.
 
         ---
         parameters:
