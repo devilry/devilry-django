@@ -228,7 +228,8 @@ class TestFeedbacksetFilters(api_test_helper.TestCaseMixin,
 
     def test_filter_group_id_not_found(self):
         group = mommy.make('core.AssignmentGroup',
-                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'),
+                           id=10)
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(id=10, group=group)
         examiner = devilry_core_mommy_factories.examiner(group=feedbackset.group)
         apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)

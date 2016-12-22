@@ -52,25 +52,25 @@ class AssignmentGroupViewPeriodAdmin(mixins.CreateModelMixin,
 
     get.__doc__ = BaseAssignmentGroupView.get.__doc__
 
-    def post(self, request, *args, **kwargs):
-        """
-        Creates a new assignment group for a assignment
-
-        ---
-        parameters:
-            - name: assignment_id
-              required: true
-              paramType: form
-              type: int
-              description: id of assignment
-            - name: name
-              required: true
-              paramType: form
-              type: int
-              description: name of assignment group
-
-        """
-        return super(AssignmentGroupViewPeriodAdmin, self).create(request, *args, **kwargs)
+    # def post(self, request, *args, **kwargs):
+    #     """
+    #     Creates a new assignment group for a assignment
+    #
+    #     ---
+    #     parameters:
+    #         - name: assignment_id
+    #           required: true
+    #           paramType: form
+    #           type: int
+    #           description: id of assignment
+    #         - name: name
+    #           required: true
+    #           paramType: form
+    #           type: int
+    #           description: name of assignment group
+    #
+    #     """
+    #     return super(AssignmentGroupViewPeriodAdmin, self).create(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         """
