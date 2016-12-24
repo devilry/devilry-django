@@ -4,14 +4,14 @@ from rest_framework.test import APITestCase
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.devilry_api import devilry_api_mommy_factories as api_mommy
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
-from devilry.devilry_api.tests.mixins import test_period_admin_mixins, api_test_helper, test_common_mixins
+from devilry.devilry_api.tests.mixins import test_admin_mixins, api_test_helper, test_common_mixins
 from devilry.devilry_api.feedbackset.views.feedbackset_period_admin import FeedbacksetViewPeriodAdmin
 from devilry.devilry_group.models import FeedbackSet
 from devilry.apps.core.models import Assignment
 
 
 class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
-                            test_period_admin_mixins.TestAuthAPIKeyPeriodAdminMixin,
+                            test_admin_mixins.TestAuthAPIKeyAdminMixin,
                             api_test_helper.TestCaseMixin,
                             APITestCase):
     viewclass = FeedbacksetViewPeriodAdmin

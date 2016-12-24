@@ -60,9 +60,9 @@ else:
 
 
 # Mapping to other docs
-django_version = '1.7'
+django_version = '1.9'
 intersphinx_mapping = {
-    'django': ('http://docs.djangoproject.com/en/{0}/'.format(django_version), 'http://docs.djangoproject.com/en/{0}/_objects/'.format(django_version))
+    'django': ('https://docs.djangoproject.com/en/{0}/'.format(django_version), 'https://docs.djangoproject.com/en/{0}/_objects/'.format(django_version))
 }
 
 extlinks = {

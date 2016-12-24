@@ -7,12 +7,12 @@ from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.devilry_api import devilry_api_mommy_factories as api_mommy
 from devilry.apps.core.models.assignment import Assignment
 from devilry.devilry_api.assignment_group.views.assignmentgroup_period_admin import AssignmentGroupViewPeriodAdmin
-from devilry.devilry_api.tests.mixins import test_period_admin_mixins, api_test_helper, test_common_mixins
+from devilry.devilry_api.tests.mixins import test_admin_mixins, api_test_helper, test_common_mixins
 from devilry.devilry_api.tests.mixins.test_common_filters_mixin import TestAssignmentFiltersPeriodAdminMixin
 
 
 class TestPeriodAdminAssignmentgroupView(test_common_mixins.TestReadOnlyPermissionMixin,
-                                         test_period_admin_mixins.TestAuthAPIKeyPeriodAdminMixin,
+                                         test_admin_mixins.TestAuthAPIKeyAdminMixin,
                                          api_test_helper.TestCaseMixin,
                                          APITestCase):
     viewclass = AssignmentGroupViewPeriodAdmin

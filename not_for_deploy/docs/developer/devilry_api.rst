@@ -1,251 +1,239 @@
 ################################################################
-:mod:`devilry_api` --- Devilry API models, serializers and views
+:mod:`devilry_api` --- Devilry RESTFUL API
 ################################################################
 
-The ``devilry_api`` module is a RESTFUL api for devilry
+.. module:: devilry_api
+
+The ``devilry_api`` module is a RESTFUL api for devilry.
 
 
-#################
+*****************
 About devilry api
-#################
+*****************
 The devilry_api is built on django rest framework and documented with swagger.
-For swagger docs see /api/docs.
+For api documentation we use swagger, see /api/docs.
 
 
-##################
+******************
 What is an APIKey?
-##################
-The APIKey has a foreign key to a user and stores information of its purpose and permission level.
+******************
+The :class:`~devilry_api.APIKey` has a foreign key to a :class:`devilry_account.User` and stores information of its purpose and permission level.
 It also has a key type which tells how long a key last from it's created datetime.
 There are three types of permission classes, admin-, examiner- and student permission.
 Each permission class has 3 types of permission levels, no permission which is the default, read only and write.
 
+.. _devilry_api-how-to:
 
-#########
-Datamodel
-#########
+********************
+How to create an api
+********************
+The following example will be for a student api, examiner and admin api's can be created similarly.
+This guide will only cover how to create views and test them.
+How to create a serializer see: http://www.django-rest-framework.org/api-guide/serializers/
 
-.. py:currentmodule:: devilry.devilry_api.models
+Create the view
+===============
 
-.. automodule:: devilry.devilry_api.models
-    :members:
+Create a view inside something like ``devilry_api/my_api/views/my_view.py``::
 
+    from rest_framework.generics import mixins, GenericAPIView
+    from rest_framework.filters import OrderingFilter
+    from devilry.devilry_api.auth.authentication import TokenAuthentication
+    from devilry.devilry_api.my_api.serializers.serializer_student import MyStudentSerializer
+    from devilry.devilry_api.permission.student_permission import StudentPermissionAPIKey
+    from devilry.devilry_api.models import APIKey
 
-##############
-Assignment API
-##############
+    class MyView(mixins.ListModelMixin, GenericAPIView):
+        serializer_class = MyStudentSerializer
+        authentication_classes = (TokenAuthentication, )
+        filter_backends = [OrderingFilter, ]
 
-.. py:currentmodule:: devilry.devilry_api.assignment
+        #: student permission
+        permission_classes = (StudentPermissionAPIKey, )
 
-.. automodule:: devilry.devilry_api.assignment.views.assignment_base
-    :members:
+        #: We'll only allow read permission for this api
+        api_key_permissions = (APIKey.STUDENT_PERMISSION_READ, )
 
+        def get_queryset(self):
+            """
+            Return queryset for your model.
+            """
+            ...
 
-Student
-=======
-The assignment student api will list all assignments which a student is and has been a part of.
+        def get(self, request, *args, **kwargs):
+            """
+            List my model
 
-.. automodule:: devilry.devilry_api.assignment.views.assignemnt_student
-    :members:
-
-
-Examiner
-========
-The assignment examiner api will list all assignments which an examiner has access to.
-
-.. automodule:: devilry.devilry_api.assignment.views.assignment_examiner
-    :members:
-
-
-Period admin
-============
-The assignment period admin api will list all assignments which a period admin has access to.
-In addition to that a period admin will also be able to:
-
-- Create an assignment with anonimization mode off.
-- update all properties except anonimization mode.
-- Delete an assignment (**Coming soon**) if there is no child content other than basic initialization content,
-  for instance a period admin should not be able to delete an assignment if there is a comment on a feedback set.
-
-Other features that we should consider:
-
-- Dry runs (show whats being deleted?)
+            ---
+            parameters:
+                - name: ordering
+                  required: false
+                  paramType: query
+                  type: String
+                  description: ordering field
+            """
+            return super(MyView, self).list(request, *args, **kwargs)
 
 
-Subject admin
+Test the view
 =============
-**Coming soon**
-Has same privileges as period admin, but in addition to that a subject admin has also access to semi anonymous exams.
+
+For making testing easy we have created some useful mixins.
+
+    :class:`devilry.devilry_api.tests.mixins.api_test_helper.TestCaseMixin`
+
+        Used to create a request and returns a response.
+
+    :class:`devilry.devilry_api.tests.mixins.test_common_mixins.TestAuthAPIKeyMixin`
+
+        Tests the api key authentication for expired key's with different lifetimes. If we want to use this mixin,
+        we have to create a ``get_apikey`` function
+
+    :class:`devilry.devilry_api.tests.mixins.test_common_mixins.TestReadOnlyPermissionMixin`
+
+        Test that a read only key does not have permission to perform write actions. If we want to use this mixin,
+        we have to create a ``get_apikey`` function or we can inherit it along with the next following mixins.
+
+    :class:`devilry.devilry_api.test_student_mixins.TestAuthAPIKeyStudentMixin`
+
+        Test that no other than a student api key has access to the api.
+        This mixin inherits from ``TestAuthAPIKeyMixin``, a read only student api key is already implemented here.
+
+    :class:`devilry.devilry_api.test_examiner_mixins.TestAuthAPIKeyExaminerMixin`
+
+        Test that no other than an examiner api key has access to the api.
+        This mixin inherits from ``TestAuthAPIKeyMixin``, a read only student api key is already implemented here.
+
+    :class:`devilry.devilry_api.test_admin_mixins.TestAuthAPIKeyAdminMixin`
+
+        Test that no other than an admin api key has access to the api.
+        This mixin inherits from ``TestAuthAPIKeyMixin``, a read only student api key is already implemented here.
 
 
-####################
-Assignment Group API
-####################
+Create a test class inside something like ``devilry_api/tests/test_my_view.py``::
 
-.. py:currentmodule:: devilry.devilry_api.assignment_group
+    from model_mommy import mommy
+    from rest_framework.test import APITestCase
+    from devilry.devilry_api import devilry_api_mommy_factories as api_mommy
+    from devilry.devilry_api.tests.mixins import test_student_mixins, api_test_helper, test_common_mixins
+    from devilry.devilry_api.my_api.views.my_view import MyView
 
-.. automodule:: devilry.devilry_api.assignment.views.assignmentgroup_base
-    :members:
+    class TestMyView(test_common_mixins.TestReadOnlyPermissionMixin,
+                     test_student_mixins.TestAuthAPIKeyStudentMixin,
+                     api_test_helper.TestCaseMixin,
+                     APITestCase):
+           viewclass = MyView
 
+           def test_sanity(self)
+               candidate = mommy.make('core.Candidate')
+               apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
+               response = self.mock_get_request(apikey=apikey.key)
+               self.assertEqual(200, response.status_code)
 
-Student
-=======
-The assignment group student api will list all assignment groups which a student is and has been a part of.
+.. _devilry_api-models:
 
-.. automodule:: devilry.devilry_api.assignemnt_group.views.assignemntgroup_student
-    :members:
+**************
+Database model
+**************
 
+.. py:currentmodule:: devilry_api.models
 
-Examiner
-========
-The assignment group examiner api will list all assignments groups which an examiner has access to.
+Functions
+=========
+:func:`devilry_api.models.generate_key` generates a random key
+of size specified in :attr:`django.conf.settings.DEVILRY_API_KEYLENGTH`.
 
-.. automodule:: devilry.devilry_api.assignment_group.views.assignmentgroup_examiner
-    :members:
+The model
+=========
+.. py:class:: APIKey
 
+    The api key is used to authenticate a user upon the api with predefined permissions
 
-Period admin
-============
-The assignment group period admin api will list all assignment groups which a period admin has access to.
-In additon to that a period admin will also be able to:
+    .. py:attribute:: key
 
-- Create assignment group.
-- Delete assignment group if there is no students in assignment group.
+        Database char field which contains the key itself.
 
+    .. py:attribute:: user
 
-Subject admin
-=============
-**Coming soon**
-Has same privileges as period admin, but in addition to that a subject admin has also access to semi anonymous exams.
+        Database foreign key to the :class:`devilry_account.User` owner of the key.
 
+    .. py:attribute:: creadet_datetime
 
-############
-Examiner API
-############
-.. py:currentmodule:: devilry.devilry_api.examiner
+        Database datetime field which stores the created timestamp of the key.
 
+    .. py:attribute:: last_login_datetime
 
-Period admin
-============
-**Coming soon**
+        Database datetime field which stores the last usage of the api key.
+        Currently not in use.
 
-- List examiners for a given assignment group
-- Add examiners to a assignment group
-- Remove examiners from a assignment group
+    .. py:attribute:: user_agent
 
-Subject admin
-=============
-**Coming soon**
+        Database text field which is supposed to store the user agent data of the last request.
+        Currently not in use.
 
-Has same previleges as period admin, but also for assignment groups in semi anonymous assignments
+    .. py:attribute:: purpose
 
+        Database char field which stores the purpose of the key, max length is 255
 
-#############
-Candidate API
-#############
-.. py:currentmodule:: devilry.devilry_api.candidate
+    .. py:attribute:: student_permission
 
-Period admin
-============
-**Coming soon**
+        Database char field which tells what kind of student permission the key is granted.
 
-- List candidates for a given assignment group
-- Add candidates to a assignment group
-- Remove candidates from a assignment group
+        .. py:attribute:: STUDENT_NO_PERMISSION
 
-Subject admin
-=============
-**Coming soon**
-Has same previleges as period admin, but also for assignment groups in semi anonymous assignments
+            The key has no student permission.
 
+        .. py:attribute:: STUDENT_PERMISSION_READ
 
-###############
-Feedbackset API
-###############
+            The key is granted GET, HEAD and OPTIONS for the student api
 
-.. py:currentmodule:: devilry.devilry_api.feedbackset
+        .. py:attribute:: STUDENT_PERMISSION_WRITE
 
-.. automodule:: devilry.devilry_api.feedbackset.views.feedbackset_base
-    :members:
+            The key is granted GET, HEAD, OPTIONS, POST, PUT, PATCH, DELETE for the examiner api
 
+    .. py:attribute:: examiner_permission
 
-Student
-=======
-The feedbackset student api will list all feedback sets which a student has access to.
+        Database char field which tells what kind of examiner permission the key is granted.
 
-.. automodule:: devilry.devilry_api.feedbackset.views.feedbackset_student
-    :members:
+        .. py:attribute:: EXAMINER_NO_PERMISSION
 
+            The key has no examiner permission.
 
-Examiner
-========
-The feedbackset examiner api will list all feedback sets which an exminer has access to.
-In addition to that an examiner will also be able to:
+        .. py:attribute:: EXAMINER_PERMISSION_READ
 
-- Create a new feedbackset (if the old feedbackset has expired and grading is published?)
-- Publish a feedbackset with grading points
+            The key is granted GET, HEAD and OPTIONS for the examiner api
 
-.. automodule:: devilry.devilry_api.feedbackset.views.feedbackset_examiner
-    :members:
+        .. py:attribute:: EXAMINER_PERMISSION_WRITE
+
+            The key is granted GET, HEAD, OPTIONS, POST, PUT, PATCH, DELETE for the examiner api
 
 
-Period admin
-============
-The feedbackset period admin api will list all feedbacksets which a period admin has access to.
-In addition to that a period admin will also be able to:
+    .. py:attribute:: admin_permission
 
-- Create feedbackset.
-- Update feedbackset.
+        Database char field which tells what kind of admin permission the key is granted.
 
-**NOTE**: When a feedbackset is created by a period admin created_by_fullname is set to None.
+        .. py:attribute:: ADMIN_NO_PERMISSION
 
-Subject admin
-=============
-**Coming soon**
-Has same previleges as period admin, but in addition to that a subject admin has also access to semi anonymous exams.
+            The key has no admin permission.
 
+        .. py:attribute:: ADMIN_PERMISSION_READ
 
-#############
-Group Comment
-#############
+            The key is granted GET, HEAD and OPTIONS for the examiner api
 
-.. py:currentmodule:: devilry.devilry_api.group_comment
+        .. py:attribute:: ADMIN_PERMISSION_WRITE
 
-.. automodule:: devilry.devilry_api.group_comment.views.groupcomment_base
-    :members:
+            The key is granted GET, HEAD, OPTIONS, POST, PUT, PATCH, DELETE for the admin api
 
+    .. py:attribute:: keytype
 
-Student
-=======
-In the group comment student api a student will be able to:
+        Database char field which tells us how long the key will last from creation.
+        There are two choices.
 
-- View all comments which is Visible to everyone.
-- Post comments which is visible to everyone and not part_of_grading comments.
+        .. py:attribute:: LIFETIME_SHORT
 
-.. automodule:: devilry.devilry.feedbackset.views.groupcomment_student
-    :members:
+            The key will last half a year.
 
+        .. py:attribute:: LIFETIME_LONG
 
-Examiner
-========
-In the group comment examiner api an examiner will be able to:
+            The key will last a year.
 
-- View all comments but not other examiners private comments.
-- Post comments which is either visible to everyone, examiners and admins or private for drafts.
-
-.. automodule:: devilry.devilry.feedbackset.vies.groupcomment_examiner
-    :members:
-
-
-Period admin
-============
-In the group comment period admin api a period admin should be able to:
-
-- View all comments, but not an examiners drafted comments.
-- Post comments with visibility to everyone or visible to examiners and admins.
-    Since user role admin is not valid for a group comment this should not be supported?
-
-Subject admin
-=============
-**Coming soon**
-Has same previleges as period admin, but in addition to that a subject admin has also access to semi anonymous exams.

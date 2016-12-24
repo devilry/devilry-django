@@ -2,7 +2,7 @@ from devilry.devilry_api import devilry_api_mommy_factories as api_mommy
 from test_common_mixins import TestAuthAPIKeyMixin
 
 
-class TestAuthAPIKeyPeriodAdminMixin(TestAuthAPIKeyMixin):
+class TestAuthAPIKeyAdminMixin(TestAuthAPIKeyMixin):
     """
     These test cases will only test for the read permission level
     which is the lowest.
