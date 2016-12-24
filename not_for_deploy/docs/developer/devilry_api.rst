@@ -122,7 +122,9 @@ Create a test class inside something like ``devilry_api/tests/test_my_view.py``:
                      test_student_mixins.TestAuthAPIKeyStudentMixin,
                      api_test_helper.TestCaseMixin,
                      APITestCase):
-           viewclass = MyView #View that we are testing.
+
+           #: View that we are testing.
+           viewclass = MyView
 
            def test_sanity(self):
                candidate = mommy.make('core.Candidate')
