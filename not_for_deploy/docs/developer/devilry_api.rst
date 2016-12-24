@@ -77,7 +77,7 @@ Create a view inside something like ``devilry_api/my_api/views/my_view.py``::
 
 Test the view
 =============
-
+`
 For making testing easy we have created some useful mixins.
 
     :class:`devilry.devilry_api.tests.mixins.api_test_helper.TestCaseMixin`
@@ -122,9 +122,9 @@ Create a test class inside something like ``devilry_api/tests/test_my_view.py``:
                      test_student_mixins.TestAuthAPIKeyStudentMixin,
                      api_test_helper.TestCaseMixin,
                      APITestCase):
-           viewclass = MyView
+           viewclass = MyView #View that we are testing.
 
-           def test_sanity(self)
+           def test_sanity(self):
                candidate = mommy.make('core.Candidate')
                apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
                response = self.mock_get_request(apikey=apikey.key)
