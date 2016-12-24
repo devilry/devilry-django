@@ -77,7 +77,7 @@ Create a view inside something like ``devilry_api/my_api/views/my_view.py``::
 
 Test the view
 =============
-`
+
 For making testing easy we have created some useful mixins.
 
     :class:`devilry.devilry_api.tests.mixins.api_test_helper.TestCaseMixin`
