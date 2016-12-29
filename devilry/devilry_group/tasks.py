@@ -87,11 +87,17 @@ class FeedbackSetCompressAction(batchregistry.Action):
                 for comment_file in group_comment.commentfile_set.all():
                     if comment_file.comment.user_role == 'student':
                         if comment_file.comment.published_datetime > feedbackset.current_deadline():
-                            zipfile_backend.add_file(os.path.join('uploaded_after_deadline', comment_file.filename),
-                                                     comment_file.file.file)
+                            zipfile_backend.add_file(
+                                    os.path.join('uploaded_after_deadline', comment_file.filename),
+                                    comment_file.file.file)
                         else:
-                            zipfile_backend.add_file(os.path.join('delivery', comment_file.filename),
-                                                     comment_file.file.file)
+                            zipfile_backend.add_file(
+                                    os.path.join('delivery', comment_file.filename),
+                                    comment_file.file.file)
+                    elif comment_file.comment.user_role == 'examiner':
+                        zipfile_backend.add_file(
+                                os.path.join('uploaded_by_examiner', comment_file.filename),
+                                comment_file.file.file)
         zipfile_backend.close()
 
         # create archive meta entry
