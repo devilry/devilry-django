@@ -10,6 +10,7 @@ from django.views import generic
 from wsgiref.util import FileWrapper
 
 # ievv_opensource imports
+from django.views.generic import TemplateView
 from ievv_opensource.ievv_batchframework import batchregistry
 
 # devilry imports
@@ -55,7 +56,7 @@ class FileDownloadFeedbackfeedView(generic.TemplateView):
         return response
 
 
-class CompressedGroupCommentFileDownload(generic.TemplateView):
+class CompressedGroupCommentFileDownloadView(generic.TemplateView):
     """Compress all files from a specific GroupComment into a zipped folder
     """
 
@@ -101,7 +102,11 @@ class CompressedGroupCommentFileDownload(generic.TemplateView):
             )
 
         return HttpResponseRedirect(
-                self.request.cradmin_app.reverse_appurl('wait-for-download', groupcomment_id))
+                self.request.cradmin_app.reverse_appurl(
+                        viewname='wait-for-download',
+                        kwargs={
+                            'pk': groupcomment_id
+                        }))
 
 
 class CompressedFeedbackSetFileDownloadView(generic.TemplateView):
@@ -146,7 +151,42 @@ class CompressedFeedbackSetFileDownloadView(generic.TemplateView):
             )
 
         return HttpResponseRedirect(
-                self.request.cradmin_app.reverse_appurl('wait-for-download', pk=feedbackset_id))
+                self.request.cradmin_app.reverse_appurl(
+                        viewname='wait-for-download',
+                        kwargs={
+                            'pk': feedbackset_id
+                        }))
+
+
+class WaitForDownload(TemplateView):
+    """
+    Redirected to this view when downloading files.
+    """
+    template_name = 'devilry_group/wait_for_download.django.html'
+
+    def __init__(self):
+        super(WaitForDownload, self).__init__()
+        self.status = 'NOT FINISHED'
+
+    def get(self, request, *args, **kwargs):
+        """
+        """
+        object_id = int(self.kwargs.get('pk'))
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=object_id)
+        if archive_meta is not None:
+            self.status = 'FINISHED'
+            return download_response.download_response(
+                    content_path=archive_meta.archive_path,
+                    content_name=archive_meta.archive_name,
+                    content_type='application/zip',
+                    content_size=archive_meta.archive_size
+            )
+        return super(WaitForDownload, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(WaitForDownload, self).get_context_data(**kwargs)
+        context['status'] = self.status
+        return context
 
 
 class App(crapp.App):
@@ -157,10 +197,15 @@ class App(crapp.App):
             name='file-download'),
         crapp.Url(
             r'^groupcomment-file-download/(?P<groupcomment_id>[0-9]+)$',
-            CompressedGroupCommentFileDownload.as_view(),
+            CompressedGroupCommentFileDownloadView.as_view(),
             name='groupcomment-file-download'),
         crapp.Url(
             r'^feedbackset-file-download/(?P<feedbackset_id>[0-9]+)$',
             CompressedFeedbackSetFileDownloadView.as_view(),
             name='feedbackset-file-download'),
+        crapp.Url(
+            r'^wait-for-download/(?P<pk>[0-9]+)$',
+            WaitForDownload.as_view(),
+            name='wait-for-download'
+        )
     ]
