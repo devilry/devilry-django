@@ -25,6 +25,7 @@ class TestCompressed(TestCase):
     def tearDown(self):
         # Ignores errors if the path is not created.
         shutil.rmtree(self.backend_path, ignore_errors=True)
+        shutil.rmtree('devilry_testfiles/filestore/', ignore_errors=True)
 
 
 class TestGroupCommentBatchTask(TestCompressed):
