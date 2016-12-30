@@ -1,4 +1,5 @@
 import datetime
+import shutil
 from StringIO import StringIO
 from zipfile import ZipFile
 
@@ -19,7 +20,13 @@ class BulkDownloadTestClass(feedbackfeed_bulkfiledownload.BulkFileDownloadBaseVi
         return 'testfile.zip'
 
 
-class TestBulkFileDownloadBase(test.TestCase):
+class AbstractTestCase(test.TestCase):
+    def tearDown(self):
+        # Ignores errors if the path is not created.
+        shutil.rmtree('devilry_testfiles/filestore/', ignore_errors=True)
+
+
+class TestBulkFileDownloadBase(AbstractTestCase):
 
     def test_get_zipfile(self):
         assignmentgroup1 = mommy.make('core.AssignmentGroup',

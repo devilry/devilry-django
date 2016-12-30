@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from django import test
 from django.core.files.base import ContentFile
@@ -7,7 +8,13 @@ from model_mommy import mommy
 from devilry.devilry_comment.models import CommentFile, Comment
 
 
-class TestCommentModel(test.TestCase):
+class AbstractTestCase(test.TestCase):
+    def tearDown(self):
+        # Ignores errors if the path is not created.
+        shutil.rmtree('devilry_testfiles/filestore/', ignore_errors=True)
+
+
+class TestCommentModel(AbstractTestCase):
     def test_delete_comment_model_deletes_files(self):
         testcomment = mommy.make('devilry_comment.Comment')
         testcommentfile = mommy.make('devilry_comment.CommentFile',
@@ -29,7 +36,7 @@ class TestCommentModel(test.TestCase):
         self.assertFalse(os.path.exists(filepath))
 
 
-class TestCommentFileModel(test.TestCase):
+class TestCommentFileModel(AbstractTestCase):
     def test_empty_file_field_is_bool_false(self):
         testcommentfile = mommy.make('devilry_comment.CommentFile',
                                      file='')
@@ -70,7 +77,7 @@ class TestCommentFileModel(test.TestCase):
         self.assertFalse(os.path.exists(filepath))
 
 
-class TestCommentFileImageModel(test.TestCase):
+class TestCommentFileImageModel(AbstractTestCase):
     def test_empty_image_field_is_bool_false(self):
         testcommentimage = mommy.make('devilry_comment.CommentFileImage',
                                       image='')
