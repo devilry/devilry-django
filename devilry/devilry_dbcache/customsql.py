@@ -164,11 +164,15 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
           group_id,
           created_datetime,
           feedbackset_type,
-          gradeform_data_json)
+          gradeform_data_json,
+          ignored,
+          ignored_reason)
       VALUES (
           NEW.id,
           now(),
           'first_attempt',
+          '',
+          FALSE,
           '');
       RETURN NEW;
   END

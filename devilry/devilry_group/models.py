@@ -227,7 +227,7 @@ class FeedbackSet(models.Model):
 
     #: The User that created the feedbackset. Only used as metadata
     #: for superusers (for debugging).
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="created_feedbacksets")
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="created_feedbacksets", null=True, blank=True)
 
     #: The datetime when this FeedbackSet was created.
     created_datetime = models.DateTimeField(default=timezone.now)
