@@ -1,7 +1,6 @@
 # Python imports
 import os
 import shutil
-from StringIO import StringIO
 from zipfile import ZipFile
 
 # Third party imports
@@ -16,11 +15,6 @@ from django.utils import timezone
 # Devilry imports
 from devilry.devilry_group import tasks
 from devilry.devilry_compressionutil import models as archivemodels
-
-
-class DummyAction(batchregistry.Action):
-    def execute(self):
-        return 'test'
 
 
 class TestCompressed(TestCase):
@@ -257,3 +251,43 @@ class TestFeedbackSetBatchTask(TestCompressed):
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
             self.assertEquals(zipfileobject.read('uploaded_by_examiner/testfile.txt'), 'examiner testcontent')
+
+    def test_batchframework_files_from_examiner_and_student(self):
+        # Tests that the file uploaded by examiner is added to 'uploaded_by_examiner' subfolder,
+        # and that file from student is added under 'delivery'.
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
+            testfeedbackset = mommy.make('devilry_group.FeedbackSet')
+            # examiner-comment with file.
+            testcomment = mommy.make('devilry_group.GroupComment',
+                                     feedback_set=testfeedbackset,
+                                     user_role='examiner',
+                                     user__shortname='testexaminer@example.com')
+            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment,
+                                     filename='testfile_examiner.txt')
+            commentfile.file.save('testfile_examiner.txt', ContentFile('examiner testcontent'))
+
+            # student-comment with file
+            testcomment = mommy.make('devilry_group.GroupComment',
+                                     feedback_set=testfeedbackset,
+                                     user_role='student',
+                                     user__shortname='teststudent@example.com')
+            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment,
+                                     filename='testfile_student.txt')
+            commentfile.file.save('testfile_student.txt', ContentFile('student testcontent'))
+
+            batchregistry.Registry.get_instance().add_actiongroup(
+                batchregistry.ActionGroup(
+                    name='batchframework_feedbackset',
+                    mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
+                    actions=[
+                        tasks.FeedbackSetCompressAction
+                    ]))
+            batchregistry.Registry.get_instance().run(
+                    actiongroup_name='batchframework_feedbackset',
+                    context_object=testfeedbackset,
+                    test='test')
+
+            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
+            zipfileobject = ZipFile(archive_meta.archive_path)
+            self.assertEquals(zipfileobject.read('delivery/testfile_student.txt'), 'student testcontent')
+            self.assertEquals(zipfileobject.read('uploaded_by_examiner/testfile_examiner.txt'), 'examiner testcontent')

@@ -12,7 +12,7 @@ class TestGroupCommentModel(TestCase):
         test_comment = mommy.make('devilry_group.GroupComment')
         self.assertEquals(False, test_comment.part_of_grading)
 
-    def test_groupcomment_visibility_default__visible_to_everyone(self):
+    def test_groupcomment_visibility_default_visible_to_everyone(self):
         test_comment = mommy.make('devilry_group.GroupComment')
         self.assertEquals(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE, test_comment.visibility)
 
