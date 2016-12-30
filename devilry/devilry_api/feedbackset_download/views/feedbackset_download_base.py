@@ -64,13 +64,11 @@ class BaseFeedbacksetView(APIView):
               description: id of feedbackset to download
 
         """
-
         # Check that request user has access to feedbackset and if it exists.
         try:
             feedbackset = self.get_role_queryset().get(id=content_id)
         except FeedbackSet.DoesNotExist:
             raise NotFound(ugettext_lazy('Feedbackset not found'))
-
         # Check if feedbackset is already compressed.
         archive_meta = archive_models.CompressedArchiveMeta.objects.filter(content_object_id=content_id).first()
         if archive_meta:
@@ -78,7 +76,6 @@ class BaseFeedbacksetView(APIView):
                                      content_size=archive_meta.archive_size,
                                      content_type='application/zip',
                                      content_name=archive_meta.archive_name)
-
         # Compress Feedbackset
         batchregistry.Registry.get_instance().run(
             actiongroup_name='batchframework_api_compress_feedbackset',

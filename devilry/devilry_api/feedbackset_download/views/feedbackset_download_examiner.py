@@ -21,6 +21,6 @@ class ExaminerFeedbacksetView(BaseFeedbacksetView):
         return FeedbackSet.objects.filter(group=assignment_group_queryset)
 
     def get(self, request, content_id, *args, **kwargs):
-        super(ExaminerFeedbacksetView, self).get(request, content_id, *args, **kwargs)
+        return super(ExaminerFeedbacksetView, self).get(request, content_id, *args, **kwargs)
 
     get.__doc__ = BaseFeedbacksetView.get.__doc__
