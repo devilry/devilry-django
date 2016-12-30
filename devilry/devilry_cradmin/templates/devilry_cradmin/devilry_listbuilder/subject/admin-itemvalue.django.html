@@ -1,0 +1,14 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load devilry_core_tags %}
+
+{% block title-content %}
+    {{ me.subject.long_name }}
+{% endblock title-content %}
+
+{% block description-content %}
+    {% for period in me.subject.active_periodobjects  %}
+        <span>{{ period.short_name }}</span>
+    {% endfor %}
+{% endblock description-content %}
+

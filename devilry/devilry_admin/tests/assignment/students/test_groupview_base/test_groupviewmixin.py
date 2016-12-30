@@ -15,6 +15,7 @@ from devilry.devilry_admin.views.assignment.students import groupview_base
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import GroupComment, ImageAnnotationComment
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
 class MinimalGroupItemValue(listbuilder.itemvalue.TitleDescription):
@@ -43,6 +44,9 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockinstance = mock.MagicMock()
         mockinstance.get_devilryrole_for_requestuser.return_value = devilryrole
         return mockinstance
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_search_nomatch(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -717,6 +721,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_studentfile(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -725,6 +730,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         comment = mommy.make(
             'devilry_group.GroupComment',
             feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+            comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
             user_role=Comment.USER_ROLE_STUDENT,
             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mommy.make('devilry_comment.CommentFile', comment=comment)
@@ -742,6 +748,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_no_studentfile(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -750,6 +757,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         comment = mommy.make(
             'devilry_group.GroupComment',
             feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+            comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
             user_role=Comment.USER_ROLE_STUDENT,
             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mommy.make('devilry_comment.CommentFile', comment=comment)
@@ -767,6 +775,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_studentcomment_groupcomment(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -774,6 +783,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -797,6 +807,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -808,11 +819,13 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'activity-studentcomment'},
             requestuser=testuser)
+
         self.assertEqual(
             {'user1'},
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_no_studentcomment(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -820,6 +833,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -827,6 +841,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup2),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -843,6 +858,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_examinercomment_groupcomment(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -850,6 +866,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -873,6 +890,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -889,6 +907,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_no_examinercomment(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -896,6 +915,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -903,6 +923,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup2),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -919,6 +940,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_admincomment_groupcomment(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -926,6 +948,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_ADMIN,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -949,6 +972,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_ADMIN,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 

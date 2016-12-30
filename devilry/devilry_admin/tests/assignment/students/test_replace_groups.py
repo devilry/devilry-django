@@ -13,6 +13,7 @@ from model_mommy import mommy
 from devilry.apps.core.models import AssignmentGroup, Candidate
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START
 from devilry.devilry_admin.views.assignment.students import replace_groups
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group.models import FeedbackSet
 
 
@@ -167,6 +168,9 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
 
 class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = replace_groups.ConfirmView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_redirect_if_assignment_is_published(self):
         testassignment = mommy.make('core.Assignment',
@@ -609,6 +613,9 @@ class TestRelatedStudentMultiselectTarget(TestCase):
 
 class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = replace_groups.ManualSelectStudentsView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_redirect_if_assignment_is_published(self):
         testassignment = mommy.make('core.Assignment',

@@ -1,6 +1,7 @@
 import json
 from setuptools import setup, find_packages
 
+
 with open('devilry/version.json') as versionfile:
     version = json.load(versionfile)
 
@@ -27,7 +28,7 @@ setup(
         'gunicorn==19.2.1',
         'django-crispy-forms==1.6.0',
         'openpyxl==1.6.1',
-        'django==1.9.9',
+        'django==1.8.4',
         'URLObject==2.0.1',
         'django-simple-rest==1.4.1',
         'mimeparse==0.1.3',
@@ -41,8 +42,7 @@ setup(
         'python-dateutil==1.5',
         'pytz==2012j',
         'django-celery-transactions==0.2.0',
-        # 'django-haystack==2.3.1',
-        'django-haystack==2.5.0',
+        'django-haystack==2.3.1',
         'httplib2==0.7.7',
         'detektor==1.1.0-beta.012',
         'dj-static>=0.0.6',
@@ -51,6 +51,6 @@ setup(
         'psycopg2==2.4.6',
         'elasticsearch==1.6.0',
         'django_cradmin==1.1.1',
-        'ievv_opensource==1.1.3',
+        'ievv_opensource==1.1.0',
     ]
 )

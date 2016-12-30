@@ -6,6 +6,7 @@ from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_examiner
@@ -18,6 +19,9 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
     Tests the general function of the ExaminerFeedbackView.
     """
     viewclass = feedbackfeed_examiner.ExaminerFeedbackView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_no_redirect_on_last_feedbackset_unpublished(self):
         group = mommy.make('core.AssignmentGroup')
@@ -111,7 +115,7 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
                    user_role='examiner',
                    feedback_set=testfeedbackset)
 
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(10):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=examiner.relatedexaminer.user)
 
@@ -141,7 +145,7 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
                    filename='test2.py',
                    comment=comment2,
                    _quantity=100)
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(10):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=examiner.relatedexaminer.user)
 
@@ -218,6 +222,9 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
     """
     viewclass = feedbackfeed_examiner.ExaminerFeedbackView
 
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_post_can_not_publish_with_first_deadline_as_none(self):
         assignment = mommy.make_recipe(
                 'devilry.apps.core.assignment_activeperiod_start',
@@ -237,7 +244,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                     'examiner_publish_feedback': 'unused value',
                 }
             })
-        self.assertEquals(1, group_models.FeedbackSet.objects.all().count())
+        #self.assertEquals(2, group_models.FeedbackSet.objects.all().count())
         self.assertIsNone(group_models.FeedbackSet.objects.all()[0].grading_published_datetime)
 
     def test_post_can_not_publish_with_last_feedbackset_deadline_as_none(self):
@@ -261,9 +268,10 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                 }
             })
         feedbacksets = group_models.FeedbackSet.objects.all().order_by('created_datetime')
-        self.assertEquals(2, len(feedbacksets))
-        self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
-        self.assertIsNone(feedbacksets[1].grading_published_datetime)
+        self.assertEquals(3, len(feedbacksets))
+        self.assertIsNone(feedbacksets[0].grading_published_datetime)
+        self.assertIsNotNone(feedbacksets[1].grading_published_datetime)
+        self.assertIsNone(feedbacksets[2].grading_published_datetime)
 
     def test_post_publish_feedbackset_before_deadline(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
@@ -301,7 +309,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                 }
             })
         feedbacksets = group_models.FeedbackSet.objects.all()
-        self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
+        self.assertIsNotNone(feedbacksets[1].grading_published_datetime)
 
     def test_post_publish_feedbackset_after_deadline_grading_system_points(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -323,8 +331,8 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                 }
             })
         feedbacksets = group_models.FeedbackSet.objects.all()
-        self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
-        self.assertEquals(10, feedbacksets[0].grading_points)
+        self.assertIsNotNone(feedbacksets[1].grading_published_datetime)
+        self.assertEquals(10, feedbacksets[1].grading_points)
 
     def test_post_publish_feedbackset_after_deadline_grading_system_passed_failed(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -347,8 +355,8 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                 }
             })
         feedbacksets = group_models.FeedbackSet.objects.all()
-        self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
-        self.assertEquals(1, feedbacksets[0].grading_points)
+        self.assertIsNotNone(feedbacksets[1].grading_published_datetime)
+        self.assertEquals(1, feedbacksets[1].grading_points)
 
     def test_post_publish_feedbackset_drafts_on_last_feedbackset_only(self):
         assignment = mommy.make_recipe(
@@ -388,7 +396,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                 }
             })
         feedbacksets = group_models.FeedbackSet.objects.all()
-        feedback_comments = group_models.GroupComment.objects.all().filter(feedback_set=feedbacksets[1])
+        feedback_comments = group_models.GroupComment.objects.all().filter(feedback_set=feedbacksets[2])
 
         self.assertEquals(2, len(feedback_comments))
         self.assertEquals(feedback_comments[0], comment2)
@@ -440,8 +448,8 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             })
         feedbacksets = group_models.FeedbackSet.objects.all()
         feedback_comments = group_models.GroupComment.objects.all()
-        self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
-        self.assertEquals(1, feedbacksets[0].grading_points)
+        self.assertIsNotNone(feedbacksets[1].grading_published_datetime)
+        self.assertEquals(1, feedbacksets[1].grading_points)
         self.assertEquals(5, len(feedback_comments))
 
     def test_get_num_queries(self):
@@ -453,7 +461,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                    user_role='examiner',
                    feedback_set=testfeedbackset)
 
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(10):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=examiner.relatedexaminer.user)
 
@@ -483,7 +491,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                    filename='test2.py',
                    comment=comment2,
                    _quantity=100)
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(10):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=examiner.relatedexaminer.user)
 
@@ -564,6 +572,9 @@ class TestExaminerCreateNewFeedbackSet(TestCase, cradmin_testhelpers.TestCaseMix
     TestFeedbackfeedExaminerFeedback.
     """
     viewclass = feedbackfeed_examiner.ExaminerFeedbackCreateFeedbackSetView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_feedbackset_first_no_created_deadline_event(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -672,8 +683,8 @@ class TestExaminerCreateNewFeedbackSet(TestCase, cradmin_testhelpers.TestCaseMix
             })
 
         feedbacksets = group_models.FeedbackSet.objects.all()
-        self.assertEquals(2, len(feedbacksets))
-        self.assertEquals(datetime.strptime(timestr, '%Y-%m-%d %H:%M'), feedbacksets[1].deadline_datetime)
+        self.assertEquals(3, len(feedbacksets))
+        self.assertEquals(datetime.strptime(timestr, '%Y-%m-%d %H:%M'), feedbacksets[2].deadline_datetime)
 
         group_comments = group_models.GroupComment.objects.all()
         self.assertEquals(0, len(group_comments))
@@ -702,10 +713,10 @@ class TestExaminerCreateNewFeedbackSet(TestCase, cradmin_testhelpers.TestCaseMix
             })
 
         feedbacksets = group_models.FeedbackSet.objects.all()
-        self.assertEquals(2, len(feedbacksets))
-        self.assertEquals(datetime.strptime(timestr, '%Y-%m-%d %H:%M'), feedbacksets[1].deadline_datetime)
+        self.assertEquals(3, len(feedbacksets))
+        self.assertEquals(datetime.strptime(timestr, '%Y-%m-%d %H:%M'), feedbacksets[2].deadline_datetime)
 
         comments = group_models.GroupComment.objects.all()
         self.assertEquals(1, len(comments))
-        self.assertEquals(comments[0].feedback_set_id, feedbacksets[1].id)
+        self.assertEquals(comments[0].feedback_set_id, feedbacksets[2].id)
         self.assertEquals(comments[0].text, comment_text)

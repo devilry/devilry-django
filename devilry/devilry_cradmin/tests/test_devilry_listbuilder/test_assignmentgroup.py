@@ -1,13 +1,13 @@
 from datetime import timedelta
 
 import htmls
+from devilry.apps.core.models import Assignment, AssignmentGroup
+from devilry.devilry_cradmin import devilry_listbuilder
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from devilry.devilry_group import devilry_group_mommy_factories
 from django import test
 from django.utils import timezone
 from model_mommy import mommy
-
-from devilry.apps.core.models import Assignment, AssignmentGroup
-from devilry.devilry_cradmin import devilry_listbuilder
-from devilry.devilry_group import devilry_group_mommy_factories
 
 
 class TestFullyAnonymousSubjectAdminItemValue(test.TestCase):
@@ -513,6 +513,7 @@ class MockNoMultiselectItemValue(devilry_listbuilder.assignmentgroup.ItemValueMi
 
 
 class TestItemValue(test.TestCase):
+
     def test_status_is_corrected(self):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             grading_points=1)
@@ -548,6 +549,7 @@ class TestItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_grade_comment_summary_is_available(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         mommy.make('core.AssignmentGroup')
         testgroup = AssignmentGroup.objects\
             .annotate_with_number_of_commentfiles_from_students()\
@@ -1292,6 +1294,7 @@ class TestMultiselectItemValue(test.TestCase):
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
 
     def test_grade_comment_summary_is_available(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         mommy.make('core.AssignmentGroup')
         testgroup = AssignmentGroup.objects\
             .annotate_with_number_of_commentfiles_from_students()\

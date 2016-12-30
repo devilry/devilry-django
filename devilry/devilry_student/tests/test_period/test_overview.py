@@ -16,6 +16,7 @@ from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import GroupComment
 from devilry.devilry_student.views.period import overview
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
 class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -392,6 +393,7 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_grouplist_comments_sanity(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
         testgroup = mommy.make('core.AssignmentGroup',
@@ -404,21 +406,25 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 group=testgroup)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT,
                    _quantity=2)
         mommy.make('devilry_comment.CommentFile',
                    comment=mommy.make('devilry_group.GroupComment',
                                       feedback_set=feedbackset,
+                                      comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                                       visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                                       user_role=Comment.USER_ROLE_STUDENT))
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    _quantity=5)
         mommy.make('devilry_group.GroupComment',  # Should not be part of count
                    feedback_set=feedbackset,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
                    user_role=Comment.USER_ROLE_EXAMINER)
         mockresponse = self.mock_http200_getrequest_htmls(

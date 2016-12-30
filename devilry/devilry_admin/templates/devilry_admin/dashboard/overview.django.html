@@ -1,4 +1,4 @@
-{% extends "django_cradmin/base.django.html" %}
+{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
 {% load static %}
 {% load i18n %}
 {% load cradmin_tags %}
@@ -15,7 +15,9 @@
 {% endblock pageheader-inner %}
 
 {% block content %}
-<div class="container">
+    {{ block.super }}
+{% comment %}<div class="container">
+<h1>BJALLE</h1>
     {% if periods_where_user_is_subjectadmin_or_periodadmin %}
     <div id="devilry_admin_dashboard_periods_where_user_is_subjectadmin_or_periodadmin">
         <h2>
@@ -67,5 +69,5 @@
         </ul>
     </div>
     {% endif %}
-</div>
+</div>{% endcomment %}
 {% endblock content %}

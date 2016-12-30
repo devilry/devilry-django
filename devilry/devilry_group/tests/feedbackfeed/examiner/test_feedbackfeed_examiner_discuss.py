@@ -2,6 +2,7 @@ from django.test import TestCase
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_examiner
@@ -10,6 +11,9 @@ from devilry.devilry_group.views.examiner import feedbackfeed_examiner
 
 class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
     viewclass = feedbackfeed_examiner.ExaminerDiscussView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choise_add_comment_for_examiners_and_admins_button(self):
         examiner = mommy.make('core.Examiner')
