@@ -9,6 +9,7 @@ from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_group.cradmin_instances import crinstance_base
 from devilry.devilry_group.views.admin import feedbackfeed_admin
 from devilry.devilry_group.views.download_files import feedbackfeed_bulkfiledownload
+from devilry.devilry_group.views.download_files import batch_download_files
 
 
 class Menu(crmenu.Menu):
@@ -28,7 +29,8 @@ class AdminCrInstance(crinstance_base.CrInstanceBase):
     menuclass = Menu
     apps = [
         ('feedbackfeed', feedbackfeed_admin.App),
-        ('feedbackfeed', feedbackfeed_bulkfiledownload.App)
+        ('feedbackfeed', feedbackfeed_bulkfiledownload.App),
+        ('feedbackfeed', batch_download_files.App)
     ]
     id = 'devilry_group_admin'
 
