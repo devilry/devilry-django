@@ -11,8 +11,8 @@ from rest_framework.test import APITestCase
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.apps.core import mommy_recipes
 from devilry.devilry_api import devilry_api_mommy_factories as api_mommy
-from devilry.devilry_api.feedbackset_download.views.feedbackset_download_examiner import ExaminerFeedbacksetView
-from devilry.devilry_api.tests.mixins import test_examiner_mixins, api_test_helper, test_common_mixins
+from devilry.devilry_api.feedbackset_download.views.feedbackset_download_student import StudentFeedbacksetView
+from devilry.devilry_api.tests.mixins import test_student_mixins, api_test_helper, test_common_mixins
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 
 
@@ -27,18 +27,18 @@ class SetUpTearDown(TestCase):
         shutil.rmtree(self.backend_path, ignore_errors=True)
 
 
-class TestFeedbacksetDownloadExaminerPermission(test_common_mixins.TestReadOnlyPermissionMixin,
-                                                test_examiner_mixins.TestAuthAPIKeyExaminerMixin,
-                                                api_test_helper.TestCaseMixin,
-                                                APITestCase):
-    viewclass = ExaminerFeedbacksetView
+class TestFeedbacksetDownloadStudentPermission(test_common_mixins.TestReadOnlyPermissionMixin,
+                                               test_student_mixins.TestAuthAPIKeyStudentMixin,
+                                               api_test_helper.TestCaseMixin,
+                                               APITestCase):
+    viewclass = StudentFeedbacksetView
 
 
-class TestFeedbacksetDownloadExaminer(api_test_helper.TestCaseMixin, SetUpTearDown):
+class TestFeedbacksetDownloadStudent(api_test_helper.TestCaseMixin, SetUpTearDown):
 
-    viewclass = ExaminerFeedbacksetView
+    viewclass = StudentFeedbacksetView
 
-    def test_cannot_download_files_examiner_not_in_group_404(self):
+    def test_cannot_download_student_not_in_group_404(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             # Test download files from feedbackset
             group = mommy.make('core.AssignmentGroup',
@@ -55,8 +55,8 @@ class TestFeedbacksetDownloadExaminer(api_test_helper.TestCaseMixin, SetUpTearDo
                                              filename='testfile-student.txt')
             commentfile_student.file.save('testfile.txt', ContentFile('student-testcontent'))
 
-            examiner = core_mommy.examiner(group=mommy.make('core.AssignmentGroup'))
-            apikey = api_mommy.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
+            candidate = core_mommy.candidate(group=mommy.make('core.AssignmentGroup'))
+            apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
             response = self.mock_get_request(content_id=testfeedbackset.id, apikey=apikey.key)
             self.assertEqual(response.status_code, 404)
             self.assertEqual(response.data['detail'], 'Feedbackset not found')
@@ -68,18 +68,19 @@ class TestFeedbacksetDownloadExaminer(api_test_helper.TestCaseMixin, SetUpTearDo
                                parentnode=mommy.make_recipe(
                                    'devilry.apps.core.assignment_activeperiod_start',
                                    first_deadline=mommy_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_FIRST_DEADLINE))
+            candidate = core_mommy.candidate(group=group)
             testfeedbackset = group_mommy.feedbackset_first_attempt_published(group=group)
             # Add student comment with file
             testcomment_student = mommy.make('devilry_group.GroupComment',
                                              feedback_set=testfeedbackset,
-                                             user_role='student')
+                                             user_role='student',
+                                             user=candidate.relatedstudent.user)
             commentfile_student = mommy.make('devilry_comment.CommentFile',
                                              comment=testcomment_student,
                                              filename='testfile-student.txt')
             commentfile_student.file.save('testfile.txt', ContentFile('student-testcontent'))
 
-            examiner = core_mommy.examiner(group=group)
-            apikey = api_mommy.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
+            apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
             response = self.mock_get_request(content_id=testfeedbackset.id, apikey=apikey.key)
             self.assertEqual(response.status_code, 200)
             zipfileobject = ZipFile(StringIO(response.content))
@@ -90,18 +91,19 @@ class TestFeedbacksetDownloadExaminer(api_test_helper.TestCaseMixin, SetUpTearDo
             # Test download files from feedbackset
             group = mommy.make('core.AssignmentGroup',
                                parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+            candidate = core_mommy.candidate(group=group)
             testfeedbackset = group_mommy.feedbackset_first_attempt_published(group=group)
             # Add student comment with file
             testcomment_student = mommy.make('devilry_group.GroupComment',
                                              feedback_set=testfeedbackset,
-                                             user_role='student')
+                                             user_role='student',
+                                             user=candidate.relatedstudent.user)
             commentfile_student = mommy.make('devilry_comment.CommentFile',
                                              comment=testcomment_student,
                                              filename='testfile-student.txt')
             commentfile_student.file.save('testfile.txt', ContentFile('student-testcontent'))
 
-            examiner = core_mommy.examiner(group=group)
-            apikey = api_mommy.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
+            apikey = api_mommy.api_key_student_permission_read(user=candidate.relatedstudent.user)
             response = self.mock_get_request(content_id=testfeedbackset.id, apikey=apikey.key)
             self.assertEqual(response.status_code, 200)
             zipfileobject = ZipFile(StringIO(response.content))

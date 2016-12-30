@@ -1,5 +1,3 @@
-
-
 from devilry.devilry_api.feedbackset_download.views.feedbackset_download_base import BaseFeedbacksetView
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.models import FeedbackSet
@@ -12,7 +10,7 @@ class StudentFeedbacksetView(BaseFeedbacksetView):
     permission_classes = (StudentPermissionAPIKey, )
     api_key_permissions = (APIKey.STUDENT_PERMISSION_READ, )
 
-    def get_role_query_set(self):
+    def get_role_queryset(self):
         """
         Returns role queryset for student role
 
@@ -23,6 +21,6 @@ class StudentFeedbacksetView(BaseFeedbacksetView):
         return FeedbackSet.objects.filter(group=assignment_group_queryset)
 
     def get(self, request, content_id, *args, **kwargs):
-        super(StudentFeedbacksetView, self).get(request, content_id, *args, **kwargs)
+        return super(StudentFeedbacksetView, self).get(request, content_id, *args, **kwargs)
 
     get.__doc__ = BaseFeedbacksetView.get.__doc__
