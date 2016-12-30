@@ -132,7 +132,7 @@ class AbstractGroupComment(comment_models.Comment):
             set to :obj:`~.AbstractGroupComment.VISIBILITY_PRIVATE`.
         """
         if self.user_role == 'student':
-            if self.visibility is not AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
+            if self.visibility != AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
                 raise ValidationError({
                     'visibility': ugettext_lazy('A student comment is always visible to everyone'),
                 })

@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^assignment-group/', include('devilry.devilry_api.assignment_group.urls')),
     url(r'^feedbackset/', include('devilry.devilry_api.feedbackset.urls')),
     url(r'^group-comment/', include('devilry.devilry_api.group_comment.urls')),
+    url(r'^feedbackset-download/', include('devilry.devilry_api.feedbackset_download.urls')),
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]
 
