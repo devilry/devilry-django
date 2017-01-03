@@ -1,8 +1,10 @@
 import mock
 from django import http
 from django.conf import settings
+from django.http import Http404
 from django.test import TestCase
 from django.utils import timezone
+from django_cradmin.cradmin_testhelpers import TestCaseMixin
 from model_mommy import mommy
 
 # devilry imports
@@ -12,6 +14,7 @@ from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
 from devilry.devilry_group.views.admin import feedbackfeed_admin
+from devilry.devilry_group.cradmin_instances import crinstance_admin
 from devilry.devilry_group import models
 
 
@@ -88,7 +91,42 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
 
+    def test_get_feedbackfeed_periodadmin_raise_404_semi_anonymous(self):
+        # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
+        # It's easier to read if we mock the return value rather than creating a
+        # permission group(this crinstance-function with permission groups is tested separately for the instance)
+        testperiod = mommy.make('core.Period')
+        testassignment = mommy.make('core.Assignment',
+                                    parentnode=testperiod,
+                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        mockrequest = mock.MagicMock()
+        mockrequest.cradmin_instance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
+        with self.assertRaisesMessage(http.Http404, ''):
+            self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup,
+                                 cradmin_instance=mockrequest.cradmin_instance)
+
+    def test_get_feedbackfeed_periodadmin_raise_404_fully_anonymous(self):
+        # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
+        # It's easier to read if we mock the return value rather than creating a
+        # permission group(this crinstance-function with permission groups is tested separately for the instance)
+        testperiod = mommy.make('core.Period')
+        testassignment = mommy.make('core.Assignment',
+                                    parentnode=testperiod,
+                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        mockrequest = mock.MagicMock()
+        mockrequest.cradmin_instance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
+        with self.assertRaisesMessage(http.Http404, ''):
+            self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup,
+                                 cradmin_instance=mockrequest.cradmin_instance)
+
     def test_get_feedbackfeed_subjectadmin_can_see_student_name_semi_anonymous(self):
+        # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
+        # It's easier to read if we mock the return value rather than creating a
+        # permission group(this crinstance-function with permission groups is tested separately for the instance)
         testassignment = mommy.make('core.Assignment',
                                     anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -103,41 +141,23 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         mockrequest.cradmin_instance.get_devilryrole_for_requestuser.return_value = 'subjectadmin'
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                           cradmin_instance=mockrequest.cradmin_instance)
+
         self.assertFalse(mockresponse.selector.exists('.devilry-core-candidate-anonymous-name'))
         self.assertTrue(mockresponse.selector.exists('.devilry-user-verbose-inline'))
 
-    def test_get_feedbackfeed_periodadmin_raise_404_fully_anonymous(self):
-        # creates a user in period permission group
-        testperiod = mommy.make('core.Period')
-        testassignment = mommy.make('core.Assignment',
-                                    parentnode=testperiod,
-                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-        mommy.make('devilry_account.PermissionGroupUser',
-                   user=testuser,
-                   permissiongroup=mommy.make(
-                       'devilry_account.PeriodPermissionGroup',
-                       permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_PERIODADMIN,
-                       period=testperiod).permissiongroup)
-        with self.assertRaisesMessage(http.Http404, ''):
-            self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup)
-
     def test_get_feedbackfeed_subjectadmin_raise_404_fully_anonymous(self):
-        # creates a user in subject permission group
-        testsubject = mommy.make('core.Subject')
+        # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
+        # It's easier to read if we mock the return value rather than creating a
+        # permission group(this crinstance-function with permission groups is tested separately for the instance)
         testassignment = mommy.make('core.Assignment',
                                     anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-        mommy.make('devilry_account.PermissionGroupUser',
-                   user=testuser,
-                   permissiongroup=mommy.make(
-                       'devilry_account.SubjectPermissionGroup',
-                       permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_SUBJECTADMIN,
-                       subject=testsubject).permissiongroup)
+        mockrequest = mock.MagicMock()
+        mockrequest.cradmin_instance.get_devilryrole_for_requestuser.return_value = 'subjectadmin'
         with self.assertRaisesMessage(http.Http404, ''):
-            self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup)
+            self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup,
+                                 cradmin_instance=mockrequest.cradmin_instance)
 
     def test_get_feedbackfeed_admin_wysiwyg_get_comment_choise_add_comment_for_examiners_and_admins_button(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet')
@@ -224,7 +244,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         """
         NOTE: (works as it should)
         Checking that no more queries are executed even though the
-        :func:`devilry.devilry_group.timeline_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
+        :func:`devilry.devilry_group.feedbackfeed_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
         duplicates comment_file query.
         """
         period = mommy.make('core.Period')
@@ -260,3 +280,98 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=admin,
                                                cradmin_instance=mock_cradmininstance)
+
+    def test_get_files_in_sidebar(self):
+        """
+        NOTE: (works as it should)
+        Checking that no more queries are executed even though the
+        :func:`devilry.devilry_group.feedbackfeed_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
+        duplicates comment_file query.
+        """
+        period = mommy.make('core.Period')
+        admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=admin,
+                   permissiongroup=mommy.make(
+                           'devilry_account.PeriodPermissionGroup',
+                           permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_PERIODADMIN,
+                           period=period).permissiongroup)
+        testgroup = mommy.make('core.AssignmentGroup')
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
+        testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+        comment = mommy.make('devilry_group.GroupComment',
+                             user=candidate.relatedstudent.user,
+                             user_role='student',
+                             feedback_set=testfeedbackset)
+        comment2 = mommy.make('devilry_group.GroupComment',
+                              user=candidate.relatedstudent.user,
+                              user_role='student',
+                              feedback_set=testfeedbackset)
+        mommy.make('devilry_comment.CommentFile',
+                   filename='test.py',
+                   comment=comment,
+                   _quantity=100)
+        mommy.make('devilry_comment.CommentFile',
+                   filename='test2.py',
+                   comment=comment2,
+                   _quantity=100)
+        mock_cradmininstance = mock.MagicMock()
+        mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                                          requestuser=admin,
+                                                          cradmin_instance=mock_cradmininstance)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar-uploaded-files'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar-deadlines'))
+
+
+class TestFeedbackfeedAdminPermissions(TestCase, TestCaseMixin):
+    """
+    "End"-testing for view permission. The PermissionGroups are also
+    tested in tests/crinstance/test_crinstance_admin.py.
+    """
+    viewclass = feedbackfeed_admin.AdminFeedbackFeedView
+
+    def test_get_periodadmin_no_access(self):
+        # Periodadmin does not have access to view when the user is not periodadmin for that period.
+        period1 = mommy.make('core.Period')
+        period2 = mommy.make('core.Period')
+        admin = mommy.make(settings.AUTH_USER_MODEL)
+        permissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                     permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_PERIODADMIN,
+                                     period=period2)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=admin,
+                   permissiongroup=permissiongroup.permissiongroup)
+
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period1)
+
+        mockrequest = mock.MagicMock()
+        mockrequest.user = admin
+        mockrequest.cradmin_role = testgroup
+        crinstance = crinstance_admin.AdminCrInstance(request=mockrequest)
+
+        with self.assertRaises(Http404):
+            self.mock_getrequest(cradmin_role=testgroup, cradmin_instance=crinstance)
+
+    def test_get_subjectadmin_no_access(self):
+        # Subjectadmin does not have access to view when the user is not subjectadmin for that perdiod
+        subject1 = mommy.make('core.Subject')
+        subject2 = mommy.make('core.Subject')
+        admin = mommy.make(settings.AUTH_USER_MODEL)
+        permissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                     permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                                     subject=subject2)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=admin,
+                   permissiongroup=permissiongroup.permissiongroup)
+
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode__parentnode=subject1)
+
+        mockrequest = mock.MagicMock()
+        mockrequest.user = admin
+        mockrequest.cradmin_role = testgroup
+        crinstance = crinstance_admin.AdminCrInstance(request=mockrequest)
+
+        with self.assertRaises(Http404):
+            self.mock_getrequest(cradmin_role=testgroup, cradmin_instance=crinstance)

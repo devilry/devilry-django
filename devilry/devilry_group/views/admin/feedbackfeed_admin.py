@@ -7,7 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 
 # Devilry/cradmin imports
 from devilry.apps.core import models as core_models
-from devilry.devilry_account import models as account_models
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models
 from django_cradmin import crapp

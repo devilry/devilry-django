@@ -244,7 +244,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                     'examiner_publish_feedback': 'unused value',
                 }
             })
-        #self.assertEquals(2, group_models.FeedbackSet.objects.all().count())
+        # self.assertEquals(2, group_models.FeedbackSet.objects.all().count())
         self.assertIsNone(group_models.FeedbackSet.objects.all()[0].grading_published_datetime)
 
     def test_post_can_not_publish_with_last_feedbackset_deadline_as_none(self):
@@ -268,6 +268,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                 }
             })
         feedbacksets = group_models.FeedbackSet.objects.all().order_by('created_datetime')
+        # self.assertEquals(3, group_models.FeedbackSet.objects.all().count())
         self.assertEquals(3, len(feedbacksets))
         self.assertIsNone(feedbacksets[0].grading_published_datetime)
         self.assertIsNotNone(feedbacksets[1].grading_published_datetime)
