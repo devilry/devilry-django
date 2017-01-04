@@ -828,25 +828,6 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             )
         )
 
-    def annotate_with_datetime_of_last_student_comment(self):
-        # TODO CACHE: Cache last student comment?
-        """
-        Annotate the queryset with ``datetime_of_last_student_comment``.
-        """
-        return self.annotate(
-            datetime_of_last_student_comment=devilry_djangoaggregate_functions.BooleanCount(
-                models.Case(
-                    models.When(
-                        feedbackset__is_last_in_group=True,
-                        feedbackset__grading_published_datetime__isnull=False,
-                        feedbackset__grading_points__gte=models.F('parentnode__passing_grade_min_points'),
-                        then=1
-                    ),
-                    default=models.Value(None)
-                )
-            )
-        )
-
     def extra_annotate_datetime_of_last_student_comment(self):
         """
         Annotate with the datetiem of the last comment added by a student.
