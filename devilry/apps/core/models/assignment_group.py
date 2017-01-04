@@ -312,27 +312,6 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
                 ]
             )
 
-    def annotate_with_has_unpublished_feedbackdraft(self):
-        """
-        Annotate the queryset with ``has_unpublished_feedbackdraft``.
-
-        A group is considered to have an unpublished feedback draft if the following
-        is true:
-
-        - :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime` is ``None``.
-        - :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points` is not ``None``.
-
-        So this means that all groups annotated with ``has_unpublished_feedbackdraft``
-        are groups that are corrected, and ready be be published.
-        """
-        whenquery = models.Q(feedbackset__grading_published_datetime__isnull=True,
-                             feedbackset__grading_points__isnull=False)
-        return self.annotate(
-            has_unpublished_feedbackdraft=devilry_djangoaggregate_functions.BooleanCount(
-                models.Case(models.When(whenquery, then=1))
-            )
-        )
-
     def annotate_with_number_of_published_feedbacksets(self):
         """
         Annotate the queryset with ``number_of_published_feedbacksets`` -
@@ -357,14 +336,11 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`
         or any comments.
         """
-        return self.annotate_with_number_of_groupcomments() \
-            .annotate_with_number_of_imageannotationcomments() \
-            .annotate_with_number_of_published_feedbacksets() \
+        return self.annotate_with_number_of_published_feedbacksets() \
             .filter(
                 models.Q(number_of_published_feedbacksets__gt=0) |
-                models.Q(number_of_imageannotationcomments__gt=0) |
-                models.Q(number_of_groupcomments__gt=0)
-            )
+                models.Q(cached_data__public_total_comment_count__gt=0) |
+                models.Q(cached_data__public_total_imageannotationcomment_count__gt=0))
 
     def extra_annotate_with_fullname_of_first_candidate(self):
         # Not ment to be used directly - this is used by the
@@ -1646,6 +1622,22 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             return False
         else:
             return self.published_grading_points >= self.assignment.passing_grade_min_points
+
+    @property
+    def has_unpublished_feedbackdraft(self):
+        """
+        A group is considered to have an unpublished feedback draft if the following
+        is true for the last feedbackset:
+
+        - :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime` is ``None``.
+        - :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points` is not ``None``.
+
+        So this means that if this property returns ``True``, the group
+        is corrected, and ready be be published.
+        """
+        last_feedbackset = self.cached_data.last_feedbackset
+        return (last_feedbackset.grading_published_datetime is None
+                and last_feedbackset.grading_points is not None)
 
 
 class AssignmentGroupTag(models.Model):
