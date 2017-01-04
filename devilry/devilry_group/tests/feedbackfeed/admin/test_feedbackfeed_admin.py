@@ -11,11 +11,12 @@ from model_mommy import mommy
 from devilry.apps.core import models as core_models
 from devilry.devilry_account import models as account_models
 from devilry.devilry_account.models import PeriodPermissionGroup
-from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from devilry.devilry_group.cradmin_instances import crinstance_admin
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
 from devilry.devilry_group.views.admin import feedbackfeed_admin
-from devilry.devilry_group.cradmin_instances import crinstance_admin
-from devilry.devilry_group import models
+from devilry.devilry_group import models as group_models
+from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
 class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
@@ -33,28 +34,36 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
                           candidate.assignment_group.assignment.get_path())
 
     def test_get_feedbackfeed_event_delivery_passed(self):
-        feedbackset = mommy.make('devilry_group.FeedbackSet',
-                                 group__parentnode__max_points=10,
-                                 group__parentnode__passing_grade_min_points=5,
-                                 grading_published_datetime=timezone.now(),
-                                 deadline_datetime=timezone.now(),
-                                 grading_points=7)
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       max_points=10,
+                                       passing_grade_min_points=5)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        feedbackset = group_mommy.feedbackset_first_attempt_published(
+                group=testgroup,
+                grading_points=7,
+                deadline_datetime=timezone.now() - timezone.timedelta(days=1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-passed'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-core-grade-failed'))
 
     def test_get_feedbackfeed_event_delivery_failed(self):
-        feedbackset = mommy.make('devilry_group.FeedbackSet',
-                                 group__parentnode__max_points=10,
-                                 group__parentnode__passing_grade_min_points=5,
-                                 grading_published_datetime=timezone.now(),
-                                 grading_points=3)
-
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       max_points=10,
+                                       passing_grade_min_points=5)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        feedbackset = group_mommy.feedbackset_first_attempt_published(
+                group=testgroup,
+                grading_points=0,
+                deadline_datetime=timezone.now() - timezone.timedelta(days=1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-failed'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-core-grade-passed'))
 
     def test_get_feedbackfeed_periodadmin(self):
         period = mommy.make('core.Period')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
         admin = mommy.make(settings.AUTH_USER_MODEL)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         mommy.make('devilry_account.PermissionGroupUser',
                    user=admin,
                    permissiongroup=mommy.make(
@@ -66,14 +75,15 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
                              user_role='admin',
                              user=admin,
                              text='Hello, is it me you\'re looking for?',
-                             feedback_set__group__parentnode__parentnode=period,
-                             visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+                             feedback_set=testfeedbackset,
+                             visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertEqual(
             'periodadmin',
             PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
                 period=period, user=admin))
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_comment_admin(self):
         admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor the norse god')
@@ -82,14 +92,17 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
                                    parentnode__admins=[mommy.make('devilry_account.User', shortname='subjectadmin')],
                                    parentnode__parentnode__admins=[mommy.make('devilry_account.User',
                                                                               shortname='nodeadmin')])
-
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
+        admin = mommy.make(settings.AUTH_USER_MODEL)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='admin',
                              user=admin,
-                             feedback_set__group__parentnode__parentnode=period,
-                             visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+                             feedback_set=testfeedbackset,
+                             visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_periodadmin_raise_404_semi_anonymous(self):
         # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
@@ -106,6 +119,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         with self.assertRaisesMessage(http.Http404, ''):
             self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup,
                                  cradmin_instance=mockrequest.cradmin_instance)
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_periodadmin_raise_404_fully_anonymous(self):
         # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
@@ -122,6 +136,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         with self.assertRaisesMessage(http.Http404, ''):
             self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup,
                                  cradmin_instance=mockrequest.cradmin_instance)
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_subjectadmin_can_see_student_name_semi_anonymous(self):
         # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
@@ -130,13 +145,14 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         testassignment = mommy.make('core.Assignment',
                                     anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         candidate = mommy.make('core.Candidate',
                                assignment_group=testgroup,
                                relatedstudent__user__shortname='teststudent')
         mommy.make('devilry_group.GroupComment',
                    user=candidate.relatedstudent.user,
                    user_role='student',
-                   feedback_set__group=testgroup)
+                   feedback_set=testfeedbackset)
         mockrequest = mock.MagicMock()
         mockrequest.cradmin_instance.get_devilryrole_for_requestuser.return_value = 'subjectadmin'
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
@@ -144,6 +160,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
 
         self.assertFalse(mockresponse.selector.exists('.devilry-core-candidate-anonymous-name'))
         self.assertTrue(mockresponse.selector.exists('.devilry-user-verbose-inline'))
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_get_feedbackfeed_subjectadmin_raise_404_fully_anonymous(self):
         # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
@@ -158,60 +175,65 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         with self.assertRaisesMessage(http.Http404, ''):
             self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup,
                                  cradmin_instance=mockrequest.cradmin_instance)
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
-    def test_get_feedbackfeed_admin_wysiwyg_get_comment_choise_add_comment_for_examiners_and_admins_button(self):
-        feedbackset = mommy.make('devilry_group.FeedbackSet')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+    def test_get_feedbackfeed_admin_wysiwyg_get_comment_choice_add_comment_for_examiners_and_admins_button(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
         self.assertTrue(mockresponse.selector.exists('#submit-id-admin_add_comment_for_examiners'))
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
-    def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choise_add_comment_public_button(self):
-        feedbackset = mommy.make('devilry_group.FeedbackSet')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+    def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choice_add_comment_public_button(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
         self.assertTrue(mockresponse.selector.exists('#submit-id-admin_add_public_comment'))
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_post_feedbackset_comment_visible_to_everyone(self):
         admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor')
         period = mommy.make_recipe('devilry.apps.core.period_active',
                                    admins=[admin])
-        group = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
-        feedbackset = mommy.make('devilry_group.FeedbackSet', group=group)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         self.mock_http302_postrequest(
-            cradmin_role=group,
+            cradmin_role=testgroup,
             requestuser=admin,
-            viewkwargs={'pk': group.id},
+            viewkwargs={'pk': testgroup.id},
             requestkwargs={
                 'data': {
                     'text': 'This is a comment',
                     'admin_add_public_comment': 'unused value'
                 }
             })
-        comments = models.GroupComment.objects.all()
+        comments = group_models.GroupComment.objects.all()
         self.assertEquals(1, len(comments))
         self.assertEquals('visible-to-everyone', comments[0].visibility)
         self.assertEquals('periodadmin', comments[0].user.shortname)
         self.assertEquals(feedbackset.id, comments[0].feedback_set.id)
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_post_feedbackset_comment_visible_to_examiner_and_admins(self):
         admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor')
         period = mommy.make_recipe('devilry.apps.core.period_active',
                                    admins=[admin])
-        group = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
-        feedbackset = mommy.make('devilry_group.FeedbackSet', group=group)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         self.mock_http302_postrequest(
-            cradmin_role=group,
+            cradmin_role=testgroup,
             requestuser=admin,
-            viewkwargs={'pk': group.id},
+            viewkwargs={'pk': testgroup.id},
             requestkwargs={
                 'data': {
                     'text': 'This is a comment',
                     'admin_add_comment_for_examiners': 'unused value'
                 }
             })
-        comments = models.GroupComment.objects.all()
+        comments = group_models.GroupComment.objects.all()
         self.assertEquals(1, len(comments))
         self.assertEquals('visible-to-examiner-and-admins', comments[0].visibility)
         self.assertEquals('periodadmin', comments[0].user.shortname)
         self.assertEquals(feedbackset.id, comments[0].feedback_set.id)
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_get_num_queries(self):
         period = mommy.make('core.Period')
@@ -224,7 +246,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
                            period=period).permissiongroup)
 
         testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
-        testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         candidate = mommy.make('core.Candidate', assignment_group=testgroup)
 
         mommy.make('devilry_group.GroupComment',
@@ -239,6 +261,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=admin,
                                                cradmin_instance=mock_cradmininstance)
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_get_num_queries_with_commentfiles(self):
         """
@@ -257,7 +280,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
                            period=period).permissiongroup)
         testgroup = mommy.make('core.AssignmentGroup')
         candidate = mommy.make('core.Candidate', assignment_group=testgroup)
-        testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         comment = mommy.make('devilry_group.GroupComment',
                              user=candidate.relatedstudent.user,
                              user_role='student',
@@ -280,6 +303,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=admin,
                                                cradmin_instance=mock_cradmininstance)
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_get_files_in_sidebar(self):
         """
@@ -298,7 +322,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
                            period=period).permissiongroup)
         testgroup = mommy.make('core.AssignmentGroup')
         candidate = mommy.make('core.Candidate', assignment_group=testgroup)
-        testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         comment = mommy.make('devilry_group.GroupComment',
                              user=candidate.relatedstudent.user,
                              user_role='student',
@@ -323,6 +347,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar'))
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar-uploaded-files'))
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar-deadlines'))
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
 
 class TestFeedbackfeedAdminPermissions(TestCase, TestCaseMixin):
@@ -331,6 +356,9 @@ class TestFeedbackfeedAdminPermissions(TestCase, TestCaseMixin):
     tested in tests/crinstance/test_crinstance_admin.py.
     """
     viewclass = feedbackfeed_admin.AdminFeedbackFeedView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_periodadmin_no_access(self):
         # Periodadmin does not have access to view when the user is not periodadmin for that period.
@@ -353,6 +381,7 @@ class TestFeedbackfeedAdminPermissions(TestCase, TestCaseMixin):
 
         with self.assertRaises(Http404):
             self.mock_getrequest(cradmin_role=testgroup, cradmin_instance=crinstance)
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_get_subjectadmin_no_access(self):
         # Subjectadmin does not have access to view when the user is not subjectadmin for that perdiod
@@ -375,3 +404,4 @@ class TestFeedbackfeedAdminPermissions(TestCase, TestCaseMixin):
 
         with self.assertRaises(Http404):
             self.mock_getrequest(cradmin_role=testgroup, cradmin_instance=crinstance)
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())

@@ -9,9 +9,13 @@ from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.feedbackfeed_builder import builder_base
 from devilry.devilry_group.feedbackfeed_builder.feedbackfeed_sidebarbuilder import FeedbackFeedSidebarBuilder
 from devilry.devilry_group import models as group_models
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
 class TestFeedbackfeedSidebarBuilder(TestCase):
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_feedbackset_numbering(self):
         # Test that the numbering of the feedbacksets are in ascending order.
@@ -33,6 +37,7 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         # Loop through and check the numbering.
         for numbering, feedbackset_dict in enumerate(sidebarlist):
             self.assertEquals(numbering+1, feedbackset_dict['feedbackset_num'])
+        self.assertEquals(2, group_models.FeedbackSet.objects.count())
 
     def test_num_queries(self):
         # Must be refactored
@@ -63,6 +68,7 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
             sidebarbuilder = FeedbackFeedSidebarBuilder(feedbacksets=feedbackset_queryset)
             sidebarbuilder.build()
             sidebarbuilder.get_as_list()
+        self.assertEquals(2, group_models.FeedbackSet.objects.count())
 
     def test_no_comments_if_no_files(self):
         # Test that the feedbacksets appears, but no comments if there are no files attached.
@@ -86,6 +92,7 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         self.assertEquals(len(sidebarlist), 2)
         self.assertEquals(len(sidebarlist[0]['comments']), 0)
         self.assertEquals(len(sidebarlist[1]['comments']), 0)
+        self.assertEquals(2, group_models.FeedbackSet.objects.count())
 
     def test_feedbackset_ordering_get_as_list(self):
         # Must be refactored
@@ -96,7 +103,7 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
                 group=testgroup,
                 deadline_datetime=timezone.now() - timezone.timedelta(days=1),
                 is_last_in_group=None)
-        testfeedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        testfeedbackset1 = devilry_group_mommy_factories.feedbackset_new_attempt_published(
                 group=testgroup,
                 deadline_datetime=timezone.now() + timezone.timedelta(days=2))
 
@@ -115,6 +122,7 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         sidebarlist = sidebarbuilder.get_as_list()
         self.assertTrue(
                 sidebarlist[0]['feedbackset'].current_deadline() < sidebarlist[1]['feedbackset'].current_deadline())
+        self.assertEquals(2, group_models.FeedbackSet.objects.count())
 
     def test_comments_ordering_get_as_list(self):
         # Must be refactored
@@ -143,6 +151,7 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
                 comments[0]['groupcomment'].published_datetime < comments[1]['groupcomment'].published_datetime)
         self.assertTrue(
                 comments[1]['groupcomment'].published_datetime < comments[2]['groupcomment'].published_datetime)
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_files_for_comments(self):
         # Test the correct number of files for each comment and that it's the correct files.
@@ -181,6 +190,7 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         # Test CommentFiles for testcomment2
         testcomment2_files = comments[1]['files']
         self.assertEquals(testcomment2_files[0].filename, testfile4.filename)
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_items_in_builder_student(self):
         # Test that private comments are not fetched for student
@@ -217,6 +227,7 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         self.assertEquals(len(feedbackset_comments), 2)
         for comment_dict in feedbackset_comments:
             self.assertNotEquals(private_comment.published_datetime, comment_dict['groupcomment'].published_datetime)
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_items_in_builder_examiner(self):
         # Test that examiner can see private comment
@@ -255,5 +266,5 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
 
         comments = sidebarlist[0]['comments']
         self.assertEquals(len(comments), 3)
-        self.assertEquals(
-                private_comment.published_datetime, comments[2]['groupcomment'].published_datetime)
+        self.assertEquals(private_comment.published_datetime, comments[2]['groupcomment'].published_datetime)
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())

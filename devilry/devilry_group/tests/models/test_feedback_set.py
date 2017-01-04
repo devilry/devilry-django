@@ -7,18 +7,22 @@ from model_mommy import mommy
 
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
 class TestFeedbackSetModel(TestCase):
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_feedbackset_group(self):
         testgroup = mommy.make('core.AssignmentGroup')
         feedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
         self.assertEquals(feedbackset.group, testgroup)
 
-    def test_feedbackset_is_last_in_group_default_true(self):
-        feedbackset = mommy.make('devilry_group.FeedbackSet')
-        self.assertTrue(feedbackset.is_last_in_group)
+    # def test_feedbackset_is_last_in_group_default_true(self):
+    #     feedbackset = mommy.make('devilry_group.FeedbackSet')
+    #     self.assertTrue(feedbackset.is_last_in_group)
 
     def test_feedbackset_feedbackset_type_default_first_try(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet')
@@ -195,12 +199,12 @@ class TestFeedbackSetModel(TestCase):
                                       'An assignment can not be published without providing "points".'):
             result, msg = test_feedbackset.publish(published_by=testuser, grading_points=None)
 
-    def test_feedbackset_clean_is_last_in_group_false(self):
-        feedbackset = mommy.prepare('devilry_group.FeedbackSet',
-                                    is_last_in_group=False)
-        with self.assertRaisesMessage(ValidationError,
-                                      'is_last_in_group can not be false.'):
-            feedbackset.clean()
+    # def test_feedbackset_clean_is_last_in_group_false(self):
+    #     feedbackset = mommy.prepare('devilry_group.FeedbackSet',
+    #                                 is_last_in_group=False)
+    #     with self.assertRaisesMessage(ValidationError,
+    #                                   'is_last_in_group can not be false.'):
+    #         feedbackset.clean()
 
     def test_clean_published_by_is_none(self):
         testfeedbackset = mommy.prepare('devilry_group.FeedbackSet',

@@ -2,7 +2,6 @@ from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
-from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.models import GroupComment
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
@@ -12,9 +11,6 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
     """
     General mixin testclass with tests that should work on all examiner feedback views.
     """
-    def setUp(self):
-        AssignmentGroupDbCacheCustomSql().initialize()
-
     def test_get(self):
         examiner = mommy.make('core.Examiner')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
