@@ -1236,8 +1236,7 @@ class TestDevilryCommentSummary(test.TestCase):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_zero_comments_from_students(self):
-        mommy.make('core.AssignmentGroup')
-        testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_students().first()
+        testgroup = mommy.make('core.AssignmentGroup')
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/comment-summary.django.html',
@@ -1253,7 +1252,6 @@ class TestDevilryCommentSummary(test.TestCase):
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT)
-        testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_students().first()
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/comment-summary.django.html',
@@ -1275,7 +1273,6 @@ class TestDevilryCommentSummary(test.TestCase):
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT)
-        testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_students().first()
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/comment-summary.django.html',
@@ -1285,8 +1282,7 @@ class TestDevilryCommentSummary(test.TestCase):
             selector.one('.devilry-core-comment-summary-studentcomments').alltext_normalized)
 
     def test_zero_commentfiles_from_students(self):
-        mommy.make('core.AssignmentGroup')
-        testgroup = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
+        testgroup = mommy.make('core.AssignmentGroup')
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/comment-summary.django.html',
@@ -1304,7 +1300,6 @@ class TestDevilryCommentSummary(test.TestCase):
                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                                  user_role=Comment.USER_ROLE_STUDENT)
         mommy.make('devilry_comment.CommentFile', comment=testcomment)
-        testgroup = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/comment-summary.django.html',
@@ -1328,7 +1323,6 @@ class TestDevilryCommentSummary(test.TestCase):
                                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                                   user_role=Comment.USER_ROLE_STUDENT)
         mommy.make('devilry_comment.CommentFile', comment=testcomment2)
-        testgroup = AssignmentGroup.objects.annotate_with_number_of_commentfiles_from_students().first()
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/comment-summary.django.html',
@@ -1338,8 +1332,7 @@ class TestDevilryCommentSummary(test.TestCase):
             selector.one('.devilry-core-comment-summary-studentfiles').alltext_normalized)
 
     def test_zero_comments_from_examiners(self):
-        mommy.make('core.AssignmentGroup')
-        testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_examiners().first()
+        testgroup = mommy.make('core.AssignmentGroup')
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/comment-summary.django.html',
@@ -1355,7 +1348,6 @@ class TestDevilryCommentSummary(test.TestCase):
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER)
-        testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_examiners().first()
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/comment-summary.django.html',
@@ -1377,7 +1369,6 @@ class TestDevilryCommentSummary(test.TestCase):
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER)
-        testgroup = AssignmentGroup.objects.annotate_with_number_of_groupcomments_from_examiners().first()
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/comment-summary.django.html',
