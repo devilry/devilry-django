@@ -828,32 +828,6 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             )
         )
 
-    def annotate_with_is_passing_grade(self):
-        """
-        Annotate the queryset with ``is_passing_grade``.
-
-        ``is_passing_grade`` is ``True`` if the following is true
-        if the last :class:`~devilry.devilry_group.models.FeedbackSet` in the group:
-
-        - Is published.
-        - Has :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points`
-          greater or equal to ``passing_grade_min_points`` for the
-          :class:`.devilry.apps.core.models.Assignment`.
-        """
-        return self.annotate(
-            is_passing_grade=devilry_djangoaggregate_functions.BooleanCount(
-                models.Case(
-                    models.When(
-                        feedbackset__is_last_in_group=True,
-                        feedbackset__grading_published_datetime__isnull=False,
-                        feedbackset__grading_points__gte=models.F('parentnode__passing_grade_min_points'),
-                        then=1
-                    ),
-                    default=models.Value(None)
-                )
-            )
-        )
-
     def annotate_with_datetime_of_last_student_comment(self):
         # TODO CACHE: Cache last student comment?
         """
@@ -1843,6 +1817,17 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             return None
         else:
             return self.cached_data.last_feedbackset.grading_points
+
+    @property
+    def published_grade_is_passing_grade(self):
+        """
+        Returns ``True`` if :meth:`.published_grading_points` is a passing
+        grade.
+        """
+        if self.published_grading_points is None:
+            return False
+        else:
+            return self.published_grading_points >= self.assignment.passing_grade_min_points
 
 
 class AssignmentGroupTag(models.Model):
