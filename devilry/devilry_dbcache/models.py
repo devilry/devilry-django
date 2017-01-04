@@ -29,3 +29,11 @@ class AssignmentGroupCachedData(models.Model):
     file_upload_count_total = models.PositiveIntegerField()
     file_upload_count_student = models.PositiveIntegerField()
     file_upload_count_examiner = models.PositiveIntegerField()
+
+    @property
+    def last_published_feedbackset_is_last_feedbackset(self):
+        """
+        Returns ``True`` if :obj:`~.AssignmentGroup.last_published_feedbackset`
+        is the same as :obj:`~.AssignmentGroup.last_feedbackset`.
+        """
+        return self.last_published_feedbackset_id == self.last_feedbackset_id

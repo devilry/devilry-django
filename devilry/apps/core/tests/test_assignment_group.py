@@ -2008,93 +2008,95 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
         self.assertTrue(queryset.first().is_corrected)
 
 
-class TestAssignmentGroupQuerySetAnnotateWithGradingPoints(TestCase):
-    def test_annotate_with_grading_points_not_published_is_still_counted(self):
+class TestAssignmentGroupPublishedGradingPoints(TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_published_grading_points_not_published_none(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup,
             grading_points=10)
-        queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
-        self.assertEqual(10, queryset.first().grading_points)
+        testgroup.refresh_from_db()
+        self.assertEqual(None, testgroup.published_grading_points)
 
-    def test_annotate_with_grading_points(self):
+    def test_published_grading_points(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=10)
-        queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
-        self.assertEqual(10, queryset.first().grading_points)
+        testgroup.refresh_from_db()
+        self.assertEqual(10, testgroup.published_grading_points)
 
-    def test_annotate_with_grading_points_zero_is_not_none(self):
+    def test_published_grading_points_zero_is_not_none(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=0)
-        queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
-        self.assertEqual(0, queryset.first().grading_points)
+        testgroup.refresh_from_db()
+        self.assertEqual(0, testgroup.published_grading_points)
 
-    def test_annotate_with_grading_points_multiple_last_published(self):
+    def test_published_grading_points_multiple_last_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
-            grading_points=10,
-            is_last_in_group=False)
+            grading_points=10)
         devilry_group_mommy_factories.feedbackset_new_attempt_published(
             group=testgroup,
-            grading_points=20,
-            is_last_in_group=True)
-        queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
-        self.assertEqual(20, queryset.first().grading_points)
+            grading_points=20)
+        testgroup.refresh_from_db()
+        self.assertEqual(20, testgroup.published_grading_points)
 
-    def test_annotate_with_grading_points_multiple_last_unpublished(self):
+    def test_published_grading_points_multiple_last_unpublished(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
-            grading_points=10,
-            is_last_in_group=False)
+            grading_points=10)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
-            grading_points=20,
-            is_last_in_group=True)
-        queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
-        self.assertEqual(20, queryset.first().grading_points)
-
-    def test_annotate_with_grading_points_multiple_groups(self):
-        testgroup1 = mommy.make('core.AssignmentGroup')
-        testgroup2 = mommy.make('core.AssignmentGroup')
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=testgroup1,
-            grading_points=10)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=testgroup2,
             grading_points=20)
-        queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
-        self.assertEqual(10, queryset.get(id=testgroup1.id).grading_points)
-        self.assertEqual(20, queryset.get(id=testgroup2.id).grading_points)
+        testgroup.refresh_from_db()
+        self.assertEqual(10, testgroup.published_grading_points)
 
-    def test_annotate_with_grading_points_multiple_comments(self):
+
+class TestAssignmentGroupDraftedGradingPoints(TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_drafted_grading_points_not_published_is_ok(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup,
-            grading_points=2)
-        mommy.make('devilry_group.GroupComment', feedback_set=feedbackset, _quantity=5)
-        queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
-        self.assertEqual(2, queryset.get(id=testgroup.id).grading_points)
+            grading_points=10)
+        testgroup.refresh_from_db()
+        self.assertEqual(10, testgroup.drafted_grading_points)
 
-    def test_annotate_with_grading_points_multiple_groups_multiple_comments(self):
-        testgroup1 = mommy.make('core.AssignmentGroup')
-        testgroup2 = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=testgroup1,
-            grading_points=1)
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=testgroup2,
-            grading_points=2)
-        mommy.make('devilry_group.GroupComment', feedback_set=feedbackset1, _quantity=5)
-        mommy.make('devilry_group.GroupComment', feedback_set=feedbackset2, _quantity=6)
-        queryset = AssignmentGroup.objects.all().annotate_with_grading_points()
-        self.assertEqual(1, queryset.get(id=testgroup1.id).grading_points)
-        self.assertEqual(2, queryset.get(id=testgroup2.id).grading_points)
+    def test_drafted_grading_points_zero_is_not_none(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=testgroup,
+            grading_points=0)
+        testgroup.refresh_from_db()
+        self.assertEqual(0, testgroup.drafted_grading_points)
+
+    def test_drafted_grading_points_published_same_as_last_is_none(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup,
+            grading_points=10)
+        testgroup.refresh_from_db()
+        self.assertEqual(None, testgroup.drafted_grading_points)
+
+    def test_drafted_grading_points_multiple_last_unpublished(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup,
+            grading_points=10)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup,
+            grading_points=20)
+        testgroup.refresh_from_db()
+        self.assertEqual(20, testgroup.drafted_grading_points)
 
 
 class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):

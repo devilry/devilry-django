@@ -828,32 +828,6 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             )
         )
 
-    def annotate_with_grading_points(self):
-        """
-        Annotate the queryset with ``grading_points``.
-
-        ``grading_points`` is the :obj:`devilry.devilry_group.models.FeedbackSet.grading_points`
-        for the last feedbackset in the group.
-
-        We do not check if the feedback is published or not. This is for two
-        reasons:
-
-        - We can use :meth:`.annotate_with_is_corrected` to check this -
-         not need to have overlapping methods for that.
-        - We use this to show feedback draft previews (see
-          :meth:`.annotate_with_has_unpublished_feedbackdraft`).
-        """
-        return self.annotate(
-            grading_points=models.Sum(
-                models.Case(
-                    models.When(
-                        feedbackset__is_last_in_group=True,
-                        then='feedbackset__grading_points'
-                    )
-                )
-            )
-        )
-
     def annotate_with_is_passing_grade(self):
         """
         Annotate the queryset with ``is_passing_grade``.
@@ -1839,6 +1813,36 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     def get_all_admin_ids(self):
         warnings.warn("deprecated", DeprecationWarning)
         return self.parentnode.get_all_admin_ids()
+
+    @property
+    def published_grading_points(self):
+        """
+        Get the :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points`
+        from the last **published** :class:`devilry.devilry_group.models.FeedbackSet`.
+
+        This means that this property returns the current public grade for the AssignmentGroup.
+        """
+        if self.cached_data.last_published_feedbackset_id is None:
+            return None
+        else:
+            return self.cached_data.last_published_feedbackset.grading_points
+
+    @property
+    def drafted_grading_points(self):
+        """
+        Get the :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points`
+        from the last :class:`devilry.devilry_group.models.FeedbackSet` if the
+        last feedbackset is not the same as the published feedbackset.
+
+        If the last published feedbackset is the same as the last feedbackset,
+        this always returns ``None``. This will also return ``None`` if the
+        last feedbackset does not have a grade yet.
+        """
+        cached_data = self.cached_data
+        if cached_data.last_published_feedbackset_is_last_feedbackset:
+            return None
+        else:
+            return self.cached_data.last_feedbackset.grading_points
 
 
 class AssignmentGroupTag(models.Model):
