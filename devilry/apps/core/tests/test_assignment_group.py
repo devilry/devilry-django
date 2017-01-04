@@ -2653,15 +2653,14 @@ class TestAssignmentGroupQuerySetFilterUserIsAdmin(TestCase):
                 set(AssignmentGroup.objects.filter_user_is_admin(user=testuser)))
 
 
-class TestAssignmentGroupQuerySetAnnotateWithNumberOfGroupcomments(TestCase):
-
+class TestAssignmentGroupQuerySetNumberOfGroupcomments(TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_annotate_with_number_of_groupcomments_zero(self):
-        mommy.make('core.AssignmentGroup')
-        queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments()
-        self.assertEqual(0, queryset.first().number_of_groupcomments)
+        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup.refresh_from_db()
+        self.assertEqual(0, testgroup.number_of_public_groupcomments)
 
     def test_annotate_with_number_of_groupcomments_only_visible_to_everyone(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -2679,17 +2678,14 @@ class TestAssignmentGroupQuerySetAnnotateWithNumberOfGroupcomments(TestCase):
                    feedback_set=feedbackset,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_PRIVATE)
-        annotated_group = AssignmentGroup.objects.annotate_with_number_of_groupcomments().first()
-        self.assertEqual(1, annotated_group.number_of_groupcomments)
+        self.assertEqual(1, testgroup.number_of_public_groupcomments)
 
     def test_annotate_with_number_of_groupcomments_multiple_comments(self):
         testgroup = mommy.make('core.AssignmentGroup')
         feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=testgroup,
-            is_last_in_group=False)
+            group=testgroup)
         feedbackset2 = devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
-            group=testgroup,
-            is_last_in_group=True)
+            group=testgroup)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset1,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
@@ -2702,37 +2698,8 @@ class TestAssignmentGroupQuerySetAnnotateWithNumberOfGroupcomments(TestCase):
                    feedback_set=feedbackset2,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments()
-        self.assertEqual(3, queryset.first().number_of_groupcomments)
-
-    def test_annotate_with_number_of_groupcomments_multiple_groups(self):
-        testgroup1 = mommy.make('core.AssignmentGroup')
-        feedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=testgroup1)
-        mommy.make('devilry_group.GroupComment',
-                   feedback_set=feedbackset1,
-                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        mommy.make('devilry_group.GroupComment',
-                   feedback_set=feedbackset1,
-                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-
-        testgroup2 = mommy.make('core.AssignmentGroup')
-        feedbackset2 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=testgroup2)
-        mommy.make('devilry_group.GroupComment',
-                   feedback_set=feedbackset2,
-                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
-                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-
-        queryset = AssignmentGroup.objects.annotate_with_number_of_groupcomments()
-        self.assertEqual(
-            2,
-            queryset.get(id=testgroup1.id).number_of_groupcomments)
-        self.assertEqual(
-            1,
-            queryset.get(id=testgroup2.id).number_of_groupcomments)
+        testgroup.refresh_from_db()
+        self.assertEqual(3, testgroup.number_of_public_groupcomments)
 
 
 class TestAssignmentGroupQuerySetAnnotateWithNumberOfGroupcommentsFromStudents(TestCase):

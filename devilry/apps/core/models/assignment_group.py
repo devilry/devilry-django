@@ -312,19 +312,6 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
                 ]
             )
 
-    def annotate_with_number_of_groupcomments(self):
-        """
-        Annotate the queryset with ``number_of_groupcomments`` -
-        the number of :class:`devilry.devilry_group.models.GroupComment`
-        within each AssignmentGroup.
-
-        Only comments that should be visible to everyone with access to the
-        group is included.
-        """
-        return self.annotate(
-            number_of_groupcomments=models.F('cached_data__public_total_comment_count')
-        )
-
     def annotate_with_number_of_groupcomments_from_students(self):
         """
         Annotate the queryset with ``number_of_groupcomments_from_students`` -
@@ -1809,6 +1796,17 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             return False
         else:
             return self.published_grading_points >= self.assignment.passing_grade_min_points
+
+    @property
+    def number_of_public_groupcomments(self):
+        """
+        Get the number of public :class:`devilry.devilry_group.models.GroupComment`
+        within the AssignmentGroup.
+
+        Only comments that should be visible to everyone with access to the
+        group is included.
+        """
+        return self.cached_data.public_total_comment_count
 
 
 class AssignmentGroupTag(models.Model):
