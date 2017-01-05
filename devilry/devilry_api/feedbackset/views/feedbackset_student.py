@@ -1,3 +1,5 @@
+from django.db.models import Prefetch
+
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_api.feedbackset.serializers.serializer_student import FeedbacksetSerializerStudnet
 from devilry.devilry_api.feedbackset.views.feedbackset_base import BaseFeedbacksetView
@@ -18,8 +20,9 @@ class FeedbacksetViewStudent(BaseFeedbacksetView):
         Returns:
             :class:`~devilry_group.Feedbackset` queryset
         """
-        assignment_group_queryset = AssignmentGroup.objects.filter_student_has_access(user=self.request.user)
-        return FeedbackSet.objects.filter(group=assignment_group_queryset)
+        return FeedbackSet.objects \
+            .filter(group__in=AssignmentGroup.objects.filter_student_has_access(user=self.request.user)
+                    .select_related('group'))
 
     def get(self, request, *args, **kwargs):
         return super(FeedbacksetViewStudent, self).get(request, *args, **kwargs)

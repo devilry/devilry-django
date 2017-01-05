@@ -46,8 +46,9 @@ class FeedbacksetViewExaminer(mixins.CreateModelMixin,
         Returns:
             :class:`~devilry_group.Feedbackset` queryset
         """
-        assignment_group_queryset = AssignmentGroup.objects.filter_examiner_has_access(user=self.request.user)
-        return FeedbackSet.objects.filter(group=assignment_group_queryset)
+        return FeedbackSet.objects \
+            .filter(group__in=AssignmentGroup.objects.filter_examiner_has_access(user=self.request.user))\
+            .select_related('group')
 
     def post(self, request, *args, **kwargs):
         """

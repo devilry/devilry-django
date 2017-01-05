@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from model_mommy import mommy
 from rest_framework.test import APITestCase
+from django.conf import settings
 
 from devilry.apps.core import devilry_core_mommy_factories
 from devilry.devilry_api import devilry_api_mommy_factories
@@ -120,6 +121,23 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['created_by_fullname'], 'Thor')
+
+    def test_multiple_groups_and_feedbacksets(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        related_examiner = mommy.make('core.RelatedExaminer', user=testuser)
+        group1 = mommy.make('core.AssignmentGroup',
+                            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        group2 = mommy.make('core.AssignmentGroup',
+                            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Examiner', assignmentgroup=group1, relatedexaminer=related_examiner)
+        mommy.make('core.Examiner', assignmentgroup=group2, relatedexaminer=related_examiner)
+        group_mommy.feedbackset_first_attempt_published(is_last_in_group=False, group=group1)
+        group_mommy.feedbackset_first_attempt_published(is_last_in_group=False, group=group2)
+        group_mommy.feedbackset_new_attempt_unpublished(group=group1)
+        group_mommy.feedbackset_new_attempt_unpublished(group=group2)
+        apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=testuser)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(len(response.data), 4)
 
 
 class TestFeedbacksetAnonymization(api_test_helper.TestCaseMixin,

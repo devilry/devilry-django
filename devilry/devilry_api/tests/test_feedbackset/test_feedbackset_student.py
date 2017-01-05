@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from model_mommy import mommy
 from rest_framework.test import APITestCase
 
+from django.conf import settings
 from devilry.apps.core import devilry_core_mommy_factories
 from devilry.apps.core.models import Assignment
 from devilry.devilry_api import devilry_api_mommy_factories
@@ -180,6 +181,36 @@ class TestFeedbacksetAnonymization(api_test_helper.TestCaseMixin,
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['created_by_fullname'], None)
+
+    def test_multiple_groups_and_feedbacksets(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        related_student = mommy.make('core.RelatedStudent', user=testuser)
+        group1 = mommy.make('core.AssignmentGroup')
+        group2 = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate', assignment_group=group1, relatedstudent=related_student)
+        mommy.make('core.Candidate', assignment_group=group2, relatedstudent=related_student)
+        group_mommy.feedbackset_first_attempt_published(is_last_in_group=False, group=group1)
+        group_mommy.feedbackset_first_attempt_published(is_last_in_group=False, group=group2)
+        group_mommy.feedbackset_new_attempt_unpublished(group=group1)
+        group_mommy.feedbackset_new_attempt_unpublished(group=group2)
+        apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=testuser)
+        response = self.mock_get_request(apikey=apikey.key)
+        self.assertEqual(len(response.data), 4)
+
+    # def test_num_queries(self):
+    #     testuser = mommy.make(settings.AUTH_USER_MODEL)
+    #     related_student = mommy.make('core.RelatedStudent', user=testuser)
+    #     group1 = mommy.make('core.AssignmentGroup')
+    #     group2 = mommy.make('core.AssignmentGroup')
+    #     mommy.make('core.Candidate', assignment_group=group1, relatedstudent=related_student)
+    #     mommy.make('core.Candidate', assignment_group=group2, relatedstudent=related_student)
+    #     group_mommy.feedbackset_first_attempt_published(is_last_in_group=False, group=group1)
+    #     group_mommy.feedbackset_first_attempt_published(is_last_in_group=False, group=group2)
+    #     group_mommy.feedbackset_new_attempt_unpublished(group=group1)
+    #     group_mommy.feedbackset_new_attempt_unpublished(group=group2)
+    #     apikey = devilry_api_mommy_factories.api_key_student_permission_read(user=testuser)
+    #     with self.assertNumQueries(3):
+    #         self.mock_get_request(apikey=apikey.key)
 
 
 class TestFeedbacksetFilters(api_test_helper.TestCaseMixin,
