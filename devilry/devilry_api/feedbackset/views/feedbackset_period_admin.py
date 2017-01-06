@@ -19,7 +19,7 @@ class FeedbacksetViewPeriodAdmin(BaseFeedbacksetView):
             :class:`~devilry_group.Feedbackset` queryset
         """
         assignment_group_queryset = AssignmentGroup.objects.filter_user_is_period_admin(user=self.request.user)
-        return FeedbackSet.objects.filter(group=assignment_group_queryset)
+        return FeedbackSet.objects.filter(group__in=assignment_group_queryset).select_related('group')
 
     def get(self, request, *args, **kwargs):
         return super(FeedbacksetViewPeriodAdmin, self).get(request, *args, **kwargs)

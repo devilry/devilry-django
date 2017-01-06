@@ -25,8 +25,9 @@ class GroupCommentViewPeriodAdmin(mixins.CreateModelMixin,
             :class:`~devilry_group.GroupComment` queryset
         """
         assignment_group_queryset = AssignmentGroup.objects.filter_user_is_period_admin(user=self.request.user)
-        return GroupComment.objects.filter(feedback_set__group=assignment_group_queryset,
-                                           comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT) \
+        return GroupComment.objects.filter(feedback_set__group__in=assignment_group_queryset,
+                                           comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)\
+            .select_related('feedback_set__group')\
             .exclude_private_comments_from_other_users(user=self.request.user)
 
     def get(self, request, feedback_set, *args, **kwargs):

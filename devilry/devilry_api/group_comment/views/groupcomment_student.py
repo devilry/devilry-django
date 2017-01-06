@@ -24,9 +24,10 @@ class GroupCommentViewStudent(mixins.CreateModelMixin,
             :class:`~devilry_group.GroupComment` queryset
         """
         assignment_group_queryset = AssignmentGroup.objects.filter_student_has_access(user=self.request.user)
-        return GroupComment.objects.filter(feedback_set__group=assignment_group_queryset,
+        return GroupComment.objects.filter(feedback_set__group__in=assignment_group_queryset,
                                            comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
-                                           visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+                                           visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)\
+            .select_related('feedback_set__group')
 
     def get(self, request, feedback_set, *args, **kwargs):
         return super(GroupCommentViewStudent, self).get(request, feedback_set, *args, **kwargs)
