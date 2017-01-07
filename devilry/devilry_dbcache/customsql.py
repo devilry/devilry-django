@@ -17,6 +17,7 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
             'feedbackset/validate.sql',
             'feedbackset/triggers.sql',
             'groupcomment/triggers.sql',
+            'imageannotationcomment/triggers.sql',
             'assignment_group_cached_data/rebuild.sql',
         ])
 

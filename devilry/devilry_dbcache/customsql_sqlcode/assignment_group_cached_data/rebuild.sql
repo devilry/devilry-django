@@ -97,7 +97,59 @@ BEGIN
                 devilry_group_groupcomment.visibility = 'visible-to-everyone'
                 AND
                 devilry_comment_comment.user_role = 'admin'
-        ) AS public_admin_comment_count
+        ) AS public_admin_comment_count,
+        (
+            SELECT COUNT(devilry_group_imageannotationcomment.comment_ptr_id)
+            FROM devilry_group_imageannotationcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_imageannotationcomment.feedback_set_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_imageannotationcomment.visibility = 'visible-to-everyone'
+        ) AS public_total_imageannotationcomment_count,
+        (
+            SELECT COUNT(devilry_group_imageannotationcomment.comment_ptr_id)
+            FROM devilry_group_imageannotationcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_imageannotationcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_imageannotationcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_imageannotationcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'student'
+        ) AS public_student_imageannotationcomment_count,
+        (
+            SELECT COUNT(devilry_group_imageannotationcomment.comment_ptr_id)
+            FROM devilry_group_imageannotationcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_imageannotationcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_imageannotationcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_imageannotationcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'examiner'
+        ) AS public_examiner_imageannotationcomment_count,
+        (
+            SELECT COUNT(devilry_group_imageannotationcomment.comment_ptr_id)
+            FROM devilry_group_imageannotationcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_imageannotationcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_imageannotationcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_imageannotationcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'admin'
+        ) AS public_admin_imageannotationcomment_count
     FROM core_assignmentgroup AS assignmentgroup
     WHERE id = param_group_id
     INTO var_groupcachedata;
@@ -142,10 +194,10 @@ BEGIN
         var_groupcachedata.public_student_comment_count,
         var_groupcachedata.public_examiner_comment_count,
         var_groupcachedata.public_admin_comment_count,
-        0,  -- public_total_imageannotationcomment_count,
-        0,  -- public_student_imageannotationcomment_count,
-        0,  -- public_examiner_imageannotationcomment_count,
-        0,  -- public_admin_imageannotationcomment_count,
+        var_groupcachedata.public_total_imageannotationcomment_count,
+        var_groupcachedata.public_student_imageannotationcomment_count,
+        var_groupcachedata.public_examiner_imageannotationcomment_count,
+        var_groupcachedata.public_admin_imageannotationcomment_count,
         0,  -- file_upload_count_total,
         0,  -- file_upload_count_student,
         0   -- file_upload_count_examiner
@@ -160,10 +212,10 @@ BEGIN
         public_student_comment_count = var_groupcachedata.public_student_comment_count,
         public_examiner_comment_count = var_groupcachedata.public_examiner_comment_count,
         public_admin_comment_count = var_groupcachedata.public_admin_comment_count,
-        public_total_imageannotationcomment_count = 0,
-        public_student_imageannotationcomment_count = 0,
-        public_examiner_imageannotationcomment_count = 0,
-        public_admin_imageannotationcomment_count = 0,
+        public_total_imageannotationcomment_count = var_groupcachedata.public_total_imageannotationcomment_count,
+        public_student_imageannotationcomment_count = var_groupcachedata.public_student_imageannotationcomment_count,
+        public_examiner_imageannotationcomment_count = var_groupcachedata.public_examiner_imageannotationcomment_count,
+        public_admin_imageannotationcomment_count = var_groupcachedata.public_admin_imageannotationcomment_count,
         file_upload_count_total = 0,
         file_upload_count_student = 0,
         file_upload_count_examiner = 0;
