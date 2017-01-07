@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     # 'haystack',
     'ievv_opensource.ievvtasks_common',
     'ievv_opensource.ievv_batchframework',
+    'ievv_opensource.ievv_customsql',
 
     'devilry.devilry_bulkcreate_users',
     'devilry.devilry_cradmin',
