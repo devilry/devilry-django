@@ -1,4 +1,6 @@
 import htmls
+from django.utils import timezone
+
 from devilry.apps.core.models import Assignment, AssignmentGroup
 from devilry.apps.core.templatetags import devilry_core_tags
 from devilry.devilry_comment.models import Comment
@@ -1249,6 +1251,7 @@ class TestDevilryCommentSummary(test.TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   feedback_set__deadline_datetime=timezone.now(),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT)
@@ -1264,12 +1267,13 @@ class TestDevilryCommentSummary(test.TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
-                   feedback_set__is_last_in_group=False,
+                   feedback_set__deadline_datetime=timezone.now(),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT)
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   feedback_set__deadline_datetime=timezone.now(),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT)
@@ -1296,6 +1300,7 @@ class TestDevilryCommentSummary(test.TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         testcomment = mommy.make('devilry_group.GroupComment',
                                  feedback_set__group=testgroup,
+                                 feedback_set__deadline_datetime=timezone.now(),
                                  comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                                  user_role=Comment.USER_ROLE_STUDENT)
@@ -1312,13 +1317,14 @@ class TestDevilryCommentSummary(test.TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         testcomment1 = mommy.make('devilry_group.GroupComment',
                                   feedback_set__group=testgroup,
-                                  feedback_set__is_last_in_group=False,
+                                  feedback_set__deadline_datetime=timezone.now(),
                                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                                   user_role=Comment.USER_ROLE_STUDENT)
         mommy.make('devilry_comment.CommentFile', comment=testcomment1)
         testcomment2 = mommy.make('devilry_group.GroupComment',
                                   feedback_set__group=testgroup,
+                                  feedback_set__deadline_datetime=timezone.now(),
                                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                                   user_role=Comment.USER_ROLE_STUDENT)
@@ -1345,6 +1351,7 @@ class TestDevilryCommentSummary(test.TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   feedback_set__deadline_datetime=timezone.now(),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER)
@@ -1360,12 +1367,13 @@ class TestDevilryCommentSummary(test.TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
-                   feedback_set__is_last_in_group=False,
+                   feedback_set__deadline_datetime=timezone.now(),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER)
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   feedback_set__deadline_datetime=timezone.now(),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER)
@@ -1393,6 +1401,7 @@ class TestDevilryCommentSummary(test.TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   feedback_set__deadline_datetime=timezone.now(),
                    visibility=GroupComment.VISIBILITY_PRIVATE,
                    user=testuser,
                    user_role=Comment.USER_ROLE_EXAMINER)
@@ -1411,12 +1420,13 @@ class TestDevilryCommentSummary(test.TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   feedback_set__deadline_datetime=timezone.now(),
                    user=testuser,
-                   feedback_set__is_last_in_group=False,
                    visibility=GroupComment.VISIBILITY_PRIVATE,
                    user_role=Comment.USER_ROLE_EXAMINER)
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
+                   feedback_set__deadline_datetime=timezone.now(),
                    user=testuser,
                    visibility=GroupComment.VISIBILITY_PRIVATE,
                    user_role=Comment.USER_ROLE_EXAMINER)

@@ -186,14 +186,15 @@ class TestAssignmentGroup(TestCase):
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    grading_published_datetime=timezone.now(),  # -> published=True
-                   is_last_in_group=None,
+                   deadline_datetime=timezone.now(),
                    grading_points=1)
 
         self.assertTrue(testgroup.last_feedbackset_is_published)
 
         mommy.make('devilry_group.FeedbackSet',
-                                     group=testgroup,
-                                     grading_points=1)
+                   group=testgroup,
+                   deadline_datetime=timezone.now(),
+                   grading_points=1)
 
         testgroup.cached_data.refresh_from_db()  # Update cached data from database
         self.assertFalse(testgroup.last_feedbackset_is_published)
@@ -597,12 +598,13 @@ class TestAssignmentGroup(TestCase):
         testassignment = mommy.make('core.Assignment',
                                     passing_grade_min_points=1)
         passingfeedbackset = mommy.make('devilry_group.FeedbackSet',
+                                        deadline_datetime=timezone.now(),
                                         grading_published_datetime=timezone.now(),
-                                        is_last_in_group=None,
                                         group__parentnode=testassignment,
                                         grading_points=1)
         mommy.make('devilry_group.FeedbackSet',
                    group__parentnode=testassignment,
+                   deadline_datetime=timezone.now(),
                    grading_published_datetime=timezone.now(),
                    grading_points=0)
         self.assertEqual(
@@ -614,6 +616,7 @@ class TestAssignmentGroup(TestCase):
                                     passing_grade_min_points=1)
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=None,
+                   deadline_datetime=timezone.now(),
                    group__parentnode=testassignment,
                    grading_points=1)
         self.assertEqual(
@@ -626,11 +629,12 @@ class TestAssignmentGroup(TestCase):
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
-                   is_last_in_group=None,
+                   deadline_datetime=timezone.now(),
                    grading_published_datetime=timezone.now() - timedelta(days=2),
                    grading_points=1)
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=None,
+                   deadline_datetime=timezone.now(),
                    group=testgroup,
                    grading_points=0)
         self.assertEqual(
@@ -643,18 +647,18 @@ class TestAssignmentGroup(TestCase):
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now() - timedelta(days=2),
+                   deadline_datetime=timezone.now(),
                    group=testgroup,
-                   is_last_in_group=None,
                    grading_points=0)
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now(),
+                   deadline_datetime=timezone.now(),
                    group=testgroup,
-                   is_last_in_group=None,
                    grading_points=1)
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now() - timedelta(days=3),
                    group=testgroup,
-                   is_last_in_group=None,
+                   deadline_datetime=timezone.now(),
                    grading_points=0)
         self.assertEqual(
             [testgroup],
@@ -667,16 +671,17 @@ class TestAssignmentGroup(TestCase):
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now() - timedelta(days=2),
                    group=testgroup,
-                   is_last_in_group=None,
+                   deadline_datetime=timezone.now(),
                    grading_points=1)
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now(),
                    group=testgroup,
-                   is_last_in_group=None,
+                   deadline_datetime=timezone.now(),
                    grading_points=0)
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now() - timedelta(days=3),
                    group=testgroup,
+                   deadline_datetime=timezone.now(),
                    grading_points=1)
         self.assertEqual(
             [],
@@ -688,6 +693,7 @@ class TestAssignmentGroup(TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now(),
+                   deadline_datetime=timezone.now(),
                    group=testgroup,
                    grading_points=1)
         self.assertEqual(
@@ -1931,8 +1937,8 @@ class TestAssignmentGroupIsCorrected(TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
-                   grading_published_datetime=None,
-                   is_last_in_group=True)
+                   deadline_datetime=timezone.now(),
+                   grading_published_datetime=None)
         testgroup.refresh_from_db()
         self.assertFalse(testgroup.is_corrected)
 
@@ -1940,8 +1946,8 @@ class TestAssignmentGroupIsCorrected(TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
-                   grading_published_datetime=timezone.now(),
-                   is_last_in_group=True)
+                   deadline_datetime=timezone.now(),
+                   grading_published_datetime=timezone.now())
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.is_corrected)
 
@@ -1949,14 +1955,14 @@ class TestAssignmentGroupIsCorrected(TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
+                   deadline_datetime=timezone.now(),
                    grading_published_datetime=timezone.now() - timedelta(days=3),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
-                   is_last_in_group=None)
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
+                   deadline_datetime=timezone.now(),
                    grading_published_datetime=None,
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
-                   is_last_in_group=True)
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
         testgroup.refresh_from_db()
         self.assertFalse(testgroup.is_corrected)
 
@@ -1964,14 +1970,14 @@ class TestAssignmentGroupIsCorrected(TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
+                   deadline_datetime=timezone.now(),
                    grading_published_datetime=timezone.now() - timedelta(days=2),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
-                   is_last_in_group=None)
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
+                   deadline_datetime=timezone.now(),
                    grading_published_datetime=timezone.now() - timedelta(days=1),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
-                   is_last_in_group=True)
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.is_corrected)
 
@@ -2174,13 +2180,11 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastStudentComment(T
                    feedback_set__group=testgroup,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set__is_last_in_group=None,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT,
-                   feedback_set__is_last_in_group=None,
                    published_datetime=datetime(2009, 12, 24, 0, 0))
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
@@ -2283,13 +2287,11 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastExaminerComment(
                    feedback_set__group=testgroup,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set__is_last_in_group=None,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER,
-                   feedback_set__is_last_in_group=None,
                    published_datetime=datetime(2009, 12, 24, 0, 0))
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
@@ -2392,13 +2394,11 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastAdminComment(Tes
                    feedback_set__group=testgroup,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set__is_last_in_group=None,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_ADMIN,
-                   feedback_set__is_last_in_group=None,
                    published_datetime=datetime(2009, 12, 24, 0, 0))
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
@@ -2633,15 +2633,12 @@ class TestAssignmentGroupQuerySetAnnotateWithNumberOfPublishedFeedbacksets(TestC
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
-                   is_last_in_group=None,
                    grading_published_datetime=timezone.now())
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
-                   is_last_in_group=None,
                    grading_published_datetime=timezone.now())
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
-                   is_last_in_group=None,
                    grading_published_datetime=None)
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
@@ -2656,15 +2653,12 @@ class TestAssignmentGroupQuerySetAnnotateWithNumberOfPublishedFeedbacksets(TestC
         testgroup2 = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup1,
-                   is_last_in_group=None,
                    grading_published_datetime=timezone.now())
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup1,
-                   is_last_in_group=None,
                    grading_published_datetime=timezone.now())
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup2,
-                   is_last_in_group=None,
                    grading_published_datetime=None)
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup2,
@@ -2689,17 +2683,19 @@ class TestAssignmentGroupQuerySetFilterWithPublishedFeedbackOrComments(TestCase)
         mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup_with_published_feedback,
-                   is_last_in_group=None,
+                   deadline_datetime=timezone.now(),
                    grading_published_datetime=timezone.now())
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup_with_unpublished_feedback,
-                   is_last_in_group=None,
+                   deadline_datetime=timezone.now(),
                    grading_published_datetime=None)
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup_with_groupcomment,
+                   feedback_set__deadline_datetime=timezone.now(),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set__group=testgroup_with_imageannotationcomment,
+                   feedback_set__deadline_datetime=timezone.now(),
                    comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION)
         queryset = AssignmentGroup.objects.filter_with_published_feedback_or_comments()
         self.assertEqual(
@@ -2740,9 +2736,9 @@ class TestAssignmentGroupHasUnpublishedFeedbackset(TestCase):
     def test_annotate_with_has_unpublished_feedbackdraft_multiple_feedbacksets(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=testgroup, is_last_in_group=None)
+            group=testgroup)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
-            group=testgroup, is_last_in_group=True, grading_points=1)
+            group=testgroup, grading_points=1)
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.has_unpublished_feedbackdraft)
 

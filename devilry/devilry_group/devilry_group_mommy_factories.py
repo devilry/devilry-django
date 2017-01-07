@@ -24,7 +24,6 @@ def feedbackset_save(feedbackset, **kwargs):
     """
     for key, value in kwargs.iteritems():
         setattr(feedbackset, key, value)
-    feedbackset.is_last_in_group = None  # NOTE: is_last_in_group is deprecated, and will be removed
     feedbackset.full_clean()
     feedbackset.save()
 
@@ -132,14 +131,15 @@ def feedbackset_new_attempt_published(group, grading_published_datetime=None, gr
     if not group:
         raise ValueError('A FeedbackSet as a new attempt must have a pre-existing group!')
     kwargs.setdefault('deadline_datetime', timezone.now())
-    examiner = mommy.make('core.Examiner', assignmentgroup=group)
+    if 'grading_published_by' not in kwargs:
+        examiner = mommy.make('core.Examiner', assignmentgroup=group)
+        kwargs['grading_published_by'] = examiner.relatedexaminer.user
     feedbackset = mommy.prepare(
         'devilry_group.FeedbackSet',
         group=group,
         feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
         grading_published_datetime=grading_published_datetime or timezone.now(),
         grading_points=grading_points,
-        grading_published_by=examiner.relatedexaminer.user,
         **kwargs
     )
     feedbackset.full_clean()
