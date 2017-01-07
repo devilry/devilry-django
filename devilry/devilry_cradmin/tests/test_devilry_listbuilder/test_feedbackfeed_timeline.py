@@ -5,6 +5,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_timeline as listbuilder
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_timelinebuilder
 from devilry.devilry_group.feedbackfeed_builder import builder_base
 from devilry.apps.core import models as core_models
@@ -15,6 +16,9 @@ class TestFeedbackfeedTimelineListBuilderList(test.TestCase):
     """
     Testing the listbuilder and the items it holds.
     """
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_listbuilder_list_items_complete_example(self):
         """
         Test a complete example of the listbuilder with all events.
