@@ -53,6 +53,10 @@ def feedbackset_first_attempt_published(group=None, grading_published_datetime=N
     """
     if not group:
         group = mommy.make('core.AssignmentGroup')
+    if 'deadline_datetime' in kwargs:
+        raise ValueError('deadline_datetime can not be specified for '
+                         'the first FeedbackSet in a group. The deadline should '
+                         'be specifed using Assignment.first_deadline!')
     group_cache = cache_models.AssignmentGroupCachedData.objects.get(group=group)
     first_feedbackset = group_cache.first_feedbackset
     first_feedbackset.feedbackset_type = FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT
@@ -82,6 +86,10 @@ def feedbackset_first_attempt_unpublished(group=None, **kwargs):
     """
     if not group:
         group = mommy.make('core.AssignmentGroup')
+    if 'deadline_datetime' in kwargs:
+        raise ValueError('deadline_datetime can not be specified for '
+                         'the first FeedbackSet in a group. The deadline should '
+                         'be specifed using Assignment.first_deadline!')
     group_cache = cache_models.AssignmentGroupCachedData.objects.get(group=group)
     first_feedbackset = group_cache.first_feedbackset
     first_feedbackset.feedbackset_type = FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT
