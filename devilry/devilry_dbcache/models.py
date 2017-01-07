@@ -53,3 +53,10 @@ class AssignmentGroupCachedData(models.Model):
     @property
     def public_admin_anytype_comment_comment_count(self):
         return self.public_admin_comment_count + self.public_admin_imageannotationcomment_count
+
+    @property
+    def last_feedbackset_deadline_datetime(self):
+        if self.last_feedbackset == self.first_feedbackset:
+            return self.group.assignment.first_deadline
+        else:
+            return self.last_feedbackset.deadline_datetime

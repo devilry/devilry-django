@@ -556,70 +556,6 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             order_by=order_by
         )
 
-    def annotate_with_is_waiting_for_feedback(self):
-        """
-        Annotate the queryset with ``is_waiting_for_feedback``.
-
-        Groups waiting for feedback is all groups where
-        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
-        has expired, and the feedbackset does not have a
-        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
-        """
-        from devilry.devilry_group.models import FeedbackSet
-        now = timezone.now()
-        whenquery = models.Q(
-            feedbackset__is_last_in_group=True,
-            feedbackset__grading_published_datetime__isnull=True
-        ) & (
-            models.Q(
-                models.Q(feedbackset__deadline_datetime__lt=now),
-                ~models.Q(feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
-            ) |
-            models.Q(
-                feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
-                parentnode__first_deadline__lt=now
-            )
-        )
-        return self.annotate(
-            is_waiting_for_feedback=devilry_djangoaggregate_functions.BooleanCount(
-                models.Case(
-                    models.When(whenquery, then=1)
-                )
-            )
-        )
-
-    def annotate_with_is_waiting_for_deliveries(self):
-        """
-        Annotate the queryset with ``is_waiting_for_deliveries``.
-
-        Groups waiting for deliveries is all groups where
-        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
-        has not expired, and the feedbackset does not have a
-        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
-        """
-        from devilry.devilry_group.models import FeedbackSet
-        now = timezone.now()
-        whenquery = models.Q(
-            feedbackset__is_last_in_group=True,
-            feedbackset__grading_published_datetime__isnull=True
-        ) & (
-            models.Q(
-                models.Q(feedbackset__deadline_datetime__gte=now),
-                ~models.Q(feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
-            ) |
-            models.Q(
-                feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
-                parentnode__first_deadline__gte=now
-            )
-        )
-        return self.annotate(
-            is_waiting_for_deliveries=devilry_djangoaggregate_functions.BooleanCount(
-                models.Case(
-                    models.When(whenquery, then=1)
-                )
-            )
-        )
-
     def extra_annotate_datetime_of_last_student_comment(self):
         """
         Annotate with the datetiem of the last comment added by a student.
@@ -1644,6 +1580,30 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Returns ``True`` if the last feedbackset is published.
         """
         return self.cached_data.last_published_feedbackset_is_last_feedbackset
+
+    @property
+    def is_waiting_for_feedback(self):
+        """
+        Groups waiting for feedback is all groups where
+        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
+        has expired, and the feedbackset does not have a
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
+        """
+        if self.is_corrected:
+            return False
+        return self.cached_data.last_feedbackset_deadline_datetime < timezone.now()
+
+    @property
+    def is_waiting_for_deliveries(self):
+        """
+        Groups waiting for deliveries is all groups where
+        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
+        has not expired, and the feedbackset does not have a
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
+        """
+        if self.is_corrected:
+            return False
+        return self.cached_data.last_feedbackset_deadline_datetime >= timezone.now()
 
 
 class AssignmentGroupTag(models.Model):
