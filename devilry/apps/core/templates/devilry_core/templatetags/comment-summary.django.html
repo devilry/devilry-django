@@ -9,7 +9,7 @@
         {% endblocktrans %}
     </span>
     <span class="devilry-core-comment-summary-studentfiles">
-        {% blocktrans trimmed count filecount=group.cached_data.file_upload_count_student %}
+        {% blocktrans trimmed count filecount=group.cached_data.public_student_file_upload_count %}
             {{ filecount }} file from student.
         {% plural %}
             {{ filecount }} files from student.

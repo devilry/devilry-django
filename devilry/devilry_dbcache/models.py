@@ -16,21 +16,22 @@ class AssignmentGroupCachedData(models.Model):
 
     #: Number of FeedbackSets with :obj:`~devilry.devilry_group.models.FeedbackSet.feedbackset_type`
     #: set to :obj:`~devilry.devilry_group.models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT`.
-    new_attempt_count = models.PositiveIntegerField()
+    new_attempt_count = models.PositiveIntegerField(default=0)
 
-    public_total_comment_count = models.PositiveIntegerField()
-    public_student_comment_count = models.PositiveIntegerField()
-    public_examiner_comment_count = models.PositiveIntegerField()
-    public_admin_comment_count = models.PositiveIntegerField()
+    public_total_comment_count = models.PositiveIntegerField(default=0)
+    public_student_comment_count = models.PositiveIntegerField(default=0)
+    public_examiner_comment_count = models.PositiveIntegerField(default=0)
+    public_admin_comment_count = models.PositiveIntegerField(default=0)
 
-    public_total_imageannotationcomment_count = models.PositiveIntegerField()
-    public_student_imageannotationcomment_count = models.PositiveIntegerField()
-    public_examiner_imageannotationcomment_count = models.PositiveIntegerField()
-    public_admin_imageannotationcomment_count = models.PositiveIntegerField()
+    public_total_imageannotationcomment_count = models.PositiveIntegerField(default=0)
+    public_student_imageannotationcomment_count = models.PositiveIntegerField(default=0)
+    public_examiner_imageannotationcomment_count = models.PositiveIntegerField(default=0)
+    public_admin_imageannotationcomment_count = models.PositiveIntegerField(default=0)
 
-    file_upload_count_total = models.PositiveIntegerField()
-    file_upload_count_student = models.PositiveIntegerField()
-    file_upload_count_examiner = models.PositiveIntegerField()
+    #: Number of files uploaded by a student on a
+    #: comment that is visible to everyone on the assignment.
+    # file_upload_count_student = models.PositiveIntegerField(default=0)
+    public_student_file_upload_count = models.PositiveIntegerField(default=0)
 
     @property
     def last_published_feedbackset_is_last_feedbackset(self):

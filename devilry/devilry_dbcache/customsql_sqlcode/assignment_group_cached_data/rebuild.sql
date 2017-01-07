@@ -149,7 +149,23 @@ BEGIN
                 devilry_group_imageannotationcomment.visibility = 'visible-to-everyone'
                 AND
                 devilry_comment_comment.user_role = 'admin'
-        ) AS public_admin_imageannotationcomment_count
+        ) AS public_admin_imageannotationcomment_count,
+        (
+            SELECT COUNT(devilry_comment_commentfile.id)
+            FROM devilry_comment_commentfile
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_comment_commentfile.comment_id
+            INNER JOIN devilry_group_groupcomment
+                ON devilry_group_groupcomment.comment_ptr_id = devilry_comment_comment.id
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_groupcomment.feedback_set_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_groupcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'student'
+        ) AS public_student_file_upload_count
     FROM core_assignmentgroup AS assignmentgroup
     WHERE id = param_group_id
     INTO var_groupcachedata;
@@ -181,9 +197,7 @@ BEGIN
         public_student_imageannotationcomment_count,
         public_examiner_imageannotationcomment_count,
         public_admin_imageannotationcomment_count,
-        file_upload_count_total,
-        file_upload_count_student,
-        file_upload_count_examiner)
+        public_student_file_upload_count)
     VALUES (
         param_group_id,
         var_groupcachedata.first_feedbackset_id,
@@ -198,9 +212,7 @@ BEGIN
         var_groupcachedata.public_student_imageannotationcomment_count,
         var_groupcachedata.public_examiner_imageannotationcomment_count,
         var_groupcachedata.public_admin_imageannotationcomment_count,
-        0,  -- file_upload_count_total,
-        0,  -- file_upload_count_student,
-        0   -- file_upload_count_examiner
+        var_groupcachedata.public_student_file_upload_count
     )
     ON CONFLICT(group_id)
     DO UPDATE SET
@@ -216,8 +228,6 @@ BEGIN
         public_student_imageannotationcomment_count = var_groupcachedata.public_student_imageannotationcomment_count,
         public_examiner_imageannotationcomment_count = var_groupcachedata.public_examiner_imageannotationcomment_count,
         public_admin_imageannotationcomment_count = var_groupcachedata.public_admin_imageannotationcomment_count,
-        file_upload_count_total = 0,
-        file_upload_count_student = 0,
-        file_upload_count_examiner = 0;
+        public_student_file_upload_count = var_groupcachedata.public_student_file_upload_count;
 END
 $$ LANGUAGE plpgsql;
