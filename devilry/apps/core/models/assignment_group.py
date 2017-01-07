@@ -620,27 +620,6 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             )
         )
 
-    def annotate_with_is_corrected(self):
-        """
-        Annotate the queryset with ``is_corrected``.
-
-        Groups waiting for deliveries is all groups where
-        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
-        has not expired, and the feedbackset does not have a
-        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
-        """
-        whenquery = models.Q(
-            feedbackset__is_last_in_group=True,
-            feedbackset__grading_published_datetime__isnull=False
-        )
-        return self.annotate(
-            is_corrected=devilry_djangoaggregate_functions.BooleanCount(
-                models.Case(
-                    models.When(whenquery, then=1)
-                )
-            )
-        )
-
     def extra_annotate_datetime_of_last_student_comment(self):
         """
         Annotate with the datetiem of the last comment added by a student.
@@ -1658,6 +1637,13 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         last_feedbackset = self.cached_data.last_feedbackset
         return (last_feedbackset.grading_published_datetime is None
                 and last_feedbackset.grading_points is not None)
+
+    @property
+    def is_corrected(self):
+        """
+        Returns ``True`` if the last feedbackset is published.
+        """
+        return self.cached_data.last_published_feedbackset_is_last_feedbackset
 
 
 class AssignmentGroupTag(models.Model):

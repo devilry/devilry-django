@@ -1958,15 +1958,18 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForDeliveries(TestCase):
         self.assertTrue(queryset.first().is_waiting_for_deliveries)
 
 
-class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
+class TestAssignmentGroupIsCorrected(TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_annotate_with_is_corrected_false_feedback_not_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    grading_published_datetime=None,
                    is_last_in_group=True)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_corrected()
-        self.assertFalse(queryset.first().is_corrected)
+        testgroup.refresh_from_db()
+        self.assertFalse(testgroup.is_corrected)
 
     def test_annotate_with_is_corrected_true_feedback_is_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -1974,8 +1977,8 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
                    group=testgroup,
                    grading_published_datetime=timezone.now(),
                    is_last_in_group=True)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_corrected()
-        self.assertTrue(queryset.first().is_corrected)
+        testgroup.refresh_from_db()
+        self.assertTrue(testgroup.is_corrected)
 
     def test_annotate_with_is_corrected_false_multiple_feedbacksets_last_is_not_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -1989,8 +1992,8 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
                    grading_published_datetime=None,
                    feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
                    is_last_in_group=True)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_corrected()
-        self.assertFalse(queryset.first().is_corrected)
+        testgroup.refresh_from_db()
+        self.assertFalse(testgroup.is_corrected)
 
     def test_annotate_with_is_corrected_true_multiple_feedbacksets_last_is_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -2004,8 +2007,8 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
                    grading_published_datetime=timezone.now() - timedelta(days=1),
                    feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
                    is_last_in_group=True)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_corrected()
-        self.assertTrue(queryset.first().is_corrected)
+        testgroup.refresh_from_db()
+        self.assertTrue(testgroup.is_corrected)
 
 
 class TestAssignmentGroupPublishedGradingPoints(TestCase):
