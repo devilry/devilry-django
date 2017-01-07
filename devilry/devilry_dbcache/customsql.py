@@ -10,11 +10,17 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
 
     def initialize(self):
         self.execute_sql_from_files([
-            'all.sql'
+            # 'all.sql',
+            'feedbackset/helperfunctions.sql',
+            'assignment_group/triggers.sql',
+            # 'assignment_group_cached_data/triggers.sql',
+            'feedbackset/validate.sql',
+            'feedbackset/triggers.sql',
+            'groupcomment/triggers.sql',
+            'assignment_group_cached_data/rebuild.sql',
         ])
 
     def recreate_data(self):
-
         from devilry.apps.core.models import AssignmentGroup
         from devilry.devilry_group.models import FeedbackSet, ImageAnnotationComment, GroupComment
         from devilry.devilry_comment.models import CommentFile

@@ -1,0 +1,17 @@
+-- CREATE OR REPLACE FUNCTION devilry__get_group_id_from_groupcomment_id(
+--     param_groupcomment_id integer)
+-- RETURNS VOID AS $$
+-- DECLARE
+--     var_group_id integer;
+-- BEGIN
+--     SELECT devilry_group_feedbackset.group_id
+--     FROM devilry_group_groupcomment
+--     INNER JOIN devilry_group_feedbackset
+--         ON devilry_group_feedbackset.id = devilry_group_groupcomment.feedback_set_id
+--     WHERE
+--         id = param_groupcomment_id
+--     INTO var_group_id;
+--
+--     RETURN var_group_id;
+-- END
+-- $$ LANGUAGE plpgsql;

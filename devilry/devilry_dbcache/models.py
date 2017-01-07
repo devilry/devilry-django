@@ -14,7 +14,9 @@ class AssignmentGroupCachedData(models.Model):
     last_published_feedbackset = models.ForeignKey(FeedbackSet, related_name='+',
                                                    null=True, blank=True)
 
-    feedbackset_count = models.PositiveIntegerField()
+    #: Number of FeedbackSets with :obj:`~devilry.devilry_group.models.FeedbackSet.feedbackset_type`
+    #: set to :obj:`~devilry.devilry_group.models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT`.
+    new_attempt_count = models.PositiveIntegerField()
 
     public_total_comment_count = models.PositiveIntegerField()
     public_student_comment_count = models.PositiveIntegerField()

@@ -181,9 +181,6 @@ class FeedbackSet(models.Model):
     #: The AssignmentGroup that owns this feedbackset.
     group = models.ForeignKey(assignment_group.AssignmentGroup)
 
-    #: Is the last feedbackset for :obj:`~.FeedbackSet.group` Must be None or True.
-    is_last_in_group = models.NullBooleanField(default=True)
-
     #: This means the feedbackset is basically the first feedbackset.
     #: Choice for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_FIRST_ATTEMPT = 'first_attempt'
@@ -206,12 +203,12 @@ class FeedbackSet(models.Model):
     ]
 
     #: Sets the type of the feedbackset.
-    #: Defaults to :obj:`~.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT`.
+    #: Defaults to :obj:`~.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT`.
     feedbackset_type = models.CharField(
         max_length=50,
         db_index=True,
         choices=FEEDBACKSET_TYPE_CHOICES,
-        default=FEEDBACKSET_TYPE_FIRST_ATTEMPT,
+        default=FEEDBACKSET_TYPE_NEW_ATTEMPT
     )
 
     #: Field can be set to ``True`` if a situation requires the :obj:`~.FeedbackSet` to not be counted as neither
@@ -274,9 +271,6 @@ class FeedbackSet(models.Model):
         null=False, blank=True, default=''
     )
 
-    class Meta:
-        unique_together = ('group', 'is_last_in_group')
-
     def __unicode__(self):
         return u"{} - {} - {} - deadline: {} - points: {}".format(
                 self.group.assignment,
@@ -300,8 +294,6 @@ class FeedbackSet(models.Model):
             |
             Error occurs if :attr:`~.FeedbackSet.grading_published_datetime` has a datetime but
             :obj:`~.FeedbackSet.grading_points` is ``None``.
-            |
-            Error occurs if :attr:`~.FeedbackSet.is_last_in_group` is ``None``.
         """
         if self.ignored and len(self.ignored_reason) == 0:
             raise ValidationError({
@@ -327,10 +319,6 @@ class FeedbackSet(models.Model):
                 raise ValidationError({
                     'grading_published_datetime': ugettext_lazy('An assignment can not be published '
                                                                 'without providing "points".'),
-                })
-            if self.is_last_in_group is False:
-                raise ValidationError({
-                    'is_last_in_group': 'is_last_in_group can not be false.'
                 })
 
     def current_deadline(self, assignment=None):
