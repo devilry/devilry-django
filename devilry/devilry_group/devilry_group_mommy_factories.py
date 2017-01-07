@@ -24,6 +24,7 @@ def feedbackset_save(feedbackset, **kwargs):
     """
     for key, value in kwargs.iteritems():
         setattr(feedbackset, key, value)
+    feedbackset.is_last_in_group = None  # NOTE: is_last_in_group is deprecated, and will be removed
     feedbackset.full_clean()
     feedbackset.save()
 
