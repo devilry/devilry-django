@@ -1,3 +1,4 @@
+import unittest
 from datetime import datetime, timedelta
 
 from devilry.apps.core.models import AssignmentGroup
@@ -47,6 +48,25 @@ class TestFeedbackSetTriggers(test.TestCase):
         feedbackset.save()
         cached_data = AssignmentGroupCachedData.objects.get(group=feedbackset.group)
         self.assertIsNone(cached_data.last_published_feedbackset)
+
+    def test_feedbackset_count_insert(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup.cached_data.refresh_from_db()
+        self.assertEqual(testgroup.cached_data.feedbackset_count, 1)
+        mommy.make('devilry_group.FeedbackSet', group=testgroup)
+        testgroup.cached_data.refresh_from_db()
+        self.assertEqual(testgroup.cached_data.feedbackset_count, 2)
+
+    # def test_feedbackset_count_delete(self):
+    #     testgroup = mommy.make('core.AssignmentGroup')
+    #     feedbackset2 = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+    #     testgroup.cached_data.refresh_from_db()
+    #     self.assertEqual(testgroup.cached_data.feedbackset_count, 2)
+    #     feedbackset2.delete()
+    #     testgroup.refresh_from_db()
+    #     testgroup.cached_data.refresh_from_db()
+    #     print(AssignmentGroupCachedData.objects.all())
+    #     self.assertEqual(testgroup.cached_data.feedbackset_count, 1)
 
 
 class TestAssignmentGroupTriggers(test.TestCase):
@@ -420,39 +440,21 @@ class TestCommentFileTriggers(test.TestCase):
 
 
 class TestRecrateCacheData(test.TestCase):
-
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_feedbackset_count(self):
-        testgroup1 = mommy.make('core.AssignmentGroup')
-        feedbackset1_1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup1)
-
-        testgroup2 = mommy.make('core.AssignmentGroup')
-        feedbackset2_1 = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
-
-        testgroup3 = mommy.make('core.AssignmentGroup')
-        feedbackset3_1 = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup3, is_last_in_group=None)
-        feedbackset3_2 = devilry_group_mommy_factories.feedbackset_new_attempt_published(group=testgroup3)
-
-        testgroup4 = mommy.make('core.AssignmentGroup')
-        feedbackset4_1 = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup4, is_last_in_group=None)
-        feedbackset4_2 = devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(group=testgroup4)
-
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(group=testgroup)
+        testgroup.refresh_from_db()
+        self.assertEqual(testgroup.cached_data.feedbackset_count, 3)
         AssignmentGroupDbCacheCustomSql().recreate_data()
+        testgroup.refresh_from_db()
+        self.assertEqual(testgroup.cached_data.feedbackset_count, 3)
 
-        testgroup1_ = AssignmentGroup.objects.get(id=testgroup1.id)
-        testgroup2_ = AssignmentGroup.objects.get(id=testgroup2.id)
-        testgroup3_ = AssignmentGroup.objects.get(id=testgroup3.id)
-        testgroup4_ = AssignmentGroup.objects.get(id=testgroup4.id)
-
-        self.assertEqual(testgroup1.cached_data.feedbackset_count, testgroup1_.cached_data.feedbackset_count)
-        self.assertEqual(testgroup2.cached_data.feedbackset_count, testgroup2_.cached_data.feedbackset_count)
-        self.assertEqual(testgroup3.cached_data.feedbackset_count, testgroup3_.cached_data.feedbackset_count)
-        self.assertEqual(testgroup4.cached_data.feedbackset_count, testgroup4_.cached_data.feedbackset_count)
-
-
-    def test_create_commentfile_total_gives_correct_count(self):
+    def test_public_total_comment_count(self):
         testgroup = mommy.make('core.AssignmentGroup')
         feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
         testcomment1 = mommy.make('devilry_group.GroupComment',
@@ -467,26 +469,11 @@ class TestRecrateCacheData(test.TestCase):
                                   user_role=GroupComment.USER_ROLE_EXAMINER,
                                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mommy.make('devilry_comment.CommentFile', comment=testcomment2)
-
-        testcomment3 = mommy.make('devilry_group.ImageAnnotationComment',
-                              feedback_set=feedbackset,
-                              comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
-                              user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
-                              visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-
-        self.assertEqual(2, testgroup.cached_data.file_upload_count_total)
-
-        feedbackset_count = testgroup.cached_data.feedbackset_count
-        public_total_comment_count = testgroup.cached_data.public_total_comment_count
-        public_total_imageannotationcomment_count = testgroup.cached_data.public_total_imageannotationcomment_count
-
+        testgroup.refresh_from_db()
+        self.assertEqual(testgroup.cached_data.public_total_comment_count, 2)
         AssignmentGroupDbCacheCustomSql().recreate_data()
-
-        testgroup = AssignmentGroup.objects.get(id=testgroup.id)
-        self.assertEqual(feedbackset_count, testgroup.cached_data.feedbackset_count)
-        self.assertEqual(public_total_comment_count, testgroup.cached_data.public_total_comment_count)
-        self.assertEqual(public_total_imageannotationcomment_count,
-                         testgroup.cached_data.public_total_imageannotationcomment_count)
+        testgroup.refresh_from_db()
+        self.assertEqual(testgroup.cached_data.public_total_comment_count, 2)
 
 
 class TimeExecution(object):
@@ -525,6 +512,7 @@ def _remove_triggers():
     """)
 
 
+@unittest.skip('Bechmark - should just be enabled when debugging performance')
 class TestBenchMarkAssignmentGroupFileUploadCountTrigger(test.TestCase):
 
     def setUp(self):
@@ -581,6 +569,7 @@ class TestBenchMarkAssignmentGroupFileUploadCountTrigger(test.TestCase):
         self.__create_distinct_comments('file upload: with triggers')
 
 
+@unittest.skip('Bechmark - should just be enabled when debugging performance')
 class TestBenchMarkFeedbackSetTrigger(test.TestCase):
 
     def setUp(self):
@@ -635,6 +624,7 @@ class TestBenchMarkFeedbackSetTrigger(test.TestCase):
         self.__create_in_same_group_feedbacksets('feedbacksets same group: with triggers')
 
 
+@unittest.skip('Bechmark - should just be enabled when debugging performance')
 class TestBenchMarkAssignmentGroupTrigger(test.TestCase):
     def setUp(self):
         _remove_triggers()
@@ -657,6 +647,7 @@ class TestBenchMarkAssignmentGroupTrigger(test.TestCase):
         self.__create_distinct_groups('assignment groups: with triggers')
 
 
+@unittest.skip('Bechmark - should just be enabled when debugging performance')
 class TestBenchMarkAssignmentGroupCommentCountTrigger(test.TestCase):
     def setUp(self):
         _remove_triggers()
