@@ -231,3 +231,29 @@ BEGIN
         public_student_file_upload_count = var_groupcachedata.public_student_file_upload_count;
 END
 $$ LANGUAGE plpgsql;
+
+
+-- Rebuild AssignmentGroupCachedData table data.
+CREATE OR REPLACE FUNCTION devilry__rebuild_assignmentgroupcacheddata_for_period(
+    param_period_id integer)
+RETURNS void AS $$
+DECLARE
+    var_group_id integer;
+BEGIN
+    RAISE NOTICE 'Rebuilding data cache all AssignmentGroups in Period#% into table AssignmentGroupCachedData.', param_period_id;
+
+    FOR var_group_id IN
+        SELECT
+            core_assignmentgroup.id
+        FROM core_assignmentgroup
+        INNER JOIN core_assignment
+            ON core_assignment.id = core_assignmentgroup.parentnode_id
+        WHERE
+            core_assignment.parentnode_id = param_period_id
+    LOOP
+        PERFORM devilry__rebuild_assignmentgroupcacheddata(var_group_id);
+    END LOOP;
+
+    RAISE NOTICE 'Rebuilding data cache for Period#% finished.', param_period_id;
+END
+$$ LANGUAGE plpgsql;

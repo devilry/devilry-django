@@ -3,9 +3,11 @@ from datetime import timedelta
 from django import test
 from model_mommy import mommy
 
+from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import GroupComment, ImageAnnotationComment
 
 
@@ -958,3 +960,41 @@ class TestAssignmentGroupCachedDataPublicStudentFileUploadCount(test.TestCase):
         commentfile1.delete()
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.public_student_file_upload_count, 1)
+
+
+class TestRecrateCacheData(test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_new_attempt_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(group=testgroup)
+        testgroup.cached_data.refresh_from_db()
+        self.assertEqual(testgroup.cached_data.new_attempt_count, 2)
+        AssignmentGroupDbCacheCustomSql().recreate_data()
+        testgroup = AssignmentGroup.objects.get(id=testgroup.id)
+        testgroup.cached_data.refresh_from_db()
+        self.assertEqual(testgroup.cached_data.new_attempt_count, 2)
+
+    def test_public_total_comment_count(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        feedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
+        testcomment1 = mommy.make('devilry_group.GroupComment',
+                                  feedback_set=feedbackset,
+                                  comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                                  user_role=GroupComment.USER_ROLE_STUDENT,
+                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment1)
+        testcomment2 = mommy.make('devilry_group.GroupComment',
+                                  feedback_set=feedbackset,
+                                  comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                                  user_role=GroupComment.USER_ROLE_EXAMINER,
+                                  visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment2)
+        testgroup.cached_data.refresh_from_db()
+        self.assertEqual(testgroup.cached_data.public_total_comment_count, 2)
+        AssignmentGroupDbCacheCustomSql().recreate_data()
+        testgroup = AssignmentGroup.objects.get(id=testgroup.id)
+        self.assertEqual(testgroup.cached_data.public_total_comment_count, 2)

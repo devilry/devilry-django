@@ -3,6 +3,9 @@
 import logging
 from ievv_opensource.ievv_customsql import customsql_registry
 
+from devilry.apps.core.models import Period
+from devilry.devilry_dbcache.models import AssignmentGroupCachedData
+
 log = logging.getLogger(__name__)
 
 
@@ -33,11 +36,9 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
         log.info("ImageAnnotationComment count: %s" % ImageAnnotationComment.objects.count())
         log.info("CommentFile count: %s" % CommentFile.objects.count())
 
-        self.execute_sql("""
-             DELETE FROM devilry_dbcache_assignmentgroupcacheddata;
-             DO language plpgsql $$
-             BEGIN
-               PERFORM devilry_dbcache_rebuild_assignmentgroupcacheddata();
-             END
-             $$;
-        """)
+        AssignmentGroupCachedData.objects.all().delete()
+        for period in Period.objects.order_by('-start_time').iterator():
+            self.execute_sql("""
+                SELECT devilry__rebuild_assignmentgroupcacheddata_for_period({period_id});
+            """.format(period_id=period.id))
+
