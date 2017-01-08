@@ -137,21 +137,21 @@ class AssignmentQuerySet(models.QuerySet):
 
         Groups waiting for feedback is all groups where
         The deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
-        has expired, and the feedbackset does not have a
+        has expired, and the last feedbackset does not have a
         :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
         """
-        from devilry.devilry_group.models import FeedbackSet
         now = timezone.now()
         whenquery = models.Q(
-            assignmentgroups__feedbackset__is_last_in_group=True,
-            assignmentgroups__feedbackset__grading_published_datetime__isnull=True
+            assignmentgroups__cached_data__last_feedbackset__grading_published_datetime__isnull=True
         ) & (
             models.Q(
-                models.Q(assignmentgroups__feedbackset__deadline_datetime__lt=now),
-                ~models.Q(assignmentgroups__feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
+                ~models.Q(assignmentgroups__cached_data__last_feedbackset=models.F(
+                    'assignmentgroups__cached_data__first_feedbackset')),
+                models.Q(assignmentgroups__cached_data__last_feedbackset__deadline_datetime__lt=now),
             ) |
             models.Q(
-                assignmentgroups__feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
+                models.Q(assignmentgroups__cached_data__last_feedbackset=models.F(
+                    'assignmentgroups__cached_data__first_feedbackset')),
                 first_deadline__lt=now
             )
         )
