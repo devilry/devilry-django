@@ -96,13 +96,13 @@ class AbstractOrderBy(listfilter.django.single.select.AbstractOrderBy):
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value() or ''
         if cleaned_value == 'last_commented_by_student_ascending':
-            return queryobject.extra_order_by_datetime_of_last_student_comment()
+            return queryobject.order_by('cached_data__last_public_comment_by_student_datetime')
         elif cleaned_value == 'last_commented_by_student_descending':
-            return queryobject.extra_order_by_datetime_of_last_student_comment(descending=True)
+            return queryobject.order_by('-cached_data__last_public_comment_by_student_datetime')
         elif cleaned_value == 'last_commented_by_examiner_ascending':
-            return queryobject.extra_order_by_datetime_of_last_examiner_comment()
+            return queryobject.order_by('cached_data__last_public_comment_by_examiner_datetime')
         elif cleaned_value == 'last_commented_by_examiner_descending':
-            return queryobject.extra_order_by_datetime_of_last_examiner_comment(descending=True)
+            return queryobject.order_by('-cached_data__last_public_comment_by_examiner_datetime')
         return super(AbstractOrderBy, self).filter(queryobject=queryobject).distinct()
 
 
