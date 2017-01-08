@@ -217,7 +217,7 @@ def test():
     """
     Run all the tests.
     """
-    _managepy('test', djangoenv='test')
+    _managepy('test devilry -v2', djangoenv='test')
 
 
 @task
@@ -225,4 +225,4 @@ def codeship_test():
     """
     Run all the tests with settings for CodeShip CI.
     """
-    _managepy('test', djangoenv='codeship_test')
+    _managepy('test devilry -v2', djangoenv='codeship_test')
