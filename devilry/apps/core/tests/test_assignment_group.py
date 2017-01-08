@@ -1825,52 +1825,52 @@ class TestAssignmentGroupIsWaitingForFeedback(TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def test_is_waiting_for_feedback_false_feedback_published(self):
+    def test_false_feedback_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
-            grading_published_datetime=timezone.now() - timedelta(days=1))
+            grading_published_datetime=ACTIVE_PERIOD_START)
         testgroup.refresh_from_db()
         self.assertFalse(testgroup.is_waiting_for_feedback)
 
-    def test_is_waiting_for_feedback_false_deadline_not_expired(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
-            group=testgroup,
-            deadline_datetime=timezone.now() + timedelta(days=2))
-        testgroup.refresh_from_db()
-        self.assertFalse(testgroup.is_waiting_for_feedback)
-
-    def test_is_waiting_for_feedback_false_deadline_not_expired_first_try(self):
+    def test_false_deadline_not_expired_first_attempt(self):
         testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode__first_deadline=timezone.now() + timedelta(days=2))
+                               parentnode__first_deadline=ACTIVE_PERIOD_END)
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup)
         testgroup.refresh_from_db()
         self.assertFalse(testgroup.is_waiting_for_feedback)
 
-    def test_is_waiting_for_feedback_true_deadline_expired(self):
+    def test_false_deadline_not_expired_new_attempt(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
-            deadline_datetime=timezone.now() - timedelta(days=1))
+            deadline_datetime=ACTIVE_PERIOD_END)
+        testgroup.refresh_from_db()
+        self.assertFalse(testgroup.is_waiting_for_feedback)
+
+    def test_true_deadline_expired_first_attempt(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=ACTIVE_PERIOD_START)
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.is_waiting_for_feedback)
 
-    def test_is_waiting_for_feedback_true_deadline_expired_first_try(self):
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode__first_deadline=timezone.now() - timedelta(days=2))
+    def test_true_deadline_expired_new_attempt(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup,
+            deadline_datetime=ACTIVE_PERIOD_START)
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.is_waiting_for_feedback)
 
-    def test_is_waiting_for_feedback_true_multiple_feedbacksets(self):
+    def test_true_multiple_feedbacksets(self):
         testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode__first_deadline=timezone.now() - timedelta(days=2))
+                               parentnode__first_deadline=ACTIVE_PERIOD_START)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
-            deadline_datetime=timezone.now() - timedelta(days=1))
+            deadline_datetime=ACTIVE_PERIOD_START)
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.is_waiting_for_feedback)
 
@@ -1893,7 +1893,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
         annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
         self.assertFalse(annotated_group.annotated_is_waiting_for_feedback)
 
-    def test_ignore_deadline_not_expired(self):
+    def test_ignore_deadline_not_expired_new_attempt(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
@@ -1903,7 +1903,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
 
     def test_include_deadline_expired_first_attempt(self):
         mommy.make('core.AssignmentGroup',
-                   parentnode__first_deadline=timezone.now() - timedelta(days=2))
+                   parentnode__first_deadline=ACTIVE_PERIOD_START)
         annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
         self.assertTrue(annotated_group.annotated_is_waiting_for_feedback)
 
@@ -1917,7 +1917,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
 
     def test_include_multiple_feedbacksets(self):
         testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode__first_deadline=timezone.now() - timedelta(days=2))
+                               parentnode__first_deadline=ACTIVE_PERIOD_START)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
@@ -1969,48 +1969,46 @@ class TestAssignmentGroupIsWaitingForDeliveries(TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def test_is_waiting_for_deliveries_false_feedback_published(self):
+    def test_false_feedback_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         testgroup.refresh_from_db()
         self.assertFalse(testgroup.is_waiting_for_deliveries)
 
-    def test_is_waiting_for_deliveries_false_deadline_expired(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
-            group=testgroup,
-            deadline_datetime=timezone.now() - timedelta(days=2))
+    def test_false_deadline_expired_first_attempt(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=ACTIVE_PERIOD_START)
         testgroup.refresh_from_db()
         self.assertFalse(testgroup.is_waiting_for_deliveries)
 
-    def test_is_waiting_for_deliveries_false_deadline_expired_first_try(self):
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode__first_deadline=timezone.now() - timedelta(days=2))
-        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
-            group=testgroup)
-        testgroup.refresh_from_db()
-        self.assertFalse(testgroup.is_waiting_for_deliveries)
-
-    def test_is_waiting_for_deliveries_true_deadline_not_expired(self):
+    def test_false_deadline_expired_new_attempt(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
-            deadline_datetime=timezone.now() + timedelta(days=2))
+            deadline_datetime=ACTIVE_PERIOD_START)
         testgroup.refresh_from_db()
-        self.assertTrue(testgroup.is_waiting_for_deliveries)
+        self.assertFalse(testgroup.is_waiting_for_deliveries)
 
-    def test_is_waiting_for_deliveries_true_deadline_not_expired_first_try(self):
+    def test_true_deadline_not_expired_first_attempt(self):
         testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode__first_deadline=timezone.now() + timedelta(days=2))
+                               parentnode__first_deadline=ACTIVE_PERIOD_END)
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup)
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.is_waiting_for_deliveries)
 
-    def test_is_waiting_for_deliveries_true_multiple_feedbacksets(self):
+    def test_true_deadline_not_expired_new_attempt(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup,
+            deadline_datetime=ACTIVE_PERIOD_END)
+        testgroup.refresh_from_db()
+        self.assertTrue(testgroup.is_waiting_for_deliveries)
+
+    def test_true_multiple_feedbacksets(self):
         testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode__first_deadline=timezone.now() - timedelta(days=2))
+                               parentnode__first_deadline=ACTIVE_PERIOD_START)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
@@ -2024,7 +2022,7 @@ class TestAssignmentGroupIsCorrected(TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def test_annotate_with_is_corrected_false_feedback_not_published(self):
+    def test_false_feedback_not_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
@@ -2033,7 +2031,7 @@ class TestAssignmentGroupIsCorrected(TestCase):
         testgroup.refresh_from_db()
         self.assertFalse(testgroup.is_corrected)
 
-    def test_annotate_with_is_corrected_true_feedback_is_published(self):
+    def test_true_feedback_is_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
@@ -2042,12 +2040,12 @@ class TestAssignmentGroupIsCorrected(TestCase):
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.is_corrected)
 
-    def test_annotate_with_is_corrected_false_multiple_feedbacksets_last_is_not_published(self):
+    def test_false_multiple_feedbacksets_last_is_not_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    deadline_datetime=timezone.now(),
-                   grading_published_datetime=timezone.now() - timedelta(days=3),
+                   grading_published_datetime=ACTIVE_PERIOD_START,
                    feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
@@ -2057,17 +2055,17 @@ class TestAssignmentGroupIsCorrected(TestCase):
         testgroup.refresh_from_db()
         self.assertFalse(testgroup.is_corrected)
 
-    def test_annotate_with_is_corrected_true_multiple_feedbacksets_last_is_published(self):
+    def test_true_multiple_feedbacksets_last_is_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    deadline_datetime=timezone.now(),
-                   grading_published_datetime=timezone.now() - timedelta(days=2),
+                   grading_published_datetime=ACTIVE_PERIOD_START,
                    feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
                    deadline_datetime=timezone.now(),
-                   grading_published_datetime=timezone.now() - timedelta(days=1),
+                   grading_published_datetime=ACTIVE_PERIOD_START,
                    feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.is_corrected)
