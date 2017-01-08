@@ -16,6 +16,9 @@ from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
 class TestGroupDetailsRenderable(test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_name(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('core.Candidate',
@@ -96,10 +99,7 @@ class TestGroupDetailsRenderable(test.TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=False,
             grading_points=1)
-        testgroup = AssignmentGroup.objects\
-            .annotate_with_is_corrected()\
-            .annotate_with_grading_points()\
-            .first()
+        testgroup = AssignmentGroup.objects.first()
         selector = htmls.S(groupdetails.GroupDetailsRenderable(
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
@@ -110,10 +110,7 @@ class TestGroupDetailsRenderable(test.TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group__parentnode__students_can_see_points=True,
             grading_points=1)
-        testgroup = AssignmentGroup.objects\
-            .annotate_with_is_corrected()\
-            .annotate_with_grading_points()\
-            .first()
+        testgroup = AssignmentGroup.objects.first()
         selector = htmls.S(groupdetails.GroupDetailsRenderable(
             value=testgroup, assignment=testgroup.assignment).render())
         self.assertEqual(
@@ -161,12 +158,7 @@ class TestGroupDetailsRenderable(test.TestCase):
     def test_grade_comment_summary_is_available(self):
         AssignmentGroupDbCacheCustomSql().initialize()
         mommy.make('core.AssignmentGroup')
-        testgroup = AssignmentGroup.objects\
-            .annotate_with_number_of_commentfiles_from_students()\
-            .annotate_with_number_of_groupcomments_from_students()\
-            .annotate_with_number_of_groupcomments_from_examiners()\
-            .annotate_with_number_of_groupcomments_from_admins()\
-            .first()
+        testgroup = AssignmentGroup.objects.first()
 
         selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
                                                                assignment=testgroup.assignment).render())
@@ -178,6 +170,9 @@ class TestGroupDetailsRenderable(test.TestCase):
 
 class TestGroupDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = groupdetails.GroupDetailsView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def __mockinstance_with_devilryrole(self, devilryrole):
         mockinstance = mock.MagicMock()
