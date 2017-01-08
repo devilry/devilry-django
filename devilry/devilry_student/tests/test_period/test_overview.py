@@ -22,6 +22,9 @@ from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = overview.PeriodOverviewView
 
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_title(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testperiod = mommy.make_recipe('devilry.apps.core.period_active',
@@ -325,9 +328,9 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
-                group=testgroup, grading_points=3, is_last_in_group=False)
+                group=testgroup, grading_points=3)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
-                group=testgroup, is_last_in_group=True,
+                group=testgroup,
                 deadline_datetime=timezone.now() + timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=testuser, cradmin_role=testperiod)
@@ -351,9 +354,9 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
-                group=testgroup, grading_points=3, is_last_in_group=False)
+                group=testgroup, grading_points=3)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
-                group=testgroup, is_last_in_group=True,
+                group=testgroup,
                 deadline_datetime=timezone.now() - timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=testuser, cradmin_role=testperiod)
@@ -377,9 +380,9 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
-                group=testgroup, grading_points=3, is_last_in_group=False)
+                group=testgroup, grading_points=3)
         devilry_group_mommy_factories.feedbackset_new_attempt_published(
-                group=testgroup, is_last_in_group=True, grading_points=2)
+                group=testgroup, grading_points=2)
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=testuser, cradmin_role=testperiod)
         self.assertFalse(
@@ -393,7 +396,6 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_grouplist_comments_sanity(self):
-        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
         testgroup = mommy.make('core.AssignmentGroup',
