@@ -1,10 +1,19 @@
 CREATE OR REPLACE FUNCTION devilry__on_feedbackset_before_insert_or_update() RETURNS TRIGGER AS $$
+DECLARE
+    var_is_first_feedbackset boolean;
+    var_is_update_operation boolean;
 BEGIN
     IF pg_trigger_depth() = 1 THEN
         -- We do not validate when this is triggered via another trigger.
         -- We assume the other trigger creates/updates the feedbackset
         -- correctly.
-        PERFORM devilry__validate_feedbackset_change(NEW, TG_OP);
+        var_is_update_operation = (TG_OP = 'UPDATE');
+        var_is_first_feedbackset = devilry__is_first_feedbackset_in_group(
+            NEW.id, NEW.group_id, var_is_update_operation);
+        IF var_is_first_feedbackset THEN
+            NEW.deadline_datetime = devilry__get_first_deadline_from_group_id(NEW.group_id);
+        END IF;
+--         PERFORM devilry__validate_feedbackset_change(NEW, TG_OP);
     END IF;
     RETURN NEW;
 END

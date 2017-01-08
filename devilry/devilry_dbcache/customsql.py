@@ -15,8 +15,9 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
         self.execute_sql_from_files([
             'feedbackset/helperfunctions.sql',
             'commentfile/helperfunctions.sql',
+            'assignment_group/helperfunctions.sql',
             'assignment_group/triggers.sql',
-            'feedbackset/validate.sql',
+            # 'feedbackset/validate.sql',
             'feedbackset/triggers.sql',
             'groupcomment/triggers.sql',
             'imageannotationcomment/triggers.sql',
