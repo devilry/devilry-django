@@ -2113,51 +2113,53 @@ class TestAssignmentGroupIsCorrected(TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def test_false_feedback_not_published(self):
+    def test_false_feedback_not_published_first_attempt(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup,
-                   deadline_datetime=timezone.now(),
-                   grading_published_datetime=None)
         testgroup.refresh_from_db()
         self.assertFalse(testgroup.is_corrected)
 
-    def test_true_feedback_is_published(self):
+    def test_false_feedback_not_published_new_attempt(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup,
-                   deadline_datetime=timezone.now(),
-                   grading_published_datetime=timezone.now())
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup)
+        testgroup.refresh_from_db()
+        self.assertFalse(testgroup.is_corrected)
+
+    def test_true_feedback_is_published_first_attempt(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        testgroup.refresh_from_db()
+        self.assertTrue(testgroup.is_corrected)
+
+    def test_true_feedback_is_published_new_attempt(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=testgroup)
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.is_corrected)
 
     def test_false_multiple_feedbacksets_last_is_not_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup,
-                   deadline_datetime=timezone.now(),
-                   grading_published_datetime=ACTIVE_PERIOD_START,
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup,
-                   deadline_datetime=timezone.now(),
-                   grading_published_datetime=None,
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup)
         testgroup.refresh_from_db()
         self.assertFalse(testgroup.is_corrected)
 
     def test_true_multiple_feedbacksets_last_is_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup,
-                   deadline_datetime=timezone.now(),
-                   grading_published_datetime=ACTIVE_PERIOD_START,
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup,
-                   deadline_datetime=timezone.now(),
-                   grading_published_datetime=ACTIVE_PERIOD_START,
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=testgroup)
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.is_corrected)
 
