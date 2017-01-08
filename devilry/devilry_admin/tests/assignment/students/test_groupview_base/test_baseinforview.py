@@ -9,6 +9,7 @@ from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_admin.views.assignment.students import groupview_base
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories
 
 
@@ -22,6 +23,9 @@ class TestBaseInfoView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     devilry.devilry_admin.tests.assignment.students.test_groupview_base.test_groupviewmixin.TestGroupViewMixin
     """
     viewclass = MinimalInfoView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def __mockinstance_with_devilryrole(self, devilryrole):
         mockinstance = mock.MagicMock()
