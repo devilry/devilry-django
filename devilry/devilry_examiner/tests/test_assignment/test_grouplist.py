@@ -10,6 +10,7 @@ from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories
 from devilry.apps.core.models import Assignment
+from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_examiner.views.assignment import grouplist
 from devilry.devilry_group import devilry_group_mommy_factories
@@ -1578,7 +1579,6 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_studentfile(self):
-        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -1606,7 +1606,6 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_no_studentfile(self):
-        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -1634,7 +1633,6 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_studentcomment_groupcomment(self):
-        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -1685,7 +1683,6 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_no_studentcomment(self):
-        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -1720,7 +1717,6 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_examinercomment_groupcomment(self):
-        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -1771,7 +1767,6 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_no_examinercomment(self):
-        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -1806,7 +1801,6 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_admincomment_groupcomment(self):
-        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -1951,7 +1945,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
-            first_deadline=timezone.now() - timedelta(days=2))
+            first_deadline=ACTIVE_PERIOD_END)
 
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
@@ -1971,7 +1965,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
-            first_deadline=timezone.now() + timedelta(days=2))
+            first_deadline=ACTIVE_PERIOD_START)
 
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
