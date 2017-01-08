@@ -81,6 +81,24 @@ class AssignmentGroupCachedData(models.Model):
     public_student_file_upload_count = models.PositiveIntegerField(
         default=0, editable=False)
 
+    #: Datetime of the last :class:`devilry.devilry_group.models.GroupComment` or
+    #: :class:`devilry.devilry_group.models.ImageAnnotationComment` within the group
+    #: with :obj:`~devilry.devilry_group.models.AbstractGroupComment.visibility`
+    #: set to :obj:`~devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
+    #: and :obj:`~devilry.devilry_comment.models.Comment.user_role` set
+    #: to :obj:`~devilry.devilry_comment.models.Comment.USER_ROLE_STUDENT`.
+    last_public_comment_by_student_datetime = models.DateTimeField(
+        null=True, blank=True, editable=False)
+
+    #: Datetime of the last :class:`devilry.devilry_group.models.GroupComment` or
+    #: :class:`devilry.devilry_group.models.ImageAnnotationComment` within the group
+    #: with :obj:`~devilry.devilry_group.models.AbstractGroupComment.visibility`
+    #: set to :obj:`~devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
+    #: and :obj:`~devilry.devilry_comment.models.Comment.user_role` set
+    #: to :obj:`~devilry.devilry_comment.models.Comment.USER_ROLE_EXAMINER`.
+    last_public_comment_by_examiner_datetime = models.DateTimeField(
+        null=True, blank=True, editable=False)
+
     @property
     def last_published_feedbackset_is_last_feedbackset(self):
         """

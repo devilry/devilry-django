@@ -922,6 +922,390 @@ class TestAssignmentGroupCachedDataPublicStudentFileUploadCount(test.TestCase):
         self.assertEqual(group.cached_data.public_student_file_upload_count, 1)
 
 
+class TestAssignmentGroupCachedDataLastPublicCommentByStudentDatetime(test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_none(self):
+        group = mommy.make('core.AssignmentGroup')
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
+
+    def test_groupcomment_single(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        comment = mommy.make('devilry_group.GroupComment',
+                             user_role=Comment.USER_ROLE_STUDENT,
+                             feedback_set=feedbackset1,
+                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
+                         comment.created_datetime)
+
+    def test_groupcomment_ignore_private(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.GroupComment',
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   feedback_set=feedbackset1,
+                   visibility=GroupComment.VISIBILITY_PRIVATE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
+
+    def test_groupcomment_ignore_visible_to_examiners_and_admins(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.GroupComment',
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   feedback_set=feedbackset1,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
+
+    def test_groupcomment_ignore_user_role_examiner(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.GroupComment',
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   feedback_set=feedbackset1,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
+
+    def test_groupcomment_ignore_user_role_admin(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.GroupComment',
+                   user_role=Comment.USER_ROLE_ADMIN,
+                   feedback_set=feedbackset1,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
+
+    def test_groupcomment_multiple_feedbacksets(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.GroupComment',
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   feedback_set=feedbackset1,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        feedbackset2 = mommy.make(
+            'devilry_group.FeedbackSet',
+            group=group,
+            deadline_datetime=ACTIVE_PERIOD_START)
+        comment2 = mommy.make('devilry_group.GroupComment',
+                              user_role=Comment.USER_ROLE_STUDENT,
+                              feedback_set=feedbackset2,
+                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
+                         comment2.created_datetime)
+
+    def test_groupcomment_delete_updates_datetime(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        groupcomment1 = mommy.make(
+            'devilry_group.GroupComment',
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        groupcomment2 = mommy.make(
+            'devilry_group.GroupComment',
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
+                         groupcomment2.created_datetime)
+        groupcomment2.delete()
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
+                         groupcomment1.created_datetime)
+
+    def test_imageannotationcomment_single(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        comment = mommy.make('devilry_group.ImageAnnotationComment',
+                             user_role=Comment.USER_ROLE_STUDENT,
+                             feedback_set=feedbackset1,
+                             visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
+                         comment.created_datetime)
+
+    def test_imageannotationcomment_ignore_private(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   feedback_set=feedbackset1,
+                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
+
+    def test_imageannotationcomment_ignore_visible_to_examiners_and_admins(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   feedback_set=feedbackset1,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
+
+    def test_imageannotationcomment_ignore_user_role_examiner(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   feedback_set=feedbackset1,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
+
+    def test_imageannotationcomment_ignore_user_role_admin(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   user_role=Comment.USER_ROLE_ADMIN,
+                   feedback_set=feedbackset1,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime, None)
+
+    def test_imageannotationcomment_multiple_feedbacksets(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   feedback_set=feedbackset1,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        feedbackset2 = mommy.make(
+            'devilry_group.FeedbackSet',
+            group=group,
+            deadline_datetime=ACTIVE_PERIOD_START)
+        comment2 = mommy.make('devilry_group.ImageAnnotationComment',
+                              user_role=Comment.USER_ROLE_STUDENT,
+                              feedback_set=feedbackset2,
+                              visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
+                         comment2.created_datetime)
+
+    def test_imageannotationcomment_delete_decrements_count(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        comment1 = mommy.make(
+            'devilry_group.ImageAnnotationComment',
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment2 = mommy.make(
+            'devilry_group.ImageAnnotationComment',
+            user_role=Comment.USER_ROLE_STUDENT,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
+                         comment2.created_datetime)
+        comment2.delete()
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
+                         comment1.created_datetime)
+
+
+class TestAssignmentGroupCachedDataLastPublicCommentByExaminerDatetime(test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_none(self):
+        group = mommy.make('core.AssignmentGroup')
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
+
+    def test_groupcomment_single(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        comment = mommy.make('devilry_group.GroupComment',
+                             user_role=Comment.USER_ROLE_EXAMINER,
+                             feedback_set=feedbackset1,
+                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
+                         comment.created_datetime)
+
+    def test_groupcomment_ignore_private(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.GroupComment',
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   feedback_set=feedbackset1,
+                   visibility=GroupComment.VISIBILITY_PRIVATE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
+
+    def test_groupcomment_ignore_visible_to_examiners_and_admins(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.GroupComment',
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   feedback_set=feedbackset1,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
+
+    def test_groupcomment_ignore_user_role_student(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.GroupComment',
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   feedback_set=feedbackset1,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
+
+    def test_groupcomment_ignore_user_role_admin(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.GroupComment',
+                   user_role=Comment.USER_ROLE_ADMIN,
+                   feedback_set=feedbackset1,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
+
+    def test_groupcomment_multiple_feedbacksets(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.GroupComment',
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   feedback_set=feedbackset1,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        feedbackset2 = mommy.make(
+            'devilry_group.FeedbackSet',
+            group=group,
+            deadline_datetime=ACTIVE_PERIOD_START)
+        comment2 = mommy.make('devilry_group.GroupComment',
+                              user_role=Comment.USER_ROLE_EXAMINER,
+                              feedback_set=feedbackset2,
+                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
+                         comment2.created_datetime)
+
+    def test_groupcomment_delete_updates_datetime(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        groupcomment1 = mommy.make(
+            'devilry_group.GroupComment',
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        groupcomment2 = mommy.make(
+            'devilry_group.GroupComment',
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
+                         groupcomment2.created_datetime)
+        groupcomment2.delete()
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
+                         groupcomment1.created_datetime)
+
+    def test_imageannotationcomment_single(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        comment = mommy.make('devilry_group.ImageAnnotationComment',
+                             user_role=Comment.USER_ROLE_EXAMINER,
+                             feedback_set=feedbackset1,
+                             visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
+                         comment.created_datetime)
+
+    def test_imageannotationcomment_ignore_private(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   feedback_set=feedbackset1,
+                   visibility=ImageAnnotationComment.VISIBILITY_PRIVATE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
+
+    def test_imageannotationcomment_ignore_visible_to_examiners_and_admins(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   feedback_set=feedbackset1,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
+
+    def test_imageannotationcomment_ignore_user_role_student(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   feedback_set=feedbackset1,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
+
+    def test_imageannotationcomment_ignore_user_role_admin(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   user_role=Comment.USER_ROLE_ADMIN,
+                   feedback_set=feedbackset1,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime, None)
+
+    def test_imageannotationcomment_multiple_feedbacksets(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   user_role=Comment.USER_ROLE_EXAMINER,
+                   feedback_set=feedbackset1,
+                   visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        feedbackset2 = mommy.make(
+            'devilry_group.FeedbackSet',
+            group=group,
+            deadline_datetime=ACTIVE_PERIOD_START)
+        comment2 = mommy.make('devilry_group.ImageAnnotationComment',
+                              user_role=Comment.USER_ROLE_EXAMINER,
+                              feedback_set=feedbackset2,
+                              visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
+                         comment2.created_datetime)
+
+    def test_imageannotationcomment_delete_decrements_count(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        comment1 = mommy.make(
+            'devilry_group.ImageAnnotationComment',
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        comment2 = mommy.make(
+            'devilry_group.ImageAnnotationComment',
+            user_role=Comment.USER_ROLE_EXAMINER,
+            feedback_set=feedbackset1,
+            visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
+                         comment2.created_datetime)
+        comment2.delete()
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
+                         comment1.created_datetime)
+
+
 class TestRecrateCacheData(test.TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()

@@ -13,6 +13,7 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
 
     def initialize(self):
         self.execute_sql_from_files([
+            'general_purpose_functions.sql',
             'feedbackset/helperfunctions.sql',
             'commentfile/helperfunctions.sql',
             'assignment_group/triggers.sql',

@@ -165,7 +165,72 @@ BEGIN
                 devilry_group_groupcomment.visibility = 'visible-to-everyone'
                 AND
                 devilry_comment_comment.user_role = 'student'
-        ) AS public_student_file_upload_count
+        ) AS public_student_file_upload_count,
+        (
+            SELECT devilry_comment_comment.created_datetime
+            FROM devilry_group_groupcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_groupcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_groupcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_groupcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'student'
+            ORDER BY devilry_comment_comment.created_datetime DESC
+            LIMIT 1
+        ) AS last_public_groupcomment_by_student_datetime,
+        (
+            SELECT devilry_comment_comment.created_datetime
+            FROM devilry_group_imageannotationcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_imageannotationcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_imageannotationcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_imageannotationcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'student'
+            ORDER BY devilry_comment_comment.created_datetime DESC
+            LIMIT 1
+        ) AS last_public_imageannotationcomment_by_student_datetime,
+        (
+            SELECT devilry_comment_comment.created_datetime
+            FROM devilry_group_groupcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_groupcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_groupcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_groupcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'examiner'
+            ORDER BY devilry_comment_comment.created_datetime DESC
+            LIMIT 1
+        ) AS last_public_groupcomment_by_examiner_datetime,
+        (
+            SELECT devilry_comment_comment.created_datetime
+            FROM devilry_group_imageannotationcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_imageannotationcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_imageannotationcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_imageannotationcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'examiner'
+            ORDER BY devilry_comment_comment.created_datetime DESC
+            LIMIT 1
+        ) AS last_public_imageannotationcomment_by_examiner_datetime
+
     FROM core_assignmentgroup AS assignmentgroup
     WHERE id = param_group_id
     INTO var_groupcachedata;
@@ -180,8 +245,18 @@ CREATE OR REPLACE FUNCTION devilry__rebuild_assignmentgroupcacheddata(
 RETURNS VOID AS $$
 DECLARE
     var_groupcachedata RECORD;
+    var_last_public_comment_by_student_datetime timestamp with time zone;
+    var_last_public_comment_by_examiner_datetime timestamp with time zone;
 BEGIN
     var_groupcachedata = devilry__collect_groupcachedata(param_group_id);
+    var_last_public_comment_by_student_datetime = devilry__largest_datetime(
+        var_groupcachedata.last_public_groupcomment_by_student_datetime,
+        var_groupcachedata.last_public_imageannotationcomment_by_student_datetime
+    );
+    var_last_public_comment_by_examiner_datetime = devilry__largest_datetime(
+        var_groupcachedata.last_public_groupcomment_by_examiner_datetime,
+        var_groupcachedata.last_public_imageannotationcomment_by_examiner_datetime
+    );
 
     INSERT INTO devilry_dbcache_assignmentgroupcacheddata (
         group_id,
@@ -193,7 +268,9 @@ BEGIN
         public_student_comment_count,
         public_examiner_comment_count,
         public_admin_comment_count,
-        public_student_file_upload_count)
+        public_student_file_upload_count,
+        last_public_comment_by_student_datetime,
+        last_public_comment_by_examiner_datetime)
     VALUES (
         param_group_id,
         var_groupcachedata.first_feedbackset_id,
@@ -204,7 +281,9 @@ BEGIN
         var_groupcachedata.public_student_comment_count + var_groupcachedata.public_student_imageannotationcomment_count,
         var_groupcachedata.public_examiner_comment_count + var_groupcachedata.public_examiner_imageannotationcomment_count,
         var_groupcachedata.public_admin_comment_count + var_groupcachedata.public_admin_imageannotationcomment_count,
-        var_groupcachedata.public_student_file_upload_count
+        var_groupcachedata.public_student_file_upload_count,
+        var_last_public_comment_by_student_datetime,
+        var_last_public_comment_by_examiner_datetime
     )
     ON CONFLICT(group_id)
     DO UPDATE SET
@@ -216,7 +295,9 @@ BEGIN
         public_student_comment_count = var_groupcachedata.public_student_comment_count + var_groupcachedata.public_student_imageannotationcomment_count,
         public_examiner_comment_count = var_groupcachedata.public_examiner_comment_count + var_groupcachedata.public_examiner_imageannotationcomment_count,
         public_admin_comment_count = var_groupcachedata.public_admin_comment_count + var_groupcachedata.public_admin_imageannotationcomment_count,
-        public_student_file_upload_count = var_groupcachedata.public_student_file_upload_count;
+        public_student_file_upload_count = var_groupcachedata.public_student_file_upload_count,
+        last_public_comment_by_student_datetime = var_last_public_comment_by_student_datetime,
+        last_public_comment_by_examiner_datetime = var_last_public_comment_by_examiner_datetime;
 END
 $$ LANGUAGE plpgsql;
 
