@@ -98,10 +98,10 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         # Must be refactored
         # Tests the ordering of FeedbackFeedSidebarBuilder
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() - timezone.timedelta(days=1))
         testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
                 group=testgroup,
-                deadline_datetime=timezone.now() - timezone.timedelta(days=1),
                 is_last_in_group=None)
         testfeedbackset1 = devilry_group_mommy_factories.feedbackset_new_attempt_published(
                 group=testgroup,
@@ -128,10 +128,10 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         # Must be refactored
         # Tests the ordering of FeedbackFeedSidebarBuilder
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() - timezone.timedelta(days=1))
         testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
-                group=testgroup,
-                deadline_datetime=timezone.now() - timezone.timedelta(days=1))
+                group=testgroup)
         testcomment1 = mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset)
         mommy.make('devilry_comment.CommentFile',
                    comment=testcomment1)
@@ -156,10 +156,10 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
     def test_files_for_comments(self):
         # Test the correct number of files for each comment and that it's the correct files.
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() - timezone.timedelta(days=1))
         testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
-                group=testgroup,
-                deadline_datetime=timezone.now() - timezone.timedelta(days=1))
+                group=testgroup)
 
         # testcomment 1 with 3 CommentFiles
         testcomment1 = mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset, text='comment1')
@@ -195,10 +195,10 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
     def test_items_in_builder_student(self):
         # Test that private comments are not fetched for student
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() - timezone.timedelta(days=1))
         testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
-                group=testgroup,
-                deadline_datetime=timezone.now() - timezone.timedelta(days=1))
+                group=testgroup)
 
         # testcomment 1
         testcomment1 = mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset, text='comment1')
@@ -232,10 +232,10 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
     def test_items_in_builder_examiner(self):
         # Test that examiner can see private comment
         testuser_examiner = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() - timezone.timedelta(days=1))
         testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
-                group=testgroup,
-                deadline_datetime=timezone.now() - timezone.timedelta(days=1))
+                group=testgroup)
 
         testcomment = mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset, text='comment1')
         mommy.make('devilry_comment.CommentFile',

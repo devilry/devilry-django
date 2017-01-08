@@ -59,18 +59,15 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
         now = timezone.now()
         group_mommy.feedbackset_first_attempt_published(
                 group=testgroup,
-                is_last_in_group=None,
                 created_datetime=now - timezone.timedelta(days=20),
                 grading_published_datetime=now-timezone.timedelta(days=19))
         group_mommy.feedbackset_new_attempt_published(
                 group=testgroup,
-                is_last_in_group=None,
                 created_datetime=now - timezone.timedelta(days=18),
                 deadline_datetime=now-timezone.timedelta(days=17),
                 grading_published_datetime=now-timezone.timedelta(days=16))
         group_mommy.feedbackset_new_attempt_published(
                 group=testgroup,
-                is_last_in_group=None,
                 created_datetime=now - timezone.timedelta(days=15),
                 deadline_datetime=now-timezone.timedelta(days=14),
                 grading_published_datetime=now-timezone.timedelta(days=13))
