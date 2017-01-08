@@ -117,7 +117,9 @@ class GroupListView(listbuilderview.FilterListMixin,
                                 queryset=examinerqueryset)) \
             .annotate_with_is_waiting_for_feedback()\
             .annotate_with_is_waiting_for_deliveries()\
-            .annotate_with_is_corrected()\
+            .annotate_with_is_corrected() \
+            .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user) \
+            .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)\
             .distinct()\
             .select_related('cached_data__last_published_feedbackset')
         # .annotate_with_grading_points()\

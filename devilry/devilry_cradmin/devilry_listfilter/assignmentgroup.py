@@ -476,33 +476,25 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value()
         if cleaned_value == 'studentcomment':
-            queryobject = queryobject.filter(
-                models.Q(number_of_groupcomments_from_students__gt=0) |
-                models.Q(number_of_imageannotationcomments_from_students__gt=0))
+            queryobject = queryobject.filter(cached_data__public_student_comment_count__gt=0)
         elif cleaned_value == 'no-studentcomment':
-            queryobject = queryobject.filter(
-                models.Q(number_of_groupcomments_from_students=0) &
-                models.Q(number_of_imageannotationcomments_from_students=0))
+            queryobject = queryobject.filter(cached_data__public_student_comment_count=0)
         elif cleaned_value == 'studentfile':
-            queryobject = queryobject.filter(number_of_commentfiles_from_students__gt=0)
+            queryobject = queryobject.filter(cached_data__public_student_file_upload_count__gt=0)
         elif cleaned_value == 'no-studentfile':
-            queryobject = queryobject.filter(number_of_commentfiles_from_students=0)
+            queryobject = queryobject.filter(cached_data__public_student_file_upload_count=0)
         elif cleaned_value == 'examinercomment':
-            queryobject = queryobject.filter(
-                models.Q(number_of_groupcomments_from_examiners__gt=0) |
-                models.Q(number_of_imageannotationcomments_from_examiners__gt=0))
+            queryobject = queryobject.filter(cached_data__public_examiner_comment_count__gt=0)
         elif cleaned_value == 'no-examinercomment':
-            queryobject = queryobject.filter(
-                models.Q(number_of_groupcomments_from_examiners=0) &
-                models.Q(number_of_imageannotationcomments_from_examiners=0))
+            queryobject = queryobject.filter(cached_data__public_examiner_comment_count=0)
         elif cleaned_value == 'unpublishedfeedback':
-            queryobject = queryobject.filter(has_unpublished_feedbackdraft=True)
-        elif cleaned_value == 'admincomment':
             queryobject = queryobject.filter(
-                models.Q(number_of_groupcomments_from_admins__gt=0) |
-                models.Q(number_of_imageannotationcomments_from_admins__gt=0))
+                ~models.Q(cached_data__last_feedbackset=models.F('cached_data__last_published_feedbackset'))
+            )
+        elif cleaned_value == 'admincomment':
+            queryobject = queryobject.filter(cached_data__public_admin_comment_count__gt=0)
         elif cleaned_value == 'privatecomment':
             queryobject = queryobject.filter(
                 models.Q(number_of_private_groupcomments_from_user__gt=0) |
-                models.Q(number_of_imageannotationcomments_from_user__gt=0))
+                models.Q(number_of_private_imageannotationcomments_from_user__gt=0))
         return queryobject
