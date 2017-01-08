@@ -744,6 +744,26 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             )
         )
 
+    def annotate_with_number_of_private_imageannotationcomments_from_user(self, user):
+        """
+        Annotate the queryset with ``number_of_private_imageannotationcomments_from_user`` -
+        the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
+        with private :obj:`~devilry.devilry_group.models.ImageAnnotationComment.visibility`
+        added by the provided ``user``.
+        Args:
+            user: A User object.
+        """
+        from devilry.devilry_group.models import ImageAnnotationComment
+        return self.annotate(
+            number_of_private_imageannotationcomments_from_user=models.Count(
+                models.Case(
+                    models.When(feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_PRIVATE,
+                                feedbackset__imageannotationcomment__user=user,
+                                then=1)
+                )
+            )
+        )
+
     def prefetch_assignment_with_points_to_grade_map(self, assignmentqueryset=None):
         """
         Prefetches the assignment in the ``prefetched_assignment`` attribute.
