@@ -108,7 +108,6 @@ class GroupListView(listbuilderview.FilterListMixin,
         queryset = coremodels.AssignmentGroup.objects\
             .filter_examiner_has_access(user=self.request.user)\
             .filter(parentnode=assignment)\
-            .only('name')\
             .prefetch_related(
                 models.Prefetch('candidates',
                                 queryset=candidatequeryset))\
@@ -121,7 +120,10 @@ class GroupListView(listbuilderview.FilterListMixin,
             .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user) \
             .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)\
             .distinct()\
-            .select_related('cached_data__last_published_feedbackset')
+            .select_related('cached_data__last_published_feedbackset',
+                            'cached_data__last_feedbackset',
+                            'cached_data__first_feedbackset',
+                            'parentnode')
         # .annotate_with_grading_points()\
         # .annotate_with_number_of_commentfiles_from_students()\
         # .annotate_with_number_of_groupcomments_from_students()\
