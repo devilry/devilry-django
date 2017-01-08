@@ -327,7 +327,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
                                 relatedstudent=relatedstudent1,
                                 assignment_group__parentnode=otherassignment)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=candidate1.assignment_group)
+            group=candidate1.assignment_group,
+            grading_points=1)
         mommy.make('core.Candidate',
                    relatedstudent=relatedstudent2,
                    assignment_group__parentnode=otherassignment)
@@ -449,7 +450,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
                                 relatedstudent=relatedstudent1,
                                 assignment_group__parentnode=otherassignment)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=candidate1.assignment_group)
+            group=candidate1.assignment_group,
+            grading_points=1)
 
         relatedstudent2 = mommy.make('core.RelatedStudent',
                                      user__fullname='User that is not candidate',
