@@ -167,7 +167,7 @@ BEGIN
                 devilry_comment_comment.user_role = 'student'
         ) AS public_student_file_upload_count,
         (
-            SELECT devilry_comment_comment.created_datetime
+            SELECT devilry_comment_comment.published_datetime
             FROM devilry_group_groupcomment
             INNER JOIN devilry_group_feedbackset
                 ON devilry_group_feedbackset.id = devilry_group_groupcomment.feedback_set_id
@@ -179,11 +179,11 @@ BEGIN
                 devilry_group_groupcomment.visibility = 'visible-to-everyone'
                 AND
                 devilry_comment_comment.user_role = 'student'
-            ORDER BY devilry_comment_comment.created_datetime DESC
+            ORDER BY devilry_comment_comment.published_datetime DESC NULLS LAST
             LIMIT 1
         ) AS last_public_groupcomment_by_student_datetime,
         (
-            SELECT devilry_comment_comment.created_datetime
+            SELECT devilry_comment_comment.published_datetime
             FROM devilry_group_imageannotationcomment
             INNER JOIN devilry_group_feedbackset
                 ON devilry_group_feedbackset.id = devilry_group_imageannotationcomment.feedback_set_id
@@ -195,11 +195,11 @@ BEGIN
                 devilry_group_imageannotationcomment.visibility = 'visible-to-everyone'
                 AND
                 devilry_comment_comment.user_role = 'student'
-            ORDER BY devilry_comment_comment.created_datetime DESC
+            ORDER BY devilry_comment_comment.published_datetime DESC NULLS LAST
             LIMIT 1
         ) AS last_public_imageannotationcomment_by_student_datetime,
         (
-            SELECT devilry_comment_comment.created_datetime
+            SELECT devilry_comment_comment.published_datetime
             FROM devilry_group_groupcomment
             INNER JOIN devilry_group_feedbackset
                 ON devilry_group_feedbackset.id = devilry_group_groupcomment.feedback_set_id
@@ -211,11 +211,11 @@ BEGIN
                 devilry_group_groupcomment.visibility = 'visible-to-everyone'
                 AND
                 devilry_comment_comment.user_role = 'examiner'
-            ORDER BY devilry_comment_comment.created_datetime DESC
+            ORDER BY devilry_comment_comment.published_datetime DESC NULLS LAST
             LIMIT 1
         ) AS last_public_groupcomment_by_examiner_datetime,
         (
-            SELECT devilry_comment_comment.created_datetime
+            SELECT devilry_comment_comment.published_datetime
             FROM devilry_group_imageannotationcomment
             INNER JOIN devilry_group_feedbackset
                 ON devilry_group_feedbackset.id = devilry_group_imageannotationcomment.feedback_set_id
@@ -227,7 +227,7 @@ BEGIN
                 devilry_group_imageannotationcomment.visibility = 'visible-to-everyone'
                 AND
                 devilry_comment_comment.user_role = 'examiner'
-            ORDER BY devilry_comment_comment.created_datetime DESC
+            ORDER BY devilry_comment_comment.published_datetime DESC NULLS LAST
             LIMIT 1
         ) AS last_public_imageannotationcomment_by_examiner_datetime
 

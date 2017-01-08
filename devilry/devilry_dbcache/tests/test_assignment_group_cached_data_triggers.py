@@ -940,7 +940,7 @@ class TestAssignmentGroupCachedDataLastPublicCommentByStudentDatetime(test.TestC
                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
-                         comment.created_datetime)
+                         comment.published_datetime)
 
     def test_groupcomment_ignore_private(self):
         group = mommy.make('core.AssignmentGroup')
@@ -999,7 +999,7 @@ class TestAssignmentGroupCachedDataLastPublicCommentByStudentDatetime(test.TestC
                               visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
-                         comment2.created_datetime)
+                         comment2.published_datetime)
 
     def test_groupcomment_delete_updates_datetime(self):
         group = mommy.make('core.AssignmentGroup')
@@ -1016,11 +1016,11 @@ class TestAssignmentGroupCachedDataLastPublicCommentByStudentDatetime(test.TestC
             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
-                         groupcomment2.created_datetime)
+                         groupcomment2.published_datetime)
         groupcomment2.delete()
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
-                         groupcomment1.created_datetime)
+                         groupcomment1.published_datetime)
 
     def test_imageannotationcomment_single(self):
         group = mommy.make('core.AssignmentGroup')
@@ -1031,7 +1031,7 @@ class TestAssignmentGroupCachedDataLastPublicCommentByStudentDatetime(test.TestC
                              visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
-                         comment.created_datetime)
+                         comment.published_datetime)
 
     def test_imageannotationcomment_ignore_private(self):
         group = mommy.make('core.AssignmentGroup')
@@ -1090,9 +1090,9 @@ class TestAssignmentGroupCachedDataLastPublicCommentByStudentDatetime(test.TestC
                               visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
-                         comment2.created_datetime)
+                         comment2.published_datetime)
 
-    def test_imageannotationcomment_delete_decrements_count(self):
+    def test_imageannotationcomment_delete_updates_datetime(self):
         group = mommy.make('core.AssignmentGroup')
         feedbackset1 = group.feedbackset_set.first()
         comment1 = mommy.make(
@@ -1107,11 +1107,11 @@ class TestAssignmentGroupCachedDataLastPublicCommentByStudentDatetime(test.TestC
             visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
-                         comment2.created_datetime)
+                         comment2.published_datetime)
         comment2.delete()
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_student_datetime,
-                         comment1.created_datetime)
+                         comment1.published_datetime)
 
 
 class TestAssignmentGroupCachedDataLastPublicCommentByExaminerDatetime(test.TestCase):
@@ -1132,7 +1132,7 @@ class TestAssignmentGroupCachedDataLastPublicCommentByExaminerDatetime(test.Test
                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
-                         comment.created_datetime)
+                         comment.published_datetime)
 
     def test_groupcomment_ignore_private(self):
         group = mommy.make('core.AssignmentGroup')
@@ -1191,7 +1191,7 @@ class TestAssignmentGroupCachedDataLastPublicCommentByExaminerDatetime(test.Test
                               visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
-                         comment2.created_datetime)
+                         comment2.published_datetime)
 
     def test_groupcomment_delete_updates_datetime(self):
         group = mommy.make('core.AssignmentGroup')
@@ -1208,11 +1208,11 @@ class TestAssignmentGroupCachedDataLastPublicCommentByExaminerDatetime(test.Test
             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
-                         groupcomment2.created_datetime)
+                         groupcomment2.published_datetime)
         groupcomment2.delete()
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
-                         groupcomment1.created_datetime)
+                         groupcomment1.published_datetime)
 
     def test_imageannotationcomment_single(self):
         group = mommy.make('core.AssignmentGroup')
@@ -1223,7 +1223,7 @@ class TestAssignmentGroupCachedDataLastPublicCommentByExaminerDatetime(test.Test
                              visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
-                         comment.created_datetime)
+                         comment.published_datetime)
 
     def test_imageannotationcomment_ignore_private(self):
         group = mommy.make('core.AssignmentGroup')
@@ -1282,9 +1282,9 @@ class TestAssignmentGroupCachedDataLastPublicCommentByExaminerDatetime(test.Test
                               visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
-                         comment2.created_datetime)
+                         comment2.published_datetime)
 
-    def test_imageannotationcomment_delete_decrements_count(self):
+    def test_imageannotationcomment_delete_updates_datetime(self):
         group = mommy.make('core.AssignmentGroup')
         feedbackset1 = group.feedbackset_set.first()
         comment1 = mommy.make(
@@ -1299,11 +1299,11 @@ class TestAssignmentGroupCachedDataLastPublicCommentByExaminerDatetime(test.Test
             visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
-                         comment2.created_datetime)
+                         comment2.published_datetime)
         comment2.delete()
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.last_public_comment_by_examiner_datetime,
-                         comment1.created_datetime)
+                         comment1.published_datetime)
 
 
 class TestRecrateCacheData(test.TestCase):
