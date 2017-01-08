@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-# python imports
 import json
 
-# django imports
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.functions import Coalesce
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy
 
-# devilry imports
 from devilry.apps.core.models import assignment_group
 from devilry.devilry_comment import models as comment_models
 
@@ -167,6 +165,45 @@ class AbstractGroupComment(comment_models.Comment):
         self.save()
 
 
+class FeedbackSetQuerySet(models.QuerySet):
+    """
+    QuerySet for :class:`.FeedbackSet`.
+    """
+    def get_order_by_deadline_datetime_argument(self):
+        """
+        Get a Coalesce expression that can be used with ``order_by()``
+        to order feedbacksets by deadline. This handles
+        ordering the first feedbackset by the first deadline of the
+        assignment.
+
+        Examples:
+
+            Basics (same as using :meth:`.order_by_deadline_datetime`)::
+
+                FeedbackSet.objects.all()\
+                    .order_by(FeedbackSet.objects.get_order_by_deadline_datetime_argument())
+
+            Combine with other order by arguments::
+
+                FeedbackSet.objects.all()\
+                    .order_by('group__parentnode__short_name',
+                              'group__id',
+                              FeedbackSet.objects.get_order_by_deadline_datetime_argument())
+        """
+        return Coalesce('deadline_datetime', 'group__parentnode__first_deadline')
+
+    def order_by_deadline_datetime(self):
+        """
+        Order by ``deadline_datetime``.
+
+        Unlike just using ``order_by('deadline_datetime')``, this method
+        uses :meth:`.get_order_by_deadline_datetime_argument`, which
+        ensures that the first feedbackset is ordered using
+        the first deadline of the assignment.
+        """
+        return self.order_by(self.get_order_by_deadline_datetime_argument())
+
+
 class FeedbackSet(models.Model):
     """
     All comments that are given for a specific deadline (delivery and feedback) are
@@ -177,6 +214,7 @@ class FeedbackSet(models.Model):
     All student-comments will be `instant_publish=True`, and the same applies to comments made by examiners that
     are not a part of feedback.
     """
+    objects = FeedbackSetQuerySet.as_manager()
 
     #: The AssignmentGroup that owns this feedbackset.
     group = models.ForeignKey(assignment_group.AssignmentGroup)
