@@ -3,13 +3,6 @@ from __future__ import unicode_literals
 from datetime import timedelta
 
 import mock
-from devilry.apps.core.models import Assignment
-from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
-from devilry.devilry_comment.models import Comment
-from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_group import devilry_group_mommy_factories
-from devilry.devilry_group.models import GroupComment
-from devilry.devilry_student.views.dashboard import dashboard
 from django import test
 from django.conf import settings
 from django.utils import timezone
@@ -18,9 +11,20 @@ from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 from model_mommy import mommy
 
+from devilry.apps.core.models import Assignment
+from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
+from devilry.devilry_comment.models import Comment
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group.models import GroupComment
+from devilry.devilry_student.views.dashboard import dashboard
+
 
 class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = dashboard.DashboardView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_title(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -295,9 +299,9 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=testgroup, grading_points=3, is_last_in_group=False)
+            group=testgroup, grading_points=3)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
-            group=testgroup, is_last_in_group=True,
+            group=testgroup,
             deadline_datetime=timezone.now() + timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=testuser)
@@ -319,9 +323,9 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=testgroup, grading_points=3, is_last_in_group=False)
+            group=testgroup, grading_points=3)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
-            group=testgroup, is_last_in_group=True,
+            group=testgroup,
             deadline_datetime=timezone.now() - timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=testuser)
@@ -343,9 +347,9 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=testgroup, grading_points=3, is_last_in_group=False)
+            group=testgroup, grading_points=3)
         devilry_group_mommy_factories.feedbackset_new_attempt_published(
-            group=testgroup, is_last_in_group=True, grading_points=2)
+            group=testgroup, grading_points=2)
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=testuser)
         self.assertFalse(
@@ -359,7 +363,6 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                         '.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
 
     def test_grouplist_comments_sanity(self):
-        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
