@@ -117,7 +117,7 @@ class AssignmentGroupCachedData(models.Model):
         return self.last_published_feedbackset_id == self.last_feedbackset_id
 
     @property
-    def public_total_anytype_comment_comment_count(self):
+    def public_total_anytype_comment_count(self):
         """
         Returns :obj:`~.AssignmentGroupCachedData.public_total_comment_count` +
         :obj:`~.AssignmentGroupCachedData.public_total_imageannotationcomment_count`.
@@ -125,7 +125,7 @@ class AssignmentGroupCachedData(models.Model):
         return self.public_total_comment_count + self.public_total_imageannotationcomment_count
 
     @property
-    def public_student_anytype_comment_comment_count(self):
+    def public_student_anytype_comment_count(self):
         """
         Returns :obj:`~.AssignmentGroupCachedData.public_student_comment_count` +
         :obj:`~.AssignmentGroupCachedData.public_student_imageannotationcomment_count`.
@@ -133,7 +133,7 @@ class AssignmentGroupCachedData(models.Model):
         return self.public_student_comment_count + self.public_student_imageannotationcomment_count
 
     @property
-    def public_examiner_anytype_comment_comment_count(self):
+    def public_examiner_anytype_comment_count(self):
         """
         Returns :obj:`~.AssignmentGroupCachedData.public_examiner_comment_count` +
         :obj:`~.AssignmentGroupCachedData.public_examiner_imageannotationcomment_count`.
@@ -141,7 +141,7 @@ class AssignmentGroupCachedData(models.Model):
         return self.public_examiner_comment_count + self.public_examiner_imageannotationcomment_count
 
     @property
-    def public_admin_anytype_comment_comment_count(self):
+    def public_admin_anytype_comment_count(self):
         """
         Returns :obj:`~.AssignmentGroupCachedData.public_admin_comment_count` +
         :obj:`~.AssignmentGroupCachedData.public_admin_imageannotationcomment_count`.
