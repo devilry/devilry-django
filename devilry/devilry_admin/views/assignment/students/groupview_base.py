@@ -114,21 +114,21 @@ class GroupViewMixin(object):
         return self.get_filterlist()\
             .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
                     exclude={'status'})\
-            .filter(is_waiting_for_feedback=True)\
+            .filter(annotated_is_waiting_for_feedback=True)\
             .count()
 
     def get_filtered_waiting_for_deliveries_count(self):
         return self.get_filterlist()\
             .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
                     exclude={'status'})\
-            .filter(is_waiting_for_deliveries=True)\
+            .filter(annotated_is_waiting_for_deliveries=True)\
             .count()
 
     def get_filtered_corrected_count(self):
         return self.get_filterlist()\
             .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
                     exclude={'status'})\
-            .filter(is_corrected=True)\
+            .filter(annotated_is_corrected=True)\
             .count()
 
     def __get_distinct_relatedexaminer_ids(self):

@@ -286,11 +286,11 @@ class StatusSelectFilter(abstractselect.AbstractSelectFilter):
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value() or ''
         if cleaned_value == 'waiting-for-feedback':
-            queryobject = queryobject.filter(is_waiting_for_feedback=True)
+            queryobject = queryobject.filter(annotated_is_waiting_for_feedback=True)
         elif cleaned_value == 'waiting-for-deliveries':
-            queryobject = queryobject.filter(is_waiting_for_deliveries=True)
+            queryobject = queryobject.filter(annotated_is_waiting_for_deliveries=True)
         elif cleaned_value == 'corrected':
-            queryobject = queryobject.filter(is_corrected=True)
+            queryobject = queryobject.filter(annotated_is_corrected=True)
         return queryobject
 
 
