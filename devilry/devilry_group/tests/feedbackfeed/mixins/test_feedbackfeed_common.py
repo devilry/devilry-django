@@ -1,15 +1,13 @@
 import unittest
 
 import mock
-from model_mommy import mommy
 from django.utils import formats
 from django.utils import timezone
-
 from django_cradmin import cradmin_testhelpers
+from model_mommy import mommy
 
-from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_group import models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group import models
 from devilry.devilry_group import models as group_models
 
 
@@ -17,9 +15,6 @@ class TestFeedbackFeedHeaderMixin(cradmin_testhelpers.TestCaseMixin):
     """
     Tests the header of the feedbackfeed and elements that should be rendered inside it.
     """
-    def setUp(self):
-        AssignmentGroupDbCacheCustomSql().initialize()
-
     def test_get_header(self):
         # tests that that header exists in header
         group = mommy.make('core.AssignmentGroup')
@@ -192,9 +187,6 @@ class TestFeedbackFeedGroupCommentMixin(cradmin_testhelpers.TestCaseMixin):
     """
     Tests the rendering of GroupComment in a feedbackfeed.
     """
-    def setUp(self):
-        AssignmentGroupDbCacheCustomSql().initialize()
-
     def test_get_comment_student(self):
         # test that student comment-style is rendered.
         group = mommy.make('core.AssignmentGroup')
@@ -302,9 +294,6 @@ class TestFeedbackFeedGroupCommentMixin(cradmin_testhelpers.TestCaseMixin):
 
 class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCommentMixin):
     viewclass = None  # must be implemented in subclass
-
-    def setUp(self):
-        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get(self):
         group = mommy.make('core.AssignmentGroup')
