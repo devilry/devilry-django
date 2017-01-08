@@ -905,6 +905,34 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             )
         )
 
+    def annotate_with_has_unpublished_feedbackdraft(self):
+        """
+        Annotate the queryset with ``annotated_has_unpublished_feedbackdraft``.
+        A group is considered to have an unpublished feedback draft if the following
+        is true:
+        - :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime` is ``None``.
+        - :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points` is not ``None``.
+        So this means that all groups annotated with ``has_unpublished_feedbackdraft``
+        are groups that are corrected, and ready be be published.
+
+
+        This means that this method annotates with the same logic
+        as the :meth:`.AssignmentGroup.has_unpublished_feedbackdraft` property.
+
+        Typically used for filtering by the annotated value. When you
+        just need the information and have as AssignmentGroup object,
+        you should use the :meth:`.AssignmentGroup.has_unpublished_feedbackdraft` property.
+
+        """
+        whenquery = models.Q(
+            cached_data__last_feedbackset__grading_published_datetime__isnull=True,
+            cached_data__last_feedbackset__grading_points__isnull=False)
+        return self.annotate(
+            annotated_has_unpublished_feedbackdraft=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(models.When(whenquery, then=1))
+            )
+        )
+
 
 class AssignmentGroupManager(models.Manager):
     """

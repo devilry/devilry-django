@@ -2978,31 +2978,31 @@ class TestAssignmentGroupHasUnpublishedFeedbackset(TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def test_has_unpublished_feedbackdraft_no_feedbackset(self):
+    def test_no_feedbackset(self):
         testgroup = mommy.make('core.AssignmentGroup')
         testgroup.refresh_from_db()
         self.assertFalse(testgroup.has_unpublished_feedbackdraft)
 
-    def test_annotate_with_has_unpublished_feedbackdraft_false_published(self):
+    def test_false_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
         testgroup.refresh_from_db()
         self.assertFalse(testgroup.has_unpublished_feedbackdraft)
 
-    def test_annotate_with_has_unpublished_feedbackdraft_false_no_grading_points(self):
+    def test_false_no_grading_points(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
         testgroup.refresh_from_db()
         self.assertFalse(testgroup.has_unpublished_feedbackdraft)
 
-    def test_annotate_with_has_unpublished_feedbackdraft_true(self):
+    def test_true(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup, grading_points=1)
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.has_unpublished_feedbackdraft)
 
-    def test_annotate_with_has_unpublished_feedbackdraft_multiple_feedbacksets(self):
+    def test_multiple_feedbacksets(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
@@ -3010,6 +3010,44 @@ class TestAssignmentGroupHasUnpublishedFeedbackset(TestCase):
             group=testgroup, grading_points=1)
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.has_unpublished_feedbackdraft)
+
+
+class TestAssignmentGroupAnnotateWithHasUnpublishedFeedbackset(TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_no_feedbackset(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        self.assertFalse(annotated_group.annotated_has_unpublished_feedbackdraft)
+
+    def test_false_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
+        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        self.assertFalse(annotated_group.annotated_has_unpublished_feedbackdraft)
+
+    def test_false_no_grading_points(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        self.assertFalse(annotated_group.annotated_has_unpublished_feedbackdraft)
+
+    def test_true(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=testgroup, grading_points=1)
+        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        self.assertTrue(annotated_group.annotated_has_unpublished_feedbackdraft)
+
+    def test_multiple_feedbacksets(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup, grading_points=1)
+        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        self.assertTrue(annotated_group.annotated_has_unpublished_feedbackdraft)
 
 
 class TestAssignmentGroupQuerySetAnnotateWithNumberOfExaminers(TestCase):
