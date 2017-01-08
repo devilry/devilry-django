@@ -302,7 +302,7 @@ class PointsFilter(listfilter.django.single.textinput.IntSearch):
         return pgettext_lazy('group points filter', 'Points')
 
     def get_modelfields(self):
-        return ['grading_points']
+        return ['cached_data__last_published_feedbackset__grading_points']
 
     # def get_placeholder(self):
     #     return pgettext_lazy('group points filter', 'Type a number ...')
