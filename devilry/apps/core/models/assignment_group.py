@@ -784,8 +784,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             cached_data__last_feedbackset__grading_published_datetime__isnull=True
         ) & (
             models.Q(
-                ~models.Q(cached_data__last_feedbackset=models.F(
-                    'cached_data__first_feedbackset')),
+                ~models.Q(cached_data__last_feedbackset=models.F('cached_data__first_feedbackset')),
                 models.Q(cached_data__last_feedbackset__deadline_datetime__lt=now),
             ) |
             models.Q(
@@ -795,6 +794,42 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         )
         return self.annotate(
             annotated_is_waiting_for_feedback=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(
+                    models.When(whenquery, then=1)
+                )
+            )
+        )
+
+    def annotate_with_is_waiting_for_deliveries(self):
+        """
+        Annotate the queryset with ``annotated_is_waiting_for_deliveries``.
+        Groups waiting for deliveries is all groups where
+        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
+        has not expired, and the feedbackset does not have a
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
+
+        This means that this method annotates with the same logic
+        as the :meth:`.AssignmentGroup.is_waiting_for_deliveries` property.
+
+        Typically used for filtering by the annotated value. When you
+        just need the information and have as AssignmentGroup object,
+        you should use the :meth:`.AssignmentGroup.is_waiting_for_deliveries` property.
+        """
+        now = timezone.now()
+        whenquery = models.Q(
+            cached_data__last_feedbackset__grading_published_datetime__isnull=True
+        ) & (
+            models.Q(
+                ~models.Q(cached_data__last_feedbackset=models.F('cached_data__first_feedbackset')),
+                models.Q(cached_data__last_feedbackset__deadline_datetime__gte=now),
+            ) |
+            models.Q(
+                models.Q(cached_data__last_feedbackset=models.F('cached_data__first_feedbackset')),
+                parentnode__first_deadline__gte=now
+            )
+        )
+        return self.annotate(
+            annotated_is_waiting_for_deliveries=devilry_djangoaggregate_functions.BooleanCount(
                 models.Case(
                     models.When(whenquery, then=1)
                 )

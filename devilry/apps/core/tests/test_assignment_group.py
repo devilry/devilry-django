@@ -1945,7 +1945,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
             group=testgroup2)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup2,
-            deadline_datetime=ACTIVE_PERIOD_START)
+            deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=1))
 
         # Should not be waiting for feedback
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
@@ -2016,6 +2016,97 @@ class TestAssignmentGroupIsWaitingForDeliveries(TestCase):
             deadline_datetime=timezone.now() + timedelta(days=1))
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.is_waiting_for_deliveries)
+
+
+class TestAssignmentGroupQuerysetAnnotateWithIsWaitingForDeliveries(TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_false_feedback_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        self.assertFalse(annotated_group.annotated_is_waiting_for_deliveries)
+
+    def test_false_deadline_expired_first_attempt(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=ACTIVE_PERIOD_START)
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        self.assertFalse(annotated_group.annotated_is_waiting_for_deliveries)
+
+    def test_false_deadline_expired_new_attempt(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup,
+            deadline_datetime=ACTIVE_PERIOD_START)
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        self.assertFalse(annotated_group.annotated_is_waiting_for_deliveries)
+
+    def test_true_deadline_not_expired_first_attempt(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=ACTIVE_PERIOD_END)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=testgroup)
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        self.assertTrue(annotated_group.annotated_is_waiting_for_deliveries)
+
+    def test_true_deadline_not_expired_new_attempt(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup,
+            deadline_datetime=ACTIVE_PERIOD_END)
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        self.assertTrue(annotated_group.annotated_is_waiting_for_deliveries)
+
+    def test_true_multiple_feedbacksets(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=ACTIVE_PERIOD_START)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup,
+            deadline_datetime=timezone.now() + timedelta(days=1))
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        self.assertTrue(annotated_group.annotated_is_waiting_for_deliveries)
+
+    def test_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup',
+                                parentnode__first_deadline=ACTIVE_PERIOD_END)
+        testgroup2 = mommy.make('core.AssignmentGroup',
+                                parentnode__first_deadline=ACTIVE_PERIOD_START)
+        testgroup3 = mommy.make('core.AssignmentGroup',
+                                parentnode__first_deadline=ACTIVE_PERIOD_END)
+        testgroup4 = mommy.make('core.AssignmentGroup',
+                                parentnode__first_deadline=ACTIVE_PERIOD_END)
+        testgroup5 = mommy.make('core.AssignmentGroup',
+                                parentnode__first_deadline=ACTIVE_PERIOD_START)
+
+        # Should be waiting for deliveries
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=testgroup1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup2)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup2,
+            deadline_datetime=ACTIVE_PERIOD_END)
+
+        # Should not be waiting for deliveries
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup3)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup4)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=testgroup4)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=testgroup5)
+
+        annotated_groups = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries()
+        self.assertTrue(annotated_groups.get(id=testgroup1.id).annotated_is_waiting_for_deliveries)
+        self.assertTrue(annotated_groups.get(id=testgroup2.id).annotated_is_waiting_for_deliveries)
+        self.assertFalse(annotated_groups.get(id=testgroup3.id).annotated_is_waiting_for_deliveries)
+        self.assertFalse(annotated_groups.get(id=testgroup4.id).annotated_is_waiting_for_deliveries)
+        self.assertFalse(annotated_groups.get(id=testgroup5.id).annotated_is_waiting_for_deliveries)
 
 
 class TestAssignmentGroupIsCorrected(TestCase):
