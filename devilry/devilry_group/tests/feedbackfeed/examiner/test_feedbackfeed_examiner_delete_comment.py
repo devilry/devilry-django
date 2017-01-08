@@ -3,12 +3,16 @@ from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.views.examiner import feedbackfeed_examiner
 
 
 class TestFeedbackFeedDeleteComment(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = feedbackfeed_examiner.GroupCommentDeleteView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_delete_comment_draft(self):
         # Test that the GroupComment does not exist after delete is posted
@@ -22,7 +26,7 @@ class TestFeedbackFeedDeleteComment(TestCase, cradmin_testhelpers.TestCaseMixin)
                              user_role='examiner',
                              part_of_grading=True,
                              visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
-                             feedback_set__group=group)
+                             feedback_set=group.feedbackset_set.first())
 
         self.assertEquals(1, len(group_models.GroupComment.objects.all()))
 
@@ -40,7 +44,7 @@ class TestFeedbackFeedDeleteComment(TestCase, cradmin_testhelpers.TestCaseMixin)
         testcomment = mommy.make('devilry_group.GroupComment',
                                  user=testexaminer.relatedexaminer.user,
                                  user_role='examiner',
-                                 feedback_set__group=testexaminer.assignmentgroup)
+                                 feedback_set=testexaminer.assignmentgroup.feedbackset_set.first())
         with self.assertRaises(PermissionDenied):
             self.mock_getrequest(cradmin_role=testexaminer.assignmentgroup,
                                  requestuser=testexaminer.relatedexaminer.user,
@@ -58,7 +62,7 @@ class TestFeedbackFeedDeleteComment(TestCase, cradmin_testhelpers.TestCaseMixin)
                                       user_role='examiner',
                                       part_of_grading=True,
                                       visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
-                                      feedback_set__group=testexaminer.assignmentgroup)
+                                      feedback_set=testexaminer.assignmentgroup.feedbackset_set.first())
         with self.assertRaises(PermissionDenied):
             self.mock_getrequest(cradmin_role=testexaminer.assignmentgroup,
                                  requestuser=testexaminer.relatedexaminer.user,
@@ -73,7 +77,7 @@ class TestFeedbackFeedDeleteComment(TestCase, cradmin_testhelpers.TestCaseMixin)
                                  user_role='examiner',
                                  part_of_grading=True,
                                  visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
-                                 feedback_set__group=testexaminer.assignmentgroup)
+                                 feedback_set=testexaminer.assignmentgroup.feedbackset_set.first())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testexaminer.assignmentgroup,
                                                           requestuser=testexaminer.relatedexaminer.user,
                                                           viewkwargs={'pk': testcomment.id})
@@ -89,7 +93,7 @@ class TestFeedbackFeedDeleteComment(TestCase, cradmin_testhelpers.TestCaseMixin)
                                  user_role='examiner',
                                  part_of_grading=True,
                                  visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
-                                 feedback_set__group=testexaminer.assignmentgroup)
+                                 feedback_set=testexaminer.assignmentgroup.feedbackset_set.first())
         with self.assertNumQueries(2):
             self.mock_http200_getrequest_htmls(cradmin_role=testexaminer.assignmentgroup,
                                                requestuser=testexaminer.relatedexaminer.user,

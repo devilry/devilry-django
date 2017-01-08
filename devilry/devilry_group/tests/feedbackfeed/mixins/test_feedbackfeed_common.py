@@ -192,6 +192,9 @@ class TestFeedbackFeedGroupCommentMixin(cradmin_testhelpers.TestCaseMixin):
     """
     Tests the rendering of GroupComment in a feedbackfeed.
     """
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_get_comment_student(self):
         # test that student comment-style is rendered.
         group = mommy.make('core.AssignmentGroup')
@@ -299,6 +302,9 @@ class TestFeedbackFeedGroupCommentMixin(cradmin_testhelpers.TestCaseMixin):
 
 class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCommentMixin):
     viewclass = None  # must be implemented in subclass
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get(self):
         group = mommy.make('core.AssignmentGroup')

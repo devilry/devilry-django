@@ -1,3 +1,4 @@
+import unittest
 from datetime import datetime
 
 from django.test import TestCase
@@ -223,6 +224,8 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
         cached_group = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
         self.assertIsNone(cached_group.last_published_feedbackset)
 
+    @unittest.skip('Should most likely be removed. The DB triggers enforce that only the first '
+                   'feedbackset can have deadline_datetime=None.')
     def test_post_can_not_publish_with_last_feedbackset_deadline_as_none(self):
         assignment = mommy.make_recipe(
                 'devilry.apps.core.assignment_activeperiod_start',
@@ -627,8 +630,8 @@ class TestExaminerCreateNewFeedbackSet(TestCase, cradmin_testhelpers.TestCaseMix
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=testgroup,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
-        group_mommy.feedbackset_first_attempt_published(group=testgroup, is_last_in_group=None,)
-        group_mommy.feedbackset_new_attempt_published(group=testgroup, is_last_in_group=None,)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        group_mommy.feedbackset_new_attempt_published(group=testgroup)
         group_mommy.feedbackset_new_attempt_unpublished(group=testgroup)
         mockresponse = self.mock_getrequest(cradmin_role=examiner.assignmentgroup)
         self.assertEquals(302, mockresponse.response.status_code)

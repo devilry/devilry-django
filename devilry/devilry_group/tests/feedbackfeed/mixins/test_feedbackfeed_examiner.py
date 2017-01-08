@@ -29,7 +29,7 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
         mommy.make('devilry_group.GroupComment',
                    user_role='student',
                    user=candidate.relatedstudent.user,
-                   feedback_set__group=group)
+                   feedback_set=group.feedbackset_set.first())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
         self.assertFalse(mockresponse.selector.exists('.devilry-user-verbose-inline'))
         self.assertTrue(mockresponse.selector.exists('.devilry-core-candidate-anonymous-name'))
@@ -47,7 +47,7 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
         mommy.make('devilry_group.GroupComment',
                    user_role='student',
                    user=candidate.relatedstudent.user,
-                   feedback_set__group=group)
+                   feedback_set=group.feedbackset_set.first())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
         self.assertFalse(mockresponse.selector.exists('.devilry-user-verbose-inline'))
         self.assertTrue(mockresponse.selector.exists('.devilry-core-candidate-anonymous-name'))
@@ -75,7 +75,7 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
                    user=student.relatedstudent.user,
                    user_role='student',
                    published_datetime=timezone.now() - timezone.timedelta(days=1),
-                   feedback_set__group=group)
+                   feedback_set=group.feedbackset_set.first())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
                                                           requestuser=examiner.relatedexaminer.user)
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
@@ -95,7 +95,7 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
                    user_role='examiner',
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=timezone.now(),
-                   feedback_set__group=group)
+                   feedback_set=group.feedbackset_set.first())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=request_examiner.assignmentgroup,
                                                           requestuser=request_examiner.relatedexaminer.user)
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
@@ -115,7 +115,7 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
                    user_role='examiner',
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
                    published_datetime=timezone.now(),
-                   feedback_set__group=group)
+                   feedback_set=group.feedbackset_set.first())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=request_examiner.assignmentgroup,
                                                           requestuser=request_examiner.relatedexaminer.user)
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
@@ -136,7 +136,7 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
                    visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                    part_of_grading=True,
                    published_datetime=timezone.now(),
-                   feedback_set__group=group)
+                   feedback_set=group.feedbackset_set.first())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group,
                                                           requestuser=requestexaminer.relatedexaminer.user)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
@@ -153,7 +153,7 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
                    visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
                    part_of_grading=True,
                    published_datetime=timezone.now(),
-                   feedback_set__group=group)
+                   feedback_set=group.feedbackset_set.first())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group,
                                                           requestuser=examiner.relatedexaminer.user)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
@@ -172,7 +172,7 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
                    part_of_grading=True,
                    visibility=GroupComment.VISIBILITY_PRIVATE,
                    published_datetime=timezone.now() - timezone.timedelta(days=1),
-                   feedback_set__group=group)
+                   feedback_set=group.feedbackset_set.first())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=request_examiner.assignmentgroup,
                                                           requestuser=request_examiner.relatedexaminer.user)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
@@ -187,7 +187,7 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
                    user_role='examiner',
                    part_of_grading=True,
                    visibility=GroupComment.VISIBILITY_PRIVATE,
-                   feedback_set__group=group)
+                   feedback_set=group.feedbackset_set.first())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
                                                           requestuser=examiner.relatedexaminer.user)
         self.assertTrue(mockresponse.selector.exists('.btn-danger'))
@@ -203,7 +203,7 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
                    user_role='examiner',
                    part_of_grading=True,
                    visibility=GroupComment.VISIBILITY_PRIVATE,
-                   feedback_set__group=group)
+                   feedback_set=group.feedbackset_set.first())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
                                                           requestuser=examiner.relatedexaminer.user)
         self.assertTrue(mockresponse.selector.exists('.btn-info'))
