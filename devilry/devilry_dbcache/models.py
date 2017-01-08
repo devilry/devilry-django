@@ -40,14 +40,16 @@ class AssignmentGroupCachedData(models.Model):
     new_attempt_count = models.PositiveIntegerField(
         default=0, editable=False)
 
-    #: The number of :class:`devilry.devilry_group.models.GroupComment` within the group
+    #: The number of :class:`devilry.devilry_group.models.GroupComment` and
+    #: :class:`devilry.devilry_group.models.ImageAnnotationComment` within the group
     #: with :obj:`~devilry.devilry_group.models.AbstractGroupComment.visibility`
     #: set to :obj:`~devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
     #: within the group.
     public_total_comment_count = models.PositiveIntegerField(
         default=0, editable=False)
 
-    #: The number of :class:`devilry.devilry_group.models.GroupComment` within the group
+    #: The number of :class:`devilry.devilry_group.models.GroupComment` and
+    #: :class:`devilry.devilry_group.models.ImageAnnotationComment` within the group
     #: with :obj:`~devilry.devilry_group.models.AbstractGroupComment.visibility`
     #: set to :obj:`~devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
     #: and :obj:`~devilry.devilry_comment.models.Comment.user_role` set
@@ -55,7 +57,8 @@ class AssignmentGroupCachedData(models.Model):
     public_student_comment_count = models.PositiveIntegerField(
         default=0, editable=False)
 
-    #: The number of :class:`devilry.devilry_group.models.GroupComment` within the group
+    #: The number of :class:`devilry.devilry_group.models.GroupComment` and
+    #: :class:`devilry.devilry_group.models.ImageAnnotationComment` within the group
     #: with :obj:`~devilry.devilry_group.models.AbstractGroupComment.visibility`
     #: set to :obj:`~devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
     #: and :obj:`~devilry.devilry_comment.models.Comment.user_role` set
@@ -63,43 +66,13 @@ class AssignmentGroupCachedData(models.Model):
     public_examiner_comment_count = models.PositiveIntegerField(
         default=0, editable=False)
 
-    #: The number of :class:`devilry.devilry_group.models.GroupComment` within the group
+    #: The number of :class:`devilry.devilry_group.models.GroupComment` and
+    #: :class:`devilry.devilry_group.models.ImageAnnotationComment` within the group
     #: with :obj:`~devilry.devilry_group.models.AbstractGroupComment.visibility`
     #: set to :obj:`~devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
     #: and :obj:`~devilry.devilry_comment.models.Comment.user_role` set
     #: to :obj:`~devilry.devilry_comment.models.Comment.USER_ROLE_ADMIN`.
     public_admin_comment_count = models.PositiveIntegerField(
-        default=0, editable=False)
-
-    #: The number of :class:`devilry.devilry_group.models.ImageAnnotationComment` within the group
-    #: with :obj:`~devilry.devilry_group.models.AbstractGroupComment.visibility`
-    #: set to :obj:`~devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
-    #: within the group.
-    public_total_imageannotationcomment_count = models.PositiveIntegerField(
-        default=0, editable=False)
-
-    #: The number of :class:`devilry.devilry_group.models.ImageAnnotationComment` within the group
-    #: with :obj:`~devilry.devilry_group.models.AbstractGroupComment.visibility`
-    #: set to :obj:`~devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
-    #: and :obj:`~devilry.devilry_comment.models.Comment.user_role` set
-    #: to :obj:`~devilry.devilry_comment.models.Comment.USER_ROLE_STUDENT`.
-    public_student_imageannotationcomment_count = models.PositiveIntegerField(
-        default=0, editable=False)
-
-    #: The number of :class:`devilry.devilry_group.models.ImageAnnotationComment` within the group
-    #: with :obj:`~devilry.devilry_group.models.AbstractGroupComment.visibility`
-    #: set to :obj:`~devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
-    #: and :obj:`~devilry.devilry_comment.models.Comment.user_role` set
-    #: to :obj:`~devilry.devilry_comment.models.Comment.USER_ROLE_EXAMINER`.
-    public_examiner_imageannotationcomment_count = models.PositiveIntegerField(
-        default=0, editable=False)
-
-    #: The number of :class:`devilry.devilry_group.models.ImageAnnotationComment` within the group
-    #: with :obj:`~devilry.devilry_group.models.AbstractGroupComment.visibility`
-    #: set to :obj:`~devilry.devilry_group.models.AbstractGroupComment.VISIBILITY_VISIBLE_TO_EVERYONE`
-    #: and :obj:`~devilry.devilry_comment.models.Comment.user_role` set
-    #: to :obj:`~devilry.devilry_comment.models.Comment.USER_ROLE_ADMIN`.
-    public_admin_imageannotationcomment_count = models.PositiveIntegerField(
         default=0, editable=False)
 
     #: Number of files uploaded by a student on a
@@ -115,38 +88,6 @@ class AssignmentGroupCachedData(models.Model):
         is the same as :obj:`~.AssignmentGroup.last_feedbackset`.
         """
         return self.last_published_feedbackset_id == self.last_feedbackset_id
-
-    @property
-    def public_total_anytype_comment_count(self):
-        """
-        Returns :obj:`~.AssignmentGroupCachedData.public_total_comment_count` +
-        :obj:`~.AssignmentGroupCachedData.public_total_imageannotationcomment_count`.
-        """
-        return self.public_total_comment_count + self.public_total_imageannotationcomment_count
-
-    @property
-    def public_student_anytype_comment_count(self):
-        """
-        Returns :obj:`~.AssignmentGroupCachedData.public_student_comment_count` +
-        :obj:`~.AssignmentGroupCachedData.public_student_imageannotationcomment_count`.
-        """
-        return self.public_student_comment_count + self.public_student_imageannotationcomment_count
-
-    @property
-    def public_examiner_anytype_comment_count(self):
-        """
-        Returns :obj:`~.AssignmentGroupCachedData.public_examiner_comment_count` +
-        :obj:`~.AssignmentGroupCachedData.public_examiner_imageannotationcomment_count`.
-        """
-        return self.public_examiner_comment_count + self.public_examiner_imageannotationcomment_count
-
-    @property
-    def public_admin_anytype_comment_count(self):
-        """
-        Returns :obj:`~.AssignmentGroupCachedData.public_admin_comment_count` +
-        :obj:`~.AssignmentGroupCachedData.public_admin_imageannotationcomment_count`.
-        """
-        return self.public_admin_comment_count + self.public_admin_imageannotationcomment_count
 
     @property
     def last_feedbackset_deadline_datetime(self):

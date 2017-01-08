@@ -16,10 +16,6 @@ class AssignmentGroupCachedDataAdmin(admin.ModelAdmin):
         'public_student_comment_count',
         'public_examiner_comment_count',
         'public_admin_comment_count',
-        'public_total_imageannotationcomment_count',
-        'public_student_imageannotationcomment_count',
-        'public_examiner_imageannotationcomment_count',
-        'public_admin_imageannotationcomment_count',
         'public_student_file_upload_count',
     ]
     search_fields = [

@@ -2,7 +2,7 @@
 
 <span class="devilry-core-comment-summary">
     <span class="devilry-core-comment-summary-studentcomments">
-        {% blocktrans trimmed count commentcount=group.cached_data.public_student_anytype_comment_count %}
+        {% blocktrans trimmed count commentcount=group.cached_data.public_student_comment_count %}
             {{ commentcount }} comment from student.
         {% plural %}
             {{ commentcount }} comments from student.
@@ -16,7 +16,7 @@
         {% endblocktrans %}
     </span>
     <span class="devilry-core-comment-summary-examinercomments">
-        {% blocktrans trimmed count commentcount=group.cached_data.public_examiner_anytype_comment_count %}
+        {% blocktrans trimmed count commentcount=group.cached_data.public_examiner_comment_count %}
             {{ commentcount }} comment from examiner.
         {% plural %}
             {{ commentcount }} comments from examiner.

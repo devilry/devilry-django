@@ -339,8 +339,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         return self.annotate_with_number_of_published_feedbacksets() \
             .filter(
                 models.Q(number_of_published_feedbacksets__gt=0) |
-                models.Q(cached_data__public_total_comment_count__gt=0) |
-                models.Q(cached_data__public_total_imageannotationcomment_count__gt=0))
+                models.Q(cached_data__public_total_comment_count__gt=0))
 
     def extra_annotate_with_fullname_of_first_candidate(self):
         # Not ment to be used directly - this is used by the

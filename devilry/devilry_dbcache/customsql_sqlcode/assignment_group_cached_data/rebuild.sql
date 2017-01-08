@@ -193,10 +193,6 @@ BEGIN
         public_student_comment_count,
         public_examiner_comment_count,
         public_admin_comment_count,
-        public_total_imageannotationcomment_count,
-        public_student_imageannotationcomment_count,
-        public_examiner_imageannotationcomment_count,
-        public_admin_imageannotationcomment_count,
         public_student_file_upload_count)
     VALUES (
         param_group_id,
@@ -204,14 +200,10 @@ BEGIN
         var_groupcachedata.last_feedbackset_id,
         var_groupcachedata.last_published_feedbackset_id,
         var_groupcachedata.new_attempt_count,
-        var_groupcachedata.public_total_comment_count,
-        var_groupcachedata.public_student_comment_count,
-        var_groupcachedata.public_examiner_comment_count,
-        var_groupcachedata.public_admin_comment_count,
-        var_groupcachedata.public_total_imageannotationcomment_count,
-        var_groupcachedata.public_student_imageannotationcomment_count,
-        var_groupcachedata.public_examiner_imageannotationcomment_count,
-        var_groupcachedata.public_admin_imageannotationcomment_count,
+        var_groupcachedata.public_total_comment_count + var_groupcachedata.public_total_imageannotationcomment_count,
+        var_groupcachedata.public_student_comment_count + var_groupcachedata.public_student_imageannotationcomment_count,
+        var_groupcachedata.public_examiner_comment_count + var_groupcachedata.public_examiner_imageannotationcomment_count,
+        var_groupcachedata.public_admin_comment_count + var_groupcachedata.public_admin_imageannotationcomment_count,
         var_groupcachedata.public_student_file_upload_count
     )
     ON CONFLICT(group_id)
@@ -220,14 +212,10 @@ BEGIN
         last_feedbackset_id = var_groupcachedata.last_feedbackset_id,
         last_published_feedbackset_id = var_groupcachedata.last_published_feedbackset_id,
         new_attempt_count = var_groupcachedata.new_attempt_count,
-        public_total_comment_count = var_groupcachedata.public_total_comment_count,
-        public_student_comment_count = var_groupcachedata.public_student_comment_count,
-        public_examiner_comment_count = var_groupcachedata.public_examiner_comment_count,
-        public_admin_comment_count = var_groupcachedata.public_admin_comment_count,
-        public_total_imageannotationcomment_count = var_groupcachedata.public_total_imageannotationcomment_count,
-        public_student_imageannotationcomment_count = var_groupcachedata.public_student_imageannotationcomment_count,
-        public_examiner_imageannotationcomment_count = var_groupcachedata.public_examiner_imageannotationcomment_count,
-        public_admin_imageannotationcomment_count = var_groupcachedata.public_admin_imageannotationcomment_count,
+        public_total_comment_count = var_groupcachedata.public_total_comment_count + var_groupcachedata.public_total_imageannotationcomment_count,
+        public_student_comment_count = var_groupcachedata.public_student_comment_count + var_groupcachedata.public_student_imageannotationcomment_count,
+        public_examiner_comment_count = var_groupcachedata.public_examiner_comment_count + var_groupcachedata.public_examiner_imageannotationcomment_count,
+        public_admin_comment_count = var_groupcachedata.public_admin_comment_count + var_groupcachedata.public_admin_imageannotationcomment_count,
         public_student_file_upload_count = var_groupcachedata.public_student_file_upload_count;
 END
 $$ LANGUAGE plpgsql;
