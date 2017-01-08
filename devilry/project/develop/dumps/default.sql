@@ -1635,42 +1635,6 @@ ALTER SEQUENCE devilry_comment_commentfileimage_id_seq OWNED BY devilry_comment_
 
 
 --
--- Name: devilry_dbcache_assignmentgroupcacheddata; Type: TABLE; Schema: public; Owner: dbdev; Tablespace: 
---
-
-CREATE TABLE devilry_dbcache_assignmentgroupcacheddata (
-    id integer NOT NULL,
-    group_id integer NOT NULL,
-    last_feedbackset_id integer,
-    last_published_feedbackset_id integer,
-    first_feedbackset_id integer
-);
-
-
-ALTER TABLE public.devilry_dbcache_assignmentgroupcacheddata OWNER TO dbdev;
-
---
--- Name: devilry_dbcache_assignmentgroupcacheddata_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
---
-
-CREATE SEQUENCE devilry_dbcache_assignmentgroupcacheddata_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.devilry_dbcache_assignmentgroupcacheddata_id_seq OWNER TO dbdev;
-
---
--- Name: devilry_dbcache_assignmentgroupcacheddata_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
---
-
-ALTER SEQUENCE devilry_dbcache_assignmentgroupcacheddata_id_seq OWNED BY devilry_dbcache_assignmentgroupcacheddata.id;
-
-
---
 -- Name: devilry_detektor_comparetwocacheitem; Type: TABLE; Schema: public; Owner: dbdev; Tablespace: 
 --
 
@@ -2596,12 +2560,6 @@ ALTER TABLE ONLY devilry_comment_commentfile ALTER COLUMN id SET DEFAULT nextval
 
 ALTER TABLE ONLY devilry_comment_commentfileimage ALTER COLUMN id SET DEFAULT nextval('devilry_comment_commentfileimage_id_seq'::regclass);
 
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: dbdev
---
-
-ALTER TABLE ONLY devilry_dbcache_assignmentgroupcacheddata ALTER COLUMN id SET DEFAULT nextval('devilry_dbcache_assignmentgroupcacheddata_id_seq'::regclass);
 
 
 --
@@ -3683,20 +3641,6 @@ COPY devilry_comment_commentfileimage (id, image, image_width, image_height, thu
 SELECT pg_catalog.setval('devilry_comment_commentfileimage_id_seq', 1, false);
 
 
---
--- Data for Name: devilry_dbcache_assignmentgroupcacheddata; Type: TABLE DATA; Schema: public; Owner: dbdev
---
-
-COPY devilry_dbcache_assignmentgroupcacheddata (id, group_id, last_feedbackset_id, last_published_feedbackset_id, first_feedbackset_id) FROM stdin;
-\.
-
-
---
--- Name: devilry_dbcache_assignmentgroupcacheddata_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
---
-
-SELECT pg_catalog.setval('devilry_dbcache_assignmentgroupcacheddata_id_seq', 1, false);
-
 
 --
 -- Data for Name: devilry_detektor_comparetwocacheitem; Type: TABLE DATA; Schema: public; Owner: dbdev
@@ -4082,14 +4026,7 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 76	devilry_comment	0005_auto_20160122_1709	2016-02-02 12:40:04.57152+01
 77	devilry_group	0017_auto_20160122_1518	2016-02-02 12:40:04.783329+01
 78	devilry_group	0018_auto_20160122_1712	2016-02-02 12:40:04.889591+01
-79	devilry_dbcache	0001_initial	2016-08-06 13:27:17.311535+02
-80	devilry_dbcache	0002_auto_20160413_0154	2016-08-06 13:27:17.435906+02
-81	devilry_dbcache	0003_auto_20160413_0216	2016-08-06 13:27:17.556816+02
-82	devilry_dbcache	0004_assignmentgroupcacheddata_first_feedbackset	2016-08-06 13:27:17.657678+02
-83	devilry_dbcache	0005_auto_20160413_1239	2016-08-06 13:27:17.777072+02
-84	devilry_dbcache	0006_auto_20160413_1958	2016-08-06 13:27:17.899438+02
-85	devilry_dbcache	0007_auto_20160413_2000	2016-08-06 13:27:18.020828+02
-86	ievv_batchframework	0002_auto_20160413_0154	2016-08-06 13:27:18.143708+02
+79	ievv_batchframework	0002_auto_20160413_0154	2016-08-06 13:27:18.143708+02
 \.
 
 
@@ -4097,7 +4034,7 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('django_migrations_id_seq', 86, true);
+SELECT pg_catalog.setval('django_migrations_id_seq', 79, true);
 
 
 --
@@ -4772,22 +4709,6 @@ ALTER TABLE ONLY devilry_comment_commentfile
 
 ALTER TABLE ONLY devilry_comment_commentfileimage
     ADD CONSTRAINT devilry_comment_commentfileimage_pkey PRIMARY KEY (id);
-
-
---
--- Name: devilry_dbcache_assignmentgroupcacheddata_group_id_key; Type: CONSTRAINT; Schema: public; Owner: dbdev; Tablespace: 
---
-
-ALTER TABLE ONLY devilry_dbcache_assignmentgroupcacheddata
-    ADD CONSTRAINT devilry_dbcache_assignmentgroupcacheddata_group_id_key UNIQUE (group_id);
-
-
---
--- Name: devilry_dbcache_assignmentgroupcacheddata_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev; Tablespace: 
---
-
-ALTER TABLE ONLY devilry_dbcache_assignmentgroupcacheddata
-    ADD CONSTRAINT devilry_dbcache_assignmentgroupcacheddata_pkey PRIMARY KEY (id);
 
 
 --
@@ -5749,27 +5670,6 @@ CREATE INDEX devilry_comment_commentfileimage_b009b360 ON devilry_comment_commen
 
 
 --
--- Name: devilry_dbcache_assignmentgroupcacheddata_1f1b65ab; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
---
-
-CREATE INDEX devilry_dbcache_assignmentgroupcacheddata_1f1b65ab ON devilry_dbcache_assignmentgroupcacheddata USING btree (last_published_feedbackset_id);
-
-
---
--- Name: devilry_dbcache_assignmentgroupcacheddata_5da8f6f1; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
---
-
-CREATE INDEX devilry_dbcache_assignmentgroupcacheddata_5da8f6f1 ON devilry_dbcache_assignmentgroupcacheddata USING btree (first_feedbackset_id);
-
-
---
--- Name: devilry_dbcache_assignmentgroupcacheddata_ce0430ee; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
---
-
-CREATE INDEX devilry_dbcache_assignmentgroupcacheddata_ce0430ee ON devilry_dbcache_assignmentgroupcacheddata USING btree (last_feedbackset_id);
-
-
---
 -- Name: devilry_detektor_comparetwocacheitem_1228a18e; Type: INDEX; Schema: public; Owner: dbdev; Tablespace: 
 --
 
@@ -6089,27 +5989,11 @@ ALTER TABLE ONLY core_assignmentgrouptag
 
 
 --
--- Name: D38f06e86c282176ed91b626b3d53c5c; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
---
-
-ALTER TABLE ONLY devilry_dbcache_assignmentgroupcacheddata
-    ADD CONSTRAINT "D38f06e86c282176ed91b626b3d53c5c" FOREIGN KEY (last_feedbackset_id) REFERENCES devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
 -- Name: D3ec90dcce686786fa6cfc7940d91960; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
 ALTER TABLE ONLY core_assignmentgroup
     ADD CONSTRAINT "D3ec90dcce686786fa6cfc7940d91960" FOREIGN KEY (batchoperation_id) REFERENCES ievv_batchframework_batchoperation(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: D501a297186ad015f4b232ee0cc9d6bc; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
---
-
-ALTER TABLE ONLY devilry_dbcache_assignmentgroupcacheddata
-    ADD CONSTRAINT "D501a297186ad015f4b232ee0cc9d6bc" FOREIGN KEY (last_published_feedbackset_id) REFERENCES devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -6270,14 +6154,6 @@ ALTER TABLE ONLY devilry_qualifiesforexam_qualifiesforfinalexam
 
 ALTER TABLE ONLY devilry_comment_commentfileimage
     ADD CONSTRAINT c5ab7e1e9bde26caa038c76c78d6bc7c FOREIGN KEY (comment_file_id) REFERENCES devilry_comment_commentfile(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: cea413632741eceda962fafaadf5240d; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
---
-
-ALTER TABLE ONLY devilry_dbcache_assignmentgroupcacheddata
-    ADD CONSTRAINT cea413632741eceda962fafaadf5240d FOREIGN KEY (first_feedbackset_id) REFERENCES devilry_group_feedbackset(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -6718,14 +6594,6 @@ ALTER TABLE ONLY devilry_account_periodpermissiongroup
 
 ALTER TABLE ONLY devilry_comment_comment
     ADD CONSTRAINT devilry_com_user_id_22e2aceb29d9ed4d_fk_devilry_account_user_id FOREIGN KEY (user_id) REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: devilry_db_group_id_52f51e6c979920a8_fk_core_assignmentgroup_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
---
-
-ALTER TABLE ONLY devilry_dbcache_assignmentgroupcacheddata
-    ADD CONSTRAINT devilry_db_group_id_52f51e6c979920a8_fk_core_assignmentgroup_id FOREIGN KEY (group_id) REFERENCES core_assignmentgroup(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
