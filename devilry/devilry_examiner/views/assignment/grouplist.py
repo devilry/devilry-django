@@ -124,17 +124,6 @@ class GroupListView(listbuilderview.FilterListMixin,
                             'cached_data__last_feedbackset',
                             'cached_data__first_feedbackset',
                             'parentnode')
-        # .annotate_with_grading_points()\
-        # .annotate_with_number_of_commentfiles_from_students()\
-        # .annotate_with_number_of_groupcomments_from_students()\
-        # .annotate_with_number_of_groupcomments_from_examiners()\
-        # .annotate_with_number_of_groupcomments_from_admins()\
-        # .annotate_with_number_of_imageannotationcomments_from_students()\
-        # .annotate_with_number_of_imageannotationcomments_from_examiners()\
-        # .annotate_with_number_of_imageannotationcomments_from_admins()\
-        # .annotate_with_has_unpublished_feedbackdraft()\
-        # .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user)\
-        # .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)\
         return queryset
 
     def __get_status_filter_value(self):
