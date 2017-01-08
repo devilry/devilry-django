@@ -3217,3 +3217,88 @@ class TestAssignmentGroupQuerySetAnnotateWithNumberOfPrivateImageannotationcomme
         self.assertEqual(
             1,
             queryset.get(id=testgroup2.id).number_of_private_imageannotationcomments_from_user)
+
+
+class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_false_unpublished(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=testgroup,
+            grading_points=10)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        self.assertFalse(queryset.first().is_passing_grade)
+
+    def test_false_published(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__passing_grade_min_points=10)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup,
+            grading_points=9)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        self.assertFalse(queryset.first().is_passing_grade)
+
+    def test_true(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__passing_grade_min_points=10)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup,
+            grading_points=20)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        self.assertTrue(queryset.first().is_passing_grade)
+
+    def test_true_gte(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__passing_grade_min_points=10)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup,
+            grading_points=10)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        self.assertTrue(queryset.first().is_passing_grade)
+
+    def test_multiple_last_published(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__passing_grade_min_points=10)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup,
+            grading_points=5)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=testgroup,
+            grading_points=15)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        self.assertTrue(queryset.first().is_passing_grade)
+
+    def test_multiple_last_unpublished(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__passing_grade_min_points=10)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup,
+            grading_points=5)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup,
+            grading_points=20)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        self.assertFalse(queryset.first().is_passing_grade)
+
+    def test_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup',
+                                parentnode__passing_grade_min_points=10)
+        testgroup2 = mommy.make('core.AssignmentGroup',
+                                parentnode__passing_grade_min_points=30)
+        testgroup3 = mommy.make('core.AssignmentGroup',
+                                parentnode__passing_grade_min_points=20)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup1,
+            grading_points=10)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup2,
+            grading_points=20)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup3,
+            grading_points=30)
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        self.assertTrue(queryset.get(id=testgroup1.id).is_passing_grade)
+        self.assertFalse(queryset.get(id=testgroup2.id).is_passing_grade)
+        self.assertTrue(queryset.get(id=testgroup3.id).is_passing_grade)

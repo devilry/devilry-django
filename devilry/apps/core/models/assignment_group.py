@@ -881,6 +881,30 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             )
         )
 
+    def annotate_with_is_passing_grade(self):
+        """
+        Annotate the queryset with ``is_passing_grade``.
+        ``is_passing_grade`` is ``True`` if the following is true
+        if the last :class:`~devilry.devilry_group.models.FeedbackSet` in the group:
+        - Is published.
+        - Has :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points`
+          greater or equal to ``passing_grade_min_points`` for the
+          :class:`.devilry.apps.core.models.Assignment`.
+        """
+        return self.annotate(
+            is_passing_grade=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(
+                    models.When(
+                        cached_data__last_published_feedbackset__isnull=False,
+                        cached_data__last_published_feedbackset__grading_points__gte=models.F(
+                            'parentnode__passing_grade_min_points'),
+                        then=1
+                    ),
+                    default=models.Value(None)
+                )
+            )
+        )
+
 
 class AssignmentGroupManager(models.Manager):
     """
