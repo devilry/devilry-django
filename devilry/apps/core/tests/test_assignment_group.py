@@ -2164,6 +2164,93 @@ class TestAssignmentGroupIsCorrected(TestCase):
         self.assertTrue(testgroup.is_corrected)
 
 
+class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_false_feedback_not_published_first_attempt(self):
+        mommy.make('core.AssignmentGroup')
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        self.assertFalse(annotated_group.annotated_is_corrected)
+
+    def test_false_feedback_not_published_new_attempt(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup)
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        self.assertFalse(annotated_group.annotated_is_corrected)
+
+    def test_true_feedback_is_published_first_attempt(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        self.assertTrue(annotated_group.annotated_is_corrected)
+
+    def test_true_feedback_is_published_new_attempt(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=testgroup)
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        self.assertTrue(annotated_group.annotated_is_corrected)
+
+    def test_false_multiple_feedbacksets_last_is_not_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup)
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        self.assertFalse(annotated_group.annotated_is_corrected)
+
+    def test_true_multiple_feedbacksets_last_is_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=testgroup)
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        self.assertTrue(annotated_group.annotated_is_corrected)
+
+    def test_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup',
+                                parentnode__first_deadline=ACTIVE_PERIOD_START)
+        testgroup2 = mommy.make('core.AssignmentGroup',
+                                parentnode__first_deadline=ACTIVE_PERIOD_START)
+        testgroup3 = mommy.make('core.AssignmentGroup',
+                                parentnode__first_deadline=ACTIVE_PERIOD_START)
+        testgroup4 = mommy.make('core.AssignmentGroup',
+                                parentnode__first_deadline=ACTIVE_PERIOD_START)
+
+        # Should be corrected
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup2)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=testgroup2)
+
+        # Should not be corrected
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=testgroup3)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup4)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup4)
+
+        annotated_groups = AssignmentGroup.objects.annotate_with_is_corrected()
+        self.assertTrue(annotated_groups.get(id=testgroup1.id).annotated_is_corrected)
+        self.assertTrue(annotated_groups.get(id=testgroup2.id).annotated_is_corrected)
+        self.assertFalse(annotated_groups.get(id=testgroup3.id).annotated_is_corrected)
+        self.assertFalse(annotated_groups.get(id=testgroup4.id).annotated_is_corrected)
+
+
 class TestAssignmentGroupPublishedGradingPoints(TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()

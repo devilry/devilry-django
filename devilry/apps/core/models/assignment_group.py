@@ -836,6 +836,32 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             )
         )
 
+    def annotate_with_is_corrected(self):
+        """
+        Annotate the queryset with ``annotated_is_corrected``.
+
+        Corrected groups is all groups where the last feedbackset is
+        the same as the last published feedbackset.
+
+        This means that this method annotates with the same logic
+        as the :meth:`.AssignmentGroup.is_corrected` property.
+
+        Typically used for filtering by the annotated value. When you
+        just need the information and have as AssignmentGroup object,
+        you should use the :meth:`.AssignmentGroup.is_corrected` property.
+        """
+        whenquery = models.Q(
+            models.Q(cached_data__last_feedbackset=models.F(
+                'cached_data__last_published_feedbackset')),
+        )
+        return self.annotate(
+            annotated_is_corrected=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(
+                    models.When(whenquery, then=1)
+                )
+            )
+        )
+
 
 class AssignmentGroupManager(models.Manager):
     """
