@@ -1,4 +1,4 @@
-set log_error_verbosity=TERSE;
+-- set log_error_verbosity=TERSE;
 
 
 -- Takes the ID of an AssignmentGroup, and returns a
