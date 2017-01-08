@@ -40,8 +40,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
         feedbackset = group_mommy.feedbackset_first_attempt_published(
                 group=testgroup,
-                grading_points=7,
-                deadline_datetime=timezone.now() - timezone.timedelta(days=1))
+                grading_points=7)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-passed'))
         self.assertFalse(mockresponse.selector.exists('.devilry-core-grade-failed'))
@@ -53,8 +52,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
         feedbackset = group_mommy.feedbackset_first_attempt_published(
                 group=testgroup,
-                grading_points=0,
-                deadline_datetime=timezone.now() - timezone.timedelta(days=1))
+                grading_points=0)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-failed'))
         self.assertFalse(mockresponse.selector.exists('.devilry-core-grade-passed'))
