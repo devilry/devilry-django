@@ -488,9 +488,8 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
         elif cleaned_value == 'no-examinercomment':
             queryobject = queryobject.filter(cached_data__public_examiner_comment_count=0)
         elif cleaned_value == 'unpublishedfeedback':
-            queryobject = queryobject.filter(
-                ~models.Q(cached_data__last_feedbackset=models.F('cached_data__last_published_feedbackset'))
-            )
+            queryobject = queryobject.annotate_with_has_unpublished_feedbackdraft()
+            queryobject = queryobject.filter(annotated_has_unpublished_feedbackdraft=True)
         elif cleaned_value == 'admincomment':
             queryobject = queryobject.filter(cached_data__public_admin_comment_count__gt=0)
         elif cleaned_value == 'privatecomment':
