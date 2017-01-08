@@ -1,5 +1,4 @@
 import unittest
-from datetime import datetime
 
 from django.test import TestCase
 from django.utils import timezone
@@ -7,13 +6,12 @@ from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
-from devilry.devilry_group import models as group_models
+from devilry.devilry_dbcache import models as cache_models
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_examiner
 from devilry.devilry_group.views.examiner import feedbackfeed_examiner
-from devilry.utils import datetimeutils
-from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_dbcache import models as cache_models
 
 
 class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
@@ -661,12 +659,14 @@ class TestExaminerCreateNewFeedbackSet(TestCase, cradmin_testhelpers.TestCaseMix
         self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-failed'))
 
     def test_feedbackset_created_with_published_feedbackset_without_comment(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() - timezone.timedelta(days=2))
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=testgroup,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
         group_mommy.feedbackset_first_attempt_published(group=testgroup)
-        timestr = (datetimeutils.get_current_datetime() + timezone.timedelta(days=2)).strftime('%Y-%m-%d %H:%M')
+        deadline_datetime = timezone.now() + timezone.timedelta(days=2)
+        deadline_datetime = deadline_datetime.replace(microsecond=0, second=0)
 
         self.mock_http302_postrequest(
             cradmin_role=examiner.assignmentgroup,
@@ -674,28 +674,31 @@ class TestExaminerCreateNewFeedbackSet(TestCase, cradmin_testhelpers.TestCaseMix
             viewkwargs={'pk': examiner.assignmentgroup.id},
             requestkwargs={
                 'data': {
-                    'deadline_datetime': timestr,
+                    'deadline_datetime': deadline_datetime.strftime('%Y-%m-%d %H:%M'),
                     'text': '',
                     'examiner_create_new_feedbackset': 'unused value',
                 }
             })
 
-        feedbacksets = group_models.FeedbackSet.objects.all()
+        feedbacksets = group_models.FeedbackSet.objects.order_by_deadline_datetime()
         self.assertEquals(2, len(feedbacksets))
-        self.assertEquals(datetime.strptime(timestr, '%Y-%m-%d %H:%M'), feedbacksets[1].deadline_datetime)
+        self.assertEquals(feedbacksets[1].deadline_datetime,
+                          deadline_datetime)
         self.assertEquals(2, group_models.FeedbackSet.objects.count())
         group_comments = group_models.GroupComment.objects.all()
         self.assertEquals(0, len(group_comments))
 
     def test_feedbackset_created_with_published_feedbackset_with_comment(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__first_deadline=timezone.now() - timezone.timedelta(days=2))
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=testgroup,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
         group_mommy.feedbackset_first_attempt_published(group=testgroup,
                                                         grading_published_by=examiner.relatedexaminer.user)
 
-        timestr = (datetimeutils.get_current_datetime() + timezone.timedelta(days=2)).strftime('%Y-%m-%d %H:%M')
+        deadline_datetime = timezone.now() + timezone.timedelta(days=2)
+        deadline_datetime = deadline_datetime.replace(microsecond=0, second=0)
         comment_text = 'New attempt given'
 
         self.mock_http302_postrequest(
@@ -704,15 +707,15 @@ class TestExaminerCreateNewFeedbackSet(TestCase, cradmin_testhelpers.TestCaseMix
             viewkwargs={'pk': examiner.assignmentgroup.id},
             requestkwargs={
                 'data': {
-                    'deadline_datetime': timestr,
+                    'deadline_datetime': deadline_datetime.strftime('%Y-%m-%d %H:%M'),
                     'text': comment_text,
                     'examiner_create_new_feedbackset': 'unused value',
                 }
             })
 
-        feedbacksets = group_models.FeedbackSet.objects.all()
+        feedbacksets = group_models.FeedbackSet.objects.order_by_deadline_datetime()
         self.assertEquals(2, len(feedbacksets))
-        self.assertEquals(datetime.strptime(timestr, '%Y-%m-%d %H:%M'), feedbacksets[1].deadline_datetime)
+        self.assertEquals(deadline_datetime, feedbacksets[1].deadline_datetime)
 
         comments = group_models.GroupComment.objects.all()
         self.assertEquals(1, len(comments))
