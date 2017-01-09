@@ -55,7 +55,8 @@ class FeedbackFeedBaseView(create.CreateView):
     template_name = "devilry_group/feedbackfeed.django.html"
     model = group_models.GroupComment
     form_attributes = {
-        'django-cradmin-bulkfileupload-form': ''
+        'django-cradmin-bulkfileupload-form': '',
+        'django-cradmin-bulkfileupload-form-prevent-window-dragdrop': 'true'
     }
 
     submit_use_label = _('Post comment')

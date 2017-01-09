@@ -101,3 +101,12 @@
         <input type="hidden" name="{{ hiddenfieldname }}" django-cradmin-bulkfileupload-collectionid-field>
     </div>
 </div>
+
+<script>
+    window.addEventListener("dragover", function(e) {
+      e.preventDefault()
+    }, false);
+    window.addEventListener("drop", function(e) {
+      e.preventDefault()
+    }, false);
+</script>
