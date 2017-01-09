@@ -1,7 +1,6 @@
 {% load i18n %}
 
-<div django-cradmin-bulkfileupload="{{ apiurl }}"
-     django-cradmin-bulkfileupload-apiparameters={{ apiparameters|safe }} {# NOTE: The missing quotes are correct - they are added by quoteattr #}
+<div django-cradmin-bulkfileupload={{ apiparameters|safe }} {# NOTE: The missing quotes are correct - they are added by quoteattr #}
              class="django-cradmin-bulkfileupload">
 
     <div django-cradmin-bulkfileupload-progress></div>
