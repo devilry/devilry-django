@@ -55,7 +55,8 @@ class FeedbackFeedBaseView(create.CreateView):
     template_name = "devilry_group/feedbackfeed.django.html"
     model = group_models.GroupComment
     form_attributes = {
-        'django-cradmin-bulkfileupload-form': ''
+        'django-cradmin-bulkfileupload-form': '',
+        'django-cradmin-bulkfileupload-form-prevent-window-dragdrop': 'true'
     }
 
     submit_use_label = _('Post comment')
@@ -170,6 +171,8 @@ class FeedbackFeedBaseView(create.CreateView):
     def get_buttons(self):
         return []
 
+    # def _get_upload_api_
+
     def get_field_layout(self):
         field_layout = []
         field_layout.extend(self.get_form_class().get_field_layout())
@@ -180,11 +183,23 @@ class FeedbackFeedBaseView(create.CreateView):
                     'devilry_group/include/fileupload.django.html',
                     {
                         "apiparameters": quoteattr(json.dumps({
+                            "autosubmit": False,
+                            "uploadapiurl": reverse('cradmin_temporary_file_upload_api'),
                             "unique_filenames": True,
-                            "max_filename_length": comment_models.CommentFile.MAX_FILENAME_LENGTH
+                            "max_filename_length": comment_models.CommentFile.MAX_FILENAME_LENGTH,
+                            # "uploadapiurl": "/cradmin_temporaryfileuploadstore/temporary_file_upload_api",
+                            "errormessage503": "Server timeout while uploading the file. "
+                                               "This may be caused by a poor upload link and/or a too large file.",
+                            # "remove_file_label": "Remove",
+                            # "removing_file_message": "Removing ...",
+                            # "close_errormessage_label": "Close"
+                            "apiparameters": {
+                                "singlemode": False,
+                                # "accept": "image/png,image/jpeg,image/gif"
+                            },
                         })),
                         "hiddenfieldname": "temporary_file_collection_id",
-                        "apiurl": reverse('cradmin_temporary_file_upload_api')
+
                     })),
                 # css_class='panel-footer'
             ))

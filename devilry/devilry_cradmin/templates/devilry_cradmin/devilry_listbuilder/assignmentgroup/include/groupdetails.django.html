@@ -14,7 +14,7 @@
 {% if me.group.is_corrected %}
     <p class="devilry-cradmin-groupitemvalue-grade">
         <span class="sr-only">{% trans "Grade" context "group grade" %}:</span>
-        {% devilry_grade_full me.get_assignment me.group.grading_points me.get_devilryrole %}
+        {% devilry_grade_full me.get_assignment me.group.published_grading_points me.get_devilryrole %}
     </p>
 {% else %}
     <p class="devilry-cradmin-groupitemvalue-status">

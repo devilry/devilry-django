@@ -11,6 +11,7 @@ from ievv_opensource.ievv_batchframework.models import BatchOperation
 from devilry.apps.core.models import Subject
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_comment.models import Comment
+from devilry.devilry_dbcache.bulk_create_queryset_mixin import BulkCreateQuerySetMixin
 from devilry.utils import devilry_djangoaggregate_functions
 from .node import Node
 from .abstract_is_admin import AbstractIsAdmin
@@ -40,7 +41,7 @@ class GroupPopNotCandiateError(GroupPopValueError):
     """
 
 
-class AssignmentGroupQuerySet(models.QuerySet):
+class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
     """
     QuerySet for :class:`.AssignmentGroup`
     """
@@ -329,261 +330,6 @@ class AssignmentGroupQuerySet(models.QuerySet):
                 ]
             )
 
-    def annotate_with_number_of_groupcomments(self):
-        """
-        Annotate the queryset with ``number_of_groupcomments`` -
-        the number of :class:`devilry.devilry_group.models.GroupComment`
-        within each AssignmentGroup.
-
-        Only comments that should be visible to everyone with access to the
-        group is included.
-        """
-        from devilry.devilry_group.models import GroupComment
-        return self.annotate(
-            number_of_groupcomments=models.Count(
-                models.Case(
-                    models.When(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                                then=1)
-                )
-            )
-        )
-
-    def annotate_with_number_of_groupcomments_from_students(self):
-        """
-        Annotate the queryset with ``number_of_groupcomments_from_students`` -
-        the number of :class:`devilry.devilry_group.models.GroupComment`
-        added by students within each AssignmentGroup.
-
-        Only comments that should be visible to everyone with access to the
-        group is included.
-        """
-        from devilry.devilry_group.models import GroupComment
-        return self.annotate(
-            number_of_groupcomments_from_students=models.Count(
-                models.Case(
-                    models.When(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                                feedbackset__groupcomment__user_role=GroupComment.USER_ROLE_STUDENT,
-                                then=1)
-                )
-            )
-        )
-
-    def annotate_with_number_of_groupcomments_from_examiners(self):
-        """
-        Annotate the queryset with ``number_of_groupcomments_from_examiners`` -
-        the number of :class:`devilry.devilry_group.models.GroupComment`
-        added by examiners within each AssignmentGroup.
-
-        Only comments that should be visible to everyone with access to the
-        group is included.
-        """
-        from devilry.devilry_group.models import GroupComment
-        return self.annotate(
-            number_of_groupcomments_from_examiners=models.Count(
-                models.Case(
-                    models.When(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                                feedbackset__groupcomment__user_role=GroupComment.USER_ROLE_EXAMINER,
-                                then=1)
-                )
-            )
-        )
-
-    def annotate_with_number_of_groupcomments_from_admins(self):
-        """
-        Annotate the queryset with ``number_of_groupcomments_from_admins`` -
-        the number of :class:`devilry.devilry_group.models.GroupComment`
-        added by admins within each AssignmentGroup.
-
-        Only comments that should be visible to everyone with access to the
-        group is included.
-        """
-        from devilry.devilry_group.models import GroupComment
-        return self.annotate(
-            number_of_groupcomments_from_admins=models.Count(
-                models.Case(
-                    models.When(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                                feedbackset__groupcomment__user_role=GroupComment.USER_ROLE_ADMIN,
-                                then=1)
-                )
-            )
-        )
-
-    def annotate_with_number_of_imageannotationcomments(self):
-        """
-        Annotate the queryset with ``number_of_imageannotationcomments`` -
-        the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
-        within each AssignmentGroup.
-
-        Only comments that should be visible to everyone with access to the
-        group is included.
-        """
-        from devilry.devilry_group.models import ImageAnnotationComment
-        whenquery = models.When(
-            feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-            then=1
-        )
-        return self.annotate(
-            number_of_imageannotationcomments=models.Count(
-                models.Case(whenquery)
-            )
-        )
-
-    def annotate_with_number_of_imageannotationcomments_from_students(self):
-        """
-        Annotate the queryset with ``number_of_imageannotationcomments`` -
-        the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
-        added by students within each AssignmentGroup.
-
-        Only comments that should be visible to everyone with access to the
-        group is included.
-        """
-        from devilry.devilry_group.models import ImageAnnotationComment
-        whenquery = models.When(
-            feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-            feedbackset__imageannotationcomment__user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
-            then=1
-        )
-        return self.annotate(
-            number_of_imageannotationcomments_from_students=models.Count(
-                models.Case(whenquery)
-            )
-        )
-
-    def annotate_with_number_of_imageannotationcomments_from_examiners(self):
-        """
-        Annotate the queryset with ``number_of_imageannotationcomments`` -
-        the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
-        added by examiners within each AssignmentGroup.
-
-        Only comments that should be visible to everyone with access to the
-        group is included.
-        """
-        from devilry.devilry_group.models import ImageAnnotationComment
-        whenquery = models.When(
-            feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-            feedbackset__imageannotationcomment__user_role=ImageAnnotationComment.USER_ROLE_EXAMINER,
-            then=1
-        )
-        return self.annotate(
-            number_of_imageannotationcomments_from_examiners=models.Count(
-                models.Case(whenquery)
-            )
-        )
-
-    def annotate_with_number_of_imageannotationcomments_from_admins(self):
-        """
-        Annotate the queryset with ``number_of_imageannotationcomments`` -
-        the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
-        added by admins within each AssignmentGroup.
-
-        Only comments that should be visible to everyone with access to the
-        group is included.
-        """
-        from devilry.devilry_group.models import ImageAnnotationComment
-        whenquery = models.When(
-            feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-            feedbackset__imageannotationcomment__user_role=ImageAnnotationComment.USER_ROLE_ADMIN,
-            then=1
-        )
-        return self.annotate(
-            number_of_imageannotationcomments_from_admins=models.Count(
-                models.Case(whenquery)
-            )
-        )
-
-    def annotate_with_number_of_commentfiles_from_students(self):
-        """
-        Annotate the queryset with ``number_of_imageannotationcomments`` -
-        the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
-        added by admins within each AssignmentGroup.
-
-        Only comments that should be visible to everyone with access to the
-        group is included.
-        """
-        from devilry.devilry_group.models import ImageAnnotationComment
-        from devilry.devilry_group.models import GroupComment
-        whenquery = models.When(
-            models.Q(
-                feedbackset__groupcomment__commentfile__isnull=False,
-                feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                feedbackset__groupcomment__user_role=GroupComment.USER_ROLE_STUDENT,
-            ) | models.Q(
-                feedbackset__imageannotationcomment__commentfile__isnull=False,
-                feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                feedbackset__imageannotationcomment__user_role=ImageAnnotationComment.USER_ROLE_STUDENT,
-            ),
-            then=1
-        )
-        return self.annotate(
-            number_of_commentfiles_from_students=models.Count(
-                models.Case(whenquery)
-            )
-        )
-
-    def annotate_with_number_of_private_groupcomments_from_user(self, user):
-        """
-        Annotate the queryset with ``number_of_private_groupcomments_from_user`` -
-        the number of :class:`devilry.devilry_group.models.GroupComment`
-        with private :obj:`~devilry.devilry_group.models.GroupComment.visibility`
-        added by the provided ``user``.
-
-        Args:
-            user: A User object.
-        """
-        from devilry.devilry_group.models import GroupComment
-        return self.annotate(
-            number_of_private_groupcomments_from_user=models.Count(
-                models.Case(
-                    models.When(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_PRIVATE,
-                                feedbackset__groupcomment__user=user,
-                                then=1)
-                )
-            )
-        )
-
-    def annotate_with_number_of_private_imageannotationcomments_from_user(self, user):
-        """
-        Annotate the queryset with ``number_of_imageannotationcomments_from_user`` -
-        the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
-        with private :obj:`~devilry.devilry_group.models.ImageAnnotationComment.visibility`
-        added by the provided ``user``.
-
-        Args:
-            user: A User object.
-        """
-        from devilry.devilry_group.models import ImageAnnotationComment
-        return self.annotate(
-            number_of_imageannotationcomments_from_user=models.Count(
-                models.Case(
-                    models.When(
-                        feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_PRIVATE,
-                        feedbackset__imageannotationcomment__user=user,
-                        then=1)
-                )
-            )
-        )
-
-    def annotate_with_has_unpublished_feedbackdraft(self):
-        """
-        Annotate the queryset with ``has_unpublished_feedbackdraft``.
-
-        A group is considered to have an unpublished feedback draft if the following
-        is true:
-
-        - :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime` is ``None``.
-        - :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points` is not ``None``.
-
-        So this means that all groups annotated with ``has_unpublished_feedbackdraft``
-        are groups that are corrected, and ready be be published.
-        """
-        whenquery = models.Q(feedbackset__grading_published_datetime__isnull=True,
-                             feedbackset__grading_points__isnull=False)
-        return self.annotate(
-            has_unpublished_feedbackdraft=devilry_djangoaggregate_functions.BooleanCount(
-                models.Case(models.When(whenquery, then=1))
-            )
-        )
-
     def annotate_with_number_of_published_feedbacksets(self):
         """
         Annotate the queryset with ``number_of_published_feedbacksets`` -
@@ -608,14 +354,10 @@ class AssignmentGroupQuerySet(models.QuerySet):
         :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`
         or any comments.
         """
-        return self.annotate_with_number_of_groupcomments()\
-            .annotate_with_number_of_imageannotationcomments()\
-            .annotate_with_number_of_published_feedbacksets()\
+        return self.annotate_with_number_of_published_feedbacksets() \
             .filter(
                 models.Q(number_of_published_feedbacksets__gt=0) |
-                models.Q(number_of_imageannotationcomments__gt=0) |
-                models.Q(number_of_groupcomments__gt=0)
-            )
+                models.Q(cached_data__public_total_comment_count__gt=0))
 
     def extra_annotate_with_fullname_of_first_candidate(self):
         # Not ment to be used directly - this is used by the
@@ -831,269 +573,6 @@ class AssignmentGroupQuerySet(models.QuerySet):
             order_by=order_by
         )
 
-    def annotate_with_is_waiting_for_feedback(self):
-        """
-        Annotate the queryset with ``is_waiting_for_feedback``.
-
-        Groups waiting for feedback is all groups where
-        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
-        has expired, and the feedbackset does not have a
-        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
-        """
-        from devilry.devilry_group.models import FeedbackSet
-        now = timezone.now()
-        whenquery = models.Q(
-            feedbackset__is_last_in_group=True,
-            feedbackset__grading_published_datetime__isnull=True
-        ) & (
-            models.Q(
-                models.Q(feedbackset__deadline_datetime__lt=now),
-                ~models.Q(feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
-            ) |
-            models.Q(
-                feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
-                parentnode__first_deadline__lt=now
-            )
-        )
-        return self.annotate(
-            is_waiting_for_feedback=devilry_djangoaggregate_functions.BooleanCount(
-                models.Case(
-                    models.When(whenquery, then=1)
-                )
-            )
-        )
-
-    def annotate_with_is_waiting_for_deliveries(self):
-        """
-        Annotate the queryset with ``is_waiting_for_deliveries``.
-
-        Groups waiting for deliveries is all groups where
-        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
-        has not expired, and the feedbackset does not have a
-        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
-        """
-        from devilry.devilry_group.models import FeedbackSet
-        now = timezone.now()
-        whenquery = models.Q(
-            feedbackset__is_last_in_group=True,
-            feedbackset__grading_published_datetime__isnull=True
-        ) & (
-            models.Q(
-                models.Q(feedbackset__deadline_datetime__gte=now),
-                ~models.Q(feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
-            ) |
-            models.Q(
-                feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
-                parentnode__first_deadline__gte=now
-            )
-        )
-        return self.annotate(
-            is_waiting_for_deliveries=devilry_djangoaggregate_functions.BooleanCount(
-                models.Case(
-                    models.When(whenquery, then=1)
-                )
-            )
-        )
-
-    def annotate_with_is_corrected(self):
-        """
-        Annotate the queryset with ``is_corrected``.
-
-        Groups waiting for deliveries is all groups where
-        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
-        has not expired, and the feedbackset does not have a
-        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
-        """
-        whenquery = models.Q(
-            feedbackset__is_last_in_group=True,
-            feedbackset__grading_published_datetime__isnull=False
-        )
-        return self.annotate(
-            is_corrected=devilry_djangoaggregate_functions.BooleanCount(
-                models.Case(
-                    models.When(whenquery, then=1)
-                )
-            )
-        )
-
-    def annotate_with_grading_points(self):
-        """
-        Annotate the queryset with ``grading_points``.
-
-        ``grading_points`` is the :obj:`devilry.devilry_group.models.FeedbackSet.grading_points`
-        for the last feedbackset in the group.
-
-        We do not check if the feedback is published or not. This is for two
-        reasons:
-
-        - We can use :meth:`.annotate_with_is_corrected` to check this -
-         not need to have overlapping methods for that.
-        - We use this to show feedback draft previews (see
-          :meth:`.annotate_with_has_unpublished_feedbackdraft`).
-        """
-        return self.annotate(
-            grading_points=models.Sum(
-                models.Case(
-                    models.When(
-                        feedbackset__is_last_in_group=True,
-                        then='feedbackset__grading_points'
-                    )
-                )
-            )
-        )
-
-    def annotate_with_is_passing_grade(self):
-        """
-        Annotate the queryset with ``is_passing_grade``.
-
-        ``is_passing_grade`` is ``True`` if the following is true
-        if the last :class:`~devilry.devilry_group.models.FeedbackSet` in the group:
-
-        - Is published.
-        - Has :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points`
-          greater or equal to ``passing_grade_min_points`` for the
-          :class:`.devilry.apps.core.models.Assignment`.
-        """
-        return self.annotate(
-            is_passing_grade=devilry_djangoaggregate_functions.BooleanCount(
-                models.Case(
-                    models.When(
-                        feedbackset__is_last_in_group=True,
-                        feedbackset__grading_published_datetime__isnull=False,
-                        feedbackset__grading_points__gte=models.F('parentnode__passing_grade_min_points'),
-                        then=1
-                    ),
-                    default=models.Value(None)
-                )
-            )
-        )
-
-    def annotate_with_datetime_of_last_student_comment(self):
-        """
-        Annotate the queryset with ``datetime_of_last_student_comment``.
-        """
-        return self.annotate(
-            datetime_of_last_student_comment=devilry_djangoaggregate_functions.BooleanCount(
-                models.Case(
-                    models.When(
-                        feedbackset__is_last_in_group=True,
-                        feedbackset__grading_published_datetime__isnull=False,
-                        feedbackset__grading_points__gte=models.F('parentnode__passing_grade_min_points'),
-                        then=1
-                    ),
-                    default=models.Value(None)
-                )
-            )
-        )
-
-    def extra_annotate_datetime_of_last_student_comment(self):
-        """
-        Annotate with the datetiem of the last comment added by a student.
-
-        .. warning:: As the ``extra_`` prefix implies, this uses a
-            custom SQL query added using the ``extra()``-method of the QuerySet.
-            This query is fairly expensive.
-        """
-        from devilry.devilry_group.models import AbstractGroupComment
-        return self.extra(
-            select={
-                "datetime_of_last_student_comment": """
-                    SELECT
-                        devilry_comment_comment.published_datetime
-                    FROM devilry_group_feedbackset
-                    LEFT OUTER JOIN devilry_group_groupcomment
-                        ON (devilry_group_groupcomment.feedback_set_id = devilry_group_feedbackset.id)
-                    INNER JOIN devilry_comment_comment
-                        ON (devilry_comment_comment.id = devilry_group_groupcomment.comment_ptr_id)
-                    WHERE
-                        devilry_group_feedbackset.group_id = core_assignmentgroup.id
-                        AND
-                        devilry_comment_comment.user_role = %s
-                        AND
-                        devilry_group_groupcomment.visibility <> %s
-                    ORDER BY devilry_comment_comment.published_datetime DESC
-                    LIMIT 1
-                """
-            },
-            select_params=[
-                Comment.USER_ROLE_STUDENT,
-                AbstractGroupComment.VISIBILITY_PRIVATE,
-            ]
-        )
-
-    def extra_order_by_datetime_of_last_student_comment(self, descending=False):
-        """
-        Order by datetime of the last comment by a student in each group.
-
-        .. warning:: As the ``extra_`` prefix implies, this uses a
-            custom SQL query added using the ``extra()``-method of the QuerySet.
-            This query is fairly expensive.
-
-        Args:
-            descending: Set this to ``True`` to order descending.
-        """
-        if descending:
-            order_by = ['-datetime_of_last_student_comment']
-        else:
-            order_by = ['datetime_of_last_student_comment']
-        return self.extra_annotate_datetime_of_last_student_comment().extra(
-            order_by=order_by
-        )
-
-    def extra_annotate_datetime_of_last_examiner_comment(self):
-        """
-        Annotate with the datetiem of the last comment added by an examiner.
-
-        .. warning:: As the ``extra_`` prefix implies, this uses a
-            custom SQL query added using the ``extra()``-method of the QuerySet.
-            This query is fairly expensive.
-        """
-        from devilry.devilry_group.models import AbstractGroupComment
-        return self.extra(
-            select={
-                "datetime_of_last_examiner_comment": """
-                    SELECT
-                        devilry_comment_comment.published_datetime
-                    FROM devilry_group_feedbackset
-                    LEFT OUTER JOIN devilry_group_groupcomment
-                        ON (devilry_group_groupcomment.feedback_set_id = devilry_group_feedbackset.id)
-                    INNER JOIN devilry_comment_comment
-                        ON (devilry_comment_comment.id = devilry_group_groupcomment.comment_ptr_id)
-                    WHERE
-                        devilry_group_feedbackset.group_id = core_assignmentgroup.id
-                        AND
-                        devilry_comment_comment.user_role = %s
-                        AND
-                        devilry_group_groupcomment.visibility <> %s
-                    ORDER BY devilry_comment_comment.published_datetime DESC
-                    LIMIT 1
-                """
-            },
-            select_params=[
-                Comment.USER_ROLE_EXAMINER,
-                AbstractGroupComment.VISIBILITY_PRIVATE,
-            ]
-        )
-
-    def extra_order_by_datetime_of_last_examiner_comment(self, descending=False):
-        """
-        Order by datetime of the last comment by an examiner in each group.
-
-        .. warning:: As the ``extra_`` prefix implies, this uses a
-            custom SQL query added using the ``extra()``-method of the QuerySet.
-            This query is fairly expensive.
-
-        Args:
-            descending: Set this to ``True`` to order descending.
-        """
-        if descending:
-            order_by = ['-datetime_of_last_examiner_comment']
-        else:
-            order_by = ['datetime_of_last_examiner_comment']
-        return self.extra_annotate_datetime_of_last_examiner_comment().extra(
-            order_by=order_by
-        )
-
     def extra_annotate_datetime_of_last_admin_comment(self):
         """
         Annotate with the datetiem of the last comment added by an admin.
@@ -1155,6 +634,46 @@ class AssignmentGroupQuerySet(models.QuerySet):
         """
         return self.annotate(number_of_examiners=models.Count('examiners'))
 
+    def annotate_with_number_of_private_groupcomments_from_user(self, user):
+        """
+        Annotate the queryset with ``number_of_private_groupcomments_from_user`` -
+        the number of :class:`devilry.devilry_group.models.GroupComment`
+        with private :obj:`~devilry.devilry_group.models.GroupComment.visibility`
+        added by the provided ``user``.
+        Args:
+            user: A User object.
+        """
+        from devilry.devilry_group.models import GroupComment
+        return self.annotate(
+            number_of_private_groupcomments_from_user=models.Count(
+                models.Case(
+                    models.When(feedbackset__groupcomment__visibility=GroupComment.VISIBILITY_PRIVATE,
+                                feedbackset__groupcomment__user=user,
+                                then=1)
+                )
+            )
+        )
+
+    def annotate_with_number_of_private_imageannotationcomments_from_user(self, user):
+        """
+        Annotate the queryset with ``number_of_private_imageannotationcomments_from_user`` -
+        the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
+        with private :obj:`~devilry.devilry_group.models.ImageAnnotationComment.visibility`
+        added by the provided ``user``.
+        Args:
+            user: A User object.
+        """
+        from devilry.devilry_group.models import ImageAnnotationComment
+        return self.annotate(
+            number_of_private_imageannotationcomments_from_user=models.Count(
+                models.Case(
+                    models.When(feedbackset__imageannotationcomment__visibility=ImageAnnotationComment.VISIBILITY_PRIVATE,
+                                feedbackset__imageannotationcomment__user=user,
+                                then=1)
+                )
+            )
+        )
+
     def prefetch_assignment_with_points_to_grade_map(self, assignmentqueryset=None):
         """
         Prefetches the assignment in the ``prefetched_assignment`` attribute.
@@ -1173,6 +692,156 @@ class AssignmentGroupQuerySet(models.QuerySet):
         return self.prefetch_related(models.Prefetch('parentnode',
                                                      queryset=assignmentqueryset,
                                                      to_attr='prefetched_assignment'))
+
+    def annotate_with_is_waiting_for_feedback(self):
+        """
+        Annotate the queryset with ``annotated_is_waiting_for_feedback``.
+        Groups waiting for feedback is all groups where
+        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
+        has expired, and the feedbackset does not have a
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
+
+        This means that this method annotates with the same logic
+        as the :meth:`.AssignmentGroup.is_waiting_for_feedback` property.
+
+        Typically used for filtering by the annotated value. When you
+        just need the information and have as AssignmentGroup object,
+        you should use the :meth:`.AssignmentGroup.is_waiting_for_feedback` property.
+        """
+        now = timezone.now()
+        whenquery = models.Q(
+            cached_data__last_feedbackset__grading_published_datetime__isnull=True
+        ) & (
+            models.Q(
+                ~models.Q(cached_data__last_feedbackset=models.F('cached_data__first_feedbackset')),
+                models.Q(cached_data__last_feedbackset__deadline_datetime__lt=now),
+            ) |
+            models.Q(
+                models.Q(cached_data__last_feedbackset=models.F('cached_data__first_feedbackset')),
+                parentnode__first_deadline__lt=now
+            )
+        )
+        return self.annotate(
+            annotated_is_waiting_for_feedback=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(
+                    models.When(whenquery, then=1)
+                )
+            )
+        )
+
+    def annotate_with_is_waiting_for_deliveries(self):
+        """
+        Annotate the queryset with ``annotated_is_waiting_for_deliveries``.
+        Groups waiting for deliveries is all groups where
+        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
+        has not expired, and the feedbackset does not have a
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
+
+        This means that this method annotates with the same logic
+        as the :meth:`.AssignmentGroup.is_waiting_for_deliveries` property.
+
+        Typically used for filtering by the annotated value. When you
+        just need the information and have as AssignmentGroup object,
+        you should use the :meth:`.AssignmentGroup.is_waiting_for_deliveries` property.
+        """
+        now = timezone.now()
+        whenquery = models.Q(
+            cached_data__last_feedbackset__grading_published_datetime__isnull=True
+        ) & (
+            models.Q(
+                ~models.Q(cached_data__last_feedbackset=models.F('cached_data__first_feedbackset')),
+                models.Q(cached_data__last_feedbackset__deadline_datetime__gte=now),
+            ) |
+            models.Q(
+                models.Q(cached_data__last_feedbackset=models.F('cached_data__first_feedbackset')),
+                parentnode__first_deadline__gte=now
+            )
+        )
+        return self.annotate(
+            annotated_is_waiting_for_deliveries=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(
+                    models.When(whenquery, then=1)
+                )
+            )
+        )
+
+    def annotate_with_is_corrected(self):
+        """
+        Annotate the queryset with ``annotated_is_corrected``.
+
+        Corrected groups is all groups where the last feedbackset is
+        the same as the last published feedbackset.
+
+        This means that this method annotates with the same logic
+        as the :meth:`.AssignmentGroup.is_corrected` property.
+
+        Typically used for filtering by the annotated value. When you
+        just need the information and have as AssignmentGroup object,
+        you should use the :meth:`.AssignmentGroup.is_corrected` property.
+        """
+        whenquery = models.Q(
+            models.Q(cached_data__last_feedbackset=models.F(
+                'cached_data__last_published_feedbackset')),
+        )
+        return self.annotate(
+            annotated_is_corrected=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(
+                    models.When(whenquery, then=1)
+                )
+            )
+        )
+
+    def annotate_with_is_passing_grade(self):
+        """
+        Annotate the queryset with ``is_passing_grade``.
+        ``is_passing_grade`` is ``True`` if the following is true
+        if the last :class:`~devilry.devilry_group.models.FeedbackSet` in the group:
+        - Is published.
+        - Has :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points`
+          greater or equal to ``passing_grade_min_points`` for the
+          :class:`.devilry.apps.core.models.Assignment`.
+        """
+        return self.annotate(
+            is_passing_grade=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(
+                    models.When(
+                        cached_data__last_published_feedbackset__isnull=False,
+                        cached_data__last_published_feedbackset__grading_points__gte=models.F(
+                            'parentnode__passing_grade_min_points'),
+                        then=1
+                    ),
+                    default=models.Value(None)
+                )
+            )
+        )
+
+    def annotate_with_has_unpublished_feedbackdraft(self):
+        """
+        Annotate the queryset with ``annotated_has_unpublished_feedbackdraft``.
+        A group is considered to have an unpublished feedback draft if the following
+        is true:
+        - :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime` is ``None``.
+        - :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points` is not ``None``.
+        So this means that all groups annotated with ``has_unpublished_feedbackdraft``
+        are groups that are corrected, and ready be be published.
+
+
+        This means that this method annotates with the same logic
+        as the :meth:`.AssignmentGroup.has_unpublished_feedbackdraft` property.
+
+        Typically used for filtering by the annotated value. When you
+        just need the information and have as AssignmentGroup object,
+        you should use the :meth:`.AssignmentGroup.has_unpublished_feedbackdraft` property.
+
+        """
+        whenquery = models.Q(
+            cached_data__last_feedbackset__grading_published_datetime__isnull=True,
+            cached_data__last_feedbackset__grading_points__isnull=False)
+        return self.annotate(
+            annotated_has_unpublished_feedbackdraft=devilry_djangoaggregate_functions.BooleanCount(
+                models.Case(models.When(whenquery, then=1))
+            )
+        )
 
 
 class AssignmentGroupManager(models.Manager):
@@ -1200,15 +869,9 @@ class AssignmentGroupManager(models.Manager):
             candidates.append(candidate)
         Candidate.objects.bulk_create(candidates)
 
-    def __bulk_create_feedbacksets(self, group_list, created_by_user):
+    def __bulk_update_feedbacksets(self, group_list, created_by_user):
         from devilry.devilry_group.models import FeedbackSet
-        feedbacksets = []
-        for group in group_list:
-            feedbackset = FeedbackSet(
-                group=group,
-                created_by=created_by_user)
-            feedbacksets.append(feedbackset)
-        FeedbackSet.objects.bulk_create(feedbacksets)
+        FeedbackSet.objects.filter(group__in=group_list).update(created_by=created_by_user)
 
     def bulk_create_groups(self, created_by_user, assignment, relatedstudents):
         """
@@ -1245,7 +908,7 @@ class AssignmentGroupManager(models.Manager):
 
         self.__bulk_create_candidates(group_list=group_list,
                                       relatedstudents=relatedstudents)
-        self.__bulk_create_feedbacksets(created_by_user=created_by_user,
+        self.__bulk_update_feedbacksets(created_by_user=created_by_user,
                                         group_list=group_list)
         batchoperation.finish()
         return group_queryset
@@ -1311,6 +974,18 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
            * "corrected"
            * "closed-without-feedback"
            * "waiting-for-something"
+
+    .. attribute:: cached_data
+
+        A Django RelatedManager of :class:`cached_data <devilry.devilry_dbcache.models.AssignmentGroupCachedData>` for this AssignmentGroup.
+
+    .. attribute:: feedbackset
+
+        A Django RelatedManager :class:`devilry.apps.core.models.FeedbackSet` for this AssignmentGroup
+
+    Note:
+        Postgres triggers create a :class:`devilry.apps.core.models.FeedbackSet` on INSERT
+
     """
 
     objects = AssignmentGroupManager.from_queryset(AssignmentGroupQuerySet)()
@@ -1464,14 +1139,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     @property
     def last_feedbackset_is_published(self):
-        from devilry.devilry_group import models as group_models
-        last_feedbackset = group_models.FeedbackSet.objects\
-            .filter(group=self)\
-            .order_by('-created_datetime')\
-            .first()
-        if last_feedbackset is None:
-            return False
-        return last_feedbackset.grading_published_datetime is not None
+        return self.cached_data.last_feedbackset.grading_published_datetime is not None
 
     @property
     def should_ask_if_examiner_want_to_give_another_chance(self):
@@ -1927,6 +1595,94 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     def get_all_admin_ids(self):
         warnings.warn("deprecated", DeprecationWarning)
         return self.parentnode.get_all_admin_ids()
+
+    @property
+    def published_grading_points(self):
+        """
+        Get the :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points`
+        from the last **published** :class:`devilry.devilry_group.models.FeedbackSet`.
+
+        This means that this property returns the current public grade for the AssignmentGroup.
+        """
+        if self.cached_data.last_published_feedbackset_id is None:
+            return None
+        else:
+            return self.cached_data.last_published_feedbackset.grading_points
+
+    @property
+    def drafted_grading_points(self):
+        """
+        Get the :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points`
+        from the last :class:`devilry.devilry_group.models.FeedbackSet` if the
+        last feedbackset is not the same as the published feedbackset.
+
+        If the last published feedbackset is the same as the last feedbackset,
+        this always returns ``None``. This will also return ``None`` if the
+        last feedbackset does not have a grade yet.
+        """
+        cached_data = self.cached_data
+        if cached_data.last_published_feedbackset_is_last_feedbackset:
+            return None
+        else:
+            return self.cached_data.last_feedbackset.grading_points
+
+    @property
+    def published_grade_is_passing_grade(self):
+        """
+        Returns ``True`` if :meth:`.published_grading_points` is a passing
+        grade.
+        """
+        if self.published_grading_points is None:
+            return False
+        else:
+            return self.published_grading_points >= self.assignment.passing_grade_min_points
+
+    @property
+    def has_unpublished_feedbackdraft(self):
+        """
+        A group is considered to have an unpublished feedback draft if the following
+        is true for the last feedbackset:
+
+        - :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime` is ``None``.
+        - :obj:`~devilry.devilry_group.models.FeedbackSet.grading_points` is not ``None``.
+
+        So this means that if this property returns ``True``, the group
+        is corrected, and ready be be published.
+        """
+        last_feedbackset = self.cached_data.last_feedbackset
+        return (last_feedbackset.grading_published_datetime is None
+                and last_feedbackset.grading_points is not None)
+
+    @property
+    def is_corrected(self):
+        """
+        Returns ``True`` if the last feedbackset is published.
+        """
+        return self.cached_data.last_published_feedbackset_is_last_feedbackset
+
+    @property
+    def is_waiting_for_feedback(self):
+        """
+        Groups waiting for feedback is all groups where
+        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
+        has expired, and the feedbackset does not have a
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
+        """
+        if self.is_corrected:
+            return False
+        return self.cached_data.last_feedbackset_deadline_datetime < timezone.now()
+
+    @property
+    def is_waiting_for_deliveries(self):
+        """
+        Groups waiting for deliveries is all groups where
+        the deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
+        has not expired, and the feedbackset does not have a
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
+        """
+        if self.is_corrected:
+            return False
+        return self.cached_data.last_feedbackset_deadline_datetime >= timezone.now()
 
 
 class AssignmentGroupTag(models.Model):

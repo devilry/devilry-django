@@ -16,10 +16,14 @@ from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import GroupComment
 from devilry.devilry_student.views.period import overview
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
 class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = overview.PeriodOverviewView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_title(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -324,9 +328,9 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
-                group=testgroup, grading_points=3, is_last_in_group=False)
+                group=testgroup, grading_points=3)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
-                group=testgroup, is_last_in_group=True,
+                group=testgroup,
                 deadline_datetime=timezone.now() + timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=testuser, cradmin_role=testperiod)
@@ -350,9 +354,9 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
-                group=testgroup, grading_points=3, is_last_in_group=False)
+                group=testgroup, grading_points=3)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
-                group=testgroup, is_last_in_group=True,
+                group=testgroup,
                 deadline_datetime=timezone.now() - timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=testuser, cradmin_role=testperiod)
@@ -376,9 +380,9 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
-                group=testgroup, grading_points=3, is_last_in_group=False)
+                group=testgroup, grading_points=3)
         devilry_group_mommy_factories.feedbackset_new_attempt_published(
-                group=testgroup, is_last_in_group=True, grading_points=2)
+                group=testgroup, grading_points=2)
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=testuser, cradmin_role=testperiod)
         self.assertFalse(
@@ -404,21 +408,25 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 group=testgroup)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT,
                    _quantity=2)
         mommy.make('devilry_comment.CommentFile',
                    comment=mommy.make('devilry_group.GroupComment',
                                       feedback_set=feedbackset,
+                                      comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                                       visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                                       user_role=Comment.USER_ROLE_STUDENT))
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    _quantity=5)
         mommy.make('devilry_group.GroupComment',  # Should not be part of count
                    feedback_set=feedbackset,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
                    user_role=Comment.USER_ROLE_EXAMINER)
         mockresponse = self.mock_http200_getrequest_htmls(

@@ -7,6 +7,7 @@ from django.utils import timezone
 from django_cradmin.cradmin_testhelpers import TestCaseMixin
 from model_mommy import mommy
 
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group.feedbackfeed_builder import builder_base
 from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_sidebarbuilder
@@ -14,6 +15,8 @@ from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
 
 
 class TestFeedbackfeedSidebarListBuilderList(TestCaseMixin, test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_listbuilder_sidebar_complete_example(self):
         # Just a sanity check with a full example comprising of two FeedbackSets

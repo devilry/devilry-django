@@ -24,7 +24,6 @@ class FeedbackFeedTimelineBuilder(builder_base.FeedbackFeedBuilderBase):
             feedbacksets: Fetched feedbacksets, comments and files.
         """
         super(FeedbackFeedTimelineBuilder, self). __init__(**kwargs)
-        # self.feedbacksets = list(feedbacksets)
         self.group = group
         self.__candidatemap = self.__make_candidatemap()
         self.__examinermap = self.__make_examinermap()
@@ -257,7 +256,6 @@ class FeedbackFeedTimelineBuilder(builder_base.FeedbackFeedBuilderBase):
         """
         for feedbackset in self.feedbacksets:
             self.__add_feedbackset_to_timeline(feedbackset=feedbackset)
-
         self.timeline = self.sort_dict(self.timeline)
 
     def get_as_list(self):

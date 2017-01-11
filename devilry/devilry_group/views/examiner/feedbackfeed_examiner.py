@@ -204,7 +204,6 @@ class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
 
     def save_object(self, form, commit=True):
         comment = super(ExaminerDiscussView, self).save_object(form)
-        self._convert_temporary_files_to_comment_files(form, comment)
         if form.data.get('examiner_add_comment_for_examiners'):
             comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
             comment.published_datetime = timezone.now()
@@ -213,6 +212,7 @@ class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
             comment.published_datetime = timezone.now()
 
         comment = super(ExaminerDiscussView, self).save_object(form, commit=True)
+        self._convert_temporary_files_to_comment_files(form, comment)
         return comment
 
     def get_success_url(self):

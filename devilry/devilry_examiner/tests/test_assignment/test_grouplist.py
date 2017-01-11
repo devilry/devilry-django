@@ -10,14 +10,19 @@ from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories
 from devilry.apps.core.models import Assignment
+from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_examiner.views.assignment import grouplist
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import GroupComment, ImageAnnotationComment
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
 class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = grouplist.GroupListView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_title(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -1051,7 +1056,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup1,
+                   feedback_set=testgroup1.feedbackset_set.first(),
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=datetime(2011, 12, 24, 0, 0))
@@ -1059,7 +1064,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup2,
+                   feedback_set=testgroup2.feedbackset_set.first(),
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
@@ -1081,7 +1086,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup1,
+                   feedback_set=testgroup1.feedbackset_set.first(),
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=datetime(2011, 12, 24, 0, 0))
@@ -1089,7 +1094,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup2,
+                   feedback_set=testgroup2.feedbackset_set.first(),
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
@@ -1111,7 +1116,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup1,
+                   feedback_set=testgroup1.feedbackset_set.first(),
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=datetime(2011, 12, 24, 0, 0))
@@ -1119,7 +1124,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup2,
+                   feedback_set=testgroup2.feedbackset_set.first(),
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
@@ -1141,7 +1146,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup1,
+                   feedback_set=testgroup1.feedbackset_set.first(),
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=datetime(2011, 12, 24, 0, 0))
@@ -1149,7 +1154,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup2,
+                   feedback_set=testgroup2.feedbackset_set.first(),
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
@@ -1583,6 +1588,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         comment = mommy.make(
             'devilry_group.GroupComment',
             feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+            comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
             user_role=Comment.USER_ROLE_STUDENT,
             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mommy.make('devilry_comment.CommentFile', comment=comment)
@@ -1609,6 +1615,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         comment = mommy.make(
             'devilry_group.GroupComment',
             feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+            comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
             user_role=Comment.USER_ROLE_STUDENT,
             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mommy.make('devilry_comment.CommentFile', comment=comment)
@@ -1634,6 +1641,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -1658,6 +1666,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -1682,6 +1691,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -1690,6 +1700,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup2),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -1714,6 +1725,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -1738,6 +1750,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -1762,6 +1775,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -1770,6 +1784,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup2),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -1794,6 +1809,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_ADMIN,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -1818,6 +1834,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_ADMIN,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -1928,7 +1945,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
-            first_deadline=timezone.now() - timedelta(days=2))
+            first_deadline=ACTIVE_PERIOD_END)
 
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
@@ -1948,7 +1965,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
-            first_deadline=timezone.now() + timedelta(days=2))
+            first_deadline=ACTIVE_PERIOD_START)
 
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)

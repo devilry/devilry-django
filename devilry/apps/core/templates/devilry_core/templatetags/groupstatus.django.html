@@ -14,5 +14,7 @@
         {% trans "waiting for feedback" context "group status" %}
     {% elif group.is_waiting_for_deliveries %}
         {% trans "waiting for deliveries" context "group status" %}
+    {% else %}
+        <strong style="color: red;">Unknown status - this is a bug</strong>
     {% endif %}
 </span>

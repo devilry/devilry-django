@@ -63,16 +63,8 @@ class PeriodOverviewView(listbuilderview.FilterListMixin,
         return coremodels.AssignmentGroup.objects\
             .filter(parentnode__parentnode=period)\
             .filter_student_has_access(user=self.request.user)\
-            .annotate_with_grading_points()\
-            .annotate_with_is_waiting_for_feedback()\
-            .annotate_with_is_waiting_for_deliveries()\
-            .annotate_with_is_corrected()\
-            .annotate_with_number_of_commentfiles_from_students()\
-            .annotate_with_number_of_groupcomments_from_students()\
-            .annotate_with_number_of_groupcomments_from_examiners()\
-            .annotate_with_number_of_imageannotationcomments_from_students()\
-            .annotate_with_number_of_imageannotationcomments_from_examiners()\
             .distinct()\
+            .select_related('cached_data__last_published_feedbackset')\
             .order_by('-parentnode__first_deadline', '-parentnode__publishing_time')\
             .prefetch_assignment_with_points_to_grade_map(
                 assignmentqueryset=Assignment.objects.select_related('parentnode__parentnode'))

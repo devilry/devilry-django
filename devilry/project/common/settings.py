@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'extjs4',
     # 'haystack',
     'ievv_opensource.ievvtasks_common',
-    'ievv_opensource.ievv_batchframework.apps.BatchOperationAppConfig',
+    'ievv_opensource.ievv_batchframework',
+    'ievv_opensource.ievv_customsql',
 
     'devilry.devilry_bulkcreate_users',
     'devilry.devilry_cradmin',
@@ -91,6 +92,7 @@ INSTALLED_APPS = [
     'devilry.devilry_gradingsystemplugin_approved.apps.GradingsystemApprovedAppConfig',
     'devilry.devilry_detektor',
     'devilry.devilry_admin',
+    'devilry.devilry_dbcache',
     'devilry.project.common',
     'rest_framework_swagger',
     'rest_framework',

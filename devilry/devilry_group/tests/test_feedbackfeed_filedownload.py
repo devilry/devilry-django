@@ -1,109 +1,31 @@
 # Python imports
-import mock
 import shutil
+
+from django.http import Http404
+from model_mommy import mommy
 from StringIO import StringIO
 from zipfile import ZipFile
-from model_mommy import mommy
-
 
 # Django imports
-from django.http import Http404
 from django.test import TestCase
 from django.conf import settings
 from django.core.files.base import ContentFile
-from django.utils import timezone
+
+# Ievv imports
+from ievv_opensource.ievv_batchframework import batchregistry
+
+# CrAdmin imports
+from django_cradmin.cradmin_testhelpers import TestCaseMixin
 
 # Devilry imports
-from devilry.devilry_group.views.download_files import feedbackfeed_download_files
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from devilry.devilry_group.views.download_files import batch_download_files
 from devilry.devilry_group import models as group_models
+from devilry.devilry_group import tasks
+from devilry.devilry_group import devilry_group_mommy_factories
 
 
-class TestFileDownloadFeedbackfeedView(TestCase):
-    """
-    Test single file download
-    """
-    def test_single_file_download(self):
-        # Test download of single file
-        testgroup = mommy.make('core.AssignmentGroup')
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
-        testcomment = mommy.make('devilry_group.GroupComment',
-                                 feedback_set__group=testgroup,
-                                 user=testuser,
-                                 user_role='student')
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-
-        testdownloader = feedbackfeed_download_files.FileDownloadFeedbackfeedView()
-        mockrequest = mock.MagicMock()
-        mockrequest.cradmin_role = testgroup
-        mockrequest.user = testuser
-        response = testdownloader.get(mockrequest, commentfile.id)
-        self.assertEquals(response.content, 'testcontent')
-
-    def test_single_file_download_two_users(self):
-        # Test download of single file
-        testgroup = mommy.make('core.AssignmentGroup')
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
-        testuser1 = mommy.make(settings.AUTH_USER_MODEL, shortname='april@example.com', fullname='April Duck')
-        candidate1 = mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
-        candidate2 = mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser1)
-        testcomment = mommy.make('devilry_group.GroupComment',
-                                 feedback_set__group=testgroup,
-                                 user=testuser,
-                                 user_role='student')
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-
-        testdownloader = feedbackfeed_download_files.FileDownloadFeedbackfeedView()
-        mockrequest = mock.MagicMock()
-        mockrequest.cradmin_role = candidate1.assignment_group
-        mockrequest.user = testuser
-        response = testdownloader.get(mockrequest, commentfile.id)
-        self.assertEquals(response.content, 'testcontent')
-
-        mockrequest.cradmin_role = candidate2.assignment_group
-        mockrequest.user = testuser1
-        response = testdownloader.get(mockrequest, commentfile.id)
-        self.assertEquals(response.content, 'testcontent')
-
-    def test_file_download_user_not_in_group_404(self):
-        # Test user can't download if not part of AssignmentGroup
-        testgroup = mommy.make('core.AssignmentGroup')
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
-        testcomment = mommy.make('devilry_group.GroupComment', user_role='examiner')
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-
-        testdownloader = feedbackfeed_download_files.FileDownloadFeedbackfeedView()
-        mockrequest = mock.MagicMock()
-        mockrequest.user = testuser
-        mockrequest.cradmin_role = testgroup
-        with self.assertRaises(Http404):
-            testdownloader.get(mockrequest, commentfile.id)
-
-    def test_file_download_private_comment_404(self):
-        # User can't download file if the comment it belongs to is private unless the user created it.
-        testgroup = mommy.make('core.AssignmentGroup')
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
-        testcomment = mommy.make('devilry_group.GroupComment',
-                                 user_role='examiner',
-                                 feedback_set__group=testgroup,
-                                 visibility=group_models.GroupComment.VISIBILITY_PRIVATE)
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-
-        testdownloader = feedbackfeed_download_files.FileDownloadFeedbackfeedView()
-        mockrequest = mock.MagicMock()
-        mockrequest.user = testuser
-        mockrequest.cradmin_role = testgroup
-        with self.assertRaises(Http404):
-            testdownloader.get(mockrequest, commentfile.id)
-
-
-class TestCompressedGroupCommentFileDownload(TestCase):
-    """
-    Test GroupComment files download
-    """
+class AbstractTestCase(TestCase):
     def setUp(self):
         # Sets up a directory where files can be added. Is removed by tearDown.
         self.backend_path = 'devilry_testfiles/devilry_compressed_archives/'
@@ -111,6 +33,107 @@ class TestCompressedGroupCommentFileDownload(TestCase):
     def tearDown(self):
         # Ignores errors if the path is not created.
         shutil.rmtree(self.backend_path, ignore_errors=True)
+        shutil.rmtree('devilry_testfiles/filestore/', ignore_errors=True)
+
+
+class TestFileDownloadFeedbackfeedView(TestCase, TestCaseMixin):
+    """
+    Test single file download
+    """
+    viewclass = batch_download_files.FileDownloadFeedbackfeedView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_single_file_download(self):
+        # Test download of single file
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=testgroup.feedbackset_set.first(),
+                                 user=testuser,
+                                 user_role='student')
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+        mockresponse = self.mock_getrequest(
+                requestuser=testuser,
+                cradmin_role=testgroup,
+                viewkwargs={
+                    'commentfile_id': commentfile.id
+                })
+        self.assertEquals(mockresponse.response.content, 'testcontent')
+
+    def test_single_file_download_two_users(self):
+        # Test download of single file
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser1 = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
+        testuser2 = mommy.make(settings.AUTH_USER_MODEL, shortname='april@example.com', fullname='April Duck')
+        candidate1 = mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser1)
+        candidate2 = mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser2)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=testgroup.feedbackset_set.first(),
+                                 user=testuser1,
+                                 user_role='student')
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+        mockresponse1 = self.mock_getrequest(
+                requestuser=candidate1.relatedstudent.user,
+                cradmin_role=candidate1.assignment_group,
+                viewkwargs={
+                    'commentfile_id': commentfile.id
+                })
+        mockresponse2 = self.mock_getrequest(
+                requestuser=candidate2.relatedstudent.user,
+                cradmin_role=candidate2.assignment_group,
+                viewkwargs={
+                    'commentfile_id': commentfile.id
+                })
+        self.assertEquals(mockresponse1.response.content, 'testcontent')
+        self.assertEquals(mockresponse2.response.content, 'testcontent')
+
+    def test_file_download_user_not_in_group_404(self):
+        # Test user can't download if not part of AssignmentGroup
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 user_role='examiner',
+                                 feedback_set=devilry_group_mommy_factories.make_first_feedbackset_in_group())
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+
+        with self.assertRaises(Http404):
+            self.mock_getrequest(
+                requestuser=testuser,
+                cradmin_role=testgroup,
+                viewkwargs={
+                    'commentfile_id': commentfile.id
+                })
+
+    def test_file_download_private_comment_404(self):
+        # User can't download file if the comment it belongs to is private unless the user created it.
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 user_role='examiner',
+                                 feedback_set=testgroup.feedbackset_set.first(),
+                                 visibility=group_models.GroupComment.VISIBILITY_PRIVATE)
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+
+        with self.assertRaises(Http404):
+            self.mock_getrequest(
+                requestuser=testuser,
+                cradmin_role=testgroup,
+                viewkwargs={
+                    'commentfile_id': commentfile.id
+                })
+
+
+class TestCompressedGroupCommentFileDownload(AbstractTestCase, TestCaseMixin):
+    """
+    Test GroupComment files download.
+    """
+    viewclass = batch_download_files.CompressedGroupCommentFileDownloadView
 
     def test_groupcomment_files_download(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
@@ -120,205 +143,135 @@ class TestCompressedGroupCommentFileDownload(TestCase):
             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
             commentfile.file.save('testfile.txt', ContentFile('testcontent'))
 
-            testdownloader = feedbackfeed_download_files.CompressedGroupCommentFileDownload()
-            mockrequest = mock.MagicMock()
-            mockrequest.cradmin_role = testcomment.feedback_set.group
-            mockrequest.user = testuser
-            response = testdownloader.get(mockrequest, testcomment.id)
-            zipfileobject = ZipFile(StringIO(response.content))
-            filecontents = zipfileobject.read('testfile.txt')
-            self.assertEquals(filecontents, 'testcontent')
+            mockresponse = self.mock_getrequest(
+                    cradmin_role=testcomment.feedback_set.group,
+                    viewkwargs={
+                        'groupcomment_id': testcomment.id
+                    }
+            )
+            self.assertEquals(mockresponse.response.status_code, 302)
 
-    def test_groupcomment_files_download_two_users(self):
+
+class TestCompressedFeedbackSetFileDownload(AbstractTestCase, TestCaseMixin):
+    """
+    Test FeedbackSet files download.
+    """
+    viewclass = batch_download_files.CompressedFeedbackSetFileDownloadView
+
+    def test_feedbackset_files_download(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testgroup = mommy.make('core.AssignmentGroup')
-            testuser1 = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
-            testuser2 = mommy.make(settings.AUTH_USER_MODEL, shortname='april@example.com', fullname='April Duck')
-            candidate1 = mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser1)
-            candidate2 = mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser2)
-            testcomment = mommy.make('devilry_group.GroupComment',
-                                     feedback_set__group=testgroup,
-                                     user=testuser1,
+            # Test download feedbackset files.
+            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
+            testfeedbackset = mommy.make('devilry_group.FeedbackSet')
+            testcomment = mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset, user=testuser,
                                      user_role='student')
             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
             commentfile.file.save('testfile.txt', ContentFile('testcontent'))
 
-            testdownloader = feedbackfeed_download_files.CompressedGroupCommentFileDownload()
+            mockresponse = self.mock_getrequest(
+                    cradmin_role=testfeedbackset.group,
+                    viewkwargs={
+                        'feedbackset_id': testfeedbackset.id
+                    }
+            )
+            self.assertEquals(mockresponse.response.status_code, 302)
 
-            # First user download
-            mockrequest = mock.MagicMock()
-            mockrequest.cradmin_role = candidate1.assignment_group
-            mockrequest.user = testuser1
-            response = testdownloader.get(mockrequest, testcomment.id)
-            zipfileobject = ZipFile(StringIO(response.content))
-            filecontents = zipfileobject.read('testfile.txt')
-            self.assertEquals(filecontents, 'testcontent')
 
-            # Second user download
-            mockrequest.cradmin_role = candidate2.assignment_group
-            mockrequest.user = testuser2
-            response = testdownloader.get(mockrequest, testcomment.id)
-            zipfileobject = ZipFile(StringIO(response.content))
-            filecontents = zipfileobject.read('testfile.txt')
-            self.assertEquals(filecontents, 'testcontent')
+class TestWaitForDownloadView(AbstractTestCase, TestCaseMixin):
+    viewclass = batch_download_files.WaitForDownload
 
-    def test_groupcomment_download_user_not_in_group_404(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            # Test user can't download if not part of AssignmentGroup
-            testgroup = mommy.make('core.AssignmentGroup')
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
-            testcomment = mommy.make('devilry_group.GroupComment', user_role='student')
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-            commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-
-            testdownloader = feedbackfeed_download_files.CompressedGroupCommentFileDownload()
-            mockrequest = mock.MagicMock()
-            mockrequest.user = testuser
-            mockrequest.cradmin_role = testgroup
-            with self.assertRaises(Http404):
-                testdownloader.get(mockrequest, testcomment.id)
-
-    def test_groupcomment_download_private_comment_404(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            # User cant download private comment unless the user created it.
-            testgroup = mommy.make('core.AssignmentGroup')
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
+    def test_groupcomment_response_200(self):
+        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
             testcomment = mommy.make('devilry_group.GroupComment',
-                                     user_role='examiner',
-                                     feedback_set__group=testgroup,
-                                     visibility=group_models.GroupComment.VISIBILITY_PRIVATE)
+                                     user_role='student',
+                                     user__shortname='testuser@example.com')
             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
             commentfile.file.save('testfile.txt', ContentFile('testcontent'))
 
-            testdownloader = feedbackfeed_download_files.CompressedGroupCommentFileDownload()
-            mockrequest = mock.MagicMock()
-            mockrequest.user = testuser
-            mockrequest.cradmin_role = testgroup
-            with self.assertRaises(Http404):
-                testdownloader.get(mockrequest, testcomment.id)
+            batchregistry.Registry.get_instance().add_actiongroup(
+                batchregistry.ActionGroup(
+                    name='batchframework_groupcomment',
+                    mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
+                    actions=[
+                        tasks.GroupCommentCompressAction
+                    ]))
+            batchregistry.Registry.get_instance().run(actiongroup_name='batchframework_groupcomment',
+                                                      context_object=testcomment,
+                                                      test='test')
+            mockresponse = self.mock_getrequest(viewkwargs={'pk': testcomment.id})
+            self.assertEquals(mockresponse.response.status_code, 200)
 
-
-class TestCompressedFeedbackSetFileDownload(TestCase):
-    """
-    Test FeeedbackSet files download
-    """
-    def setUp(self):
-        # Sets up a directory where files can be added. Is removed by tearDown.
-        self.backend_path = 'devilry_testfiles/devilry_compressed_archives/'
-
-    def tearDown(self):
-        # Ignores errors if the path is not created.
-        shutil.rmtree(self.backend_path, ignore_errors=True)
-
-    def test_feedbackset_files_download(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            # Test download files from feedbackset
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
-            testfeedbackset = mommy.make('devilry_group.FeedbackSet',
-                                         deadline_datetime=timezone.now() + timezone.timedelta(days=1))
-
-            # Add student comment with file
-            testcomment_student = mommy.make('devilry_group.GroupComment',
-                                             feedback_set=testfeedbackset,
-                                             user=testuser,
-                                             user_role='student')
-            commentfile_student = mommy.make('devilry_comment.CommentFile',
-                                             comment=testcomment_student,
-                                             filename='testfile-student.txt')
-            commentfile_student.file.save('testfile.txt', ContentFile('student-testcontent'))
-
-            testdownloader = feedbackfeed_download_files.CompressedFeedbackSetFileDownloadView()
-            mockrequest = mock.MagicMock()
-            mockrequest.cradmin_role = testfeedbackset.group
-            mockrequest.user = testuser
-            response = testdownloader.get(mockrequest, testcomment_student.feedback_set.id)
-            zipfileobject = ZipFile(StringIO(response.content))
-            self.assertEquals('student-testcontent', zipfileobject.read('delivery/testfile-student.txt'))
-
-    def test_feedbackset_files_download_two_users(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            # Test download files from feedbackset
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
-            testfeedbackset = mommy.make('devilry_group.FeedbackSet',
-                                         deadline_datetime=timezone.now() + timezone.timedelta(days=1))
-
-            # Add student comment visible to everyone
-            testcomment_student = mommy.make('devilry_group.GroupComment',
-                                             feedback_set=testfeedbackset,
-                                             user=testuser,
-                                             user_role='student')
-            commentfile_student = mommy.make('devilry_comment.CommentFile',
-                                             comment=testcomment_student,
-                                             filename='testfile-student.txt')
-            commentfile_student.file.save('testfile.txt', ContentFile('student-testcontent'))
-
-            # Add examiner comment visible to everyone
-            testcomment_examiner = mommy.make('devilry_group.GroupComment',
-                                              feedback_set=testfeedbackset,
-                                              user_role='examiner')
-            commentfile_examiner = mommy.make('devilry_comment.CommentFile',
-                                              comment=testcomment_examiner,
-                                              filename='testfile-examiner.txt')
-            commentfile_examiner.file.save('testfile.txt', ContentFile('examiner-testcontent'))
-
-            # Add examiner comment with private visibility
-            testcomment_examiner_private = mommy.make('devilry_group.GroupComment',
-                                                      visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
-                                                      feedback_set=testfeedbackset,
-                                                      user_role='examiner')
-            commentfile_examiner_private = mommy.make('devilry_comment.CommentFile',
-                                                      comment=testcomment_examiner_private,
-                                                      filename='testfile-private-examiner.txt')
-            commentfile_examiner_private.file.save('testfile.txt', ContentFile('examiner-private-testcontent'))
-
-            testdownloader = feedbackfeed_download_files.CompressedFeedbackSetFileDownloadView()
-            mockrequest = mock.MagicMock()
-            mockrequest.cradmin_role = testfeedbackset.group
-            mockrequest.user = testuser
-            response = testdownloader.get(mockrequest, testcomment_student.feedback_set.id)
-            zipfileobject = ZipFile(StringIO(response.content))
-            self.assertEquals('student-testcontent', zipfileobject.read('delivery/testfile-student.txt'))
-
-            # Check that the private comment does not exist
-            with self.assertRaises(KeyError):
-                zipfileobject.read('delivery/testfile-private-examiner.txt')
-
-    def test_feedbackset_files_download_after_deadline(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            # Test download files from feedbackset
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
-            testfeedbackset = mommy.make('devilry_group.FeedbackSet',
-                                         deadline_datetime=timezone.now() - timezone.timedelta(days=1))
-            # Add student comment visible to everyone
-            testcomment_student = mommy.make('devilry_group.GroupComment',
-                                             feedback_set=testfeedbackset,
-                                             user=testuser,
-                                             user_role='student')
-            commentfile_student = mommy.make('devilry_comment.CommentFile',
-                                             comment=testcomment_student,
-                                             filename='testfile-student.txt')
-            commentfile_student.file.save('testfile.txt', ContentFile('student-testcontent'))
-
-            testdownloader = feedbackfeed_download_files.CompressedFeedbackSetFileDownloadView()
-            mockrequest = mock.MagicMock()
-            mockrequest.cradmin_role = testfeedbackset.group
-            mockrequest.user = testuser
-            response = testdownloader.get(mockrequest, testcomment_student.feedback_set.id)
-            zipfileobject = ZipFile(StringIO(response.content))
-            self.assertEquals('student-testcontent', zipfileobject.read('uploaded_after_deadline/testfile-student.txt'))
-
-    def test_feedbackset_download_user_not_in_group_404(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            # Test user can't download if not part of AssignmentGroup
-            testgroup = mommy.make('core.AssignmentGroup')
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
-            testcomment = mommy.make('devilry_group.GroupComment', user_role='student')
+    def test_groupcomment_response_archive(self):
+        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+            testcomment = mommy.make('devilry_group.GroupComment',
+                                     user_role='student',
+                                     user__shortname='testuser@example.com')
             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
             commentfile.file.save('testfile.txt', ContentFile('testcontent'))
 
-            testdownloader = feedbackfeed_download_files.CompressedFeedbackSetFileDownloadView()
-            mockrequest = mock.MagicMock()
-            mockrequest.user = testuser
-            mockrequest.cradmin_role = testgroup
-            with self.assertRaises(Http404):
-                testdownloader.get(mockrequest, testcomment.feedback_set.id)
+            batchregistry.Registry.get_instance().add_actiongroup(
+                batchregistry.ActionGroup(
+                    name='batchframework_groupcomment',
+                    mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
+                    actions=[
+                        tasks.GroupCommentCompressAction
+                    ]))
+            batchregistry.Registry.get_instance().run(actiongroup_name='batchframework_groupcomment',
+                                                      context_object=testcomment,
+                                                      test='test')
+            mockresponse = self.mock_getrequest(viewkwargs={'pk': testcomment.id})
+            zipfile = ZipFile(StringIO(mockresponse.response.content))
+            filecontents = zipfile.read('testfile.txt')
+            self.assertEquals(mockresponse.response.status_code, 200)
+            self.assertEquals(filecontents, 'testcontent')
+
+    def test_feedbackset_response_200(self):
+        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+            testfeedbackset = mommy.make('devilry_group.FeedbackSet')
+            testcomment = mommy.make('devilry_group.GroupComment',
+                                     feedback_set=testfeedbackset,
+                                     user_role='student',
+                                     user__shortname='testuser@example.com')
+            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+            commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+
+            batchregistry.Registry.get_instance().add_actiongroup(
+                batchregistry.ActionGroup(
+                    name='batchframework_feedbackset',
+                    mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
+                    actions=[
+                        tasks.FeedbackSetCompressAction
+                    ]))
+            batchregistry.Registry.get_instance()\
+                .run(actiongroup_name='batchframework_feedbackset',
+                     context_object=testfeedbackset,
+                     test='test')
+            mockresponse = self.mock_getrequest(viewkwargs={'pk': testfeedbackset.id})
+            self.assertEquals(mockresponse.response.status_code, 200)
+
+    def test_feedbackset_response_archive(self):
+        with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
+            testfeedbackset = mommy.make('devilry_group.FeedbackSet')
+            testcomment = mommy.make('devilry_group.GroupComment',
+                                     feedback_set=testfeedbackset,
+                                     user_role='student',
+                                     user__shortname='testuser@example.com')
+            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+            commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+
+            batchregistry.Registry.get_instance().add_actiongroup(
+                batchregistry.ActionGroup(
+                    name='batchframework_feedbackset',
+                    mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
+                    actions=[
+                        tasks.FeedbackSetCompressAction
+                    ]))
+            batchregistry.Registry.get_instance()\
+                .run(actiongroup_name='batchframework_feedbackset',
+                     context_object=testfeedbackset,
+                     test='test')
+            mockresponse = self.mock_getrequest(viewkwargs={'pk': testfeedbackset.id})
+            zipfile = ZipFile(StringIO(mockresponse.response.content))
+            filecontents = zipfile.read('delivery/testfile.txt')
+            self.assertEquals(mockresponse.response.status_code, 200)
+            self.assertEquals(filecontents, 'testcontent')

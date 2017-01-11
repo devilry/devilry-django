@@ -7,7 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 
 # Devilry/cradmin imports
 from devilry.apps.core import models as core_models
-from devilry.devilry_account import models as account_models
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models
 from django_cradmin import crapp
@@ -74,9 +73,13 @@ class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
              ``ANONYMIZATIONMODE_FULLY_ANONYMOUS``, and the requestuser is not a ``departmentadmin``.
         """
         assignment = self.request.cradmin_role.parentnode
+        admin_role = self.request.cradmin_instance.get_devilryrole_for_requestuser()
+        if admin_role == 'departmentadmin':
+            return super(AdminFeedbackFeedView, self).dispatch(request, *args, **kwargs)
         if assignment.anonymizationmode == core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
-            if account_models.PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
-                    user=self.request.user, period=assignment.period) != 'departmentadmin':
+            raise http.Http404
+        if assignment.anonymizationmode == core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS:
+            if admin_role != 'subjectadmin':
                 raise http.Http404
         return super(AdminFeedbackFeedView, self).dispatch(request, *args, **kwargs)
 

@@ -1,4 +1,5 @@
 import datetime
+import shutil
 from StringIO import StringIO
 from zipfile import ZipFile
 
@@ -7,6 +8,7 @@ from django.core.files.base import ContentFile
 from model_mommy import mommy
 
 from devilry.devilry_comment.models import Comment
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import models as groupmodels
 from devilry.devilry_group.views.download_files import feedbackfeed_bulkfiledownload
 
@@ -19,7 +21,15 @@ class BulkDownloadTestClass(feedbackfeed_bulkfiledownload.BulkFileDownloadBaseVi
         return 'testfile.zip'
 
 
-class TestBulkFileDownloadBase(test.TestCase):
+class AbstractTestCase(test.TestCase):
+    def tearDown(self):
+        # Ignores errors if the path is not created.
+        shutil.rmtree('devilry_testfiles/filestore/', ignore_errors=True)
+
+
+class TestBulkFileDownloadBase(AbstractTestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_zipfile(self):
         assignmentgroup1 = mommy.make('core.AssignmentGroup',
@@ -32,7 +42,6 @@ class TestBulkFileDownloadBase(test.TestCase):
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
-                                  is_last_in_group=True,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=tomorrow)
         comment_fbs1_1 = mommy.make('devilry_group.GroupComment',
@@ -62,7 +71,6 @@ class TestBulkFileDownloadBase(test.TestCase):
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
-                                  is_last_in_group=True,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=tomorrow)
         comment_fbs1_1 = mommy.make('devilry_group.GroupComment',
@@ -89,7 +97,6 @@ class TestBulkFileDownloadBase(test.TestCase):
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
-                                  is_last_in_group=False,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=tomorrow)
         comment_fbs1_1 = mommy.make('devilry_group.GroupComment',
@@ -100,7 +107,6 @@ class TestBulkFileDownloadBase(test.TestCase):
         commentfile_fbs1_1.file.save('testfile1.txt', ContentFile('test'))
         feedbackset2 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
-                                  is_last_in_group=True,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
                                   deadline_datetime=tomorrow)
         comment_fbs2_1 = mommy.make('devilry_group.GroupComment',
@@ -129,7 +135,6 @@ class TestBulkFileDownloadBase(test.TestCase):
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
-                                  is_last_in_group=True,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=tomorrow)
         comment_fbs1_1 = mommy.make('devilry_group.GroupComment',
@@ -165,7 +170,6 @@ class TestBulkFileDownloadBase(test.TestCase):
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
-                                  is_last_in_group=True,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=tomorrow)
 
@@ -198,7 +202,6 @@ class TestBulkFileDownloadBase(test.TestCase):
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
-                                  is_last_in_group=True,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=tomorrow)
         comment_fbs1_1 = mommy.make('devilry_group.GroupComment',
@@ -225,7 +228,6 @@ class TestBulkFileDownloadBase(test.TestCase):
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
-                                  is_last_in_group=True,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=yesterday)
         comment_fbs1_1 = mommy.make('devilry_group.GroupComment',
@@ -253,7 +255,6 @@ class TestBulkFileDownloadBase(test.TestCase):
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
-                                  is_last_in_group=True,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=tomorrow)
         comment_fbs1 = mommy.make('devilry_group.GroupComment',
@@ -270,7 +271,6 @@ class TestBulkFileDownloadBase(test.TestCase):
                    relatedstudent__user__shortname="testuser2")
         feedbackset2 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup2,
-                                  is_last_in_group=True,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
                                   deadline_datetime=tomorrow)
         comment_fbs2 = mommy.make('devilry_group.GroupComment',

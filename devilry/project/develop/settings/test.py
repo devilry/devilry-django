@@ -37,6 +37,10 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+INSTALLED_APPS += [
+    'devilry.devilry_dbcache.devilry_dbcache_testapp',
+]
+
 # We need to use this because loads of tests uses username and password to login
 DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND = False
 AUTHENTICATION_BACKENDS = (

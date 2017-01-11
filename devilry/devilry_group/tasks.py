@@ -85,13 +85,22 @@ class FeedbackSetCompressAction(batchregistry.Action):
             # Don't add files from comments that are not visible to everyone.
             if group_comment.visibility == group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
                 for comment_file in group_comment.commentfile_set.all():
+
+                    # Where should the file recide in the zipped archive.
+                    # The folder the file should be added under is set to 'delivery' by default.
+                    sub_folder_type = 'delivery'
+
                     if comment_file.comment.user_role == 'student':
-                        if comment_file.comment.published_datetime > feedbackset.current_deadline():
-                            zipfile_backend.add_file(os.path.join('uploaded_after_deadline', comment_file.filename),
-                                                     comment_file.file.file)
-                        else:
-                            zipfile_backend.add_file(os.path.join('delivery', comment_file.filename),
-                                                     comment_file.file.file)
+                        current_deadline = feedbackset.current_deadline()
+                        if current_deadline and comment_file.comment.published_datetime > current_deadline:
+                            sub_folder_type = 'uploaded_after_deadline'
+                    elif comment_file.comment.user_role == 'examiner':
+                        sub_folder_type = 'uploaded_by_examiner'
+
+                    # Write file to backend on the path defined by os.path.join
+                    zipfile_backend.add_file(
+                            os.path.join(sub_folder_type, comment_file.filename),
+                            comment_file.file.file)
         zipfile_backend.close()
 
         # create archive meta entry

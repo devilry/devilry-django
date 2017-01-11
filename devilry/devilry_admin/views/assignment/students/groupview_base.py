@@ -66,30 +66,22 @@ class GroupViewMixin(object):
                              'relatedexaminer__user__shortname')))
         queryset = coremodels.AssignmentGroup.objects\
             .filter(parentnode=self.assignment)\
-            .only('name')\
             .prefetch_related(
                 models.Prefetch('candidates',
                                 queryset=candidatequeryset))\
             .prefetch_related(
                 models.Prefetch('examiners',
                                 queryset=examinerqueryset))\
-            .annotate_with_grading_points()\
             .annotate_with_is_waiting_for_feedback()\
             .annotate_with_is_waiting_for_deliveries()\
-            .annotate_with_is_corrected()\
-            .annotate_with_number_of_commentfiles_from_students()\
-            .annotate_with_number_of_groupcomments_from_students()\
-            .annotate_with_number_of_groupcomments_from_examiners()\
-            .annotate_with_number_of_groupcomments_from_admins()\
-            .annotate_with_number_of_imageannotationcomments_from_students()\
-            .annotate_with_number_of_imageannotationcomments_from_examiners()\
-            .annotate_with_number_of_imageannotationcomments_from_admins()\
-            .annotate_with_number_of_published_feedbacksets()\
-            .annotate_with_has_unpublished_feedbackdraft()\
-            .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user)\
+            .annotate_with_is_corrected() \
+            .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user) \
             .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)\
-            .annotate_with_number_of_examiners()\
-            .distinct()
+            .distinct() \
+            .select_related('cached_data__last_published_feedbackset',
+                            'cached_data__last_feedbackset',
+                            'cached_data__first_feedbackset',
+                            'parentnode')
         return queryset
 
     def get_status_filter_value(self):
@@ -122,21 +114,21 @@ class GroupViewMixin(object):
         return self.get_filterlist()\
             .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
                     exclude={'status'})\
-            .filter(is_waiting_for_feedback=True)\
+            .filter(annotated_is_waiting_for_feedback=True)\
             .count()
 
     def get_filtered_waiting_for_deliveries_count(self):
         return self.get_filterlist()\
             .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
                     exclude={'status'})\
-            .filter(is_waiting_for_deliveries=True)\
+            .filter(annotated_is_waiting_for_deliveries=True)\
             .count()
 
     def get_filtered_corrected_count(self):
         return self.get_filterlist()\
             .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
                     exclude={'status'})\
-            .filter(is_corrected=True)\
+            .filter(annotated_is_corrected=True)\
             .count()
 
     def __get_distinct_relatedexaminer_ids(self):

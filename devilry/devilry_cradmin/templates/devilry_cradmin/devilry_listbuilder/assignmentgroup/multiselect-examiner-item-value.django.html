@@ -9,7 +9,7 @@
                 {% trans "Unpublished feedback draft" %}:
             </span>
             <span class="devilry-cradmin-groupitemvalue-unpublished-feedbackdraft-grade">
-                {% devilry_grade_full me.get_assignment me.group.grading_points me.get_devilryrole %}
+                {% devilry_grade_full me.get_assignment me.group.drafted_grading_points me.get_devilryrole %}
             </span>
         </p>
     {% endif %}

@@ -3,12 +3,16 @@ from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.views.examiner import feedbackfeed_examiner
 
 
 class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = feedbackfeed_examiner.GroupCommentEditView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_edit_comment_draft_save(self):
         # Test that the GroupComment is updated after default save
@@ -23,7 +27,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
                              text='unedited',
                              part_of_grading=True,
                              visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
-                             feedback_set__group=group)
+                             feedback_set=group.feedbackset_set.first())
         self.mock_http302_postrequest(
             cradmin_role=examiner.assignmentgroup,
             requestuser=examiner.relatedexaminer.user,
@@ -50,7 +54,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
                              text='unedited',
                              part_of_grading=True,
                              visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
-                             feedback_set__group=group)
+                             feedback_set=group.feedbackset_set.first())
         self.mock_http302_postrequest(
             cradmin_role=examiner.assignmentgroup,
             requestuser=examiner.relatedexaminer.user,
@@ -72,7 +76,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
         testcomment = mommy.make('devilry_group.GroupComment',
                                  user=testexaminer.relatedexaminer.user,
                                  user_role='examiner',
-                                 feedback_set__group=testexaminer.assignmentgroup)
+                                 feedback_set=testexaminer.assignmentgroup.feedbackset_set.first())
         with self.assertRaises(PermissionDenied):
             self.mock_getrequest(cradmin_role=testexaminer.assignmentgroup,
                                  requestuser=testexaminer.relatedexaminer.user,
@@ -90,7 +94,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
                                       user_role='examiner',
                                       part_of_grading=True,
                                       visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
-                                      feedback_set__group=testexaminer.assignmentgroup)
+                                      feedback_set=testexaminer.assignmentgroup.feedbackset_set.first())
         with self.assertRaises(PermissionDenied):
             self.mock_getrequest(cradmin_role=testexaminer.assignmentgroup,
                                  requestuser=testexaminer.relatedexaminer.user,
@@ -105,7 +109,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
                                  user_role='examiner',
                                  part_of_grading=True,
                                  visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
-                                 feedback_set__group=testexaminer.assignmentgroup)
+                                 feedback_set=testexaminer.assignmentgroup.feedbackset_set.first())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testexaminer.assignmentgroup,
                                                           requestuser=testexaminer.relatedexaminer.user,
                                                           viewkwargs={'pk': testcomment.id})
@@ -121,7 +125,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
                                  user_role='examiner',
                                  part_of_grading=True,
                                  visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
-                                 feedback_set__group=testexaminer.assignmentgroup)
+                                 feedback_set=testexaminer.assignmentgroup.feedbackset_set.first())
         with self.assertNumQueries(2):
             self.mock_http200_getrequest_htmls(cradmin_role=testexaminer.assignmentgroup,
                                                requestuser=testexaminer.relatedexaminer.user,

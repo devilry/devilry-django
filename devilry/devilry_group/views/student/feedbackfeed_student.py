@@ -45,11 +45,15 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         obj.published_datetime = timezone.now()
 
     def save_object(self, form, commit=True):
-        obj = super(StudentFeedbackFeedView, self).save_object(form)
-        self._convert_temporary_files_to_comment_files(form, obj)
-        if len(obj.text) > 0:
-            obj = super(StudentFeedbackFeedView, self).save_object(form, commit=True)
-        return obj
+        groupcomment = super(StudentFeedbackFeedView, self).save_object(form)
+        if len(groupcomment.text) == 0:
+            raise Exception('This should be handled as a ValidationError if a comment should '
+                            'be required. It probably makes more sense to require '
+                            'files or comment text. '
+                            'Will be fixed in #905.')
+        groupcomment = super(StudentFeedbackFeedView, self).save_object(form, commit=True)
+        self._convert_temporary_files_to_comment_files(form, groupcomment)
+        return groupcomment
 
 
 class App(crapp.App):

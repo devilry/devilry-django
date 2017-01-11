@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-# python imports
 import json
 
-# django imports
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.functions import Coalesce
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy
 
-# devilry imports
 from devilry.apps.core.models import assignment_group
 from devilry.devilry_comment import models as comment_models
 
@@ -167,6 +165,45 @@ class AbstractGroupComment(comment_models.Comment):
         self.save()
 
 
+class FeedbackSetQuerySet(models.QuerySet):
+    """
+    QuerySet for :class:`.FeedbackSet`.
+    """
+    def get_order_by_deadline_datetime_argument(self):
+        """
+        Get a Coalesce expression that can be used with ``order_by()``
+        to order feedbacksets by deadline. This handles
+        ordering the first feedbackset by the first deadline of the
+        assignment.
+
+        Examples:
+
+            Basics (same as using :meth:`.order_by_deadline_datetime`)::
+
+                FeedbackSet.objects.all()\
+                    .order_by(FeedbackSet.objects.get_order_by_deadline_datetime_argument())
+
+            Combine with other order by arguments::
+
+                FeedbackSet.objects.all()\
+                    .order_by('group__parentnode__short_name',
+                              'group__id',
+                              FeedbackSet.objects.get_order_by_deadline_datetime_argument())
+        """
+        return Coalesce('deadline_datetime', 'group__parentnode__first_deadline')
+
+    def order_by_deadline_datetime(self):
+        """
+        Order by ``deadline_datetime``.
+
+        Unlike just using ``order_by('deadline_datetime')``, this method
+        uses :meth:`.get_order_by_deadline_datetime_argument`, which
+        ensures that the first feedbackset is ordered using
+        the first deadline of the assignment.
+        """
+        return self.order_by(self.get_order_by_deadline_datetime_argument())
+
+
 class FeedbackSet(models.Model):
     """
     All comments that are given for a specific deadline (delivery and feedback) are
@@ -177,12 +214,10 @@ class FeedbackSet(models.Model):
     All student-comments will be `instant_publish=True`, and the same applies to comments made by examiners that
     are not a part of feedback.
     """
+    objects = FeedbackSetQuerySet.as_manager()
 
     #: The AssignmentGroup that owns this feedbackset.
     group = models.ForeignKey(assignment_group.AssignmentGroup)
-
-    #: Is the last feedbackset for :obj:`~.FeedbackSet.group`? Must be None or True.
-    is_last_in_group = models.NullBooleanField(default=True)
 
     #: This means the feedbackset is basically the first feedbackset.
     #: Choice for :obj:`~.FeedbackSet.feedbackset_type`.
@@ -206,12 +241,12 @@ class FeedbackSet(models.Model):
     ]
 
     #: Sets the type of the feedbackset.
-    #: Defaults to :obj:`~.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT`.
+    #: Defaults to :obj:`~.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT`.
     feedbackset_type = models.CharField(
         max_length=50,
         db_index=True,
         choices=FEEDBACKSET_TYPE_CHOICES,
-        default=FEEDBACKSET_TYPE_FIRST_ATTEMPT,
+        default=FEEDBACKSET_TYPE_NEW_ATTEMPT
     )
 
     #: Field can be set to ``True`` if a situation requires the :obj:`~.FeedbackSet` to not be counted as neither
@@ -219,7 +254,7 @@ class FeedbackSet(models.Model):
     #: the :obj:`~.FeedbackSet` to be ignored must be provided in the :attr:`~FeedbackSet.ignored_reason`.
     ignored = models.BooleanField(default=False)
 
-    #: The reason for the :obj:`~FeedackSet` to be ignored.
+    #: The reason for the :obj:`~FeedbackSet` to be ignored.
     ignored_reason = models.TextField(null=False, blank=True, default='')
 
     #: The datetime for when the :obj:`~.FeedbackSet` was ignored.
@@ -227,7 +262,7 @@ class FeedbackSet(models.Model):
 
     #: The User that created the feedbackset. Only used as metadata
     #: for superusers (for debugging).
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="created_feedbacksets")
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="created_feedbacksets", null=True, blank=True)
 
     #: The datetime when this FeedbackSet was created.
     created_datetime = models.DateTimeField(default=timezone.now)
@@ -274,9 +309,6 @@ class FeedbackSet(models.Model):
         null=False, blank=True, default=''
     )
 
-    class Meta:
-        unique_together = ('group', 'is_last_in_group')
-
     def __unicode__(self):
         return u"{} - {} - {} - deadline: {} - points: {}".format(
                 self.group.assignment,
@@ -300,8 +332,6 @@ class FeedbackSet(models.Model):
             |
             Error occurs if :attr:`~.FeedbackSet.grading_published_datetime` has a datetime but
             :obj:`~.FeedbackSet.grading_points` is ``None``.
-            |
-            Error occurs if :attr:`~.FeedbackSet.is_last_in_group` is ``None``.
         """
         if self.ignored and len(self.ignored_reason) == 0:
             raise ValidationError({
@@ -328,25 +358,27 @@ class FeedbackSet(models.Model):
                     'grading_published_datetime': ugettext_lazy('An assignment can not be published '
                                                                 'without providing "points".'),
                 })
-            if self.is_last_in_group is False:
-                raise ValidationError({
-                    'is_last_in_group': 'is_last_in_group can not be false.'
-                })
 
     def current_deadline(self, assignment=None):
         """
-        If the :obj:`~.FeedbackSet.feedbackset_type` is ``FEEDBACKSET_TYPE_FIRST_ATTEMPT``, the
-        deadline datetime is the Assignments' first_deadline, else it's :obj:`~.FeedbackSet.deadline_datetime`.
+        If :obj:`~.FeedbackSet.feedbackset_type` IS :obj:`~.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT`, it will try to
+        return :obj:`~.FeedbackSet.deadline_datetime` if not ``None``, else it will try to return ``first_deadline`` in
+        :class:`~devilry.apps.core.models.assignment.Assignment`
 
-        :param assignment: Optional argument.
-        :return: A deadline datetime or None
+        If :obj:`~.FeedbackSet.feedbackset_type` IS NOT :obj:`~.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT`,
+        :obj:`~.FeedbackSet.deadline_datetime` will be returned without checking ``first_deadline`` in
+        :class:`~devilry.apps.core.models.assignment.Assignment`.
+
+        Args:
+            assignment: Uses first_deadline of this assignment if not ``None``.
+
+        Returns:
+            datetime or ``None``.
         """
-        if assignment is None:
-            first_deadline = self.group.assignment.first_deadline
-        else:
-            first_deadline = assignment.first_deadline
         if self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
-            return first_deadline or self.deadline_datetime
+            if assignment:
+                return self.deadline_datetime or assignment.first_deadline
+            return self.deadline_datetime or self.group.assignment.first_deadline
         return self.deadline_datetime
 
     def __get_drafted_comments(self, user):

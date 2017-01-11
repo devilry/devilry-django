@@ -1,0 +1,101 @@
+import mock
+from devilry.apps.core.models import Subject
+from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START
+from devilry.devilry_admin.views.subject import edit
+from django.test import TestCase
+from django_cradmin import cradmin_testhelpers
+from model_mommy import mommy
+
+
+class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = edit.UpdateView
+
+    def test_get_render_title(self):
+        testsubject = mommy.make('core.Subject',
+                                short_name='testsubject')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testsubject)
+        self.assertIn('Edit testsubject',
+                      mockresponse.selector.one('title').alltext_normalized)
+
+    def test_get_render_h1(self):
+        testsubject = mommy.make('core.Subject',
+                                short_name='testsubject')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testsubject)
+        self.assertEqual('Edit testsubject',
+                         mockresponse.selector.one('h1').alltext_normalized)
+
+    def test_get_render_formfields(self):
+        testsubject = mommy.make('core.Subject',
+                                long_name='Test subject',
+                                short_name='testsubject')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testsubject)
+        self.assertEqual(
+                'Test subject',
+                mockresponse.selector.one('input[name=long_name]')['value'])
+        self.assertEqual(
+                'testsubject',
+                mockresponse.selector.one('input[name=short_name]')['value'])
+
+    def test_post_missing_short_name(self):
+        testsubject = mommy.make('core.Subject')
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=testsubject,
+            requestkwargs={
+                'data': {
+                    'long_name': 'Test subject',
+                    'short_name': '',
+                }
+            })
+        self.assertEqual(
+            'This field is required.',
+            mockresponse.selector.one('#error_1_id_short_name').alltext_normalized)
+
+    def test_post_missing_long_name(self):
+        testsubject = mommy.make('core.Subject')
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=testsubject,
+            requestkwargs={
+                'data': {
+                    'long_name': '',
+                    'short_name': 'testsubject',
+                }
+            })
+        self.assertEqual(
+            'This field is required.',
+            mockresponse.selector.one('#error_1_id_long_name').alltext_normalized)
+
+
+    def __valid_post_request(self, testsubject,
+                             start_time=ACTIVE_PERIOD_START,
+                             end_time=ACTIVE_PERIOD_END,
+                             **kwargs):
+        mockresponse = self.mock_http302_postrequest(
+            cradmin_role=testsubject,
+            requestkwargs={
+                'data': {
+                    'long_name': 'Test subject',
+                    'short_name': 'testsubject',
+                }
+            },
+            **kwargs)
+        updated_period = Subject.objects.get(id=testsubject.id)
+        return updated_period, mockresponse
+
+    def test_post_sanity(self):
+        testsubject = mommy.make('core.Subject')
+        updated_period, mockresponse = self.__valid_post_request(
+                testsubject=testsubject)
+        self.assertEqual(Subject.objects.count(), 1)
+        self.assertEqual('Test subject', updated_period.long_name)
+        self.assertEqual('testsubject', updated_period.short_name)
+
+    def test_post_success_redirect(self):
+        testsubject = mommy.make('core.Subject')
+        mock_cradmin_instance = mock.MagicMock()
+        self.__valid_post_request(
+                testsubject=testsubject,
+                cradmin_instance=mock_cradmin_instance)
+        mock_cradmin_instance.rolefrontpage_url.assert_called_once_with()
