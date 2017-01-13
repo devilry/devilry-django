@@ -53,5 +53,7 @@ setup(
         'elasticsearch==1.6.0',
         'django_cradmin==1.1.1',
         'ievv_opensource==4.0.0b15',
+        'django-rest-swagger==0.3.8',
+        'djangorestframework==3.3.3',
     ]
 )
