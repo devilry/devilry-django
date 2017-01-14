@@ -5,7 +5,7 @@ from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 
 class TestAssignmentFiltersStudentMixin(object):
     def test_filter_search_subject_short_name_not_found(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                 parentnode__parentnode__short_name='duckduck1010',
                                 parentnode__short_name='456',
                                 short_name='456')
@@ -18,7 +18,7 @@ class TestAssignmentFiltersStudentMixin(object):
         self.assertEqual(0, len(response.data))
 
     def test_filter_search_subject_short_name_found(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                 parentnode__parentnode__short_name='duckduck1010')
         candidate = mommy.make('core.Candidate',
                                assignment_group__parentnode=assignment)
@@ -29,7 +29,7 @@ class TestAssignmentFiltersStudentMixin(object):
         self.assertEqual(assignment.parentnode.parentnode.short_name, response.data[0]['subject_short_name'])
 
     def test_filter_search_period_short_name_not_found(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                 parentnode__short_name='asd',
                                 parentnode__parentnode__short_name='456',
                                 short_name='456')
@@ -42,7 +42,7 @@ class TestAssignmentFiltersStudentMixin(object):
         self.assertEqual(0, len(response.data))
 
     def test_filter_search_period_short_name_found(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                 parentnode__short_name='S15')
         candidate = mommy.make('core.Candidate',
                                assignment_group__parentnode=assignment)
@@ -53,7 +53,7 @@ class TestAssignmentFiltersStudentMixin(object):
         self.assertEqual(assignment.parentnode.short_name, response.data[0]['period_short_name'])
 
     def test_filter_subject_short_name_not_found(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                 parentnode__parentnode__short_name='duck1010')
         candidate = mommy.make('core.Candidate',
                                assignment_group__parentnode=assignment)
@@ -64,7 +64,7 @@ class TestAssignmentFiltersStudentMixin(object):
         self.assertEqual(0, len(response.data))
 
     def test_filter_subject_short_name_found(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                 parentnode__parentnode__short_name='duck1010')
         candidate = mommy.make('core.Candidate',
                                assignment_group__parentnode=assignment)
@@ -75,7 +75,7 @@ class TestAssignmentFiltersStudentMixin(object):
         self.assertEqual(assignment.parentnode.parentnode.short_name, response.data[0]['subject_short_name'])
 
     def test_filter_period_short_name_not_found(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                 parentnode__short_name='S07')
         candidate = mommy.make('core.Candidate',
                                assignment_group__parentnode=assignment)
@@ -86,7 +86,7 @@ class TestAssignmentFiltersStudentMixin(object):
         self.assertEqual(0, len(response.data))
 
     def test_filter_period_short_name_found(self):
-        assignment = mommy.make('core.Assignment',
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                 parentnode__short_name='S15')
         candidate = mommy.make('core.Candidate',
                                assignment_group__parentnode=assignment)

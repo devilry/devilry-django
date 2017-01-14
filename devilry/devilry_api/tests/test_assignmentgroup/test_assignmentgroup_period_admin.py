@@ -3,6 +3,7 @@ from rest_framework.test import APITestCase
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core import mommy_recipes as core_recipes
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.devilry_api import devilry_api_mommy_factories as api_mommy
 from devilry.apps.core.models.assignment import Assignment
@@ -16,6 +17,9 @@ class TestPeriodAdminAssignmentgroupView(test_common_mixins.TestReadOnlyPermissi
                                          api_test_helper.TestCaseMixin,
                                          APITestCase):
     viewclass = AssignmentGroupViewPeriodAdmin
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_unauthorized_401(self):
         response = self.mock_get_request()
@@ -156,6 +160,9 @@ class TestPeriodAdminAssignmentViewFilters(api_test_helper.TestCaseMixin,
                                            TestAssignmentFiltersPeriodAdminMixin,
                                            APITestCase):
     viewclass = AssignmentGroupViewPeriodAdmin
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_filter_search_assignment_short_name_not_found(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -317,6 +324,9 @@ class TestPeriodAdminAssignmentViewFilters(api_test_helper.TestCaseMixin,
 class TestPeriodAdminDelete(api_test_helper.TestCaseMixin,
                             APITestCase):
     viewclass = AssignmentGroupViewPeriodAdmin
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_unauthorized_401(self):
         response = self.mock_delete_request()

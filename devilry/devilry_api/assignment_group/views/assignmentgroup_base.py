@@ -90,14 +90,15 @@ class BaseAssignmentGroupView(ListAPIView):
 
         """
         queryset = self.get_role_query_set() \
-            .select_related('parentnode__parentnode__parentnode') \
+            .select_related('parentnode__parentnode__parentnode',
+                            'cached_data__last_feedbackset',
+                            'cached_data__first_feedbackset') \
             .prefetch_related(
                 models.Prefetch('candidates',
                                 queryset=self.get_candidate_queryset())) \
             .prefetch_related(
                 models.Prefetch('examiners',
                                 queryset=self.get_examiner_queryset())) \
-            .annotate_with_grading_points() \
             .annotate_with_is_waiting_for_feedback() \
             .annotate_with_is_waiting_for_deliveries() \
             .annotate_with_is_corrected() \

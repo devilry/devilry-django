@@ -2,6 +2,7 @@ from model_mommy import mommy
 from rest_framework.test import APITestCase
 
 from django.conf import settings
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.apps.core import devilry_core_mommy_factories
 from devilry.apps.core.models import Assignment
 from devilry.devilry_api import devilry_api_mommy_factories
@@ -15,6 +16,9 @@ class TestAssignmentGroupListView(test_common_mixins.TestReadOnlyPermissionMixin
                                   api_test_helper.TestCaseMixin,
                                   APITestCase):
     viewclass = AssignmentGroupListViewExaminer
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_unauthorized_401(self):
         response = self.mock_get_request()
@@ -140,7 +144,7 @@ class TestAssignmentGroupListView(test_common_mixins.TestReadOnlyPermissionMixin
 
     def test_num_queries(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        for x in range(10):
+        for x in range(20):
             assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
             mommy.make('core.Examiner',
                        relatedexaminer=mommy.make('core.RelatedExaminer', active=True, user=testuser),
@@ -153,6 +157,9 @@ class TestAssignmentGroupListView(test_common_mixins.TestReadOnlyPermissionMixin
 class TestAssignmentGroupListViewAnonymization(api_test_helper.TestCaseMixin,
                                                APITestCase):
     viewclass = AssignmentGroupListViewExaminer
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_anonymization_mode_off_fullname(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -432,6 +439,9 @@ class TestAssignmentGroupListViewFilters(api_test_helper.TestCaseMixin,
                                          TestAssignmentFiltersExaminerMixin,
                                          APITestCase):
     viewclass = AssignmentGroupListViewExaminer
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_filter_search_assignment_short_name_not_found(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
