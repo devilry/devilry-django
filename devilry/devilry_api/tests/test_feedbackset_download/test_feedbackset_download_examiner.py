@@ -10,6 +10,7 @@ from rest_framework.test import APITestCase
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.apps.core import mommy_recipes
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_api import devilry_api_mommy_factories as api_mommy
 from devilry.devilry_api.feedbackset_download.views.feedbackset_download_examiner import ExaminerFeedbacksetView
 from devilry.devilry_api.tests.mixins import test_examiner_mixins, api_test_helper, test_common_mixins
@@ -20,6 +21,7 @@ class SetUpTearDown(TestCase):
 
     def setUp(self):
         # Sets up a directory where files can be added. Is removed by tearDown.
+        AssignmentGroupDbCacheCustomSql().initialize()
         self.backend_path = os.path.join('devilry_testfiles', 'devilry_compressed_archives', '')
 
     def tearDown(self):
