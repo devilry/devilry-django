@@ -6,6 +6,7 @@ from rest_framework.test import APITestCase
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.devilry_api import devilry_api_mommy_factories as api_mommy
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_api.tests.mixins import test_examiner_mixins, api_test_helper, test_common_mixins
 from devilry.devilry_api.group_comment.views import groupcomment_examiner
@@ -18,6 +19,9 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                              api_test_helper.TestCaseMixin,
                              APITestCase):
     viewclass = groupcomment_examiner.GroupCommentViewExaminer
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_unauthorized_401(self):
         response = self.mock_get_request()
@@ -172,6 +176,9 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
 class TestGroupCommentAnonymization(api_test_helper.TestCaseMixin,
                                     APITestCase):
     viewclass = groupcomment_examiner.GroupCommentViewExaminer
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_anonymization_off_student_user_fullname(self):
         group = mommy.make('core.AssignmentGroup',
@@ -384,6 +391,9 @@ class TestGroupCommentVisibility(api_test_helper.TestCaseMixin,
                                  APITestCase):
     viewclass = groupcomment_examiner.GroupCommentViewExaminer
 
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_visible_to_everyone(self):
         group = mommy.make('core.AssignmentGroup',
                            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
@@ -496,6 +506,9 @@ class TestGroupCommentFilters(api_test_helper.TestCaseMixin,
                               APITestCase):
     viewclass = groupcomment_examiner.GroupCommentViewExaminer
 
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_filter_id(self):
         group = mommy.make('core.AssignmentGroup',
                            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
@@ -571,6 +584,9 @@ class TestGroupCommentPost(api_test_helper.TestCaseMixin,
                            APITestCase):
     viewclass = groupcomment_examiner.GroupCommentViewExaminer
 
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_unauthorized_401(self):
         response = self.mock_post_request(feedbackset=1)
         self.assertEqual(401, response.status_code)
@@ -598,7 +614,7 @@ class TestGroupCommentPost(api_test_helper.TestCaseMixin,
     def test_post_comment_sanity(self):
         group = mommy.make('core.AssignmentGroup',
                            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group, id=10)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
         examiner = core_mommy.examiner(group=group)
         apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
         response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={'text': 'hei'})
@@ -606,7 +622,7 @@ class TestGroupCommentPost(api_test_helper.TestCaseMixin,
         self.assertEqual(response.data['text'], 'hei')
         self.assertEqual(response.data['user_role'], 'examiner')
         self.assertEqual(response.data['visibility'], 'visible-to-everyone')
-        self.assertEqual(response.data['feedback_set'], 10)
+        self.assertEqual(response.data['feedback_set'], feedbackset.id)
         self.assertEqual(response.data['part_of_grading'], False)
 
     def test_post_comment_no_text(self):
@@ -675,7 +691,7 @@ class TestGroupCommentPost(api_test_helper.TestCaseMixin,
     def test_post_part_of_grading_True_published_feedbackset(self):
         group = mommy.make('core.AssignmentGroup',
                            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        feedbackset = group_mommy.feedbackset_first_attempt_published(group=group, id=10)
+        feedbackset = group_mommy.feedbackset_first_attempt_published(group=group)
         examiner = core_mommy.examiner(group=group)
         apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
         response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
@@ -690,7 +706,7 @@ class TestGroupCommentPost(api_test_helper.TestCaseMixin,
     def test_post_part_of_grading_True_visibility_private_success(self):
         group = mommy.make('core.AssignmentGroup',
                            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group, id=10)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
         examiner = core_mommy.examiner(group=group)
         apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
         response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
@@ -700,7 +716,7 @@ class TestGroupCommentPost(api_test_helper.TestCaseMixin,
         })
         self.assertEqual(201, response.status_code)
         self.assertEqual(response.data['text'], 'hei')
-        self.assertEqual(response.data['feedback_set'], 10)
+        self.assertEqual(response.data['feedback_set'], feedbackset.id)
         self.assertEqual(response.data['visibility'], GroupComment.VISIBILITY_PRIVATE)
         self.assertTrue(response.data['part_of_grading'])
         self.assertEqual(response.data['user_role'], GroupComment.USER_ROLE_EXAMINER)
@@ -708,7 +724,7 @@ class TestGroupCommentPost(api_test_helper.TestCaseMixin,
     def test_post_visible_to_examiner_and_admins(self):
         group = mommy.make('core.AssignmentGroup',
                            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group, id=10)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
         examiner = core_mommy.examiner(group=group)
         apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
         response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
@@ -717,7 +733,7 @@ class TestGroupCommentPost(api_test_helper.TestCaseMixin,
         })
         self.assertEqual(201, response.status_code)
         self.assertEqual(response.data['text'], 'hei')
-        self.assertEqual(response.data['feedback_set'], 10)
+        self.assertEqual(response.data['feedback_set'], feedbackset.id)
         self.assertEqual(response.data['visibility'], GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
         self.assertFalse(response.data['part_of_grading'])
         self.assertEqual(response.data['user_role'], GroupComment.USER_ROLE_EXAMINER)
@@ -725,7 +741,7 @@ class TestGroupCommentPost(api_test_helper.TestCaseMixin,
     def test_post_comment_created_in_db(self):
         group = mommy.make('core.AssignmentGroup',
                            parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group, id=10)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
         examiner = core_mommy.examiner(group=group)
         apikey = api_mommy.api_key_examiner_permission_write(user=examiner.relatedexaminer.user)
         response = self.mock_post_request(apikey=apikey.key, feedback_set=feedbackset.id, data={
@@ -735,7 +751,7 @@ class TestGroupCommentPost(api_test_helper.TestCaseMixin,
         self.assertEqual(201, response.status_code)
         comment = GroupComment.objects.get(id=response.data['id'])
         self.assertEqual(comment.text, 'hei')
-        self.assertEqual(comment.feedback_set.id, 10)
+        self.assertEqual(comment.feedback_set.id, feedbackset.id)
         self.assertEqual(comment.visibility, GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
         self.assertFalse(comment.part_of_grading)
         self.assertEqual(comment.user_role, GroupComment.USER_ROLE_EXAMINER)
@@ -744,6 +760,9 @@ class TestGroupCommentPost(api_test_helper.TestCaseMixin,
 class TestGroupCommentDeleteDraft(api_test_helper.TestCaseMixin,
                                   APITestCase):
     viewclass = groupcomment_examiner.GroupCommentViewExaminer
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_unauthorized_401(self):
         response = self.mock_delete_request(feedback_set=10, data={'id': 5})
