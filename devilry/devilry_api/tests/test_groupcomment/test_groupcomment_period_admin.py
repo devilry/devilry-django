@@ -4,6 +4,7 @@ from rest_framework.test import APITestCase
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.devilry_api import devilry_api_mommy_factories as api_mommy
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_api.tests.mixins import test_admin_mixins, api_test_helper, test_common_mixins
 from devilry.devilry_api.group_comment.views.groupcomment_period_admin import GroupCommentViewPeriodAdmin
@@ -16,6 +17,9 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                              api_test_helper.TestCaseMixin,
                              APITestCase):
     viewclass = GroupCommentViewPeriodAdmin
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_unauthorized_401(self):
         response = self.mock_get_request()
@@ -214,6 +218,9 @@ class TestGroupCommentVisibility(api_test_helper.TestCaseMixin,
                                  APITestCase):
     viewclass = GroupCommentViewPeriodAdmin
 
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_visible_to_examiners_and_admins_by_examiner(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
@@ -299,6 +306,9 @@ class TestGroupCommentVisibility(api_test_helper.TestCaseMixin,
 class TestGroupCommentPeriodAdminPost(api_test_helper.TestCaseMixin,
                                       APITestCase):
     viewclass = GroupCommentViewPeriodAdmin
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_unauthorized_401(self):
         response = self.mock_post_request(feedbackset=1)
@@ -439,7 +449,7 @@ class TestGroupCommentPeriodAdminPost(api_test_helper.TestCaseMixin,
     def test_post_comment_created_in_db(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group, id=10)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
         apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
         response = self.mock_post_request(
@@ -461,7 +471,7 @@ class TestGroupCommentPeriodAdminPost(api_test_helper.TestCaseMixin,
     def test_num_queries(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group, id=10)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
         apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
         with self.assertNumQueries(6):
