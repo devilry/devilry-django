@@ -1,8 +1,10 @@
+from django.db import models
 from django.utils.translation import ugettext_lazy
 from rest_framework import exceptions
 from rest_framework.generics import mixins
 
 from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import Examiner
 from devilry.devilry_api.feedbackset.serializers.serializer_examiner import FeedbacksetSerializerExaminer
 from devilry.devilry_api.feedbackset.views.feedbackset_base import BaseFeedbacksetView
 from devilry.devilry_api.models import APIKey
@@ -46,9 +48,13 @@ class FeedbacksetViewExaminer(mixins.CreateModelMixin,
         Returns:
             :class:`~devilry_group.Feedbackset` queryset
         """
+
+        assignment_group_queryset = AssignmentGroup.objects.filter_examiner_has_access(user=self.request.user)
         return FeedbackSet.objects \
-            .filter(group__in=AssignmentGroup.objects.filter_examiner_has_access(user=self.request.user))\
-            .select_related('group')
+            .select_related('group__cached_data',
+                            'group__parentnode__parentnode__parentnode')\
+            .filter(group__in=assignment_group_queryset)\
+            .distinct()
 
     def post(self, request, *args, **kwargs):
         """

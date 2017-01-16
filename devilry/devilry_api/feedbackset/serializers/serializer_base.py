@@ -18,7 +18,6 @@ class DeadlineDatetime(serializers.DateTimeField):
         """
         return instance.current_deadline()
 
-
 class BaseFeedbacksetSerializer(serializers.Serializer):
     FEEDBACKSET_CHOICES = FeedbackSet.FEEDBACKSET_TYPE_CHOICES
 
@@ -33,9 +32,6 @@ class BaseFeedbacksetSerializer(serializers.Serializer):
 
     #: Feedbackset type
     feedbackset_type = serializers.ChoiceField(choices=FEEDBACKSET_CHOICES, required=True)
-
-    #: is last in group
-    is_last_in_group = serializers.BooleanField(read_only=True)
 
     #: Feedbackset deadline datetime
     deadline_datetime = DeadlineDatetime(required=True)
@@ -72,11 +68,10 @@ class BaseFeedbacksetSerializer(serializers.Serializer):
         anonymous = instance.group.parentnode. \
             examiners_must_be_anonymized_for_devilryrole(self.devilry_role)
         try:
-            examiner = Examiner.objects.get(assignmentgroup=instance.group,
-                                            relatedexaminer__user=instance.created_by)
-
+            examiner = Examiner.objects.get(relatedexaminer__user=instance.created_by,
+                                            assignmentgroup=instance.group)
         except Examiner.DoesNotExist:
             return None
         if anonymous:
             return examiner.get_anonymous_name()
-        return instance.created_by.fullname
+        return examiner.relatedexaminer.user.fullname

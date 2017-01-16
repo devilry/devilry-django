@@ -120,7 +120,7 @@ class FeedbacksetSerializerExaminer(serializer_base.BaseFeedbacksetSerializer):
             :obj:`~devilry_group.Feedbackset`
 
         """
-        self.__set_is_last_in_group_false_in_previous_feedbackset(validated_data['group_id'])
+        # self.__set_is_last_in_group_false_in_previous_feedbackset(validated_data['group_id'])
         return FeedbackSet.objects.create(created_by=self.context['request'].user, **validated_data)
 
     def update(self, instance, validated_data):
