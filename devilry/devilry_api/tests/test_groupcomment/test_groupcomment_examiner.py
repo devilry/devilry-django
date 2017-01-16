@@ -53,7 +53,7 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                              user=examiner.relatedexaminer.user,
                              feedback_set=feedbackset,
-                             user_role=GroupComment.USER_ROLE_STUDENT,
+                             user_role=GroupComment.USER_ROLE_EXAMINER,
                              comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
@@ -69,7 +69,7 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user=examiner.relatedexaminer.user,
                    feedback_set=feedbackset,
-                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    text='lol')
         response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
@@ -86,7 +86,7 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user=examiner.relatedexaminer.user,
                    feedback_set=feedbackset,
-                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    id=20)
         response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
@@ -103,7 +103,7 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user=examiner.relatedexaminer.user,
                    feedback_set=feedbackset,
-                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
@@ -119,7 +119,7 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user=examiner.relatedexaminer.user,
                    feedback_set=feedbackset,
-                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
@@ -135,7 +135,7 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user=examiner.relatedexaminer.user,
                    feedback_set=feedbackset,
-                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
@@ -151,7 +151,7 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user=examiner.relatedexaminer.user,
                    feedback_set=feedbackset,
-                   user_role=GroupComment.USER_ROLE_STUDENT,
+                   user_role=GroupComment.USER_ROLE_EXAMINER,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
         response = self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
         self.assertEqual(200, response.status_code)
@@ -172,6 +172,21 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['user_role'], GroupComment.USER_ROLE_STUDENT)
 
+    def test_num_queries(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        examiner = core_mommy.examiner(group, shortname='Thor@example.com')
+        apikey = api_mommy.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
+        for index in range(100):
+            mommy.make('devilry_group.GroupComment',
+                       visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                       user=examiner.relatedexaminer.user,
+                       feedback_set=feedbackset,
+                       user_role=GroupComment.USER_ROLE_EXAMINER,
+                       comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
+        with self.assertNumQueries(2):
+            self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
 
 class TestGroupCommentAnonymization(api_test_helper.TestCaseMixin,
                                     APITestCase):

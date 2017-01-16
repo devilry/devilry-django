@@ -131,13 +131,12 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
     #     related_examiner = mommy.make('core.RelatedExaminer', user=testuser)
     #     apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=testuser)
     #
-    #     for index in range(100):
+    #     for index in range(10):
     #         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
     #         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=assignment)
     #         mommy.make('core.Examiner', assignmentgroup=feedbackset.group, relatedexaminer=related_examiner)
     #     with self.assertNumQueries(10):
     #         self.mock_get_request(apikey=apikey.key)
-
 
 
 class TestFeedbacksetAnonymization(api_test_helper.TestCaseMixin,

@@ -213,6 +213,21 @@ class TestGroupCommentSanity(test_common_mixins.TestReadOnlyPermissionMixin,
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['user_role'], GroupComment.USER_ROLE_STUDENT)
 
+    def test_num_queries(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
+        period_admin = core_mommy.period_admin(period=assignment.parentnode)
+        apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
+        for index in range(100):
+            mommy.make('devilry_group.GroupComment',
+                       visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                       user=period_admin.user,
+                       feedback_set=feedbackset,
+                       user_role=GroupComment.USER_ROLE_ADMIN,
+                       comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT)
+        with self.assertNumQueries(2):
+            self.mock_get_request(feedback_set=feedbackset.id, apikey=apikey.key)
 
 class TestGroupCommentVisibility(api_test_helper.TestCaseMixin,
                                  APITestCase):

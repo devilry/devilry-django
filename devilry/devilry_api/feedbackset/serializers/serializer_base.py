@@ -57,8 +57,6 @@ class BaseFeedbacksetSerializer(serializers.Serializer):
         """
         Gets full name of the examiner or anonymized name.
 
-        TODO: admin stuffs
-
         Args:
             instance: :obj:`~devilry_group.Feedbackset`
 
