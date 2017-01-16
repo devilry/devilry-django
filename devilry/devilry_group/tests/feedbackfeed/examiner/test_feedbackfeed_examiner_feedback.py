@@ -546,7 +546,7 @@ class TestFeedbackfeedFeedbackFileUploadExaminer(TestCase, cradmin_testhelpers.T
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def test_add_upload_files_publish(self):
+    def test_upload_files_publish(self):
         # Test the content of a CommentFile after upload.
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            grading_system_plugin_id=core_models.Assignment
@@ -576,7 +576,7 @@ class TestFeedbackfeedFeedbackFileUploadExaminer(TestCase, cradmin_testhelpers.T
         self.assertEqual(1, group_models.GroupComment.objects.count())
         self.assertIsNotNone(group_models.FeedbackSet.objects.get(id=testfeedbackset.id).grading_published_datetime)
 
-    def test_add_upload_files_draft(self):
+    def test_upload_files_draft(self):
         # Test the content of a CommentFile after upload.
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            grading_system_plugin_id=core_models.Assignment
@@ -774,7 +774,7 @@ class TestFeedbackfeedCreateFeedbackSetFileUploadExaminer(TestCase, cradmin_test
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def test_add_upload_single_file_on_feedbackset_create(self):
+    def test_upload_single_file_on_feedbackset_create(self):
         # Test the content of a CommentFile after upload.
         # Posting comment with visibility visible to everyone
         testfeedbackset = group_mommy.feedbackset_first_attempt_published()
@@ -803,7 +803,7 @@ class TestFeedbackfeedCreateFeedbackSetFileUploadExaminer(TestCase, cradmin_test
         self.assertEquals(1, comment_models.CommentFile.objects.count())
         self.assertEqual(1, group_models.GroupComment.objects.count())
 
-    def test_add_upload_single_file_content_on_feedbackset_create(self):
+    def test_upload_single_file_content_on_feedbackset_create(self):
         # Test the content of a CommentFile after upload.
         # Posting comment with visibility visible to everyone
         testfeedbackset = group_mommy.feedbackset_first_attempt_published()
@@ -836,7 +836,7 @@ class TestFeedbackfeedCreateFeedbackSetFileUploadExaminer(TestCase, cradmin_test
         self.assertEqual(len('Test content'), comment_file.filesize)
         self.assertEqual('text/txt', comment_file.mimetype)
 
-    def test_add_upload_multiple_files(self):
+    def test_upload_multiple_files(self):
         # Test the content of a CommentFile after upload.
         testfeedbackset = group_mommy.feedbackset_first_attempt_published()
         testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
@@ -865,7 +865,7 @@ class TestFeedbackfeedCreateFeedbackSetFileUploadExaminer(TestCase, cradmin_test
         self.assertEquals(3, comment_models.CommentFile.objects.count())
         self.assertEqual(1, group_models.GroupComment.objects.count())
 
-    def test_add_upload_multiple_files_contents(self):
+    def test_upload_multiple_files_contents(self):
         # Test the content of a CommentFile after upload.
         testfeedbackset = group_mommy.feedbackset_first_attempt_published()
         testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
@@ -892,10 +892,9 @@ class TestFeedbackfeedCreateFeedbackSetFileUploadExaminer(TestCase, cradmin_test
                 }
             })
         self.assertEquals(3, comment_models.CommentFile.objects.count())
-        comment_files = comment_models.CommentFile.objects.all().order_by('created_datetime')
-        comment_file1 = comment_files[0]
-        comment_file2 = comment_files[1]
-        comment_file3 = comment_files[2]
+        comment_file1 = comment_models.CommentFile.objects.get(filename='testfile1.txt')
+        comment_file2 = comment_models.CommentFile.objects.get(filename='testfile2.txt')
+        comment_file3 = comment_models.CommentFile.objects.get(filename='testfile3.txt')
 
         # Check content of testfile 1.
         self.assertEqual('testfile1.txt', comment_file1.filename)
@@ -915,7 +914,7 @@ class TestFeedbackfeedCreateFeedbackSetFileUploadExaminer(TestCase, cradmin_test
         self.assertEqual(len('Test content3'), comment_file3.filesize)
         self.assertEqual('text/txt', comment_file3.mimetype)
 
-    def test_add_upload_files_and_comment_text(self):
+    def test_upload_files_and_comment_text(self):
         # Test the content of a CommentFile after upload.
         testfeedbackset = group_mommy.feedbackset_first_attempt_published()
         testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)

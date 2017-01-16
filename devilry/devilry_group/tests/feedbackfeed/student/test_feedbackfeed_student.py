@@ -393,7 +393,7 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
             'A comment must have either text or a file attached, or both. An empty comment is not allowed.',
             mockresponse.selector.one('#error_1_id_text').alltext_normalized)
 
-    def test_add_upload_single_file(self):
+    def test_upload_single_file(self):
         # Test that a CommentFile is created on upload.
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
@@ -413,7 +413,7 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
         self.assertEquals(1, group_models.GroupComment.objects.count())
         self.assertEquals(1, comment_models.CommentFile.objects.count())
 
-    def test_add_upload_single_file_content(self):
+    def test_upload_single_file_content(self):
         # Test the content of a CommentFile after upload.
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
@@ -441,7 +441,7 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
         self.assertEqual(len('Test content'), comment_file.filesize)
         self.assertEqual('text/txt', comment_file.mimetype)
 
-    def test_add_upload_multiple_files(self):
+    def test_upload_multiple_files(self):
         # Test the content of a CommentFile after upload.
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
@@ -466,7 +466,7 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
             })
         self.assertEquals(3, comment_models.CommentFile.objects.count())
 
-    def test_add_upload_multiple_files_contents(self):
+    def test_upload_multiple_files_contents(self):
         # Test the content of a CommentFile after upload.
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
@@ -490,30 +490,26 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
                 }
             })
         self.assertEquals(3, comment_models.CommentFile.objects.count())
-        comment_files = comment_models.CommentFile.objects.all().order_by('created_datetime')
-        comment_file1 = comment_files[0]
-        comment_file2 = comment_files[1]
-        comment_file3 = comment_files[2]
+        comment_file1 = comment_models.CommentFile.objects.get(filename='testfile1.txt')
+        comment_file2 = comment_models.CommentFile.objects.get(filename='testfile2.txt')
+        comment_file3 = comment_models.CommentFile.objects.get(filename='testfile3.txt')
 
         # Check content of testfile 1.
-        self.assertEqual('testfile1.txt', comment_file1.filename)
         self.assertEqual('Test content1', comment_file1.file.file.read())
         self.assertEqual(len('Test content1'), comment_file1.filesize)
         self.assertEqual('text/txt', comment_file1.mimetype)
 
         # Check content of testfile 2.
-        self.assertEqual('testfile2.txt', comment_file2.filename)
         self.assertEqual('Test content2', comment_file2.file.file.read())
         self.assertEqual(len('Test content2'), comment_file2.filesize)
         self.assertEqual('text/txt', comment_file2.mimetype)
 
         # Check content of testfile 3.
-        self.assertEqual('testfile3.txt', comment_file3.filename)
         self.assertEqual('Test content3', comment_file3.file.file.read())
         self.assertEqual(len('Test content3'), comment_file3.filesize)
         self.assertEqual('text/txt', comment_file3.mimetype)
 
-    def test_add_upload_files_with_comment_text(self):
+    def test_upload_files_with_comment_text(self):
         # Test the content of a CommentFile after upload.
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
@@ -539,7 +535,7 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
         self.assertEquals(1, group_models.GroupComment.objects.count())
         self.assertEquals('Test comment', group_models.GroupComment.objects.all()[0].text)
 
-    def test_add_comment_only_with_text(self):
+    def test_comment_only_with_text(self):
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group,
                                # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
