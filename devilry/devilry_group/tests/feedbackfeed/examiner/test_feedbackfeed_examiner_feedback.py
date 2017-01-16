@@ -1,5 +1,6 @@
 import unittest
 
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
@@ -12,6 +13,7 @@ from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_examiner
 from devilry.devilry_group.views.examiner import feedbackfeed_examiner
+from devilry.devilry_comment import models as comment_models
 
 
 class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
@@ -507,7 +509,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             })
         feedbacksets = group_models.FeedbackSet.objects.all()
         self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
-        self.assertEquals(0, group_models.GroupComment.objects.all().count())
+        self.assertEquals(0, group_models.GroupComment.objects.count())
         cached_group = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
         self.assertEquals(cached_group.last_published_feedbackset, feedbackset)
 
@@ -537,28 +539,72 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
         self.assertEquals(1, group_models.GroupComment.objects.all().count())
         self.assertEquals('test', group_models.GroupComment.objects.get(feedback_set=feedbackset).text)
 
-    # def test_post_comment_file(self):
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet')
-    #     filecollection = mommy.make(
-    #         'cradmin_temporaryfileuploadstore.TemporaryFileCollection',
-    #     )
-    #     test_file = mommy.make(
-    #         'cradmin_temporaryfileuploadstore.TemporaryFile',
-    #         filename='test.txt',
-    #         collection=filecollection
-    #     )
-    #     test_file.file.save('test.txt', ContentFile('test'))
-    #     self.mock_http302_postrequest(
-    #         cradmin_role=feedbackset.group,
-    #         viewkwargs={'pk': feedbackset.group.id},
-    #         requestkwargs={
-    #             'data': {
-    #                 'text': 'This is a comment',
-    #                 'temporary_file_collection_id': filecollection.id,
-    #             }
-    #         })
-    #     comment_files = comment_models.CommentFile.objects.all()
-    #     self.assertEquals(1, len(comment_files))
+
+class TestFeedbackfeedFeedbackFileUploadExaminer(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = feedbackfeed_examiner.ExaminerFeedbackView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_add_upload_files_publish(self):
+        # Test the content of a CommentFile after upload.
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           grading_system_plugin_id=core_models.Assignment
+                                           .GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
+        testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt')
+            ],
+            user=testexaminer.relatedexaminer.user
+        )
+        self.mock_http302_postrequest(
+            cradmin_role=testexaminer.assignmentgroup,
+            requestuser=testexaminer.relatedexaminer.user,
+            viewkwargs={'pk': testfeedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'passed': True,
+                    'text': '',
+                    'examiner_publish_feedback': 'unused value',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(2, comment_models.CommentFile.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
+        self.assertIsNotNone(group_models.FeedbackSet.objects.get(id=testfeedbackset.id).grading_published_datetime)
+
+    def test_add_upload_files_draft(self):
+        # Test the content of a CommentFile after upload.
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           grading_system_plugin_id=core_models.Assignment
+                                           .GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
+        testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt')
+            ],
+            user=testexaminer.relatedexaminer.user
+        )
+        self.mock_http302_postrequest(
+            cradmin_role=testexaminer.assignmentgroup,
+            requestuser=testexaminer.relatedexaminer.user,
+            viewkwargs={'pk': testfeedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'passed': True,
+                    'text': '',
+                    'examiner_add_comment_to_feedback_draft': 'unused value',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(2, comment_models.CommentFile.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
+        self.assertIsNone(group_models.FeedbackSet.objects.get(id=testfeedbackset.id).grading_published_datetime)
 
 
 class TestExaminerCreateNewFeedbackSet(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -679,9 +725,7 @@ class TestExaminerCreateNewFeedbackSet(TestCase, cradmin_testhelpers.TestCaseMix
                     'examiner_create_new_feedbackset': 'unused value',
                 }
             })
-
         feedbacksets = group_models.FeedbackSet.objects.order_by_deadline_datetime()
-        self.assertEquals(2, len(feedbacksets))
         self.assertEquals(feedbacksets[1].deadline_datetime,
                           deadline_datetime)
         self.assertEquals(2, group_models.FeedbackSet.objects.count())
@@ -714,7 +758,7 @@ class TestExaminerCreateNewFeedbackSet(TestCase, cradmin_testhelpers.TestCaseMix
             })
 
         feedbacksets = group_models.FeedbackSet.objects.order_by_deadline_datetime()
-        self.assertEquals(2, len(feedbacksets))
+        self.assertEqual(2, group_models.FeedbackSet.objects.count())
         self.assertEquals(deadline_datetime, feedbacksets[1].deadline_datetime)
 
         comments = group_models.GroupComment.objects.all()
@@ -722,3 +766,181 @@ class TestExaminerCreateNewFeedbackSet(TestCase, cradmin_testhelpers.TestCaseMix
         self.assertEquals(comments[0].feedback_set_id, feedbacksets[1].id)
         self.assertEquals(comments[0].text, comment_text)
         self.assertEquals(2, group_models.FeedbackSet.objects.count())
+
+
+class TestFeedbackfeedCreateFeedbackSetFileUploadExaminer(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = feedbackfeed_examiner.ExaminerFeedbackCreateFeedbackSetView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_add_upload_single_file_on_feedbackset_create(self):
+        # Test the content of a CommentFile after upload.
+        # Posting comment with visibility visible to everyone
+        testfeedbackset = group_mommy.feedbackset_first_attempt_published()
+        testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile.txt', content=b'Test content', content_type='text/txt')
+            ],
+            user=testexaminer.relatedexaminer.user
+        )
+        deadline_datetime = timezone.now() + timezone.timedelta(days=2)
+        deadline_datetime = deadline_datetime.replace(microsecond=0, second=0)
+        self.mock_http302_postrequest(
+            cradmin_role=testexaminer.assignmentgroup,
+            requestuser=testexaminer.relatedexaminer.user,
+            viewkwargs={'pk': testfeedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'deadline_datetime': deadline_datetime.strftime('%Y-%m-%d %H:%M'),
+                    'text': '',
+                    'examiner_create_new_feedbackset': 'unused value',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+        self.assertEquals(1, comment_models.CommentFile.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
+
+    def test_add_upload_single_file_content_on_feedbackset_create(self):
+        # Test the content of a CommentFile after upload.
+        # Posting comment with visibility visible to everyone
+        testfeedbackset = group_mommy.feedbackset_first_attempt_published()
+        testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile.txt', content=b'Test content', content_type='text/txt')
+            ],
+            user=testexaminer.relatedexaminer.user
+        )
+        deadline_datetime = timezone.now() + timezone.timedelta(days=2)
+        deadline_datetime = deadline_datetime.replace(microsecond=0, second=0)
+        self.mock_http302_postrequest(
+            cradmin_role=testexaminer.assignmentgroup,
+            requestuser=testexaminer.relatedexaminer.user,
+            viewkwargs={'pk': testfeedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'deadline_datetime': deadline_datetime.strftime('%Y-%m-%d %H:%M'),
+                    'text': '',
+                    'examiner_create_new_feedbackset': 'unused value',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(1, comment_models.CommentFile.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
+        comment_file = comment_models.CommentFile.objects.all()[0]
+        self.assertEqual('testfile.txt', comment_file.filename)
+        self.assertEqual('Test content', comment_file.file.file.read())
+        self.assertEqual(len('Test content'), comment_file.filesize)
+        self.assertEqual('text/txt', comment_file.mimetype)
+
+    def test_add_upload_multiple_files(self):
+        # Test the content of a CommentFile after upload.
+        testfeedbackset = group_mommy.feedbackset_first_attempt_published()
+        testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
+            ],
+            user=testexaminer.relatedexaminer.user
+        )
+        deadline_datetime = timezone.now() + timezone.timedelta(days=2)
+        deadline_datetime = deadline_datetime.replace(microsecond=0, second=0)
+        self.mock_http302_postrequest(
+            cradmin_role=testexaminer.assignmentgroup,
+            requestuser=testexaminer.relatedexaminer.user,
+            viewkwargs={'pk': testfeedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'deadline_datetime': deadline_datetime.strftime('%Y-%m-%d %H:%M'),
+                    'text': '',
+                    'examiner_create_new_feedbackset': 'unused value',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(3, comment_models.CommentFile.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
+
+    def test_add_upload_multiple_files_contents(self):
+        # Test the content of a CommentFile after upload.
+        testfeedbackset = group_mommy.feedbackset_first_attempt_published()
+        testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
+            ],
+            user=testexaminer.relatedexaminer.user
+        )
+        deadline_datetime = timezone.now() + timezone.timedelta(days=2)
+        deadline_datetime = deadline_datetime.replace(microsecond=0, second=0)
+        self.mock_http302_postrequest(
+            cradmin_role=testexaminer.assignmentgroup,
+            requestuser=testexaminer.relatedexaminer.user,
+            viewkwargs={'pk': testfeedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'deadline_datetime': deadline_datetime.strftime('%Y-%m-%d %H:%M'),
+                    'text': '',
+                    'examiner_create_new_feedbackset': 'unused value',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(3, comment_models.CommentFile.objects.count())
+        comment_files = comment_models.CommentFile.objects.all().order_by('created_datetime')
+        comment_file1 = comment_files[0]
+        comment_file2 = comment_files[1]
+        comment_file3 = comment_files[2]
+
+        # Check content of testfile 1.
+        self.assertEqual('testfile1.txt', comment_file1.filename)
+        self.assertEqual('Test content1', comment_file1.file.file.read())
+        self.assertEqual(len('Test content1'), comment_file1.filesize)
+        self.assertEqual('text/txt', comment_file1.mimetype)
+
+        # Check content of testfile 2.
+        self.assertEqual('testfile2.txt', comment_file2.filename)
+        self.assertEqual('Test content2', comment_file2.file.file.read())
+        self.assertEqual(len('Test content2'), comment_file2.filesize)
+        self.assertEqual('text/txt', comment_file2.mimetype)
+
+        # Check content of testfile 3.
+        self.assertEqual('testfile3.txt', comment_file3.filename)
+        self.assertEqual('Test content3', comment_file3.file.file.read())
+        self.assertEqual(len('Test content3'), comment_file3.filesize)
+        self.assertEqual('text/txt', comment_file3.mimetype)
+
+    def test_add_upload_files_and_comment_text(self):
+        # Test the content of a CommentFile after upload.
+        testfeedbackset = group_mommy.feedbackset_first_attempt_published()
+        testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
+            ],
+            user=testexaminer.relatedexaminer.user
+        )
+        deadline_datetime = timezone.now() + timezone.timedelta(days=2)
+        deadline_datetime = deadline_datetime.replace(microsecond=0, second=0)
+        self.mock_http302_postrequest(
+            cradmin_role=testexaminer.assignmentgroup,
+            requestuser=testexaminer.relatedexaminer.user,
+            viewkwargs={'pk': testfeedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'deadline_datetime': deadline_datetime.strftime('%Y-%m-%d %H:%M'),
+                    'text': 'Test comment',
+                    'examiner_create_new_feedbackset': 'unused value',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(2, comment_models.CommentFile.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
+        group_comments = group_models.GroupComment.objects.all()
+        self.assertEquals('Test comment', group_comments[0].text)

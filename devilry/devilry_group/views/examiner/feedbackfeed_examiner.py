@@ -24,7 +24,7 @@ from devilry.utils import datetimeutils
 
 class AbstractFeedbackForm(cradmin_feedbackfeed_base.GroupCommentForm):
     """
-    Feedback-related forms regarding grading inherits from this.
+    Feedback-related forms regarding grading or creating a new FeedbackSet inherits from this.
     """
     def get_grading_points(self):
         raise NotImplementedError()
@@ -170,9 +170,8 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
                         grading_points=form.get_grading_points())
                 if result is False:
                     messages.error(self.request, ugettext_lazy(error_msg))
-                elif len(comment.text) > 0:
-                    # Don't make comment visible to others unless it actually
-                    # contains any text.
+                elif form.cleaned_data['temporary_file_collection_id'] or len(comment.text) > 0:
+                    # Don't add a comment unless there is text or files associated with it.
                     comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
                     comment.part_of_grading = True
                     comment.published_datetime = comment.get_published_datetime()
@@ -212,7 +211,6 @@ class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
             comment.published_datetime = timezone.now()
 
         comment = super(ExaminerDiscussView, self).save_object(form, commit=True)
-        self._convert_temporary_files_to_comment_files(form, comment)
         return comment
 
     def get_success_url(self):
@@ -332,24 +330,22 @@ class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
         feedbackset.save()
         return feedbackset
 
-    def save_object(self, form, commit=True):
+    def save_object(self, form, commit=False):
         comment = super(ExaminerFeedbackCreateFeedbackSetView, self).save_object(form=form)
-
-        if 'deadline_datetime' in self.request.POST:
+        if 'deadline_datetime' in form.cleaned_data:
             new_deadline = datetime.strptime(self.request.POST['deadline_datetime'], '%Y-%m-%d %H:%M')
             # Create a new :obj:`~devilry.devilry_group.models.FeedbackSet`.
             new_feedbackset = self.__create_new_feedbackset(comment=comment, new_deadline=new_deadline)
             if new_feedbackset is None:
                 return comment
-
-            if len(comment.text) > 0:
+            if form.cleaned_data['temporary_file_collection_id'] or len(comment.text) > 0:
                 # Also save comment and set the comments feedback_set to the newly
                 # created new_feedbackset.
                 comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
                 comment.feedback_set = new_feedbackset
                 comment.published_datetime = new_feedbackset.created_datetime + timezone.timedelta(seconds=1)
-                comment = super(ExaminerFeedbackCreateFeedbackSetView, self).save_object(form=form, commit=True)
-        return comment
+                commit = True
+        return super(ExaminerFeedbackCreateFeedbackSetView, self).save_object(form=form, commit=commit)
 
 
 class GroupCommentEditDeleteMixin(object):

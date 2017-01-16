@@ -1,5 +1,6 @@
 import mock
 from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
@@ -7,11 +8,12 @@ from model_mommy import mommy
 from psycopg2.tests import unittest
 
 from devilry.apps.core import models as core_models
+from devilry.devilry_comment import models as comment_models
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
 from devilry.devilry_group.views.student import feedbackfeed_student
-from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
 class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
@@ -342,8 +344,10 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                     'student_add_comment': 'unused value',
                 }
             })
-        self.assertIsNotNone(group_models.GroupComment.objects.all()[0].published_datetime)
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
+        self.assertIsNotNone(group_models.GroupComment.objects.all()[0].published_datetime)
+        self.assertEqual('test', group_models.GroupComment.objects.all()[0].text)
 
     @unittest.skip('Ignored - must be updated for issue ')
     def test_post_feedbackset_post_comment_without_text(self):
@@ -360,8 +364,200 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                     'student_add_comment': 'unused value',
                 }
             })
-        self.assertEquals(0, len(group_models.GroupComment.objects.all()))
+        self.assertEquals(0, group_models.GroupComment.objects.count())
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
+
+
+class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = feedbackfeed_student.StudentFeedbackFeedView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_add_comment_without_text_or_file(self):
+        # Tests that error message pops up if trying to post a comment without either text or file.
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=candidate.assignment_group,
+            requestuser=candidate.relatedstudent.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                    'student_add_comment': 'unused value'
+                }
+            })
+        self.assertEquals(0, group_models.GroupComment.objects.count())
+        self.assertEqual(
+            'A comment must have either text or a file attached, or both. An empty comment is not allowed.',
+            mockresponse.selector.one('#error_1_id_text').alltext_normalized)
+
+    def test_add_upload_single_file(self):
+        # Test that a CommentFile is created on upload.
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfile(
+            user=candidate.relatedstudent.user)
+        self.mock_http302_postrequest(
+            cradmin_role=candidate.assignment_group,
+            requestuser=candidate.relatedstudent.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                    'student_add_comment': 'unused value',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEquals(1, comment_models.CommentFile.objects.count())
+
+    def test_add_upload_single_file_content(self):
+        # Test the content of a CommentFile after upload.
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile.txt', content=b'Test content', content_type='text/txt')
+            ],
+            user=candidate.relatedstudent.user
+        )
+        self.mock_http302_postrequest(
+            cradmin_role=candidate.assignment_group,
+            requestuser=candidate.relatedstudent.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                    'student_add_comment': 'unused value',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(1, comment_models.CommentFile.objects.count())
+        comment_file = comment_models.CommentFile.objects.all()[0]
+        self.assertEqual('testfile.txt', comment_file.filename)
+        self.assertEqual('Test content', comment_file.file.file.read())
+        self.assertEqual(len('Test content'), comment_file.filesize)
+        self.assertEqual('text/txt', comment_file.mimetype)
+
+    def test_add_upload_multiple_files(self):
+        # Test the content of a CommentFile after upload.
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
+            ],
+            user=candidate.relatedstudent.user
+        )
+        self.mock_http302_postrequest(
+            cradmin_role=candidate.assignment_group,
+            requestuser=candidate.relatedstudent.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                    'student_add_comment': 'unused value',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(3, comment_models.CommentFile.objects.count())
+
+    def test_add_upload_multiple_files_contents(self):
+        # Test the content of a CommentFile after upload.
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
+            ],
+            user=candidate.relatedstudent.user
+        )
+        self.mock_http302_postrequest(
+            cradmin_role=candidate.assignment_group,
+            requestuser=candidate.relatedstudent.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                    'student_add_comment': 'unused value',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(3, comment_models.CommentFile.objects.count())
+        comment_files = comment_models.CommentFile.objects.all().order_by('created_datetime')
+        comment_file1 = comment_files[0]
+        comment_file2 = comment_files[1]
+        comment_file3 = comment_files[2]
+
+        # Check content of testfile 1.
+        self.assertEqual('testfile1.txt', comment_file1.filename)
+        self.assertEqual('Test content1', comment_file1.file.file.read())
+        self.assertEqual(len('Test content1'), comment_file1.filesize)
+        self.assertEqual('text/txt', comment_file1.mimetype)
+
+        # Check content of testfile 2.
+        self.assertEqual('testfile2.txt', comment_file2.filename)
+        self.assertEqual('Test content2', comment_file2.file.file.read())
+        self.assertEqual(len('Test content2'), comment_file2.filesize)
+        self.assertEqual('text/txt', comment_file2.mimetype)
+
+        # Check content of testfile 3.
+        self.assertEqual('testfile3.txt', comment_file3.filename)
+        self.assertEqual('Test content3', comment_file3.file.file.read())
+        self.assertEqual(len('Test content3'), comment_file3.filesize)
+        self.assertEqual('text/txt', comment_file3.mimetype)
+
+    def test_add_upload_files_with_comment_text(self):
+        # Test the content of a CommentFile after upload.
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
+            ],
+            user=candidate.relatedstudent.user
+        )
+        self.mock_http302_postrequest(
+            cradmin_role=candidate.assignment_group,
+            requestuser=candidate.relatedstudent.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': 'Test comment',
+                    'student_add_comment': 'unused value',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(2, comment_models.CommentFile.objects.count())
+        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEquals('Test comment', group_models.GroupComment.objects.all()[0].text)
+
+    def test_add_comment_only_with_text(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group,
+                               # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
+                               relatedstudent=mommy.make('core.RelatedStudent'))
+        self.mock_http302_postrequest(
+            cradmin_role=candidate.assignment_group,
+            requestuser=candidate.relatedstudent.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': 'test',
+                    'student_add_comment': 'unused value',
+                }
+            })
+
+        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEqual('test', group_models.GroupComment.objects.all()[0].text)
+        self.assertEqual(0, comment_models.CommentFile.objects.count())
 
 
 class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin):

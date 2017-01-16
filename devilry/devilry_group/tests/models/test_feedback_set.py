@@ -1,9 +1,13 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.db.models.functions import Lower, Concat
 from django.test import TestCase
 from django.utils import timezone
 from model_mommy import mommy
+from django.db import models
 
+from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import Examiner
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
@@ -19,10 +23,6 @@ class TestFeedbackSetModel(TestCase):
         feedbackset = group_mommy.make_first_feedbackset_in_group(
             group=testgroup)
         self.assertEquals(feedbackset.group, testgroup)
-
-    # def test_feedbackset_is_last_in_group_default_true(self):
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet')
-    #     self.assertTrue(feedbackset.is_last_in_group)
 
     def test_feedbackset_feedbackset_type_default_first_try(self):
         feedbackset = group_mommy.make_first_feedbackset_in_group()
