@@ -88,7 +88,9 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         feedbackset = group_mommy.feedbackset_new_attempt_unpublished(
-            group=group, id=group.cached_data.last_feedbackset.id+1)
+            group=group,
+            id=group.cached_data.last_feedbackset.id+1
+        )
         examiner = devilry_core_mommy_factories.examiner(group)
         apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
         response = self.mock_get_request(
@@ -298,7 +300,9 @@ class TestFeedbacksetFilters(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
         response = self.mock_get_request(apikey=apikey.key, queryparams='?ordering=id')
         self.assertEqual(200, response.status_code)
-        self.assertListEqual([feedbackset['id'] for feedbackset in response.data], [testfeedbackset.id, testfeedbackset.id+1])
+        self.assertListEqual(
+            [feedbackset['id'] for feedbackset in response.data], [testfeedbackset.id, testfeedbackset.id+1]
+        )
 
     def test_filter_ordering_id_desc(self):
         group = mommy.make('core.AssignmentGroup',
@@ -309,7 +313,9 @@ class TestFeedbacksetFilters(api_test_helper.TestCaseMixin,
         apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
         response = self.mock_get_request(apikey=apikey.key, queryparams='?ordering=-id')
         self.assertEqual(200, response.status_code)
-        self.assertListEqual([feedbackset['id'] for feedbackset in response.data], [testfeedbackset.id+1, testfeedbackset.id])
+        self.assertListEqual(
+            [feedbackset['id'] for feedbackset in response.data], [testfeedbackset.id+1, testfeedbackset.id]
+        )
 
 
 class TestFeedbacksetPost(api_test_helper.TestCaseMixin,
