@@ -3,6 +3,7 @@ from rest_framework.test import APITestCase
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.devilry_api import devilry_api_mommy_factories as api_mommy
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_api.tests.mixins import test_admin_mixins, api_test_helper, test_common_mixins
 from devilry.devilry_api.feedbackset.views.feedbackset_period_admin import FeedbacksetViewPeriodAdmin
@@ -16,6 +17,9 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
                             APITestCase):
     viewclass = FeedbacksetViewPeriodAdmin
 
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_unauthorized_401(self):
         response = self.mock_get_request()
         self.assertEqual(401, response.status_code)
@@ -24,7 +28,7 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                        anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        mommy.make('devilry_group.Feedbackset', group=group)
+        group_mommy.feedbackset_first_attempt_unpublished(group=group)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
         response = self.mock_get_request(apikey=apikey.key)
@@ -35,7 +39,7 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                        anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        mommy.make('devilry_group.Feedbackset', group=group)
+        group_mommy.feedbackset_first_attempt_unpublished(group=group)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
         response = self.mock_get_request(apikey=apikey.key)
@@ -46,7 +50,7 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                        anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        mommy.make('devilry_group.Feedbackset', group=group)
+        group_mommy.feedbackset_first_attempt_unpublished(group=group)
         period_admin = core_mommy.period_admin(period=mommy.make('core.Period'))
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
         response = self.mock_get_request(apikey=apikey.key)
@@ -56,7 +60,7 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
     def test_sanity(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        mommy.make('devilry_group.Feedbackset', group=group)
+        group_mommy.feedbackset_first_attempt_unpublished(group=group)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
         response = self.mock_get_request(apikey=apikey.key)
@@ -66,7 +70,7 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
     def test_group_id(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        mommy.make('devilry_group.Feedbackset', group=group)
+        group_mommy.feedbackset_first_attempt_unpublished(group=group)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
         response = self.mock_get_request(apikey=apikey.key)
@@ -76,31 +80,17 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
     def test_created_datetime(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = mommy.make('devilry_group.Feedbackset', group=group)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
         response = self.mock_get_request(apikey=apikey.key)
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.data[0]['created_datetime'], feedbackset.created_datetime.isoformat())
 
-    def test_is_last_in_group(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = mommy.make('devilry_group.Feedbackset',
-                                 group=group,
-                                 is_last_in_group=True)
-        period_admin = core_mommy.period_admin(period=assignment.parentnode)
-        apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
-        response = self.mock_get_request(apikey=apikey.key)
-        self.assertEqual(200, response.status_code)
-        self.assertEqual(response.data[0]['is_last_in_group'], feedbackset.is_last_in_group)
-
     def test_deadline_datetime_first_attempt(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        mommy.make('devilry_group.Feedbackset',
-                   group=group,
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
+        group_mommy.feedbackset_first_attempt_unpublished(group=group)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
         response = self.mock_get_request(apikey=apikey.key)
@@ -111,43 +101,45 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
-        feedbackset = mommy.make('devilry_group.Feedbackset',
-                                 group=group,
-                                 feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
+        feedbackset = group_mommy.feedbackset_new_attempt_unpublished(
+            group=group, id=group.cached_data.last_feedbackset.id + 1)
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
-        response = self.mock_get_request(apikey=apikey.key)
+        response = self.mock_get_request(apikey=apikey.key, queryparam="?id={}".format(feedbackset.id))
         self.assertEqual(200, response.status_code)
-        self.assertEqual(response.data[0]['deadline_datetime'], feedbackset.deadline_datetime)
+        self.assertEqual(response.data[0]['deadline_datetime'], feedbackset.deadline_datetime.isoformat())
 
 
 class TestFeedbacksetFilters(api_test_helper.TestCaseMixin,
                              APITestCase):
     viewclass = FeedbacksetViewPeriodAdmin
 
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_filter_id_not_found(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        mommy.make('devilry_group.Feedbackset', id=10, group=group)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
-        response = self.mock_get_request(apikey=apikey.key, queryparams='?id=20')
+        response = self.mock_get_request(apikey=apikey.key, queryparams='?id={}'.format(feedbackset.id+1))
         self.assertEqual(200, response.status_code)
         self.assertEqual(0, len(response.data))
 
     def test_filter_id_found(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = mommy.make('devilry_group.Feedbackset', id=10, group=group)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
-        response = self.mock_get_request(apikey=apikey.key, queryparams='?id=10')
+        response = self.mock_get_request(apikey=apikey.key, queryparams='?id={}'.format(feedbackset.id))
         self.assertEqual(200, response.status_code)
         self.assertEqual(feedbackset.id, response.data[0]['id'])
 
     def test_filter_group_id_not_found(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', id=10, parentnode=assignment)
-        mommy.make('devilry_group.Feedbackset', group=group)
+        group_mommy.feedbackset_first_attempt_unpublished(group=group)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
         response = self.mock_get_request(apikey=apikey.key, queryparams='?group_id=20')
@@ -157,34 +149,34 @@ class TestFeedbacksetFilters(api_test_helper.TestCaseMixin,
     def test_filter_group_id_found(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', id=10, parentnode=assignment)
-        mommy.make('devilry_group.Feedbackset', group=group)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
         response = self.mock_get_request(apikey=apikey.key, queryparams='?group_id=10')
         self.assertEqual(200, response.status_code)
-        self.assertEqual(response.data[0]['group_id'], group.id)
+        self.assertEqual(response.data[0]['group_id'], feedbackset.group.id)
 
     def test_filter_ordering_id_asc(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        group_mommy.feedbackset_first_attempt_published(group=group, id=10, is_last_in_group=False)
-        group_mommy.feedbackset_new_attempt_unpublished(group=group, id=20, is_last_in_group=True)
+        feedbackset1 = group_mommy.feedbackset_first_attempt_published(group=group)
+        feedbackset2 = group_mommy.feedbackset_new_attempt_unpublished(group=group, id=feedbackset1.id+1)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
         response = self.mock_get_request(apikey=apikey.key, queryparams='?ordering=id')
         self.assertEqual(200, response.status_code)
-        self.assertListEqual([feedbackset['id'] for feedbackset in response.data], [10, 20])
+        self.assertListEqual([feedbackset['id'] for feedbackset in response.data], [feedbackset1.id, feedbackset2.id])
 
     def test_filter_ordering_id_desc(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        group_mommy.feedbackset_first_attempt_published(group=group, id=10, is_last_in_group=False)
-        group_mommy.feedbackset_new_attempt_unpublished(group=group, id=20, is_last_in_group=True)
+        feedbackset1 = group_mommy.feedbackset_first_attempt_published(group=group)
+        feedbackset2 = group_mommy.feedbackset_new_attempt_unpublished(group=group, id=feedbackset1.id + 1)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
         response = self.mock_get_request(apikey=apikey.key, queryparams='?ordering=-id')
         self.assertEqual(200, response.status_code)
-        self.assertListEqual([feedbackset['id'] for feedbackset in response.data], [20, 10])
+        self.assertListEqual([feedbackset['id'] for feedbackset in response.data], [feedbackset2.id, feedbackset1.id])
 
 #
 # class TestFeedbacksetPost(api_test_helper.TestCaseMixin,
