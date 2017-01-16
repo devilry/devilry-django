@@ -428,7 +428,7 @@ class TestGroupCommentPeriodAdminPost(api_test_helper.TestCaseMixin,
     def test_post_comment_sanity(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group, id=10)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
         apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
         response = self.mock_post_request(
@@ -442,7 +442,7 @@ class TestGroupCommentPeriodAdminPost(api_test_helper.TestCaseMixin,
         self.assertEqual(response.data['visibility'], GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         self.assertEqual(response.data['text'], 'heia')
         self.assertEqual(response.data['user_role'], GroupComment.USER_ROLE_ADMIN)
-        self.assertEqual(response.data['feedback_set'], 10)
+        self.assertEqual(response.data['feedback_set'], feedbackset.id)
         self.assertFalse(response.data['part_of_grading'])
         self.assertEqual(response.data['user_fullname'], 'Admin')
 

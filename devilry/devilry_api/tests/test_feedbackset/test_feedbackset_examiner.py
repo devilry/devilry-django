@@ -41,7 +41,7 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
     def test_id(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = group_mommy.feedbackset_new_attempt_unpublished(group=group)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=group)
         examiner = devilry_core_mommy_factories.examiner(feedbackset.group)
         apikey = devilry_api_mommy_factories.api_key_examiner_permission_read(user=examiner.relatedexaminer.user)
         response = self.mock_get_request(apikey=apikey.key)
