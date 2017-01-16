@@ -101,8 +101,7 @@ class TestFeedbacksetSanity(test_common_mixins.TestReadOnlyPermissionMixin,
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         period_admin = core_mommy.period_admin(period=assignment.parentnode)
-        feedbackset = group_mommy.feedbackset_new_attempt_unpublished(
-            group=group, id=group.cached_data.last_feedbackset.id + 1)
+        feedbackset = group_mommy.feedbackset_new_attempt_unpublished(group=group)
         apikey = api_mommy.api_key_admin_permission_read(user=period_admin.user)
         response = self.mock_get_request(apikey=apikey.key, queryparam="?id={}".format(feedbackset.id))
         self.assertEqual(200, response.status_code)
