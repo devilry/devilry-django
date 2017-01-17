@@ -113,14 +113,22 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
 
     def test_get_num_queries(self):
         testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate', assignment_group=testgroup, _quantity=50)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, _quantity=50)
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         mommy.make('devilry_group.GroupComment',
                    user=examiner.relatedexaminer.user,
                    user_role='examiner',
-                   feedback_set=testfeedbackset)
-
-        with self.assertNumQueries(10):
+                   feedback_set=testfeedbackset,
+                   _quantity=20)
+        mommy.make('devilry_group.GroupComment',
+                   user=candidate.relatedstudent.user,
+                   user_role='student',
+                   feedback_set=testfeedbackset,
+                   _quantity=20)
+        with self.assertNumQueries(14):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=examiner.relatedexaminer.user)
 
@@ -132,25 +140,38 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
         duplicates comment_file query.
         """
         testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate', assignment_group=testgroup, _quantity=50)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, _quantity=50)
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=testfeedbackset,
+                   _quantity=20)
+        mommy.make('devilry_group.GroupComment',
+                   user=candidate.relatedstudent.user,
+                   user_role='student',
+                   feedback_set=testfeedbackset,
+                   _quantity=20)
         comment = mommy.make('devilry_group.GroupComment',
                              user=examiner.relatedexaminer.user,
                              user_role='examiner',
                              feedback_set=testfeedbackset)
         comment2 = mommy.make('devilry_group.GroupComment',
-                              user=examiner.relatedexaminer.user,
-                              user_role='examiner',
+                              user=candidate.relatedstudent.user,
+                              user_role='student',
                               feedback_set=testfeedbackset)
         mommy.make('devilry_comment.CommentFile',
                    filename='test.py',
                    comment=comment,
-                   _quantity=100)
+                   _quantity=20)
         mommy.make('devilry_comment.CommentFile',
                    filename='test2.py',
                    comment=comment2,
-                   _quantity=100)
-        with self.assertNumQueries(10):
+                   _quantity=20)
+        with self.assertNumQueries(14):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=examiner.relatedexaminer.user)
 
@@ -444,48 +465,6 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
         self.assertIsNotNone(cached_group.last_published_feedbackset.grading_published_datetime)
         self.assertEquals(1, cached_group.last_published_feedbackset.grading_points)
         self.assertEquals(5, len(feedback_comments))
-
-    def test_get_num_queries(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        mommy.make('devilry_group.GroupComment',
-                   user=examiner.relatedexaminer.user,
-                   user_role='examiner',
-                   feedback_set=testfeedbackset)
-        with self.assertNumQueries(10):
-            self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
-                                               requestuser=examiner.relatedexaminer.user)
-
-    def test_get_num_queries_with_commentfiles(self):
-        """
-        NOTE: (works as it should)
-        Checking that no more queries are executed even though the
-        :func:`devilry.devilry_group.feedbackfeed_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
-        duplicates comment_file query.
-        """
-        testgroup = mommy.make('core.AssignmentGroup')
-        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        comment = mommy.make('devilry_group.GroupComment',
-                             user=examiner.relatedexaminer.user,
-                             user_role='examiner',
-                             feedback_set=testfeedbackset)
-        comment2 = mommy.make('devilry_group.GroupComment',
-                              user=examiner.relatedexaminer.user,
-                              user_role='examiner',
-                              feedback_set=testfeedbackset)
-        mommy.make('devilry_comment.CommentFile',
-                   filename='test.py',
-                   comment=comment,
-                   _quantity=100)
-        mommy.make('devilry_comment.CommentFile',
-                   filename='test2.py',
-                   comment=comment2,
-                   _quantity=100)
-        with self.assertNumQueries(10):
-            self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
-                                               requestuser=examiner.relatedexaminer.user)
 
     def test_examiner_publishes_without_comment_text(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',

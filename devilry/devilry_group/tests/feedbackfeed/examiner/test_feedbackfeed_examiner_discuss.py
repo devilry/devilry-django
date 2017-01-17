@@ -6,13 +6,12 @@ from django.test import TestCase
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
+from devilry.devilry_comment import models as comment_models
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_examiner
 from devilry.devilry_group.views.examiner import feedbackfeed_examiner
-from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_comment import models as comment_models
-from django_cradmin import cradmin_testhelpers
 
 
 class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
@@ -162,14 +161,22 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
 
     def test_get_num_queries(self):
         testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate', assignment_group=testgroup, _quantity=50)
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, _quantity=50)
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   user=candidate.relatedstudent.user,
+                   user_role='student',
+                   feedback_set=testfeedbackset,
+                   _quantity=20)
         mommy.make('devilry_group.GroupComment',
                    user=examiner.relatedexaminer.user,
                    user_role='examiner',
-                   feedback_set=testfeedbackset)
-
-        with self.assertNumQueries(8):
+                   feedback_set=testfeedbackset,
+                   _quantity=20)
+        with self.assertNumQueries(12):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=examiner.relatedexaminer.user)
 
@@ -181,30 +188,41 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
         duplicates comment_file query.
         """
         testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate', assignment_group=testgroup, _quantity=50)
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, _quantity=50)
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        comment = mommy.make('devilry_group.GroupComment',
-                             user=examiner.relatedexaminer.user,
-                             user_role='examiner',
+        comment1 = mommy.make('devilry_group.GroupComment',
+                             user=candidate.relatedstudent.user,
+                             user_role='student',
                              feedback_set=testfeedbackset)
+        mommy.make('devilry_group.GroupComment',
+                   user=candidate.relatedstudent.user,
+                   user_role='student',
+                   feedback_set=testfeedbackset)
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=testfeedbackset)
         comment2 = mommy.make('devilry_group.GroupComment',
                               user=examiner.relatedexaminer.user,
                               user_role='examiner',
                               feedback_set=testfeedbackset)
         mommy.make('devilry_comment.CommentFile',
                    filename='test.py',
-                   comment=comment,
-                   _quantity=100)
+                   comment=comment1,
+                   _quantity=20)
         mommy.make('devilry_comment.CommentFile',
                    filename='test2.py',
                    comment=comment2,
-                   _quantity=100)
-        with self.assertNumQueries(8):
+                   _quantity=20)
+        with self.assertNumQueries(12):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=examiner.relatedexaminer.user)
 
 
-class TestFeedbackfeedFileUploadExaminer(TestCase, cradmin_testhelpers.TestCaseMixin):
+class TestFeedbackfeedFileUploadExaminer(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
     viewclass = feedbackfeed_examiner.ExaminerDiscussView
 
     def setUp(self):

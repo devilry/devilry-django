@@ -1,17 +1,26 @@
 {% extends 'devilry_group/listbuilder_sidebar/base_sidebar_file_item_value.django.html' %}
 
 {% load devilry_group_tags %}
+{% load devilry_core_tags %}
+{% load devilry_account_tags %}
 {% load cradmin_tags %}
 {% load i18n %}
 
 {% block content %}
     <dl>
         <dt>
-{#            <span style="padding-left: 20px;">#}
             <a href="{% cradmin_appurl 'groupcomment-file-download' me.groupcomment.id %}">
-                ({{ me.groupcomment.user }}){{ me.groupcomment.published_datetime }}
+                <div class="devilry-group-feedbackfeed-sidebar-groupcomment-user">
+                    {% if me.groupcomment.user_role == 'student'%}
+                        {% devilry_single_candidate_short_displayname me.assignment me.user_obj me.devilryrole %}
+                    {% elif me.groupcomment.user_role == 'examiner' %}
+                        {% devilry_single_examiner_short_displayname me.assignment me.user_obj me.devilryrole %}
+                    {% else %}
+                        <p class="comment-created-by-text">{% devilry_user_verbose_inline me.group_comment.user %} &nbsp;</p>
+                    {% endif %}
+                </div>
+                {{ me.groupcomment.published_datetime }}
             </a>
-{#            </span>#}
         </dt>
     </dl>
 {% endblock content %}

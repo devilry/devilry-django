@@ -59,13 +59,13 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                                     anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = mommy.make('core.Examiner',
-                               assignmentgroup=testgroup,
-                               relatedexaminer__automatic_anonymous_id='AnonymousExaminer',
-                               relatedexaminer__user__shortname='testexaminer')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=testgroup,
+                              relatedexaminer__automatic_anonymous_id='AnonymousExaminer',
+                              relatedexaminer__user__shortname='testexaminer')
         mommy.make('devilry_group.GroupComment',
                    user_role='examiner',
-                   user=candidate.relatedexaminer.user,
+                   user=examiner.relatedexaminer.user,
                    feedback_set=testfeedbackset)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
         self.assertFalse(mockresponse.selector.exists('.devilry-user-verbose-inline'))
@@ -73,6 +73,44 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertEqual('AnonymousExaminer',
                          mockresponse.selector.one('.devilry-core-examiner-anonymous-name').alltext_normalized)
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
+
+    def test_get_feedbackfeed_sidebarfiles_uploaded_by_examiner_semi_anonymous(self):
+        testassignment = mommy.make('core.Assignment',
+                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=testfeedbackset.group,
+                              relatedexaminer__automatic_anonymous_id='AnonymousExaminer',
+                              relatedexaminer__user__shortname='testexaminer')
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 user_role='examiner',
+                                 user=examiner.relatedexaminer.user,
+                                 feedback_set=testfeedbackset)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group)
+        self.assertEquals(
+            'AnonymousExaminer',
+            mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-groupcomment-user').alltext_normalized
+        )
+
+    def test_get_feedbackfeed_sidebarfiles_uploaded_by_examiner_fully_anonymous(self):
+        testassignment = mommy.make('core.Assignment',
+                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=testfeedbackset.group,
+                              relatedexaminer__automatic_anonymous_id='AnonymousExaminer',
+                              relatedexaminer__user__shortname='testexaminer')
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 user_role='examiner',
+                                 user=examiner.relatedexaminer.user,
+                                 feedback_set=testfeedbackset)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group)
+        self.assertEquals(
+            'AnonymousExaminer',
+            mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-groupcomment-user').alltext_normalized
+        )
 
     def test_get_feedbackfeed_student_cannot_see_feedback_or_discuss_in_header(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -690,15 +728,24 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
 
     def test_get_num_queries(self):
         testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate', assignment_group=testgroup, _quantity=50)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, _quantity=50)
         candidate = mommy.make('core.Candidate', assignment_group=testgroup)
         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         mommy.make('devilry_group.GroupComment',
                    user=candidate.relatedstudent.user,
                    user_role='student',
-                   feedback_set=testfeedbackset)
+                   feedback_set=testfeedbackset,
+                   _quantity=20)
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=testfeedbackset,
+                   _quantity=20)
         mock_cradmininstance = mock.MagicMock()
         mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'student'
-        with self.assertNumQueries(10):
+        with self.assertNumQueries(12):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=candidate.relatedstudent.user,
                                                cradmin_instance=mock_cradmininstance)
@@ -713,24 +760,27 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
         """
         testgroup = mommy.make('core.AssignmentGroup')
         candidate = mommy.make('core.Candidate', assignment_group=testgroup)
+        mommy.make('core.Candidate', assignment_group=testgroup, _quantity=50)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, _quantity=50)
         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         comment = mommy.make('devilry_group.GroupComment',
                              user=candidate.relatedstudent.user,
                              user_role='student',
                              feedback_set=testfeedbackset)
         comment2 = mommy.make('devilry_group.GroupComment',
-                              user=candidate.relatedstudent.user,
-                              user_role='student',
+                              user=examiner.relatedexaminer.user,
+                              user_role='examiner',
                               feedback_set=testfeedbackset)
         mommy.make('devilry_comment.CommentFile',
                    filename='test.py',
                    comment=comment,
-                   _quantity=100)
+                   _quantity=20)
         mommy.make('devilry_comment.CommentFile',
                    filename='test2.py',
                    comment=comment2,
-                   _quantity=100)
-        with self.assertNumQueries(10):
+                   _quantity=20)
+        with self.assertNumQueries(12):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=candidate.relatedstudent.user)
         self.assertEquals(1, group_models.FeedbackSet.objects.count())

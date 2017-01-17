@@ -87,6 +87,7 @@ class TestFeedbackfeedSidebarListBuilderList(TestCaseMixin, test.TestCase):
         )
 
         built_sidebar = feedbackfeed_sidebarbuilder.FeedbackFeedSidebarBuilder(
+            group=testgroup,
             feedbacksets=feedbackset_queryset,
         )
         built_sidebar.build()
@@ -110,7 +111,7 @@ class TestFeedbackfeedSidebarListBuilderList(TestCaseMixin, test.TestCase):
         #     GroupCommentItemValue
         #         FileListBuilderList
         #         FileItemValue
-        #
+
         self.assertTrue(isinstance(listbuilder_list.renderable_list[0],
                                    feedbackfeed_sidebar.FeedbackSetItemValue))
         self.assertTrue(isinstance(listbuilder_list.renderable_list[1],

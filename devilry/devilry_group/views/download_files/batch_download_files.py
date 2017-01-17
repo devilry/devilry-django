@@ -172,7 +172,10 @@ class WaitForDownload(TemplateView):
         """
         """
         object_id = int(self.kwargs.get('pk'))
-        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=object_id)
+        try:
+            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=object_id)
+        except archivemodels.CompressedArchiveMeta.DoesNotExist:
+            return super(WaitForDownload, self).get(request, *args, **kwargs)
         if archive_meta is not None:
             self.status = 'FINISHED'
             return download_response.download_response(

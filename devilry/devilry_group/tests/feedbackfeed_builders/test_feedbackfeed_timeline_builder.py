@@ -428,3 +428,21 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
         self.assertEquals(builder_list[7]['type'], 'comment')
         self.assertEquals(builder_list[8]['type'], 'grade')
         self.assertEquals(2, group_models.FeedbackSet.objects.count())
+
+    def test_num_queries(self):
+        testassignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup1)
+        mommy.make('core.Candidate', assignment_group=testgroup1, _quantity=100)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, _quantity=100)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+        mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset, _quantity=100)
+        with self.assertNumQueries(8):
+            feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(
+                group=testgroup1,
+                requestuser=candidate.relatedstudent.user,
+                devilryrole='student')
+            timelinebuilder = FeedbackFeedTimelineBuilder(
+                feedbacksets=feedbackset_queryset,
+                group=testgroup1)
+            timelinebuilder.get_as_list()

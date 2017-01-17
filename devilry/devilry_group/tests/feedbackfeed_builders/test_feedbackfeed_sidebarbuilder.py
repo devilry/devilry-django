@@ -30,44 +30,13 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         )
 
         feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(testgroup, testuser, 'unused')
-        sidebarbuilder = FeedbackFeedSidebarBuilder(feedbacksets=feedbackset_queryset)
+        sidebarbuilder = FeedbackFeedSidebarBuilder(group=testgroup, feedbacksets=feedbackset_queryset)
         sidebarbuilder.build()
         sidebarlist = sidebarbuilder.get_as_list()
 
         # Loop through and check the numbering.
         for numbering, feedbackset_dict in enumerate(sidebarlist):
             self.assertEquals(numbering+1, feedbackset_dict['feedbackset_num'])
-        self.assertEquals(2, group_models.FeedbackSet.objects.count())
-
-    def test_num_queries(self):
-        # Must be refactored
-        # Test that the number of queries performed is manageable
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup')
-        testfeedbackset1 = devilry_group_mommy_factories.feedbackset_first_attempt_published(
-                group=testgroup,
-                is_last_in_group=None)
-        testfeedbackset2 = devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
-            group=testgroup,
-            deadline_datetime=timezone.now() + timezone.timedelta(days=3)
-        )
-
-        testcomment = mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset1)
-        testcomment1 = mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset2)
-        mommy.make('devilry_comment.CommentFile',
-                   comment=testcomment)
-        mommy.make('devilry_comment.CommentFile',
-                   comment=testcomment)
-        mommy.make('devilry_comment.CommentFile',
-                   comment=testcomment1)
-        mommy.make('devilry_comment.CommentFile',
-                   comment=testcomment1)
-
-        with self.assertNumQueries(4):
-            feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(testgroup, testuser, 'unused')
-            sidebarbuilder = FeedbackFeedSidebarBuilder(feedbacksets=feedbackset_queryset)
-            sidebarbuilder.build()
-            sidebarbuilder.get_as_list()
         self.assertEquals(2, group_models.FeedbackSet.objects.count())
 
     def test_no_comments_if_no_files(self):
@@ -85,7 +54,7 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset2)
 
         feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(testgroup, testuser, 'unused')
-        sidebarbuilder = FeedbackFeedSidebarBuilder(feedbacksets=feedbackset_queryset)
+        sidebarbuilder = FeedbackFeedSidebarBuilder(group=testgroup, feedbacksets=feedbackset_queryset)
         sidebarbuilder.build()
         sidebarlist = sidebarbuilder.get_as_list()
 
@@ -116,7 +85,7 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
                    comment=testcomment1)
 
         feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(testgroup, testuser, 'unused')
-        sidebarbuilder = FeedbackFeedSidebarBuilder(feedbacksets=feedbackset_queryset)
+        sidebarbuilder = FeedbackFeedSidebarBuilder(group=testgroup, feedbacksets=feedbackset_queryset)
         sidebarbuilder.build()
 
         sidebarlist = sidebarbuilder.get_as_list()
@@ -143,14 +112,14 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
                    comment=testcomment3)
 
         feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(testgroup, testuser, 'unused')
-        sidebarbuilder = FeedbackFeedSidebarBuilder(feedbacksets=feedbackset_queryset)
+        sidebarbuilder = FeedbackFeedSidebarBuilder(group=testgroup, feedbacksets=feedbackset_queryset)
         sidebarbuilder.build()
         sidebarlist = sidebarbuilder.get_as_list()
         comments = sidebarlist[0]['comments']
         self.assertTrue(
-                comments[0]['groupcomment'].published_datetime < comments[1]['groupcomment'].published_datetime)
+                comments[0]['group_comment'].published_datetime < comments[1]['group_comment'].published_datetime)
         self.assertTrue(
-                comments[1]['groupcomment'].published_datetime < comments[2]['groupcomment'].published_datetime)
+                comments[1]['group_comment'].published_datetime < comments[2]['group_comment'].published_datetime)
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_files_for_comments(self):
@@ -172,7 +141,7 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         testfile4 = mommy.make('devilry_comment.CommentFile', comment=testcomment2, filename='testfile1')
 
         feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(testgroup, testuser, 'unused')
-        sidebarbuilder = FeedbackFeedSidebarBuilder(feedbacksets=feedbackset_queryset)
+        sidebarbuilder = FeedbackFeedSidebarBuilder(group=testgroup, feedbacksets=feedbackset_queryset)
         sidebarbuilder.build()
         sidebarlist = sidebarbuilder.get_as_list()
 
@@ -217,7 +186,7 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         mommy.make('devilry_comment.CommentFile', comment=private_comment, filename='private file')
 
         feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(testgroup, testuser, 'student')
-        sidebarbuilder = FeedbackFeedSidebarBuilder(feedbacksets=feedbackset_queryset)
+        sidebarbuilder = FeedbackFeedSidebarBuilder(group=testgroup, feedbacksets=feedbackset_queryset)
         sidebarbuilder.build()
         sidebarlist = sidebarbuilder.get_as_list()
 
@@ -226,7 +195,7 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         feedbackset_comments = sidebarlist[0]['comments']
         self.assertEquals(len(feedbackset_comments), 2)
         for comment_dict in feedbackset_comments:
-            self.assertNotEquals(private_comment.published_datetime, comment_dict['groupcomment'].published_datetime)
+            self.assertNotEquals(private_comment.published_datetime, comment_dict['group_comment'].published_datetime)
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_items_in_builder_examiner(self):
@@ -260,11 +229,34 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
                    filename='private file')
 
         feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(testgroup, testuser_examiner, 'examiner')
-        sidebarbuilder = FeedbackFeedSidebarBuilder(feedbacksets=feedbackset_queryset)
+        sidebarbuilder = FeedbackFeedSidebarBuilder(group=testgroup, feedbacksets=feedbackset_queryset)
         sidebarbuilder.build()
         sidebarlist = sidebarbuilder.get_as_list()
 
         comments = sidebarlist[0]['comments']
         self.assertEquals(len(comments), 3)
-        self.assertEquals(private_comment.published_datetime, comments[2]['groupcomment'].published_datetime)
+        self.assertEquals(private_comment.published_datetime, comments[2]['group_comment'].published_datetime)
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+
+    def test_num_queries(self):
+        # Must be refactored
+        # Test that the number of queries performed is manageable
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup')
+        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
+        mommy.make('core.Candidate', assignment_group=testgroup, _quantity=100)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, _quantity=100)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=testfeedbackset,
+                                 user=candidate.relatedstudent.user)
+        mommy.make('devilry_comment.CommentFile',
+                   comment=testcomment,
+                   _quantity=100)
+
+        with self.assertNumQueries(8):
+            feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(testgroup, testuser, 'unused')
+            sidebarbuilder = FeedbackFeedSidebarBuilder(group=testgroup, feedbacksets=feedbackset_queryset)
+            sidebarbuilder.build()
+            sidebarbuilder.get_as_list()
         self.assertEquals(1, group_models.FeedbackSet.objects.count())

@@ -263,7 +263,6 @@ class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
             HttpResponse: The HTTP response.
         """
         group = self.request.cradmin_role
-        # NOTE: :func:`~devilry.apps.core.models.AssignmentGroup.last_feedbackset_is_published` performs a query.
         if not group.last_feedbackset_is_published:
             return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
         return super(ExaminerFeedbackCreateFeedbackSetView, self).dispatch(request, *args, **kwargs)

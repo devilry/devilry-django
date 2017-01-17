@@ -17,9 +17,8 @@ class GroupCommentCompressAction(batchregistry.Action):
         groupcomment = self.kwargs.get('context_object')
 
         commentfiles = groupcomment.commentfile_set.all()
-        archivename = '{}-{}.zip'.format(
-            groupcomment.user_role,
-            groupcomment.user
+        archivename = '{}-comment.zip'.format(
+            groupcomment.user_role
         )
 
         # Get backend and path

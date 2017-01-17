@@ -245,17 +245,23 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
 
         testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        mommy.make('core.Candidate', assignment_group=testgroup, _quantity=50)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, _quantity=50)
         candidate = mommy.make('core.Candidate', assignment_group=testgroup)
-
         mommy.make('devilry_group.GroupComment',
                    user=candidate.relatedstudent.user,
                    user_role='student',
                    feedback_set=testfeedbackset,
-                   _quantity=50)
-
+                   _quantity=20)
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   feedback_set=testfeedbackset,
+                   _quantity=20)
         mock_cradmininstance = mock.MagicMock()
         mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
-        with self.assertNumQueries(10):
+        with self.assertNumQueries(12):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=admin,
                                                cradmin_instance=mock_cradmininstance)
@@ -276,32 +282,149 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
                            'devilry_account.PeriodPermissionGroup',
                            permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_PERIODADMIN,
                            period=period).permissiongroup)
-        testgroup = mommy.make('core.AssignmentGroup')
-        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        mommy.make('core.Candidate', assignment_group=testgroup, _quantity=50)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, _quantity=50)
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
         comment = mommy.make('devilry_group.GroupComment',
                              user=candidate.relatedstudent.user,
                              user_role='student',
                              feedback_set=testfeedbackset)
         comment2 = mommy.make('devilry_group.GroupComment',
-                              user=candidate.relatedstudent.user,
-                              user_role='student',
+                              user=examiner.relatedexaminer.user,
+                              user_role='examiner',
                               feedback_set=testfeedbackset)
         mommy.make('devilry_comment.CommentFile',
                    filename='test.py',
                    comment=comment,
-                   _quantity=100)
+                   _quantity=20)
         mommy.make('devilry_comment.CommentFile',
                    filename='test2.py',
                    comment=comment2,
-                   _quantity=100)
+                   _quantity=20)
         mock_cradmininstance = mock.MagicMock()
         mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
-        with self.assertNumQueries(10):
+        with self.assertNumQueries(12):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=admin,
                                                cradmin_instance=mock_cradmininstance)
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
+
+    def test_get_feedbackfeed_sidebarfiles_periodadmin_uploaded_by_student(self):
+        testassignment = mommy.make('core.Assignment')
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
+        admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testfeedbackset.group)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 user_role='student',
+                                 user=candidate.relatedstudent.user,
+                                 feedback_set=testfeedbackset)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        mock_cradmininstance = mock.MagicMock()
+        mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group,
+                                                          requestuser=admin,
+                                                          cradmin_instance=mock_cradmininstance)
+        self.assertEquals('testfile.txt',
+                          mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-files').alltext_normalized)
+
+    def test_get_feedbackfeed_sidebarfiles_subjectadmin_uploaded_by_student(self):
+        testassignment = mommy.make('core.Assignment')
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
+        admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testfeedbackset.group)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 user_role='student',
+                                 user=candidate.relatedstudent.user,
+                                 feedback_set=testfeedbackset)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        mock_cradmininstance = mock.MagicMock()
+        mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'subjectadmin'
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group,
+                                                          requestuser=admin,
+                                                          cradmin_instance=mock_cradmininstance)
+        self.assertEquals('testfile.txt',
+                          mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-files').alltext_normalized)
+
+    def test_get_feedbackfeed_sidebarfiles_departmentadmin_uploaded_by_student(self):
+        testassignment = mommy.make('core.Assignment')
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
+        admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testfeedbackset.group)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 user_role='student',
+                                 user=candidate.relatedstudent.user,
+                                 feedback_set=testfeedbackset)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        mock_cradmininstance = mock.MagicMock()
+        mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'departmentadmin'
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group,
+                                                          requestuser=admin,
+                                                          cradmin_instance=mock_cradmininstance)
+        self.assertEquals('testfile.txt',
+                          mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-files').alltext_normalized)
+
+    def test_get_feedbackfeed_sidebarfiles_periodadmin_uploaded_by_examiner(self):
+        testassignment = mommy.make('core.Assignment')
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
+        admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=testfeedbackset.group)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 user_role='examiner',
+                                 user=examiner.relatedexaminer.user,
+                                 feedback_set=testfeedbackset)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        mock_cradmininstance = mock.MagicMock()
+        mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group,
+                                                          requestuser=admin,
+                                                          cradmin_instance=mock_cradmininstance)
+        self.assertEquals('testfile.txt',
+                          mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-files').alltext_normalized)
+
+    def test_get_feedbackfeed_sidebarfiles_subjectadmin_uploaded_by_examiner(self):
+        testassignment = mommy.make('core.Assignment')
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
+        admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=testfeedbackset.group)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 user_role='examiner',
+                                 user=examiner.relatedexaminer.user,
+                                 feedback_set=testfeedbackset)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        mock_cradmininstance = mock.MagicMock()
+        mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'subjectadmin'
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group,
+                                                          requestuser=admin,
+                                                          cradmin_instance=mock_cradmininstance)
+        self.assertEquals('testfile.txt',
+                          mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-files').alltext_normalized)
+
+    def test_get_feedbackfeed_sidebarfiles_departmentadmin_uploaded_by_examiner(self):
+        testassignment = mommy.make('core.Assignment')
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
+        admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=testfeedbackset.group)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 user_role='examiner',
+                                 user=examiner.relatedexaminer.user,
+                                 feedback_set=testfeedbackset)
+        mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        mock_cradmininstance = mock.MagicMock()
+        mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'departmentadmin'
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group,
+                                                          requestuser=admin,
+                                                          cradmin_instance=mock_cradmininstance)
+        self.assertEquals('testfile.txt',
+                          mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-files').alltext_normalized)
 
     def test_get_files_in_sidebar(self):
         """

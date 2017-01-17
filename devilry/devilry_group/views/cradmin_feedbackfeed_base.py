@@ -129,13 +129,15 @@ class FeedbackFeedBaseView(create.CreateView):
 
     def __build_sidebar(self, feedbackset_queryset):
         """
+        Building the sidebar that includes the files for each comment, and comments for each
+        FeedbackSet.
 
         Returns:
             :obj:`devilry.devilry_group.feedbackfeed_builder.FeedbackFeedSidebarBuilder`
         """
         sidebar_builder = feedbackfeed_sidebarbuilder.FeedbackFeedSidebarBuilder(
-            feedbacksets=feedbackset_queryset
-        )
+            feedbacksets=feedbackset_queryset,
+            group=self.request.cradmin_role)
         sidebar_builder.build()
         return sidebar_builder
 
