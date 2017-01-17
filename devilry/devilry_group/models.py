@@ -186,7 +186,6 @@ class AbstractGroupComment(comment_models.Comment):
             user_role=self.user_role,
             comment_type=self.comment_type,
         )
-        commentcopy.full_clean()
         commentcopy.save()
         return commentcopy
 
@@ -467,7 +466,6 @@ class FeedbackSet(models.Model):
         comments = GroupComment.objects.filter(feedback_set=self)
         for comment in comments:
             comment.feedback_set = target
-            comment.full_clean()
             comment.save()
         self.delete()
 
@@ -503,7 +501,6 @@ class FeedbackSet(models.Model):
         else:
             for key, value in feedbackset_kwargs.iteritems():
                 setattr(target, key, value)
-        target.full_clean()
         target.save()
 
         for comment in self.groupcomment_set.all():

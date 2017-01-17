@@ -12,8 +12,9 @@ from model_mommy import mommy
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Delivery
+from devilry.apps.core.models import Examiner
 from devilry.apps.core.models import deliverytypes, Assignment, RelatedStudent
-from devilry.apps.core.models.assignment_group import GroupPopNotCandiateError
+from devilry.apps.core.models.assignment_group import GroupPopNotCandiateError, AssignmentGroupTag
 from devilry.apps.core.models.assignment_group import GroupPopToFewCandiatesError
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
 from devilry.apps.core.testhelper import TestHelper
@@ -802,6 +803,65 @@ class TestAssignmentGroupMerge(TestCase):
         sourceAssignmentGroup.merge_into(targetAssignmentGroup)
         comments = GroupComment.objects.filter(feedback_set=targetAssignmentGroup.cached_data.first_feedbackset)
         self.assertEqual(len(comments), 6)
+
+    def test_examiners_is_merged(self):
+        testAssignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        targetAssignmentGroup = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
+        sourceAssignmentGroup = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
+        core_mommy.candidate(group=targetAssignmentGroup)
+        core_mommy.candidate(group=sourceAssignmentGroup)
+        core_mommy.examiner(group=sourceAssignmentGroup, fullname='Thor')
+        core_mommy.examiner(group=sourceAssignmentGroup, fullname='Odin')
+        sourceAssignmentGroup.merge_into(targetAssignmentGroup)
+        examiners = targetAssignmentGroup.examiners.all().order_by('relatedexaminer__user__fullname')
+        examiner_names = [examiner.relatedexaminer.user.fullname for examiner in examiners]
+        self.assertListEqual(examiner_names, ['Odin', 'Thor'])
+
+    def test_duplicate_examiner_is_not_merged_and_removed(self):
+        testAssignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        targetAssignmentGroup = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
+        sourceAssignmentGroup = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
+        core_mommy.candidate(group=targetAssignmentGroup)
+        core_mommy.candidate(group=sourceAssignmentGroup)
+        related_examiner = mommy.make('core.RelatedExaminer', user__fullname='Thor')
+        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=targetAssignmentGroup)
+        duplicate_examiner = mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=sourceAssignmentGroup)
+        core_mommy.examiner(group=sourceAssignmentGroup, fullname='Odin')
+        sourceAssignmentGroup.merge_into(targetAssignmentGroup)
+        examiners = targetAssignmentGroup.examiners.all().order_by('relatedexaminer__user__fullname')
+        examiner_names = [examiner.relatedexaminer.user.fullname for examiner in examiners]
+        self.assertListEqual(examiner_names, ['Odin', 'Thor'])
+        with self.assertRaises(Examiner.DoesNotExist):
+            Examiner.objects.get(id=duplicate_examiner.id)
+
+    def test_tags_is_merged(self):
+        testAssignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        targetAssignmentGroup = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
+        sourceAssignmentGroup = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
+        core_mommy.candidate(group=targetAssignmentGroup)
+        core_mommy.candidate(group=sourceAssignmentGroup)
+        mommy.make('core.AssignmentGroupTag', assignment_group=sourceAssignmentGroup, tag='AAA')
+        mommy.make('core.AssignmentGroupTag', assignment_group=sourceAssignmentGroup, tag='QQQ')
+        sourceAssignmentGroup.merge_into(targetAssignmentGroup)
+        tags = AssignmentGroupTag.objects.filter(assignment_group=targetAssignmentGroup).order_by('tag')
+        tag_name = [tag.tag for tag in tags]
+        self.assertListEqual(tag_name, ['AAA', 'QQQ'])
+
+    def tag_duplicate_is_not_merged_and_removed(self):
+        testAssignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        targetAssignmentGroup = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
+        sourceAssignmentGroup = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
+        core_mommy.candidate(group=targetAssignmentGroup)
+        core_mommy.candidate(group=sourceAssignmentGroup)
+        mommy.make('core.AssignmentGroupTag', assignment_group=targetAssignmentGroup, tag='AAA')
+        duplicate_tag = mommy.make('core.AssignmentGroupTag', assignment_group=sourceAssignmentGroup, tag='AAA')
+        mommy.make('core.AssignmentGroupTag', assignment_group=sourceAssignmentGroup, tag='QQQ')
+        sourceAssignmentGroup.merge_into(targetAssignmentGroup)
+        tags = AssignmentGroupTag.objects.filter(assignment_group=targetAssignmentGroup).order_by('tag')
+        tag_name = [tag.tag for tag in tags]
+        self.assertListEqual(tag_name, ['AAA', 'QQQ'])
+        with self.assertRaises(AssignmentGroupTag.DoesNotExist):
+            AssignmentGroupTag.objects.get(id=duplicate_tag.id)
 
 
 class TestAssignmentGroupPopCandidate(TestCase):

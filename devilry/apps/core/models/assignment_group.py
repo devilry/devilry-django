@@ -1417,29 +1417,52 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             else:
                 self.delivery_status = 'closed-without-feedback'
 
+    def _merge_tags_into(self, target):
+        """
+        Move tags to ``target`` AssignmentGroup.
+        if tag is present in ``target`` AssignmentGroup remove tag from db
+
+        Args:
+            target: :class:`~core.AssignmentGroup`
+
+        """
+        for tag in self.tags.all():
+            if not target.tags.filter(tag=tag.tag).exists():
+                tag.assignment_group = target
+                tag.save()
+            else:
+                tag.delete()
+
     def _merge_examiners_into(self, target):
-        target_examiners = set([e.user.id for e in target.examiners.all()])
+        """
+        Move examiners to ``target`` AssignmentGroup.
+        if examier is present in ``target`` AssignmentGroup remove examiner from db
+
+        Args:
+            target: :class:`~core.AssignmentGroup`
+
+        """
         for examiner in self.examiners.all():
-            if examiner.user.id not in target_examiners:
+            if not target.examiners.filter(relatedexaminer__user=examiner.relatedexaminer.user).exists():
                 examiner.assignmentgroup = target
                 examiner.save()
+            else:
+                examiner.delete()
 
     def _merge_candidates_into(self, target):
-        target_candidates = set([e.student.id for e in target.candidates.all()])
+        """
+        Move candidates to ``target`` AssignmentGroup.
+        if candidate is present in ``target`` AssignmentGroup raise exception?
+
+        Args:
+            target: :class:`~core.AssignmentGroup`
+
+        """
         for candidate in self.candidates.all():
-            if candidate.student.id not in target_candidates:
+            if not target.candidates.filter(relatedstudent__user=candidate.relatedstudent.user).exists():
                 candidate.assignment_group = target
                 candidate.save()
-
-    def _set_latest_feedback_as_active(self):
-        from .static_feedback import StaticFeedback
-        feedbacks = StaticFeedback.objects\
-            .order_by('-save_timestamp')\
-            .filter(delivery__deadline__assignment_group=self)[:1]
-        self.feedback = None  # NOTE: Required to avoid IntegrityError caused by non-unique feedback_id
-        if len(feedbacks) == 1:
-            latest_feedback = feedbacks[0]
-            self.feedback = latest_feedback
+            # else raise exception?
 
     def merge_into(self, target):
         """
@@ -1465,11 +1488,15 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         self.cached_data.first_feedbackset.merge_into(target.cached_data.first_feedbackset)
 
         # move candidates to target assignment group
-        for candidate in self.candidates.all():
-            if not target.candidates.filter(relatedstudent__user=candidate.relatedstudent.user).exists():
-                candidate.assignment_group = target
-                candidate.save()
+        self._merge_candidates_into(target)
 
+        # move examiners to target assignment group
+        self._merge_examiners_into(target)
+
+        # move tags to target assignment group
+        self._merge_tags_into(target)
+
+        # delete this assignment group
         self.delete()
 
     def pop_candidate(self, candidate):
@@ -1498,15 +1525,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         for feedbackset in self.feedbackset_set.order_by_deadline_datetime():
             if feedbackset != self.cached_data.first_feedbackset:
                 feedbackset.copy_feedbackset_into_group(group=groupcopy)
-
-    @classmethod
-    def merge_many_groups(self, sources, target):
-        """
-        Loop through the ``sources``-iterable, and for each ``source`` in the
-        iterator, run ``source.merge_into(target)``.
-        """
-        for source in sources:
-            source.merge_into(target)  # Source is deleted after this
 
     def get_status(self):
         """
