@@ -727,7 +727,7 @@ class TestAssignmentGroup(TestCase):
             list(AssignmentGroup.objects.filter_user_is_examiner(user=testuser)))
 
 
-class TestAssignmentGroupSplitMerge(TestCase):
+class TestAssignmentGroupMerge(TestCase):
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
@@ -787,16 +787,16 @@ class TestAssignmentGroupSplitMerge(TestCase):
         testAssignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         targetAssignmentGroup = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
         sourceAssignmentGroup = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
-        candidate1 = core_mommy.candidate(group=targetAssignmentGroup)
-        candidate2 = core_mommy.candidate(group=sourceAssignmentGroup)
+        testCandidate1 = core_mommy.candidate(group=targetAssignmentGroup)
+        testCandidate2 = core_mommy.candidate(group=sourceAssignmentGroup)
         for index in range(3):
             mommy.make('devilry_group.GroupComment',
                        feedback_set=sourceAssignmentGroup.cached_data.first_feedbackset,
-                       user=candidate2.relatedstudent.user)
+                       user=testCandidate2.relatedstudent.user)
         for index in range(3):
             mommy.make('devilry_group.GroupComment',
                        feedback_set=targetAssignmentGroup.cached_data.first_feedbackset,
-                       user=candidate1.relatedstudent.user)
+                       user=testCandidate1.relatedstudent.user)
         comments = GroupComment.objects.filter(feedback_set=targetAssignmentGroup.cached_data.first_feedbackset)
         self.assertEqual(len(comments), 3)
         sourceAssignmentGroup.merge_into(targetAssignmentGroup)
@@ -804,6 +804,124 @@ class TestAssignmentGroupSplitMerge(TestCase):
         self.assertEqual(len(comments), 6)
 
 
+class TestAssignmentGroupPopCandidate(TestCase):
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def testHelper(self):
+        testAssignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testGroup1 = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
+        testCandidate1 = core_mommy.candidate(group=testGroup1)
+        testCandidate2 = core_mommy.candidate(group=testGroup1)
+        core_mommy.examiner(group=testGroup1)
+        core_mommy.examiner(group=testGroup1)
+        core_mommy.examiner(group=testGroup1)
+        mommy.make('core.AssignmentGroupTag', assignment_group=testGroup1, tag='AAA')
+        mommy.make('core.AssignmentGroupTag', assignment_group=testGroup1, tag='DDD')
+        mommy.make('core.AssignmentGroupTag', assignment_group=testGroup1, tag='QQQ')
+        feedbacksets = []
+        feedbacksets.append(group_mommy.feedbackset_first_attempt_published(testGroup1))
+        feedbacksets.append(group_mommy.feedbackset_new_attempt_published(testGroup1))
+        feedbacksets.append(group_mommy.feedbackset_new_attempt_unpublished(testGroup1))
+
+        for feedbackset in feedbacksets:
+            for index in range(3):
+                mommy.make('devilry_group.GroupComment',
+                           feedback_set=feedbackset,
+                           user=testCandidate1.relatedstudent.user,
+                           user_role=GroupComment.USER_ROLE_STUDENT,
+                           _fill_optional=True)
+            for index in range(3):
+                mommy.make('devilry_group.GroupComment',
+                           feedback_set=feedbackset,
+                           user=testCandidate2.relatedstudent.user,
+                           user_role=GroupComment.USER_ROLE_STUDENT,
+                           _fill_optional=True)
+            for index in range(7):
+                mommy.make('devilry_group.GroupComment',
+                           feedback_set=feedbackset,
+                           user_role=GroupComment.USER_ROLE_EXAMINER,
+                           _fill_optional=True)
+
+        return (testGroup1, testCandidate1, testCandidate2)
+
+    def test_pop_candidate_not_part_of_assignmentgroup(self):
+        testAssignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testGroup1 = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
+        testGroup2 = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
+        core_mommy.candidate(group=testGroup1)
+        testCandidate = core_mommy.candidate(group=testGroup2)
+        with self.assertRaises(GroupPopNotCandiateError):
+            testGroup1.pop_candidate(testCandidate)
+
+    def test_pop_candidate_has_left_from_assignment_group(self):
+        testGroup1, testCandidate1, testCandidate2 = self.testHelper()
+
+        testGroup1.pop_candidate(testCandidate2)
+
+        # testGroup1 contains 1 candidate
+        self.assertEqual(len(testGroup1.candidates.all()), 1)
+        self.assertFalse(testGroup1.candidates.filter(id=testCandidate2.id).exists())
+
+        # testGroup1 and testGroup2 is different
+        testGroup2 = Candidate.objects.get(id=testCandidate2.id).assignment_group
+        self.assertNotEqual(testGroup1, testGroup2)
+
+        # testGroup2 contains 1 candidate
+        self.assertEqual(len(testGroup2.candidates.all()), 1)
+        self.assertFalse(testGroup2.candidates.filter(id=testCandidate1.id).exists())
+
+    def test_pop_candidate_first_feedbackset_cointains_equal_amount_of_comments(self):
+        testGroup1, testCandidate1, testCandidate2 = self.testHelper()
+
+        testGroup1.pop_candidate(testCandidate2)
+
+        testGroup2 = Candidate.objects.get(id=testCandidate2.id).assignment_group
+
+        groupComments1 = GroupComment.objects.filter(feedback_set=testGroup1.cached_data.first_feedbackset)
+        groupComments2 = GroupComment.objects.filter(feedback_set=testGroup2.cached_data.first_feedbackset)
+        self.assertEqual(len(groupComments1), len(groupComments2))
+
+    def test_pop_candiate_multiple_feedbacksets_with_comments(self):
+        testGroup1, testCandidate1, testCandidate2 = self.testHelper()
+
+        testGroup1.pop_candidate(testCandidate2)
+        testGroup2 = Candidate.objects.get(id=testCandidate2.id).assignment_group
+        self.assertNotEqual(testGroup1, testGroup2)
+        feedbacksets1 = FeedbackSet.objects.filter(group=testGroup1).order_by_deadline_datetime()
+        feedbacksets2 = FeedbackSet.objects.filter(group=testGroup2).order_by_deadline_datetime()
+
+        for feedbackset1, feedbackset2 in zip(feedbacksets1, feedbacksets2):
+            groupComments1 = GroupComment.objects.filter(feedback_set=feedbackset1).order_by('created_datetime')
+            groupComments2 = GroupComment.objects.filter(feedback_set=feedbackset2).order_by('created_datetime')
+            self.assertEqual(len(groupComments1), 13)
+            self.assertEqual(len(groupComments2), 13)
+
+            for comment1, comment2 in zip(groupComments1, groupComments2):
+                self.assertEqual(comment1.text, comment2.text)
+
+    def test_examiners_has_been_copied_to_new_group(self):
+        testGroup1, testCandidate1, testCandidate2 = self.testHelper()
+        testGroup1.pop_candidate(testCandidate2)
+        testGroup2 = Candidate.objects.get(id=testCandidate2.id).assignment_group
+
+        examiners1 = testGroup1.examiners.all().order_by('relatedexaminer__user__id')
+        examiners2 = testGroup2.examiners.all().order_by('relatedexaminer__user__id')
+
+        for examiner1, examiner2 in zip(examiners1, examiners2):
+            self.assertEqual(examiner1.relatedexaminer, examiner2.relatedexaminer)
+
+    def test_tags_has_been_copied_to_new_group(self):
+        testGroup1, testCandidate1, testCandidate2 = self.testHelper()
+        testGroup1.pop_candidate(testCandidate2)
+        testGroup2 = Candidate.objects.get(id=testCandidate2.id).assignment_group
+
+        tags1 = testGroup1.tags.all().order_by('tag')
+        tags2 = testGroup2.tags.all().order_by('tag')
+
+        for tag1, tag2 in zip(tags1, tags2):
+            self.assertEqual(tag1.tag, tag2.tag)
 
 
 @unittest.skip('Must be updated for new FeedbackSet structure')

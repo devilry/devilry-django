@@ -164,6 +164,32 @@ class AbstractGroupComment(comment_models.Comment):
         self.full_clean()
         self.save()
 
+    def copy_comment_into_feedbackset(self, feedbackset):
+        """
+        Creates a new GroupComment, copies all fields in self into
+        the new comment and sets feedback_set foreign key to ``feedbackset``
+        Args:
+            feedbackset: :class:`~devilry_group.FeedbackSet`
+
+        Returns:
+            :class:`~devilry_group.GroupComment` a new group comment
+        """
+        commentcopy = GroupComment(
+            part_of_grading=self.part_of_grading,
+            feedback_set=feedbackset,
+            text=self.text,
+            draft_text=self.draft_text,
+            user=self.user,
+            parent=self.parent,
+            created_datetime=self.created_datetime,
+            published_datetime=self.published_datetime,
+            user_role=self.user_role,
+            comment_type=self.comment_type,
+        )
+        commentcopy.full_clean()
+        commentcopy.save()
+        return commentcopy
+
 
 class FeedbackSetQuerySet(models.QuerySet):
     """
@@ -441,8 +467,49 @@ class FeedbackSet(models.Model):
         comments = GroupComment.objects.filter(feedback_set=self)
         for comment in comments:
             comment.feedback_set = target
+            comment.full_clean()
             comment.save()
         self.delete()
+
+    def copy_feedbackset_into_group(self, group, target=None):
+        """
+        Copy this feedbackset into ``target`` or create a new feedbackset,
+        and set group foreign key to ``group``
+
+        Args:
+            group: :class:`~core.AssignmentGroup`
+            target: :class:`~devilry_group.FeedbackSet`
+
+        Returns:
+            :class:`~devilry_group.FeedbackSet` a feedbackset with copied data from self
+
+        """
+        feedbackset_kwargs = {
+            'group': group,
+            'feedbackset_type': self.feedbackset_type,
+            'ignored': self.ignored,
+            'ignored_reason': self.ignored_reason,
+            'ignored_datetime': self.ignored_datetime,
+            'created_by': self.created_by,
+            'created_datetime': self.created_datetime,
+            'deadline_datetime': self.deadline_datetime,
+            'grading_published_datetime': self.grading_published_datetime,
+            'grading_published_by': self.grading_published_by,
+            'grading_points': self.grading_points,
+            'gradeform_data_json': self.gradeform_data_json
+        }
+        if target is None:
+            target = FeedbackSet(**feedbackset_kwargs)
+        else:
+            for key, value in feedbackset_kwargs.iteritems():
+                setattr(target, key, value)
+        target.full_clean()
+        target.save()
+
+        for comment in self.groupcomment_set.all():
+           comment.copy_comment_into_feedbackset(target)
+
+        return target
 
     @property
     def gradeform_data(self):

@@ -1,6 +1,7 @@
 import warnings
 from datetime import datetime
 
+from copy import deepcopy
 from django.db.models import Q
 from django.db import models
 from django.db import transaction
@@ -1344,46 +1345,23 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     def copy_all_except_candidates(self):
         """
-        .. note:: Always run this is a transaction.
+        copy everything assignment group contains into a new,
+        except candiates.
+
+        Returns:
+            :class:`~core.AssignmentGroup` a new assignmentgroup
         """
         groupcopy = AssignmentGroup(parentnode=self.parentnode,
                                     name=self.name,
                                     is_open=self.is_open,
                                     delivery_status=self.delivery_status)
         groupcopy.full_clean()
-        groupcopy.save(update_delivery_status=False)
+        groupcopy.save()
+        for examiner in self.examiners.all():
+            groupcopy.examiners.create(relatedexaminer=examiner.relatedexaminer)
         for tagobj in self.tags.all():
             groupcopy.tags.create(tag=tagobj.tag)
-        for examiner in self.examiners.all():
-            groupcopy.examiners.create(user=examiner.user)
-        for deadline in self.deadlines.all():
-            deadline.copy(groupcopy)
-        groupcopy._set_latest_feedback_as_active()
-        groupcopy.save(update_delivery_status=False)
         return groupcopy
-
-    # def pop_candidate(self, candidate):
-    #     """
-    #     Make a copy of this group using ``copy_all_except_candidates``, and
-    #     add given candidate to the copied group and remove the candidate from
-    #     this group.
-    #
-    #     :param candidate: A :class:`devilry.apps.core.models.Candidate` object.
-    #         The candidate must be among the candidates on this group.
-    #
-    #     .. note:: Always run this is a transaction.
-    #     """
-    #     candidates = self.candidates.all()
-    #     if len(candidates) < 2:
-    #         raise GroupPopToFewCandiatesError('Can not pop candidates on a group with less than 2 candidates.')
-    #     if candidate not in candidates:
-    #         raise GroupPopNotCandiateError('The candidate to pop must be in the original group.')
-    #
-    #     groupcopy = self.copy_all_except_candidates()
-    #     candidate.assignment_group = groupcopy  # Move the candidate to the new group
-    #     candidate.full_clean()
-    #     candidate.save()
-    #     return groupcopy
 
     def recalculate_delivery_numbers(self):
         """
@@ -1481,7 +1459,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Returns:
 
         """
-        if self.parentnode != target.parentnode:
+        if self.parentnode is not target.parentnode:
             raise ValidationError('self and target AssignmentGroup is not part of same Assignment')
 
         self.cached_data.first_feedbackset.merge_into(target.cached_data.first_feedbackset)
@@ -1494,83 +1472,32 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         self.delete()
 
+    def pop_candidate(self, candidate):
+        """
+        Pops a candidate off the assignment group
 
+        Args:
+            candidate: :class:`~core.Candidate`
 
-    # def merge_into(self, target):
-    #     """
-    #     Merge this AssignmentGroup into the ``target`` AssignmentGroup.
-    #     Algorithm:
-    #
-    #         - Copy in all candidates and examiners not already on the
-    #           AssignmentGroup.
-    #         - Delete all copies where the original is in ``self`` or ``target``:
-    #             - Delete all deliveries from ``target`` that are ``copy_of`` a delivery
-    #               ``self``.
-    #             - Delete all deliveries from ``self`` that are ``copy_of`` a delivery in
-    #               ``target``.
-    #         - Loop through all deadlines in this AssignmentGroup, and for each
-    #           deadline:
-    #
-    #           If the datetime and text of the deadline matches one already in
-    #           ``target``, move the remaining deliveries into the target deadline.
-    #
-    #           If the deadline and text does NOT match a deadline already in
-    #           ``target``, change assignmentgroup of the deadline to the
-    #           master group.
-    #         - Recalculate delivery numbers of ``target`` using
-    #           :meth:`recalculate_delivery_numbers`.
-    #         - Run ``self.delete()``.
-    #         - Set the latest feedback on ``target`` as the active feedback.
-    #
-    #     .. note::
-    #         The ``target.name`` or ``target.is_open`` is not changed.
-    #
-    #     .. note::
-    #         Everything except setting the latest feedback runs in a
-    #         transaction. Setting the latest feedback does not run
-    #         in transaction because we need to save the with ``feedback=None``,
-    #         and then set the *new* latest feedback to avoid IntegrityError.
-    #     """
-    #     from .deadline import Deadline
-    #     from .delivery import Delivery
-    #     with transaction.atomic():
-    #         # Unset last_deadline - if we not do this, we will get
-    #         # ``IntegrityError: column last_deadline_id is not unique``
-    #         # if the last deadline after the merge is self.last_deadline
-    #         self.last_deadline = None
-    #         self.save(update_delivery_status=False)
-    #
-    #         # Copies
-    #         Delivery.objects.filter(deadline__assignment_group=self,
-    #                                 copy_of__deadline__assignment_group=target).delete()
-    #         Delivery.objects.filter(deadline__assignment_group=target,
-    #                                 copy_of__deadline__assignment_group=self).delete()
-    #
-    #         # Examiners and candidates
-    #         self._merge_examiners_into(target)
-    #         self._merge_candidates_into(target)
-    #
-    #         # Deadlines
-    #         for deadline in self.deadlines.all():
-    #             try:
-    #                 matching_deadline = target.deadlines.get(deadline=deadline.deadline,
-    #                                                          text=deadline.text)
-    #                 for delivery in deadline.deliveries.all():
-    #                     if delivery.copy_of:
-    #                         # NOTE: If we merge 2 groups with a copy from the same third group, we
-    #                         #       we only want one of the copies.
-    #                         if Delivery.objects.filter(deadline__assignment_group=target,
-    #                                                    copy_of=delivery.copy_of).exists():
-    #                             continue
-    #                     delivery.deadline = matching_deadline
-    #                     delivery.save()
-    #             except Deadline.DoesNotExist:
-    #                 deadline.assignment_group = target
-    #                 deadline.save()
-    #         target.recalculate_delivery_numbers()
-    #         self.delete()
-    #     target._set_latest_feedback_as_active()
-    #     target.save()
+        Raises:
+            GroupPopNotCandiateError when candiate is not part of AssignmentGroup
+
+        Returns:
+
+        """
+        if not self.candidates.filter(id=candidate.id).exists():
+            raise GroupPopNotCandiateError('candidate is not part of AssignmentGroup')
+
+        groupcopy = self.copy_all_except_candidates()
+        candidate.assignment_group = groupcopy
+        candidate.save()
+        self.cached_data.first_feedbackset.copy_feedbackset_into_group(
+            group=groupcopy,
+            target=groupcopy.cached_data.first_feedbackset
+        )
+        for feedbackset in self.feedbackset_set.order_by_deadline_datetime():
+            if feedbackset != self.cached_data.first_feedbackset:
+                feedbackset.copy_feedbackset_into_group(group=groupcopy)
 
     @classmethod
     def merge_many_groups(self, sources, target):
