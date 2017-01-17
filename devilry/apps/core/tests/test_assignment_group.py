@@ -983,6 +983,14 @@ class TestAssignmentGroupPopCandidate(TestCase):
         for tag1, tag2 in zip(tags1, tags2):
             self.assertEqual(tag1.tag, tag2.tag)
 
+    def test_pop_candidate_when_there_is_only_one(self):
+        testAssignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testGroup = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
+        testCandidate = core_mommy.candidate(group=testGroup)
+        with self.assertRaises(GroupPopToFewCandiatesError):
+            testGroup.pop_candidate(testCandidate)
+
+
 
 @unittest.skip('Must be updated for new FeedbackSet structure')
 class TestAssignmentGroupSplit(TestCase):

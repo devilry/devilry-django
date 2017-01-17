@@ -1514,6 +1514,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         if not self.candidates.filter(id=candidate.id).exists():
             raise GroupPopNotCandiateError('candidate is not part of AssignmentGroup')
+        if len(self.candidates.all()) < 2:
+            raise GroupPopToFewCandiatesError('cannot pop candidate from AssignmentGroup when there is only one')
 
         groupcopy = self.copy_all_except_candidates()
         candidate.assignment_group = groupcopy
