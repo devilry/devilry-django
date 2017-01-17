@@ -1,8 +1,8 @@
 {
   "appname": "devilry_theme3", 
-  "destinationfolder": "/Users/espenak/code/devilry-django/devilry/devilry_theme3/static/devilry_theme3/1.0.0", 
+  "destinationfolder": "/home/eskil/dev/devilry-django/devilry/devilry_theme3/static/devilry_theme3/1.0.0", 
   "is_in_production_mode": false, 
   "keep_temporary_files": false, 
-  "sourcefolder": "/Users/espenak/code/devilry-django/devilry/devilry_theme3/staticsources/devilry_theme3", 
+  "sourcefolder": "/home/eskil/dev/devilry-django/devilry/devilry_theme3/staticsources/devilry_theme3", 
   "version": "1.0.0"
 }
