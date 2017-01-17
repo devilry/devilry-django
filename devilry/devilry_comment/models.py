@@ -145,6 +145,26 @@ class CommentFile(models.Model):
     def __unicode__(self):
         return u'{} - {}'.format(self.comment.user, self.filename)
 
+    def copy_into_comment(self, target):
+        """
+        Copy CommentFile to ``target`` comment
+
+        Args:
+            target: :class:`~devilry_comment.Comment`
+
+        """
+        commentfilecopy = CommentFile(
+            comment=target,
+            filename=self.filename,
+            filesize=self.filesize,
+            mimetype=self.mimetype,
+            file=self.file,
+            processing_started_datetime=self.processing_started_datetime,
+            processing_completed_datetime=self.processing_completed_datetime,
+            processing_successful=self.processing_successful,
+            created_datetime=self.created_datetime
+        )
+        commentfilecopy.save()
 
 def commentfileimage_directory_path(instance, filename):
     if instance.id is None:

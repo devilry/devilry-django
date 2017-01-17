@@ -1,8 +1,10 @@
+import shutil
 import unittest
 from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.base import ContentFile
 from django.test import TestCase
 from django.utils import timezone
 from django.core.exceptions import ValidationError
@@ -19,7 +21,7 @@ from devilry.apps.core.models.assignment_group import GroupPopToFewCandiatesErro
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
-from devilry.devilry_comment.models import Comment
+from devilry.devilry_comment.models import Comment, CommentFile
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import FeedbackSet, GroupComment, ImageAnnotationComment
@@ -869,7 +871,11 @@ class TestAssignmentGroupPopCandidate(TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def testHelper(self):
+    def tearDown(self):
+        # Ignores errors if the path is not created.
+        shutil.rmtree('devilry_testfiles/filestore/', ignore_errors=True)
+
+    def testData(self):
         testAssignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testGroup1 = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
         testCandidate1 = core_mommy.candidate(group=testGroup1)
@@ -887,17 +893,23 @@ class TestAssignmentGroupPopCandidate(TestCase):
 
         for feedbackset in feedbacksets:
             for index in range(3):
-                mommy.make('devilry_group.GroupComment',
-                           feedback_set=feedbackset,
-                           user=testCandidate1.relatedstudent.user,
-                           user_role=GroupComment.USER_ROLE_STUDENT,
-                           _fill_optional=True)
+                comment = mommy.make('devilry_group.GroupComment',
+                                     feedback_set=feedbackset,
+                                     user=testCandidate1.relatedstudent.user,
+                                     user_role=GroupComment.USER_ROLE_STUDENT,
+                                     _fill_optional=True)
+                testcommentfile1 = mommy.make('devilry_comment.CommentFile', filename='testfile1.txt', comment=comment)
+                testcommentfile1.file.save('testfile1.txt', ContentFile('test1'))
+                testcommentfile2 = mommy.make('devilry_comment.CommentFile', filename='testfile2.txt', comment=comment)
+                testcommentfile2.file.save('testfile2.txt', ContentFile('test2'))
+
             for index in range(3):
                 mommy.make('devilry_group.GroupComment',
                            feedback_set=feedbackset,
                            user=testCandidate2.relatedstudent.user,
                            user_role=GroupComment.USER_ROLE_STUDENT,
                            _fill_optional=True)
+
             for index in range(7):
                 mommy.make('devilry_group.GroupComment',
                            feedback_set=feedbackset,
@@ -915,8 +927,15 @@ class TestAssignmentGroupPopCandidate(TestCase):
         with self.assertRaises(GroupPopNotCandiateError):
             testGroup1.pop_candidate(testCandidate)
 
+    def test_pop_candidate_when_there_is_only_one(self):
+        testAssignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testGroup = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
+        testCandidate = core_mommy.candidate(group=testGroup)
+        with self.assertRaises(GroupPopToFewCandiatesError):
+            testGroup.pop_candidate(testCandidate)
+
     def test_pop_candidate_has_left_from_assignment_group(self):
-        testGroup1, testCandidate1, testCandidate2 = self.testHelper()
+        testGroup1, testCandidate1, testCandidate2 = self.testData()
 
         testGroup1.pop_candidate(testCandidate2)
 
@@ -933,7 +952,7 @@ class TestAssignmentGroupPopCandidate(TestCase):
         self.assertFalse(testGroup2.candidates.filter(id=testCandidate1.id).exists())
 
     def test_pop_candidate_first_feedbackset_cointains_equal_amount_of_comments(self):
-        testGroup1, testCandidate1, testCandidate2 = self.testHelper()
+        testGroup1, testCandidate1, testCandidate2 = self.testData()
 
         testGroup1.pop_candidate(testCandidate2)
 
@@ -944,7 +963,7 @@ class TestAssignmentGroupPopCandidate(TestCase):
         self.assertEqual(len(groupComments1), len(groupComments2))
 
     def test_pop_candiate_multiple_feedbacksets_with_comments(self):
-        testGroup1, testCandidate1, testCandidate2 = self.testHelper()
+        testGroup1, testCandidate1, testCandidate2 = self.testData()
 
         testGroup1.pop_candidate(testCandidate2)
         testGroup2 = Candidate.objects.get(id=testCandidate2.id).assignment_group
@@ -962,7 +981,7 @@ class TestAssignmentGroupPopCandidate(TestCase):
                 self.assertEqual(comment1.text, comment2.text)
 
     def test_examiners_has_been_copied_to_new_group(self):
-        testGroup1, testCandidate1, testCandidate2 = self.testHelper()
+        testGroup1, testCandidate1, testCandidate2 = self.testData()
         testGroup1.pop_candidate(testCandidate2)
         testGroup2 = Candidate.objects.get(id=testCandidate2.id).assignment_group
 
@@ -973,7 +992,7 @@ class TestAssignmentGroupPopCandidate(TestCase):
             self.assertEqual(examiner1.relatedexaminer, examiner2.relatedexaminer)
 
     def test_tags_has_been_copied_to_new_group(self):
-        testGroup1, testCandidate1, testCandidate2 = self.testHelper()
+        testGroup1, testCandidate1, testCandidate2 = self.testData()
         testGroup1.pop_candidate(testCandidate2)
         testGroup2 = Candidate.objects.get(id=testCandidate2.id).assignment_group
 
@@ -983,14 +1002,22 @@ class TestAssignmentGroupPopCandidate(TestCase):
         for tag1, tag2 in zip(tags1, tags2):
             self.assertEqual(tag1.tag, tag2.tag)
 
-    def test_pop_candidate_when_there_is_only_one(self):
-        testAssignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testGroup = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
-        testCandidate = core_mommy.candidate(group=testGroup)
-        with self.assertRaises(GroupPopToFewCandiatesError):
-            testGroup.pop_candidate(testCandidate)
+    def test_commentfile_has_been_copied_into_new_group(self):
+        testGroup1, testCandidate1, testCandidate2 = self.testData()
+        testGroup1.pop_candidate(testCandidate2)
+        testGroup2 = Candidate.objects.get(id=testCandidate2.id).assignment_group
 
-
+        feedbacksets1 = FeedbackSet.objects.filter(group=testGroup1).order_by_deadline_datetime()
+        feedbacksets2 = FeedbackSet.objects.filter(group=testGroup2).order_by_deadline_datetime()
+        for feedbackset1, feedbackset2 in zip(feedbacksets1, feedbacksets2):
+            groupComments1 = GroupComment.objects.filter(feedback_set=feedbackset1).order_by('created_datetime')
+            groupComments2 = GroupComment.objects.filter(feedback_set=feedbackset2).order_by('created_datetime')
+            for comment1, comment2 in zip(groupComments1, groupComments2):
+                commentfiles1 = CommentFile.objects.filter(comment=comment1).order_by('filename')
+                commentfiles2 = CommentFile.objects.filter(comment=comment2).order_by('filename')
+                for commentfile1, commentfile2 in zip(commentfiles1, commentfiles2):
+                    self.assertEqual(commentfile1.file, commentfile2.file)
+                    self.assertEqual(commentfile1.filename, commentfile2.filename)
 
 @unittest.skip('Must be updated for new FeedbackSet structure')
 class TestAssignmentGroupSplit(TestCase):
