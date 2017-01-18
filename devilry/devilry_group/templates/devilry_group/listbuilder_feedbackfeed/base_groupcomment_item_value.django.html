@@ -37,7 +37,7 @@
             {% blocktrans with text=me.group_comment.text|devilry_group_markdown|safe %} {{text}} {% endblocktrans %}
         </div>
         {% for commentfile in me.group_comment.commentfile_set.all %}
-            <a href="{% cradmin_appurl 'file-download' commentfile.id %}">
+            <a href="{% cradmin_instance_url appname='download' viewname='file-download' commentfile_id=commentfile.id %}">
                 <i class="fa fa-file fa-3x" tooltip="{{ commentfile.filename }}"></i>
             </a>
         {% endfor %}

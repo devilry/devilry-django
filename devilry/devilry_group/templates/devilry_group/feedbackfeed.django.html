@@ -91,3 +91,8 @@
         angular.module('djangoCradminUi', ['djangoCradmin', 'devilryGroup.sidebar'])
     </script>
 {% endblock %}
+
+{% block end-of-body %}
+    {{ block.super }}
+    {% include "devilry_theme3/include/devilry_all_js.django.html" %}
+{% endblock end-of-body %}

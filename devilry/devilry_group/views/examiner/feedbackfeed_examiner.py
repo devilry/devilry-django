@@ -11,6 +11,7 @@ from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy, pgettext_lazy
 
 # Devilry/cradmin imports
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django_cradmin import crapp
 from django_cradmin.viewhelpers import update, delete
 from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
@@ -502,11 +503,11 @@ class App(crapp.App):
     appurls = [
         crapp.Url(
                 r'^$',
-                ExaminerFeedbackView.as_view(),
+                ensure_csrf_cookie(ExaminerFeedbackView.as_view()),
                 name=crapp.INDEXVIEW_NAME),
         crapp.Url(
                 r'^discuss$',
-                ExaminerDiscussView.as_view(),
+                ensure_csrf_cookie(ExaminerDiscussView.as_view()),
                 name='discuss'),
         crapp.Url(
                 r'^create-feedbackset$',

@@ -1,24 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-# django imports
-from django import http
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404
-from django.views import generic
 from wsgiref.util import FileWrapper
 
-# ievv_opensource imports
+from django import http
+from django.http import Http404, HttpResponse
+from django.shortcuts import get_object_or_404
+from django.views import generic
 from django.views.generic import TemplateView
-from ievv_opensource.ievv_batchframework import batchregistry
-
-# devilry imports
 from django_cradmin import crapp
-from devilry.devilry_group import models as group_models
+
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_compressionutil import models as archivemodels
+from devilry.devilry_group import models as group_models
 from devilry.devilry_group.utils import download_response
+from devilry.devilry_group.views.download_files.batch_download_api import BatchCompressionAPIGroupCommentView, \
+    BatchCompressionAPIFeedbackSetView
 
 
 class FileDownloadFeedbackfeedView(generic.TemplateView):
@@ -83,30 +80,31 @@ class CompressedGroupCommentFileDownloadView(generic.TemplateView):
         if groupcomment.visibility != group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
             raise Http404()
 
-        # Try to fetch archive meta
-        try:
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=groupcomment_id)
-        except ObjectDoesNotExist:
-            # Run actiongroup batchjob.
-            batchregistry.Registry.get_instance().run(
-                actiongroup_name='batchframework_compress_groupcomment',
-                context_object=groupcomment,
-            )
-        else:
-            # Send response.
-            return download_response.download_response(
-                    content_path=archive_meta.archive_path,
-                    content_name=archive_meta.archive_name,
-                    content_type='application/zip',
-                    content_size=archive_meta.archive_size
-            )
+        # # Try to fetch archive meta
+        # try:
+        #     archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=groupcomment_id)
+        # except ObjectDoesNotExist:
+        #     # Run actiongroup batchjob.
+        #     batchregistry.Registry.get_instance().run(
+        #         actiongroup_name='batchframework_compress_groupcomment',
+        #         context_object=groupcomment,
+        #     )
+        # else:
+        #     # Send response.
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=groupcomment_id)
+        return download_response.download_response(
+                content_path=archive_meta.archive_path,
+                content_name=archive_meta.archive_name,
+                content_type='application/zip',
+                content_size=archive_meta.archive_size,
+                streaming_response=True)
 
-        return HttpResponseRedirect(
-                self.request.cradmin_app.reverse_appurl(
-                        viewname='wait-for-download',
-                        kwargs={
-                            'pk': groupcomment_id
-                        }))
+        # return HttpResponseRedirect(
+        #         self.request.cradmin_app.reverse_appurl(
+        #                 viewname='wait-for-download',
+        #                 kwargs={
+        #                     'pk': groupcomment_id
+        #                 }))
 
 
 class CompressedFeedbackSetFileDownloadView(generic.TemplateView):
@@ -132,30 +130,31 @@ class CompressedFeedbackSetFileDownloadView(generic.TemplateView):
         if feedbackset.group.id != request.cradmin_role.id:
             raise Http404()
 
-        # Check if archive exists
-        try:
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=feedbackset_id)
-        except ObjectDoesNotExist:
-            # Run actiongroup
-            batchregistry.Registry.get_instance().run(
-                actiongroup_name='batchframework_compress_feedbackset',
-                context_object=feedbackset,
-            )
-        else:
-            # Send response
-            return download_response.download_response(
-                    content_path=archive_meta.archive_path,
-                    content_name=archive_meta.archive_name,
-                    content_type='application/zip',
-                    content_size=archive_meta.archive_size
-            )
+        # # Check if archive exists
+        # try:
+        #     archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=feedbackset_id)
+        # except ObjectDoesNotExist:
+        #     # Run actiongroup
+        #     batchregistry.Registry.get_instance().run(
+        #         actiongroup_name='batchframework_compress_feedbackset',
+        #         context_object=feedbackset,
+        #     )
+        # else:
+        #     # Send response
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=feedbackset_id)
+        return download_response.download_response(
+                content_path=archive_meta.archive_path,
+                content_name=archive_meta.archive_name,
+                content_type='application/zip',
+                content_size=archive_meta.archive_size,
+                streaming_response=True)
 
-        return HttpResponseRedirect(
-                self.request.cradmin_app.reverse_appurl(
-                        viewname='wait-for-download',
-                        kwargs={
-                            'pk': feedbackset_id
-                        }))
+        # return HttpResponseRedirect(
+        #         self.request.cradmin_app.reverse_appurl(
+        #                 viewname='wait-for-download',
+        #                 kwargs={
+        #                     'pk': feedbackset_id
+        #                 }))
 
 
 class WaitForDownload(TemplateView):
@@ -206,9 +205,19 @@ class App(crapp.App):
             r'^feedbackset-file-download/(?P<feedbackset_id>[0-9]+)$',
             CompressedFeedbackSetFileDownloadView.as_view(),
             name='feedbackset-file-download'),
+        # crapp.Url(
+        #     r'^wait-for-download/(?P<pk>[0-9]+)$',
+        #     WaitForDownload.as_view(),
+        #     name='wait-for-download'
+        # ),
         crapp.Url(
-            r'^wait-for-download/(?P<pk>[0-9]+)$',
-            WaitForDownload.as_view(),
-            name='wait-for-download'
+            r'groupcomment-download-api/(?P<content_object_id>[0-9]+)$',
+            BatchCompressionAPIGroupCommentView.as_view(),
+            name='groupcomment-file-download-api'
+        ),
+        crapp.Url(
+            r'feedbackset-download-api/(?P<content_object_id>[0-9]+)$',
+            BatchCompressionAPIFeedbackSetView.as_view(),
+            name='feedbackset-file-download-api'
         )
     ]
