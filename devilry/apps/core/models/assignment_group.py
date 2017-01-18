@@ -1452,7 +1452,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     def _merge_candidates_into(self, target):
         """
         Move candidates to ``target`` AssignmentGroup.
-        if candidate is present in ``target`` AssignmentGroup raise exception?
+        if candidate is present in ``target`` AssignmentGroup remove candidate from db
 
         Args:
             target: :class:`~core.AssignmentGroup`
@@ -1462,7 +1462,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             if not target.candidates.filter(relatedstudent__user=candidate.relatedstudent.user).exists():
                 candidate.assignment_group = target
                 candidate.save()
-            # else raise exception?
+            else:
+                candidate.delete()
 
     def merge_into(self, target):
         """
@@ -1470,7 +1471,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         Algorithm:
             - Move foreign key pointers from all comments in first feedbackset to target first feedbackset
-            - Copy in all candidates not already on the AssignmentGroup.
+            - Move in all candidates not already on the AssignmentGroup.
+            - Move in all examiners not already on the AssignmentGroup.
+            - Move in all tags not already on the AssignmentGroup.
 
         Args:
             target: :class:`~core.AssignmentGroup` the assignment group that self will be merged into
@@ -1483,7 +1486,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         """
         if self.parentnode is not target.parentnode:
-            raise ValidationError('self and target AssignmentGroup is not part of same Assignment')
+            raise ValueError('self and target AssignmentGroup is not part of same Assignment')
 
         self.cached_data.first_feedbackset.merge_into(target.cached_data.first_feedbackset)
 
