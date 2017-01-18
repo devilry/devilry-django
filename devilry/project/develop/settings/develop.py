@@ -152,6 +152,7 @@ IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
                     'bower_components',
                 ]
             ),
+            ievvbuildstatic.npmrun_jsbuild.Plugin(),
             ievvbuildstatic.mediacopy.Plugin(),
         ]
     ),

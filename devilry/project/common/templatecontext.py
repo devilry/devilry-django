@@ -12,8 +12,11 @@ def template_variables(request):
         'DEVILRY_STATIC_URL': settings.DEVILRY_STATIC_URL,
         'DEVILRY_URLPATH_PREFIX': settings.DEVILRY_URLPATH_PREFIX,
         'DEVILRY_LOGOUT_URL': settings.DEVILRY_LOGOUT_URL,
+        'DEVILRY_THEME3_JAVASCRIPT_URL': '{static_url}/devilry_theme3/{theme3_version}/scripts/devilry_all.js'.format(
+            static_url=settings.DEVILRY_STATIC_URL,
+            theme3_version=settings.DEVILRY_THEME3_VERSION
+        ),
         'session': request.session,
-        'DEVILRY_EXTJS_URL': settings.DEVILRY_EXTJS_URL,
         'DEVILRY_MATHJAX_URL': settings.DEVILRY_MATHJAX_URL,
         'DEVILRY_HELP_URL': settings.DEVILRY_HELP_URL,
         'DEVILRY_SYSTEM_ADMIN_EMAIL': settings.DEVILRY_SYSTEM_ADMIN_EMAIL,
