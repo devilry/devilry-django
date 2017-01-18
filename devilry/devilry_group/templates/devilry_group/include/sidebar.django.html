@@ -10,9 +10,9 @@
                 <i class="pull-right fa" ng-class="{'fa-chevron-up': filecollapse.value, 'fa-chevron-down': !filecollapse.value}"></i>
             </h4>
             <div ng-show="filecollapse.value">
-                <a href="{% cradmin_appurl 'bulk-filedownload' %}">
-                    <strong>{% trans 'Download all assignment files' %}</strong>
-                </a>
+{#                <a href="{% cradmin_appurl 'bulk-filedownload' %}">#}
+{#                    <strong>{% trans 'Download all assignment files' %}</strong>#}
+{#                </a>#}
                 {% cradmin_render_renderable sidebarbuilder_list %}
             </div>
         </div>

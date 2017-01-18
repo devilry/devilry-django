@@ -30,8 +30,7 @@ class StudentCrInstance(crinstance_base.CrInstanceBase):
     apps = [
         ('projectgroup', projectgroupapp.App),
         ('feedbackfeed', feedbackfeed_student.App),
-        ('feedbackfeed', feedbackfeed_bulkfiledownload.App),
-        ('feedbackfeed', batch_download_files.App)
+        ('download', batch_download_files.App)
     ]
     id = 'devilry_group_student'
 

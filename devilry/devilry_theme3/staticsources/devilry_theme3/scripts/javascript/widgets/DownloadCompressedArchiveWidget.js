@@ -13,9 +13,6 @@ import HttpJsonRequest from "ievv_jsbase/http/HttpJsonRequest";
 export default class DownloadCompressedArchiveWidget extends AbstractWidget {
   constructor(element) {
     super(element);
-    this.apiurl = `/devilry_group/student/${this.config.group_id}/` +
-      `feedbackfeed/${this.config.apiname}/` +
-      `${this.config.content_object_id}`;
     this._onClick = this._onClick.bind(this);
     this.element.addEventListener('click', this._onClick);
     this.isFinished = false;
@@ -26,7 +23,7 @@ export default class DownloadCompressedArchiveWidget extends AbstractWidget {
     if(this.isLoading) {
       return;
     }
-    new HttpJsonRequest(this.apiurl).get()
+    new HttpJsonRequest(this.config.apiurl).get()
       .then((response) => {
         this._handleApiResponse(response, 'get');
       })
@@ -60,7 +57,7 @@ export default class DownloadCompressedArchiveWidget extends AbstractWidget {
       return;
     }
     event.preventDefault();
-    new HttpDjangoJsonRequest(this.apiurl).post()
+    new HttpDjangoJsonRequest(this.config.apiurl).post()
       .then((response) => {
         this._handleApiResponse(response, 'post');
       })

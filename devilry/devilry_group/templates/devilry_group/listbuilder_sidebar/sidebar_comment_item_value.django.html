@@ -9,7 +9,7 @@
 {% block content %}
     <dl>
         <dt>
-            <a href="{% cradmin_appurl 'groupcomment-file-download' me.groupcomment.id %}">
+            <a href="{% cradmin_instance_url appname='download' viewname='groupcomment-file-download' groupcomment_id=me.groupcomment.id %}">
                 <div class="devilry-group-feedbackfeed-sidebar-groupcomment-user">
                     {% if me.groupcomment.user_role == 'student'%}
                         {% devilry_single_candidate_short_displayname me.assignment me.user_obj me.devilryrole %}
