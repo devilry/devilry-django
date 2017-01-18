@@ -1,25 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-# django imports
-from django import http
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404
-from django.views import generic
 from wsgiref.util import FileWrapper
 
-# ievv_opensource imports
+from django import http
+from django.http import Http404, HttpResponse
+from django.shortcuts import get_object_or_404
+from django.views import generic
 from django.views.generic import TemplateView
-from ievv_opensource.ievv_batchframework import batchregistry
-
-# devilry imports
 from django_cradmin import crapp
-from devilry.devilry_group import models as group_models
+
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_compressionutil import models as archivemodels
+from devilry.devilry_group import models as group_models
 from devilry.devilry_group.utils import download_response
-from devilry.devilry_group.views.download_files.batch_download_api import BatchCompressionAPIGroupCommentView
+from devilry.devilry_group.views.download_files.batch_download_api import BatchCompressionAPIGroupCommentView, \
+    BatchCompressionAPIFeedbackSetView
 
 
 class FileDownloadFeedbackfeedView(generic.TemplateView):
@@ -221,7 +217,7 @@ class App(crapp.App):
         ),
         crapp.Url(
             r'feedbackset-download-api/(?P<content_object_id>[0-9]+)$',
-            CompressedFeedbackSetFileDownloadView.as_view(),
+            BatchCompressionAPIFeedbackSetView.as_view(),
             name='feedbackset-file-download-api'
         )
     ]

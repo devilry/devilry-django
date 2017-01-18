@@ -6,6 +6,8 @@ from django import http
 from django.utils.translation import ugettext_lazy as _
 
 # Devilry/cradmin imports
+from django.views.decorators.csrf import ensure_csrf_cookie
+
 from devilry.apps.core import models as core_models
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models
@@ -88,6 +90,6 @@ class App(crapp.App):
     appurls = [
         crapp.Url(
             r'^$',
-            AdminFeedbackFeedView.as_view(),
+            ensure_csrf_cookie(AdminFeedbackFeedView.as_view()),
             name=crapp.INDEXVIEW_NAME),
     ]

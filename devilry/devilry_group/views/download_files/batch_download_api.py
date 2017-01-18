@@ -172,15 +172,7 @@ class AbstractBatchCompressionAPIView(View):
         Returns:
             (JsonResponse): Status of the compression.
         """
-        # clean the json data, and get a dict from it.
-        posted_data_dict = self.clean_post_data(posted_json_data=request.POST.get('json'))
-
-        # if data is erroneous return with error.
-        if 'error' in posted_data_dict:
-            return JsonResponse(posted_data_dict)
-
-        # get content_object_id from posted data dict.
-        content_object_id = posted_data_dict.get('content_object_id')
+        content_object_id = self.kwargs.get('content_object_id')
 
         # start task or return status.
         response_dict = self.get_response_status(object_id=content_object_id)

@@ -6,6 +6,8 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 # Devilry/cradmin imports
+from django.views.decorators.csrf import ensure_csrf_cookie
+
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from django_cradmin import crapp
 
@@ -52,6 +54,6 @@ class App(crapp.App):
     appurls = [
         crapp.Url(
             r'^$',
-            StudentFeedbackFeedView.as_view(),
+            ensure_csrf_cookie(StudentFeedbackFeedView.as_view()),
             name=crapp.INDEXVIEW_NAME),
     ]

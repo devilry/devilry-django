@@ -7,7 +7,18 @@
 {% block content %}
     <dl>
         <dt>
-            <a href="{% cradmin_appurl 'feedbackset-file-download' me.feedbackset.id %}">
+{#            <a href="{% cradmin_appurl 'feedbackset-file-download' me.feedbackset.id %}">#}
+{#                {% blocktrans with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}#}
+{#                    {{ verbose_feedbackset }} deadline#}
+{#                {% endblocktrans %}#}
+{#            </a>#}
+            <a href="#"
+                    data-ievv-jsbase-widget="devilry-download-compressed-archive"
+                    data-ievv-jsbase-widget-config='{
+                        "group_id": {{ me.feedbackset.group_id }},
+                        "apiname": "feedbackset-download-api",
+                        "content_object_id": {{ me.feedbackset.id }}
+                    }'>
                 {% blocktrans with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
                     {{ verbose_feedbackset }} deadline
                 {% endblocktrans %}
