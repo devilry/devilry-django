@@ -21,6 +21,7 @@ from .abstract_is_examiner import AbstractIsExaminer
 from .assignment import Assignment
 from model_utils import Etag
 import deliverytypes
+import itertools
 
 
 class GroupPopValueError(ValueError):
@@ -1423,7 +1424,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         if tag is present in ``target`` AssignmentGroup remove tag from db
 
         Args:
-            target: :class:`~core.AssignmentGroup`
+            target: :class:`~core.AssignmentGroup` to be merged into
 
         """
         for tag in self.tags.all():
@@ -1439,7 +1440,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         if examier is present in ``target`` AssignmentGroup remove examiner from db
 
         Args:
-            target: :class:`~core.AssignmentGroup`
+            target: :class:`~core.AssignmentGroup` to be merged into
 
         """
         for examiner in self.examiners.all():
@@ -1455,7 +1456,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         if candidate is present in ``target`` AssignmentGroup remove candidate from db
 
         Args:
-            target: :class:`~core.AssignmentGroup`
+            target: :class:`~core.AssignmentGroup` to be merged into
 
         """
         for candidate in self.candidates.all():
@@ -1465,22 +1466,48 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             else:
                 candidate.delete()
 
-    def merge_into(self, target):
+    def _merge_feedbackset_into(self, target, force_merge_published_feedbacksets):
+        """
+        Move merge feedbacksets in self with ``target`` feedbackset
+        if ``force_merge_published_feedbacksets`` is set to true merging of
+        published feedbackset is also allowed, if not :meth:`~devilry_group.Feedbackset.merge_into`
+        will throw a value error.
+
+        if self contains greater amount of feedbacksets than target, then the AssignmentGroup foreign key is just moved
+        to ``target``
+
+        Args:
+            target: :class:`~core.AssignmentGroup` to be merged into
+            force_merge_published_feedbacksets: merges published feedbacksets if true
+
+        """
+        source_feedbacksets = self.feedbackset_set.order_by_deadline_datetime()
+        target_feedbacksets = target.feedbackset_set.order_by_deadline_datetime()
+        for source_feedbackset, target_feedbackset in zip(source_feedbacksets, target_feedbacksets):
+            source_feedbackset.merge_into(target_feedbackset, force_merge_published_feedbacksets)
+
+        # move left over feedbacksets into target
+        for source_left_over_feedbackset in self.feedbackset_set.order_by_deadline_datetime():
+            source_left_over_feedbackset.group = target
+            source_left_over_feedbackset.save()
+
+    def merge_into(self, target, force_merge_published_feedbacksets=False):
         """
         Merge this AssignmentGroup into ``target`` AssignmentGroup
 
         Algorithm:
-            - Move foreign key pointers from all comments in first feedbackset to target first feedbackset
+            - Move foreign key pointers from all comments in feedbacksets to related feedbackset in target
+                assignment group
             - Move in all candidates not already on the AssignmentGroup.
             - Move in all examiners not already on the AssignmentGroup.
             - Move in all tags not already on the AssignmentGroup.
 
         Args:
             target: :class:`~core.AssignmentGroup` the assignment group that self will be merged into
+            force_merge_published_feedbacksets: merges published feedbacksets
 
         Raises:
-            ValidationError from :func:`~devilry_group.FeedbackSet.merge_into`
-            ValidationError if self and target AssignmentGroup is not part of same Assignment
+            ValueError if self and target AssignmentGroup is not part of same Assignment
 
         Returns:
 
@@ -1488,7 +1515,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         if self.parentnode is not target.parentnode:
             raise ValueError('self and target AssignmentGroup is not part of same Assignment')
 
-        self.cached_data.first_feedbackset.merge_into(target.cached_data.first_feedbackset)
+        # move feedbackset to target assignment group
+        self._merge_feedbackset_into(target, force_merge_published_feedbacksets)
 
         # move candidates to target assignment group
         self._merge_candidates_into(target)

@@ -740,7 +740,7 @@ class TestAssignmentGroupMerge(TestCase):
         testassignment2 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
         sourceassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(ValueError):
             sourceassignmentgroup.merge_into(targetassignmentgroup)
 
     def test_merge_source_into_target_assignmentgroup_sanity(self):
@@ -757,13 +757,87 @@ class TestAssignmentGroupMerge(TestCase):
         with self.assertRaises(AssignmentGroup.DoesNotExist):
             AssignmentGroup.objects.get(id=sourceassignmentgroup.id)
 
-    def test_should_not_be_able_to_merge_if_feedbackset_grading_is_published_source(self):
+    def test_merge_published_feedbackset_not_forced(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         sourceassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         group_mommy.feedbackset_first_attempt_published(group=sourceassignmentgroup)
         with self.assertRaises(ValidationError):
             sourceassignmentgroup.merge_into(targetassignmentgroup)
+
+    def test_merge_multiple_feedbacksets_with_grading_published_forced(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        sourceassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        firstfeedbackset1 = group_mommy.feedbackset_first_attempt_published(group=sourceassignmentgroup)
+        firstfeedbackset2 = group_mommy.feedbackset_first_attempt_published(group=targetassignmentgroup)
+        secondpublishedfeedbackset = group_mommy.feedbackset_new_attempt_published(group=sourceassignmentgroup)
+        group_mommy.feedbackset_new_attempt_published(group=targetassignmentgroup)
+        newfeedbackse1 = group_mommy.feedbackset_new_attempt_unpublished(group=sourceassignmentgroup)
+        newfeedbackse2 = group_mommy.feedbackset_new_attempt_unpublished(group=targetassignmentgroup)
+
+        # add comments
+        for index in range(3):
+            mommy.make('devilry_group.GroupComment',
+                       feedback_set=firstfeedbackset1)
+            mommy.make('devilry_group.GroupComment',
+                       feedback_set=firstfeedbackset2)
+        for index in range(2):
+            mommy.make('devilry_group.GroupComment',
+                       feedback_set=newfeedbackse1)
+            mommy.make('devilry_group.GroupComment',
+                       feedback_set=newfeedbackse2)
+        sourceassignmentgroup.merge_into(targetassignmentgroup, force_merge_published_feedbacksets=True)
+        group = AssignmentGroup.objects.get(id=targetassignmentgroup.id)
+        self.assertEqual(len(group.feedbackset_set.all()), 3)
+        feedbacksets = group.feedbackset_set.order_by_deadline_datetime()
+        self.assertEqual(len(feedbacksets[0].groupcomment_set.all()), 6)
+        self.assertEqual(len(feedbacksets[1].groupcomment_set.all()), 0)
+        self.assertEqual(len(feedbacksets[2].groupcomment_set.all()), 4)
+        self.assertFalse(FeedbackSet.objects.filter(id=firstfeedbackset1.id).exists())
+        self.assertFalse(FeedbackSet.objects.filter(id=secondpublishedfeedbackset.id).exists())
+        self.assertFalse(FeedbackSet.objects.filter(id=newfeedbackse1.id).exists())
+
+
+    def test_merge_multiple_fefedbacksets_with_grading_published_and_leftover_sets_from_source_forced(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        sourceassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        firstfeedbackset1 = group_mommy.feedbackset_first_attempt_published(group=sourceassignmentgroup)
+        firstfeedbackset2 = group_mommy.feedbackset_first_attempt_published(group=targetassignmentgroup)
+        secondpublishedfeedbackset = group_mommy.feedbackset_new_attempt_published(group=sourceassignmentgroup)
+        group_mommy.feedbackset_new_attempt_published(group=targetassignmentgroup)
+        newfeedbackse1 = group_mommy.feedbackset_new_attempt_published(group=sourceassignmentgroup)
+        newfeedbackse2 = group_mommy.feedbackset_new_attempt_unpublished(group=targetassignmentgroup)
+        newleftoverfeedbackset = group_mommy.feedbackset_new_attempt_published(group=sourceassignmentgroup)
+        # add comments
+        for index in range(3):
+            mommy.make('devilry_group.GroupComment',
+                       feedback_set=firstfeedbackset1)
+            mommy.make('devilry_group.GroupComment',
+                       feedback_set=firstfeedbackset2)
+        for index in range(2):
+            mommy.make('devilry_group.GroupComment',
+                       feedback_set=newfeedbackse1)
+            mommy.make('devilry_group.GroupComment',
+                       feedback_set=newfeedbackse2)
+
+        for index in range(7):
+            mommy.make('devilry_group.GroupComment',
+                       feedback_set=newleftoverfeedbackset)
+
+        sourceassignmentgroup.merge_into(targetassignmentgroup, force_merge_published_feedbacksets=True)
+        group = AssignmentGroup.objects.get(id=targetassignmentgroup.id)
+        self.assertEqual(len(group.feedbackset_set.all()), 4)
+        feedbacksets = group.feedbackset_set.order_by_deadline_datetime()
+        self.assertEqual(len(feedbacksets[0].groupcomment_set.all()), 6)
+        self.assertEqual(len(feedbacksets[1].groupcomment_set.all()), 0)
+        self.assertEqual(len(feedbacksets[2].groupcomment_set.all()), 4)
+        self.assertEqual(len(feedbacksets[3].groupcomment_set.all()), 7)
+        self.assertFalse(FeedbackSet.objects.filter(id=firstfeedbackset1.id).exists())
+        self.assertFalse(FeedbackSet.objects.filter(id=secondpublishedfeedbackset.id).exists())
+        self.assertFalse(FeedbackSet.objects.filter(id=newfeedbackse1.id).exists())
+        self.assertTrue(FeedbackSet.objects.filter(id=newleftoverfeedbackset.id).exists())
 
     def test_should_not_be_able_to_merge_if_feedbackset_grading_is_published_target(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
