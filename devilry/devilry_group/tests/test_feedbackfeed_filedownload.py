@@ -1,5 +1,6 @@
 # Python imports
 import shutil
+import unittest
 
 from django.http import Http404
 from model_mommy import mommy
@@ -135,6 +136,7 @@ class TestCompressedGroupCommentFileDownload(AbstractTestCase, TestCaseMixin):
     """
     viewclass = batch_download_files.CompressedGroupCommentFileDownloadView
 
+    @unittest.skip('Skipped for new batch download api, will probably be removed')
     def test_groupcomment_files_download(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             # Test download of all files for GroupComment.
@@ -158,6 +160,7 @@ class TestCompressedFeedbackSetFileDownload(AbstractTestCase, TestCaseMixin):
     """
     viewclass = batch_download_files.CompressedFeedbackSetFileDownloadView
 
+    @unittest.skip('Skipped for new batch download api, will probably be removed')
     def test_feedbackset_files_download(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             # Test download feedbackset files.
