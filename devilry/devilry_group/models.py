@@ -187,6 +187,8 @@ class AbstractGroupComment(comment_models.Comment):
             comment_type=self.comment_type,
         )
         commentcopy.save()
+        for commentfile in self.commentfile_set.all():
+            commentfile.copy_into_comment(commentcopy)
         return commentcopy
 
 

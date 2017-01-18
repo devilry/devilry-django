@@ -1,8 +1,10 @@
+import shutil
 import unittest
 from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.base import ContentFile
 from django.test import TestCase
 from django.utils import timezone
 from django.core.exceptions import ValidationError
@@ -19,7 +21,7 @@ from devilry.apps.core.models.assignment_group import GroupPopToFewCandiatesErro
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
-from devilry.devilry_comment.models import Comment
+from devilry.devilry_comment.models import Comment, CommentFile
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import FeedbackSet, GroupComment, ImageAnnotationComment
@@ -869,7 +871,11 @@ class TestAssignmentGroupPopCandidate(TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def testHelper(self):
+    def tearDown(self):
+        # Ignores errors if the path is not created.
+        shutil.rmtree('devilry_testfiles/filestore/', ignore_errors=True)
+
+    def testData(self):
         testAssignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testGroup1 = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
         testCandidate1 = core_mommy.candidate(group=testGroup1)
@@ -887,17 +893,23 @@ class TestAssignmentGroupPopCandidate(TestCase):
 
         for feedbackset in feedbacksets:
             for index in range(3):
-                mommy.make('devilry_group.GroupComment',
-                           feedback_set=feedbackset,
-                           user=testCandidate1.relatedstudent.user,
-                           user_role=GroupComment.USER_ROLE_STUDENT,
-                           _fill_optional=True)
+                comment = mommy.make('devilry_group.GroupComment',
+                                     feedback_set=feedbackset,
+                                     user=testCandidate1.relatedstudent.user,
+                                     user_role=GroupComment.USER_ROLE_STUDENT,
+                                     _fill_optional=True)
+                testcommentfile1 = mommy.make('devilry_comment.CommentFile', filename='testfile1.txt', comment=comment)
+                testcommentfile1.file.save('testfile1.txt', ContentFile('test1'))
+                testcommentfile2 = mommy.make('devilry_comment.CommentFile', filename='testfile2.txt', comment=comment)
+                testcommentfile2.file.save('testfile2.txt', ContentFile('test2'))
+
             for index in range(3):
                 mommy.make('devilry_group.GroupComment',
                            feedback_set=feedbackset,
                            user=testCandidate2.relatedstudent.user,
                            user_role=GroupComment.USER_ROLE_STUDENT,
                            _fill_optional=True)
+
             for index in range(7):
                 mommy.make('devilry_group.GroupComment',
                            feedback_set=feedbackset,
@@ -915,8 +927,15 @@ class TestAssignmentGroupPopCandidate(TestCase):
         with self.assertRaises(GroupPopNotCandiateError):
             testGroup1.pop_candidate(testCandidate)
 
+    def test_pop_candidate_when_there_is_only_one(self):
+        testAssignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testGroup = mommy.make('core.AssignmentGroup', parentnode=testAssignment)
+        testCandidate = core_mommy.candidate(group=testGroup)
+        with self.assertRaises(GroupPopToFewCandiatesError):
+            testGroup.pop_candidate(testCandidate)
+
     def test_pop_candidate_has_left_from_assignment_group(self):
-        testGroup1, testCandidate1, testCandidate2 = self.testHelper()
+        testGroup1, testCandidate1, testCandidate2 = self.testData()
 
         testGroup1.pop_candidate(testCandidate2)
 
@@ -933,7 +952,7 @@ class TestAssignmentGroupPopCandidate(TestCase):
         self.assertFalse(testGroup2.candidates.filter(id=testCandidate1.id).exists())
 
     def test_pop_candidate_first_feedbackset_cointains_equal_amount_of_comments(self):
-        testGroup1, testCandidate1, testCandidate2 = self.testHelper()
+        testGroup1, testCandidate1, testCandidate2 = self.testData()
 
         testGroup1.pop_candidate(testCandidate2)
 
@@ -944,7 +963,7 @@ class TestAssignmentGroupPopCandidate(TestCase):
         self.assertEqual(len(groupComments1), len(groupComments2))
 
     def test_pop_candiate_multiple_feedbacksets_with_comments(self):
-        testGroup1, testCandidate1, testCandidate2 = self.testHelper()
+        testGroup1, testCandidate1, testCandidate2 = self.testData()
 
         testGroup1.pop_candidate(testCandidate2)
         testGroup2 = Candidate.objects.get(id=testCandidate2.id).assignment_group
@@ -962,7 +981,7 @@ class TestAssignmentGroupPopCandidate(TestCase):
                 self.assertEqual(comment1.text, comment2.text)
 
     def test_examiners_has_been_copied_to_new_group(self):
-        testGroup1, testCandidate1, testCandidate2 = self.testHelper()
+        testGroup1, testCandidate1, testCandidate2 = self.testData()
         testGroup1.pop_candidate(testCandidate2)
         testGroup2 = Candidate.objects.get(id=testCandidate2.id).assignment_group
 
@@ -973,7 +992,7 @@ class TestAssignmentGroupPopCandidate(TestCase):
             self.assertEqual(examiner1.relatedexaminer, examiner2.relatedexaminer)
 
     def test_tags_has_been_copied_to_new_group(self):
-        testGroup1, testCandidate1, testCandidate2 = self.testHelper()
+        testGroup1, testCandidate1, testCandidate2 = self.testData()
         testGroup1.pop_candidate(testCandidate2)
         testGroup2 = Candidate.objects.get(id=testCandidate2.id).assignment_group
 
@@ -983,411 +1002,22 @@ class TestAssignmentGroupPopCandidate(TestCase):
         for tag1, tag2 in zip(tags1, tags2):
             self.assertEqual(tag1.tag, tag2.tag)
 
+    def test_commentfile_has_been_copied_into_new_group(self):
+        testGroup1, testCandidate1, testCandidate2 = self.testData()
+        testGroup1.pop_candidate(testCandidate2)
+        testGroup2 = Candidate.objects.get(id=testCandidate2.id).assignment_group
 
-@unittest.skip('Must be updated for new FeedbackSet structure')
-class TestAssignmentGroupSplit(TestCase):
-    def setUp(self):
-        self.testhelper = TestHelper()
-        self.testhelper.add(nodes="uni",
-                            subjects=["sub"],
-                            periods=["p1"],
-                            assignments=['a1'])
-
-    def _create_testdata(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2,student3)'
-                                    ':examiner(examiner1,examiner2,examiner3)')
-        self.testhelper.sub_p1_a1.max_points = 100
-        self.testhelper.sub_p1_a1.save()
-
-        # Add d1 and deliveries
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(1)')
-        self.testhelper.add_delivery("sub.p1.a1.g1", {"firsttry.py": "print first"},
-                                     time_of_delivery=datetime(2002, 1, 1))
-        delivery2 = self.testhelper.add_delivery("sub.p1.a1.g1", {"secondtry.py": "print second"},
-                                                 time_of_delivery=-1)  # days after deadline
-        self.testhelper.add_feedback(delivery=delivery2,
-                                     verdict={'grade': 'F', 'points': 10, 'is_passing_grade': False},
-                                     rendered_view='Bad',
-                                     timestamp=datetime(2005, 1, 1))
-
-        # Add d2 and deliveries
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d2:ends(4)')
-        delivery3 = self.testhelper.add_delivery("sub.p1.a1.g1", {"thirdtry.py": "print third"},
-                                                 time_of_delivery=-1)  # days after deadline
-        self.testhelper.add_feedback(delivery=delivery3,
-                                     verdict={'grade': 'C', 'points': 40, 'is_passing_grade': True},
-                                     rendered_view='Better',
-                                     timestamp=datetime(2010, 1, 1))
-
-        # Set attributes and tags
-        g1 = self.testhelper.sub_p1_a1_g1
-        g1.name = 'Stuff'
-        g1.is_open = True
-        g1.save()
-        g1.tags.create(tag='a')
-        g1.tags.create(tag='b')
-
-    def test_copy_all_except_candidates(self):
-        self._create_testdata()
-        g1 = self.testhelper.sub_p1_a1_g1
-        g1copy = g1.copy_all_except_candidates()
-        g1copy = self.testhelper.reload_from_db(g1copy)
-
-        # Basics
-        self.assertEquals(g1copy.name, 'Stuff')
-        self.assertTrue(g1copy.is_open)
-        self.assertEquals(g1copy.candidates.count(), 0)
-
-        # Tags
-        self.assertEquals(g1copy.tags.count(), 2)
-        tags = [t.tag for t in g1copy.tags.all()]
-        self.assertEquals(set(tags), {'a', 'b'})
-
-        # Examiners
-        self.assertEquals(g1copy.examiners.count(), 3)
-        examiner_usernames = [e.user.shortname for e in g1copy.examiners.all()]
-        examiner_usernames.sort()
-        self.assertEquals(examiner_usernames, ['examiner1', 'examiner2', 'examiner3'])
-
-        # Deliveries
-        deliveries = Delivery.objects.filter(deadline__assignment_group=g1).order_by('time_of_delivery')
-        copydeliveries = Delivery.objects.filter(deadline__assignment_group=g1copy).order_by('time_of_delivery')
-        self.assertEquals(len(deliveries), len(copydeliveries))
-        self.assertEquals(len(deliveries), 3)
-        for delivery, deliverycopy in zip(deliveries, copydeliveries):
-            self.assertEquals(delivery.delivery_type, deliverycopy.delivery_type)
-            self.assertEquals(delivery.time_of_delivery, deliverycopy.time_of_delivery)
-            self.assertEquals(delivery.number, deliverycopy.number)
-            self.assertEquals(delivery.delivered_by, deliverycopy.delivered_by)
-            self.assertEquals(delivery.deadline.deadline, deliverycopy.deadline.deadline)
-            self.assertEquals(delivery.delivered_by, deliverycopy.delivered_by)
-            self.assertEquals(delivery.alias_delivery, deliverycopy.alias_delivery)
-
-        # Active feedback
-        self.assertEquals(g1copy.feedback.grade, 'C')
-        self.assertEquals(g1copy.feedback.save_timestamp, datetime(2010, 1, 1))
-        self.assertEquals(g1copy.feedback.rendered_view, 'Better')
-        self.assertEquals(g1copy.feedback.points, 40)
-
-        self.assertEquals(
-            Delivery.objects.filter(deadline__assignment_group=g1copy).first().filemetas.first().filename,
-            'thirdtry.py')
-
-    def test_pop_candidate(self):
-        self._create_testdata()
-        g1 = self.testhelper.sub_p1_a1_g1
-        self.assertEquals(g1.candidates.count(), 3)  # We check this again after popping
-        candidate = g1.candidates.order_by('student__username')[1]
-        g1copy = g1.pop_candidate(candidate)
-
-        self.assertEquals(g1copy.name, 'Stuff')  # Sanity test - the tests for copying are above
-        self.assertEquals(g1copy.candidates.count(), 1)
-        self.assertEquals(g1.candidates.count(), 2)
-        self.assertEquals(candidate.student.shortname, 'student2')
-        self.assertEquals(g1copy.candidates.all()[0], candidate)
-
-    def test_pop_candidate_not_candidate(self):
-        self._create_testdata()
-        self.testhelper.add_to_path('uni;sub.p1.a2.other:candidate(student10)')
-        g1 = self.testhelper.sub_p1_a1_g1
-        other = self.testhelper.sub_p1_a2_other
-        candidate = other.candidates.all()[0]
-        with self.assertRaises(GroupPopNotCandiateError):
-            g1.pop_candidate(candidate)
-
-    def test_pop_candidate_to_few_candidates(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
-        g1 = self.testhelper.sub_p1_a1_g1
-        candidate = g1.candidates.all()[0]
-        with self.assertRaises(GroupPopToFewCandiatesError):
-            g1.pop_candidate(candidate)
-
-    def _create_mergetestdata(self):
-        self._create_testdata()
-        source = self.testhelper.sub_p1_a1_g1
-
-        self.testhelper.add_to_path('uni;sub.p1.a1.target:candidate(dewey):examiner(donald)')
-
-        # Add d1 and deliveries. d1 matches d1 in g1 (the source)
-        self.testhelper.add_to_path('uni;sub.p1.a1.target.d1:ends(1)')
-        self.testhelper.add_delivery("sub.p1.a1.target", {"a.py": "print a"},
-                                     time_of_delivery=1)  # days after deadline
-
-        # Add d2 and deliveries
-        self.testhelper.add_to_path('uni;sub.p1.a1.target.d2:ends(11)')
-        delivery = self.testhelper.add_delivery("sub.p1.a1.target", {"b.py": "print b"},
-                                                time_of_delivery=-1)  # days after deadline
-
-        # Create a delivery in g1 that is copy of one in target
-        delivery.copy(self.testhelper.sub_p1_a1_g1_d2)
-
-        # Double check the important values before the merge
-        self.assertEquals(self.testhelper.sub_p1_a1_g1_d1.deadline,
-                          self.testhelper.sub_p1_a1_target_d1.deadline)
-        self.assertNotEquals(self.testhelper.sub_p1_a1_g1_d2.deadline,
-                             self.testhelper.sub_p1_a1_target_d2.deadline)
-        target = self.testhelper.sub_p1_a1_target
-        self.assertEquals(source.deadlines.count(), 2)
-        self.assertEquals(target.deadlines.count(), 2)
-        self.assertEquals(self.testhelper.sub_p1_a1_g1_d1.deliveries.count(), 2)
-        self.assertEquals(self.testhelper.sub_p1_a1_g1_d2.deliveries.count(), 2)
-        self.assertEquals(self.testhelper.sub_p1_a1_target_d1.deliveries.count(), 1)
-        self.assertEquals(self.testhelper.sub_p1_a1_target_d2.deliveries.count(), 1)
-        return source, target
-
-    def test_merge_into_sanity(self):
-        source, target = self._create_mergetestdata()
-        source.name = 'The source'
-        source.is_open = False
-        source.save()
-        target.name = 'The target'
-        source.is_open = True
-        target.save()
-        source.merge_into(target)
-
-        # Source has been deleted?
-        self.assertFalse(AssignmentGroup.objects.filter(id=source.id).exists())
-
-        # Name or is_open unchanged?
-        target = self.testhelper.reload_from_db(target)
-        self.assertEquals(target.name, 'The target')
-        self.assertEquals(target.is_open, True)
-
-    def test_merge_into_last_delivery(self):
-        source, target = self._create_mergetestdata()
-        source.merge_into(target)
-        target = self.testhelper.reload_from_db(target)
-        self.assertEquals(
-            Delivery.objects.filter(deadline__assignment_group=target).first().filemetas.first().filename,
-            'b.py')
-
-    def test_merge_into_candidates(self):
-        source, target = self._create_mergetestdata()
-        source.merge_into(target)
-        self.assertEquals(target.examiners.count(), 4)
-        self.assertEquals(set([e.user.shortname for e in target.examiners.all()]),
-                          {'donald', 'examiner1', 'examiner2', 'examiner3'})
-
-    def test_merge_into_examiners(self):
-        source, target = self._create_mergetestdata()
-        source.merge_into(target)
-        self.assertEquals(target.candidates.count(), 4)
-        self.assertEquals(set([e.student.shortname for e in target.candidates.all()]),
-                          {'dewey', 'student1', 'student2', 'student3'})
-
-    def test_merge_into_deadlines(self):
-        source, target = self._create_mergetestdata()
-        deadline1 = self.testhelper.sub_p1_a1_g1_d1.deadline
-        deadline2 = self.testhelper.sub_p1_a1_g1_d2.deadline
-        deadline3 = self.testhelper.sub_p1_a1_target_d2.deadline
-
-        # A control delivery that we use to make sure timestamps are not messed with
-        control_delivery = self.testhelper.sub_p1_a1_g1_d1.deliveries.order_by('time_of_delivery')[0]
-        control_delivery_id = control_delivery.id
-        self.assertEquals(control_delivery.time_of_delivery, datetime(2002, 1, 1))
-
-        source.merge_into(target)
-        deadlines = target.deadlines.order_by('deadline')
-        self.assertEquals(len(deadlines), 3)
-        self.assertEquals(deadlines[0].deadline, deadline1)
-        self.assertEquals(deadlines[1].deadline, deadline2)
-        self.assertEquals(deadlines[2].deadline, deadline3)
-
-        self.assertEquals(deadlines[0].deliveries.count(), 3)  # d1 from both have been merged
-        self.assertEquals(deadlines[1].deliveries.count(), 1)  # g1(source) d2
-        self.assertEquals(deadlines[2].deliveries.count(), 1)  # target d2
-
-        control_delivery = Delivery.objects.get(deadline__assignment_group=target,
-                                                id=control_delivery_id)
-        self.assertEquals(control_delivery.time_of_delivery, datetime(2002, 1, 1))
-
-    def test_merge_into_active_feedback(self):
-        source, target = self._create_mergetestdata()
-        source.merge_into(target)
-        self.assertEquals(target.feedback.grade, 'C')
-        self.assertEquals(target.feedback.save_timestamp, datetime(2010, 1, 1))
-        self.assertEquals(target.feedback.rendered_view, 'Better')
-        self.assertEquals(target.feedback.points, 40)
-
-    def test_merge_into_active_feedback_target(self):
-        source, target = self._create_mergetestdata()
-
-        # Create the feedack that should become "active feedback" after the merge
-        delivery = self.testhelper.add_delivery(target, {"good.py": "print good"},
-                                                time_of_delivery=2)  # days after deadline
-        self.testhelper.add_feedback(delivery=delivery,
-                                     verdict={'grade': 'A', 'points': 100, 'is_passing_grade': True},
-                                     rendered_view='Good',
-                                     timestamp=datetime(2011, 1, 1))
-
-        source.merge_into(target)
-        self.assertEquals(target.feedback.grade, 'A')
-        self.assertEquals(target.feedback.save_timestamp, datetime(2011, 1, 1))
-        self.assertEquals(target.feedback.rendered_view, 'Good')
-        self.assertEquals(target.feedback.points, 100)
-
-    def test_merge_into_delivery_numbers(self):
-        source, target = self._create_mergetestdata()
-
-        def get_deliveries_ordered_by_timestamp(group):
-            return Delivery.objects.filter(deadline__assignment_group=group).order_by('time_of_delivery')
-        for delivery in get_deliveries_ordered_by_timestamp(source):
-            delivery.number = 0
-            delivery.save()
-
-        source.merge_into(target)
-        deliveries = get_deliveries_ordered_by_timestamp(target)
-        self.assertEquals(deliveries[0].number, 1)
-        self.assertEquals(deliveries[1].number, 2)
-        self.assertEquals(deliveries[2].number, 3)
-
-    def test_merge_into_delivery_numbers_unsuccessful(self):
-        source, target = self._create_mergetestdata()
-
-        # Make all deliveries unsuccessful with number=0
-        def get_deliveries_ordered_by_timestamp(group):
-            return Delivery.objects.filter(deadline__assignment_group=group).order_by('time_of_delivery')
-
-        def set_all_unsuccessful(group):
-            for unsuccessful_delivery in get_deliveries_ordered_by_timestamp(group):
-                unsuccessful_delivery.number = 0
-                unsuccessful_delivery.successful = False
-                unsuccessful_delivery.save()
-
-        set_all_unsuccessful(source)
-        set_all_unsuccessful(target)
-
-        # Make a single delivery successful, and set its timestamp so it is the oldest
-        deliveries = get_deliveries_ordered_by_timestamp(source)
-        delivery = deliveries[0]
-        delivery.number = 10
-        delivery.successful = True
-        delivery.time_of_delivery = datetime(2001, 1, 1)
-        delivery.save()
-
-        source.merge_into(target)
-        deliveries = get_deliveries_ordered_by_timestamp(target)
-        self.assertEquals(deliveries[0].time_of_delivery, datetime(2001, 1, 1))
-        self.assertEquals(deliveries[0].number, 1)
-        self.assertEquals(deliveries[1].number, 0)
-        self.assertEquals(deliveries[2].number, 0)
-        self.assertEquals(deliveries[3].number, 0)
-
-    def test_merge_with_copy_of_in_both(self):
-        for groupname in 'source', 'target':
-            self.testhelper.add(
-                nodes="uni",
-                subjects=["sub"],
-                periods=["p1"],
-                assignments=['a1'],
-                assignmentgroups=['{groupname}:candidate(student1):examiner(examiner1)'.format(groupname=groupname)],
-                deadlines=['d1:ends(1)'])
-            self.testhelper.add_delivery("sub.p1.a1.{groupname}".format(groupname=groupname),
-                                         {'a.txt': "a"},
-                                         time_of_delivery=datetime(2002, 1, 1))
-        source = self.testhelper.sub_p1_a1_source
-        target = self.testhelper.sub_p1_a1_target
-
-        # Copy the delivery from source into target, and vica versa
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source).count(), 1)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target).count(), 1)
-        sourcedeadline = source.deadlines.all()[0]
-        targetdeadine = target.deadlines.all()[0]
-        sourcedeadline.deliveries.all()[0].copy(targetdeadine)
-        targetdeadine.deliveries.all()[0].copy(sourcedeadline)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source).count(), 2)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target).count(), 2)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source,
-                                                  copy_of__deadline__assignment_group=target).count(), 1)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target,
-                                                  copy_of__deadline__assignment_group=source).count(), 1)
-
-        # Merge and make sure we do not get any duplicates
-        # - We should only end up with 2 deliveries, since 2 of the deliveries are copies
-        source.merge_into(target)
-        deliveries = Delivery.objects.filter(deadline__assignment_group=target)
-        self.assertEquals(len(deliveries), 2)
-        self.assertEquals(deliveries[0].copy_of, None)
-        self.assertEquals(deliveries[1].copy_of, None)
-
-    def test_merge_with_copy_of_in_other(self):
-        for groupname in 'source', 'target', 'other':
-            self.testhelper.add(
-                nodes="uni",
-                subjects=["sub"],
-                periods=["p1"],
-                assignments=['a1'],
-                assignmentgroups=['{groupname}:candidate(student1):examiner(examiner1)'.format(groupname=groupname)],
-                deadlines=['d1:ends(1)'])
-            self.testhelper.add_delivery("sub.p1.a1.{groupname}".format(groupname=groupname),
-                                         {'a.txt': "a"},
-                                         time_of_delivery=datetime(2002, 1, 1))
-        source = self.testhelper.sub_p1_a1_source
-        target = self.testhelper.sub_p1_a1_target
-        other = self.testhelper.sub_p1_a1_other
-
-        # Copy the delivery from source into target, and vica versa
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source).count(), 1)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target).count(), 1)
-        for group in source, target:
-            deadline = group.deadlines.all()[0]
-            other.deadlines.all()[0].deliveries.all()[0].copy(deadline)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source).count(), 2)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target).count(), 2)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source,
-                                                  copy_of__deadline__assignment_group=target).count(), 0)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target,
-                                                  copy_of__deadline__assignment_group=source).count(), 0)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source,
-                                                  copy_of__deadline__assignment_group=other).count(), 1)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target,
-                                                  copy_of__deadline__assignment_group=other).count(), 1)
-
-        # Merge and make sure we do not get any duplicates
-        # - We should only end up with 3 deliveries, one from source, one from
-        #   target, and one copy from other (both have the same copy from
-        #   other, so we should not get any duplicates)
-        source.merge_into(target)
-        deliveries = Delivery.objects.filter(deadline__assignment_group=target)
-        self.assertEquals(deliveries.filter(copy_of__isnull=True).count(), 2)
-        self.assertEquals(deliveries.filter(copy_of__isnull=False).count(), 1)
-        self.assertEquals(len(deliveries), 3)
-
-    def test_merge_many_groups(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.a:candidate(student1):examiner(examiner1)')
-        self.testhelper.add_to_path('uni;sub.p1.a1.b:candidate(student2):examiner(examiner2)')
-        self.testhelper.add_to_path('uni;sub.p1.a1.c:candidate(student1,student3):examiner(examiner1,examiner3)')
-        for groupname in 'a', 'b', 'c':
-            self.testhelper.add(nodes="uni",
-                                subjects=["sub"],
-                                periods=["p1"],
-                                assignments=['a1'],
-                                assignmentgroups=[groupname],
-                                deadlines=['d1:ends(1)'])
-            self.testhelper.add_delivery("sub.p1.a1.{groupname}".format(**vars()),
-                                         {groupname: groupname},
-                                         time_of_delivery=datetime(2002, 1, 1))
-        a = self.testhelper.sub_p1_a1_a
-        b = self.testhelper.sub_p1_a1_b
-        c = self.testhelper.sub_p1_a1_c
-
-        AssignmentGroup.merge_many_groups([a, b], c)
-        self.assertFalse(AssignmentGroup.objects.filter(id=a.id).exists())
-        self.assertFalse(AssignmentGroup.objects.filter(id=b.id).exists())
-        self.assertTrue(AssignmentGroup.objects.filter(id=c.id).exists())
-        c = self.testhelper.reload_from_db(self.testhelper.sub_p1_a1_c)
-        candidates = [cand.student.shortname for cand in c.candidates.all()]
-        self.assertEquals(len(candidates), 3)
-        self.assertEquals(set(candidates), {'student1', 'student2', 'student3'})
-
-        examiners = [cand.user.shortname for cand in c.examiners.all()]
-        self.assertEquals(len(examiners), 3)
-        self.assertEquals(set(examiners), {'examiner1', 'examiner2', 'examiner3'})
-
-        deadlines = c.deadlines.all()
-        self.assertEquals(len(deadlines), 1)
-        deliveries = deadlines[0].deliveries.all()
-        self.assertEquals(len(deliveries), 3)
+        feedbacksets1 = FeedbackSet.objects.filter(group=testGroup1).order_by_deadline_datetime()
+        feedbacksets2 = FeedbackSet.objects.filter(group=testGroup2).order_by_deadline_datetime()
+        for feedbackset1, feedbackset2 in zip(feedbacksets1, feedbacksets2):
+            groupComments1 = GroupComment.objects.filter(feedback_set=feedbackset1).order_by('created_datetime')
+            groupComments2 = GroupComment.objects.filter(feedback_set=feedbackset2).order_by('created_datetime')
+            for comment1, comment2 in zip(groupComments1, groupComments2):
+                commentfiles1 = CommentFile.objects.filter(comment=comment1).order_by('filename')
+                commentfiles2 = CommentFile.objects.filter(comment=comment2).order_by('filename')
+                for commentfile1, commentfile2 in zip(commentfiles1, commentfiles2):
+                    self.assertEqual(commentfile1.file, commentfile2.file)
+                    self.assertEqual(commentfile1.filename, commentfile2.filename)
 
 
 class TestAssignmentGroupStatus(TestCase):
