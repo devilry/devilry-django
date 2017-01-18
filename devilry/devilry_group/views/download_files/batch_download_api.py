@@ -64,7 +64,7 @@ class AbstractBatchCompressionAPIView(View):
         JSON-serializable dictionary with the response.
 
         Args:
-            context_object_id:
+            context_object_id: object the BatchOperation references.
 
         Returns:
             (dict): A JSON-serializable dictionary.
