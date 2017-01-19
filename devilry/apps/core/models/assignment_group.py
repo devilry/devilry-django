@@ -1342,7 +1342,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     def copy_all_except_candidates(self):
         """
-        copy everything assignment group contains into a new,
+        copy everything assignment group contains into a new AssignmentGroup,
         except candiates.
 
         Returns:
@@ -1546,6 +1546,33 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         for feedbackset in self.feedbackset_set.order_by_deadline_datetime():
             if feedbackset != self.cached_data.first_feedbackset:
                 feedbackset.copy_feedbackset_into_group(group=groupcopy)
+
+    def get_current_state(self):
+        """
+        Dumps the current state of this AssignmentGroup and all inherent models such as
+        user.id of candidates and examiners, tags and feedbacksets into a dictionary.
+
+        Returns:
+            dictonary with current state of assignmentGroup and all inherent models
+        """
+        candidate_queryset = self.candidates.all().select_related('relatedstudent__user')
+        candidates = [candidate.relatedstudent.user.id for candidate in candidate_queryset]
+        examiner_queryset = self.examiners.all().select_related('relatedexaminer__user')
+        examiners = [examiner.relatedexaminer.user.id for examiner in examiner_queryset]
+        tag_queryset = self.tags.all()
+        tags = [tag.tag for tag in tag_queryset]
+        feedbackset_queryset = self.feedbackset_set.order_by_deadline_datetime()
+        feedbacksets = [feedbackset.get_current_state() for feedbackset in feedbackset_queryset]
+
+        return {
+            'name': self.name,
+            'created_datetime': self.created_datetime,
+            'candidates': candidates,
+            'examiners': examiners,
+            'tags': tags,
+            'feedbacksets': feedbacksets,
+            'parentnode': self.parentnode.id
+        }
 
     def get_status(self):
         """

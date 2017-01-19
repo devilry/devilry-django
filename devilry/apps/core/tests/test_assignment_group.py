@@ -1096,6 +1096,68 @@ class TestAssignmentGroupPopCandidate(TestCase):
                     self.assertEqual(commentfile1.filename, commentfile2.filename)
                     self.assertEqual(commentfile1.file.path, commentfile2.file.path)
 
+
+class TestAssignmentGroupGetCurrentState(TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_candidate_ids(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        candidate1 = core_mommy.candidate(group=testgroup).relatedstudent.user.id
+        candidate2 = core_mommy.candidate(group=testgroup).relatedstudent.user.id
+        candidate3 = core_mommy.candidate(group=testgroup).relatedstudent.user.id
+        state = testgroup.get_current_state()
+        self.assertListEqual(state['candidates'], [candidate1, candidate2, candidate3])
+
+    def test_examiner_ids(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        examiner1 = core_mommy.examiner(group=testgroup).relatedexaminer.user.id
+        examiner2 = core_mommy.examiner(group=testgroup).relatedexaminer.user.id
+        examiner3 = core_mommy.examiner(group=testgroup).relatedexaminer.user.id
+        state = testgroup.get_current_state()
+        self.assertListEqual(state['examiners'], [examiner1, examiner2, examiner3])
+
+    def test_tags(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        mommy.make('core.AssignmentGroupTag', assignment_group=testgroup, tag='awesome')
+        mommy.make('core.AssignmentGroupTag', assignment_group=testgroup, tag='cool')
+        mommy.make('core.AssignmentGroupTag', assignment_group=testgroup, tag='imba')
+        state = testgroup.get_current_state()
+        self.assertListEqual(state['tags'], ['awesome', 'cool', 'imba'])
+
+    def test_name(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group1')
+        state = testgroup.get_current_state()
+        self.assertEqual(state['name'], 'group1')
+
+    def test_created_datetime(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        state = testgroup.get_current_state()
+        self.assertEqual(state['created_datetime'], testgroup.created_datetime)
+
+    def test_parentnode(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', id=10)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        state = testgroup.get_current_state()
+        self.assertEqual(state['parentnode'], 10)
+
+    def test_feedbacksets(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        feedbacksets = []
+        feedbacksets.append(group_mommy.feedbackset_first_attempt_published(testgroup).id)
+        feedbacksets.append(group_mommy.feedbackset_new_attempt_published(testgroup).id)
+        feedbacksets.append(group_mommy.feedbackset_new_attempt_unpublished(testgroup).id)
+        state = testgroup.get_current_state()
+        state_feedbacksets_ids = [feedbackset['id'] for feedbackset in state['feedbacksets']]
+        self.assertListEqual(state_feedbacksets_ids, feedbacksets)
+
+
 class TestAssignmentGroupStatus(TestCase):
     def setUp(self):
         self.assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
