@@ -1,13 +1,25 @@
 // Header
 .devilry-group-feedbackfeed-header {
-  .devilry-group-feedbackfeed-current-deadline-heading {
-    margin: 0 0 0 0;
-    padding: 0;
-    font-size: @cradmin-page-header-h1-font-size;
-    line-height: @cradmin-page-header-h1-line-height;
-    vertical-align: middle;
-    text-transform: uppercase;
+  padding: @cradmin-page-header-padding-top 0 @cradmin-page-header-padding-bottom 0;
+  background: @cradmin-page-header-bg;
+  color: @cradmin-page-header-color;
+  border: none;
+  margin: @cradmin-page-header-margin;
 
+  .devilry-group-feedbackfeed-current-deadline-wrapper {
+    @media(min-width: @screen-sm-min) {
+      text-align: right;
+    }
+  }
+
+  .devilry-group-feedbackfeed-current-deadline-heading {
+    padding: 0;
+    margin: 0;
+    font-size: @cradmin-page-header-h1-font-size;
+    font-weight: bold;
+    vertical-align: middle;
+    line-height: @cradmin-page-header-h1-line-height;
+    //text-transform: uppercase;
   }
 
   .devilry-group-feedbackfeed-feedback-button{}
@@ -16,9 +28,25 @@
 
   .devilry-group-feedbackfeed-create-feedbackset-button{}
 
-  .devilry-group-feedbackfeed-header-assignment{}
+  .devilry-group-feedbackfeed-header-assignment {
+    padding: 0;
+    margin: 0;
+    font-size: @cradmin-page-header-h1-font-size;
+    font-weight: bold;
+    vertical-align: middle;
+    line-height: @cradmin-page-header-h1-line-height;
+    //text-transform: uppercase;
+  }
 
-  .devilry-group-feedbackfeed-header-subject-period{}
+  .devilry-group-feedbackfeed-header-subject-period{
+    margin-bottom: 15px;
+    .devilry-group-feedbackfeed-header-subject {
+      display: inline;
+    }
+    .devilry-group-feedbackfeed-header-period {
+      display: inline;
+    }
+  }
 
   .devilry-group-feedbackfeed-current-deadline {}
 
@@ -31,27 +59,26 @@
 // Sidebar
 .devilry-group-feedbackfeed-sidebar {
   background: @cradmin-focus-bg;
-  padding: 10px;
-  text-align: right;
+  padding: 5px 15px 0 15px;
+  margin-bottom: 15px;
 
   &__title {
     margin-top: 0;
     margin-bottom: 5px;
     font-size: @font-size-h4;
+    display: inline-block;
   }
 
   &__list {
     list-style: none;
     margin: 0;
     padding: 0;
+    display: inline-block;
     li {
       margin: 0;
+      display: inline-block;
       padding: 0;
     }
-  }
-
-  &:last-child {
-    margin-bottom: 0;
   }
 }
 
@@ -63,10 +90,10 @@
    Event messages such as passed, failed and general messages between comments.
    */
     .devilry-group-feedbackfeed-event-message{
-        margin-left: 3.0em;
-        margin-top: 4.0em;
-        margin-bottom: 4.0em;
-        font-size: 1.0em;
+        margin-left: 25px;
+        margin-top: 10px;
+        margin-bottom: 25px;
+        font-size: @font-size-base;
     }
 
     .event-spacing{

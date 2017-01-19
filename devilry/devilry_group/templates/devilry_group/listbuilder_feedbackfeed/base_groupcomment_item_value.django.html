@@ -12,27 +12,23 @@
 
         {% include "devilry_group/include/groupcomment_edit_delete_option.html" %}
 
-        <div class="devilry-group-comment-meta">
-            <div class="devilry-group-comment-created-by">
+        <p class="devilry-group-comment-meta">
+            <span class="devilry-group-comment-created-by-role comment-created-by-role-text">
+                ({{ me.group_comment.user_role }})
+            </span>
+            <span class="devilry-group-comment-created-by comment-created-by-text">
                 {% if me.group_comment.user_role == 'student'%}
-                    <p class="comment-created-by-text">
-                        {% devilry_single_candidate_long_displayname me.assignment me.user_obj me.devilry_viewrole %}
-                    </p>
+                    {% devilry_single_candidate_long_displayname me.assignment me.user_obj me.devilry_viewrole %}
                 {% elif me.group_comment.user_role == 'examiner' %}
-                    <p class="comment-created-by-text">
-                        {% devilry_single_examiner_long_displayname me.assignment me.user_obj me.devilry_viewrole %} &nbsp;
-                    </p>
+                    {% devilry_single_examiner_long_displayname me.assignment me.user_obj me.devilry_viewrole %} &nbsp;
                 {% else %}
-                    <p class="comment-created-by-text">{% devilry_user_verbose_inline me.group_comment.user %} &nbsp;</p>
+                    {% devilry_user_verbose_inline me.group_comment.user %}
                 {% endif %}
-            </div>
-            <div class="devilry-group-comment-created-by-role">
-                <p class="comment-created-by-role-text">({{ me.group_comment.user_role }})&nbsp;</p>
-            </div>
-            <div class="devilry-group-comment-published-date">
-                <p class="comment-published-date-text"> {{ me.group_comment|devilry_group_comment_published }}</p>
-            </div>
-        </div>
+            </span>
+            <span class="devilry-group-comment-published-date comment-published-date-text">
+                {{ me.group_comment|devilry_group_comment_published }}
+            </span>
+        </p>
         <div class="devilry-group-comment-text">
             {% blocktrans with text=me.group_comment.text|devilry_group_markdown|safe %} {{text}} {% endblocktrans %}
         </div>

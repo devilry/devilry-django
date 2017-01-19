@@ -230,13 +230,12 @@ class FeedbackFeedBaseView(create.CreateView):
                 # css_class='panel-footer'
             ))
         return [
-            layout.Fieldset(
-                '',
+            layout.Div(
                 layout.Div(
                     *field_layout
                 ),
                 layout.Div(
-                    layout.Div(*self.get_buttons()),
+                    *self.get_buttons(),
                     css_class="text-right"
                 ),
                 css_class='comment-form-container'

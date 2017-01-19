@@ -7589,35 +7589,16 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   opacity: 1;
 }
 .comment-form-container {
-  background-color: #f2f2f2;
+  background-color: #fff;
   padding: 10px 10px 10px 10px;
 }
 .devilry-group-feedbackfeed-comment {
-  display: flex;
+  display: block;
   margin-bottom: 15px;
-  background-color: #f2f2f2;
-  min-width: 40%;
-  max-width: 100%;
+  background-color: #fff;
   min-height: 5.0em;
-  border-style: solid;
-  border-color: #666666;
-  border-width: 0 0 0 12px;
-}
-.devilry-group-feedbackfeed-comment:before,
-.devilry-group-feedbackfeed-comment:after {
-  content: " ";
-  display: table;
-}
-.devilry-group-feedbackfeed-comment:after {
-  clear: both;
-}
-.devilry-group-feedbackfeed-comment:before,
-.devilry-group-feedbackfeed-comment:after {
-  content: " ";
-  display: table;
-}
-.devilry-group-feedbackfeed-comment:after {
-  clear: both;
+  border: 0 solid #666666;
+  border-left-width: 12px;
 }
 .devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-student {
   border-left-color: #F7D71E;
@@ -7628,48 +7609,50 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 .devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-admin {
   border-left-color: #B568A9;
 }
-.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content {
-  float: left;
+.devilry-group-feedbackfeed-comment--with-badge {
+  display: flex;
+  min-width: 40%;
+  max-width: 100%;
+}
+.devilry-group-feedbackfeed-comment--with-badge .devilry-group-feedbackfeed-comment-content {
   max-width: 100%;
   min-width: 65%;
-  padding-bottom: 1.0em;
-  padding-left: 1.5em;
-  padding-right: 0.3em;
-  padding-top: 1.0em;
+}
+@media (min-width: 992px) {
+  .devilry-group-feedbackfeed-comment--with-badge .devilry-group-feedbackfeed-comment-content {
+    min-width: 75%;
+  }
+}
+@media (min-width: 1200px) {
+  .devilry-group-feedbackfeed-comment--with-badge .devilry-group-feedbackfeed-comment-content {
+    min-width: 80%;
+  }
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content {
+  padding: 10px 15px;
   /**/
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-meta {
-  word-break: break-all;
+  display: block;
   white-space: normal;
-  float: left;
   color: #333333;
-  font-size: 1.2em;
-  display: inline-block;
+  font-size: 14px;
+  line-height: 20px;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-created-by {
-  word-break: break-all;
-  white-space: normal;
-  float: left;
-  color: #333333;
-  font-size: 1.2em;
-  display: inline-block;
   font-weight: bold;
+  font-size: 16px;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-created-by-role {
-  word-break: break-all;
-  white-space: normal;
-  float: left;
-  color: #333333;
-  font-size: 1.2em;
-  display: inline-block;
+  display: block;
+}
+@media (min-width: 768px) {
+  .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-created-by-role {
+    float: right;
+  }
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-published-date {
-  word-break: break-all;
-  white-space: normal;
-  float: left;
-  color: #333333;
-  font-size: 1.2em;
-  display: inline-block;
+  display: block;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text {
   max-width: 60.0em;
@@ -7687,13 +7670,22 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   border-left: 1px solid #999999;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field {
-  float: right;
   min-width: 35%;
   min-height: 100%;
   text-align: center;
   display: table-cell;
   vertical-align: middle;
   position: relative;
+}
+@media (min-width: 992px) {
+  .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field {
+    min-width: 25%;
+  }
+}
+@media (min-width: 1200px) {
+  .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field {
+    min-width: 20%;
+  }
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field.after-deadline-badge {
   background-color: #971009;
@@ -8672,13 +8664,42 @@ fieldset[disabled] .button_student {
 .button_student:hover {
   background_color: #F7D71E _35;
 }
+.devilry-group-feedbackfeed-header {
+  padding: 25px 0 12px 0;
+  background: none;
+  color: #000000;
+  border: none;
+  margin: 0 0 15px 0;
+}
+@media (min-width: 768px) {
+  .devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-current-deadline-wrapper {
+    text-align: right;
+  }
+}
 .devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-current-deadline-heading {
-  margin: 0 0 0 0;
   padding: 0;
+  margin: 0;
   font-size: 21px;
-  line-height: 31px;
+  font-weight: bold;
   vertical-align: middle;
-  text-transform: uppercase;
+  line-height: 31px;
+}
+.devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-header-assignment {
+  padding: 0;
+  margin: 0;
+  font-size: 21px;
+  font-weight: bold;
+  vertical-align: middle;
+  line-height: 31px;
+}
+.devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-header-subject-period {
+  margin-bottom: 15px;
+}
+.devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-header-subject-period .devilry-group-feedbackfeed-header-subject {
+  display: inline;
+}
+.devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-header-subject-period .devilry-group-feedbackfeed-header-period {
+  display: inline;
 }
 .devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-current-deadline-expired {
   font-weight: bold;
@@ -8686,25 +8707,25 @@ fieldset[disabled] .button_student {
 }
 .devilry-group-feedbackfeed-sidebar {
   background: #fff;
-  padding: 10px;
-  text-align: right;
+  padding: 5px 15px 0 15px;
+  margin-bottom: 15px;
 }
 .devilry-group-feedbackfeed-sidebar__title {
   margin-top: 0;
   margin-bottom: 5px;
   font-size: 20px;
+  display: inline-block;
 }
 .devilry-group-feedbackfeed-sidebar__list {
   list-style: none;
   margin: 0;
   padding: 0;
+  display: inline-block;
 }
 .devilry-group-feedbackfeed-sidebar__list li {
   margin: 0;
+  display: inline-block;
   padding: 0;
-}
-.devilry-group-feedbackfeed-sidebar:last-child {
-  margin-bottom: 0;
 }
 .devilry-group-feedbackfeed-feed {
   /*
@@ -8712,40 +8733,40 @@ fieldset[disabled] .button_student {
    */
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message {
-  margin-left: 3.0em;
-  margin-top: 4.0em;
-  margin-bottom: 4.0em;
-  font-size: 1.0em;
+  margin-left: 25px;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-deadline-created {
-  margin-left: 3.0em;
-  margin-top: 4.0em;
-  margin-bottom: 4.0em;
-  font-size: 1.0em;
+  margin-left: 25px;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-deadline-expired {
-  margin-left: 3.0em;
-  margin-top: 4.0em;
-  margin-bottom: 4.0em;
-  font-size: 1.0em;
+  margin-left: 25px;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-passed {
-  margin-left: 3.0em;
-  margin-top: 4.0em;
-  margin-bottom: 4.0em;
-  font-size: 1.0em;
+  margin-left: 25px;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-grade {
-  margin-left: 3.0em;
-  margin-top: 4.0em;
-  margin-bottom: 4.0em;
-  font-size: 1.0em;
+  margin-left: 25px;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-failed {
-  margin-left: 3.0em;
-  margin-top: 4.0em;
-  margin-bottom: 4.0em;
-  font-size: 1.0em;
+  margin-left: 25px;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-feed-uploaded-file-tag {
   display: inline-block;

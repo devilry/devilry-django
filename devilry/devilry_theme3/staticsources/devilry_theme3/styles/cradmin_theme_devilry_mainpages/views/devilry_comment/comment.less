@@ -4,17 +4,13 @@
 }
 
 .devilry-group-feedbackfeed-comment {
-    display: flex;
+    display: block;
     margin-bottom: 15px;
     background-color: @comment-background-color;
-    min-width: 40%;
-    max-width: 100%;
     min-height: 5.0em;
-    border-style: solid;
-    border-color: @default-left-border-color;
-    border-width: 0 0 0 12px;
-    .clearfix();
-
+    border: 0 solid @default-left-border-color;
+    border-left-width: 12px;
+    //.clearfix();
 
 
     &.devilry-group-feedbackfeed-comment-student {
@@ -27,35 +23,52 @@
         border-left-color: @devilry-anyadmin-bgcolor;
     }
 
+    &--with-badge {
+        display: flex;
+        min-width: 40%;
+        max-width: 100%;
+        .devilry-group-feedbackfeed-comment-content {
+            //float:left;
+            max-width:100%;
+            min-width: 65%;
+            @media(min-width: @screen-md-min) {
+                min-width: 75%;
+            }
+            @media(min-width: @screen-lg-min) {
+                min-width: 80%;
+            }
+        }
+    }
+
     .devilry-group-feedbackfeed-comment-content {
-        float:left;
-        max-width:100%;
-        min-width: 65%;
-        padding-bottom:1.0em;
-        padding-left:1.5em;
-        padding-right:0.3em;
-        padding-top: 1.0em;
+        padding: 10px 15px;
 
-        .devilry-group-comment-meta{
-            word-break: break-all;
+        .devilry-group-comment-meta {
+            //word-break: break-all;
+            display: block;
             white-space: normal;
-            float: left;
+            //float: left;
             color: @comment-text-color;
-            font-size: 1.2em;
-            display: inline-block;
+            font-size: @font-size-small;
+            line-height: (@font-size-base + 4px);
         }
 
-        .devilry-group-comment-created-by{
-            .devilry-group-comment-meta;
+        .devilry-group-comment-created-by {
+            //.devilry-group-comment-meta;
             font-weight: bold;
+            font-size: @font-size-base;
+            //margin-right: 8px;
         }
 
-        .devilry-group-comment-created-by-role{
-            .devilry-group-comment-meta;
+        .devilry-group-comment-created-by-role {
+            display: block;
+            @media(min-width: @screen-sm-min) {
+                float: right;
+            }
         }
 
-        .devilry-group-comment-published-date{
-            .devilry-group-comment-meta;
+        .devilry-group-comment-published-date {
+            display: block;
         }
 
         /**/
@@ -79,13 +92,19 @@
     }
 
     .devilry-group-feedbackfeed-right-badge-field{
-        float: right;
+        //float: right;
         min-width: 35%;
         min-height: 100%;
         text-align: center;
         display: table-cell;
         vertical-align: middle;
         position: relative;
+        @media(min-width: @screen-md-min) {
+            min-width: 25%;
+        }
+        @media(min-width: @screen-lg-min) {
+            min-width: 20%;
+        }
 
         &.after-deadline-badge{
             background-color: #971009;

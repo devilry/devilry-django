@@ -15,7 +15,7 @@
             <span class="fa fa-spinner fa-spin" aria-hidden="true"></span>
             <span class="text-muted">{% trans "preparing download" %}</span>
         </span>
-        <button class="btn btn-default btn-block devilry-batchprocessed-download__startbutton"
+        <button class="btn btn-default devilry-batchprocessed-download__startbutton"
                 data-ievv-jsbase-widget="devilry-download-compressed-archive-startbutton"
                     data-ievv-jsbase-widget-config='{
                          "signalNameSpace": "download-feedbackset-{{ me.feedbackset.id }}"
@@ -24,7 +24,7 @@
                 {{ verbose_feedbackset }} deadline
             {% endblocktrans %}
         </button>
-        <a class="btn btn-default btn-block devilry-batchprocessed-download__downloadlink"
+        <a class="btn btn-default devilry-batchprocessed-download__downloadlink"
                 data-ievv-jsbase-widget="devilry-download-compressed-archive-downloadlink"
                 data-ievv-jsbase-widget-config='{
                      "signalNameSpace": "download-feedbackset-{{ me.feedbackset.id }}"

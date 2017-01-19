@@ -15,74 +15,70 @@
     <script src="{% static "devilry_group/src/js/devilry-group.js"%}" type="application/javascript"></script>
 {% endblock jsimports %}
 
-{% block pageheader-inner %}
-    <div class="row">
-        <div class="devilry-group-feedbackfeed-header">
-            <div class="col-sm-7 text-left">
-                <h1 class="devilry-group-feedbackfeed-header-assignment">
-                    {{ assignment.long_name }}
-                </h1>
-                <div class="devilry-group-feedbackfeed-header-subject-period">
-                    <p class="devilry-group-feedbackfeed-header-subject">
-                        {{ subject.long_name }}
-                    </p>
-                    <p class="devilry-group-feedbackfeed-header-period">
-                        {{ period.long_name }}
-                    </p>
-                </div>
-                {% block navigation %}
-                {% endblock %}
+{% block pageheader %}
+    <div class="container">
+        <div class="row">
+            <div class="devilry-group-feedbackfeed-header">
+                <div class="col-sm-7 text-left">
+                    <h1 class="devilry-group-feedbackfeed-header-assignment">
+                        {{ assignment.long_name }}
+                    </h1>
+                    <div class="devilry-group-feedbackfeed-header-subject-period">
+                        <p class="devilry-group-feedbackfeed-header-subject">
+                            {{ subject.long_name }}
+                        </p>
+                        <p class="devilry-group-feedbackfeed-header-period">
+                            {{ period.long_name }}
+                        </p>
+                    </div>
+                    {% block navigation %}
+                    {% endblock %}
 
-            </div>
-            <div class="col-sm-5 text-right">
-                {% if last_deadline %}
-                    <h2 class="devilry-group-feedbackfeed-current-deadline-heading">
-                        {% trans "Current deadline" %}
-                    </h2>
-                    <p class="
-                        {% if current_date >= last_deadline %}
-                            devilry-group-feedbackfeed-current-deadline-expired
-                        {% else %}
-                            devilry-group-feedbackfeed-current-deadline
-                        {% endif %}">
-                        {% if current_date >= last_deadline %}
-                            <span class="devilry-group-feedbackfeed-current-deadline-expired-label">
-                                {% trans "Expired" %} -
+                </div>
+                <div class="col-sm-5 devilry-group-feedbackfeed-current-deadline-wrapper">
+                    {% if last_deadline %}
+                        <h2 class="devilry-group-feedbackfeed-current-deadline-heading">
+                            {% trans "Current deadline" %}
+                        </h2>
+                        <p class="
+                            {% if current_date >= last_deadline %}
+                                devilry-group-feedbackfeed-current-deadline-expired
+                            {% else %}
+                                devilry-group-feedbackfeed-current-deadline
+                            {% endif %}">
+                            {% if current_date >= last_deadline %}
+                                <span class="devilry-group-feedbackfeed-current-deadline-expired-label">
+                                    {% trans "Expired" %} -
+                                </span>
+                            {% endif %}
+                            <span class="devilry-group-feedbackfeed-current-deadline-datetime">
+                                {{ last_deadline|date:"SHORT_DATETIME_FORMAT" }}
                             </span>
-                        {% endif %}
-                        <span class="devilry-group-feedbackfeed-current-deadline-datetime">
-                            {{ last_deadline|date:"SHORT_DATETIME_FORMAT" }}
-                        </span>
-                    </p>
-                {% endif %}
+                        </p>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-
-{% endblock pageheader-inner %}
+{% endblock pageheader %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            {# Sidebar #}
-            <div class="col-sm-3 col-sm-push-9">
-                {% block sidebar %}
-                    {% include "devilry_group/include/sidebar.django.html" %}
-                {% endblock sidebar %}
-            </div>
-            {# Feedbackfeed #}
-            <div class="col-sm-9 col-sm-pull-3">
-                {% block feed %}
-                    {% cradmin_render_renderable listbuilder_list %}
-                    {% block pre_form %}{% endblock pre_form %}
-                    {% block form %}
-                        {% crispy form formhelper %}
-                        {{ form.media }}
-                    {% endblock form %}
-                    {% block post_form %}{% endblock post_form %}
-                {% endblock feed %}
-              </div>
+    {% block downloadbar %}
+        <div class="container">
+            {% include "devilry_group/include/sidebar.django.html" %}
         </div>
+    {% endblock downloadbar %}
+
+    <div class="container">
+        {% block feed %}
+            {% cradmin_render_renderable listbuilder_list %}
+            {% block pre_form %}{% endblock pre_form %}
+            {% block form %}
+                {% crispy form formhelper %}
+                {{ form.media }}
+            {% endblock form %}
+            {% block post_form %}{% endblock post_form %}
+        {% endblock feed %}
     </div>
 {% endblock content %}
 
