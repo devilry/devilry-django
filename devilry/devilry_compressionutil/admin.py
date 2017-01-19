@@ -36,5 +36,6 @@ class CompressedArchiveMeta(admin.ModelAdmin):
 
     search_fields = [
         'content_object_id',
-        'content_type'
+        'content_type__app_label',
+        'content_type__model'
     ]
