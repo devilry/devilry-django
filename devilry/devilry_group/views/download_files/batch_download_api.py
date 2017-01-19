@@ -26,10 +26,10 @@ class AbstractBatchCompressionAPIView(View):
         If the subclasses adds more stuff, this should be documented there::
 
             If the BatchOperation is NOT created::
-                '{"status": "not created"}'
+                '{"status": "not-created"}'
 
             If the BatchOperation IS created, but not started::
-                '{"status": "not started"}'
+                '{"status": "not-started"}'
 
             If the BatchOperation is running::
                 '{"status": "running"}'
@@ -72,12 +72,12 @@ class AbstractBatchCompressionAPIView(View):
         try:
             batchoperation = BatchOperation.objects.get(context_object_id=context_object_id)
         except BatchOperation.DoesNotExist:
-            return {'status': 'not created'}
+            return {'status': 'not-created'}
 
         # The ``BatchOperation`` exists. Check the status.
         status = batchoperation.status
         if status == BatchOperation.STATUS_UNPROCESSED:
-            return {'status': 'not started'}
+            return {'status': 'not-started'}
         return {'status': 'running'}
 
     def get_ready_for_download_status(self, content_object_id=None):
@@ -176,7 +176,7 @@ class AbstractBatchCompressionAPIView(View):
 
         # start task or return status.
         response_dict = self.get_response_status(object_id=content_object_id)
-        if response_dict.get('status') == 'not created':
+        if response_dict.get('status') == 'not-created':
             self.start_compression_task(content_object_id=content_object_id)
         return JsonResponse(self.get_response_status(object_id=content_object_id))
 
