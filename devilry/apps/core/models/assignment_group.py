@@ -1,27 +1,23 @@
 import warnings
 from datetime import datetime
 
-from copy import deepcopy
-from django.db.models import Q
 from django.db import models
-from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
-from django.core.exceptions import ValidationError
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 
+import deliverytypes
 from devilry.apps.core.models import Subject
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_dbcache.bulk_create_queryset_mixin import BulkCreateQuerySetMixin
 from devilry.utils import devilry_djangoaggregate_functions
-from .node import Node
+from model_utils import Etag
 from .abstract_is_admin import AbstractIsAdmin
 from .abstract_is_examiner import AbstractIsExaminer
 from .assignment import Assignment
-from model_utils import Etag
-import deliverytypes
-import itertools
+from .node import Node
 
 
 class GroupPopValueError(ValueError):
