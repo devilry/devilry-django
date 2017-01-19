@@ -21,6 +21,9 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     Handles what should be rendered for a student
     on the FeedbackFeed.
     """
+    def get_form_heading_text_template_name(self):
+        return 'devilry_group/include/student_commentform_headingtext.django.html'
+
     def get_devilryrole(self):
         """
         Get the devilryrole for the view.

@@ -7655,11 +7655,15 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   display: block;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text {
-  max-width: 60.0em;
-  clear: both;
-  font-size: 1.0em;
-  margin-bottom: 1.0em;
-  padding-top: 0.9em;
+  font-size: 20px;
+  margin-bottom: 15px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text pre {
+  margin-bottom: 15px;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text a {
+  text-decoration: underline;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content.after {
   content: "";

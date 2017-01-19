@@ -73,11 +73,17 @@
 
         /**/
         .devilry-group-comment-text{
-            max-width: 60.0em;
-            clear: both;
-            font-size: 1.0em;
-            margin-bottom: 1.0em;
-            padding-top: 0.9em;
+            font-size: ceil(@font-size-base + 4px);
+            margin-bottom: 15px;
+            font-family: @font-family-serif;
+            //padding-top: 15px;
+            pre {
+                margin-bottom: 15px;
+            }
+
+            a {
+                text-decoration: underline;
+            }
         }
 
         &.after{
