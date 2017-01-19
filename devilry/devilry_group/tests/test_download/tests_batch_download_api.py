@@ -273,7 +273,7 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         # post_json = json.dumps({'content_object_id': testfeedbackset.id})
         mockresponse = self.mock_postrequest(
             viewkwargs={
-                'content_object_id': testcomment.id
+                'content_object_id': testfeedbackset.id
             })
         self.assertEquals({'status': 'not started'}, json.loads(mockresponse.response.content))
 
@@ -297,7 +297,7 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         # post_json = json.dumps({'content_object_id': testfeedbackset.id})
         mockresponse = self.mock_postrequest(
             viewkwargs={
-                'content_object_id': testcomment.id
+                'content_object_id': testfeedbackset.id
             })
         self.assertEquals({'status': 'running'}, json.loads(mockresponse.response.content))
 
@@ -319,7 +319,7 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         mockresponse = self.mock_postrequest(
             cradmin_app=mock_cradmin_app,
             viewkwargs={
-                'content_object_id': testcomment.id
+                'content_object_id': testfeedbackset.id
             })
         self.assertEquals({'status': 'finished', 'download_link': 'url-to-downloadview'},
                           json.loads(mockresponse.response.content))
