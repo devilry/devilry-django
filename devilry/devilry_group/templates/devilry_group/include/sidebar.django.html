@@ -3,18 +3,6 @@
 {% load i18n %}
 
 <div class="devilry-group-feedbackfeed-sidebar">
-    <div ng-controller="sidebarCollapseCtrl">
-        <div ng-init="filecollapse=register_collapse('uploaded_files', true)">
-            <h4 class="devilry-group-feedbackfeed-sidebar-uploaded-files" ng-click="toggle_collapse('uploaded_files')">
-                {% trans "Uploaded files" %}
-                <i class="pull-right fa" ng-class="{'fa-chevron-up': filecollapse.value, 'fa-chevron-down': !filecollapse.value}"></i>
-            </h4>
-            <div ng-show="filecollapse.value">
-{#                <a href="{% cradmin_appurl 'bulk-filedownload' %}">#}
-{#                    <strong>{% trans 'Download all assignment files' %}</strong>#}
-{#                </a>#}
-                {% cradmin_render_renderable sidebarbuilder_list %}
-            </div>
-        </div>
-    </div>
+    <h2 class="devilry-group-feedbackfeed-sidebar__title">{% trans "Download" %}</h2>
+    {% cradmin_render_renderable sidebarbuilder_list %}
 </div>

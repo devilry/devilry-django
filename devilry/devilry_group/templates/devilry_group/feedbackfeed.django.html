@@ -65,13 +65,13 @@
     <div class="container">
         <div class="row">
             {# Sidebar #}
-            <div class="col-sm-4 col-sm-push-8">
+            <div class="col-sm-3 col-sm-push-9">
                 {% block sidebar %}
                     {% include "devilry_group/include/sidebar.django.html" %}
                 {% endblock sidebar %}
             </div>
             {# Feedbackfeed #}
-            <div class="col-sm-8 col-sm-pull-4">
+            <div class="col-sm-9 col-sm-pull-3">
                 {% block feed %}
                     {% cradmin_render_renderable listbuilder_list %}
                     {% block pre_form %}{% endblock pre_form %}

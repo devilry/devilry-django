@@ -5,11 +5,6 @@
 {% load i18n %}
 
 {% block content %}
-    <h3 class="feedbackfeed-sidebar__subtitle">
-        {% blocktrans with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
-            {{ verbose_feedbackset }} deadline
-        {% endblocktrans %}
-    </h3>
     <div class="devilry-batchprocessed-download devilry-batchprocessed-download--none"
                 data-ievv-jsbase-widget="devilry-download-compressed-archive"
                 data-ievv-jsbase-widget-config='{
@@ -20,14 +15,16 @@
             <span class="fa fa-spinner fa-spin" aria-hidden="true"></span>
             <span class="text-muted">{% trans "preparing download" %}</span>
         </span>
-        <button class="btn btn-default devilry-batchprocessed-download__startbutton"
+        <button class="btn btn-default btn-block devilry-batchprocessed-download__startbutton"
                 data-ievv-jsbase-widget="devilry-download-compressed-archive-startbutton"
                     data-ievv-jsbase-widget-config='{
                          "signalNameSpace": "download-feedbackset-{{ me.feedbackset.id }}"
                     }'>
-            {% trans "download" %}
+            {% blocktrans with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
+                {{ verbose_feedbackset }} deadline
+            {% endblocktrans %}
         </button>
-        <a class="btn btn-default devilry-batchprocessed-download__downloadlink"
+        <a class="btn btn-default btn-block devilry-batchprocessed-download__downloadlink"
                 data-ievv-jsbase-widget="devilry-download-compressed-archive-downloadlink"
                 data-ievv-jsbase-widget-config='{
                      "signalNameSpace": "download-feedbackset-{{ me.feedbackset.id }}"
@@ -35,7 +32,9 @@
             <small class="text-muted devilry-batchprocessed-download__download-ready-message">
                 {% trans "download is ready" %}
             </small>
-            {% trans "download" %}
+            {% blocktrans with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
+                {{ verbose_feedbackset }} deadline
+            {% endblocktrans %}
         </a>
     </div>
 {% endblock content %}

@@ -7293,6 +7293,20 @@ h3 {
 .devilry-batchprocessed-download--finished-within-same-session .devilry-batchprocessed-download__download-ready-message {
   display: block;
 }
+.devilry-singlefile-download__fullview {
+  display: none;
+}
+.devilry-singlefile-download__filename-truncated,
+.devilry-singlefile-download__filename-full {
+  word-break: break-all;
+  font-weight: bold;
+}
+.devilry-singlefile-download:hover .devilry-singlefile-download__preview {
+  display: none;
+}
+.devilry-singlefile-download:hover .devilry-singlefile-download__fullview {
+  display: block;
+}
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;
 }
@@ -8671,37 +8685,26 @@ fieldset[disabled] .button_student {
   color: #971009;
 }
 .devilry-group-feedbackfeed-sidebar {
-  background: none;
-  padding: 10px 20px 10px 20px;
-  height: 100%;
-  margin-bottom: 15px;
+  background: #fff;
+  padding: 10px;
+  text-align: right;
 }
-.devilry-group-feedbackfeed-sidebar h4 {
-  padding: 2px 2px 2px 2px;
-  text-transform: uppercase;
-  font-size: 16px;
-  cursor: pointer;
+.devilry-group-feedbackfeed-sidebar__title {
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-size: 20px;
 }
-.devilry-group-feedbackfeed-sidebar h4:hover {
-  background: #ccc;
-  color: #fff;
-  transition: background 0.2s ease-in-out;
-  transition: color 0.2s ease-in-out;
+.devilry-group-feedbackfeed-sidebar__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
-.devilry-group-feedbackfeed-sidebar dl dt {
-  text-transform: uppercase;
-  font-weight: normal;
-  font-size: 14px;
+.devilry-group-feedbackfeed-sidebar__list li {
+  margin: 0;
+  padding: 0;
 }
-.devilry-group-feedbackfeed-sidebar dl dd .devilry-group-feedbackfeed-sidebar-files {
-  word-break: break-all;
-  width: 100%;
-}
-.devilry-group-feedbackfeed-sidebar dl dd i.after-deadline-icon {
-  color: #971009;
-}
-.devilry-group-feedbackfeed-sidebar dl dd i.examiner-file-icon {
-  color: #0093D0;
+.devilry-group-feedbackfeed-sidebar:last-child {
+  margin-bottom: 0;
 }
 .devilry-group-feedbackfeed-feed {
   /*

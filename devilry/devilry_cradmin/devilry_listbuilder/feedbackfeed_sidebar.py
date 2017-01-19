@@ -41,16 +41,14 @@ class SidebarListBuilderList(listbuilder.base.List):
         """
         self.append(renderable=FeedbackSetItemValue(value=feedbackset_dict['feedbackset'],
                                                     feedbackset_num=feedbackset_dict['feedbackset_num']))
-        valuerenderer = GroupCommentListBuilderList.from_groupcomments(
-                comment_list=feedbackset_dict['comments'],
-                assignment=self.assignment,
-                devilryrole=self.devilryrole)
-        self.append(renderable=valuerenderer)
+        # valuerenderer = GroupCommentListBuilderList.from_groupcomments(
+        #         comment_list=feedbackset_dict['comments'],
+        #         assignment=self.assignment,
+        #         devilryrole=self.devilryrole)
+        # self.append(renderable=valuerenderer)
 
-    def get_extra_css_classes_list(self):
-        css_classes_list = super(SidebarListBuilderList, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-group-feedbackfeed-sidebar-filecontent')
-        return css_classes_list
+    def get_base_css_classes_list(self):
+        return ['devilry-group-feedbackfeed-sidebar__list']
 
 
 class GroupCommentListBuilderList(listbuilder.base.List):

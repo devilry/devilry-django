@@ -7385,6 +7385,20 @@ h3 {
 .devilry-batchprocessed-download--finished-within-same-session .devilry-batchprocessed-download__download-ready-message {
   display: block;
 }
+.devilry-singlefile-download__fullview {
+  display: none;
+}
+.devilry-singlefile-download__filename-truncated,
+.devilry-singlefile-download__filename-full {
+  word-break: break-all;
+  font-weight: bold;
+}
+.devilry-singlefile-download:hover .devilry-singlefile-download__preview {
+  display: none;
+}
+.devilry-singlefile-download:hover .devilry-singlefile-download__fullview {
+  display: block;
+}
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;
 }
