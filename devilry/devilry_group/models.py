@@ -515,6 +515,32 @@ class FeedbackSet(models.Model):
 
         return target
 
+    def get_current_state(self):
+        """
+        Dumps the current state of this Feedbackset and all inherent comment ids
+        into a dictionary.
+
+        Returns:
+            dictionary with current state of this Feedbackset.
+        """
+        groupcomment_queryset = self.groupcomment_set.all()
+        groupcomments = [groupcomment.id for groupcomment in groupcomment_queryset]
+        return {
+            'id': self.id,
+            'feedbackset_type': self.feedbackset_type,
+            'ignored': self.ignored,
+            'ignored_reason': self.ignored_reason,
+            'ignored_datetime': self.ignored_datetime,
+            'created_by': self.created_by,
+            'created_datetime': self.created_datetime,
+            'deadline_datetime': self.deadline_datetime,
+            'grading_published_datetime': self.grading_published_datetime,
+            'grading_published_by': self.grading_published_by,
+            'grading_points': self.grading_points,
+            'gradeform_data_json': self.gradeform_data_json,
+            'groupcomments': groupcomments
+        }
+
     @property
     def gradeform_data(self):
         if self.gradeform_data_json:

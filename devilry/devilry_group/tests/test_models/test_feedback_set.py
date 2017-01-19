@@ -229,3 +229,42 @@ class TestFeedbackSetModel(TestCase):
         with self.assertRaisesMessage(ValidationError,
                                       'An assignment can not be published without providing "points".'):
             testfeedbackset.clean()
+
+    def test_get_current_state(self):
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(_fill_optional=True)
+        mommy.make('devilry_group.GroupComment',
+                   user_role='student',
+                   feedback_set=testfeedbackset,
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   text='comment1',
+                   id=1)
+        mommy.make('devilry_group.GroupComment',
+                   user_role='examiner',
+                   feedback_set=testfeedbackset,
+                   part_of_grading=True,
+                   visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
+                   text='comment2',
+                   id=17)
+        mommy.make('devilry_group.GroupComment',
+                   user_role='student',
+                   feedback_set=testfeedbackset,
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   text='comment3',
+                   id=35)
+        state = testfeedbackset.get_current_state()
+        testDict = {
+            'id': testfeedbackset.id,
+            'feedbackset_type': testfeedbackset.feedbackset_type,
+            'ignored': testfeedbackset.ignored,
+            'ignored_reason': testfeedbackset.ignored_reason,
+            'ignored_datetime': testfeedbackset.ignored_datetime,
+            'created_by': testfeedbackset.created_by,
+            'created_datetime': testfeedbackset.created_datetime,
+            'deadline_datetime': testfeedbackset.deadline_datetime,
+            'grading_published_datetime': testfeedbackset.grading_published_datetime,
+            'grading_published_by': testfeedbackset.grading_published_by,
+            'grading_points': testfeedbackset.grading_points,
+            'gradeform_data_json': testfeedbackset.gradeform_data_json,
+            'groupcomments': [1, 17, 35]
+        }
+        self.assertDictEqual(state, testDict)
