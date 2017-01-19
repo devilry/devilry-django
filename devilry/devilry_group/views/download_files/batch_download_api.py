@@ -150,7 +150,7 @@ class AbstractBatchCompressionAPIView(View):
 
         # start task or return status.
         response_dict = self.get_response_status(content_object_id=content_object_id)
-        if response_dict.get('status') == 'not created':
+        if response_dict.get('status') == 'not-created':
             self.start_compression_task(content_object_id=content_object_id)
         return JsonResponse(self.get_response_status(content_object_id=content_object_id))
 
