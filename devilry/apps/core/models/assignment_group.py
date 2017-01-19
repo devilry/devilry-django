@@ -1495,12 +1495,12 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         Merge this AssignmentGroup into ``target`` AssignmentGroup
 
-        Algorithm:
-            - Move foreign key pointers from all comments in feedbacksets to related feedbackset in target
-                assignment group
-            - Move in all candidates not already on the AssignmentGroup.
-            - Move in all examiners not already on the AssignmentGroup.
-            - Move in all tags not already on the AssignmentGroup.
+        - Move foreign key pointers from all comments in feedbacksets to related feedbackset in target
+            assignment group
+        - Move in all candidates not already on the AssignmentGroup.
+        - Move in all examiners not already on the AssignmentGroup.
+        - Move in all tags not already on the AssignmentGroup.
+        - delete this AssignmentGroup
 
         Args:
             target: :class:`~core.AssignmentGroup` the assignment group that self will be merged into
@@ -1515,24 +1515,16 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         if self.parentnode is not target.parentnode:
             raise ValueError('self and target AssignmentGroup is not part of same Assignment')
 
-        # move feedbackset to target assignment group
         self._merge_feedbackset_into(target, force_merge_published_feedbacksets)
-
-        # move candidates to target assignment group
         self._merge_candidates_into(target)
-
-        # move examiners to target assignment group
         self._merge_examiners_into(target)
-
-        # move tags to target assignment group
         self._merge_tags_into(target)
-
-        # delete this assignment group
         self.delete()
 
     def pop_candidate(self, candidate):
         """
-        Pops a candidate off the assignment group
+        Pops a candidate off the assignment group.
+        Copy this Assignment group and all inherent Feedbacksets and comments
 
         Args:
             candidate: :class:`~core.Candidate`
