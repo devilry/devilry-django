@@ -2,6 +2,8 @@
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 
 
 class GenericMeta(models.Model):
@@ -72,3 +74,16 @@ class CompressedArchiveMeta(GenericMeta):
 
     def __unicode__(self):
         return self.archive_path
+
+
+@receiver(pre_delete, sender=CompressedArchiveMeta)
+def pre_compressed_archive_meta_delete(sender, instance, **kwargs):
+    compressed_archive_meta = instance
+    print()
+    print("*" * 70)
+    print()
+    print('CALLED pre_compressed_archive_meta_delete')
+    print()
+    print("*" * 70)
+    print()
+    # TODO: Delete the archive file!

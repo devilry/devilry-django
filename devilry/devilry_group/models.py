@@ -453,16 +453,21 @@ class FeedbackSet(models.Model):
 
         return True, ''
 
-    def merge_into(self, target):
+    def merge_into(self, target, force_merge_published_feedbacksets):
         """
         Merge comments from this feedbackSet into ``target`` feedbackset
+        if ``force_merge_published_feedbacksets`` is set to true merging of
+        published feedbackset is also allowed, if not this will throw a value error.
+
         Args:
             target: :class:`~devilry_group.Feedbackset`
+            force_merge_published_feedbacksets: merge published feedbackset
 
         Returns:
             ValidationError cannot merge feedbackset when grading is published
         """
-        if self.grading_published_datetime is not None or target.grading_published_datetime is not None:
+        if ((self.grading_published_datetime is not None or target.grading_published_datetime is not None) and
+                not force_merge_published_feedbacksets):
             raise ValidationError('Cannot merge feedbackset when grading is published')
 
         comments = GroupComment.objects.filter(feedback_set=self)
