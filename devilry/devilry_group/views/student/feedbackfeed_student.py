@@ -38,7 +38,7 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         buttons.extend([
             DefaultSubmit(
                 'student_add_comment',
-                _('Add comment'),
+                _('Add delivery or question'),
                 css_class='btn btn-success'
             )
         ])
