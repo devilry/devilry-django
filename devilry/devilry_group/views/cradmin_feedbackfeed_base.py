@@ -15,6 +15,7 @@ from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.viewhelpers import create
 
+from devilry.devilry_compressionutil.models import CompressedArchiveMeta
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_timeline
@@ -285,6 +286,29 @@ class FeedbackFeedBaseView(create.CreateView):
             .filter_for_user(self.request.user) \
             .prefetch_related('files')
 
+    def _set_archive_meta_ready_for_delete(self, feedback_set_id):
+        """
+        Set :class:`~.devilry.devilry_compressionutil.models.CompressedArchiveMeta` to be ready for deletion.
+
+        If there is a ``CompressedArchiveMeta`` entry for the ``feedback_set_id``, the
+        ``CompressedArchiveMeta.delete`` is set to ``True`` and the model is cleaned and saved.
+
+        Args:
+            feedback_set_id: Id of the ``FeedbackSet`` referenced in ``CompressedArchiveMeta``.
+
+        Returns:
+            (boolean): If ``True`` is returned, the ``CompressedArchiveMeta`` is ready to be deleted.
+                ``False`` if there where no ``CompressedArchiveMeta`` for the ``feedback_set_id``.
+        """
+        try:
+            archive_meta = CompressedArchiveMeta.objects.get(content_object_id=feedback_set_id, delete=None)
+        except CompressedArchiveMeta.DoesNotExist:
+            return False
+        archive_meta.delete = True
+        archive_meta.clean()
+        archive_meta.save()
+        return True
+
     def _convert_temporary_files_to_comment_files(self, form, groupcomment):
         """
         Converts files added to a comment to :obj:`~devilry.devilry_comment.models.CommentFile`.
@@ -305,6 +329,8 @@ class FeedbackFeedBaseView(create.CreateView):
             temporaryfilecollection = self.get_collectionqueryset().get(id=filecollection_id)
         except TemporaryFileCollection.DoesNotExist:
             return False
+
+        self._set_archive_meta_ready_for_delete(feedback_set_id=groupcomment.feedback_set.id)
 
         for temporaryfile in temporaryfilecollection.files.all():
             groupcomment.add_commentfile_from_temporary_file(tempfile=temporaryfile)
