@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.models.functions import Lower, Concat
@@ -230,8 +231,14 @@ class TestFeedbackSetModel(TestCase):
                                       'An assignment can not be published without providing "points".'):
             testfeedbackset.clean()
 
-    def test_get_current_state(self):
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(_fill_optional=True)
+
+class TestFeedbackSetGetCurrentState(TestCase):
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_groupcomment_ids(self):
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
         mommy.make('devilry_group.GroupComment',
                    user_role='student',
                    feedback_set=testfeedbackset,
@@ -252,19 +259,47 @@ class TestFeedbackSetModel(TestCase):
                    text='comment3',
                    id=35)
         state = testfeedbackset.get_current_state()
-        testDict = {
-            'id': testfeedbackset.id,
-            'feedbackset_type': testfeedbackset.feedbackset_type,
-            'ignored': testfeedbackset.ignored,
-            'ignored_reason': testfeedbackset.ignored_reason,
-            'ignored_datetime': testfeedbackset.ignored_datetime,
-            'created_by': testfeedbackset.created_by,
-            'created_datetime': testfeedbackset.created_datetime,
-            'deadline_datetime': testfeedbackset.deadline_datetime,
-            'grading_published_datetime': testfeedbackset.grading_published_datetime,
-            'grading_published_by': testfeedbackset.grading_published_by,
-            'grading_points': testfeedbackset.grading_points,
-            'gradeform_data_json': testfeedbackset.gradeform_data_json,
-            'groupcomments': [1, 17, 35]
-        }
-        self.assertDictEqual(state, testDict)
+        self.assertEqual(state['groupcomments'], [1, 17, 35])
+
+    def test_ignored(self):
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            ignored=True,
+            ignored_reason='Was sick!',
+            ignored_datetime=datetime.now()
+        )
+        state = testfeedbackset.get_current_state()
+        self.assertTrue(state['ignored'])
+        self.assertEqual(state['ignored_reason'], 'Was sick!')
+        self.assertEqual(state['ignored_datetime'], testfeedbackset.ignored_datetime)
+
+    def test_created_by(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        testfeedbackset = group_mommy.feedbackset_new_attempt_unpublished(testgroup)
+        state = testfeedbackset.get_current_state()
+        self.assertEqual(state['created_by'], testfeedbackset.created_by)
+
+    def test_feedbackset_type(self):
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        state = testfeedbackset.get_current_state()
+        self.assertEqual(state['feedbackset_type'], testfeedbackset.feedbackset_type)
+
+    def test_created_datetime(self):
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        state = testfeedbackset.get_current_state()
+        self.assertEqual(state['created_datetime'], testfeedbackset.created_datetime)
+
+    def test_deadline_datetime(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        testfeedbackset = group_mommy.feedbackset_new_attempt_unpublished(testgroup)
+        state = testfeedbackset.get_current_state()
+        self.assertEqual(state['deadline_datetime'], testfeedbackset.deadline_datetime)
+
+    def test_grading_published(self):
+        testfeedbackset = group_mommy.feedbackset_first_attempt_published()
+        state = testfeedbackset.get_current_state()
+        self.assertEqual(state['grading_published_datetime'], testfeedbackset.grading_published_datetime)
+        self.assertEqual(state['grading_published_by'], testfeedbackset.grading_published_by)
+        self.assertEqual(state['grading_points'], testfeedbackset.grading_points)
+        self.assertEqual(state['gradeform_data_json'], testfeedbackset.gradeform_data_json)
