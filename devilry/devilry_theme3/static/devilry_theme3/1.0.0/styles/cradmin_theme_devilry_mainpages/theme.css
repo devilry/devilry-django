@@ -3762,12 +3762,12 @@ a.thumbnail.active {
   color: inherit;
 }
 .alert-success {
-  background-color: #5cb85c;
-  border-color: #5cb85c;
+  background-color: #47a447;
+  border-color: #47a447;
   color: #fff;
 }
 .alert-success hr {
-  border-top-color: #4cae4c;
+  border-top-color: #409240;
 }
 .alert-success .alert-link {
   color: #e6e6e6;
@@ -3784,23 +3784,23 @@ a.thumbnail.active {
   color: #e6e6e6;
 }
 .alert-warning {
-  background-color: #d9534f;
-  border-color: #d9534f;
+  background-color: #d2322d;
+  border-color: #d2322d;
   color: #fff;
 }
 .alert-warning hr {
-  border-top-color: #d43f3a;
+  border-top-color: #bd2d29;
 }
 .alert-warning .alert-link {
   color: #e6e6e6;
 }
 .alert-danger {
-  background-color: #d9534f;
-  border-color: #d9534f;
+  background-color: #d2322d;
+  border-color: #d2322d;
   color: #fff;
 }
 .alert-danger hr {
-  border-top-color: #d43f3a;
+  border-top-color: #bd2d29;
 }
 .alert-danger .alert-link {
   color: #e6e6e6;
@@ -4588,8 +4588,8 @@ a {
   border-bottom: 1px solid #ccc;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-danger {
-  background: #d9534f;
-  border-color: #d9534f;
+  background: #d2322d;
+  border-color: #d2322d;
   color: #fff;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-danger a {
@@ -4597,8 +4597,8 @@ a {
   text-decoration: underline;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-warning {
-  background: #d9534f;
-  border-color: #d9534f;
+  background: #d2322d;
+  border-color: #d2322d;
   color: #fff;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-warning a {
@@ -4615,8 +4615,8 @@ a {
   text-decoration: underline;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-success {
-  background: #5cb85c;
-  border-color: #5cb85c;
+  background: #47a447;
+  border-color: #47a447;
   color: #fff;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-success a {
@@ -5591,19 +5591,19 @@ The bulk file upload widget base styles.
   color: #262626;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover {
-  background: #5cb85c;
+  background: #47a447;
   color: #fff;
   border-style: solid;
-  border-color: #5cb85c;
+  border-color: #47a447;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover .django-cradmin-bulkfileupload-dropbox-text p.django-cradmin-bulkfileupload-advanced-fileselectbutton-wrapper {
   display: none;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover-error {
-  background: #d9534f;
+  background: #d2322d;
   color: #fff;
   border-style: solid;
-  border-color: #d9534f;
+  border-color: #d2322d;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover-error .django-cradmin-bulkfileupload-dropbox-invalid-filetype-errormessage {
   display: block;
@@ -5639,7 +5639,7 @@ The bulk file upload widget base styles.
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph,
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph,
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph {
-  background: #d9534f;
+  background: #d2322d;
   color: #fff;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton,
@@ -5859,10 +5859,10 @@ child of ``<body>``.
   display: none;
 }
 .django-cradmin-bulkfileupload-overlaywrapper.django-cradmin-bulkfileupload-overlaywrapper-window-dragover .django-cradmin-bulkfileupload-form-overlay .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover {
-  background: #5cb85c;
+  background: #47a447;
   color: #fff;
   border-style: solid;
-  border-color: #5cb85c;
+  border-color: #47a447;
 }
 .django-cradmin-focusedpage-wrapper {
   width: 100%;
@@ -6753,8 +6753,8 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
 }
 .django-cradmin-listfilter-target-loading .django-cradmin-listfilter-message.django-cradmin-listfilter-message-error,
 .django-cradmin-listfilter-target-loaderror .django-cradmin-listfilter-message.django-cradmin-listfilter-message-error {
-  background: #d9534f;
-  border: 1px solid #d9534f;
+  background: #d2322d;
+  border: 1px solid #d2322d;
   color: #fff;
 }
 .django-cradmin-multiselect2-selected-item {
@@ -7210,16 +7210,16 @@ h3 .devilry-user-verbose-inline small {
   }
 }
 .devilry-dangerzone {
-  border: 3px solid #d9534f;
+  border: 3px solid #d2322d;
   background: #fff;
   margin-top: 70px;
   padding: 10px;
-  color: #d9534f;
+  color: #d2322d;
 }
 .devilry-dangerzone .devilry-dangerzone-title {
   margin: 0 0 15px 0;
   padding: 0;
-  color: #d9534f;
+  color: #d2322d;
 }
 .devilry-dangerzone ul.devilry-dangerzone-actionlist {
   margin: 0;
@@ -7234,7 +7234,7 @@ h3 .devilry-user-verbose-inline small {
 }
 .devilry-dangerzone ul.devilry-dangerzone-actionlist li a h3 {
   display: block;
-  color: #d9534f;
+  color: #d2322d;
   text-decoration: underline;
   margin-bottom: 5px;
 }
@@ -7247,7 +7247,7 @@ h3 .devilry-user-verbose-inline small {
   text-decoration: none;
 }
 .devilry-dangerzone ul.devilry-dangerzone-actionlist li a:hover h3 {
-  color: #a02622;
+  color: #7e1e1b;
   text-decoration: underline;
 }
 .devilry-dangerzone ul.devilry-dangerzone-actionlist li a:hover small {
@@ -7692,7 +7692,8 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   }
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field.after-deadline-badge {
-  background-color: #971009;
+  background-color: #d2322d;
+  color: #fff;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field.not-published-badge {
   background-color: #0093D0;
@@ -8751,6 +8752,19 @@ fieldset[disabled] .button_student {
   margin-top: 25px;
   margin-bottom: 25px;
   font-size: 16px;
+  font-weight: bold;
+}
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-grade .devilry-core-grade-passed {
+  color: #fff;
+  background: #47a447;
+  display: inline-block;
+  padding: 2px 5px;
+}
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-grade .devilry-core-grade-failed {
+  color: #fff;
+  background: #d2322d;
+  display: inline-block;
+  padding: 2px 5px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-failed {
   margin-left: 25px;

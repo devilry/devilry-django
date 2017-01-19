@@ -25,9 +25,12 @@
                     {% devilry_user_verbose_inline me.group_comment.user %}
                 {% endif %}
             </span>
-            <span class="devilry-group-comment-published-date comment-published-date-text">
-                {{ me.group_comment|devilry_group_comment_published }}
-            </span>
+
+            {% if me.group_comment|devilry_group_comment_published %}
+                <span class="devilry-group-comment-published-date comment-published-date-text">
+                    {{ me.group_comment|devilry_group_comment_published }}
+                </span>
+            {% endif %}
         </p>
         <div class="devilry-group-comment-text">
             {% blocktrans with text=me.group_comment.text|devilry_group_markdown|safe %} {{text}} {% endblocktrans %}

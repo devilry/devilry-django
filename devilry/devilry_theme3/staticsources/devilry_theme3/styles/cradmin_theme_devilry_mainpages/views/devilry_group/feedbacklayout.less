@@ -116,7 +116,20 @@
     }
 
     .devilry-group-feedbackfeed-event-message-grade{
-      .devilry-group-feedbackfeed-event-message
+      .devilry-group-feedbackfeed-event-message;
+      font-weight: bold;
+      .devilry-core-grade-passed {
+        color: @devilry-brand-success-color;
+        background: @devilry-brand-success-bg;
+        display: inline-block;
+        padding: 2px 5px;
+      }
+      .devilry-core-grade-failed {
+        color: @devilry-brand-danger-color;
+        background: @devilry-brand-danger-bg;
+        display: inline-block;
+        padding: 2px 5px;
+      }
     }
 
     .devilry-group-feedbackfeed-event-message-failed{
