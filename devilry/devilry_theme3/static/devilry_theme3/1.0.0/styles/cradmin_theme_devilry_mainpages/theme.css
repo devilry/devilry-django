@@ -7291,7 +7291,7 @@ h3 {
   display: inline-block;
 }
 .devilry-batchprocessed-download--finished-within-same-session .devilry-batchprocessed-download__download-ready-message {
-  display: inline-block;
+  display: block;
 }
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;

@@ -15,6 +15,7 @@ export default class DownloadCompressedArchiveWidget extends AbstractWidget {
     super(element);
     this.status = null;
     this.cssClassPrefix = 'devilry-batchprocessed-download';
+    this.pollCount = 0;
     this.statuses = [
       'none',
       'not-created',
@@ -31,7 +32,6 @@ export default class DownloadCompressedArchiveWidget extends AbstractWidget {
       `${this.config.signalNameSpace}.MainReceiver`,
       this._onStartSignal);
 
-    // this.onClickTime = null;
     this._requestStatusUpdate();
   }
 
@@ -62,18 +62,22 @@ export default class DownloadCompressedArchiveWidget extends AbstractWidget {
   _handleFinishedStatus(response) {
     this.logger.debug('Download finished processing', response.bodydata);
     this.element.setAttribute('href', response.bodydata.download_link);
-    // if(this.onClickTime != null) {
-    //   let millisecondsSinceLastClick = new Date() - this.onClickTime;
-    //   console.log('millisecondsSinceLastClick:', millisecondsSinceLastClick);
-    //   if(millisecondsSinceLastClick < 4000) {
-    //     window.location.href = response.bodydata.download_link;
-    //   }
-    // }
     this.signalHandler.send(`${this.config.signalNameSpace}.Finished`,
       response.bodydata);
   }
 
+  _getPollDelayMilliseconds() {
+    if(this.pollCount < 3) {
+      return 700;
+    } else if(this.pollCount < 10) {
+      return 2000;
+    } else {
+      return 5000;
+    }
+  }
+
   _handleApiResponse(response, method) {
+    this.pollCount ++;
     this.logger.debug(`${method} ${this.config.apiurl}:`, response.bodydata);
     this.status = response.bodydata.status;
     this._updateCssClassesFromStatus();
@@ -83,7 +87,7 @@ export default class DownloadCompressedArchiveWidget extends AbstractWidget {
     if(this.status == 'not-started' || this.status == 'running') {
       window.setTimeout(() => {
         this._requestStatusUpdate();
-      }, 2000);
+      }, this._getPollDelayMilliseconds());
     } else if(this.status == 'finished') {
       this._handleFinishedStatus(response);
     } else {
