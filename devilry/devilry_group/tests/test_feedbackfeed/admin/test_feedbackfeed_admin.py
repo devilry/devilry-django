@@ -12,7 +12,7 @@ from devilry.apps.core import models as core_models
 from devilry.devilry_account import models as account_models
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_group.cradmin_instances import crinstance_admin
-from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
+from devilry.devilry_group.tests.test_feedbackfeed.mixins import test_feedbackfeed_common
 from devilry.devilry_group.views.admin import feedbackfeed_admin
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy

@@ -36,9 +36,6 @@ class AbstractBatchCompressionAPIView(View):
 
             If the BatchOperation is finished(CompressedArchiveMeta exists)::
                 '{"status": "finished", "download_link": "some download link"}'
-
-        JSON format as expected on POST::
-            '{"content_object_id": some_integer}'
     """
     def _compressed_archive_created(self, content_object_id):
         """
@@ -82,7 +79,7 @@ class AbstractBatchCompressionAPIView(View):
 
     def get_ready_for_download_status(self, content_object_id=None):
         """
-        Override this add the url for the download view.
+        Override this to add the url for the download view.
 
         Ovrerride by adding a call to super and then add the download link to the
         entry ``download_link`` in the dictionary.
@@ -100,26 +97,26 @@ class AbstractBatchCompressionAPIView(View):
                     return status_dict
         
         Args:
-            content_object_id: id of the object we use as url argument for the downloadview.
+            content_object_id (int): id of the object we use as url argument for the downloadview.
 
         Returns:
             (dict): A dictionary with the entries ``status`` and ``download_link``
         """
         return {'status': 'finished', 'download_link': content_object_id}
 
-    def get_response_status(self, object_id):
+    def get_response_status(self, content_object_id):
         """
         Get the built response message as a dictionary.
 
         Args:
-            object_id: id of the object from url argument.
+            content_object_id (int): id of the object from url argument.
 
         Returns:
             (dict): a JSON-serializable dictionary.
         """
-        if self._compressed_archive_created(content_object_id=object_id):
-            return self.get_ready_for_download_status(content_object_id=object_id)
-        return self.get_status_dict(context_object_id=object_id)
+        if self._compressed_archive_created(content_object_id=content_object_id):
+            return self.get_ready_for_download_status(content_object_id=content_object_id)
+        return self.get_status_dict(context_object_id=content_object_id)
 
     def start_compression_task(self, content_object_id):
         """
@@ -135,29 +132,6 @@ class AbstractBatchCompressionAPIView(View):
         """
         raise NotImplementedError('must be implemented by subclass')
 
-    def clean_post_data(self, posted_json_data):
-        """
-        Clean the posted data.
-
-        Checks that the attribute ``content_object_id`` exists in the dictionary and that
-        the ``content_object_id`` is of type int.
-
-        Args:
-            posted_json_data
-
-        Returns:
-            (dict): JSON converted to a dict. Contains the posted data if no errors, else an error message.
-        """
-        try:
-            posted_data_dict = json.loads(posted_json_data)
-        except ValueError:
-            return {'error': 'Invalid JSON format'}
-        if 'content_object_id' not in posted_data_dict:
-            return {'error': 'Missing content_object_id'}
-        if not isinstance(posted_data_dict.get('content_object_id'), int):
-            return {'error': 'content_object_id is not int'}
-        return posted_data_dict
-
     def get(self, request, *args, **kwargs):
         """
         Expects a id of the element to download as url argument with name ``content_object_id``.
@@ -165,7 +139,7 @@ class AbstractBatchCompressionAPIView(View):
         Returns:
             (JsonResponse): Status of the compression.
         """
-        return JsonResponse(self.get_response_status(object_id=kwargs.get('content_object_id')))
+        return JsonResponse(self.get_response_status(content_object_id=kwargs.get('content_object_id')))
 
     def post(self, request, *args, **kwargs):
         """
@@ -175,10 +149,10 @@ class AbstractBatchCompressionAPIView(View):
         content_object_id = self.kwargs.get('content_object_id')
 
         # start task or return status.
-        response_dict = self.get_response_status(object_id=content_object_id)
-        if response_dict.get('status') == 'not-created':
+        response_dict = self.get_response_status(content_object_id=content_object_id)
+        if response_dict.get('status') == 'not created':
             self.start_compression_task(content_object_id=content_object_id)
-        return JsonResponse(self.get_response_status(object_id=content_object_id))
+        return JsonResponse(self.get_response_status(content_object_id=content_object_id))
 
 
 class BatchCompressionAPIGroupCommentView(AbstractBatchCompressionAPIView):
