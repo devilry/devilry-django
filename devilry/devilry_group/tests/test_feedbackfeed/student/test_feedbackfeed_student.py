@@ -12,7 +12,7 @@ from devilry.devilry_comment import models as comment_models
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
-from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
+from devilry.devilry_group.tests.test_feedbackfeed.mixins import test_feedbackfeed_common
 from devilry.devilry_group.views.student import feedbackfeed_student
 
 

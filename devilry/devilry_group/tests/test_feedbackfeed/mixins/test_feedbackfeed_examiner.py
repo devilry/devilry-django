@@ -4,7 +4,7 @@ from model_mommy import mommy
 from devilry.apps.core import models as core_models
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.models import GroupComment
-from devilry.devilry_group.tests.feedbackfeed.mixins import test_feedbackfeed_common
+from devilry.devilry_group.tests.test_feedbackfeed.mixins import test_feedbackfeed_common
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 
 
