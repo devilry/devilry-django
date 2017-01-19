@@ -64,7 +64,7 @@ class TestGroupCommentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin)
             viewkwargs={
                 'content_object_id': testcomment.id
             })
-        self.assertEquals({'status': 'not started'}, json.loads(mockresponse.response.content))
+        self.assertEquals({'status': 'not-started'}, json.loads(mockresponse.response.content))
 
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_get_status_running(self):
@@ -111,7 +111,7 @@ class TestGroupCommentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin)
 
     def test_get_batchoperation_not_created_without_content_object_id(self):
         mockresponse = self.mock_getrequest()
-        self.assertEquals('{"status": "not created"}', mockresponse.response.content)
+        self.assertEquals('{"status": "not-created"}', mockresponse.response.content)
 
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_post_batchoperation_not_started(self):
@@ -129,7 +129,7 @@ class TestGroupCommentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin)
             viewkwargs={
                 'content_object_id': testcomment.id
             })
-        self.assertEquals({'status': 'not started'}, json.loads(mockresponse.response.content))
+        self.assertEquals({'status': 'not-started'}, json.loads(mockresponse.response.content))
 
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_post_batchoperation_running(self):
@@ -202,7 +202,7 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testfeedbackset.id
             })
-        self.assertEquals('{"status": "not started"}', mockresponse.response.content)
+        self.assertEquals('{"status": "not-started"}', mockresponse.response.content)
 
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_get_status_running(self):
@@ -253,7 +253,7 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
 
     def test_get_batchoperation_not_created_without_content_object_id(self):
         mockresponse = self.mock_getrequest()
-        self.assertEquals('{"status": "not created"}', mockresponse.response.content)
+        self.assertEquals('{"status": "not-created"}', mockresponse.response.content)
 
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_post_batchoperation_not_started(self):
@@ -275,7 +275,7 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testfeedbackset.id
             })
-        self.assertEquals({'status': 'not started'}, json.loads(mockresponse.response.content))
+        self.assertEquals({'status': 'not-started'}, json.loads(mockresponse.response.content))
 
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_post_batchoperation_running(self):

@@ -7274,6 +7274,25 @@ h2 {
 h3 {
   font-size: 16px;
 }
+.devilry-batchprocessed-download__preparing-download,
+.devilry-batchprocessed-download__startbutton,
+.devilry-batchprocessed-download__download-ready-message,
+.devilry-batchprocessed-download__downloadlink {
+  display: none;
+}
+.devilry-batchprocessed-download--not-created .devilry-batchprocessed-download__startbutton {
+  display: inline-block;
+}
+.devilry-batchprocessed-download--not-started .devilry-batchprocessed-download__preparing-download,
+.devilry-batchprocessed-download--running .devilry-batchprocessed-download__preparing-download {
+  display: inline-block;
+}
+.devilry-batchprocessed-download--finished .devilry-batchprocessed-download__downloadlink {
+  display: inline-block;
+}
+.devilry-batchprocessed-download--finished-within-same-session .devilry-batchprocessed-download__download-ready-message {
+  display: inline-block;
+}
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;
 }

@@ -13,10 +13,37 @@ import HttpJsonRequest from "ievv_jsbase/http/HttpJsonRequest";
 export default class DownloadCompressedArchiveWidget extends AbstractWidget {
   constructor(element) {
     super(element);
-    this._onClick = this._onClick.bind(this);
-    this.element.addEventListener('click', this._onClick);
-    this.isFinished = false;
+    this.status = null;
+    this.cssClassPrefix = 'devilry-batchprocessed-download';
+    this.statuses = [
+      'none',
+      'not-created',
+      'not-started',
+      'running',
+      'finished'];
+    this._onStartSignal = this._onStartSignal.bind(this);
+    this.logger = new window.ievv_jsbase_core.LoggerSingleton().getLogger(
+      'devilry.DownloadCompressedArchiveWidget');
+    this.signalHandler = new window.ievv_jsbase_core.SignalHandlerSingleton();
+    this.processingStartedTime = null;
+    this.signalHandler.addReceiver(
+      `${this.config.signalNameSpace}.Start`,
+      `${this.config.signalNameSpace}.MainReceiver`,
+      this._onStartSignal);
+
+    // this.onClickTime = null;
     this._requestStatusUpdate();
+  }
+
+  _updateCssClassesFromStatus() {
+    this.element.classList.remove(`${this.cssClassPrefix}--finished-within-same-session`);
+    for(let status of this.statuses) {
+      this.element.classList.remove(`${this.cssClassPrefix}--${status}`);
+    }
+    this.element.classList.add(`${this.cssClassPrefix}--${this.status}`);
+    if(this.status == 'finished' && this.processingStartedTime != null) {
+      this.element.classList.add(`${this.cssClassPrefix}--finished-within-same-session`);
+    }
   }
 
   _requestStatusUpdate() {
@@ -25,7 +52,7 @@ export default class DownloadCompressedArchiveWidget extends AbstractWidget {
     }
     new HttpJsonRequest(this.config.apiurl).get()
       .then((response) => {
-        this._handleApiResponse(response, 'get');
+        this._handleApiResponse(response, 'GET');
       })
       .catch((error) => {
         throw error;
@@ -33,33 +60,46 @@ export default class DownloadCompressedArchiveWidget extends AbstractWidget {
   }
 
   _handleFinishedStatus(response) {
-    console.log('FINISHED!!!!', response.bodydata);
+    this.logger.debug('Download finished processing', response.bodydata);
     this.element.setAttribute('href', response.bodydata.download_link);
-    this.isFinished = true;
+    // if(this.onClickTime != null) {
+    //   let millisecondsSinceLastClick = new Date() - this.onClickTime;
+    //   console.log('millisecondsSinceLastClick:', millisecondsSinceLastClick);
+    //   if(millisecondsSinceLastClick < 4000) {
+    //     window.location.href = response.bodydata.download_link;
+    //   }
+    // }
+    this.signalHandler.send(`${this.config.signalNameSpace}.Finished`,
+      response.bodydata);
   }
 
   _handleApiResponse(response, method) {
-    console.log(method, response.bodydata);
-    if(response.bodydata.status == 'not created') {
+    this.logger.debug(`${method} ${this.config.apiurl}:`, response.bodydata);
+    this.status = response.bodydata.status;
+    this._updateCssClassesFromStatus();
+    if(this.status == 'not-created') {
       return;  // Do nothing - wait for someone to click the button and start the processing
     }
-    if(response.bodydata.status == 'not started' || response.bodydata.status == 'running') {
+    if(this.status == 'not-started' || this.status == 'running') {
       window.setTimeout(() => {
         this._requestStatusUpdate();
       }, 2000);
-    } else {
+    } else if(this.status == 'finished') {
       this._handleFinishedStatus(response);
+    } else {
+      throw new Error(`Invalid status: ${this.status}`);
     }
   }
 
-  _onClick(event) {
-    if(this.isFinished) {
+  _onStartSignal() {
+    this.logger.debug('Start signal received');
+    if(this.status == 'finished') {
       return;
     }
-    event.preventDefault();
+    this.processingStartedTime = new Date();
     new HttpDjangoJsonRequest(this.config.apiurl).post()
       .then((response) => {
-        this._handleApiResponse(response, 'post');
+        this._handleApiResponse(response, 'POST');
       })
       .catch((error) => {
         throw error;
@@ -67,6 +107,7 @@ export default class DownloadCompressedArchiveWidget extends AbstractWidget {
   }
 
   destroy() {
-    this.element.removeEventListener('click', this._onClick);
+    this.signalHandler.removeAllSignalsFromReceiver(
+      `${this.config.signalNameSpace}.MainReceiver`);
   }
 }
