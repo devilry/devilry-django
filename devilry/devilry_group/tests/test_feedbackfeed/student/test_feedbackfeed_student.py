@@ -415,6 +415,7 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
+        self.mock_registry = backend_registry.MockableRegistry.make_mockregistry(backend_mock.MockDevilryZipBackend)
 
     def test_add_comment_without_text_or_file(self):
         # Tests that error message pops up if trying to post a comment without either text or file.
@@ -446,8 +447,7 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
 
         # Create existing archive meta
         # To make sure this does not fail(the model is cleaned and saved in the function)
-        # we have to add a backend to the backendregistry.
-        backend_registry.Registry.get_instance().add(backend_mock.MockDevilryZipBackend)
+        # self.mock_registry.add(backend_mock.MockDevilryZipBackend)
         test_archive_meta = mommy.make('devilry_compressionutil.CompressedArchiveMeta',
                                        content_object=testfeedbackset,
                                        backend_id=backend_mock.MockDevilryZipBackend.backend_id)
@@ -457,17 +457,21 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
             ],
             user=candidate.relatedstudent.user
         )
-        self.mock_http302_postrequest(
-            cradmin_role=candidate.assignment_group,
-            requestuser=candidate.relatedstudent.user,
-            viewkwargs={'pk': testfeedbackset.group.id},
-            requestkwargs={
-                'data': {
-                    'text': '',
-                    'student_add_comment': 'unused value',
-                    'temporary_file_collection_id': temporary_filecollection.id
-                }
-            })
+
+        with mock.patch('devilry.devilry_compressionutil.models.backend_registry.Registry._instance',
+                        self.mock_registry):
+            self.mock_http302_postrequest(
+                cradmin_role=candidate.assignment_group,
+                requestuser=candidate.relatedstudent.user,
+                viewkwargs={'pk': testfeedbackset.group.id},
+                requestkwargs={
+                    'data': {
+                        'text': '',
+                        'student_add_comment': 'unused value',
+                        'temporary_file_collection_id': temporary_filecollection.id
+                    }
+                })
+        # we have to add a backend to the backendregistry.
         self.assertEquals(1, CompressedArchiveMeta.objects.filter(content_object_id=testfeedbackset.id).count())
         self.assertTrue(CompressedArchiveMeta.objects.get(id=test_archive_meta.id).delete)
 

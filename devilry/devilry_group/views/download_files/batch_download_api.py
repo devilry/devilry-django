@@ -48,7 +48,10 @@ class AbstractBatchCompressionAPIView(View):
             (:class:`~.devilry.devilry_compressionutil.models.CompressedArchiveMeta`): instance or ``None``.
         """
         try:
-            archive_meta = compression_models.CompressedArchiveMeta.objects.get(content_object_id=content_object_id)
+            archive_meta = compression_models.CompressedArchiveMeta.objects.get(
+                content_object_id=content_object_id,
+                deleted_datetime=None
+            )
         except compression_models.CompressedArchiveMeta.DoesNotExist:
             return None
         return archive_meta
@@ -66,9 +69,11 @@ class AbstractBatchCompressionAPIView(View):
         Returns:
             (dict): A JSON-serializable dictionary.
         """
-        try:
-            batchoperation = BatchOperation.objects.get(context_object_id=context_object_id)
-        except BatchOperation.DoesNotExist:
+        batchoperation_queryset = BatchOperation.objects\
+            .filter(context_object_id=context_object_id)\
+            .exclude(status=BatchOperation.STATUS_FINISHED)
+        batchoperation = batchoperation_queryset.order_by('created_datetime').first()
+        if not batchoperation:
             return {'status': 'not-created'}
 
         # The ``BatchOperation`` exists. Check the status.

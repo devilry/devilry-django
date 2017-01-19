@@ -301,12 +301,10 @@ class FeedbackFeedBaseView(create.CreateView):
                 ``False`` if there where no ``CompressedArchiveMeta`` for the ``feedback_set_id``.
         """
         try:
-            archive_meta = CompressedArchiveMeta.objects.get(content_object_id=feedback_set_id, delete=None)
+            archive_meta = CompressedArchiveMeta.objects.get(content_object_id=feedback_set_id, deleted_datetime=None)
         except CompressedArchiveMeta.DoesNotExist:
             return False
-        archive_meta.delete = True
-        archive_meta.clean()
-        archive_meta.save()
+        archive_meta.set_ready_for_delete()
         return True
 
     def _convert_temporary_files_to_comment_files(self, form, groupcomment):

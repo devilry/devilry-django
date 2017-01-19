@@ -82,17 +82,19 @@ class CompressedArchiveMeta(GenericMeta):
     #: :attr:`~.devilry.devilry_compressionutil.backends.backends_base.BaseArchiveBackend.backend_id`.
     backend_id = models.CharField(max_length=100, blank=True, null=False, default='')
 
-    #: Should the entry be deleted?
-    #: If this is ``True``, this entry and the compressed archive from ``archive_path`` can be deleted at any time.
-    #: This field should be used when a file is added, removed or updated in any way, by setting it to
-    #: ``True``. A check can be performed on this attribute and it can be filtered accordingly.
-    delete = models.NullBooleanField(null=False, default=None)
+    #: When the entry was marked for deletion.
+    deleted_datetime = models.DateTimeField(null=True, default=None)
 
     def clean(self):
         if backend_registry.Registry.get_instance().get(self.backend_id) is None:
             raise ValidationError({
                 'backend_id': ugettext_lazy('backend_id must refer to a valid backend')
             })
+
+    def set_ready_for_delete(self):
+        self.delete = True
+        self.clean()
+        self.save()
 
     def __unicode__(self):
         return self.archive_path
@@ -101,11 +103,6 @@ class CompressedArchiveMeta(GenericMeta):
 @receiver(pre_delete, sender=CompressedArchiveMeta)
 def pre_compressed_archive_meta_delete(sender, instance, **kwargs):
     compressed_archive_meta = instance
-    print()
-    print("*" * 70)
-    print()
-    print('CALLED pre_compressed_archive_meta_delete')
-    print()
-    print("*" * 70)
-    print()
-    # TODO: Delete the archive file!
+    backend_class = backend_registry.Registry.get_instance().get(compressed_archive_meta.backend_id)
+    backend_class.delete_archive(full_path=compressed_archive_meta.archive_path)
+

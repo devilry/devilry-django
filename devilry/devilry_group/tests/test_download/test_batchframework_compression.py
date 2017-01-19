@@ -22,10 +22,10 @@ class TestCompressed(TestCase):
         # Sets up a directory where files can be added. Is removed by tearDown.
         self.backend_path = os.path.join('devilry_testfiles', 'devilry_compressed_archives', '')
 
-    def tearDown(self):
-        # Ignores errors if the path is not created.
-        shutil.rmtree(self.backend_path, ignore_errors=True)
-        shutil.rmtree('devilry_testfiles/filestore/', ignore_errors=True)
+    # def tearDown(self):
+    #     # Ignores errors if the path is not created.
+    #     shutil.rmtree(self.backend_path, ignore_errors=True)
+    #     shutil.rmtree('devilry_testfiles/filestore/', ignore_errors=True)
 
 
 class TestGroupCommentBatchTask(TestCompressed):
@@ -169,6 +169,42 @@ class TestFeedbackSetBatchTask(TestCompressed):
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
             self.assertIsNotNone(archive_meta)
             self.assertTrue(os.path.exists(archive_meta.archive_path))
+
+    def test_batchframework_delete_meta(self):
+        # Tests that the metaclass deletes the actual archive.
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
+            testfeedbackset = mommy.make('devilry_group.FeedbackSet',
+                                         deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+            testcomment = mommy.make('devilry_group.GroupComment',
+                                     feedback_set=testfeedbackset,
+                                     user_role='student',
+                                     user__shortname='testuser@example.com')
+            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+            commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+
+            batchregistry.Registry.get_instance().add_actiongroup(
+                batchregistry.ActionGroup(
+                    name='batchframework_feedbackset',
+                    mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
+                    actions=[
+                        tasks.FeedbackSetCompressAction
+                    ]))
+            batchregistry.Registry.get_instance().run(
+                    actiongroup_name='batchframework_feedbackset',
+                    context_object=testfeedbackset,
+                    test='test')
+
+            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
+            archive_path = archive_meta.archive_path
+            archive_meta_id = archive_meta.id
+            self.assertIsNotNone(archive_meta)
+            self.assertTrue(os.path.exists(archive_path))
+
+            # after delete
+            archive_meta.delete()
+            with self.assertRaises(archivemodels.CompressedArchiveMeta.DoesNotExist):
+                archivemodels.CompressedArchiveMeta.objects.get(id=archive_meta_id)
+            self.assertFalse(os.path.exists(archive_path))
 
     def test_batchframework_feedbackset_student_without_deadline(self):
         # Tests that files added when the FeedbackSet has no deadline is added under 'delivery'.

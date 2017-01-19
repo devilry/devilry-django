@@ -129,6 +129,22 @@ class BaseArchiveBackend(object):
         """
         raise NotImplementedError()
 
+    @classmethod
+    def delete_archive(cls, full_path):
+        """
+        Deletes the archive.
+
+        This must be implemented in subclass to handle the specifics for
+        different storage backends.
+
+        Args:
+            full_path (str): Full path to the stored archive.
+
+        Returns:
+            (boolean): ``True`` if deleted, else ``False``.
+        """
+        raise NotImplementedError()
+
 
 class PythonZipFileBackend(BaseArchiveBackend):
     """
