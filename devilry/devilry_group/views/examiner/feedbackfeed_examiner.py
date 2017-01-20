@@ -234,7 +234,7 @@ class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
         buttons = super(ExaminerDiscussView, self).get_buttons()
         buttons.extend([
             PrimarySubmit('examiner_add_comment_for_examiners',
-                          _('Add comment for examiners'),
+                          _('Add comment that is not visible to students'),
                           css_class='btn btn-default'),
             DefaultSubmit('examiner_add_public_comment',
                           _('Add public comment'),
