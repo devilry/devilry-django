@@ -199,24 +199,9 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         else:
             if 'examiner_add_comment_to_feedback_draft' in self.request.POST:
                 # If comment is part of a draft, the comment should only be visible to
-                # the examiner until draft-publication.
-                # comment.visibility = group_models.GroupComment.VISIBILITY_PRIVATE
-                # comment.part_of_grading = True
-                # comment = super(ExaminerFeedbackView, self).save_object(form=form, commit=True)
                 comment = self._add_feedback_draft(form=form, group_comment=comment)
             elif 'examiner_publish_feedback' in self.request.POST:
                 comment = self._publish_feedback(form=form, group_comment=comment)
-                # result, error_msg = comment.feedback_set.publish(
-                #         published_by=comment.user,
-                #         grading_points=form.get_grading_points())
-                # if result is False:
-                #     messages.error(self.request, ugettext_lazy(error_msg))
-                # elif form.cleaned_data['temporary_file_collection_id'] or len(comment.text) > 0:
-                #     # Don't add a comment unless there is text or files associated with it.
-                #     comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
-                #     comment.part_of_grading = True
-                #     comment.published_datetime = comment.get_published_datetime()
-                #     comment = super(ExaminerFeedbackView, self).save_object(form=form, commit=True)
         return comment
 
     def get_form_invalid_message(self, form):

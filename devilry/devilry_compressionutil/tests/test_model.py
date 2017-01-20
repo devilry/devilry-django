@@ -47,13 +47,6 @@ class TestCompressedFileMeta(TestCase):
         self.assertEquals(archivemeta.content_object_id, testcomment.id)
         self.assertEquals(type(archivemeta.content_object), type(testcomment))
 
-    def test_unique_constraint(self):
-        testcomment = mommy.make('devilry_comment.Comment')
-        mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testcomment)
-
-        with self.assertRaises(IntegrityError):
-            mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testcomment)
-
     def test_archive_path_cannot_be_blank(self):
         with self.assertRaises(IntegrityError):
             mommy.make('devilry_compressionutil.CompressedArchiveMeta', archive_path=None)

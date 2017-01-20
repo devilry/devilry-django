@@ -22,122 +22,122 @@ class TestCompressed(TestCase):
         # Sets up a directory where files can be added. Is removed by tearDown.
         self.backend_path = os.path.join('devilry_testfiles', 'devilry_compressed_archives', '')
 
-    # def tearDown(self):
-    #     # Ignores errors if the path is not created.
-    #     shutil.rmtree(self.backend_path, ignore_errors=True)
-    #     shutil.rmtree('devilry_testfiles/filestore/', ignore_errors=True)
+    def tearDown(self):
+        # Ignores errors if the path is not created.
+        shutil.rmtree(self.backend_path, ignore_errors=True)
+        shutil.rmtree('devilry_testfiles/filestore/', ignore_errors=True)
 
 
-class TestGroupCommentBatchTask(TestCompressed):
-
-    def test_batchframework(self):
-        # Tests that the archive has been created.
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testcomment = mommy.make('devilry_group.GroupComment',
-                                     user_role='student',
-                                     user__shortname='testuser@example.com')
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-            commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-
-            batchregistry.Registry.get_instance().add_actiongroup(
-                batchregistry.ActionGroup(
-                    name='batchframework_groupcomment',
-                    mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
-                    actions=[
-                        tasks.GroupCommentCompressAction
-                    ]))
-            batchregistry.Registry.get_instance().run(actiongroup_name='batchframework_groupcomment',
-                                                      context_object=testcomment,
-                                                      test='test')
-
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testcomment.id)
-            self.assertIsNotNone(archive_meta)
-            self.assertTrue(os.path.exists(archive_meta.archive_path))
-
-    def test_batchframework_file_uploaded_by_examiner(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testcomment = mommy.make('devilry_group.GroupComment',
-                                     user_role='examiner',
-                                     user__shortname='testuser@example.com')
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-            commentfile.file.save('testfile.txt', ContentFile('examiner testcontent'))
-
-            batchregistry.Registry.get_instance().add_actiongroup(
-                batchregistry.ActionGroup(
-                    name='batchframework_groupcomment',
-                    mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
-                    actions=[
-                        tasks.GroupCommentCompressAction
-                    ]))
-            batchregistry.Registry.get_instance().run(
-                    actiongroup_name='batchframework_groupcomment',
-                    context_object=testcomment,
-                    test='test')
-
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testcomment.id)
-            self.assertIsNotNone(archive_meta)
-            self.assertTrue(os.path.exists(archive_meta.archive_path))
-            zipfileobject = ZipFile(archive_meta.archive_path)
-            filecontents = zipfileobject.read('testfile.txt')
-            self.assertEquals(filecontents, 'examiner testcontent')
-
-    def test_batchframework_examiner_multiple_files(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testcomment = mommy.make('devilry_group.GroupComment',
-                                     user_role='examiner',
-                                     user__shortname='testuser@example.com')
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile1.txt')
-            commentfile.file.save('testfile1.txt', ContentFile('examiner testcontent1'))
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile2.txt')
-            commentfile.file.save('testfile2.txt', ContentFile('examiner testcontent2'))
-
-            batchregistry.Registry.get_instance().add_actiongroup(
-                batchregistry.ActionGroup(
-                    name='batchframework_groupcomment',
-                    mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
-                    actions=[
-                        tasks.GroupCommentCompressAction
-                    ]))
-            batchregistry.Registry.get_instance().run(
-                    actiongroup_name='batchframework_groupcomment',
-                    context_object=testcomment,
-                    test='test')
-
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testcomment.id)
-            self.assertIsNotNone(archive_meta)
-            self.assertTrue(os.path.exists(archive_meta.archive_path))
-            zipfileobject = ZipFile(archive_meta.archive_path)
-            self.assertEquals(zipfileobject.read('testfile1.txt'), 'examiner testcontent1')
-            self.assertEquals(zipfileobject.read('testfile2.txt'), 'examiner testcontent2')
-
-    def test_batchframework_student_multiple_files(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testcomment = mommy.make('devilry_group.GroupComment',
-                                     user_role='student',
-                                     user__shortname='testuser@example.com')
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile1.txt')
-            commentfile.file.save('testfile1.txt', ContentFile('student testcontent1'))
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile2.txt')
-            commentfile.file.save('testfile2.txt', ContentFile('student testcontent2'))
-
-            batchregistry.Registry.get_instance().add_actiongroup(
-                batchregistry.ActionGroup(
-                    name='batchframework_groupcomment',
-                    mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
-                    actions=[
-                        tasks.GroupCommentCompressAction
-                    ]))
-            batchregistry.Registry.get_instance().run(
-                    actiongroup_name='batchframework_groupcomment',
-                    context_object=testcomment,
-                    test='test')
-
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testcomment.id)
-            self.assertIsNotNone(archive_meta)
-            self.assertTrue(os.path.exists(archive_meta.archive_path))
-            zipfileobject = ZipFile(archive_meta.archive_path)
-            self.assertEquals(zipfileobject.read('testfile1.txt'), 'student testcontent1')
-            self.assertEquals(zipfileobject.read('testfile2.txt'), 'student testcontent2')
+# class TestGroupCommentBatchTask(TestCompressed):
+#
+#     def test_batchframework(self):
+#         # Tests that the archive has been created.
+#         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
+#             testcomment = mommy.make('devilry_group.GroupComment',
+#                                      user_role='student',
+#                                      user__shortname='testuser@example.com')
+#             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+#             commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+#
+#             batchregistry.Registry.get_instance().add_actiongroup(
+#                 batchregistry.ActionGroup(
+#                     name='batchframework_groupcomment',
+#                     mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
+#                     actions=[
+#                         tasks.GroupCommentCompressAction
+#                     ]))
+#             batchregistry.Registry.get_instance().run(actiongroup_name='batchframework_groupcomment',
+#                                                       context_object=testcomment,
+#                                                       test='test')
+#
+#             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testcomment.id)
+#             self.assertIsNotNone(archive_meta)
+#             self.assertTrue(os.path.exists(archive_meta.archive_path))
+#
+#     def test_batchframework_file_uploaded_by_examiner(self):
+#         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
+#             testcomment = mommy.make('devilry_group.GroupComment',
+#                                      user_role='examiner',
+#                                      user__shortname='testuser@example.com')
+#             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+#             commentfile.file.save('testfile.txt', ContentFile('examiner testcontent'))
+#
+#             batchregistry.Registry.get_instance().add_actiongroup(
+#                 batchregistry.ActionGroup(
+#                     name='batchframework_groupcomment',
+#                     mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
+#                     actions=[
+#                         tasks.GroupCommentCompressAction
+#                     ]))
+#             batchregistry.Registry.get_instance().run(
+#                     actiongroup_name='batchframework_groupcomment',
+#                     context_object=testcomment,
+#                     test='test')
+#
+#             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testcomment.id)
+#             self.assertIsNotNone(archive_meta)
+#             self.assertTrue(os.path.exists(archive_meta.archive_path))
+#             zipfileobject = ZipFile(archive_meta.archive_path)
+#             filecontents = zipfileobject.read('testfile.txt')
+#             self.assertEquals(filecontents, 'examiner testcontent')
+#
+#     def test_batchframework_examiner_multiple_files(self):
+#         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
+#             testcomment = mommy.make('devilry_group.GroupComment',
+#                                      user_role='examiner',
+#                                      user__shortname='testuser@example.com')
+#             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile1.txt')
+#             commentfile.file.save('testfile1.txt', ContentFile('examiner testcontent1'))
+#             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile2.txt')
+#             commentfile.file.save('testfile2.txt', ContentFile('examiner testcontent2'))
+#
+#             batchregistry.Registry.get_instance().add_actiongroup(
+#                 batchregistry.ActionGroup(
+#                     name='batchframework_groupcomment',
+#                     mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
+#                     actions=[
+#                         tasks.GroupCommentCompressAction
+#                     ]))
+#             batchregistry.Registry.get_instance().run(
+#                     actiongroup_name='batchframework_groupcomment',
+#                     context_object=testcomment,
+#                     test='test')
+#
+#             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testcomment.id)
+#             self.assertIsNotNone(archive_meta)
+#             self.assertTrue(os.path.exists(archive_meta.archive_path))
+#             zipfileobject = ZipFile(archive_meta.archive_path)
+#             self.assertEquals(zipfileobject.read('testfile1.txt'), 'examiner testcontent1')
+#             self.assertEquals(zipfileobject.read('testfile2.txt'), 'examiner testcontent2')
+#
+#     def test_batchframework_student_multiple_files(self):
+#         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
+#             testcomment = mommy.make('devilry_group.GroupComment',
+#                                      user_role='student',
+#                                      user__shortname='testuser@example.com')
+#             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile1.txt')
+#             commentfile.file.save('testfile1.txt', ContentFile('student testcontent1'))
+#             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile2.txt')
+#             commentfile.file.save('testfile2.txt', ContentFile('student testcontent2'))
+#
+#             batchregistry.Registry.get_instance().add_actiongroup(
+#                 batchregistry.ActionGroup(
+#                     name='batchframework_groupcomment',
+#                     mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
+#                     actions=[
+#                         tasks.GroupCommentCompressAction
+#                     ]))
+#             batchregistry.Registry.get_instance().run(
+#                     actiongroup_name='batchframework_groupcomment',
+#                     context_object=testcomment,
+#                     test='test')
+#
+#             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testcomment.id)
+#             self.assertIsNotNone(archive_meta)
+#             self.assertTrue(os.path.exists(archive_meta.archive_path))
+#             zipfileobject = ZipFile(archive_meta.archive_path)
+#             self.assertEquals(zipfileobject.read('testfile1.txt'), 'student testcontent1')
+#             self.assertEquals(zipfileobject.read('testfile2.txt'), 'student testcontent2')
 
 
 class TestFeedbackSetBatchTask(TestCompressed):

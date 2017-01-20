@@ -349,30 +349,6 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             })
         self.assertEquals({'status': 'not-started'}, json.loads(mockresponse.response.content))
 
-    @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
-    def test_post_batchoperation_running(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
-        testcomment = mommy.make('devilry_group.GroupComment',
-                                 feedback_set=testfeedbackset,
-                                 user_role='student',
-                                 user__shortname='testuser@example.com')
-        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-        self._register_and_run_actiongroup(
-            actiongroup_name='batchframework_compress_feedbackset',
-            task=tasks.GroupCommentCompressAction,
-            context_object=testfeedbackset)
-        self._mock_batchoperation_status(
-            context_object_id=testfeedbackset.id,
-            status=BatchOperation.STATUS_RUNNING)
-        # post_json = json.dumps({'content_object_id': testfeedbackset.id})
-        mockresponse = self.mock_postrequest(
-            viewkwargs={
-                'content_object_id': testfeedbackset.id
-            })
-        self.assertEquals({'status': 'running'}, json.loads(mockresponse.response.content))
-
     def test_post_batchoperation_finished(self):
         testgroup = mommy.make('core.AssignmentGroup')
         testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
@@ -387,7 +363,6 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         # mock return value for reverse_appurl
         mock_cradmin_app = mock.MagicMock()
         mock_cradmin_app.reverse_appurl.return_value = 'url-to-downloadview'
-        # post_json = json.dumps({'content_object_id': testfeedbackset.id})
         mockresponse = self.mock_postrequest(
             cradmin_app=mock_cradmin_app,
             viewkwargs={

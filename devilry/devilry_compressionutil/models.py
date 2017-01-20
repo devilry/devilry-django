@@ -28,7 +28,7 @@ class GenericMeta(models.Model):
 
         #: Can only exist one meta model for each model it references
         #: with its GenericForeignKey.
-        unique_together = ('content_type', 'content_object_id')
+        # unique_together = ('content_type', 'content_object_id')
 
 
 class CompressedArchiveMetaManager(models.Manager):
@@ -55,7 +55,6 @@ class CompressedArchiveMetaManager(models.Manager):
         )
         archive_meta.clean()
         archive_meta.save()
-        print 'compressed archive meta created'
         return archive_meta
 
 
