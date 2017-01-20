@@ -5,7 +5,11 @@ from django.utils.timezone import datetime
 
 class AssignmentGroupHistory(models.Model):
     """
+    This models keeps an audit trail of merges
 
+    Attributes:
+        assignment_group (:class:`core.AssignmentGroup`): One to one field to AssignmentGroup
+        merge_history_json (json): json string with history data
     """
 
     #: OneToOneFiled :class:`core.AssignmentGroup`
@@ -116,14 +120,10 @@ class AssignmentGroupHistory(models.Model):
 
     def merge_assignment_group_history(self, source):
         """
-        Creates a new AssignmentGroupHistory with merged history from self and target
+        Merge ``source`` assignment group history into self
 
         Args:
-            source: :class:`.AssignmentGroup`
-
-        Returns:
-            :class:`.AssignmentGroupHistory`
-
+            source (:class:`.AssignmentGroup`): source AssignmentGroup
         """
         newhistory = self._make_default_merge_history()
         newhistory['to'] = self.merge_history
