@@ -47,9 +47,13 @@ class Registry(Singleton):
             backend_id: ID of backend class.
 
         Returns:
-            Backend class.
+            :class:`~devilry.devilry_ziputil.backends.backends_base.PythonZipFileBackend` subclass or ``None``.
         """
-        return self._backendclasses[backend_id]
+        try:
+            backend_class = self._backendclasses[backend_id]
+        except KeyError:
+            return None
+        return backend_class
 
 
 class MockableRegistry(Registry):

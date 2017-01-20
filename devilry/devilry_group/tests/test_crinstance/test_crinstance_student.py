@@ -1,9 +1,6 @@
 import mock
-
 from django import test
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
-
 from model_mommy import mommy
 
 from devilry.devilry_group.cradmin_instances import crinstance_student

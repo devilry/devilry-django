@@ -1,5 +1,6 @@
 import mock
 from django.conf import settings
+from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.utils import timezone
@@ -9,11 +10,14 @@ from psycopg2.tests import unittest
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_comment import models as comment_models
+from devilry.devilry_compressionutil.models import CompressedArchiveMeta
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.test_feedbackfeed.mixins import test_feedbackfeed_common
 from devilry.devilry_group.views.student import feedbackfeed_student
+from devilry.devilry_compressionutil import backend_registry
+from devilry.devilry_compressionutil.backends import backend_mock
 
 
 class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
@@ -74,43 +78,43 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                          mockresponse.selector.one('.devilry-core-examiner-anonymous-name').alltext_normalized)
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
-    def test_get_feedbackfeed_sidebarfiles_uploaded_by_examiner_semi_anonymous(self):
-        testassignment = mommy.make('core.Assignment',
-                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
-        examiner = mommy.make('core.Examiner',
-                              assignmentgroup=testfeedbackset.group,
-                              relatedexaminer__automatic_anonymous_id='AnonymousExaminer',
-                              relatedexaminer__user__shortname='testexaminer')
-        testcomment = mommy.make('devilry_group.GroupComment',
-                                 user_role='examiner',
-                                 user=examiner.relatedexaminer.user,
-                                 feedback_set=testfeedbackset)
-        mommy.make('devilry_comment.CommentFile', comment=testcomment)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group)
-        self.assertEquals(
-            'AnonymousExaminer',
-            mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-groupcomment-user').alltext_normalized
-        )
+    # def test_get_feedbackfeed_sidebarfiles_uploaded_by_examiner_semi_anonymous(self):
+    #     testassignment = mommy.make('core.Assignment',
+    #                                 anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+    #     testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
+    #     examiner = mommy.make('core.Examiner',
+    #                           assignmentgroup=testfeedbackset.group,
+    #                           relatedexaminer__automatic_anonymous_id='AnonymousExaminer',
+    #                           relatedexaminer__user__shortname='testexaminer')
+    #     testcomment = mommy.make('devilry_group.GroupComment',
+    #                              user_role='examiner',
+    #                              user=examiner.relatedexaminer.user,
+    #                              feedback_set=testfeedbackset)
+    #     mommy.make('devilry_comment.CommentFile', comment=testcomment)
+    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group)
+    #     self.assertEquals(
+    #         'AnonymousExaminer',
+    #         mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-groupcomment-user').alltext_normalized
+    #     )
 
-    def test_get_feedbackfeed_sidebarfiles_uploaded_by_examiner_fully_anonymous(self):
-        testassignment = mommy.make('core.Assignment',
-                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
-        examiner = mommy.make('core.Examiner',
-                              assignmentgroup=testfeedbackset.group,
-                              relatedexaminer__automatic_anonymous_id='AnonymousExaminer',
-                              relatedexaminer__user__shortname='testexaminer')
-        testcomment = mommy.make('devilry_group.GroupComment',
-                                 user_role='examiner',
-                                 user=examiner.relatedexaminer.user,
-                                 feedback_set=testfeedbackset)
-        mommy.make('devilry_comment.CommentFile', comment=testcomment)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group)
-        self.assertEquals(
-            'AnonymousExaminer',
-            mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-groupcomment-user').alltext_normalized
-        )
+    # def test_get_feedbackfeed_sidebarfiles_uploaded_by_examiner_fully_anonymous(self):
+    #     testassignment = mommy.make('core.Assignment',
+    #                                 anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+    #     testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
+    #     examiner = mommy.make('core.Examiner',
+    #                           assignmentgroup=testfeedbackset.group,
+    #                           relatedexaminer__automatic_anonymous_id='AnonymousExaminer',
+    #                           relatedexaminer__user__shortname='testexaminer')
+    #     testcomment = mommy.make('devilry_group.GroupComment',
+    #                              user_role='examiner',
+    #                              user=examiner.relatedexaminer.user,
+    #                              feedback_set=testfeedbackset)
+    #     mommy.make('devilry_comment.CommentFile', comment=testcomment)
+    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group)
+    #     self.assertEquals(
+    #         'AnonymousExaminer',
+    #         mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-groupcomment-user').alltext_normalized
+    #     )
 
     def test_get_feedbackfeed_student_cannot_see_feedback_or_discuss_in_header(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -349,6 +353,17 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
+    # def test_get_form_heading_text(self):
+    #     assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+    #     testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+    #     candidate = mommy.make('core.Candidate',
+    #                            assignment_group=testgroup,
+    #                            relatedstudent=mommy.make('core.RelatedStudent'))
+    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
+    #                                                       requestuser=candidate.relatedstudent.user)
+    #     self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
+    #     self.assertEquals(1, group_models.FeedbackSet.objects.count())
+
     def test_post_feedbackset_comment_with_text(self):
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group,
@@ -411,6 +426,7 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
+        self.mock_registry = backend_registry.MockableRegistry.make_mockregistry(backend_mock.MockDevilryZipBackend)
 
     def test_add_comment_without_text_or_file(self):
         # Tests that error message pops up if trying to post a comment without either text or file.
@@ -430,6 +446,45 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
         self.assertEqual(
             'A comment must have either text or a file attached, or both. An empty comment is not allowed.',
             mockresponse.selector.one('#error_1_id_text').alltext_normalized)
+
+    def test_upload_file_with_existing_archive_meta_for_feedbackset(self):
+        # Tests that FeedbackFeedBaseViews _set_archive_meta_ready_for_delete function
+        # marks the existing CompressedArchiveMeta for the FeedbackSet as ready for delete.
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        candidate = mommy.make('core.Candidate', assignment_group=testfeedbackset.group)
+        testcomment = mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset)
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+
+        # Create existing archive meta
+        # To make sure this does not fail(the model is cleaned and saved in the function)
+        # self.mock_registry.add(backend_mock.MockDevilryZipBackend)
+        test_archive_meta = mommy.make('devilry_compressionutil.CompressedArchiveMeta',
+                                       content_object=testfeedbackset,
+                                       backend_id=backend_mock.MockDevilryZipBackend.backend_id)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile.txt', content=b'Test content', content_type='text/txt')
+            ],
+            user=candidate.relatedstudent.user
+        )
+
+        with mock.patch('devilry.devilry_compressionutil.models.backend_registry.Registry._instance',
+                        self.mock_registry):
+            self.mock_http302_postrequest(
+                cradmin_role=candidate.assignment_group,
+                requestuser=candidate.relatedstudent.user,
+                viewkwargs={'pk': testfeedbackset.group.id},
+                requestkwargs={
+                    'data': {
+                        'text': '',
+                        'student_add_comment': 'unused value',
+                        'temporary_file_collection_id': temporary_filecollection.id
+                    }
+                })
+        # we have to add a backend to the backendregistry.
+        self.assertEquals(1, CompressedArchiveMeta.objects.filter(content_object_id=testfeedbackset.id).count())
+        self.assertTrue(CompressedArchiveMeta.objects.get(id=test_archive_meta.id).delete)
 
     def test_upload_single_file(self):
         # Test that a CommentFile is created on upload.

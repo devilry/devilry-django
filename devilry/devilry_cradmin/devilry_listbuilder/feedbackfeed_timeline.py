@@ -156,8 +156,9 @@ class StudentGroupCommentItemValue(BaseGroupCommentItemValue):
     def get_extra_css_classes_list(self):
         css_classes_list = super(StudentGroupCommentItemValue, self).get_extra_css_classes_list()
         css_classes_list.append('devilry-group-feedbackfeed-comment-student')
-        if self.group_comment.published_datetime > self.group_comment.feedback_set.current_deadline():
-            css_classes_list.append('devilry-group-feedbackfeed-comment--with-badge')
+        if self.group_comment.feedback_set.current_deadline():
+            if self.group_comment.published_datetime > self.group_comment.feedback_set.current_deadline():
+                css_classes_list.append('devilry-group-feedbackfeed-comment--with-badge')
         return css_classes_list
 
 

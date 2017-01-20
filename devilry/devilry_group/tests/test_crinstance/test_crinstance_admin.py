@@ -1,8 +1,6 @@
 import mock
-
 from django import test
 from django.conf import settings
-
 from model_mommy import mommy
 
 from devilry.devilry_account import models as account_models
