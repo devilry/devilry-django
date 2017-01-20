@@ -27,8 +27,7 @@ class ExaminerCrInstance(crinstance_base.CrInstanceBase):
     menuclass = Menu
     apps = [
         ('feedbackfeed', feedbackfeed_examiner.App),
-        ('feedbackfeed', feedbackfeed_bulkfiledownload.App),
-        ('feedbackfeed', batch_download_files.App)
+        ('download', batch_download_files.App)
     ]
     id = 'devilry_group_examiner'
 

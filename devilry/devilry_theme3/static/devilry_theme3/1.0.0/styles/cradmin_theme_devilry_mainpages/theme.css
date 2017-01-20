@@ -3762,12 +3762,12 @@ a.thumbnail.active {
   color: inherit;
 }
 .alert-success {
-  background-color: #5cb85c;
-  border-color: #5cb85c;
+  background-color: #47a447;
+  border-color: #47a447;
   color: #fff;
 }
 .alert-success hr {
-  border-top-color: #4cae4c;
+  border-top-color: #409240;
 }
 .alert-success .alert-link {
   color: #e6e6e6;
@@ -3784,23 +3784,23 @@ a.thumbnail.active {
   color: #e6e6e6;
 }
 .alert-warning {
-  background-color: #d9534f;
-  border-color: #d9534f;
+  background-color: #d2322d;
+  border-color: #d2322d;
   color: #fff;
 }
 .alert-warning hr {
-  border-top-color: #d43f3a;
+  border-top-color: #bd2d29;
 }
 .alert-warning .alert-link {
   color: #e6e6e6;
 }
 .alert-danger {
-  background-color: #d9534f;
-  border-color: #d9534f;
+  background-color: #d2322d;
+  border-color: #d2322d;
   color: #fff;
 }
 .alert-danger hr {
-  border-top-color: #d43f3a;
+  border-top-color: #bd2d29;
 }
 .alert-danger .alert-link {
   color: #e6e6e6;
@@ -4588,8 +4588,8 @@ a {
   border-bottom: 1px solid #ccc;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-danger {
-  background: #d9534f;
-  border-color: #d9534f;
+  background: #d2322d;
+  border-color: #d2322d;
   color: #fff;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-danger a {
@@ -4597,8 +4597,8 @@ a {
   text-decoration: underline;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-warning {
-  background: #d9534f;
-  border-color: #d9534f;
+  background: #d2322d;
+  border-color: #d2322d;
   color: #fff;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-warning a {
@@ -4615,8 +4615,8 @@ a {
   text-decoration: underline;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-success {
-  background: #5cb85c;
-  border-color: #5cb85c;
+  background: #47a447;
+  border-color: #47a447;
   color: #fff;
 }
 .django-cradmin-container-focus.django-cradmin-container-focus-success a {
@@ -5591,19 +5591,19 @@ The bulk file upload widget base styles.
   color: #262626;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover {
-  background: #5cb85c;
+  background: #47a447;
   color: #fff;
   border-style: solid;
-  border-color: #5cb85c;
+  border-color: #47a447;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover .django-cradmin-bulkfileupload-dropbox-text p.django-cradmin-bulkfileupload-advanced-fileselectbutton-wrapper {
   display: none;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover-error {
-  background: #d9534f;
+  background: #d2322d;
   color: #fff;
   border-style: solid;
-  border-color: #d9534f;
+  border-color: #d2322d;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover-error .django-cradmin-bulkfileupload-dropbox-invalid-filetype-errormessage {
   display: block;
@@ -5639,7 +5639,7 @@ The bulk file upload widget base styles.
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph,
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph,
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph {
-  background: #d9534f;
+  background: #d2322d;
   color: #fff;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton,
@@ -5859,10 +5859,10 @@ child of ``<body>``.
   display: none;
 }
 .django-cradmin-bulkfileupload-overlaywrapper.django-cradmin-bulkfileupload-overlaywrapper-window-dragover .django-cradmin-bulkfileupload-form-overlay .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover {
-  background: #5cb85c;
+  background: #47a447;
   color: #fff;
   border-style: solid;
-  border-color: #5cb85c;
+  border-color: #47a447;
 }
 .django-cradmin-focusedpage-wrapper {
   width: 100%;
@@ -6753,8 +6753,8 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
 }
 .django-cradmin-listfilter-target-loading .django-cradmin-listfilter-message.django-cradmin-listfilter-message-error,
 .django-cradmin-listfilter-target-loaderror .django-cradmin-listfilter-message.django-cradmin-listfilter-message-error {
-  background: #d9534f;
-  border: 1px solid #d9534f;
+  background: #d2322d;
+  border: 1px solid #d2322d;
   color: #fff;
 }
 .django-cradmin-multiselect2-selected-item {
@@ -7210,16 +7210,16 @@ h3 .devilry-user-verbose-inline small {
   }
 }
 .devilry-dangerzone {
-  border: 3px solid #d9534f;
+  border: 3px solid #d2322d;
   background: #fff;
   margin-top: 70px;
   padding: 10px;
-  color: #d9534f;
+  color: #d2322d;
 }
 .devilry-dangerzone .devilry-dangerzone-title {
   margin: 0 0 15px 0;
   padding: 0;
-  color: #d9534f;
+  color: #d2322d;
 }
 .devilry-dangerzone ul.devilry-dangerzone-actionlist {
   margin: 0;
@@ -7234,7 +7234,7 @@ h3 .devilry-user-verbose-inline small {
 }
 .devilry-dangerzone ul.devilry-dangerzone-actionlist li a h3 {
   display: block;
-  color: #d9534f;
+  color: #d2322d;
   text-decoration: underline;
   margin-bottom: 5px;
 }
@@ -7247,7 +7247,7 @@ h3 .devilry-user-verbose-inline small {
   text-decoration: none;
 }
 .devilry-dangerzone ul.devilry-dangerzone-actionlist li a:hover h3 {
-  color: #a02622;
+  color: #7e1e1b;
   text-decoration: underline;
 }
 .devilry-dangerzone ul.devilry-dangerzone-actionlist li a:hover small {
@@ -7291,7 +7291,21 @@ h3 {
   display: inline-block;
 }
 .devilry-batchprocessed-download--finished-within-same-session .devilry-batchprocessed-download__download-ready-message {
-  display: inline-block;
+  display: block;
+}
+.devilry-singlefile-download__fullview {
+  display: none;
+}
+.devilry-singlefile-download__filename-truncated,
+.devilry-singlefile-download__filename-full {
+  word-break: break-all;
+  font-weight: bold;
+}
+.devilry-singlefile-download:hover .devilry-singlefile-download__preview {
+  display: none;
+}
+.devilry-singlefile-download:hover .devilry-singlefile-download__fullview {
+  display: block;
 }
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;
@@ -7575,35 +7589,16 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   opacity: 1;
 }
 .comment-form-container {
-  background-color: #f2f2f2;
+  background-color: #fff;
   padding: 10px 10px 10px 10px;
 }
 .devilry-group-feedbackfeed-comment {
-  display: flex;
+  display: block;
   margin-bottom: 15px;
-  background-color: #f2f2f2;
-  min-width: 40%;
-  max-width: 100%;
+  background-color: #fff;
   min-height: 5.0em;
-  border-style: solid;
-  border-color: #666666;
-  border-width: 0 0 0 12px;
-}
-.devilry-group-feedbackfeed-comment:before,
-.devilry-group-feedbackfeed-comment:after {
-  content: " ";
-  display: table;
-}
-.devilry-group-feedbackfeed-comment:after {
-  clear: both;
-}
-.devilry-group-feedbackfeed-comment:before,
-.devilry-group-feedbackfeed-comment:after {
-  content: " ";
-  display: table;
-}
-.devilry-group-feedbackfeed-comment:after {
-  clear: both;
+  border: 0 solid #666666;
+  border-left-width: 12px;
 }
 .devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-student {
   border-left-color: #F7D71E;
@@ -7614,55 +7609,61 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 .devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-admin {
   border-left-color: #B568A9;
 }
-.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content {
-  float: left;
+.devilry-group-feedbackfeed-comment--with-badge {
+  display: flex;
+  min-width: 40%;
+  max-width: 100%;
+}
+.devilry-group-feedbackfeed-comment--with-badge .devilry-group-feedbackfeed-comment-content {
   max-width: 100%;
   min-width: 65%;
-  padding-bottom: 1.0em;
-  padding-left: 1.5em;
-  padding-right: 0.3em;
-  padding-top: 1.0em;
+}
+@media (min-width: 992px) {
+  .devilry-group-feedbackfeed-comment--with-badge .devilry-group-feedbackfeed-comment-content {
+    min-width: 75%;
+  }
+}
+@media (min-width: 1200px) {
+  .devilry-group-feedbackfeed-comment--with-badge .devilry-group-feedbackfeed-comment-content {
+    min-width: 80%;
+  }
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content {
+  padding: 10px 15px;
   /**/
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-meta {
-  word-break: break-all;
+  display: block;
   white-space: normal;
-  float: left;
   color: #333333;
-  font-size: 1.2em;
-  display: inline-block;
+  font-size: 14px;
+  line-height: 20px;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-created-by {
-  word-break: break-all;
-  white-space: normal;
-  float: left;
-  color: #333333;
-  font-size: 1.2em;
-  display: inline-block;
   font-weight: bold;
+  font-size: 16px;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-created-by-role {
-  word-break: break-all;
-  white-space: normal;
-  float: left;
-  color: #333333;
-  font-size: 1.2em;
-  display: inline-block;
+  display: block;
+}
+@media (min-width: 768px) {
+  .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-created-by-role {
+    float: right;
+  }
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-published-date {
-  word-break: break-all;
-  white-space: normal;
-  float: left;
-  color: #333333;
-  font-size: 1.2em;
-  display: inline-block;
+  display: block;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text {
-  max-width: 60.0em;
-  clear: both;
-  font-size: 1.0em;
-  margin-bottom: 1.0em;
-  padding-top: 0.9em;
+  font-size: 20px;
+  margin-bottom: 15px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text pre {
+  margin-bottom: 15px;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text a {
+  text-decoration: underline;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content.after {
   content: "";
@@ -7673,7 +7674,6 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   border-left: 1px solid #999999;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field {
-  float: right;
   min-width: 35%;
   min-height: 100%;
   text-align: center;
@@ -7681,25 +7681,22 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   vertical-align: middle;
   position: relative;
 }
+@media (min-width: 992px) {
+  .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field {
+    min-width: 25%;
+  }
+}
+@media (min-width: 1200px) {
+  .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field {
+    min-width: 20%;
+  }
+}
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field.after-deadline-badge {
-  background-color: #971009;
+  background-color: #d2322d;
+  color: #fff;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field.not-published-badge {
   background-color: #0093D0;
-}
-.badge-text-new {
-  background-color: #f2dede;
-  float: right;
-  min-width: 35%;
-  min-height: 100%;
-  text-align: center;
-  display: table-cell;
-  vertical-align: middle;
-  position: relative;
-  border: 1px solid;
-}
-a.badge-text-new:hover {
-  background-color: #e4b9b9;
 }
 .devilry-group-feedbackfeed-badge-text {
   font-size: 1em;
@@ -8658,50 +8655,68 @@ fieldset[disabled] .button_student {
 .button_student:hover {
   background_color: #F7D71E _35;
 }
+.devilry-group-feedbackfeed-header {
+  padding: 25px 0 12px 0;
+  background: none;
+  color: #000000;
+  border: none;
+  margin: 0 0 15px 0;
+}
+@media (min-width: 768px) {
+  .devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-current-deadline-wrapper {
+    text-align: right;
+  }
+}
 .devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-current-deadline-heading {
-  margin: 0 0 0 0;
   padding: 0;
+  margin: 0;
   font-size: 21px;
-  line-height: 31px;
+  font-weight: bold;
   vertical-align: middle;
-  text-transform: uppercase;
+  line-height: 31px;
+}
+.devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-header-assignment {
+  padding: 0;
+  margin: 0;
+  font-size: 21px;
+  font-weight: bold;
+  vertical-align: middle;
+  line-height: 31px;
+}
+.devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-header-subject-period {
+  margin-bottom: 15px;
+}
+.devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-header-subject-period .devilry-group-feedbackfeed-header-subject {
+  display: inline;
+}
+.devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-header-subject-period .devilry-group-feedbackfeed-header-period {
+  display: inline;
 }
 .devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-current-deadline-expired {
   font-weight: bold;
   color: #971009;
 }
 .devilry-group-feedbackfeed-sidebar {
-  background: none;
-  padding: 10px 20px 10px 20px;
-  height: 100%;
+  background: #fff;
+  padding: 5px 15px 0 15px;
   margin-bottom: 15px;
 }
-.devilry-group-feedbackfeed-sidebar h4 {
-  padding: 2px 2px 2px 2px;
-  text-transform: uppercase;
-  font-size: 16px;
-  cursor: pointer;
+.devilry-group-feedbackfeed-sidebar__title {
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-size: 20px;
+  display: inline-block;
 }
-.devilry-group-feedbackfeed-sidebar h4:hover {
-  background: #ccc;
-  color: #fff;
-  transition: background 0.2s ease-in-out;
-  transition: color 0.2s ease-in-out;
+.devilry-group-feedbackfeed-sidebar__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
 }
-.devilry-group-feedbackfeed-sidebar dl dt {
-  text-transform: uppercase;
-  font-weight: normal;
-  font-size: 14px;
-}
-.devilry-group-feedbackfeed-sidebar dl dd .devilry-group-feedbackfeed-sidebar-files {
-  word-break: break-all;
-  width: 100%;
-}
-.devilry-group-feedbackfeed-sidebar dl dd i.after-deadline-icon {
-  color: #971009;
-}
-.devilry-group-feedbackfeed-sidebar dl dd i.examiner-file-icon {
-  color: #0093D0;
+.devilry-group-feedbackfeed-sidebar__list li {
+  margin: 0;
+  display: inline-block;
+  padding: 0;
 }
 .devilry-group-feedbackfeed-feed {
   /*
@@ -8709,40 +8724,53 @@ fieldset[disabled] .button_student {
    */
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message {
-  margin-left: 3.0em;
-  margin-top: 4.0em;
-  margin-bottom: 4.0em;
-  font-size: 1.0em;
+  margin-left: 25px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-deadline-created {
-  margin-left: 3.0em;
-  margin-top: 4.0em;
-  margin-bottom: 4.0em;
-  font-size: 1.0em;
+  margin-left: 25px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-deadline-expired {
-  margin-left: 3.0em;
-  margin-top: 4.0em;
-  margin-bottom: 4.0em;
-  font-size: 1.0em;
+  margin-left: 25px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-passed {
-  margin-left: 3.0em;
-  margin-top: 4.0em;
-  margin-bottom: 4.0em;
-  font-size: 1.0em;
+  margin-left: 25px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-grade {
-  margin-left: 3.0em;
-  margin-top: 4.0em;
-  margin-bottom: 4.0em;
-  font-size: 1.0em;
+  margin-left: 25px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  font-size: 16px;
+  font-weight: bold;
+}
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-grade .devilry-core-grade-passed {
+  color: #fff;
+  background: #47a447;
+  display: inline-block;
+  padding: 2px 5px;
+}
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-grade .devilry-core-grade-failed {
+  color: #fff;
+  background: #d2322d;
+  display: inline-block;
+  padding: 2px 5px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-failed {
-  margin-left: 3.0em;
-  margin-top: 4.0em;
-  margin-bottom: 4.0em;
-  font-size: 1.0em;
+  margin-left: 25px;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-feed-uploaded-file-tag {
   display: inline-block;

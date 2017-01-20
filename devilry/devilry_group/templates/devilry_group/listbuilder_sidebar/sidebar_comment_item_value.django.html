@@ -7,20 +7,18 @@
 {% load i18n %}
 
 {% block content %}
-    <dl>
-        <dt>
-            <a href="{% cradmin_instance_url appname='download' viewname='groupcomment-file-download' groupcomment_id=me.groupcomment.id %}">
-                <div class="devilry-group-feedbackfeed-sidebar-groupcomment-user">
-                    {% if me.groupcomment.user_role == 'student'%}
-                        {% devilry_single_candidate_short_displayname me.assignment me.user_obj me.devilryrole %}
-                    {% elif me.groupcomment.user_role == 'examiner' %}
-                        {% devilry_single_examiner_short_displayname me.assignment me.user_obj me.devilryrole %}
-                    {% else %}
-                        <p class="comment-created-by-text">{% devilry_user_verbose_inline me.group_comment.user %} &nbsp;</p>
-                    {% endif %}
-                </div>
-                {{ me.groupcomment.published_datetime }}
-            </a>
-        </dt>
-    </dl>
+    <h4 class="devilry-group-feedbackfeed-sidebar__comment-title">
+        <small class="devilry-group-feedbackfeed-sidebar__comment-title-meta">
+            {{ me.groupcomment.published_datetime }}
+        </small>
+        <span class="devilry-group-feedbackfeed-sidebar-groupcomment-user">
+            {% if me.groupcomment.user_role == 'student'%}
+                {% devilry_single_candidate_short_displayname me.assignment me.user_obj me.devilryrole %}
+            {% elif me.groupcomment.user_role == 'examiner' %}
+                {% devilry_single_examiner_short_displayname me.assignment me.user_obj me.devilryrole %}
+            {% else %}
+                <p class="comment-created-by-text">{% devilry_user_verbose_inline me.group_comment.user %} &nbsp;</p>
+            {% endif %}
+        </span>
+    </h4>
 {% endblock content %}

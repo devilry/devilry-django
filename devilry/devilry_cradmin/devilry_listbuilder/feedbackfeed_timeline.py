@@ -1,6 +1,7 @@
 # Devilry/cradmin imports
 from django_cradmin.viewhelpers import listbuilder
 from devilry.devilry_comment import models as comment_models
+from devilry.devilry_group.models import GroupComment
 
 
 class TimelineListBuilderList(listbuilder.base.List):
@@ -155,6 +156,8 @@ class StudentGroupCommentItemValue(BaseGroupCommentItemValue):
     def get_extra_css_classes_list(self):
         css_classes_list = super(StudentGroupCommentItemValue, self).get_extra_css_classes_list()
         css_classes_list.append('devilry-group-feedbackfeed-comment-student')
+        if self.group_comment.published_datetime > self.group_comment.feedback_set.current_deadline():
+            css_classes_list.append('devilry-group-feedbackfeed-comment--with-badge')
         return css_classes_list
 
 
@@ -164,9 +167,16 @@ class ExaminerGroupCommentItemValue(BaseGroupCommentItemValue):
     valuealias = 'group_comment'
     template_name = 'devilry_group/listbuilder_feedbackfeed/examiner_groupcomment_item_value.django.html'
 
+    def __should_add_with_badge_css_class(self):
+        return (
+            self.group_comment.part_of_grading or
+            self.group_comment.visibility == GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+
     def get_extra_css_classes_list(self):
         css_classes_list = super(ExaminerGroupCommentItemValue, self).get_extra_css_classes_list()
         css_classes_list.append('devilry-group-feedbackfeed-comment-examiner')
+        if self.__should_add_with_badge_css_class():
+            css_classes_list.append('devilry-group-feedbackfeed-comment--with-badge')
         return css_classes_list
 
 

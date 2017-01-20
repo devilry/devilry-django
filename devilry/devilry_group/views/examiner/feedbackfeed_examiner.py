@@ -204,10 +204,10 @@ class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
 
     def save_object(self, form, commit=True):
         comment = super(ExaminerDiscussView, self).save_object(form)
-        if form.data.get('examiner_add_comment_for_examiners'):
+        if 'examiner_add_comment_for_examiners' in self.request.POST:
             comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
             comment.published_datetime = timezone.now()
-        elif form.data.get('examiner_add_public_comment'):
+        elif 'examiner_add_public_comment' in self.request.POST:
             comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
             comment.published_datetime = timezone.now()
 

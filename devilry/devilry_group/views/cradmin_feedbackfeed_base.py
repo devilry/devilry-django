@@ -203,10 +203,21 @@ class FeedbackFeedBaseView(create.CreateView):
     def get_buttons(self):
         return []
 
-    # def _get_upload_api_
+    def get_form_heading_text_template_name(self):
+        return None
+
+    def get_form_heading_text(self):
+        template_name = self.get_form_heading_text_template_name()
+        if template_name:
+            return render_to_string(template_name)
+        else:
+            return None
 
     def get_field_layout(self):
         field_layout = []
+        heading_text = self.get_form_heading_text()
+        if heading_text:
+            field_layout.append(layout.HTML(heading_text))
         field_layout.extend(self.get_form_class().get_field_layout())
         field_layout.append('text')
         field_layout.append(
@@ -231,13 +242,12 @@ class FeedbackFeedBaseView(create.CreateView):
                 # css_class='panel-footer'
             ))
         return [
-            layout.Fieldset(
-                '',
+            layout.Div(
                 layout.Div(
                     *field_layout
                 ),
                 layout.Div(
-                    layout.Div(*self.get_buttons()),
+                    *self.get_buttons(),
                     css_class="text-right"
                 ),
                 css_class='comment-form-container'

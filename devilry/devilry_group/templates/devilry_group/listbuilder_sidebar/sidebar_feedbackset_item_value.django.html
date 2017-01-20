@@ -5,31 +5,24 @@
 {% load i18n %}
 
 {% block content %}
-    <h3 class="feedbackfeed-sidebar__subtitle">
-        {% blocktrans with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
-            {{ verbose_feedbackset }} deadline
-        {% endblocktrans %}
-    </h3>
     <div class="devilry-batchprocessed-download devilry-batchprocessed-download--none"
                 data-ievv-jsbase-widget="devilry-download-compressed-archive"
                 data-ievv-jsbase-widget-config='{
                      "apiurl": "{% cradmin_instance_url appname="download" viewname="feedbackset-file-download-api" content_object_id=me.feedbackset.id %}",
                      "signalNameSpace": "download-feedbackset-{{ me.feedbackset.id }}"
                 }'>
-{#        <span class="devilry-batchprocessed-download__initializing">#}
-{#            <span class="fa fa-spinner fa-spin" aria-hidden="true"></span>#}
-{#            <span class="sr-only">{% trans "Loading" %}...</span>#}
-{#        </span>#}
         <span class="devilry-batchprocessed-download__preparing-download">
             <span class="fa fa-spinner fa-spin" aria-hidden="true"></span>
-            {% trans "preparing download" %}
+            <span class="text-muted">{% trans "preparing download" %}</span>
         </span>
         <button class="btn btn-default devilry-batchprocessed-download__startbutton"
                 data-ievv-jsbase-widget="devilry-download-compressed-archive-startbutton"
                     data-ievv-jsbase-widget-config='{
                          "signalNameSpace": "download-feedbackset-{{ me.feedbackset.id }}"
                     }'>
-            {% trans "download" %}
+            {% blocktrans with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
+                {{ verbose_feedbackset }} deadline
+            {% endblocktrans %}
         </button>
         <a class="btn btn-default devilry-batchprocessed-download__downloadlink"
                 data-ievv-jsbase-widget="devilry-download-compressed-archive-downloadlink"
@@ -37,22 +30,11 @@
                      "signalNameSpace": "download-feedbackset-{{ me.feedbackset.id }}"
                 }'>
             <small class="text-muted devilry-batchprocessed-download__download-ready-message">
-                {% trans "download is ready" %}<br>
+                {% trans "download is ready" %}
             </small>
-            {% trans "download" %}
+            {% blocktrans with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
+                {{ verbose_feedbackset }} deadline
+            {% endblocktrans %}
         </a>
     </div>
-
-{#    <div class="django-cradmin-modal django-cradmin-modal-visible">#}
-{#        <div class="django-cradmin-modal-backdrop"></div>#}
-{#        <div class="django-cradmin-modal-content">#}
-{#            <h2>#}
-{#                {% trans "Preparing your download" %}#}
-{#            </h2>#}
-{##}
-{#            <p>#}
-{#                {% trans "You can close this dialog, we will notify you when the download is ready." %}#}
-{#            </p>#}
-{#        </div>#}
-{#    </div>#}
 {% endblock content %}
