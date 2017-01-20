@@ -457,11 +457,14 @@ class FeedbackSet(models.Model):
         """
         Merge comments from this feedbackSet into ``target`` feedbackset
         if ``force_merge_published_feedbacksets`` is set to true merging of
-        published feedbackset is also allowed, if not this will throw a value error.
+        published feedbackset is also allowed, if not this will throw a ValidationError.
 
         Args:
             target: :class:`~devilry_group.Feedbackset`
             force_merge_published_feedbacksets: merge published feedbackset
+
+        Raises:
+            ``ValidationError`` if feedbacksets is published and ``force_merge_published_feedbacksets`` is False
 
         Returns:
             ValidationError cannot merge feedbackset when grading is published
@@ -470,7 +473,7 @@ class FeedbackSet(models.Model):
                 not force_merge_published_feedbacksets):
             raise ValidationError('Cannot merge feedbackset when grading is published')
 
-        comments = GroupComment.objects.filter(feedback_set=self)
+        comments = self.groupcomment_set.all()
         for comment in comments:
             comment.feedback_set = target
             comment.save()

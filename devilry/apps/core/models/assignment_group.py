@@ -1423,12 +1423,16 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             target: :class:`~core.AssignmentGroup` to be merged into
 
         """
-        for tag in self.tags.all():
-            if not target.tags.filter(tag=tag.tag).exists():
-                tag.assignment_group = target
-                tag.save()
-            else:
-                tag.delete()
+        tag_queryset = self.tags.exclude(
+            tag__in=target.tags.values_list(
+                'tag',
+                flat=True
+            )
+        )
+
+        for tag in tag_queryset:
+            tag.assignment_group = target
+            tag.save()
 
     def _merge_examiners_into(self, target):
         """
@@ -1439,12 +1443,16 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             target: :class:`~core.AssignmentGroup` to be merged into
 
         """
-        for examiner in self.examiners.all():
-            if not target.examiners.filter(relatedexaminer__user=examiner.relatedexaminer.user).exists():
-                examiner.assignmentgroup = target
-                examiner.save()
-            else:
-                examiner.delete()
+        examiner_queryset = self.examiners.exclude(
+            relatedexaminer__user_id__in=target.examiners.values_list(
+                'relatedexaminer__user_id',
+                flat=True
+            )
+        )
+
+        for examiner in examiner_queryset:
+            examiner.assignmentgroup = target
+            examiner.save()
 
     def _merge_candidates_into(self, target):
         """
@@ -1455,12 +1463,16 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             target: :class:`~core.AssignmentGroup` to be merged into
 
         """
-        for candidate in self.candidates.all():
-            if not target.candidates.filter(relatedstudent__user=candidate.relatedstudent.user).exists():
-                candidate.assignment_group = target
-                candidate.save()
-            else:
-                candidate.delete()
+        candidate_queryset = self.candidates.exclude(
+            relatedstudent__user_id__in=target.candidates.values_list(
+                'relatedstudent__user_id',
+                flat=True
+            )
+        )
+
+        for candidate in candidate_queryset:
+            candidate.assignment_group = target
+            candidate.save()
 
     def _merge_feedbackset_into(self, target, force_merge_published_feedbacksets):
         """
@@ -1477,11 +1489,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             force_merge_published_feedbacksets: merges published feedbacksets if true
 
         """
-        group = AssignmentGroup.objects.prefetch_related(
-            models.Prefetch('feedbackset_set')
-        ).get(id=self.id)
-        source_feedbacksets = group.feedbackset_set.order_by_deadline_datetime()
-        target_feedbacksets = target.feedbackset_set.order_by_deadline_datetime()
+        source_feedbacksets = self.feedbackset_set.order_by_deadline_datetime().prefetch_related('groupcomment_set')
+        target_feedbacksets = target.feedbackset_set.order_by_deadline_datetime().prefetch_related('groupcomment_set')
         for source_feedbackset, target_feedbackset in zip(source_feedbacksets, target_feedbacksets):
             source_feedbackset.merge_into(target_feedbackset, force_merge_published_feedbacksets)
 
@@ -1511,11 +1520,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Returns:
 
         """
-        if self.parentnode is not target.parentnode:
+        if self.parentnode_id != target.parentnode_id:
             raise ValueError('self and target AssignmentGroup is not part of same Assignment')
 
         from devilry.apps.core.models import AssignmentGroupHistory
-        # Create the new history
+
         try:
             grouphistory = target.assignmentgrouphistory
         except AssignmentGroupHistory.DoesNotExist:
@@ -1569,13 +1578,13 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Returns:
             dictonary with current state of assignmentGroup and all inherent models
         """
-        candidate_queryset = self.candidates.all().select_related('relatedstudent__user')
-        candidates = [candidate.relatedstudent.user.id for candidate in candidate_queryset]
-        examiner_queryset = self.examiners.all().select_related('relatedexaminer__user')
-        examiners = [examiner.relatedexaminer.user.id for examiner in examiner_queryset]
+        candidate_queryset = self.candidates.all().select_related('relatedstudent')
+        candidates = [candidate.relatedstudent.user_id for candidate in candidate_queryset]
+        examiner_queryset = self.examiners.all().select_related('relatedexaminer')
+        examiners = [examiner.relatedexaminer.user_id for examiner in examiner_queryset]
         tag_queryset = self.tags.all()
         tags = [tag.tag for tag in tag_queryset]
-        feedbackset_queryset = self.feedbackset_set.order_by_deadline_datetime()
+        feedbackset_queryset = self.feedbackset_set.order_by_deadline_datetime().prefetch_related('groupcomment_set')
         feedbacksets = [feedbackset.get_current_state() for feedbackset in feedbackset_queryset]
 
         return {

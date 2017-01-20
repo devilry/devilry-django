@@ -320,3 +320,36 @@ class TestFeedbackSetGetCurrentState(TestCase):
         testfeedbackset = group_mommy.feedbackset_new_attempt_unpublished(testgroup, created_by=testuser)
         state = testfeedbackset.get_current_state()
         json.dumps(state)
+
+
+class TestFeedbacksetMerge(TestCase):
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_num_queries_2_comments(self):
+        testfeedbackset1 = group_mommy.feedbackset_first_attempt_unpublished()
+        testfeedbackset2 = group_mommy.feedbackset_first_attempt_unpublished()
+
+        mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset1, _quantity=2)
+
+        with self.assertNumQueries(11):
+            testfeedbackset1.merge_into(testfeedbackset2, False)
+
+    def test_num_queries_3_comments(self):
+        testfeedbackset1 = group_mommy.feedbackset_first_attempt_unpublished()
+        testfeedbackset2 = group_mommy.feedbackset_first_attempt_unpublished()
+
+        mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset1, _quantity=3)
+
+        with self.assertNumQueries(13):
+            testfeedbackset1.merge_into(testfeedbackset2, False)
+
+    def test_num_queries_4_comments(self):
+        testfeedbackset1 = group_mommy.feedbackset_first_attempt_unpublished()
+        testfeedbackset2 = group_mommy.feedbackset_first_attempt_unpublished()
+
+        mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset1, _quantity=4)
+
+        with self.assertNumQueries(15):
+            testfeedbackset1.merge_into(testfeedbackset2, False)
