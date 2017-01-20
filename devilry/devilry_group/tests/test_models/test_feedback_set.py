@@ -294,7 +294,7 @@ class TestFeedbackSetGetCurrentState(TestCase):
         testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
         testfeedbackset = group_mommy.feedbackset_new_attempt_unpublished(testgroup)
         state = testfeedbackset.get_current_state()
-        self.assertEqual(state['deadline_datetime'], testfeedbackset.deadline_datetime)
+        self.assertEqual(state['deadline_datetime'], testfeedbackset.deadline_datetime.isoformat())
 
     def test_grading_published(self):
         testfeedbackset = group_mommy.feedbackset_first_attempt_published()
