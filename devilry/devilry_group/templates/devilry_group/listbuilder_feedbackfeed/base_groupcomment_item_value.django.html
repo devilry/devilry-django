@@ -9,9 +9,6 @@
 
 {% block content %}
     <div class="devilry-group-feedbackfeed-comment-content">
-
-        {% include "devilry_group/include/groupcomment_edit_delete_option.html" %}
-
         <p class="devilry-group-comment-meta">
             <span class="devilry-group-comment-created-by-role comment-created-by-role-text">
                 ({{ me.group_comment.user_role }})
@@ -32,6 +29,7 @@
                 </span>
             {% endif %}
         </p>
+        {% include "devilry_group/include/groupcomment_edit_delete_option.html" %}
         <div class="devilry-group-comment-text">
             {% blocktrans with text=me.group_comment.text|devilry_group_markdown|safe %} {{text}} {% endblocktrans %}
         </div>

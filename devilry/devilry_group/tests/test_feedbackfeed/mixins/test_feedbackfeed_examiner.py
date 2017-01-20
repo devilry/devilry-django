@@ -245,8 +245,8 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
                    feedback_set=group.feedbackset_set.first())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
                                                           requestuser=examiner.relatedexaminer.user)
-        self.assertTrue(mockresponse.selector.exists('.btn-info'))
-        self.assertTrue('Edit', mockresponse.selector.one('.btn-info').alltext_normalized)
+        self.assertTrue(mockresponse.selector.exists('.btn-default'))
+        self.assertTrue('Edit', mockresponse.selector.one('.btn-default').alltext_normalized)
 
     # def test_get_num_queries(self):
     #     testgroup = mommy.make('core.AssignmentGroup')
