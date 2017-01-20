@@ -7,7 +7,7 @@
     "json-loader": "^0.5.4",
     "webpack": "^1.13.3",
     "bower": "^1.8.0",
-    "less": "^2.7.2",
+    "less": "^2.7.2"
   },
   "private": true,
   "version": "1.0.0",
