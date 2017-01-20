@@ -110,9 +110,18 @@ class TestAssignmentGroupHistory(TestCase):
         self.assertEqual(group2history['from']['state']['name'], 'group4')
         self.assertEqual(group2history['from']['to']['state']['name'], 'group4')
         self.assertEqual(group2history['from']['from']['state']['name'], 'group3')
+        self.assertIsNone(group2history['from']['to']['from'])
+        self.assertIsNone(group2history['from']['to']['to'])
+        self.assertIsNone(group2history['from']['from']['from'])
+        self.assertIsNone(group2history['from']['from']['to'])
+
         self.assertEqual(group2history['to']['state']['name'], 'group2')
         self.assertEqual(group2history['to']['from']['state']['name'], 'group1')
         self.assertEqual(group2history['to']['to']['state']['name'], 'group2')
+        self.assertIsNone(group2history['to']['to']['from'])
+        self.assertIsNone(group2history['to']['to']['to'])
+        self.assertIsNone(group2history['to']['from']['from'])
+        self.assertIsNone(group2history['to']['from']['to'])
 
     def test_is_deleted_after_merge(self):
         test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
