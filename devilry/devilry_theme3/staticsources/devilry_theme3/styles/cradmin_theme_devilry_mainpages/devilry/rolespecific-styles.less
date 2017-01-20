@@ -97,6 +97,31 @@
     }
   }
 
+  .devilry-tabs {
+    &__tab-list {
+      border-bottom-color: @color-whiten;
+    }
+
+    &__tab {
+      background: #fff;
+      color: @text-color;
+      text-decoration: none;
+      &:hover, &:focus {
+        text-decoration: none;
+        background: @color-bright;
+        color: @text-color;
+      }
+
+      &--active {
+        &,
+        &:hover,
+        &:focus {
+          background: @color-whiten;
+          color: @text-color;
+        }
+      }
+    }
+  }
 }
 
 .devilry-body-admin {

@@ -4,20 +4,30 @@
 {% load i18n %}
 
 {% block navigation %}
-    <nav>
-        <ul class="nav nav-pills">
-            <li role="presentation" class="{% block feedback_navigation_active_class %}{% endblock %}">
-                <a href="{% cradmin_appindex_url %}"
-                   class="devilry-group-feedbackfeed-feedback-button">
+        <nav class="devilry-tabs__tab-list" id="/tabs">
+            <a href="{% cradmin_appindex_url %}#/tabs"
+               class="devilry-group-feedbackfeed-feedback-button
+                    devilry-tabs__tab
+                    {% block feedback_navigation_active_class %}{% endblock %}">
+                <span class="devilry-tabs__title">
                     {% trans 'Feedback' context 'devilry_group feedbackfeed examiner' %}
-                </a>
-            </li>
-            <li role="presentation" class="{% block discuss_navigation_active_class %}{% endblock %}">
-                <a href="{% cradmin_appurl 'discuss' %}"
-                   class="devilry-group-feedbackfeed-discuss-button">
+                    {% block feedback_navigation_title_suffix %}{% endblock %}
+                </span>
+                <span class="devilry-tabs__meta">
+                    {% trans 'Grade / provide feedback' context 'devilry_group feedbackfeed examiner' %}
+                </span>
+            </a>
+            <a href="{% cradmin_appurl 'discuss' %}#/tabs"
+               class="devilry-group-feedbackfeed-discuss-button
+                    devilry-tabs__tab
+                    {% block discuss_navigation_active_class %}{% endblock %}">
+                <span class="devilry-tabs__title">
                     {% trans 'Discuss' context 'devilry_group feedbackfeed examiner' %}
-                </a>
-            </li>
-        </ul>
-    </nav>
+                    {% block discuss_navigation_title_suffix %}{% endblock %}
+                </span>
+                <span class="devilry-tabs__meta">
+                    {% trans 'Communicate without grading' context 'devilry_group feedbackfeed examiner' %}
+                </span>
+            </a>
+        </nav>
 {% endblock %}
