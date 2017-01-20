@@ -31,9 +31,6 @@
                             {{ period.long_name }}
                         </p>
                     </div>
-                    {% block navigation %}
-                    {% endblock %}
-
                 </div>
                 <div class="col-sm-5 devilry-group-feedbackfeed-current-deadline-wrapper">
                     {% if last_deadline %}
@@ -73,6 +70,7 @@
         {% block feed %}
             {% cradmin_render_renderable listbuilder_list %}
             {% block pre_form %}{% endblock pre_form %}
+            {% block navigation %}{% endblock %}
             {% block form %}
                 {% crispy form formhelper %}
                 {{ form.media }}
