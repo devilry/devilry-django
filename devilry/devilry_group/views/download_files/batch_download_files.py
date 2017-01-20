@@ -14,8 +14,7 @@ from devilry.devilry_comment import models as comment_models
 from devilry.devilry_compressionutil import models as archivemodels
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.utils import download_response
-from devilry.devilry_group.views.download_files.batch_download_api import BatchCompressionAPIGroupCommentView, \
-    BatchCompressionAPIFeedbackSetView
+from devilry.devilry_group.views.download_files.batch_download_api import BatchCompressionAPIFeedbackSetView
 
 
 class FileDownloadFeedbackfeedView(generic.TemplateView):
@@ -135,11 +134,11 @@ class App(crapp.App):
             r'^feedbackset-file-download/(?P<feedbackset_id>[0-9]+)$',
             CompressedFeedbackSetFileDownloadView.as_view(),
             name='feedbackset-file-download'),
-        crapp.Url(
-            r'groupcomment-download-api/(?P<content_object_id>[0-9]+)$',
-            BatchCompressionAPIGroupCommentView.as_view(),
-            name='groupcomment-file-download-api'
-        ),
+        # crapp.Url(
+        #     r'groupcomment-download-api/(?P<content_object_id>[0-9]+)$',
+        #     BatchCompressionAPIGroupCommentView.as_view(),
+        #     name='groupcomment-file-download-api'
+        # ),
         crapp.Url(
             r'feedbackset-download-api/(?P<content_object_id>[0-9]+)$',
             BatchCompressionAPIFeedbackSetView.as_view(),

@@ -1,6 +1,7 @@
 import json
 
 import mock
+import time
 from django import test
 from django.core.files.base import ContentFile
 from django.http import Http404
@@ -11,6 +12,7 @@ from ievv_opensource.ievv_batchframework import batchregistry
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 from model_mommy import mommy
 
+from devilry.devilry_compressionutil.models import CompressedArchiveMeta
 from devilry.devilry_dbcache import customsql
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group import tasks
@@ -218,27 +220,46 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
         mommy.make('devilry_compressionutil.CompressedArchiveMeta',
                    content_object=testfeedbackset,
-                   deleted_datetime=timezone.now()
-        )
+                   deleted_datetime=timezone.now())
         self._register_and_run_actiongroup(
             actiongroup_name='batchframework_compress_feedbackset',
             task=tasks.FeedbackSetCompressAction,
             context_object=testfeedbackset
         )
         self._mock_batchoperation_status(context_object_id=testfeedbackset.id, status=BatchOperation.STATUS_FINISHED)
-        # mockresponse = self.mock_getrequest(
-        #     viewkwargs={
-        #         'content_object_id': testfeedbackset.id
-        #     })
         mockresponse = self.mock_getrequest(
             viewkwargs={
                 'content_object_id': testfeedbackset.id
             })
         self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
 
-    def test_get_batchoperation_not_created_without_content_object_id(self):
-        mockresponse = self.mock_getrequest()
-        self.assertEquals('{"status": "not-created"}', mockresponse.response.content)
+    @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
+    def test_get_status_not_created_when_new_file_is_added(self):
+        # Tests that status "not-created" is returned when CompressedArchiveMeta has a deleted_datetime
+        testgroup = mommy.make('core.AssignmentGroup')
+        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=testfeedbackset,
+                                 user_role='student',
+                                 user__shortname='testuser@example.com')
+        mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testfeedbackset)
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+        self._register_and_run_actiongroup(
+            actiongroup_name='batchframework_compress_feedbackset',
+            task=tasks.FeedbackSetCompressAction,
+            context_object=testfeedbackset
+        )
+        self._mock_batchoperation_status(context_object_id=testfeedbackset.id, status=BatchOperation.STATUS_FINISHED)
+        mockresponse = self.mock_getrequest(
+            viewkwargs={
+                'content_object_id': testfeedbackset.id
+            })
+        self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
+
+    def test_get_404_without_content_object_id(self):
+        with self.assertRaises(Http404):
+            self.mock_getrequest()
 
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_get_status_running(self):
@@ -287,9 +308,24 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         self.assertEquals(mockresponse.response.content,
                           '{"status": "finished", "download_link": "url-to-downloadview"}')
 
-    def test_get_batchoperation_not_created_without_content_object_id(self):
-        mockresponse = self.mock_getrequest()
-        self.assertEquals('{"status": "not-created"}', mockresponse.response.content)
+    @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
+    def test_post_marks_archive_as_deleted_if_new_files_are_added(self):
+        # Tests that post marks archive as deleted if new files are added
+        # and there exists a CompressedArchiveMeta for the FeedbackSet.
+        testgroup = mommy.make('core.AssignmentGroup')
+        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=testfeedbackset,
+                                 user_role='student',
+                                 user__shortname='testuser@example.com')
+        compressed_archive_meta = mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testfeedbackset)
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+        mockresponse = self.mock_postrequest(
+            viewkwargs={
+                'content_object_id': testfeedbackset.id
+            })
+        self.assertIsNotNone(CompressedArchiveMeta.objects.get(id=compressed_archive_meta.id).deleted_datetime)
 
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_post_batchoperation_not_started(self):
@@ -360,6 +396,6 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         self.assertEquals({'status': 'finished', 'download_link': 'url-to-downloadview'},
                           json.loads(mockresponse.response.content))
 
-    def test_post_batchoperation_404_content_object_id(self):
+    def test_post_404_without_content_object_id(self):
         with self.assertRaises(Http404):
             self.mock_postrequest()

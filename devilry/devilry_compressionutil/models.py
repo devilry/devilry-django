@@ -91,11 +91,6 @@ class CompressedArchiveMeta(GenericMeta):
                 'backend_id': ugettext_lazy('backend_id must refer to a valid backend')
             })
 
-    def set_ready_for_delete(self):
-        self.delete = True
-        self.clean()
-        self.save()
-
     def __unicode__(self):
         return self.archive_path
 
