@@ -7349,6 +7349,25 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   border-color: #d9b4d3;
   color: #000000;
 }
+.devilry-body-admin .btn.btn-danger {
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
+}
+.devilry-body-admin .btn.btn-danger:hover,
+.devilry-body-admin .btn.btn-danger:focus {
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
+}
+@media (min-width: 768px) {
+  .devilry-body-admin .btn.btn-danger:hover,
+  .devilry-body-admin .btn.btn-danger:focus {
+    background: #E84D3D;
+    border-color: #E84D3D;
+    color: #fff;
+  }
+}
 .devilry-body-admin a.django-cradmin-listbuilder-itemframe-link {
   text-decoration: none;
 }
@@ -7411,6 +7430,25 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   border-color: #82c9e5;
   color: #000000;
 }
+.devilry-body-examiner .btn.btn-danger {
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
+}
+.devilry-body-examiner .btn.btn-danger:hover,
+.devilry-body-examiner .btn.btn-danger:focus {
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
+}
+@media (min-width: 768px) {
+  .devilry-body-examiner .btn.btn-danger:hover,
+  .devilry-body-examiner .btn.btn-danger:focus {
+    background: #E84D3D;
+    border-color: #E84D3D;
+    color: #fff;
+  }
+}
 .devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link {
   text-decoration: none;
 }
@@ -7472,6 +7510,25 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   background: #fae993;
   border-color: #fae993;
   color: #000000;
+}
+.devilry-body-student .btn.btn-danger {
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
+}
+.devilry-body-student .btn.btn-danger:hover,
+.devilry-body-student .btn.btn-danger:focus {
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
+}
+@media (min-width: 768px) {
+  .devilry-body-student .btn.btn-danger:hover,
+  .devilry-body-student .btn.btn-danger:focus {
+    background: #E84D3D;
+    border-color: #E84D3D;
+    color: #fff;
+  }
 }
 .devilry-body-student a.django-cradmin-listbuilder-itemframe-link {
   text-decoration: none;
