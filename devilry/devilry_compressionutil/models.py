@@ -55,6 +55,7 @@ class CompressedArchiveMetaManager(models.Manager):
         )
         archive_meta.clean()
         archive_meta.save()
+        print 'compressed archive meta created'
         return archive_meta
 
 

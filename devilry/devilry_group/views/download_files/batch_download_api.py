@@ -184,12 +184,16 @@ class AbstractBatchCompressionAPIView(View):
         Returns:
             (JsonResponse): Status of the compression.
         """
+        print 'GET'
         content_object_id = kwargs.get('content_object_id')
         compressed_archive_meta = self._compressed_archive_created(content_object_id=content_object_id)
         if compressed_archive_meta:
             if self.new_file_is_added(latest_compressed_datetime=compressed_archive_meta.created_datetime):
+                print 'new file added'
                 return JsonResponse(self.get_status_dict(context_object_id=content_object_id))
+            print 'no!!!!!'
             return JsonResponse(self.get_ready_for_download_status(content_object_id=content_object_id))
+        print 'no compressed archive meta'
         return JsonResponse(self.get_status_dict(context_object_id=content_object_id))
 
     def post(self, request, *args, **kwargs):
@@ -197,15 +201,20 @@ class AbstractBatchCompressionAPIView(View):
         Returns:
             (JsonResponse): Status of the compression.
         """
+        print 'POST'
         content_object_id = self.kwargs.get('content_object_id')
         # start task or return status.
         compressed_archive_meta = self._compressed_archive_created(content_object_id=content_object_id)
+        print compressed_archive_meta
         if compressed_archive_meta:
             if self.new_file_is_added(latest_compressed_datetime=compressed_archive_meta.created_datetime):
                 self._set_archive_meta_ready_for_delete(compressed_archive_meta=compressed_archive_meta)
                 self.start_compression_task(content_object_id=content_object_id)
+                print 'new file added'
+                return JsonResponse(self.get_status_dict(context_object_id=content_object_id))
             else:
                 return JsonResponse(self.get_ready_for_download_status(content_object_id=content_object_id))
+        self.start_compression_task(content_object_id=content_object_id)
         return JsonResponse(self.get_status_dict(context_object_id=content_object_id))
 
 

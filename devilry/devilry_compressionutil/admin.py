@@ -15,7 +15,8 @@ class CompressedArchiveMeta(admin.ModelAdmin):
         'created_datetime',
         'archive_name',
         'archive_path',
-        'archive_size'
+        'archive_size',
+        'deleted_datetime'
     ]
 
     readonly_fields = [
@@ -25,7 +26,8 @@ class CompressedArchiveMeta(admin.ModelAdmin):
         'created_datetime',
         'archive_name',
         'archive_path',
-        'archive_size'
+        'archive_size',
+        'deleted_datetime'
     ]
 
     list_filter = [
