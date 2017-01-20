@@ -10,6 +10,7 @@ from .assignment import Assignment
 from .pointrange_to_grade import PointRangeToGrade
 from .pointrange_to_grade import PointToGradeMap
 from .assignment_group import AssignmentGroup, AssignmentGroupTag
+from .assignment_group_history import AssignmentGroupHistory
 from .delivery import Delivery
 from .deadline import Deadline
 from .candidate import Candidate
@@ -25,4 +26,4 @@ __all__ = ("AbstractIsAdmin", "AbstractIsExaminer", "AbstractIsCandidate",
            "AssignmentGroupTag", "Delivery", "Deadline", "Candidate", "StaticFeedback",
            "FileMeta", "DevilryUserProfile", 'PeriodApplicationKeyValue', 'Examiner',
            'GroupInvite', 'StaticFeedbackFileAttachment', 'PointRangeToGrade',
-           'PointToGradeMap')
+           'PointToGradeMap', 'AssignmentGroupHistory')

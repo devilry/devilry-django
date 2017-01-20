@@ -2,14 +2,6 @@ import AbstractWidget from "ievv_jsbase/widget/AbstractWidget";
 import HttpDjangoJsonRequest from "ievv_jsbase/http/HttpDjangoJsonRequest";
 import HttpJsonRequest from "ievv_jsbase/http/HttpJsonRequest";
 
-/**
- * Run ``window.print()`` on click widget.
- *
- * @example
- * <button type="button" data-ievv-jsbase-widget="cradmin-print-on-click">
- *     Print
- * </button>
- */
 export default class DownloadCompressedArchiveWidget extends AbstractWidget {
   constructor(element) {
     super(element);
