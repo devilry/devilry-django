@@ -204,20 +204,39 @@ class FeedbackFeedBaseView(create.CreateView):
         return []
 
     def get_form_heading_text_template_name(self):
+        """
+        Get template for rendering a heading text in the form.
+
+        Override this to provide an explanatory text added to the heading of the form
+        for posting a comment. This should include some information about what happens
+        when a comment is posted.
+
+        Returns:
+            (str): a string or path to html template or None.
+        """
         return None
 
-    def get_form_heading_text(self):
+    def _get_form_heading_text(self):
+        """
+        Loads information text for the comment form.
+
+        Returns:
+            (str): a rendered string(with render_to_string()) or None.
+        """
         template_name = self.get_form_heading_text_template_name()
         if template_name:
-            return render_to_string(template_name)
+            return render_to_string(template_name=template_name)
         else:
             return None
 
     def get_field_layout(self):
         field_layout = []
-        heading_text = self.get_form_heading_text()
+        heading_text = self._get_form_heading_text()
         if heading_text:
-            field_layout.append(layout.HTML(heading_text))
+            field_layout.append(layout.Div(
+                layout.HTML(heading_text),
+                css_class='devilry-group-feedbackfeed-form-heading'
+            ))
         field_layout.extend(self.get_form_class().get_field_layout())
         field_layout.append('text')
         field_layout.append(
