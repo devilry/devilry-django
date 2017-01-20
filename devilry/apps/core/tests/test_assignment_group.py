@@ -1,16 +1,16 @@
 import shutil
-import unittest
 from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.test import TestCase
 from django.utils import timezone
-from django.core.exceptions import ValidationError
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 from model_mommy import mommy
 
+from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Delivery
@@ -19,13 +19,11 @@ from devilry.apps.core.models import deliverytypes, Assignment, RelatedStudent
 from devilry.apps.core.models.assignment_group import GroupPopNotCandiateError, AssignmentGroupTag
 from devilry.apps.core.models.assignment_group import GroupPopToFewCandiatesError
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
-from devilry.apps.core.testhelper import TestHelper
-from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.devilry_comment.models import Comment, CommentFile
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories
-from devilry.devilry_group.models import FeedbackSet, GroupComment, ImageAnnotationComment
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group.models import FeedbackSet, GroupComment, ImageAnnotationComment
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
@@ -1138,7 +1136,7 @@ class TestAssignmentGroupGetCurrentState(TestCase):
         test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
         state = testgroup.get_current_state()
-        self.assertEqual(state['created_datetime'], testgroup.created_datetime)
+        self.assertEqual(state['created_datetime'], testgroup.created_datetime.isoformat())
 
     def test_parentnode(self):
         test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', id=10)

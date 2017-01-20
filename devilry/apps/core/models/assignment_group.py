@@ -1511,10 +1511,21 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         if self.parentnode is not target.parentnode:
             raise ValueError('self and target AssignmentGroup is not part of same Assignment')
 
+        from devilry.apps.core.models import AssignmentGroupHistory
+        # Create the new history
+        try:
+            grouphistory = target.assignmentgrouphistory
+        except AssignmentGroupHistory.DoesNotExist:
+            grouphistory = AssignmentGroupHistory(assignment_group=target)
+
+        grouphistory.merge_assignment_group_history(self)
+
         self._merge_feedbackset_into(target, force_merge_published_feedbacksets)
         self._merge_candidates_into(target)
         self._merge_examiners_into(target)
         self._merge_tags_into(target)
+
+        grouphistory.save()
         self.delete()
 
     def pop_candidate(self, candidate):
@@ -1566,7 +1577,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         return {
             'name': self.name,
-            'created_datetime': self.created_datetime,
+            'created_datetime': self.created_datetime.isoformat(),
             'candidates': candidates,
             'examiners': examiners,
             'tags': tags,

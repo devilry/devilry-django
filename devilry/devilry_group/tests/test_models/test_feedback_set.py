@@ -270,7 +270,7 @@ class TestFeedbackSetGetCurrentState(TestCase):
         state = testfeedbackset.get_current_state()
         self.assertTrue(state['ignored'])
         self.assertEqual(state['ignored_reason'], 'Was sick!')
-        self.assertEqual(state['ignored_datetime'], testfeedbackset.ignored_datetime)
+        self.assertEqual(state['ignored_datetime'], testfeedbackset.ignored_datetime.isoformat())
 
     def test_created_by(self):
         test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -287,7 +287,7 @@ class TestFeedbackSetGetCurrentState(TestCase):
     def test_created_datetime(self):
         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
         state = testfeedbackset.get_current_state()
-        self.assertEqual(state['created_datetime'], testfeedbackset.created_datetime)
+        self.assertEqual(state['created_datetime'], testfeedbackset.created_datetime.isoformat())
 
     def test_deadline_datetime(self):
         test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -299,7 +299,7 @@ class TestFeedbackSetGetCurrentState(TestCase):
     def test_grading_published(self):
         testfeedbackset = group_mommy.feedbackset_first_attempt_published()
         state = testfeedbackset.get_current_state()
-        self.assertEqual(state['grading_published_datetime'], testfeedbackset.grading_published_datetime)
+        self.assertEqual(state['grading_published_datetime'], testfeedbackset.grading_published_datetime.isoformat())
         self.assertEqual(state['grading_published_by'], testfeedbackset.grading_published_by)
         self.assertEqual(state['grading_points'], testfeedbackset.grading_points)
         self.assertEqual(state['gradeform_data_json'], testfeedbackset.gradeform_data_json)
