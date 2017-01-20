@@ -1,4 +1,5 @@
 import shutil
+import json
 from datetime import datetime, timedelta
 
 from django.conf import settings
@@ -1154,6 +1155,18 @@ class TestAssignmentGroupGetCurrentState(TestCase):
         state = testgroup.get_current_state()
         state_feedbacksets_ids = [feedbackset['id'] for feedbackset in state['feedbacksets']]
         self.assertListEqual(state_feedbacksets_ids, feedbacksets)
+
+    def test_is_json_serializeable(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        core_mommy.candidate(group=testgroup)
+        core_mommy.candidate(group=testgroup)
+        core_mommy.examiner(group=testgroup)
+        core_mommy.examiner(group=testgroup)
+        group_mommy.feedbackset_first_attempt_published(testgroup)
+        group_mommy.feedbackset_new_attempt_published(testgroup)
+        state = testgroup.get_current_state()
+        json.dumps(state)
 
 
 class TestAssignmentGroupStatus(TestCase):

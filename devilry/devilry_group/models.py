@@ -531,12 +531,12 @@ class FeedbackSet(models.Model):
             'ignored': self.ignored,
             'ignored_reason': self.ignored_reason,
             'ignored_datetime': self.ignored_datetime.isoformat() if self.ignored_datetime else None,
-            'created_by': self.created_by,
+            'created_by': self.created_by.id if self.created_by else None,
             'created_datetime': self.created_datetime.isoformat(),
             'deadline_datetime': self.deadline_datetime.isoformat() if self.deadline_datetime else None,
             'grading_published_datetime':
                 self.grading_published_datetime.isoformat() if self.grading_published_datetime else None,
-            'grading_published_by': self.grading_published_by,
+            'grading_published_by': self.grading_published_by.id if self.grading_published_by else None,
             'grading_points': self.grading_points,
             'gradeform_data_json': self.gradeform_data_json,
             'groupcomments': groupcomments

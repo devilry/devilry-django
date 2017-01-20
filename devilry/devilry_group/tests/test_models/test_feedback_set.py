@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -273,11 +274,19 @@ class TestFeedbackSetGetCurrentState(TestCase):
         self.assertEqual(state['ignored_datetime'], testfeedbackset.ignored_datetime.isoformat())
 
     def test_created_by(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL, id=10)
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        testfeedbackset = group_mommy.feedbackset_new_attempt_unpublished(testgroup, created_by=testuser)
+        state = testfeedbackset.get_current_state()
+        self.assertEqual(state['created_by'], testfeedbackset.created_by.id)
+
+    def test_created_by_is_none(self):
         test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
         testfeedbackset = group_mommy.feedbackset_new_attempt_unpublished(testgroup)
         state = testfeedbackset.get_current_state()
-        self.assertEqual(state['created_by'], testfeedbackset.created_by)
+        self.assertIsNone(state['created_by'])
 
     def test_feedbackset_type(self):
         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
@@ -300,6 +309,14 @@ class TestFeedbackSetGetCurrentState(TestCase):
         testfeedbackset = group_mommy.feedbackset_first_attempt_published()
         state = testfeedbackset.get_current_state()
         self.assertEqual(state['grading_published_datetime'], testfeedbackset.grading_published_datetime.isoformat())
-        self.assertEqual(state['grading_published_by'], testfeedbackset.grading_published_by)
+        self.assertEqual(state['grading_published_by'], testfeedbackset.grading_published_by.id)
         self.assertEqual(state['grading_points'], testfeedbackset.grading_points)
         self.assertEqual(state['gradeform_data_json'], testfeedbackset.gradeform_data_json)
+
+    def test_is_json_serializeable(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL, id=10)
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        testfeedbackset = group_mommy.feedbackset_new_attempt_unpublished(testgroup, created_by=testuser)
+        state = testfeedbackset.get_current_state()
+        json.dumps(state)

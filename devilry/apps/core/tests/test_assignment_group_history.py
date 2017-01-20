@@ -2,6 +2,7 @@ from model_mommy import mommy
 from django.utils.timezone import datetime, timedelta
 from devilry.apps.core.models import AssignmentGroupHistory
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from django.test import TestCase
 
 
@@ -139,3 +140,15 @@ class TestAssignmentGroupHistory(TestCase):
         with self.assertRaises(AssignmentGroupHistory.DoesNotExist):
             AssignmentGroupHistory.objects.get(id=historygroup4id)
         self.assertTrue(AssignmentGroupHistory.objects.filter(id=historygroup2id).exists())
+
+    def test_num_queries(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group1')
+        group2 = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group2')
+        group_mommy.feedbackset_new_attempt_published(group1)
+        group_mommy.feedbackset_new_attempt_published(group1)
+        group_mommy.feedbackset_new_attempt_published(group2)
+        group_mommy.feedbackset_new_attempt_published(group2)
+
+        with self.assertNumQueries(3):
+            group1.merge_into(group2)

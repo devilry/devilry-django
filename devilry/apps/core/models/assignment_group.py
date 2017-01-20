@@ -1477,7 +1477,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             force_merge_published_feedbacksets: merges published feedbacksets if true
 
         """
-        source_feedbacksets = self.feedbackset_set.order_by_deadline_datetime()
+        group = AssignmentGroup.objects.prefetch_related(
+            models.Prefetch('feedbackset_set')
+        ).get(id=self.id)
+        source_feedbacksets = group.feedbackset_set.order_by_deadline_datetime()
         target_feedbacksets = target.feedbackset_set.order_by_deadline_datetime()
         for source_feedbackset, target_feedbackset in zip(source_feedbacksets, target_feedbacksets):
             source_feedbackset.merge_into(target_feedbackset, force_merge_published_feedbacksets)
