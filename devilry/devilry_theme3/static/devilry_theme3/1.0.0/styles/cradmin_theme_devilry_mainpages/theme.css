@@ -7307,6 +7307,52 @@ h3 {
 .devilry-singlefile-download:hover .devilry-singlefile-download__fullview {
   display: block;
 }
+.devilry-tabs__tab-list {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  border-bottom: 3px solid #555;
+}
+.devilry-tabs__tab {
+  font-weight: bold;
+  display: block;
+  text-align: center;
+  padding: 7px 15px;
+  border: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  margin-right: 5px;
+  background-color: #fff;
+  color: #555;
+}
+.devilry-tabs__tab:hover,
+.devilry-tabs__tab:focus {
+  background-color: #555;
+  color: #fff;
+  text-decoration: none;
+}
+.devilry-tabs__tab--active,
+.devilry-tabs__tab--active:hover,
+.devilry-tabs__tab--active:focus {
+  color: #fff;
+  background-color: #262626;
+}
+.devilry-tabs__title {
+  font-weight: bold;
+  display: block;
+}
+.devilry-tabs__meta {
+  margin-top: 5px;
+  font-weight: normal;
+  font-size: 14px;
+}
+.devilry-tabs__panel {
+  display: none;
+}
+.devilry-tabs__panel--active {
+  display: block;
+}
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;
 }
@@ -7349,6 +7395,25 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   border-color: #d9b4d3;
   color: #000000;
 }
+.devilry-body-admin .btn.btn-danger {
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
+}
+.devilry-body-admin .btn.btn-danger:hover,
+.devilry-body-admin .btn.btn-danger:focus {
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
+}
+@media (min-width: 768px) {
+  .devilry-body-admin .btn.btn-danger:hover,
+  .devilry-body-admin .btn.btn-danger:focus {
+    background: #E84D3D;
+    border-color: #E84D3D;
+    color: #fff;
+  }
+}
 .devilry-body-admin a.django-cradmin-listbuilder-itemframe-link {
   text-decoration: none;
 }
@@ -7374,6 +7439,26 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   .devilry-body-admin nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
     height: 66px;
   }
+}
+.devilry-body-admin .devilry-tabs__tab-list {
+  border-bottom-color: #ebd9e8;
+}
+.devilry-body-admin .devilry-tabs__tab {
+  background: #fff;
+  color: #000000;
+  text-decoration: none;
+}
+.devilry-body-admin .devilry-tabs__tab:hover,
+.devilry-body-admin .devilry-tabs__tab:focus {
+  text-decoration: none;
+  background: #d9b4d3;
+  color: #000000;
+}
+.devilry-body-admin .devilry-tabs__tab--active,
+.devilry-body-admin .devilry-tabs__tab--active:hover,
+.devilry-body-admin .devilry-tabs__tab--active:focus {
+  background: #ebd9e8;
+  color: #000000;
 }
 .devilry-body-examiner a {
   color: #0d6890;
@@ -7411,6 +7496,25 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   border-color: #82c9e5;
   color: #000000;
 }
+.devilry-body-examiner .btn.btn-danger {
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
+}
+.devilry-body-examiner .btn.btn-danger:hover,
+.devilry-body-examiner .btn.btn-danger:focus {
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
+}
+@media (min-width: 768px) {
+  .devilry-body-examiner .btn.btn-danger:hover,
+  .devilry-body-examiner .btn.btn-danger:focus {
+    background: #E84D3D;
+    border-color: #E84D3D;
+    color: #fff;
+  }
+}
 .devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link {
   text-decoration: none;
 }
@@ -7436,6 +7540,26 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   .devilry-body-examiner nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
     height: 66px;
   }
+}
+.devilry-body-examiner .devilry-tabs__tab-list {
+  border-bottom-color: #c0e4f2;
+}
+.devilry-body-examiner .devilry-tabs__tab {
+  background: #fff;
+  color: #000000;
+  text-decoration: none;
+}
+.devilry-body-examiner .devilry-tabs__tab:hover,
+.devilry-body-examiner .devilry-tabs__tab:focus {
+  text-decoration: none;
+  background: #82c9e5;
+  color: #000000;
+}
+.devilry-body-examiner .devilry-tabs__tab--active,
+.devilry-body-examiner .devilry-tabs__tab--active:hover,
+.devilry-body-examiner .devilry-tabs__tab--active:focus {
+  background: #c0e4f2;
+  color: #000000;
 }
 .devilry-body-student a {
   color: #ac9527;
@@ -7473,6 +7597,25 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   border-color: #fae993;
   color: #000000;
 }
+.devilry-body-student .btn.btn-danger {
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
+}
+.devilry-body-student .btn.btn-danger:hover,
+.devilry-body-student .btn.btn-danger:focus {
+  background: #fff;
+  border-color: #E84D3D;
+  color: #E84D3D;
+}
+@media (min-width: 768px) {
+  .devilry-body-student .btn.btn-danger:hover,
+  .devilry-body-student .btn.btn-danger:focus {
+    background: #E84D3D;
+    border-color: #E84D3D;
+    color: #fff;
+  }
+}
 .devilry-body-student a.django-cradmin-listbuilder-itemframe-link {
   text-decoration: none;
 }
@@ -7498,6 +7641,26 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   .devilry-body-student nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
     height: 66px;
   }
+}
+.devilry-body-student .devilry-tabs__tab-list {
+  border-bottom-color: #fdf4c9;
+}
+.devilry-body-student .devilry-tabs__tab {
+  background: #fff;
+  color: #000000;
+  text-decoration: none;
+}
+.devilry-body-student .devilry-tabs__tab:hover,
+.devilry-body-student .devilry-tabs__tab:focus {
+  text-decoration: none;
+  background: #fae993;
+  color: #000000;
+}
+.devilry-body-student .devilry-tabs__tab--active,
+.devilry-body-student .devilry-tabs__tab--active:hover,
+.devilry-body-student .devilry-tabs__tab--active:focus {
+  background: #fdf4c9;
+  color: #000000;
 }
 @media (max-width: 991px) {
   nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb .devilry-django-cradmin-menuitem-breadcrumb-icon {

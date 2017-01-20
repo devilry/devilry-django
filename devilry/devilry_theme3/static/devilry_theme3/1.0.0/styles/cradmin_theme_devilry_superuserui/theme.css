@@ -7399,6 +7399,52 @@ h3 {
 .devilry-singlefile-download:hover .devilry-singlefile-download__fullview {
   display: block;
 }
+.devilry-tabs__tab-list {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  border-bottom: 3px solid #555;
+}
+.devilry-tabs__tab {
+  font-weight: bold;
+  display: block;
+  text-align: center;
+  padding: 7px 15px;
+  border: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  margin-right: 5px;
+  background-color: #fff;
+  color: #555;
+}
+.devilry-tabs__tab:hover,
+.devilry-tabs__tab:focus {
+  background-color: #555;
+  color: #fff;
+  text-decoration: none;
+}
+.devilry-tabs__tab--active,
+.devilry-tabs__tab--active:hover,
+.devilry-tabs__tab--active:focus {
+  color: #fff;
+  background-color: #262626;
+}
+.devilry-tabs__title {
+  font-weight: bold;
+  display: block;
+}
+.devilry-tabs__meta {
+  margin-top: 5px;
+  font-weight: normal;
+  font-size: 14px;
+}
+.devilry-tabs__panel {
+  display: none;
+}
+.devilry-tabs__panel--active {
+  display: block;
+}
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;
 }
