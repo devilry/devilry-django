@@ -436,9 +436,6 @@ class FeedbackSet(models.Model):
         if current_deadline is None:
             return False, 'Cannot publish feedback without a deadline.'
 
-        if current_deadline > timezone.now():
-            return False, 'The deadline has not expired. Feedback was saved, but not published.'
-
         drafted_comments = self.__get_drafted_comments(published_by)
         now_without_seconds = timezone.now().replace(second=0, microsecond=0)
         for modifier, draft in enumerate(drafted_comments):

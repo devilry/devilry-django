@@ -5,6 +5,8 @@ from datetime import datetime
 # Django imports
 from django import forms
 from django.core.exceptions import PermissionDenied
+from django.http import Http404
+from django.shortcuts import redirect
 from django.utils import timezone
 from django.contrib import messages
 from django.http import HttpResponseRedirect
@@ -12,6 +14,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext_lazy, pgettext
 
 # Devilry/cradmin imports
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.generic import View
 from django_cradmin import crapp
 from django_cradmin.viewhelpers import update, delete
 from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
@@ -123,7 +126,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         group = self.request.cradmin_role
         # NOTE: :func:`~devilry.apps.core.models.AssignmentGroup.last_feedbackset_is_published` performs a query.
         if group.last_feedbackset_is_published:
-            return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl('create-feedbackset'))
+            raise Http404()
         return super(ExaminerFeedbackView, self).dispatch(request, *args, **kwargs)
 
     def get_form_class(self):
@@ -524,20 +527,31 @@ class GroupCommentEditView(GroupCommentEditDeleteMixin, update.UpdateView):
             return self.request.cradmin_app.reverse_appindexurl()
 
 
+
+class ExaminerFeedbackfeedRedirectView(View):
+    def dispatch(self, request, *args, **kwargs):
+        viewname = 'discuss'
+        return redirect(self.request.cradmin_app.reverse_appurl(viewname=viewname))
+
+
 class App(crapp.App):
     appurls = [
         crapp.Url(
                 r'^$',
-                ensure_csrf_cookie(ExaminerFeedbackView.as_view()),
+                ExaminerFeedbackfeedRedirectView.as_view(),
                 name=crapp.INDEXVIEW_NAME),
+        crapp.Url(
+                r'^feedback$',
+                ensure_csrf_cookie(ExaminerFeedbackView.as_view()),
+                name='feedback'),
         crapp.Url(
                 r'^discuss$',
                 ensure_csrf_cookie(ExaminerDiscussView.as_view()),
                 name='discuss'),
         crapp.Url(
-                r'^create-feedbackset$',
+                r'^new-deadline$',
                 ExaminerFeedbackCreateFeedbackSetView.as_view(),
-                name='create-feedbackset'),
+                name='new-deadline'),
         crapp.Url(
                 r'^groupcomment-delete/(?P<pk>\d+)$',
                 GroupCommentDeleteView.as_view(),

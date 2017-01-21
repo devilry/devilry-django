@@ -1,22 +1,28 @@
 {% extends 'devilry_group/feedbackfeed.django.html' %}
-
 {% load cradmin_tags %}
 {% load i18n %}
 
 {% block navigation %}
+    {% if request.cradmin_role.cached_data.last_published_feedbackset_is_last_feedbackset %}
+        <div class="alert alert-info text-center">
+            <p>
+                {% blocktrans trimmed with attempt_number=request.cradmin_role.cached_data.prettyformat_current_attempt_number %}
+                    The {{ attempt_number }} has been graded. You can leave this grade
+                    as their final grade for this assignment, or:
+                {% endblocktrans %}
+            </p>
+            <p>
+                {# If failing grade #}
+                <a href="{% cradmin_appurl 'new-deadline' %}" class="btn btn-default">
+                    {% trans "Give new attempt" %}
+                </a>
+                <a href="#" class="btn btn-default">
+                    {% trans "Edit the grade" %}
+                </a>
+            </p>
+        </div>
+    {% else %}
         <nav class="devilry-tabs__tab-list" id="/tabs">
-            <a href="{% cradmin_appindex_url %}#/tabs"
-               class="devilry-group-feedbackfeed-feedback-button
-                    devilry-tabs__tab
-                    {% block feedback_navigation_active_class %}{% endblock %}">
-                <span class="devilry-tabs__title">
-                    {% trans 'Feedback' context 'devilry_group feedbackfeed examiner' %}
-                    {% block feedback_navigation_title_suffix %}{% endblock %}
-                </span>
-                <span class="devilry-tabs__meta">
-                    {% trans 'Grade / provide feedback' context 'devilry_group feedbackfeed examiner' %}
-                </span>
-            </a>
             <a href="{% cradmin_appurl 'discuss' %}#/tabs"
                class="devilry-group-feedbackfeed-discuss-button
                     devilry-tabs__tab
@@ -29,5 +35,19 @@
                     {% trans 'Communicate without grading' context 'devilry_group feedbackfeed examiner' %}
                 </span>
             </a>
+
+            <a href="{% cradmin_appurl 'feedback' %}#/tabs"
+               class="devilry-group-feedbackfeed-feedback-button
+                    devilry-tabs__tab
+                    {% block feedback_navigation_active_class %}{% endblock %}">
+                <span class="devilry-tabs__title">
+                    {% trans 'Feedback' context 'devilry_group feedbackfeed examiner' %}
+                    {% block feedback_navigation_title_suffix %}{% endblock %}
+                </span>
+                <span class="devilry-tabs__meta">
+                    {% trans 'Grade / provide feedback' context 'devilry_group feedbackfeed examiner' %}
+                </span>
+            </a>
         </nav>
+    {% endif %}
 {% endblock %}
