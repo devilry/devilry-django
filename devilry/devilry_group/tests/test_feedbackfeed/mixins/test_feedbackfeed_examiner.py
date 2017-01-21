@@ -229,8 +229,8 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
                    feedback_set=group.feedbackset_set.first())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
                                                           requestuser=examiner.relatedexaminer.user)
-        self.assertTrue(mockresponse.selector.exists('.btn-danger'))
-        self.assertTrue('Delete', mockresponse.selector.one('.btn-danger').alltext_normalized)
+        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-groupcomment-draft-delete'))
+        self.assertTrue('Delete', mockresponse.selector.one('.devilry-feedbackfeed-groupcomment-draft-delete').alltext_normalized)
 
     def test_get_examiner_edit_on_drafts(self):
         group = mommy.make('core.AssignmentGroup')
@@ -245,8 +245,9 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
                    feedback_set=group.feedbackset_set.first())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
                                                           requestuser=examiner.relatedexaminer.user)
-        self.assertTrue(mockresponse.selector.exists('.btn-default'))
-        self.assertTrue('Edit', mockresponse.selector.one('.btn-default').alltext_normalized)
+        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-groupcomment-draft-edit'))
+        self.assertTrue('Edit',
+                        mockresponse.selector.one('.devilry-feedbackfeed-groupcomment-draft-edit').alltext_normalized)
 
     # def test_get_num_queries(self):
     #     testgroup = mommy.make('core.AssignmentGroup')

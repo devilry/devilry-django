@@ -28,7 +28,7 @@ class GenericMeta(models.Model):
 
         #: Can only exist one meta model for each model it references
         #: with its GenericForeignKey.
-        unique_together = ('content_type', 'content_object_id')
+        # unique_together = ('content_type', 'content_object_id')
 
 
 class CompressedArchiveMetaManager(models.Manager):
@@ -90,11 +90,6 @@ class CompressedArchiveMeta(GenericMeta):
             raise ValidationError({
                 'backend_id': ugettext_lazy('backend_id must refer to a valid backend')
             })
-
-    def set_ready_for_delete(self):
-        self.delete = True
-        self.clean()
-        self.save()
 
     def __unicode__(self):
         return self.archive_path

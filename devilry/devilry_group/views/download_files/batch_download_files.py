@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from wsgiref.util import FileWrapper
 
 from django import http
+from django.contrib.contenttypes.models import ContentType
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views import generic
@@ -14,8 +15,7 @@ from devilry.devilry_comment import models as comment_models
 from devilry.devilry_compressionutil import models as archivemodels
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.utils import download_response
-from devilry.devilry_group.views.download_files.batch_download_api import BatchCompressionAPIGroupCommentView, \
-    BatchCompressionAPIFeedbackSetView
+from devilry.devilry_group.views.download_files.batch_download_api import BatchCompressionAPIFeedbackSetView
 
 
 class FileDownloadFeedbackfeedView(generic.TemplateView):
@@ -112,7 +112,12 @@ class CompressedFeedbackSetFileDownloadView(generic.TemplateView):
         if feedbackset.group.id != request.cradmin_role.id:
             raise Http404()
 
-        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=feedbackset_id)
+        # archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=feedbackset_id)
+        archive_meta = archivemodels.CompressedArchiveMeta.objects.exclude()\
+            .filter(content_object_id=feedbackset_id,
+                    content_type=ContentType.objects.get_for_model(model=feedbackset),
+                    deleted_datetime=None)\
+            .order_by('-created_datetime').first()
         return download_response.download_response(
                 content_path=archive_meta.archive_path,
                 content_name=archive_meta.archive_name,
@@ -135,11 +140,11 @@ class App(crapp.App):
             r'^feedbackset-file-download/(?P<feedbackset_id>[0-9]+)$',
             CompressedFeedbackSetFileDownloadView.as_view(),
             name='feedbackset-file-download'),
-        crapp.Url(
-            r'groupcomment-download-api/(?P<content_object_id>[0-9]+)$',
-            BatchCompressionAPIGroupCommentView.as_view(),
-            name='groupcomment-file-download-api'
-        ),
+        # crapp.Url(
+        #     r'groupcomment-download-api/(?P<content_object_id>[0-9]+)$',
+        #     BatchCompressionAPIGroupCommentView.as_view(),
+        #     name='groupcomment-file-download-api'
+        # ),
         crapp.Url(
             r'feedbackset-download-api/(?P<content_object_id>[0-9]+)$',
             BatchCompressionAPIFeedbackSetView.as_view(),

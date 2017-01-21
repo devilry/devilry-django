@@ -23,13 +23,13 @@ class DevilryGroupAppConfig(AppConfig):
         backend_registry.Registry.get_instance().add(backends.DevilryGroupZipBackend)
 
         # add actiongroup for zipping groupcomment files to registry
-        batchregistry.Registry.get_instance().add_actiongroup(
-            batchregistry.ActionGroup(
-                name='batchframework_compress_groupcomment',
-                mode=batchregistry.ActionGroup.MODE_ASYNCHRONOUS,
-                actions=[
-                    tasks.GroupCommentCompressAction
-                ]))
+        # batchregistry.Registry.get_instance().add_actiongroup(
+        #     batchregistry.ActionGroup(
+        #         name='batchframework_compress_groupcomment',
+        #         mode=batchregistry.ActionGroup.MODE_ASYNCHRONOUS,
+        #         actions=[
+        #             tasks.GroupCommentCompressAction
+        #         ]))
 
         # add actiongroup for zipping all files in a feedbackset to registry
         batchregistry.Registry.get_instance().add_actiongroup(
