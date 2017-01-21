@@ -123,11 +123,11 @@ class AbstractBatchCompressionAPIView(View):
             Adding the downloadlink in subclass::
 
                 def get_ready_for_download(self, content_object_id):
-                    status_dict = super(BatchCompressionAPIGroupCommentView, self).get_ready_for_download_status()
+                    status_dict = super(BatchCompressionAPIFeedbackSetView, self).get_ready_for_download_status()
                     status_dict['download_link'] = self.request.cradmin_app.reverse_appurl(
-                        viewname='groupcomment-file-download',
+                        viewname='feedbackset-file-download',
                         kwargs={
-                            'groupcomment_id': content_object_id
+                            'feedbackset_id': content_object_id
                         })
                     return status_dict
 
