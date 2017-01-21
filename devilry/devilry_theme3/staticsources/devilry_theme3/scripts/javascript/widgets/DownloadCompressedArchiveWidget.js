@@ -58,7 +58,11 @@ export default class DownloadCompressedArchiveWidget extends AbstractWidget {
       response.bodydata);
   }
 
-  _getPollDelayMilliseconds() {
+  _handleNoFilesStatus() {
+    this.element.style.display = 'none';
+  }
+
+  get _pollDelayMilliseconds() {
     if(this.pollCount < 3) {
       return 700;
     } else if(this.pollCount < 10) {
@@ -79,9 +83,11 @@ export default class DownloadCompressedArchiveWidget extends AbstractWidget {
     if(this.status == 'not-started' || this.status == 'running') {
       window.setTimeout(() => {
         this._requestStatusUpdate();
-      }, this._getPollDelayMilliseconds());
+      }, this._pollDelayMilliseconds);
     } else if(this.status == 'finished') {
       this._handleFinishedStatus(response);
+    } else if(this.status == 'no-files') {
+      this._handleNoFilesStatus(response);
     } else {
       throw new Error(`Invalid status: ${this.status}`);
     }
