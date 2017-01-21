@@ -144,6 +144,6 @@ class AssignmentGroupCachedData(models.Model):
         else:
             return pgettext_lazy(
                 'devilry attempt number',
-                '%(attempt_number)sst attempt')  % {
+                '%(attempt_number)sst attempt') % {
                 'attempt_number': self.new_attempt_count + 1
             }
