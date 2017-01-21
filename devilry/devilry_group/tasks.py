@@ -81,10 +81,11 @@ class FeedbackSetCompressAction(batchregistry.Action):
         Returns:
 
         """
-        return os.path.join(str(feedbackset.group.parentnode.parentnode_id),
-                            str(feedbackset.group.parentnode.id),
-                            str(feedbackset.group.id),
-                            archivename)
+        return os.path.join(
+            str(feedbackset.group.parentnode.parentnode_id),
+            str(feedbackset.group.parentnode.id),
+            str(feedbackset.group.id),
+            archivename)
 
     def _zipfile_add(self, zipfile_backend, comment_file, feedback_set):
         """
