@@ -13,6 +13,7 @@ from devilry.apps.core.models import Examiner
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
+from devilry.devilry_group.models import FeedbackSet
 
 
 class TestFeedbackSetModel(TestCase):
@@ -334,7 +335,7 @@ class TestFeedbacksetMerge(TestCase):
         mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset1, _quantity=2)
 
         with self.assertNumQueries(11):
-            testfeedbackset1.merge_into(testfeedbackset2, False)
+            testfeedbackset1.merge_into(testfeedbackset2)
 
     def test_num_queries_3_comments(self):
         testfeedbackset1 = group_mommy.feedbackset_first_attempt_unpublished()
@@ -343,7 +344,7 @@ class TestFeedbacksetMerge(TestCase):
         mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset1, _quantity=3)
 
         with self.assertNumQueries(13):
-            testfeedbackset1.merge_into(testfeedbackset2, False)
+            testfeedbackset1.merge_into(testfeedbackset2)
 
     def test_num_queries_4_comments(self):
         testfeedbackset1 = group_mommy.feedbackset_first_attempt_unpublished()
@@ -352,4 +353,13 @@ class TestFeedbacksetMerge(TestCase):
         mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset1, _quantity=4)
 
         with self.assertNumQueries(15):
-            testfeedbackset1.merge_into(testfeedbackset2, False)
+            testfeedbackset1.merge_into(testfeedbackset2)
+
+    def test_merge_comments(self):
+        testfeedbackset1 = group_mommy.feedbackset_first_attempt_unpublished()
+        testfeedbackset2 = group_mommy.feedbackset_first_attempt_unpublished()
+        mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset1, _quantity=4)
+        mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset2, _quantity=4)
+        testfeedbackset1.merge_into(testfeedbackset2)
+        self.assertFalse(FeedbackSet.objects.filter(id=testfeedbackset1.id).exists())
+        self.assertEqual(FeedbackSet.objects.get(id=testfeedbackset2.id).groupcomment_set.count(), 8)

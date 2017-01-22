@@ -260,6 +260,7 @@ class FeedbackSet(models.Model):
     #: Choice for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_RE_EDIT = 're_edit'
 
+    #: A feedbackset that has been merged
     FEEDBACKSET_MERGE_LEFTOVER = 'merge_leftover'
 
     #: Grading status choices for :obj:`~.FeedbackSet.feedbackset_type`.
@@ -453,26 +454,14 @@ class FeedbackSet(models.Model):
 
         return True, ''
 
-    def merge_into(self, target, force_merge_published_feedbacksets):
+    def merge_into(self, target):
         """
         Merge comments from this feedbackSet into ``target`` feedbackset
-        if ``force_merge_published_feedbacksets`` is set to true merging of
-        published feedbackset is also allowed, if not this will throw a ValidationError.
 
         Args:
             target: :class:`~devilry_group.Feedbackset`
-            force_merge_published_feedbacksets: merge published feedbackset
 
-        Raises:
-            ``ValidationError`` if feedbacksets is published and ``force_merge_published_feedbacksets`` is False
-
-        Returns:
-            ValidationError cannot merge feedbackset when grading is published
         """
-        if ((self.grading_published_datetime is not None or target.grading_published_datetime is not None) and
-                not force_merge_published_feedbacksets):
-            raise ValidationError('Cannot merge feedbackset when grading is published')
-
         comments = self.groupcomment_set.all()
         for comment in comments:
             comment.feedback_set = target
