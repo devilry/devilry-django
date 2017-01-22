@@ -2,7 +2,6 @@ from model_mommy import mommy
 from django.utils.timezone import datetime, timedelta
 from devilry.apps.core.models import AssignmentGroupHistory
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from django.test import TestCase
 
 

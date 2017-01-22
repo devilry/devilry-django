@@ -3,6 +3,7 @@ import json
 from django.db import models
 from django.utils.timezone import datetime
 
+
 class AssignmentGroupHistory(models.Model):
     """
     This models keeps an audit trail of merges
@@ -139,4 +140,3 @@ class AssignmentGroupHistory(models.Model):
 
         newhistory['from']['state'] = source.get_current_state()
         self.merge_history = newhistory
-
