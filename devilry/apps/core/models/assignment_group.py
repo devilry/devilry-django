@@ -1,6 +1,7 @@
 import warnings
 from datetime import datetime
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
@@ -1474,37 +1475,40 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             candidate.assignment_group = target
             candidate.save()
 
-    def _merge_feedbackset_into(self, target, force_merge_published_feedbacksets):
+    def _merge_feedbackset_into(self, target):
         """
-        Move merge feedbacksets in self with ``target`` feedbackset
-        if ``force_merge_published_feedbacksets`` is set to true merging of
-        published feedbackset is also allowed, if not :meth:`~devilry_group.Feedbackset.merge_into`
-        will throw a value error.
+        Merges Merges feedbacksets from self to target.
 
-        if self contains greater amount of feedbacksets than target, then the AssignmentGroup foreign key is just moved
-        to ``target``
+        Algorithm:
+            - Merge self feedbacksets into target AssignmentGroup and set feedbackset type to merge prefix
+            - For first Feedbackset we have to set the deadline since it's None by default
 
         Args:
             target: :class:`~core.AssignmentGroup` to be merged into
-            force_merge_published_feedbacksets: merges published feedbacksets if true
-
         """
-        source_feedbacksets = self.feedbackset_set.order_by_deadline_datetime().prefetch_related('groupcomment_set')
-        target_feedbacksets = target.feedbackset_set.order_by_deadline_datetime().prefetch_related('groupcomment_set')
-        for source_feedbackset, target_feedbackset in zip(source_feedbacksets, target_feedbacksets):
-            source_feedbackset.merge_into(target_feedbackset, force_merge_published_feedbacksets)
+        from devilry.devilry_group.models import FeedbackSet
 
-        # move left over feedbacksets into target
-        for source_left_over_feedbackset in self.feedbackset_set.order_by_deadline_datetime():
-            source_left_over_feedbackset.group = target
-            source_left_over_feedbackset.save()
+        feedbackset_type_merge_map = {
+            FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT: FeedbackSet.FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT,
+            FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT: FeedbackSet.FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT,
+            FeedbackSet.FEEDBACKSET_TYPE_RE_EDIT: FeedbackSet.FEEDBACKSET_TYPE_MERGE_RE_EDIT
+        }
 
-    def merge_into(self, target, force_merge_published_feedbacksets=False):
+        feedbacksets = self.feedbackset_set.order_by_deadline_datetime()\
+            .select_related('group__parentnode')
+        for feedbackset in feedbacksets:
+            if feedbackset.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
+                feedbackset.deadline_datetime = feedbackset.current_deadline()
+            if feedbackset.feedbackset_type in feedbackset_type_merge_map.keys():
+                feedbackset.feedbackset_type = feedbackset_type_merge_map[feedbackset.feedbackset_type]
+            feedbackset.group = target
+            feedbackset.save()
+
+    def merge_into(self, target):
         """
         Merge this AssignmentGroup into ``target`` AssignmentGroup
 
-        - Move foreign key pointers from all comments in feedbacksets to related feedbackset in target
-            assignment group
+        - Move all feedbacksets into target AssignmentGroup
         - Move in all candidates not already on the AssignmentGroup.
         - Move in all examiners not already on the AssignmentGroup.
         - Move in all tags not already on the AssignmentGroup.
@@ -1512,7 +1516,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         Args:
             target: :class:`~core.AssignmentGroup` the assignment group that self will be merged into
-            force_merge_published_feedbacksets: merges published feedbacksets
 
         Raises:
             ValueError if self and target AssignmentGroup is not part of same Assignment
@@ -1520,25 +1523,61 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Returns:
 
         """
-        if self.parentnode_id != target.parentnode_id:
-            raise ValueError('self and target AssignmentGroup is not part of same Assignment')
 
-        from devilry.apps.core.models import AssignmentGroupHistory
+        # from devilry.apps.core.models import AssignmentGroupHistory
+        #
+        # try:
+        #     grouphistory = target.assignmentgrouphistory
+        # except AssignmentGroupHistory.DoesNotExist:
+        #     grouphistory = AssignmentGroupHistory(assignment_group=target)
+        #
+        # grouphistory.merge_assignment_group_history(self)
 
-        try:
-            grouphistory = target.assignmentgrouphistory
-        except AssignmentGroupHistory.DoesNotExist:
-            grouphistory = AssignmentGroupHistory(assignment_group=target)
-
-        grouphistory.merge_assignment_group_history(self)
-
-        self._merge_feedbackset_into(target, force_merge_published_feedbacksets)
+        self._merge_feedbackset_into(target)
         self._merge_candidates_into(target)
         self._merge_examiners_into(target)
         self._merge_tags_into(target)
 
-        grouphistory.save()
+        # grouphistory.save()
         self.delete()
+
+    def can_merge(self, target):
+        """
+        Checks whether we can merge into target
+        Args:
+            target: :class:`~core.AssignmentGroup` target assignment group
+
+        Raises:
+            ValidationError
+        """
+        if self.parentnode_id != target.parentnode_id:
+            raise ValidationError('Cannot merge self into target, self and target is not part of same AssignmentGroup')
+
+    @classmethod
+    def merge_groups(self, groups):
+        """
+        First group will be target assignment group, the rest of the groups in the list
+        will be merged into target
+        Args:
+            groups: list with :class:`~core.AssignmentGroup`
+
+        Raises:
+            ValidationError if we are not able to merge groups
+        """
+        if len(groups) < 2:
+            raise ValidationError('Cannot merge less than 2 groups')
+
+        target_group = groups.pop(0)
+        # Check if we can merge
+        for group in groups:
+            group.can_merge(target_group)
+
+        # TODO: Create history of current state before merge
+
+        for group in groups:
+            group.merge_into(target_group)
+
+        # TODO: Save history of previous state
 
     def pop_candidate(self, candidate):
         """
