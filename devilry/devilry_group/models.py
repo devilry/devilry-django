@@ -260,11 +260,14 @@ class FeedbackSet(models.Model):
     #: Choice for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_RE_EDIT = 're_edit'
 
+    FEEDBACKSET_MERGE_LEFTOVER = 'merge_leftover'
+
     #: Grading status choices for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_CHOICES = [
         (FEEDBACKSET_TYPE_FIRST_ATTEMPT, 'first attempt'),
         (FEEDBACKSET_TYPE_NEW_ATTEMPT, 'new attempt'),
         (FEEDBACKSET_TYPE_RE_EDIT, 're edit'),
+        (FEEDBACKSET_MERGE_LEFTOVER, 'merge leftover')
     ]
 
     #: Sets the type of the feedbackset.
