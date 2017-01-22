@@ -439,7 +439,7 @@ class FeedbackSet(models.Model):
         Publishes this FeedbackSet and comments that belongs to this it and that are
         part of the grading.
 
-        :param published_by: Who published the feedbackset.
+k        :param published_by: Who published the feedbackset.
         :param grading_points: Points to give to student(s).
         :param gradeform_data_json: gradeform(coming soon).
         :return: True or False and an error message.
@@ -461,20 +461,6 @@ class FeedbackSet(models.Model):
         self.save()
 
         return True, ''
-
-    def merge_into(self, target):
-        """
-        Merge comments from this feedbackSet into ``target`` feedbackset
-
-        Args:
-            target: :class:`~devilry_group.Feedbackset`
-
-        """
-        comments = self.groupcomment_set.all()
-        for comment in comments:
-            comment.feedback_set = target
-            comment.save()
-        self.delete()
 
     def copy_feedbackset_into_group(self, group, target=None):
         """
@@ -511,7 +497,7 @@ class FeedbackSet(models.Model):
         target.save()
 
         for comment in self.groupcomment_set.all():
-           comment.copy_comment_into_feedbackset(target)
+            comment.copy_comment_into_feedbackset(target)
 
         return target
 
