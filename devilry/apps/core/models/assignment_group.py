@@ -1477,7 +1477,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     def _merge_feedbackset_into(self, target):
         """
-        Merges Merges feedbacksets from self to target.
+        Merge feedbacksets from self to target.
 
         Algorithm:
             - Merge self feedbacksets into target AssignmentGroup and set feedbackset type to merge prefix
@@ -1488,6 +1488,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         from devilry.devilry_group.models import FeedbackSet
 
+        # Map feedbackset_type to merge prefix
         feedbackset_type_merge_map = {
             FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT: FeedbackSet.FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT,
             FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT: FeedbackSet.FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT,
@@ -1496,11 +1497,16 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         feedbacksets = self.feedbackset_set.order_by_deadline_datetime()\
             .select_related('group__parentnode')
+
         for feedbackset in feedbacksets:
+            # set the deadline_datetime to first feedbackset
             if feedbackset.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
                 feedbackset.deadline_datetime = feedbackset.current_deadline()
+
+            # change feedbackset_type to merge prefix
             if feedbackset.feedbackset_type in feedbackset_type_merge_map.keys():
                 feedbackset.feedbackset_type = feedbackset_type_merge_map[feedbackset.feedbackset_type]
+
             feedbackset.group = target
             feedbackset.save()
 
