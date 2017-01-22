@@ -1099,7 +1099,7 @@ class TestAssignmentGroupGetCurrentState(TestCase):
         feedbacksets.append(group_mommy.feedbackset_new_attempt_published(testgroup).id)
         feedbacksets.append(group_mommy.feedbackset_new_attempt_unpublished(testgroup).id)
         state = testgroup.get_current_state()
-        state_feedbacksets_ids = [feedbackset['id'] for feedbackset in state['feedbacksets']]
+        state_feedbacksets_ids = [id for id in state['feedbacksets']]
         self.assertListEqual(state_feedbacksets_ids, feedbacksets)
 
     def test_is_json_serializeable(self):
