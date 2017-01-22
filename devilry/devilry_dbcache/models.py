@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy, pgettext_lazy
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.models import FeedbackSet
@@ -125,3 +126,24 @@ class AssignmentGroupCachedData(models.Model):
             return self.group.assignment.first_deadline
         else:
             return self.last_feedbackset.deadline_datetime
+
+    @property
+    def prettyformat_current_attempt_number(self):
+        """
+        Format the current attempt number as a human readable string
+        suitable for display in a UI.
+        """
+        if self.new_attempt_count == 0:
+            return pgettext_lazy('devilry attempt number', 'first attempt')
+        elif self.new_attempt_count == 1:
+            return pgettext_lazy('devilry attempt number', 'second attempt')
+        elif self.new_attempt_count == 2:
+            return pgettext_lazy('devilry attempt number', 'third attempt')
+        elif self.new_attempt_count == 4:
+            return pgettext_lazy('devilry attempt number', 'fourth attempt')
+        else:
+            return pgettext_lazy(
+                'devilry attempt number',
+                '%(attempt_number)sst attempt') % {
+                'attempt_number': self.new_attempt_count + 1
+            }

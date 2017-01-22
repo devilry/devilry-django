@@ -2,6 +2,8 @@ import json
 
 import mock
 import time
+
+import shutil
 from django import test
 from django.core.files.base import ContentFile
 from django.http import Http404
@@ -180,13 +182,29 @@ class TestHelper(object):
 
 
 class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
+    """
+    """
     viewclass = batch_download_api.BatchCompressionAPIFeedbackSetView
 
     def setUp(self):
         customsql.AssignmentGroupDbCacheCustomSql().initialize()
 
+    def tearDown(self):
+        # Ignores errors if the path is not created.
+        shutil.rmtree('devilry_testfiles/devilry_compressed_archives/', ignore_errors=True)
+        shutil.rmtree('devilry_testfiles/filestore/', ignore_errors=True)
+
+    def test_get_status_no_files(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        mockresponse = self.mock_getrequest(
+            viewkwargs={
+                'content_object_id': testfeedbackset.id
+            })
+        self.assertEquals('{"status": "no-files"}', mockresponse.response.content)
+
     @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
-    def test_get_status_unprocessed(self):
+    def test_get_status_not_started_unprocessed(self):
         testgroup = mommy.make('core.AssignmentGroup')
         testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
         testcomment = mommy.make('devilry_group.GroupComment',
@@ -321,7 +339,7 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         compressed_archive_meta = mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testfeedbackset)
         commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-        mockresponse = self.mock_postrequest(
+        self.mock_postrequest(
             viewkwargs={
                 'content_object_id': testfeedbackset.id
             })
@@ -342,14 +360,15 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             task=tasks.FeedbackSetCompressAction,
             context_object=testfeedbackset)
         self._mock_batchoperation_status(context_object_id=testfeedbackset.id)
-        # post_json = json.dumps({'content_object_id': testfeedbackset.id})
         mockresponse = self.mock_postrequest(
             viewkwargs={
                 'content_object_id': testfeedbackset.id
             })
         self.assertEquals({'status': 'not-started'}, json.loads(mockresponse.response.content))
 
-    def test_post_batchoperation_finished(self):
+    def test_post_status_finished_when_compressed_archive_exists(self):
+        # Tests that post returns status finished with download-link if
+        # CompressedArchiveMeta exists with deleted_datetime as None.
         testgroup = mommy.make('core.AssignmentGroup')
         testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
         testcomment = mommy.make('devilry_group.GroupComment',
@@ -368,6 +387,18 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             viewkwargs={
                 'content_object_id': testfeedbackset.id
             })
+        self.assertEquals({'status': 'finished', 'download_link': 'url-to-downloadview'},
+                          json.loads(mockresponse.response.content))
+
+        # mock return value for reverse_appurl
+        mock_cradmin_app = mock.MagicMock()
+        mock_cradmin_app.reverse_appurl.return_value = 'url-to-downloadview'
+        with self.assertNumQueries(5):
+            mockresponse = self.mock_postrequest(
+                cradmin_app=mock_cradmin_app,
+                viewkwargs={
+                    'content_object_id': testfeedbackset.id
+                })
         self.assertEquals({'status': 'finished', 'download_link': 'url-to-downloadview'},
                           json.loads(mockresponse.response.content))
 
