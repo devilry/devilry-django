@@ -1523,22 +1523,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Returns:
 
         """
-
-        # from devilry.apps.core.models import AssignmentGroupHistory
-        #
-        # try:
-        #     grouphistory = target.assignmentgrouphistory
-        # except AssignmentGroupHistory.DoesNotExist:
-        #     grouphistory = AssignmentGroupHistory(assignment_group=target)
-        #
-        # grouphistory.merge_assignment_group_history(self)
-
         self._merge_feedbackset_into(target)
         self._merge_candidates_into(target)
         self._merge_examiners_into(target)
         self._merge_tags_into(target)
 
-        # grouphistory.save()
         self.delete()
 
     def can_merge(self, target):
@@ -1567,17 +1556,26 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         if len(groups) < 2:
             raise ValidationError('Cannot merge less than 2 groups')
 
+        from devilry.apps.core.models import AssignmentGroupHistory
+
         target_group = groups.pop(0)
         # Check if we can merge
         for group in groups:
             group.can_merge(target_group)
 
-        # TODO: Create history of current state before merge
+        # Create or get target group history
+        try:
+            grouphistory = target_group.assignmentgrouphistory
+        except AssignmentGroupHistory.DoesNotExist:
+            grouphistory = AssignmentGroupHistory(assignment_group=target_group)
+        # Insert groups in history
+        grouphistory.merge_assignment_group_history(groups)
 
+        # Merge groups
         for group in groups:
             group.merge_into(target_group)
 
-        # TODO: Save history of previous state
+        grouphistory.save()
 
     def pop_candidate(self, candidate):
         """

@@ -1,7 +1,7 @@
 import json
 
 from django.db import models
-from django.utils.timezone import datetime
+from django.utils import timezone
 
 
 class AssignmentGroupHistory(models.Model):
@@ -122,14 +122,15 @@ class AssignmentGroupHistory(models.Model):
             groups (:class:`.AssignmentGroup`): source AssignmentGroup
         """
         newhistory = self._make_default_merge_history()
+        self_history = self.merge_history
+        self_history['state'] = self.assignment_group.get_current_state()
+        newhistory['groups'].append(self_history)
+        newhistory['merge_datetime'] = timezone.now().isoformat()
         for group in groups:
             try:
-                group_history = group.assignmentgrouphistory
+                group_history = group.assignmentgrouphistory.merge_history
             except AssignmentGroupHistory.DoesNotExist:
                 group_history = self._make_default_merge_history()
             group_history['state'] = group.get_current_state()
             newhistory['groups'].append(group_history)
-        self_history = self.merge_history
-        self_history['state'] = self.assignment_group.get_current_state()
-        newhistory['groups'].append(self_history)
         self.merge_history = newhistory
