@@ -1624,7 +1624,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         tag_queryset = self.tags.all()
         tags = [tag.tag for tag in tag_queryset]
         feedbackset_queryset = self.feedbackset_set.order_by_deadline_datetime().prefetch_related('groupcomment_set')
-        feedbacksets = [feedbackset.get_current_state() for feedbackset in feedbackset_queryset]
+        feedbacksets = [feedbackset.id for feedbackset in feedbackset_queryset]
 
         return {
             'name': self.name,
