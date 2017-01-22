@@ -214,9 +214,8 @@ class AbstractBatchCompressionAPIView(View):
         """
         content_object_id = kwargs.get('content_object_id')
         compressed_archive_meta = self._compressed_archive_created(content_object_id=content_object_id)
-        if compressed_archive_meta:
-            if self.new_file_is_added(latest_compressed_datetime=compressed_archive_meta.created_datetime):
-                return JsonResponse(self.get_status_dict(context_object_id=content_object_id))
+        if compressed_archive_meta and \
+                not self.new_file_is_added(latest_compressed_datetime=compressed_archive_meta.created_datetime):
             return JsonResponse(self.get_ready_for_download_status(content_object_id=content_object_id))
         return JsonResponse(self.get_status_dict(context_object_id=content_object_id))
 
