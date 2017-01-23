@@ -192,12 +192,13 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         Returns:
             (GroupComment): The update ``GroupComment``
         """
-        group_comment.visibility = group_models.GroupComment.VISIBILITY_PRIVATE
-        group_comment.part_of_grading = True
-        group_comment = super(ExaminerFeedbackView, self).save_object(form=form, commit=True)
+        if form.cleaned_data['temporary_file_collection_id'] or len(group_comment.text) > 0:
+            group_comment.visibility = group_models.GroupComment.VISIBILITY_PRIVATE
+            group_comment.part_of_grading = True
+            group_comment = super(ExaminerFeedbackView, self).save_object(form=form, commit=True)
         return group_comment
 
-    def _publish_feedback(self, form, group_comment):
+    def _publish_feedback(self, form, feedback_set, user):
         """
 
         Args:
@@ -206,20 +207,14 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         Returns:
 
         """
-        result, error_msg = group_comment.feedback_set.publish(
-            published_by=group_comment.user,
+        # publish FeedbackSet
+        result, error_msg = feedback_set.publish(
+            published_by=user,
             grading_points=form.get_grading_points())
         if result is False:
             messages.error(self.request, ugettext_lazy(error_msg))
-        elif form.cleaned_data['temporary_file_collection_id'] or len(group_comment.text) > 0:
-            # Don't add a comment unless there is text or files associated with it.
-            group_comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
-            group_comment.part_of_grading = True
-            group_comment.published_datetime = group_comment.get_published_datetime()
-            group_comment = super(ExaminerFeedbackView, self).save_object(form=form, commit=True)
-        return group_comment
 
-    def save_object(self, form, commit=True):
+    def save_object(self, form, commit=False):
         comment = super(ExaminerFeedbackView, self).save_object(form=form)
         if comment.feedback_set.grading_published_datetime is not None:
             messages.warning(self.request, ugettext_lazy('Feedback is already published!'))
@@ -228,7 +223,9 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
                 # If comment is part of a draft, the comment should only be visible to
                 comment = self._add_feedback_draft(form=form, group_comment=comment)
             elif 'examiner_publish_feedback' in self.request.POST:
-                comment = self._publish_feedback(form=form, group_comment=comment)
+                # Add comment or files provided as draft, and let FeedbackSet handle the publishing.
+                comment = self._add_feedback_draft(form=form, group_comment=comment)
+                self._publish_feedback(form=form, feedback_set=comment.feedback_set, user=comment.user)
         return comment
 
     def get_form_invalid_message(self, form):

@@ -314,22 +314,6 @@ class FeedbackFeedBaseView(create.CreateView):
             .filter_for_user(self.request.user) \
             .prefetch_related('files')
 
-    # def _set_archive_meta_ready_for_delete(self, feedback_set):
-    #     """
-    #     Set :class:`~.devilry.devilry_compressionutil.models.CompressedArchiveMeta` to be ready for deletion.
-    #
-    #     If there is a ``CompressedArchiveMeta`` entry for the ``feedback_set_id``, the
-    #     ``CompressedArchiveMeta.deleted_datetime`` is set to ``True`` and the model is cleaned and saved.
-    #
-    #     Args:
-    #         feedback_set_id: Id of the ``FeedbackSet`` referenced in ``CompressedArchiveMeta``.
-    #     """
-    #     CompressedArchiveMeta.objects\
-    #         .filter(content_object_id=feedback_set.id,
-    #                 content_type=ContentType.objects.get_for_model(model=feedback_set),
-    #                 deleted_datetime=None)\
-    #         .update(deleted_datetime=timezone.now())
-
     def _convert_temporary_files_to_comment_files(self, form, groupcomment):
         """
         Converts files added to a comment to :obj:`~devilry.devilry_comment.models.CommentFile`.

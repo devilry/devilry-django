@@ -439,7 +439,7 @@ class FeedbackSet(models.Model):
         Publishes this FeedbackSet and comments that belongs to this it and that are
         part of the grading.
 
-k        :param published_by: Who published the feedbackset.
+        :param published_by: Who published the feedbackset.
         :param grading_points: Points to give to student(s).
         :param gradeform_data_json: gradeform(coming soon).
         :return: True or False and an error message.
@@ -449,13 +449,13 @@ k        :param published_by: Who published the feedbackset.
             return False, 'Cannot publish feedback without a deadline.'
 
         drafted_comments = self.__get_drafted_comments(published_by)
-        now_without_seconds = timezone.now().replace(second=0, microsecond=0)
+        now_without_seconds = timezone.now().replace(microsecond=0)
         for modifier, draft in enumerate(drafted_comments):
-            draft.publish_draft(now_without_seconds + timezone.timedelta(milliseconds=modifier))
+            draft.publish_draft(now_without_seconds + timezone.timedelta(microseconds=modifier))
 
         self.grading_points = grading_points
         self.grading_published_datetime = now_without_seconds + timezone.timedelta(
-                milliseconds=drafted_comments.count() + 1)
+            microseconds=drafted_comments.count() + 1)
         self.grading_published_by = published_by
         self.full_clean()
         self.save()

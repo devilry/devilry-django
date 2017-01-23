@@ -9,11 +9,201 @@ from devilry.devilry_comment import models as comment_models
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
+from devilry.apps.core import models as core_models
 from devilry.devilry_group.tests.test_feedbackfeed.mixins import test_feedbackfeed_examiner
 from devilry.devilry_group.views.examiner import feedbackfeed_examiner
 
 
-class TestFeedbackfeedExaminerPublicDiscuss(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
+class TestFeedbackfeedExaminerDiscussMixin(test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
+
+    def test_get_examiner_first_attempt_feedback_tab_does_not_exist_if_last_feedbackset_is_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-feedback-button'))
+
+    def test_get_examiner_first_attempt_feedback_tab_exist_if_last_feedbackset_is_unpublished(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-feedback-button'))
+
+    def test_get_examiner_new_attempt_feedback_tab_does_not_exist_if_last_feedbackset_is_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        group_mommy.feedbackset_new_attempt_published(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-feedback-button'))
+
+    def test_get_examiner_new_attempt_feedback_tab_exist_if_last_feedbackset_is_unpublished(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        group_mommy.feedbackset_new_attempt_unpublished(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-feedback-button'))
+
+    def test_get_examiner_first_attempt_unpublished_alert_choice_box_does_not_exist(self):
+        # Tests that box providing the possibility of giving a new attempt or re-edit does NOT show when last
+        # feedbackset has been NOT been published.
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-group-feedbackfeed-examiner-after-publish-choice-alert'))
+
+    def test_get_examiner_first_attempt_published_choice_alert_box_exists(self):
+        # Tests that box providing the possibility of giving a new attempt shows when last feedbackset has been
+        # published
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertTrue(
+            mockresponse.selector.exists('.devilry-group-feedbackfeed-examiner-after-publish-choice-alert'))
+
+    def test_get_examiner_first_attempt_published_choice_alert_info_text(self):
+        # Test the info-text in the alert box that show when the last feedbackset is published.
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        choice_alert_info_text = mockresponse.selector.one(
+            '.devilry-group-feedbackfeed-examiner-after-publish-choice-alert-info-text'
+        ).alltext_normalized
+        self.assertEquals(
+            'The first attempt has been graded. You can leave this grade '
+            'as their final grade for this assignment, or:',
+            choice_alert_info_text
+        )
+
+    def test_get_examiner_first_attempt_published_choice_alert_new_attempt_button(self):
+        # Test that new attempt button exists in the choice alert when last feedbackset is published.
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertTrue(
+            mockresponse.selector.exists(
+                '.devilry-group-feedbackfeed-examiner-after-publish-choice-alert-new-attempt-button')
+        )
+        button_text = mockresponse.selector \
+            .one(
+            '.devilry-group-feedbackfeed-examiner-after-publish-choice-alert-new-attempt-button').alltext_normalized
+        self.assertEquals('Give new attempt', button_text)
+
+    def test_get_examiner_first_attempt_published_choice_alert_re_edit_button_text(self):
+        # Test that new attempt button exists in the choice alert when last feedbackset is published.
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertTrue(
+            mockresponse.selector.exists(
+                '.devilry-group-feedbackfeed-examiner-after-publish-choice-alert-reedit-button')
+        )
+        button_text = mockresponse.selector \
+            .one('.devilry-group-feedbackfeed-examiner-after-publish-choice-alert-reedit-button').alltext_normalized
+        self.assertEquals('Edit the grade', button_text)
+
+    def test_get_examiner_new_attempt_unpublished_choice_alert_does_not_exist(self):
+        # Test that choice alert for giving a new attempt or re editing the last does NOT show
+        # when first feedbackset is published, but the new try is unpublished.
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        testfeedbackset_new_attempt = group_mommy.feedbackset_new_attempt_unpublished(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertNotEquals(testgroup.cached_data.last_published_feedbackset, testfeedbackset_new_attempt)
+        self.assertEquals(testgroup.cached_data.last_feedbackset, testfeedbackset_new_attempt)
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-group-feedbackfeed-examiner-after-publish-choice-alert')
+        )
+
+    def test_get_examiner_new_attempt_published_choice_alert_exists(self):
+        # Tests that choice alert for giving new attempt or re editing the last shows
+        # when first feedbackset and new attempt is published.
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        testfeedbackset_new_attempt = group_mommy.feedbackset_new_attempt_published(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertEquals(testgroup.cached_data.last_published_feedbackset, testfeedbackset_new_attempt)
+        self.assertEquals(testgroup.cached_data.last_feedbackset, testfeedbackset_new_attempt)
+        self.assertTrue(
+            mockresponse.selector.exists('.devilry-group-feedbackfeed-examiner-after-publish-choice-alert')
+        )
+
+    def test_post_comment_always_to_last_feedbackset(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       grading_system_plugin_id=core_models.Assignment
+                                       .GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        feedbackset_first = group_mommy.feedbackset_first_attempt_published(group=group)
+        feedbackset_last = group_mommy.feedbackset_new_attempt_unpublished(group=group)
+        self.mock_http302_postrequest(
+            cradmin_role=examiner.assignmentgroup,
+            requestuser=examiner.relatedexaminer.user,
+            viewkwargs={'pk': group.id},
+            requestkwargs={
+                'data': {
+                    'text': 'This is a feedback',
+                    'examiner_add_public_comment': 'unused value',
+                }
+            })
+        comments = group_models.GroupComment.objects.all()
+        self.assertEquals(len(comments), 1)
+        self.assertNotEquals(feedbackset_first, comments[0].feedback_set)
+        self.assertEquals(feedbackset_last, comments[0].feedback_set)
+        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+
+
+class TestFeedbackfeedExaminerPublicDiscuss(TestCase, TestFeedbackfeedExaminerDiscussMixin):
     viewclass = feedbackfeed_examiner.ExaminerPublicDiscussView
 
     def setUp(self):
@@ -129,7 +319,7 @@ class TestFeedbackfeedExaminerPublicDiscuss(TestCase, test_feedbackfeed_examiner
         self.assertEquals('This is a comment', posted_comment.text)
 
 
-class TestFeedbackfeedExaminerWithAdminDiscuss(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
+class TestFeedbackfeedExaminerWithAdminDiscuss(TestCase, TestFeedbackfeedExaminerDiscussMixin):
     viewclass = feedbackfeed_examiner.ExaminerWithAdminsDiscussView
 
     def setUp(self):
