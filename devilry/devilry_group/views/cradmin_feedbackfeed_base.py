@@ -7,17 +7,14 @@ from xml.sax.saxutils import quoteattr
 
 from crispy_forms import layout
 from django import forms
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
-from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.viewhelpers import create
 
-from devilry.devilry_compressionutil.models import CompressedArchiveMeta
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_timeline

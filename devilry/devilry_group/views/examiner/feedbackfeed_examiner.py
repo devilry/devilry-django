@@ -34,24 +34,6 @@ class AbstractFeedbackForm(cradmin_feedbackfeed_base.GroupCommentForm):
         raise NotImplementedError()
 
 
-class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
-    """
-    Base view for examiner.
-    """
-    def get_devilryrole(self):
-        """
-        Get the devilryrole for the view.
-
-        Returns:
-            str: ``examiner`` as devilryrole.
-        """
-        return 'examiner'
-
-    def set_automatic_attributes(self, obj):
-        super(ExaminerBaseFeedbackFeedView, self).set_automatic_attributes(obj)
-        obj.user_role = 'examiner'
-
-
 class PassedFailedFeedbackForm(AbstractFeedbackForm):
     """
     Form for passed/failed grade plugin.
@@ -101,6 +83,49 @@ class PointsFeedbackForm(AbstractFeedbackForm):
         return self.cleaned_data['points']
 
 
+class EditGroupCommentForm(forms.ModelForm):
+    """
+    Form for editing existing Feedback drafts.
+    """
+    class Meta:
+        fields = ['text']
+        model = group_models.GroupComment
+
+    @classmethod
+    def get_field_layout(cls):
+        return ['text']
+
+
+class CreateFeedbackSetForm(cradmin_feedbackfeed_base.GroupCommentForm):
+    """
+    Form for creating a new FeedbackSet (deadline).
+    """
+    #: Deadline to be added to the new FeedbackSet.
+    deadline_datetime = forms.DateTimeField(widget=DateTimePickerWidget)
+
+    @classmethod
+    def get_field_layout(cls):
+        return ['deadline_datetime']
+
+
+class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
+    """
+    Base view for examiner.
+    """
+    def get_devilryrole(self):
+        """
+        Get the devilryrole for the view.
+
+        Returns:
+            str: ``examiner`` as devilryrole.
+        """
+        return 'examiner'
+
+    def set_automatic_attributes(self, obj):
+        super(ExaminerBaseFeedbackFeedView, self).set_automatic_attributes(obj)
+        obj.user_role = 'examiner'
+
+
 class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
     """
     The examiner feedbackview.
@@ -124,9 +149,9 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
             HttpResponse: The HTTP response.
         """
         group = self.request.cradmin_role
-        # NOTE: :func:`~devilry.apps.core.models.AssignmentGroup.last_feedbackset_is_published` performs a query.
+        # # NOTE: :func:`~devilry.apps.core.models.AssignmentGroup.last_feedbackset_is_published` performs a query.
         if group.last_feedbackset_is_published:
-            raise Http404()
+            raise Http404
         return super(ExaminerFeedbackView, self).dispatch(request, *args, **kwargs)
 
     def get_form_class(self):
@@ -135,7 +160,6 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
 
         Returns:
             A :class:`devilry.devilry_group.views.cradmin_feedbackfeed_base.GroupCommentForm`
-
         """
         assignment = self.request.cradmin_role.assignment
         if assignment.grading_system_plugin_id == core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED:
@@ -211,64 +235,67 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         return 'Cannot publish feedback until deadline has passed!'
 
 
-class ExaminerDiscussView(ExaminerBaseFeedbackFeedView):
+class ExaminerPublicDiscussView(ExaminerBaseFeedbackFeedView):
     """
-    The examiner discussview.
-    This is the view examiner uses for communicating with students and admins in the feedbackfeed.
+    View for discussing with everyone on the group.
+
+    All comments posted here are visible to everyone that has access to the group.
     """
     template_name = 'devilry_group/feedbackfeed_examiner_discuss.django.html'
 
+    def get_form_heading_text_template_name(self):
+        return 'devilry_group/include/examiner_commentform_discuss_public_headingtext.django.html'
+
     def get_buttons(self):
-        buttons = super(ExaminerDiscussView, self).get_buttons()
+        buttons = super(ExaminerPublicDiscussView, self).get_buttons()
         buttons.extend([
-            PrimarySubmit('examiner_add_comment_for_examiners',
-                          _('Add comment that is not visible to students'),
-                          css_class='btn btn-default'),
-            DefaultSubmit('examiner_add_public_comment',
-                          _('Add public comment'),
-                          css_class='btn btn-primary'),
+            DefaultSubmit(
+                'examiner_add_public_comment',
+                _('Add comment'),
+                css_class='btn btn-default')
         ])
         return buttons
 
-    def save_object(self, form, commit=True):
-        comment = super(ExaminerDiscussView, self).save_object(form)
-        if 'examiner_add_comment_for_examiners' in self.request.POST:
-            comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
-            comment.published_datetime = timezone.now()
-        elif 'examiner_add_public_comment' in self.request.POST:
-            comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
-            comment.published_datetime = timezone.now()
-
-        comment = super(ExaminerDiscussView, self).save_object(form, commit=True)
-        return comment
+    def save_object(self, form, commit=False):
+        comment = super(ExaminerPublicDiscussView, self).save_object(form=form)
+        comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
+        comment.published_datetime = timezone.now()
+        return super(ExaminerPublicDiscussView, self).save_object(form=form, commit=True)
 
     def get_success_url(self):
-        return self.request.cradmin_app.reverse_appurl(viewname='discuss')
+        return self.request.cradmin_app.reverse_appurl(viewname='public-discuss')
 
 
-class EditGroupCommentForm(forms.ModelForm):
+class ExaminerWithAdminsDiscussView(ExaminerBaseFeedbackFeedView):
     """
-    Form for editing existing Feedback drafts.
+    View for discussing with other examiners on the group and admins.
+
+    All comments posted here are only visible to examiners and admins with access to
+    the group.
     """
-    class Meta:
-        fields = ['text']
-        model = group_models.GroupComment
+    template_name = 'devilry_group/feedbackfeed_examiner_examiner_admin_discuss.django.html'
 
-    @classmethod
-    def get_field_layout(cls):
-        return ['text']
+    def get_form_heading_text_template_name(self):
+        return 'devilry_group/include/examiner_commentform_discuss_examiner_headingtext.django.html'
 
+    def get_buttons(self):
+        buttons = super(ExaminerWithAdminsDiscussView, self).get_buttons()
+        buttons.extend([
+            DefaultSubmit(
+                'examiner_add_comment_for_examiners_and_admins',
+                _('Add comment'),
+                css_class='btn btn-default')
+        ])
+        return buttons
 
-class CreateFeedbackSetForm(cradmin_feedbackfeed_base.GroupCommentForm):
-    """
-    Form for creating a new FeedbackSet (deadline).
-    """
-    #: Deadline to be added to the new FeedbackSet.
-    deadline_datetime = forms.DateTimeField(widget=DateTimePickerWidget)
+    def save_object(self, form, commit=False):
+        comment = super(ExaminerWithAdminsDiscussView, self).save_object(form=form)
+        comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
+        comment.published_datetime = timezone.now()
+        return super(ExaminerWithAdminsDiscussView, self).save_object(form=form, commit=True)
 
-    @classmethod
-    def get_field_layout(cls):
-        return ['deadline_datetime']
+    def get_success_url(self):
+        return self.request.cradmin_app.reverse_appurl(viewname='examiner-admin-discuss')
 
 
 class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
@@ -527,37 +554,42 @@ class GroupCommentEditView(GroupCommentEditDeleteMixin, update.UpdateView):
             return self.request.cradmin_app.reverse_appindexurl()
 
 
-
 class ExaminerFeedbackfeedRedirectView(View):
     def dispatch(self, request, *args, **kwargs):
-        viewname = 'discuss'
+        viewname = 'public-discuss'
         return redirect(self.request.cradmin_app.reverse_appurl(viewname=viewname))
 
 
 class App(crapp.App):
     appurls = [
         crapp.Url(
-                r'^$',
-                ExaminerFeedbackfeedRedirectView.as_view(),
-                name=crapp.INDEXVIEW_NAME),
+            r'^$',
+            ExaminerFeedbackfeedRedirectView.as_view(),
+            name=crapp.INDEXVIEW_NAME),
         crapp.Url(
-                r'^feedback$',
-                ensure_csrf_cookie(ExaminerFeedbackView.as_view()),
-                name='feedback'),
+            r'^feedback$',
+            ensure_csrf_cookie(ExaminerFeedbackView.as_view()),
+            name='feedback'),
         crapp.Url(
-                r'^discuss$',
-                ensure_csrf_cookie(ExaminerDiscussView.as_view()),
-                name='discuss'),
+            r'^public-discuss',
+            ExaminerPublicDiscussView.as_view(),
+            name='public-discuss'
+        ),
         crapp.Url(
-                r'^new-deadline$',
-                ExaminerFeedbackCreateFeedbackSetView.as_view(),
-                name='new-deadline'),
+            r'^examiner-admin-discuss',
+            ExaminerWithAdminsDiscussView.as_view(),
+            name='examiner-admin-discuss'
+        ),
         crapp.Url(
-                r'^groupcomment-delete/(?P<pk>\d+)$',
-                GroupCommentDeleteView.as_view(),
-                name="groupcomment-delete"),
+            r'^new-deadline$',
+            ExaminerFeedbackCreateFeedbackSetView.as_view(),
+            name='new-deadline'),
         crapp.Url(
-                r'^groupcomment-edit/(?P<pk>\d+)$',
-                GroupCommentEditView.as_view(),
-                name='groupcomment-edit'),
+            r'^groupcomment-delete/(?P<pk>\d+)$',
+            GroupCommentDeleteView.as_view(),
+            name="groupcomment-delete"),
+        crapp.Url(
+            r'^groupcomment-edit/(?P<pk>\d+)$',
+            GroupCommentEditView.as_view(),
+            name='groupcomment-edit'),
     ]
