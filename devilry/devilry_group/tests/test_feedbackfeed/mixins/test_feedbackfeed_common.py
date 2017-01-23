@@ -149,25 +149,6 @@ class TestFeedbackFeedHeaderMixin(cradmin_testhelpers.TestCaseMixin):
                 'Expired - {}'.format(formats.date_format(testfeedbackset.deadline_datetime, 'SHORT_DATETIME_FORMAT'))
         )
 
-    @unittest.skip('Should most likely be removed. The DB triggers enforce that only the first '
-                   'feedbackset can have deadline_datetime=None.')
-    def test_get_header_with_feedbackset_new_attempt_no_deadline(self):
-        # Tests that the deadline is not rendered if the FeedbackSet is a new attempt
-        # and FeedbackSet.deadline_datetime is None.
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testfeedbackset2_deadline = timezone.now()
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup,
-                   deadline_datetime=testfeedbackset2_deadline,
-                   feedbackset_type=group_models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup,
-                   feedbackset_type=group_models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
-
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
-
 
 def _get_mock_cradmin_instance():
     """
@@ -338,16 +319,6 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
                                  deadline_datetime=timezone.now()-timezone.timedelta(days=1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
-
-    # def test_get_event_without_feedbackset_deadline_datetime_created(self):
-    #     # tests
-    #     assignment = mommy.make_recipe('devilry.apps.core.assignment_futureperiod_start')
-    #     print assignment.first_deadline
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode=assignment)
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
-    #     self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
-    #     self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline'))
-    #     self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-datetime'))
 
     def test_get_event_without_feedbackset_deadline_datetime_expired(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet',
