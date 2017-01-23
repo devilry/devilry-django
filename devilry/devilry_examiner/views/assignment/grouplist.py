@@ -211,7 +211,7 @@ class App(crapp.App):
                   GroupListView.as_view(),
                   name='filter'),
         crapp.Url(r'bulk-feedback$',
-                  bulk_feedback.BulkFeedbackView.as_view(),
+                  bulk_feedback.BulkFeedbackRedirectView.as_view(),
                   name='bulk-feedback'),
         crapp.Url(r'bulk-feedback-points$',
                   bulk_feedback.BulkFeedbackPointsView.as_view(),
