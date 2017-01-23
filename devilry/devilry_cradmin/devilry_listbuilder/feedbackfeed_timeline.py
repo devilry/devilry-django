@@ -107,6 +107,11 @@ class BaseItemValue(listbuilder.base.ItemValueRenderer):
         """
         return self.kwargs['devilry_viewrole']
 
+    def get_extra_css_classes_list(self):
+        css_classes_list = super(BaseItemValue, self).get_extra_css_classes_list()
+        css_classes_list.append('devilry-group-feedbackfeed-itemvalue')
+        return css_classes_list
+
 
 class BaseEventItemValue(BaseItemValue):
     """Base class for all events.
