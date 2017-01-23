@@ -260,11 +260,23 @@ class FeedbackSet(models.Model):
     #: Choice for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_RE_EDIT = 're_edit'
 
+    #: A merged first attempt feedbackset
+    FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT = 'merge_first_attempt'
+
+    #: A merged new attempt feedbackset
+    FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT = 'merge_new_attempt'
+
+    #: A merged re edit feedbackset
+    FEEDBACKSET_TYPE_MERGE_RE_EDIT = 'merge_re_edit'
+
     #: Grading status choices for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_CHOICES = [
         (FEEDBACKSET_TYPE_FIRST_ATTEMPT, 'first attempt'),
         (FEEDBACKSET_TYPE_NEW_ATTEMPT, 'new attempt'),
         (FEEDBACKSET_TYPE_RE_EDIT, 're edit'),
+        (FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT, 'merge first attempt'),
+        (FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT, 'merge new attempt'),
+        (FEEDBACKSET_TYPE_MERGE_RE_EDIT, 'merge re edit'),
     ]
 
     #: Sets the type of the feedbackset.
@@ -427,7 +439,7 @@ class FeedbackSet(models.Model):
         Publishes this FeedbackSet and comments that belongs to this it and that are
         part of the grading.
 
-        :param published_by: Who published the feedbackset.
+k        :param published_by: Who published the feedbackset.
         :param grading_points: Points to give to student(s).
         :param gradeform_data_json: gradeform(coming soon).
         :return: True or False and an error message.
@@ -449,32 +461,6 @@ class FeedbackSet(models.Model):
         self.save()
 
         return True, ''
-
-    def merge_into(self, target, force_merge_published_feedbacksets):
-        """
-        Merge comments from this feedbackSet into ``target`` feedbackset
-        if ``force_merge_published_feedbacksets`` is set to true merging of
-        published feedbackset is also allowed, if not this will throw a ValidationError.
-
-        Args:
-            target: :class:`~devilry_group.Feedbackset`
-            force_merge_published_feedbacksets: merge published feedbackset
-
-        Raises:
-            ``ValidationError`` if feedbacksets is published and ``force_merge_published_feedbacksets`` is False
-
-        Returns:
-            ValidationError cannot merge feedbackset when grading is published
-        """
-        if ((self.grading_published_datetime is not None or target.grading_published_datetime is not None) and
-                not force_merge_published_feedbacksets):
-            raise ValidationError('Cannot merge feedbackset when grading is published')
-
-        comments = self.groupcomment_set.all()
-        for comment in comments:
-            comment.feedback_set = target
-            comment.save()
-        self.delete()
 
     def copy_feedbackset_into_group(self, group, target=None):
         """
@@ -511,36 +497,9 @@ class FeedbackSet(models.Model):
         target.save()
 
         for comment in self.groupcomment_set.all():
-           comment.copy_comment_into_feedbackset(target)
+            comment.copy_comment_into_feedbackset(target)
 
         return target
-
-    def get_current_state(self):
-        """
-        Dumps the current state of this Feedbackset and all inherent comment ids
-        into a dictionary.
-
-        Returns:
-            dictionary with current state of this Feedbackset.
-        """
-        groupcomment_queryset = self.groupcomment_set.all()
-        groupcomments = [groupcomment.id for groupcomment in groupcomment_queryset]
-        return {
-            'id': self.id,
-            'feedbackset_type': self.feedbackset_type,
-            'ignored': self.ignored,
-            'ignored_reason': self.ignored_reason,
-            'ignored_datetime': self.ignored_datetime.isoformat() if self.ignored_datetime else None,
-            'created_by': self.created_by.id if self.created_by else None,
-            'created_datetime': self.created_datetime.isoformat(),
-            'deadline_datetime': self.deadline_datetime.isoformat() if self.deadline_datetime else None,
-            'grading_published_datetime':
-                self.grading_published_datetime.isoformat() if self.grading_published_datetime else None,
-            'grading_published_by': self.grading_published_by.id if self.grading_published_by else None,
-            'grading_points': self.grading_points,
-            'gradeform_data_json': self.gradeform_data_json,
-            'groupcomments': groupcomments
-        }
 
     @property
     def gradeform_data(self):

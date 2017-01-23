@@ -1,11 +1,12 @@
 import json
 
 from django.db import models
-from django.utils.timezone import datetime
+from django.utils import timezone
+
 
 class AssignmentGroupHistory(models.Model):
     """
-    This models keeps an audit trail of merges
+    This models keeps an audit trail of merges in a Btree structure
 
     Attributes:
         assignment_group (:class:`core.AssignmentGroup`): One to one field to AssignmentGroup
@@ -18,17 +19,15 @@ class AssignmentGroupHistory(models.Model):
     DEFAULT_MERGE_HISTORY_JSON = {
         'merge_datetime': None,
         'state': None,
-        'from': None,
-        'to': None
+        'groups': []
     }
 
     #: The merge history for the one to one field :class:`core.AssignmentGroupHistory.assignment_group`
-    #: will be stored inn a tree structure
+    #: will be stored inn a Btree structure
     #: {
     #:  'merge_datetime': datetime of merge,
     #:  'state': state of assignment group before merge
-    #:  'from': history,
-    #:  'to': history,
+    #:  'groups': child merge histories
     #: }
     merge_history_json = models.TextField(
         null=False, blank=False, default=json.dumps(DEFAULT_MERGE_HISTORY_JSON)
@@ -87,12 +86,10 @@ class AssignmentGroupHistory(models.Model):
 
             meta_data.append({
                 'merge_datetime': merge['merge_datetime'],
-                'from_name': merge['from']['state']['name'],
-                'to_name': merge['to']['state']['name']
+                'groups': [group['state']['name'] for group in merge['groups']],
             })
 
-            queue.append(merge['from'])
-            queue.append(merge['to'])
+            queue.extend(merge['groups'])
         return meta_data
 
     @property
@@ -114,29 +111,26 @@ class AssignmentGroupHistory(models.Model):
         return {
             'merge_datetime': None,
             'state': None,
-            'from': None,
-            'to': None
+            'groups': []
         }
 
-    def merge_assignment_group_history(self, source):
+    def merge_assignment_group_history(self, groups):
         """
-        Merge ``source`` assignment group history into self
+        Merge ``source`` list of assignment group history into self
 
         Args:
-            source (:class:`.AssignmentGroup`): source AssignmentGroup
+            groups (:class:`.AssignmentGroup`): source AssignmentGroup
         """
         newhistory = self._make_default_merge_history()
-        newhistory['to'] = self.merge_history
-        newhistory['to']['state'] = self.assignment_group.get_current_state()
-        newhistory['merge_datetime'] = datetime.now().isoformat()
-
-        try:
-            sourcehistory = source.assignmentgrouphistory
-        except AssignmentGroupHistory.DoesNotExist:
-            newhistory['from'] = self._make_default_merge_history()
-        else:
-            newhistory['from'] = sourcehistory.merge_history
-
-        newhistory['from']['state'] = source.get_current_state()
+        self_history = self.merge_history
+        self_history['state'] = self.assignment_group.get_current_state()
+        newhistory['groups'].append(self_history)
+        newhistory['merge_datetime'] = timezone.now().isoformat()
+        for group in groups:
+            try:
+                group_history = group.assignmentgrouphistory.merge_history
+            except AssignmentGroupHistory.DoesNotExist:
+                group_history = self._make_default_merge_history()
+            group_history['state'] = group.get_current_state()
+            newhistory['groups'].append(group_history)
         self.merge_history = newhistory
-

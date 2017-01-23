@@ -734,178 +734,61 @@ class TestAssignmentGroupMerge(TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def test_not_part_of_same_assignment(self):
+    def test_merge_not_part_of_same_assignment(self):
         testassignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testassignment2 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
-        sourceassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
-        with self.assertRaises(ValueError):
-            sourceassignmentgroup.merge_into(targetassignmentgroup)
-
-    def test_merge_source_into_target_assignmentgroup_sanity(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        sourceassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        core_mommy.candidate(group=targetassignmentgroup)
-        core_mommy.candidate(group=sourceassignmentgroup)
-        candidates = Candidate.objects.filter(assignment_group=targetassignmentgroup)
-        self.assertEqual(len(candidates), 1)
-        sourceassignmentgroup.merge_into(targetassignmentgroup)
-        candidates = Candidate.objects.filter(assignment_group=targetassignmentgroup)
-        self.assertEqual(len(candidates), 2)
-        with self.assertRaises(AssignmentGroup.DoesNotExist):
-            AssignmentGroup.objects.get(id=sourceassignmentgroup.id)
-
-    def test_merge_published_feedbackset_not_forced(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        sourceassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        group_mommy.feedbackset_first_attempt_published(group=sourceassignmentgroup)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
         with self.assertRaises(ValidationError):
-            sourceassignmentgroup.merge_into(targetassignmentgroup)
+            AssignmentGroup.merge_groups([testgroup1, testgroup2, testgroup3])
 
-    def test_merge_multiple_feedbacksets_with_grading_published_forced(self):
+    def test_candidate_foreign_key_is_moved(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        sourceassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        firstfeedbackset1 = group_mommy.feedbackset_first_attempt_published(group=sourceassignmentgroup)
-        firstfeedbackset2 = group_mommy.feedbackset_first_attempt_published(group=targetassignmentgroup)
-        secondpublishedfeedbackset = group_mommy.feedbackset_new_attempt_published(group=sourceassignmentgroup)
-        group_mommy.feedbackset_new_attempt_published(group=targetassignmentgroup)
-        newfeedbackse1 = group_mommy.feedbackset_new_attempt_unpublished(group=sourceassignmentgroup)
-        newfeedbackse2 = group_mommy.feedbackset_new_attempt_unpublished(group=targetassignmentgroup)
-
-        # add comments
-        for index in range(3):
-            mommy.make('devilry_group.GroupComment',
-                       feedback_set=firstfeedbackset1)
-            mommy.make('devilry_group.GroupComment',
-                       feedback_set=firstfeedbackset2)
-        for index in range(2):
-            mommy.make('devilry_group.GroupComment',
-                       feedback_set=newfeedbackse1)
-            mommy.make('devilry_group.GroupComment',
-                       feedback_set=newfeedbackse2)
-        sourceassignmentgroup.merge_into(targetassignmentgroup, force_merge_published_feedbacksets=True)
-        group = AssignmentGroup.objects.get(id=targetassignmentgroup.id)
-        self.assertEqual(len(group.feedbackset_set.all()), 3)
-        feedbacksets = group.feedbackset_set.order_by_deadline_datetime()
-        self.assertEqual(len(feedbacksets[0].groupcomment_set.all()), 6)
-        self.assertEqual(len(feedbacksets[1].groupcomment_set.all()), 0)
-        self.assertEqual(len(feedbacksets[2].groupcomment_set.all()), 4)
-        self.assertFalse(FeedbackSet.objects.filter(id=firstfeedbackset1.id).exists())
-        self.assertFalse(FeedbackSet.objects.filter(id=secondpublishedfeedbackset.id).exists())
-        self.assertFalse(FeedbackSet.objects.filter(id=newfeedbackse1.id).exists())
-
-
-    def test_merge_multiple_fefedbacksets_with_grading_published_and_leftover_sets_from_source_forced(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        sourceassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        firstfeedbackset1 = group_mommy.feedbackset_first_attempt_published(group=sourceassignmentgroup)
-        firstfeedbackset2 = group_mommy.feedbackset_first_attempt_published(group=targetassignmentgroup)
-        secondpublishedfeedbackset = group_mommy.feedbackset_new_attempt_published(group=sourceassignmentgroup)
-        group_mommy.feedbackset_new_attempt_published(group=targetassignmentgroup)
-        newfeedbackse1 = group_mommy.feedbackset_new_attempt_published(group=sourceassignmentgroup)
-        newfeedbackse2 = group_mommy.feedbackset_new_attempt_unpublished(group=targetassignmentgroup)
-        newleftoverfeedbackset = group_mommy.feedbackset_new_attempt_published(group=sourceassignmentgroup)
-        # add comments
-        for index in range(3):
-            mommy.make('devilry_group.GroupComment',
-                       feedback_set=firstfeedbackset1)
-            mommy.make('devilry_group.GroupComment',
-                       feedback_set=firstfeedbackset2)
-        for index in range(2):
-            mommy.make('devilry_group.GroupComment',
-                       feedback_set=newfeedbackse1)
-            mommy.make('devilry_group.GroupComment',
-                       feedback_set=newfeedbackse2)
-
-        for index in range(7):
-            mommy.make('devilry_group.GroupComment',
-                       feedback_set=newleftoverfeedbackset)
-
-        sourceassignmentgroup.merge_into(targetassignmentgroup, force_merge_published_feedbacksets=True)
-        group = AssignmentGroup.objects.get(id=targetassignmentgroup.id)
-        self.assertEqual(len(group.feedbackset_set.all()), 4)
-        feedbacksets = group.feedbackset_set.order_by_deadline_datetime()
-        self.assertEqual(len(feedbacksets[0].groupcomment_set.all()), 6)
-        self.assertEqual(len(feedbacksets[1].groupcomment_set.all()), 0)
-        self.assertEqual(len(feedbacksets[2].groupcomment_set.all()), 4)
-        self.assertEqual(len(feedbacksets[3].groupcomment_set.all()), 7)
-        self.assertFalse(FeedbackSet.objects.filter(id=firstfeedbackset1.id).exists())
-        self.assertFalse(FeedbackSet.objects.filter(id=secondpublishedfeedbackset.id).exists())
-        self.assertFalse(FeedbackSet.objects.filter(id=newfeedbackse1.id).exists())
-        self.assertTrue(FeedbackSet.objects.filter(id=newleftoverfeedbackset.id).exists())
-
-    def test_should_not_be_able_to_merge_if_feedbackset_grading_is_published_target(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        sourceassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        group_mommy.feedbackset_first_attempt_published(group=targetassignmentgroup)
-        with self.assertRaises(ValidationError):
-            sourceassignmentgroup.merge_into(targetassignmentgroup)
-
-    def test_merge_feedbackset_comments_foreign_key_moved(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        sourceassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testcandidate1 = core_mommy.candidate(group=targetassignmentgroup)
-        testcandidate2 = core_mommy.candidate(group=sourceassignmentgroup)
-        for index in range(3):
-            mommy.make('devilry_group.GroupComment',
-                       feedback_set=sourceassignmentgroup.cached_data.first_feedbackset,
-                       user=testcandidate2.relatedstudent.user)
-        for index in range(3):
-            mommy.make('devilry_group.GroupComment',
-                       feedback_set=targetassignmentgroup.cached_data.first_feedbackset,
-                       user=testcandidate1.relatedstudent.user)
-        comments = GroupComment.objects.filter(feedback_set=targetassignmentgroup.cached_data.first_feedbackset)
-        self.assertEqual(len(comments), 3)
-        sourceassignmentgroup.merge_into(targetassignmentgroup)
-        comments = GroupComment.objects.filter(feedback_set=targetassignmentgroup.cached_data.first_feedbackset)
-        self.assertEqual(len(comments), 6)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        core_mommy.candidate(group=group2)
+        core_mommy.candidate(group=group2)
+        AssignmentGroup.merge_groups([group1, group2])
+        candidates = Candidate.objects.filter(assignment_group=group1).count()
+        self.assertEqual(candidates, 2)
 
     def test_duplicate_candidate_is_not_merged_and_removed(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        sourceassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         relatedstudent = mommy.make('core.RelatedStudent')
-        mommy.make('candidate', assignment_group=targetassignmentgroup, relatedstudent=relatedstudent)
-        testcandidate = mommy.make('candidate', assignment_group=sourceassignmentgroup, relatedstudent=relatedstudent)
-        candidates = Candidate.objects.filter(assignment_group=targetassignmentgroup)
+        mommy.make('candidate', assignment_group=group1, relatedstudent=relatedstudent)
+        testcandidate = mommy.make('candidate', assignment_group=group2, relatedstudent=relatedstudent)
+        candidates = Candidate.objects.filter(assignment_group=group1)
         self.assertEqual(len(candidates), 1)
-        sourceassignmentgroup.merge_into(targetassignmentgroup)
-        candidates = Candidate.objects.filter(assignment_group=targetassignmentgroup)
+        AssignmentGroup.merge_groups([group1, group2])
+        candidates = Candidate.objects.filter(assignment_group=group1)
         self.assertEqual(len(candidates), 1)
         with self.assertRaises(Candidate.DoesNotExist):
             Candidate.objects.get(id=testcandidate.id)
 
     def test_examiners_is_merged(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        sourceassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        core_mommy.candidate(group=targetassignmentgroup)
-        core_mommy.candidate(group=sourceassignmentgroup)
-        core_mommy.examiner(group=sourceassignmentgroup, fullname='Thor')
-        core_mommy.examiner(group=sourceassignmentgroup, fullname='Odin')
-        sourceassignmentgroup.merge_into(targetassignmentgroup)
-        examiners = targetassignmentgroup.examiners.all().order_by('relatedexaminer__user__fullname')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        core_mommy.examiner(group=group2, fullname='Thor')
+        core_mommy.examiner(group=group2, fullname='Odin')
+        AssignmentGroup.merge_groups([group1, group2])
+        examiners = group1.examiners.all().order_by('relatedexaminer__user__fullname')
         examiner_names = [examiner.relatedexaminer.user.fullname for examiner in examiners]
         self.assertListEqual(examiner_names, ['Odin', 'Thor'])
 
     def test_duplicate_examiner_is_not_merged_and_removed(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        sourceassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        core_mommy.candidate(group=targetassignmentgroup)
-        core_mommy.candidate(group=sourceassignmentgroup)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         related_examiner = mommy.make('core.RelatedExaminer', user__fullname='Thor')
-        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=targetassignmentgroup)
-        duplicate_examiner = mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=sourceassignmentgroup)
-        core_mommy.examiner(group=sourceassignmentgroup, fullname='Odin')
-        sourceassignmentgroup.merge_into(targetassignmentgroup)
-        examiners = targetassignmentgroup.examiners.all().order_by('relatedexaminer__user__fullname')
+        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=group1)
+        duplicate_examiner = mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=group2)
+        core_mommy.examiner(group=group2, fullname='Odin')
+        AssignmentGroup.merge_groups([group1, group2])
+        examiners = group1.examiners.all().order_by('relatedexaminer__user__fullname')
         examiner_names = [examiner.relatedexaminer.user.fullname for examiner in examiners]
         self.assertListEqual(examiner_names, ['Odin', 'Thor'])
         with self.assertRaises(Examiner.DoesNotExist):
@@ -913,32 +796,95 @@ class TestAssignmentGroupMerge(TestCase):
 
     def test_tags_is_merged(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        sourceassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        core_mommy.candidate(group=targetassignmentgroup)
-        core_mommy.candidate(group=sourceassignmentgroup)
-        mommy.make('core.AssignmentGroupTag', assignment_group=sourceassignmentgroup, tag='AAA')
-        mommy.make('core.AssignmentGroupTag', assignment_group=sourceassignmentgroup, tag='QQQ')
-        sourceassignmentgroup.merge_into(targetassignmentgroup)
-        tags = AssignmentGroupTag.objects.filter(assignment_group=targetassignmentgroup).order_by('tag')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.AssignmentGroupTag', assignment_group=group2, tag='AAA')
+        mommy.make('core.AssignmentGroupTag', assignment_group=group2, tag='QQQ')
+        AssignmentGroup.merge_groups([group1, group2])
+        tags = AssignmentGroupTag.objects.filter(assignment_group=group1).order_by('tag')
         tag_name = [tag.tag for tag in tags]
         self.assertListEqual(tag_name, ['AAA', 'QQQ'])
 
     def test_tag_duplicate_is_not_merged_and_removed(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        sourceassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        core_mommy.candidate(group=targetassignmentgroup)
-        core_mommy.candidate(group=sourceassignmentgroup)
-        mommy.make('core.AssignmentGroupTag', assignment_group=targetassignmentgroup, tag='AAA')
-        duplicate_tag = mommy.make('core.AssignmentGroupTag', assignment_group=sourceassignmentgroup, tag='AAA')
-        mommy.make('core.AssignmentGroupTag', assignment_group=sourceassignmentgroup, tag='QQQ')
-        sourceassignmentgroup.merge_into(targetassignmentgroup)
-        tags = AssignmentGroupTag.objects.filter(assignment_group=targetassignmentgroup).order_by('tag')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.AssignmentGroupTag', assignment_group=group1, tag='AAA')
+        duplicate_tag = mommy.make('core.AssignmentGroupTag', assignment_group=group2, tag='AAA')
+        mommy.make('core.AssignmentGroupTag', assignment_group=group2, tag='QQQ')
+        AssignmentGroup.merge_groups([group1, group2])
+        tags = AssignmentGroupTag.objects.filter(assignment_group=group1).order_by('tag')
         tag_name = [tag.tag for tag in tags]
         self.assertListEqual(tag_name, ['AAA', 'QQQ'])
         with self.assertRaises(AssignmentGroupTag.DoesNotExist):
             AssignmentGroupTag.objects.get(id=duplicate_tag.id)
+
+    def test_cannot_merge_less_than_2_groups(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        with self.assertRaises(ValidationError):
+            AssignmentGroup.merge_groups([targetassignmentgroup])
+
+    def test_merge_type_first_attempt(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        AssignmentGroup.merge_groups([group1, group2, group3])
+        merged_feedbacksets = FeedbackSet.objects.filter(
+            group=group1,
+            feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT).count()
+        self.assertEqual(merged_feedbacksets, 2)
+
+    def test_merge_type_new_attempt(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_new_attempt_published(group=group2)
+        group_mommy.feedbackset_new_attempt_published(group=group3)
+        AssignmentGroup.merge_groups([group1, group2, group3])
+        merged_feedbacksets = FeedbackSet.objects.filter(
+            group=group1,
+            feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT).count()
+        self.assertEqual(merged_feedbacksets, 2)
+
+    def test_merge_type_re_edit(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=group2,
+                   deadline_datetime=group2.cached_data.first_feedbackset.current_deadline(),
+                   grading_points=1,
+                   grading_published_datetime=timezone.now(),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_RE_EDIT)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=group3,
+                   deadline_datetime=group3.cached_data.first_feedbackset.current_deadline(),
+                   grading_points=1,
+                   grading_published_datetime=timezone.now(),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_RE_EDIT)
+        AssignmentGroup.merge_groups([group1, group2, group3])
+        merged_feedbacksets = FeedbackSet.objects.filter(
+            group=group1,
+            feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_MERGE_RE_EDIT).count()
+        self.assertEqual(merged_feedbacksets, 2)
+
+    def test_merge_unpublished_feedbackset(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_new_attempt_unpublished(group=group2)
+        group_mommy.feedbackset_new_attempt_unpublished(group=group3)
+        AssignmentGroup.merge_groups([group1, group2, group3])
+        merged_feedbacksets = FeedbackSet.objects.filter(
+            group=group1,
+            feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT,
+            grading_published_datetime=None).count()
+        self.assertEqual(merged_feedbacksets, 2)
 
 
 class TestAssignmentGroupPopCandidate(TestCase):
@@ -1004,10 +950,10 @@ class TestAssignmentGroupPopCandidate(TestCase):
 
     def test_pop_candidate_when_there_is_only_one(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testGroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testcandidate = core_mommy.candidate(group=testGroup)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testcandidate = core_mommy.candidate(group=testgroup)
         with self.assertRaises(GroupPopToFewCandiatesError):
-            testGroup.pop_candidate(testcandidate)
+            testgroup.pop_candidate(testcandidate)
 
     def test_pop_candidate_has_left_from_assignment_group(self):
         testgroup1, testcandidate1, testcandidate2 = self.make_test_data()
@@ -1033,9 +979,9 @@ class TestAssignmentGroupPopCandidate(TestCase):
 
         testgroup2 = Candidate.objects.get(id=testcandidate2.id).assignment_group
 
-        groupComments1 = GroupComment.objects.filter(feedback_set=testgroup1.cached_data.first_feedbackset)
-        groupComments2 = GroupComment.objects.filter(feedback_set=testgroup2.cached_data.first_feedbackset)
-        self.assertEqual(len(groupComments1), len(groupComments2))
+        groupcomments1 = GroupComment.objects.filter(feedback_set=testgroup1.cached_data.first_feedbackset)
+        groupcomments2 = GroupComment.objects.filter(feedback_set=testgroup2.cached_data.first_feedbackset)
+        self.assertEqual(len(groupcomments1), len(groupcomments2))
 
     def test_pop_candiate_multiple_feedbacksets_with_comments(self):
         testgroup1, testcandidate1, testcandidate2 = self.make_test_data()
@@ -1047,12 +993,12 @@ class TestAssignmentGroupPopCandidate(TestCase):
         feedbacksets2 = FeedbackSet.objects.filter(group=testgroup2).order_by_deadline_datetime()
 
         for feedbackset1, feedbackset2 in zip(feedbacksets1, feedbacksets2):
-            groupComments1 = GroupComment.objects.filter(feedback_set=feedbackset1).order_by('created_datetime')
-            groupComments2 = GroupComment.objects.filter(feedback_set=feedbackset2).order_by('created_datetime')
-            self.assertEqual(len(groupComments1), 13)
-            self.assertEqual(len(groupComments2), 13)
+            groupcomments1 = GroupComment.objects.filter(feedback_set=feedbackset1).order_by('created_datetime')
+            groupcomments2 = GroupComment.objects.filter(feedback_set=feedbackset2).order_by('created_datetime')
+            self.assertEqual(len(groupcomments1), 13)
+            self.assertEqual(len(groupcomments2), 13)
 
-            for comment1, comment2 in zip(groupComments1, groupComments2):
+            for comment1, comment2 in zip(groupcomments1, groupcomments2):
                 self.assertEqual(comment1.text, comment2.text)
 
     def test_examiners_has_been_copied_to_new_group(self):
@@ -1085,9 +1031,9 @@ class TestAssignmentGroupPopCandidate(TestCase):
         feedbacksets1 = FeedbackSet.objects.filter(group=testgroup1).order_by_deadline_datetime()
         feedbacksets2 = FeedbackSet.objects.filter(group=testgroup2).order_by_deadline_datetime()
         for feedbackset1, feedbackset2 in zip(feedbacksets1, feedbacksets2):
-            groupComments1 = GroupComment.objects.filter(feedback_set=feedbackset1).order_by('created_datetime')
-            groupComments2 = GroupComment.objects.filter(feedback_set=feedbackset2).order_by('created_datetime')
-            for comment1, comment2 in zip(groupComments1, groupComments2):
+            groupcomments1 = GroupComment.objects.filter(feedback_set=feedbackset1).order_by('created_datetime')
+            groupcomments2 = GroupComment.objects.filter(feedback_set=feedbackset2).order_by('created_datetime')
+            for comment1, comment2 in zip(groupcomments1, groupcomments2):
                 commentfiles1 = CommentFile.objects.filter(comment=comment1).order_by('filename')
                 commentfiles2 = CommentFile.objects.filter(comment=comment2).order_by('filename')
                 for commentfile1, commentfile2 in zip(commentfiles1, commentfiles2):
@@ -1153,7 +1099,7 @@ class TestAssignmentGroupGetCurrentState(TestCase):
         feedbacksets.append(group_mommy.feedbackset_new_attempt_published(testgroup).id)
         feedbacksets.append(group_mommy.feedbackset_new_attempt_unpublished(testgroup).id)
         state = testgroup.get_current_state()
-        state_feedbacksets_ids = [feedbackset['id'] for feedbackset in state['feedbacksets']]
+        state_feedbacksets_ids = [id for id in state['feedbacksets']]
         self.assertListEqual(state_feedbacksets_ids, feedbacksets)
 
     def test_is_json_serializeable(self):
