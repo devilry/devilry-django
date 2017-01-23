@@ -426,7 +426,7 @@ class ExaminerCountFilter(abstractselect.AbstractSelectFilter):
         return None
 
     def apply_filter(self, queryobject, cleaned_value):
-        queryobject = queryobject.filter(number_of_examiners=int(cleaned_value))
+        queryobject = queryobject.annotate_with_number_of_examiners().filter(number_of_examiners=int(cleaned_value))
         return queryobject
 
     def filter(self, queryobject):
