@@ -402,14 +402,12 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertIsNotNone(group_models.GroupComment.objects.all()[0].published_datetime)
         self.assertEqual('test', group_models.GroupComment.objects.all()[0].text)
 
-    @unittest.skip('Ignored - must be updated for issue ')
     def test_post_feedbackset_post_comment_without_text(self):
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
-        student = mommy.make('core.Candidate', assignment_group=feedbackset.group,
-                             # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
-                             relatedstudent=mommy.make('core.RelatedStudent'))
-        self.mock_http302_postrequest(
-            cradmin_role=student.assignment_group,
+        candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=candidate.assignment_group,
+            requestuser=candidate.relatedstudent.user,
             viewkwargs={'pk': feedbackset.group.id},
             requestkwargs={
                 'data': {
@@ -417,6 +415,9 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                     'student_add_comment': 'unused value',
                 }
             })
+        self.assertEquals(
+            'A comment must have either text or a file attached, or both. An empty comment is not allowed.',
+            mockresponse.selector.one('#error_1_id_text').alltext_normalized)
         self.assertEquals(0, group_models.GroupComment.objects.count())
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
