@@ -193,6 +193,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
             (GroupComment): The update ``GroupComment``
         """
         if form.cleaned_data['temporary_file_collection_id'] or len(group_comment.text) > 0:
+
             group_comment.visibility = group_models.GroupComment.VISIBILITY_PRIVATE
             group_comment.part_of_grading = True
             group_comment = super(ExaminerFeedbackView, self).save_object(form=form, commit=True)
