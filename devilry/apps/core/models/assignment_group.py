@@ -1552,7 +1552,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     def merge_groups(self, groups):
         """
         First group will be target assignment group, the rest of the groups in the list
-        will be merged into target
+        will be merged into target.
+
+        For further explanation see: :ref:`assignmentgroup_merge`
         Args:
             groups: list with :class:`~core.AssignmentGroup`
 
