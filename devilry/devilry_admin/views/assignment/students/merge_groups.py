@@ -31,6 +31,8 @@ class MergeGroupsView(groupview_base.BaseMultiselectView):
         return MergeGroupsTargetRenderer
 
     def form_valid(self, form):
+        print(self.request.post)
+        print(form.clean_data)
         messages.warning(
             self.request,
             'Merge groups is not finished')
