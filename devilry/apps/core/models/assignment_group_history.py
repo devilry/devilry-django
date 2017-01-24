@@ -14,7 +14,7 @@ class AssignmentGroupHistory(models.Model):
     """
 
     #: OneToOneFiled :class:`core.AssignmentGroup`
-    assignment_group = models.OneToOneField("AssignmentGroup")
+    assignment_group = models.OneToOneField("AssignmentGroup", null=False)
 
     DEFAULT_MERGE_HISTORY_JSON = {
         'merge_datetime': None,
