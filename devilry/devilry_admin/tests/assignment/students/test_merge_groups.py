@@ -134,3 +134,93 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertFalse(AssignmentGroup.objects.filter(id=group2.id).exists())
         self.assertEquals(AssignmentGroup.objects.get(id=group1.id).candidates.count(), 2)
         self.assertEquals(AssignmentGroup.objects.get(id=group1.id).feedbackset_set.count(), 2)
+
+    def test_candidate_count_filter(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        core_mommy.candidate(group=group1)
+        core_mommy.candidate(group=group1)
+        core_mommy.candidate(group=group2)
+        core_mommy.examiner(group=group2)
+        core_mommy.examiner(group=group2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            requestuser=testuser,
+            viewkwargs={
+                'filters_string': 'candidatecount-2'
+            })
+        self.assertEqual(
+            1,
+            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_examiner_count_filter(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        core_mommy.candidate(group=group1)
+        core_mommy.candidate(group=group1)
+        core_mommy.candidate(group=group2)
+        core_mommy.examiner(group=group2)
+        core_mommy.examiner(group=group2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            requestuser=testuser,
+            viewkwargs={
+                'filters_string': 'examinercount-2'
+            })
+        self.assertEqual(
+            1,
+            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_candidate_count_filter_after_merge(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        core_mommy.candidate(group=group1)
+        core_mommy.candidate(group=group1)
+        core_mommy.candidate(group=group2)
+        core_mommy.examiner(group=group2)
+        core_mommy.examiner(group=group1)
+        AssignmentGroup.merge_groups([group1, group2])
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            requestuser=testuser,
+            viewkwargs={
+                'filters_string': 'examinercount-2'
+            })
+        self.assertEqual(
+            1,
+            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_examiner_count_filter_after_merge(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        core_mommy.candidate(group=group1)
+        core_mommy.candidate(group=group1)
+        core_mommy.candidate(group=group2)
+        core_mommy.examiner(group=group2)
+        core_mommy.examiner(group=group1)
+        AssignmentGroup.merge_groups([group1, group2])
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            requestuser=testuser,
+            viewkwargs={
+                'filters_string': 'candidatecount-3'
+            })
+        self.assertEqual(
+            1,
+            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
