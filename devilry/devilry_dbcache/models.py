@@ -100,6 +100,12 @@ class AssignmentGroupCachedData(models.Model):
     last_public_comment_by_examiner_datetime = models.DateTimeField(
         null=True, blank=True, editable=False)
 
+    #: The number of :class:`core.Examiner' within the group
+    examiner_count = models.PositiveIntegerField(default=0, editable=False)
+
+    #: The number of :class:`core.Candidates` within the group
+    candidate_count = models.PositiveIntegerField(default=0, editable=False)
+
     @property
     def last_published_feedbackset_is_last_feedbackset(self):
         """

@@ -22,11 +22,13 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
             'groupcomment/triggers.sql',
             'imageannotationcomment/triggers.sql',
             'commentfile/triggers.sql',
+            'examiner/triggers.sql',
+            'candidate/triggers.sql',
             'assignment_group_cached_data/rebuild.sql',
         ])
 
     def recreate_data(self):
-        from devilry.apps.core.models import AssignmentGroup
+        from devilry.apps.core.models import AssignmentGroup, Candidate, Examiner
         from devilry.devilry_group.models import FeedbackSet, ImageAnnotationComment, GroupComment
         from devilry.devilry_comment.models import CommentFile
 
@@ -36,10 +38,11 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
         log.info("GroupComments count: %s" % GroupComment.objects.count())
         log.info("ImageAnnotationComment count: %s" % ImageAnnotationComment.objects.count())
         log.info("CommentFile count: %s" % CommentFile.objects.count())
+        log.info("Examiner count: %s" % Examiner.objects.count())
+        log.info("Candidate count: %s" % Candidate.objects.count())
 
         AssignmentGroupCachedData.objects.all().delete()
         for period in Period.objects.order_by('-start_time').iterator():
             self.execute_sql("""
                 SELECT devilry__rebuild_assignmentgroupcacheddata_for_period({period_id});
             """.format(period_id=period.id))
-

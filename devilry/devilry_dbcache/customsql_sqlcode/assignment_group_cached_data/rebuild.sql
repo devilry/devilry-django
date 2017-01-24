@@ -229,7 +229,19 @@ BEGIN
                 devilry_comment_comment.user_role = 'examiner'
             ORDER BY devilry_comment_comment.published_datetime DESC NULLS LAST
             LIMIT 1
-        ) AS last_public_imageannotationcomment_by_examiner_datetime
+        ) AS last_public_imageannotationcomment_by_examiner_datetime,
+        (
+            SELECT COUNT(id)
+            FROM core_assignmentgroup_examiners
+            WHERE
+                assignmentgroup_id = param_group_id
+        ) AS examiner_count,
+        (
+            SELECT COUNT(id)
+            FROM core_candidate
+            WHERE
+                assignment_group_id = param_group_id
+        ) AS candidate_count
 
     FROM core_assignmentgroup AS assignmentgroup
     WHERE id = param_group_id
@@ -270,7 +282,9 @@ BEGIN
         public_admin_comment_count,
         public_student_file_upload_count,
         last_public_comment_by_student_datetime,
-        last_public_comment_by_examiner_datetime)
+        last_public_comment_by_examiner_datetime,
+        examiner_count,
+        candidate_count)
     VALUES (
         param_group_id,
         var_groupcachedata.first_feedbackset_id,
@@ -283,7 +297,9 @@ BEGIN
         var_groupcachedata.public_admin_comment_count + var_groupcachedata.public_admin_imageannotationcomment_count,
         var_groupcachedata.public_student_file_upload_count,
         var_last_public_comment_by_student_datetime,
-        var_last_public_comment_by_examiner_datetime
+        var_last_public_comment_by_examiner_datetime,
+        var_groupcachedata.examiner_count,
+        var_groupcachedata.candidate_count
     )
     ON CONFLICT(group_id)
     DO UPDATE SET
@@ -297,7 +313,9 @@ BEGIN
         public_admin_comment_count = var_groupcachedata.public_admin_comment_count + var_groupcachedata.public_admin_imageannotationcomment_count,
         public_student_file_upload_count = var_groupcachedata.public_student_file_upload_count,
         last_public_comment_by_student_datetime = var_last_public_comment_by_student_datetime,
-        last_public_comment_by_examiner_datetime = var_last_public_comment_by_examiner_datetime;
+        last_public_comment_by_examiner_datetime = var_last_public_comment_by_examiner_datetime,
+        examiner_count = var_groupcachedata.examiner_count,
+        candidate_count = var_groupcachedata.candidate_count;
 END
 $$ LANGUAGE plpgsql;
 
