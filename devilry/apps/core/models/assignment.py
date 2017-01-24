@@ -382,8 +382,20 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                           'examiners after the first feedback is provided.')
         ),
     ]
+
     #: Dictionary for getting the :obj:`~.Assignment.ANONYMIZATIONMODE_CHOICES` descriptions
     ANONYMIZATIONMODE_CHOICES_DICT = dict(ANONYMIZATIONMODE_CHOICES)
+
+    #: Dictionary mapping :obj:`.Assignment.anonymizationmode` choices to short
+    #: labels.
+    ANONYMIZATIONMODE_CHOICES_SHORT_LABEL_DICT = {
+        ANONYMIZATIONMODE_OFF: pgettext_lazy(
+            'assignment anonymizationmode', 'off'),
+        ANONYMIZATIONMODE_SEMI_ANONYMOUS: pgettext_lazy(
+            'assignment anonymizationmode', 'semi anonymous'),
+        ANONYMIZATIONMODE_FULLY_ANONYMOUS: pgettext_lazy(
+            'assignment anonymizationmode', 'fully anonymized'),
+    }
 
     #: A choicefield that specifies how the assignment is anonymized (or not).
     #:
