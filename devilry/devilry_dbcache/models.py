@@ -103,7 +103,7 @@ class AssignmentGroupCachedData(models.Model):
     #: The number of :class:`core.Examiner' within the group
     examiner_count = models.PositiveIntegerField(default=0, editable=False)
 
-    #: The number of :class:`core.Candidates` within the group
+    #: The number of :class:`core.Candidate` within the group
     candidate_count = models.PositiveIntegerField(default=0, editable=False)
 
     @property
