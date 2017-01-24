@@ -2821,52 +2821,6 @@ class TestAssignmentGroupAnnotateWithHasUnpublishedFeedbackset(TestCase):
         self.assertTrue(annotated_group.annotated_has_unpublished_feedbackdraft)
 
 
-class TestAssignmentGroupQuerySetAnnotateWithNumberOfExaminers(TestCase):
-    def test_no_examiners(self):
-        mommy.make('core.AssignmentGroup')
-        annotated_group = AssignmentGroup.objects.annotate_with_number_of_examiners().first()
-        self.assertEqual(0, annotated_group.number_of_examiners)
-
-    def test_has_examiners(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner', assignmentgroup=testgroup, _quantity=5)
-        annotated_group = AssignmentGroup.objects.annotate_with_number_of_examiners().first()
-        self.assertEqual(5, annotated_group.number_of_examiners)
-
-    def test_multiple_groups(self):
-        testgroup1 = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner', assignmentgroup=testgroup1, _quantity=5)
-        testgroup2 = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner', assignmentgroup=testgroup2, _quantity=7)
-        annotated_group1 = AssignmentGroup.objects.annotate_with_number_of_examiners().get(id=testgroup1.id)
-        self.assertEqual(5, annotated_group1.number_of_examiners)
-        annotated_group2 = AssignmentGroup.objects.annotate_with_number_of_examiners().get(id=testgroup2.id)
-        self.assertEqual(7, annotated_group2.number_of_examiners)
-
-
-class TestAssignmentGroupQuerySetAnnotateWithNumberOfCandidates(TestCase):
-    def test_no_candidates(self):
-        mommy.make('core.AssignmentGroup')
-        annotated_group = AssignmentGroup.objects.annotate_with_number_of_candidates().first()
-        self.assertEqual(0, annotated_group.number_of_candidates)
-
-    def test_has_candidates(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate', assignment_group=testgroup, _quantity=5)
-        annotated_group = AssignmentGroup.objects.annotate_with_number_of_candidates().first()
-        self.assertEqual(5, annotated_group.number_of_candidates)
-
-    def test_multiple_groups(self):
-        testgroup1 = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate', assignment_group=testgroup1, _quantity=5)
-        testgroup2 = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Candidate', assignment_group=testgroup2, _quantity=7)
-        annotated_group1 = AssignmentGroup.objects.annotate_with_number_of_candidates().get(id=testgroup1.id)
-        self.assertEqual(5, annotated_group1.number_of_candidates)
-        annotated_group2 = AssignmentGroup.objects.annotate_with_number_of_candidates().get(id=testgroup2.id)
-        self.assertEqual(7, annotated_group2.number_of_candidates)
-
-
 class TestAssignmentGroupQuerySetPrefetchAssignmentWithPointsToGradeMap(TestCase):
     def test_no_pointtogrademap(self):
         testgroup = mommy.make('core.AssignmentGroup')
