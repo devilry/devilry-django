@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 import mock
 from django import test
@@ -290,6 +290,25 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.exists('.devilry-cradmin-groupitemvalue'))
         self.assertFalse(
             mockresponse.selector.exists('.devilry-cradmin-groupitemvalue-examiners'))
+
+    def test_grouplist_deadline_sanity(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make(
+            'core.AssignmentGroup',
+            parentnode=mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                first_deadline=datetime(2000, 1, 15, 12, 0)))
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group=testgroup)
+        with self.settings(DATETIME_FORMAT='Y-m-d H:i', USE_L10N=False):
+            mockresponse = self.mock_http200_getrequest_htmls(
+                    requestuser=testuser)
+        self.assertEqual(
+            '2000-01-15 12:00',
+            mockresponse.selector.one(
+                    '.devilry-cradmin-groupitemvalue-deadline__datetime').alltext_normalized
+        )
 
     def test_grouplist_status_waiting_for_deliveries_sanity(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

@@ -7,17 +7,14 @@ from xml.sax.saxutils import quoteattr
 
 from crispy_forms import layout
 from django import forms
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
-from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.viewhelpers import create
 
-from devilry.devilry_compressionutil.models import CompressedArchiveMeta
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_timeline
@@ -316,22 +313,6 @@ class FeedbackFeedBaseView(create.CreateView):
         return TemporaryFileCollection.objects \
             .filter_for_user(self.request.user) \
             .prefetch_related('files')
-
-    # def _set_archive_meta_ready_for_delete(self, feedback_set):
-    #     """
-    #     Set :class:`~.devilry.devilry_compressionutil.models.CompressedArchiveMeta` to be ready for deletion.
-    #
-    #     If there is a ``CompressedArchiveMeta`` entry for the ``feedback_set_id``, the
-    #     ``CompressedArchiveMeta.deleted_datetime`` is set to ``True`` and the model is cleaned and saved.
-    #
-    #     Args:
-    #         feedback_set_id: Id of the ``FeedbackSet`` referenced in ``CompressedArchiveMeta``.
-    #     """
-    #     CompressedArchiveMeta.objects\
-    #         .filter(content_object_id=feedback_set.id,
-    #                 content_type=ContentType.objects.get_for_model(model=feedback_set),
-    #                 deleted_datetime=None)\
-    #         .update(deleted_datetime=timezone.now())
 
     def _convert_temporary_files_to_comment_files(self, form, groupcomment):
         """

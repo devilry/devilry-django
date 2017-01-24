@@ -1,6 +1,7 @@
 import unittest
 
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.http import Http404
 from django.test import TestCase
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
@@ -25,7 +26,7 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def test_no_redirect_on_last_feedbackset_unpublished(self):
+    def test_no_404_on_last_feedbackset_unpublished(self):
         testgroup = mommy.make('core.AssignmentGroup')
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=testgroup,
@@ -35,15 +36,16 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
                                             requestuser=examiner.relatedexaminer.user)
         self.assertEquals(mockresponse.response.status_code, 200)
 
-    def test_redirect_on_last_feedbackset_published(self):
+    def test_404_on_last_feedbackset_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=testgroup,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
         group_mommy.feedbackset_first_attempt_published(group=testgroup)
-        mockresponse = self.mock_getrequest(cradmin_role=examiner.assignmentgroup,
-                                            requestuser=examiner.relatedexaminer.user)
-        self.assertEquals(mockresponse.response.status_code, 302)
+        with self.assertRaises(Http404):
+            self.mock_getrequest(
+                cradmin_role=examiner.assignmentgroup,
+                requestuser=examiner.relatedexaminer.user)
 
     def test_get_feedbackset_first_no_created_deadline_event(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -191,24 +193,8 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
                     'examiner_add_comment_to_feedback_draft': 'unused value'
                 }
             })
-
-    def test_post_feedbackset_comment_visibility_private(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        examiner = mommy.make('core.Examiner',
-                              assignmentgroup=testgroup,
-                              relatedexaminer=mommy.make('core.RelatedExaminer'))
-        self.mock_http302_postrequest(
-            cradmin_role=examiner.assignmentgroup,
-            requestuser=examiner.relatedexaminer.user,
-            viewkwargs={'pk': feedbackset.group.id},
-            requestkwargs={
-                'data': {
-                    'text': 'This is a comment',
-                    'examiner_add_comment_to_feedback_draft': 'unused value'
-                }
-            })
-        self.assertEquals('private', group_models.GroupComment.objects.all()[0].visibility)
+        group_comment = group_models.GroupComment.objects.all()[0]
+        self.assertEquals(group_comment.visibility, group_models.GroupComment.VISIBILITY_PRIVATE)
 
 
 class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examiner.TestFeedbackfeedExaminerMixin):
@@ -245,55 +231,108 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
         cached_group = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
         self.assertIsNone(cached_group.last_published_feedbackset)
 
-    @unittest.skip('Should most likely be removed. The DB triggers enforce that only the first '
-                   'feedbackset can have deadline_datetime=None.')
-    def test_post_can_not_publish_with_last_feedbackset_deadline_as_none(self):
-        assignment = mommy.make_recipe(
-                'devilry.apps.core.assignment_activeperiod_start',
-                grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
+    def test_post_first_attempt_draft_appear_before_grading_event(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        testfeedbackset_first = group_mommy.feedbackset_first_attempt_published(group=testgroup)
-        group_mommy.feedbackset_new_attempt_unpublished(group=testgroup)
-        examiner = mommy.make('core.Examiner',
-                              assignmentgroup=testgroup,
-                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testfeedbackset.group)
+        mommy.make(
+            'devilry_group.GroupComment',
+            feedback_set=testfeedbackset,
+            user=examiner.relatedexaminer.user,
+            user_role='examiner',
+            part_of_grading=True)
         self.mock_http302_postrequest(
-            cradmin_role=examiner.assignmentgroup,
+            cradmin_role=testgroup,
             requestuser=examiner.relatedexaminer.user,
             viewkwargs={'pk': testgroup.id},
             requestkwargs={
                 'data': {
-                    'text': 'This is a feedback',
+                    'text': '',
                     'examiner_publish_feedback': 'unused value',
                 }
             })
-        feedbacksets = group_models.FeedbackSet.objects.all().order_by('created_datetime')
-        self.assertEquals(2, len(feedbacksets))
-        self.assertIsNotNone(feedbacksets[0].grading_published_datetime)
-        self.assertIsNone(feedbacksets[1].grading_published_datetime)
-        cached_group = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
-        self.assertEquals(cached_group.last_published_feedbackset, testfeedbackset_first)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        class_list = [list(item.cssclasses_set) for item in
+                      mockresponse.selector.list('.devilry-group-feedbackfeed-itemvalue')]
+        # Test that grade comments are rendered before grade
+        self.assertIn('devilry-group-feedbackfeed-comment-examiner', class_list[0])
+        self.assertIn('devilry-group-feedbackfeed-event-message-grade', class_list[1])
 
-    def test_post_can_not_publish_feedbackset_before_deadline(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
+    def test_post_first_attempt_two_drafts_appear_before_grading_event(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        examiner = mommy.make('core.Examiner',
-                              assignmentgroup=feedbackset.group,
-                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testfeedbackset.group)
+
+        # Draft created before publish
+        mommy.make(
+            'devilry_group.GroupComment',
+            feedback_set=testfeedbackset,
+            user=examiner.relatedexaminer.user,
+            user_role='examiner',
+            text='Draft',
+            part_of_grading=True)
+
+        # Publish with comment
         self.mock_http302_postrequest(
-            cradmin_role=examiner.assignmentgroup,
+            cradmin_role=testgroup,
             requestuser=examiner.relatedexaminer.user,
-            viewkwargs={'pk': feedbackset.group.id},
+            viewkwargs={'pk': testgroup.id},
             requestkwargs={
                 'data': {
-                    'text': 'This is a feedback',
+                    'text': 'Corrected',
                     'examiner_publish_feedback': 'unused value',
                 }
             })
-        self.assertIsNone(group_models.FeedbackSet.objects.all()[0].grading_published_datetime)
-        cached_group = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
-        self.assertIsNone(cached_group.last_published_feedbackset)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        class_list = [list(item.cssclasses_set) for item in
+                      mockresponse.selector.list('.devilry-group-feedbackfeed-itemvalue')]
+
+        # Test that grade comments are rendered before grade
+        self.assertIn('devilry-group-feedbackfeed-comment-examiner', class_list[0])
+        self.assertIn('devilry-group-feedbackfeed-comment-examiner', class_list[1])
+        self.assertIn('devilry-group-feedbackfeed-event-message-grade', class_list[2])
+
+    def test_post_first_attempt_draft_occurs_before_comment_published(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testfeedbackset.group)
+
+        # Draft created before publish
+        mommy.make(
+            'devilry_group.GroupComment',
+            feedback_set=testfeedbackset,
+            user=examiner.relatedexaminer.user,
+            user_role='examiner',
+            text='Draft',
+            part_of_grading=True)
+
+        # Publish with comment
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user,
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data': {
+                    'text': 'Corrected',
+                    'examiner_publish_feedback': 'unused value',
+                }
+            })
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        comment_text_elements = mockresponse.selector.list('.devilry-group-comment-text')
+        self.assertEquals('Draft', comment_text_elements[0].alltext_normalized)
+        self.assertEquals('Corrected', comment_text_elements[1].alltext_normalized)
 
     def test_post_publish_feedbackset_after_deadline(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')

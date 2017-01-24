@@ -55,44 +55,6 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
         self.assertEqual('AnonymousStudent',
                          mockresponse.selector.one('.devilry-core-candidate-anonymous-name').alltext_normalized)
 
-    # def test_get_feedbackfeed_sidebarfiles_uploaded_by_student_semi_anonymous(self):
-    #     testassignment = mommy.make('core.Assignment',
-    #                                 anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-    #     testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
-    #     candidate = mommy.make('core.Candidate',
-    #                            assignment_group=testfeedbackset.group,
-    #                            relatedstudent__automatic_anonymous_id='AnonymousCandidate',
-    #                            relatedstudent__user__shortname='testcandidate')
-    #     testcomment = mommy.make('devilry_group.GroupComment',
-    #                              user_role='student',
-    #                              user=candidate.relatedstudent.user,
-    #                              feedback_set=testfeedbackset)
-    #     mommy.make('devilry_comment.CommentFile', comment=testcomment)
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group)
-    #     self.assertEquals(
-    #         'AnonymousCandidate',
-    #         mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-groupcomment-user').alltext_normalized
-    #     )
-    #
-    # def test_get_feedbackfeed_sidebarfiles_uploaded_by_student_fully_anonymous(self):
-    #     testassignment = mommy.make('core.Assignment',
-    #                                 anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-    #     testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
-    #     candidate = mommy.make('core.Candidate',
-    #                            assignment_group=testfeedbackset.group,
-    #                            relatedstudent__automatic_anonymous_id='AnonymousCandidate',
-    #                            relatedstudent__user__shortname='testcandidate')
-    #     testcomment = mommy.make('devilry_group.GroupComment',
-    #                              user_role='student',
-    #                              user=candidate.relatedstudent.user,
-    #                              feedback_set=testfeedbackset)
-    #     mommy.make('devilry_comment.CommentFile', comment=testcomment)
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group)
-    #     self.assertEquals(
-    #         'AnonymousCandidate',
-    #         mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-groupcomment-user').alltext_normalized
-    #     )
-
     def test_get_feedbackfeed_examiner_can_see_feedback_and_discuss_in_header(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
@@ -252,13 +214,14 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
     # def test_get_num_queries(self):
     #     testgroup = mommy.make('core.AssignmentGroup')
     #     examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
-    #     testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+    #     testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
     #     mommy.make('devilry_group.GroupComment',
     #                user=examiner.relatedexaminer.user,
     #                user_role='examiner',
-    #                feedback_set=testfeedbackset)
+    #                feedback_set=testfeedbackset,
+    #                _quantity=100)
     #
-    #     with self.assertNumQueries(8):
+    #     with self.assertNumQueries(13):
     #         self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
     #                                            requestuser=examiner.relatedexaminer.user)
     #
@@ -271,7 +234,8 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
     #     """
     #     testgroup = mommy.make('core.AssignmentGroup')
     #     examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
-    #     testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
+    #     candidate = mommy.make('core.Candidate', assignment_group=testgroup)
+    #     testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
     #     comment = mommy.make('devilry_group.GroupComment',
     #                          user=examiner.relatedexaminer.user,
     #                          user_role='examiner',
@@ -280,6 +244,11 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
     #                           user=examiner.relatedexaminer.user,
     #                           user_role='examiner',
     #                           feedback_set=testfeedbackset)
+    #     mommy.make('devilry_group.GroupComment',
+    #                user=candidate.relatedstudent.user,
+    #                user_role='student',
+    #                feedback_set=testfeedbackset,
+    #                _quantity=20)
     #     mommy.make('devilry_comment.CommentFile',
     #                filename='test.py',
     #                comment=comment,
@@ -288,29 +257,6 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
     #                filename='test2.py',
     #                comment=comment2,
     #                _quantity=100)
-    #     with self.assertNumQueries(8):
+    #     with self.assertNumQueries(13):
     #         self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
     #                                            requestuser=examiner.relatedexaminer.user)
-
-    # def test_post_comment_file(self):
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet')
-    #     filecollection = mommy.make(
-    #         'cradmin_temporaryfileuploadstore.TemporaryFileCollection',
-    #     )
-    #     test_file = mommy.make(
-    #         'cradmin_temporaryfileuploadstore.TemporaryFile',
-    #         filename='test.txt',
-    #         collection=filecollection
-    #     )
-    #     test_file.file.save('test.txt', ContentFile('test'))
-    #     self.mock_http302_postrequest(
-    #         cradmin_role=feedbackset.group,
-    #         viewkwargs={'pk': feedbackset.group.id},
-    #         requestkwargs={
-    #             'data': {
-    #                 'text': 'This is a comment',
-    #                 'temporary_file_collection_id': filecollection.id,
-    #             }
-    #         })
-    #     comment_files = comment_models.CommentFile.objects.all()
-    #     self.assertEquals(1, len(comment_files))

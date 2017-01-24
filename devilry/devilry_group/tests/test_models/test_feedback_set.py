@@ -131,15 +131,6 @@ class TestFeedbackSetModel(TestCase):
         self.assertEquals(groupcomments[1].text, 'comment2')
         self.assertEquals(groupcomments[2].text, 'comment3')
 
-    def test_feedbackset_publish_set_current_deadline_not_expired(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        grading_points = 10
-        test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
-                group__parentnode__first_deadline=timezone.now() + timezone.timedelta(days=1))
-        result, msg = test_feedbackset.publish(published_by=testuser, grading_points=grading_points)
-        self.assertFalse(result)
-        self.assertEquals(msg, 'The deadline has not expired. Feedback was saved, but not published.')
-
     def test_feedbackset_publish_current_deadline_is_none(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         grading_points = 10
