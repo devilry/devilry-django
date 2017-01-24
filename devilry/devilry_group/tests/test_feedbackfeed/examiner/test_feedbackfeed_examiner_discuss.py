@@ -181,7 +181,7 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
                    user_role='examiner',
                    feedback_set=testfeedbackset,
                    _quantity=20)
-        with self.assertNumQueries(12):
+        with self.assertNumQueries(13):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=examiner.relatedexaminer.user)
 
@@ -199,9 +199,9 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
         candidate = mommy.make('core.Candidate', assignment_group=testgroup)
         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         comment1 = mommy.make('devilry_group.GroupComment',
-                             user=candidate.relatedstudent.user,
-                             user_role='student',
-                             feedback_set=testfeedbackset)
+                              user=candidate.relatedstudent.user,
+                              user_role='student',
+                              feedback_set=testfeedbackset)
         mommy.make('devilry_group.GroupComment',
                    user=candidate.relatedstudent.user,
                    user_role='student',
@@ -222,7 +222,7 @@ class TestFeedbackfeedExaminerDiscuss(TestCase, test_feedbackfeed_examiner.TestF
                    filename='test2.py',
                    comment=comment2,
                    _quantity=20)
-        with self.assertNumQueries(12):
+        with self.assertNumQueries(13):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=examiner.relatedexaminer.user)
 
