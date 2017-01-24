@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 import htmls
 from django import test
@@ -107,6 +107,73 @@ class TestStudentItemValue(test.TestCase):
         self.assertEqual(
             'Grade: passed (1/1)',
             selector.one('.devilry-cradmin-groupitemvalue-grade').alltext_normalized)
+
+    def test_deadline_first_attempt(self):
+        testgroup = mommy.make(
+            'core.AssignmentGroup',
+            parentnode=mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                first_deadline=datetime(2000, 1, 15, 12, 0)))
+        with self.settings(DATETIME_FORMAT='Y-m-d H:i', USE_L10N=False):
+            selector = self.__render_studentitemvalue(group=testgroup)
+        self.assertEqual(
+            '2000-01-15 12:00',
+            selector.one(
+                    '.devilry-cradmin-groupitemvalue-deadline__datetime').alltext_normalized)
+
+    def test_deadline_new_attempt(self):
+        testgroup = mommy.make(
+            'core.AssignmentGroup',
+            parentnode=mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                first_deadline=datetime(2000, 1, 15, 12, 0)))
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup,
+            deadline_datetime=datetime(2200, 1, 2, 12, 30))
+        with self.settings(DATETIME_FORMAT='Y-m-d H:i', USE_L10N=False):
+            selector = self.__render_studentitemvalue(group=testgroup)
+        self.assertEqual(
+            '2200-01-02 12:30',
+            selector.one(
+                    '.devilry-cradmin-groupitemvalue-deadline__datetime').alltext_normalized)
+
+    def test_attempt_number_first_attempt(self):
+        testgroup = mommy.make(
+            'core.AssignmentGroup',
+            parentnode=mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start'))
+        selector = self.__render_studentitemvalue(group=testgroup)
+        self.assertFalse(
+            selector.exists(
+                    '.devilry-cradmin-groupitemvalue-deadline__attemptnumber'))
+
+    def test_attempt_number_new_attempt1(self):
+        testgroup = mommy.make(
+            'core.AssignmentGroup',
+            parentnode=mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start'))
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup)
+        selector = self.__render_studentitemvalue(group=testgroup)
+        self.assertEqual(
+            '(second attempt)',
+            selector.one(
+                    '.devilry-cradmin-groupitemvalue-deadline__attemptnumber').alltext_normalized)
+
+    def test_attempt_number_new_attempt2(self):
+        testgroup = mommy.make(
+            'core.AssignmentGroup',
+            parentnode=mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start'))
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=testgroup)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=testgroup)
+        selector = self.__render_studentitemvalue(group=testgroup)
+        self.assertEqual(
+            '(third attempt)',
+            selector.one(
+                    '.devilry-cradmin-groupitemvalue-deadline__attemptnumber').alltext_normalized)
 
 
 class TestExaminerItemValue(test.TestCase):

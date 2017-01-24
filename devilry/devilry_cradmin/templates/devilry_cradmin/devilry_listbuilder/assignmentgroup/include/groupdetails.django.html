@@ -33,7 +33,7 @@
         {{ me.group.cached_data.last_feedbackset_deadline_datetime|date:"DATETIME_FORMAT" }}
     </span>
     {% if me.group.cached_data.new_attempt_count > 0 %}
-        <span class="devilry-cradmin-groupitemvalue-deadline__new_attempt">
+        <span class="devilry-cradmin-groupitemvalue-deadline__attemptnumber">
             ({{ me.group.cached_data.prettyformat_current_attempt_number }})
         </span>
     {% endif %}
