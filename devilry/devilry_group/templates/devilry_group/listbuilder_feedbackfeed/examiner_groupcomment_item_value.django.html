@@ -20,7 +20,9 @@
             Comment is published as part of the feedback.
             -->
             <div class="devilry-group-feedbackfeed-right-badge-field not-published-badge">
-                <p class="devilry-group-feedbackfeed-badge-text">{% trans "part of feedback" context 'devilry_group feedbackfeed' %}</p>
+                <p class="devilry-group-feedbackfeed-badge-text">
+                    {% trans "feedback" context 'devilry_group feedbackfeed part of feedback badge' %}
+                </p>
             </div>
         {% endif %}
     {% elif me.group_comment.visibility == 'visible-to-examiner-and-admins' %}
