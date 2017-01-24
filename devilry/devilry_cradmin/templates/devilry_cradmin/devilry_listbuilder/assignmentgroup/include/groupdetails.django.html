@@ -24,6 +24,21 @@
         {% devilry_groupstatus me.group %}
     </p>
 {% endif %}
+
+<p class="devilry-cradmin-groupitemvalue-deadline">
+    <span class="devilry-cradmin-groupitemvalue-deadline__label">
+        {% trans "Deadline" %}:
+    </span>
+    <span class="devilry-cradmin-groupitemvalue-deadline__datetime">
+        {{ me.group.cached_data.last_feedbackset_deadline_datetime|date:"DATETIME_FORMAT" }}
+    </span>
+    {% if me.group.cached_data.new_attempt_count > 0 %}
+        <span class="devilry-cradmin-groupitemvalue-deadline__new_attempt">
+            ({{ me.group.cached_data.prettyformat_current_attempt_number }})
+        </span>
+    {% endif %}
+</p>
+
 <p class="devilry-cradmin-groupitemvalue-comments">
     {% devilry_comment_summary me.group %}
 </p>
