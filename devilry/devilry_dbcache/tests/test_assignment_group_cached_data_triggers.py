@@ -5,6 +5,7 @@ from model_mommy import mommy
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START
+from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories
@@ -112,6 +113,74 @@ class TestAssignmentGroupCachedDataBasics(test.TestCase):
             deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=2))
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.new_attempt_count, 2)
+
+
+class TestAssignmentGroupCachedDataExaminerCount(test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_none(self):
+        group = mommy.make('core.AssignmentGroup')
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.examiner_count, 0)
+
+    def test_examiner_simple(self):
+        group = mommy.make('core.AssignmentGroup')
+        core_mommy.examiner(group=group)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.examiner_count, 1)
+
+    def test_examiner_multiple(self):
+        group = mommy.make('core.AssignmentGroup')
+        core_mommy.examiner(group=group)
+        core_mommy.examiner(group=group)
+        core_mommy.examiner(group=group)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.examiner_count, 3)
+
+    def test_examiner_delete_decrements_count(self):
+        group = mommy.make('core.AssignmentGroup')
+        core_mommy.examiner(group=group)
+        examiner = core_mommy.examiner(group=group)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.examiner_count, 2)
+        examiner.delete()
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.examiner_count, 1)
+
+
+class TestAssignmentGroupCachedDataCandidateCount(test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_none(self):
+        group = mommy.make('core.AssignmentGroup')
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.candidate_count, 0)
+
+    def test_examiner_simple(self):
+        group = mommy.make('core.AssignmentGroup')
+        core_mommy.candidate(group=group)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.candidate_count, 1)
+
+    def test_candidate_multiple(self):
+        group = mommy.make('core.AssignmentGroup')
+        core_mommy.candidate(group=group)
+        core_mommy.candidate(group=group)
+        core_mommy.candidate(group=group)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.candidate_count, 3)
+
+    def test_candidate_delete_decrements_count(self):
+        group = mommy.make('core.AssignmentGroup')
+        core_mommy.candidate(group=group)
+        candidate = core_mommy.candidate(group=group)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.candidate_count, 2)
+        candidate.delete()
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.candidate_count, 1)
 
 
 class TestAssignmentGroupCachedDataPublicTotalCommentCount(test.TestCase):

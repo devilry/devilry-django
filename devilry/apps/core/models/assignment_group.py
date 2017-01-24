@@ -609,13 +609,6 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             order_by=order_by
         )
 
-    def annotate_with_number_of_examiners(self):
-        """
-        Annotate the queryset with ``number_of_examiners`` - the number of
-        examiners in each group.
-        """
-        return self.annotate(number_of_examiners=models.Count('examiners'))
-
     def annotate_with_number_of_private_groupcomments_from_user(self, user):
         """
         Annotate the queryset with ``number_of_private_groupcomments_from_user`` -
