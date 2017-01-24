@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django import forms
 from django.db import models
+from django.db.models.functions import Lower, Concat
 from django.http import HttpResponseRedirect, Http404
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy, pgettext_lazy
 from django.views.generic import View
@@ -9,7 +10,10 @@ from django.views.generic import View
 from django_cradmin.viewhelpers import multiselect2
 from django_cradmin.viewhelpers import multiselect2view
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
+from django_cradmin.viewhelpers import listbuilderview
+from django_cradmin.viewhelpers import listfilter
 
+from devilry.devilry_cradmin import devilry_listfilter
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.apps.core import models as core_models
 from devilry.devilry_dbcache.models import AssignmentGroupCachedData
@@ -45,29 +49,11 @@ class SelectedAssignmentGroupForm(forms.Form):
         self.fields['selected_items'].queryset = selectable_qualification_items_queryset
 
 
-class SelectedAssignmentGroupItem(multiselect2.selected_item_renderer.SelectedItem):
-    def get_title(self):
-        return self.value
-
-
-class SelectableAssignmentGroupItemValue(multiselect2.listbuilder_itemvalues.ItemValue):
-    selected_item_renderer_class = SelectedAssignmentGroupItem
-
-    def get_inputfield_name(self):
-        return 'selected_items'
-
-    def get_title(self):
-        return self.value
-
-    def get_description(self):
-        return ''
-
-
 class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
 
     #: The selected item as it is shown when selected.
     #: By default this is :class:`.SelectedQualificationItem`.
-    selected_target_renderer = SelectedAssignmentGroupItem
+    selected_target_renderer = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
 
     #: A descriptive name for the items selected.
     descriptive_item_name = 'assignment group'
@@ -127,33 +113,112 @@ class PassedFailedTargetRenderer(AssignmentGroupTargetRenderer):
         return layout
 
 
-class AssignmentGroupItemListView(multiselect2view.ListbuilderView):
+class AssignmentGroupItemListView(multiselect2view.ListbuilderFilterView):
     """
 
     """
-    class Meta:
-        abstract = True
 
     #: The model represented as a selectable item.
     model = core_models.AssignmentGroup
-    value_renderer_class = SelectableAssignmentGroupItemValue
+    value_renderer_class = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
+
+    def dispatch(self, request, *args, **kwargs):
+        self.assignment = self.request.cradmin_role
+        return super(AssignmentGroupItemListView, self).dispatch(request, *args, **kwargs)
+
+    # def get_filterlist_template_name(self):
+    #     return 'django_cradmin/viewhelpers/multiselect2view/listbuilderfilterview.django.html'
+
+    def get_pagetitle(self):
+        return 'Assignment groups for {}'.format(self.assignment.long_name)
 
     def get_default_paginate_by(self, queryset):
-        return 10
+        return 5
 
-    def get_queryset_for_role(self, role):
-        cache_queryset = AssignmentGroupCachedData.objects\
-            .filter(group__parentnode=role)\
-            .exclude(models.Q(last_published_feedbackset=models.F('last_feedbackset')))\
-            .values_list('group_id')
-        group_queryset = self.model.objects\
-            .filter(id__in=cache_queryset)\
-            .filter_examiner_has_access(user=self.request.user)
+    def __add_filterlist_items_anonymous_uses_custom_candidate_ids(self, filterlist):
+        filterlist.append(devilry_listfilter.assignmentgroup.SearchAnonymousUsesCustomCandidateIds())
+        filterlist.append(devilry_listfilter.assignmentgroup.OrderByAnonymousUsesCustomCandidateIds())
+
+    def __add_filterlist_items_anonymous(self, filterlist):
+        filterlist.append(devilry_listfilter.assignmentgroup.SearchAnonymous())
+        filterlist.append(devilry_listfilter.assignmentgroup.OrderByAnonymous())
+
+    def __add_filterlist_items_not_anonymous(self, filterlist):
+        filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())
+
+    def add_filterlist_items(self, filterlist):
+        if self.assignment.is_anonymous:
+            if self.assignment.uses_custom_candidate_ids:
+                self.__add_filterlist_items_anonymous_uses_custom_candidate_ids(filterlist=filterlist)
+            else:
+                self.__add_filterlist_items_anonymous(filterlist=filterlist)
+        else:
+            self.__add_filterlist_items_not_anonymous(filterlist=filterlist)
+
+    def get_filterlist_url(self, filters_string):
+        raise NotImplementedError()
+
+    def __get_candidate_queryset(self):
+        return core_models.Candidate.objects\
+            .select_related('relatedstudent__user')\
+            .only(
+                'candidate_id',
+                'assignment_group',
+                'relatedstudent__candidate_id',
+                'relatedstudent__automatic_anonymous_id',
+                'relatedstudent__user__shortname',
+                'relatedstudent__user__fullname',
+            )\
+            .order_by(
+                Lower(Concat('relatedstudent__user__fullname',
+                             'relatedstudent__user__shortname')))
+
+    def __get_examiner_queryset(self):
+        return core_models.Examiner.objects\
+            .select_related('relatedexaminer__user')\
+            .only(
+                'relatedexaminer',
+                'assignmentgroup',
+                'relatedexaminer__automatic_anonymous_id',
+                'relatedexaminer__user__shortname',
+                'relatedexaminer__user__fullname',
+            )\
+            .order_by(
+                Lower(Concat('relatedexaminer__user__fullname',
+                             'relatedexaminer__user__shortname')))
+
+    def get_unfiltered_queryset_for_role(self, role):
+        assignment = role
+        group_queryset = core_models.AssignmentGroup.objects \
+            .filter_examiner_has_access(user=self.request.user) \
+            .filter(parentnode=assignment) \
+            .exclude(cached_data__last_published_feedbackset=models.F('cached_data__last_feedbackset')) \
+            .prefetch_related(
+                models.Prefetch('candidates',
+                            queryset=self.__get_candidate_queryset())) \
+            .prefetch_related(
+                models.Prefetch('examiners',
+                            queryset=self.__get_examiner_queryset())) \
+            .annotate_with_is_waiting_for_feedback() \
+            .annotate_with_is_waiting_for_deliveries() \
+            .annotate_with_is_corrected() \
+            .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user) \
+            .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user) \
+            .distinct() \
+            .select_related('cached_data__last_published_feedbackset',
+                            'cached_data__last_feedbackset',
+                            'cached_data__first_feedbackset',
+                            'parentnode')
         return group_queryset
+
+    def get_value_and_frame_renderer_kwargs(self):
+        return {
+            'assignment': self.assignment
+        }
 
     def get_form_kwargs(self):
         kwargs = super(AssignmentGroupItemListView, self).get_form_kwargs()
-        kwargs['selectable_items_queryset'] = self.get_queryset_for_role(self.request.cradmin_role)
+        kwargs['selectable_items_queryset'] = self.get_unfiltered_queryset_for_role(self.request.cradmin_role)
         kwargs['assignment'] = self.request.cradmin_role
         return kwargs
 
@@ -161,11 +226,19 @@ class AssignmentGroupItemListView(multiselect2view.ListbuilderView):
         selected_group_ids = [item.id for item in posted_form.cleaned_data['selected_items']]
         return selected_group_ids
 
+    def __get_assignment_group_queryset(self, group_ids):
+        feedbackset_queryset = group_models.FeedbackSet.objects\
+            .select_related('group', 'created_by')\
+            .filter(group_id__in=group_ids)
+        return self.model.objects\
+            .select_related('parentnode', 'cached_data', 'cached_data__last_feedbackset')\
+            .prefetch_related(models.Prefetch('feedbackset_set', queryset=feedbackset_queryset))\
+            .filter(id__in=group_ids)
+
     def form_valid(self, form):
         group_ids = self.get_selected_groupids(posted_form=form)
-        group_queryset = core_models.AssignmentGroup.objects.filter(id__in=group_ids)
-        cached_data = AssignmentGroupCachedData.objects.filter(group__in=group_queryset)
-        feedback_sets = [cache.last_feedbackset for cache in cached_data]
+        group_queryset = self.__get_assignment_group_queryset(group_ids=group_ids)
+        feedback_sets = [group.cached_data.last_feedbackset for group in group_queryset]
         points = form.get_grading_points()
         text = form.cleaned_data['feedback_comment_text']
         for feedback_set in feedback_sets:
@@ -189,6 +262,10 @@ class BulkFeedbackPointsView(AssignmentGroupItemListView):
     """
     Handles bulkfeedback for assignment with points-based grading system.
     """
+    def get_filterlist_url(self, filters_string):
+        return self.request.cradmin_app.reverse_appurl(
+            'bulk-feedback-points-filter', kwargs={'filters_string', filters_string})
+
     def get_target_renderer_class(self):
         return PointsTargetRenderer
 
@@ -200,6 +277,10 @@ class BulkFeedbackPassedFailedView(AssignmentGroupItemListView):
     """
     Handles bulkfeedback for assignment with passed/failed grading system.
     """
+    def get_filterlist_url(self, filters_string):
+        return self.request.cradmin_app.reverse_appurl(
+            'bulk-feedback-passedfailed-filter', kwargs={'filters_string': filters_string})
+
     def get_target_renderer_class(self):
         return PassedFailedTargetRenderer
 

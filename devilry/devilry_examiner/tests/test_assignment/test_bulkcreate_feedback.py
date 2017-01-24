@@ -13,6 +13,171 @@ from devilry.project.common import settings
 from devilry.apps.core import models as core_models
 
 
+class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = bulk_feedback.BulkFeedbackPassedFailedView
+
+    def setUp(self):
+        customsql.AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_title(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 0')
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup__parentnode=testassignment,
+                   relatedexaminer__user=examiner_user)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=examiner_user)
+        self.assertIn(
+            'Assignment groups for Assignment 0',
+            mockresponse.selector.one('title').alltext_normalized)
+
+    def test_groups_not_selected_by_default(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 0')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup=testgroup,
+                   relatedexaminer__user=examiner_user)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=examiner_user
+        )
+        self.assertEquals(
+            0,
+            mockresponse.selector.count('.django-cradmin-multiselect2-target-with-items'))
+        self.assertEquals(
+            0,
+            mockresponse.selector.count('.django-cradmin-multiselect2-target-selected-item'))
+
+    def test_one_group_on_assignment(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 0')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup=testgroup,
+                   relatedexaminer__user=examiner_user)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=examiner_user)
+        self.assertEquals(
+            1,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_three_groups_on_assignment(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 0')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup3)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1,
+                   relatedexaminer__user=examiner_user)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2,
+                   relatedexaminer__user=examiner_user)
+        mommy.make('core.Examiner', assignmentgroup=testgroup3,
+                   relatedexaminer__user=examiner_user)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=examiner_user)
+        self.assertEquals(
+            3,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_examiner_only_examiner_on_one_group(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 0')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1,
+                   relatedexaminer__user=examiner_user)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=examiner_user)
+        self.assertEquals(
+            1,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_examiner_group_access_info(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 0')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup2)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup1,
+                   relatedexaminer__user=examiner_user)
+        candidate1 = mommy.make('core.Candidate',
+                                relatedstudent__user__fullname='Donald Duck',
+                                relatedstudent__user__shortname='donaldduck',
+                                assignment_group=testgroup1)
+        candidate2 = mommy.make('core.Candidate',
+                                relatedstudent__user__fullname='April Duck',
+                                relatedstudent__user__shortname='aprilduck',
+                                assignment_group=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=examiner_user
+        )
+        self.assertEquals(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+        element = mockresponse.selector.one('.django-cradmin-multiselect2-itemvalue-details')
+        self.assertIn(candidate1.relatedstudent.user.get_full_name(), element.alltext_normalized)
+        self.assertNotIn(candidate2.relatedstudent.user.get_full_name(), mockresponse.selector.__str__())
+
+    def test_groups_with_last_published_feedbackset_do_not_show(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 0')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup=testgroup,
+                   relatedexaminer__user=examiner_user)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=examiner_user
+        )
+        self.assertEquals(0, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_filter_search_student_name(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 0')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup1,
+                   relatedexaminer__user=examiner_user)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup2,
+                   relatedexaminer__user=examiner_user)
+        candidate1 = mommy.make('core.Candidate',
+                                relatedstudent__user__fullname='Donald Duck',
+                                relatedstudent__user__shortname='donaldduck',
+                                assignment_group=testgroup1)
+        candidate2 = mommy.make('core.Candidate',
+                                relatedstudent__user__fullname='April Duck',
+                                relatedstudent__user__shortname='aprilduck',
+                                assignment_group=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=examiner_user,
+            viewkwargs={'filters_string': 'search-Donald'}
+        )
+        # print mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue')
+        # self.assertEquals(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+
 class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = bulk_feedback.BulkFeedbackPassedFailedView
 
@@ -149,6 +314,85 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
         for feedback_set in feedback_sets:
             self.assertIsNotNone(feedback_set.grading_published_datetime)
             self.assertEquals(feedback_set.grading_points, testassignment.passing_grade_min_points)
+
+    def test_get_num_queries(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+        # create AssignmentGroups
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup5 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+
+        # create user as examiner for AssignmentGroups
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
+        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=examiner_user)
+        mommy.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer__user=examiner_user)
+        mommy.make('core.Examiner', assignmentgroup=testgroup5, relatedexaminer__user=examiner_user)
+
+        # create feedbacksets for the groups
+        devilry_group_mommy_factories\
+            .feedbackset_first_attempt_unpublished(group=testgroup1)
+        devilry_group_mommy_factories\
+            .feedbackset_first_attempt_unpublished(group=testgroup2)
+        devilry_group_mommy_factories\
+            .feedbackset_first_attempt_unpublished(group=testgroup3)
+        devilry_group_mommy_factories\
+            .feedbackset_first_attempt_unpublished(group=testgroup4)
+        devilry_group_mommy_factories\
+            .feedbackset_first_attempt_unpublished(group=testgroup5)
+
+        with self.assertNumQueries(5):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testassignment,
+                requestuser=examiner_user
+            )
+
+    # def test_post_num_queries(self):
+    #     testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+    #
+    #     # create AssignmentGroups
+    #     testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    #     testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    #     testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    #     testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    #     testgroup5 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    #
+    #     # create user as examiner for AssignmentGroups
+    #     examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+    #     mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
+    #     mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
+    #     mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=examiner_user)
+    #     mommy.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer__user=examiner_user)
+    #     mommy.make('core.Examiner', assignmentgroup=testgroup5, relatedexaminer__user=examiner_user)
+    #
+    #     # create feedbacksets for the groups
+    #     devilry_group_mommy_factories\
+    #         .feedbackset_first_attempt_unpublished(group=testgroup1)
+    #     devilry_group_mommy_factories\
+    #         .feedbackset_first_attempt_unpublished(group=testgroup2)
+    #     devilry_group_mommy_factories\
+    #         .feedbackset_first_attempt_unpublished(group=testgroup3)
+    #     devilry_group_mommy_factories\
+    #         .feedbackset_first_attempt_unpublished(group=testgroup4)
+    #     devilry_group_mommy_factories\
+    #         .feedbackset_first_attempt_unpublished(group=testgroup5)
+    #
+    #     with self.assertNumQueries(10):
+    #         self.mock_postrequest(
+    #             cradmin_role=testassignment,
+    #             requestuser=examiner_user,
+    #             requestkwargs={
+    #                 'data': {
+    #                     'points': 10,
+    #                     'feedback_comment_text': 'feedback comment',
+    #                     'selected_items': [testgroup1.id, testgroup2.id, testgroup3.id]
+    #                 }
+    #             }
+    #         )
 
 
 class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -299,7 +543,51 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
             self.assertIsNotNone(feedback_set.grading_published_datetime)
             self.assertEquals(10, feedback_set.grading_points)
 
-    # def test_num_queries(self):
+    def test_get_num_queries(self):
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
+            passing_grade_min_points=6,
+            max_points=10)
+
+        # create AssignmentGroups
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup5 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup6 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+
+        # create user as examiner for AssignmentGroups
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
+        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=examiner_user)
+        mommy.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer__user=examiner_user)
+        mommy.make('core.Examiner', assignmentgroup=testgroup5, relatedexaminer__user=examiner_user)
+        mommy.make('core.Examiner', assignmentgroup=testgroup6, relatedexaminer__user=examiner_user)
+
+        # create feedbacksets for the groups
+        devilry_group_mommy_factories\
+            .feedbackset_first_attempt_unpublished(group=testgroup1)
+        devilry_group_mommy_factories\
+            .feedbackset_first_attempt_unpublished(group=testgroup2)
+        devilry_group_mommy_factories\
+            .feedbackset_first_attempt_unpublished(group=testgroup3)
+        devilry_group_mommy_factories\
+            .feedbackset_first_attempt_unpublished(group=testgroup4)
+        devilry_group_mommy_factories\
+            .feedbackset_first_attempt_unpublished(group=testgroup5)
+        devilry_group_mommy_factories \
+            .feedbackset_first_attempt_unpublished(group=testgroup6)
+
+        with self.assertNumQueries(5):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testassignment,
+                requestuser=examiner_user
+            )
+    #
+    # def test_post_num_queries(self):
     #     testassignment = mommy.make_recipe(
     #         'devilry.apps.core.assignment_activeperiod_start',
     #         grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
@@ -310,20 +598,28 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
     #     testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
     #     testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
     #     testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    #     testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    #     testgroup5 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
     #
     #     # create user as examiner for AssignmentGroups
     #     examiner_user = mommy.make(settings.AUTH_USER_MODEL)
     #     mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
     #     mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
     #     mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=examiner_user)
+    #     mommy.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer__user=examiner_user)
+    #     mommy.make('core.Examiner', assignmentgroup=testgroup5, relatedexaminer__user=examiner_user)
     #
     #     # create feedbacksets for the groups
-    #     testfeedbackset_group1 = devilry_group_mommy_factories\
+    #     devilry_group_mommy_factories\
     #         .feedbackset_first_attempt_unpublished(group=testgroup1)
-    #     testfeedbackset_group2 = devilry_group_mommy_factories \
+    #     devilry_group_mommy_factories\
     #         .feedbackset_first_attempt_unpublished(group=testgroup2)
-    #     testfeedbackset_group3 = devilry_group_mommy_factories \
+    #     devilry_group_mommy_factories\
     #         .feedbackset_first_attempt_unpublished(group=testgroup3)
+    #     devilry_group_mommy_factories\
+    #         .feedbackset_first_attempt_unpublished(group=testgroup4)
+    #     devilry_group_mommy_factories\
+    #         .feedbackset_first_attempt_unpublished(group=testgroup5)
     #
     #     with self.assertNumQueries(10):
     #         self.mock_postrequest(
@@ -337,25 +633,3 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
     #                 }
     #             }
     #         )
-    #
-    #     # Test cached data.
-    #     cached_data_group1 = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup1)
-    #     cached_data_group2 = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup2)
-    #     cached_data_group3 = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup3)
-    #     self.assertEquals(testfeedbackset_group1, cached_data_group1.last_published_feedbackset)
-    #     self.assertEquals(testfeedbackset_group2, cached_data_group2.last_published_feedbackset)
-    #     self.assertEquals(testfeedbackset_group3, cached_data_group3.last_published_feedbackset)
-    #
-    #     # Test bulk created GroupComments
-    #     group_comments = group_models.GroupComment.objects.all()
-    #     self.assertEquals(3, group_comments.count())
-    #     for group_comment in group_comments:
-    #         self.assertEquals('feedback comment', group_comment.text)
-    #
-    #     # Test bulk created FeedbackSets
-    #     feedback_sets = group_models.FeedbackSet.objects.all()
-    #     self.assertEquals(3, feedback_sets.count())
-    #     for feedback_set in feedback_sets:
-    #         self.assertIsNotNone(feedback_set.grading_published_datetime)
-    #         self.assertEquals(10, feedback_set.grading_points)
-
