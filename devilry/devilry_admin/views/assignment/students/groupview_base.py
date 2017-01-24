@@ -83,6 +83,8 @@ class GroupViewMixin(object):
             .select_related('cached_data__last_published_feedbackset',
                             'cached_data__last_feedbackset',
                             'cached_data__first_feedbackset',
+                            'cached_data__examiner_count',
+                            'cached_data__candidate_count',
                             'parentnode')
         return queryset
 
