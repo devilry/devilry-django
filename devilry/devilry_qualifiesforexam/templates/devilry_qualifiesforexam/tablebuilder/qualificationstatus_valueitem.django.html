@@ -1,0 +1,9 @@
+{% extends "devilry_cradmin/devilry_tablebuilder/itemvalue.django.html" %}
+
+{% block content %}
+    {% if me.result == 'yes' %}
+        <h2><span class="label label-success">YES</span></h2>
+    {% else %}
+        <h2><span class="label label-warning">NO</span></h2>
+    {% endif %}
+{% endblock %}

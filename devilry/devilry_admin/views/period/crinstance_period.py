@@ -10,7 +10,7 @@ from devilry.devilry_admin.views.period import examiners
 from devilry.devilry_admin.views.period import overview
 from devilry.devilry_admin.views.period import students
 from devilry.devilry_admin.views.period import edit
-# from devilry.devilry_admin.views.period import qualifiedforfinalexams
+from devilry.devilry_qualifiesforexam import cradmin_app as qualifiesforexam
 
 
 class Menu(devilry_crmenu_admin.Menu):
@@ -32,7 +32,7 @@ class CrAdminInstance(devilry_crinstance_admin.BaseCrInstanceAdmin):
         ('admins', admins.App),
         ('createassignment', createassignment.App),
         ('edit', edit.App),
-        # ('qualifiedforfinalexams', qualifiedforfinalexams.App),
+        ('qualifiesforexam', qualifiesforexam.App),
     ]
     id = 'devilry_admin_periodadmin'
     rolefrontpage_appname = 'overview'

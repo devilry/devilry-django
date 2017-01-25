@@ -1,0 +1,53 @@
+{% extends "devilry_qualifiesforexam/base.django.html" %}
+
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block content %}
+    <div class="container">
+        <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
+            <h1>
+                {% trans "Qualified for final exams" %}
+            </h1>
+            {% if status.status == 'ready' %}
+                <p class="text-muted">
+                    Status: <span class="label label-success">Ready for export</span>
+                    ({% trans "Saved" %} {{ status.createtime }} {% trans "by" %} {{ status.user }})
+                </p>
+            {% else %}
+                <span class="label label-warning">Not ready for export</span>
+            {% endif %}
+            <h5>{{ num_students_qualify }}/{{ num_students }} {% trans "students qualify for final exam" %}</h5>
+        </div>
+
+        {# Show the retracted message if Status is notready #}
+        {% if status.status == 'notready' %}
+            <div class="devilry-dashboard-container">
+                <h2>{% trans "Status retracted reason" %}:</h2>
+                <p id="devilry_qualifiesforexam_retracted_message" class="text-muted">
+                    {{ status.message }}
+                </p>
+            </div>
+        {% endif %}
+
+        <p class="devilry-buttonbar">
+
+            {# Add back button #}
+            {{ block.super }}
+
+            {# Adds template specific buttons #}
+            {% if status.status == 'ready' %}
+                <a id="devilry_qualifiesforexam_retract_link" class="btn btn-primary"
+                   href="{% cradmin_instance_url 'qualifiesforexam' 'retract-status' status.id %}">
+                    {% trans "Retract" %}
+                </a>
+                <a id="devilry_qualifiesforexam_print_link" class="btn btn-primary"
+                    href="{% cradmin_instance_url 'qualifiesforexam' 'print-status' status.id %}">
+                    {% trans "print" %}
+                </a>
+            {% endif %}
+        </p>
+        {% cradmin_render_renderable table %}
+{#        {% include "devilry_qualifiesforexam/includes/qualification_table.django.html" %}#}
+    </div>
+{% endblock content %}

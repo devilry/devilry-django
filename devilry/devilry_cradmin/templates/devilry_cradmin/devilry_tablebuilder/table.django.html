@@ -1,0 +1,29 @@
+{% load cradmin_tags %}
+
+{% block pre %}{% endblock pre %}
+<{{ me.get_wrapper_htmltag }} {% if me.get_css_classes_string %}class="{{ me.get_css_classes_string }}"{% endif %} {% block list-element-attributes %}{% endblock %}>
+    {% block content %}
+        <thead>
+            {% for renderable in me.iter_renderable_section_header %}
+                {% block header-list-item %}
+                    {% cradmin_render_renderable renderable %}
+                {% endblock %}
+            {% endfor %}
+        </thead>
+        <tbody>
+            {% for renderable in me.iter_renderables %}
+                {% block body-list-item %}
+                    {% cradmin_render_renderable renderable %}
+                {% endblock %}
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            {% for renderable in me.iter_renderable_section_footer %}
+                {% block footer-list-item %}
+                    {% cradmin_render_renderable renderable %}
+                {% endblock %}
+            {% endfor %}
+        </tfoot>
+    {% endblock content %}
+</{{ me.get_wrapper_htmltag }}>
+{% block post %}{% endblock post %}

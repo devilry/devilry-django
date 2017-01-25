@@ -1,0 +1,17 @@
+{% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
+
+{% load devilry_account_tags %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block content %}
+    {% comment%}
+        Default back button, redirects to index cradmin_add index view.
+        Give a call to {{ block.super }} where you want to add this.
+    {% endcomment %}
+    <a id="devilry_qualifiesforexam_back_index_button" class="btn btn-primary"
+       href="{% cradmin_instance_url 'qualifiesforexam' 'INDEX' %}">
+        {% trans "Back to mainpage" %}
+    </a>
+{% endblock content %}

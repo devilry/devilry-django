@@ -39,7 +39,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_link_urls(self):
         testperiod = mommy.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
-        self.assertEqual(5, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(6, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEqual(
                 mock.call(appname='edit', args=(), viewname='INDEX', kwargs={}),
                 mockresponse.request.cradmin_instance.reverse_url.call_args_list[0])
@@ -55,6 +55,9 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 mock.call(appname='admins', args=(), viewname='INDEX', kwargs={}),
                 mockresponse.request.cradmin_instance.reverse_url.call_args_list[4])
+        self.assertEqual(
+                mock.call(appname='qualifiesforexam', args=(), viewname='INDEX', kwargs={}),
+                mockresponse.request.cradmin_instance.reverse_url.call_args_list[5])
 
     def test_assignmentlist_no_assignments(self):
         testperiod = mommy.make('core.Period')
