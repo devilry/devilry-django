@@ -1,24 +1,23 @@
 from __future__ import unicode_literals
 
 from django import forms
+from django.contrib import messages
 from django.db import models
+from django.db import transaction
 from django.db.models.functions import Lower, Concat
 from django.http import HttpResponseRedirect, Http404
-from django.utils.translation import ugettext_lazy as _, ugettext_lazy, pgettext_lazy
+from django.utils import timezone
+from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django.views.generic import View
-
+from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 from django_cradmin.viewhelpers import multiselect2
 from django_cradmin.viewhelpers import multiselect2view
-from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
-from django_cradmin.viewhelpers import listbuilderview
-from django_cradmin.viewhelpers import listfilter
 
-from devilry.devilry_cradmin import devilry_listfilter
-from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.apps.core import models as core_models
-from devilry.devilry_dbcache.models import AssignmentGroupCachedData
-from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
+from devilry.devilry_cradmin import devilry_listbuilder
+from devilry.devilry_cradmin import devilry_listfilter
+from devilry.devilry_group import models as group_models
 
 
 class SelectedAssignmentGroupForm(forms.Form):
@@ -74,6 +73,11 @@ class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
 
 
 class AssignPointsForm(SelectedAssignmentGroupForm):
+    """
+    Subclassed the select form and adds a ``Integer`` points field.
+    """
+
+    #: Set the amount of points.
     points = forms.IntegerField(
         min_value=0,
         help_text='Add a score that will be given to all selected assignment groups.',
@@ -92,6 +96,11 @@ class PointsTargetRenderer(AssignmentGroupTargetRenderer):
 
 
 class AssignPassedFailedForm(SelectedAssignmentGroupForm):
+    """
+    Subclassed the select form and adds a ``Boolean`` field to provide a
+    passed/failed grade.
+    """
+
     #: Set delivery as passed or failed.
     passed = forms.BooleanField(
             label=pgettext_lazy('grading', 'Passed?'),
@@ -115,22 +124,38 @@ class PassedFailedTargetRenderer(AssignmentGroupTargetRenderer):
 
 class AssignmentGroupItemListView(multiselect2view.ListbuilderFilterView):
     """
+    Base class that handles all the logic of bulk creating feedbacks.
 
+    Extend this class with a subclass that uses a form suited for the
+    :attr:``~.devilry.apps.core.models.Assignment.grading_system_plugin_id``.
+
+    Example:
+
+        Bulk feedback class points based Assignment::
+
+            class BulkFeedbackPassedFailedView(AssignmentGroupItemListView):
+                def get_filterlist_url(self, filters_string):
+                    return self.request.cradmin_app.reverse_appurl(
+                        'bulk-feedback-passedfailed-filter', kwargs={'filters_string': filters_string})
+
+                def get_target_renderer_class(self):
+                    return PassedFailedTargetRenderer
+
+                def get_form_class(self):
+                    return AssignPassedFailedForm
     """
 
     #: The model represented as a selectable item.
     model = core_models.AssignmentGroup
     value_renderer_class = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
+    template_name = 'devilry_examiner/assignment/bulk_create_feedback.django.html'
 
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
         return super(AssignmentGroupItemListView, self).dispatch(request, *args, **kwargs)
 
-    # def get_filterlist_template_name(self):
-    #     return 'django_cradmin/viewhelpers/multiselect2view/listbuilderfilterview.django.html'
-
     def get_pagetitle(self):
-        return 'Assignment groups for {}'.format(self.assignment.long_name)
+        return ugettext_lazy('Bulk create feedback')
 
     def get_default_paginate_by(self, queryset):
         return 5
@@ -141,10 +166,11 @@ class AssignmentGroupItemListView(multiselect2view.ListbuilderFilterView):
 
     def __add_filterlist_items_anonymous(self, filterlist):
         filterlist.append(devilry_listfilter.assignmentgroup.SearchAnonymous())
-        filterlist.append(devilry_listfilter.assignmentgroup.OrderByAnonymous())
+        filterlist.append(devilry_listfilter.assignmentgroup.OrderByAnonymous(include_points=False))
 
     def __add_filterlist_items_not_anonymous(self, filterlist):
         filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())
+        filterlist.append(devilry_listfilter.assignmentgroup.OrderByNotAnonymous(include_points=False))
 
     def add_filterlist_items(self, filterlist):
         if self.assignment.is_anonymous:
@@ -154,6 +180,7 @@ class AssignmentGroupItemListView(multiselect2view.ListbuilderFilterView):
                 self.__add_filterlist_items_anonymous(filterlist=filterlist)
         else:
             self.__add_filterlist_items_not_anonymous(filterlist=filterlist)
+        filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
 
     def get_filterlist_url(self, filters_string):
         raise NotImplementedError()
@@ -226,33 +253,105 @@ class AssignmentGroupItemListView(multiselect2view.ListbuilderFilterView):
         selected_group_ids = [item.id for item in posted_form.cleaned_data['selected_items']]
         return selected_group_ids
 
-    def __get_assignment_group_queryset(self, group_ids):
-        feedbackset_queryset = group_models.FeedbackSet.objects\
-            .select_related('group', 'created_by')\
-            .filter(group_id__in=group_ids)
-        return self.model.objects\
-            .select_related('parentnode', 'cached_data', 'cached_data__last_feedbackset')\
-            .prefetch_related(models.Prefetch('feedbackset_set', queryset=feedbackset_queryset))\
-            .filter(id__in=group_ids)
+    def __get_feedbackset_ids_from_posted_ids(self, form):
+        """
+        Get list of ids of the last :class:`~.devilry.devilry_group.models.FeedbackSet` from each ``AssignmentGroup``
+        in ``form``s cleaned data.
+
+        Args:
+            form: cleaned form.
+
+        Returns:
+            (list): list of ``FeedbackSet`` ids.
+        """
+        group_ids = self.get_selected_groupids(posted_form=form)
+        feedback_set_ids = self.get_unfiltered_queryset_for_role(role=self.request.cradmin_role) \
+            .filter(id__in=group_ids) \
+            .values_list('cached_data__last_feedbackset_id', flat=True)
+        return list(feedback_set_ids)
+
+    def __create_grading_groupcomment(self, feedback_set_id, published_time, text):
+        """
+        Create an entry of :class:`~.devilry.devilry_group.models.GroupComment` as part of grading
+        for the :class:`~.devilry.devilry_group.models.FeedbackSet` that received feedback.
+
+        Args:
+            feedback_set_id: comment for this feedback.
+            published_time: Time the comment was published.
+            text: Text provided by examiner.
+        """
+        group_models.GroupComment.objects.create(
+            feedback_set_id=feedback_set_id,
+            part_of_grading=True,
+            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+            user=self.request.user,
+            user_role=comment_models.Comment.USER_ROLE_EXAMINER,
+            text=text,
+            comment_type=comment_models.Comment.COMMENT_TYPE_GROUPCOMMENT,
+            published_datetime=published_time
+        )
+
+    def __get_group_anonymous_displaynames(self, form):
+        """
+        Build a list of anonymized displaynames for the groups that where corrected.
+
+        Args:
+            form: posted form
+
+        Returns:
+            (list): list of anonymized displaynames for the groups
+        """
+        groups = form.cleaned_data['selected_items']
+        anonymous_display_names = [unicode(group.get_anonymous_displayname(assignment=self.request.cradmin_role))
+                                   for group in groups]
+        return anonymous_display_names
 
     def form_valid(self, form):
-        group_ids = self.get_selected_groupids(posted_form=form)
-        group_queryset = self.__get_assignment_group_queryset(group_ids=group_ids)
-        feedback_sets = [group.cached_data.last_feedbackset for group in group_queryset]
+        """
+        Creates entries of :class:`~.devilry.devilry_group.models.GroupComment`s for all the
+        :class:`~.devilry.devilry_group.models.FeedbackSet`s that is given a bulk feedback.
+
+        Note:
+            Using ``transaction.atomic()`` for single transaction when creating ``GroupComment``s and
+            updating the ``FeedbackSet``s.
+
+        Args:
+            form: cleaned form.
+        """
+        feedback_set_ids = self.__get_feedbackset_ids_from_posted_ids(form=form)
         points = form.get_grading_points()
         text = form.cleaned_data['feedback_comment_text']
-        for feedback_set in feedback_sets:
-            group_models.GroupComment.objects.create(
-                feedback_set=feedback_set,
-                part_of_grading=True,
-                visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
-                user=self.request.user,
-                user_role=comment_models.Comment.USER_ROLE_EXAMINER,
-                text=text,
-                comment_type=comment_models.Comment.COMMENT_TYPE_GROUPCOMMENT,
-            )
-            feedback_set.publish(published_by=self.request.user, grading_points=points)
+
+        # Cache anonymous display names before transaction. Needed for django messages.
+        anonymous_displaynames = self.__get_group_anonymous_displaynames(form=form)
+
+        now_without_microseconds = timezone.now().replace(microsecond=0)
+        with transaction.atomic():
+            for feedback_set_id in feedback_set_ids:
+                self.__create_grading_groupcomment(
+                    feedback_set_id=feedback_set_id,
+                    published_time=now_without_microseconds,
+                    text=text)
+            group_models.FeedbackSet.objects\
+                .filter(id__in=feedback_set_ids)\
+                .update(
+                    grading_published_by=self.request.user,
+                    grading_published_datetime=now_without_microseconds + timezone.timedelta(microseconds=1),
+                    grading_points=points)
+
+        self.add_success_message(anonymous_displaynames)
         return super(AssignmentGroupItemListView, self).form_valid(form=form)
+
+    def add_success_message(self, anonymous_display_names):
+        """
+        Add list of anonymized displaynames of the groups that received feedback.
+
+        Args:
+            anonymous_display_names (list): List of anonymized displaynames for groups.
+        """
+        message = ugettext_lazy('Bulk added feedback for %(group_names)s') % {
+            'group_names': ', '.join(anonymous_display_names)}
+        messages.success(self.request, message=message)
 
     def get_success_url(self):
         return self.request.cradmin_app.reverse_appindexurl()
