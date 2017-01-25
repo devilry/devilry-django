@@ -11,6 +11,7 @@ import unittest
 from django import test
 
 # Devilry imports
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.project.common import settings
 from devilry.devilry_qualifiesforexam.utils import groups_groupedby_relatedstudent_and_assignments
 from devilry.devilry_qualifiesforexam import pluginhelpers
@@ -116,6 +117,9 @@ class TestPeriodResultsCollector(test.TestCase, TestPluginHelper):
 
 
 class TestGroupFeedbackSetList(test.TestCase, TestPluginHelper):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_append_errorhandling_not_a_tuple(self):
         # Test that adding something not a tuple will raise a ValueError.
         groupfeedbacksetlist = groups_groupedby_relatedstudent_and_assignments.GroupFeedbackSetList()
@@ -203,6 +207,9 @@ class TestAggregatedRelatedStudentInfoSerializers(test.TestCase, TestPluginHelpe
     """
     Does some simple testing for the serialization of AggregatedRelatedStudentInfo.
     """
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_serialize_user(self):
         # Test serialization of user.
         dataset_dict = self._build_data_set()
@@ -252,6 +259,8 @@ class TestAggregatedRelatedStudentInfoSerializers(test.TestCase, TestPluginHelpe
 
 
 class TestGroupsGroupedByRelatedStudentAndAssignment(test.TestCase, TestPluginHelper):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_assignment_fetches_all_for_period(self):
         # Test that all Assignments for the Period is fetched when no

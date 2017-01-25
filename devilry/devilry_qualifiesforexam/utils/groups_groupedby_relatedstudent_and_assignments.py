@@ -206,7 +206,7 @@ class AggregatedRelatedStudentInfo(object):
         Args:
             group: AssignmentGroup to add.
         """
-        last_feedbackset = FeedbackSet.objects.get(group=group, is_last_in_group=True)
+        last_feedbackset = group.cached_data.last_feedbackset
         self.assignments[group.parentnode.id].append((group, last_feedbackset))
 
     def student_qualifies(self):

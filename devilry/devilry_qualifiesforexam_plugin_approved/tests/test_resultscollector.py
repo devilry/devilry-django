@@ -6,6 +6,7 @@ from django import test
 
 # Devilry imports
 from model_mommy import mommy
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.project.common import settings
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_qualifiesforexam.tests import test_pluginhelpers
@@ -13,6 +14,8 @@ from devilry.devilry_qualifiesforexam_plugin_approved import resultscollector
 
 
 class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginHelper):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_student_pass_with_all_assignments_qualify(self):
         data_dict = self._build_data_set()

@@ -6,6 +6,7 @@ from django import test
 
 # Devilry imports
 from model_mommy import mommy
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.project.common import settings
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.apps.core import models as core_models
@@ -14,6 +15,8 @@ from devilry.devilry_qualifiesforexam_plugin_points import resultscollector
 
 
 class TestPeriodResultSetCollector(test.TestCase, test_pluginhelpers.TestPluginHelper):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_collector_min_passing_score_without_custom_score(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
