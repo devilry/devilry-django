@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 # Devilry imports
 from devilry.devilry_group.feedbackfeed_builder import builder_base
+from devilry.devilry_group import models as group_models
 
 
 class FeedbackFeedSidebarBuilder(builder_base.FeedbackFeedBuilderBase):
@@ -63,20 +64,26 @@ class FeedbackFeedSidebarBuilder(builder_base.FeedbackFeedBuilderBase):
             feedbackset (FeedbackSet): Get :obj:`~devilry.devilry_group.models.GroupComment` objects for.
 
         Returns:
-            dict: Sorted dictionary of :class:`~devilry.devilry_group.GroupComment`s
+            dict: Sorted dictionary of :class:`~devilry.devilry_group.GroupComment`s.
         """
-        comments = feedbackset.groupcomment_set.all()
-        commentdict = {}
-        for comment in comments:
-            comment_files = self.__get_files_for_comment(comment=comment)
+        group_comments = feedbackset.groupcomment_set.all()
+        group_comment_dict = {}
+        for group_comment in group_comments:
+            comment_files = self.__get_files_for_comment(comment=group_comment)
             if comment_files:
-                commentdict[comment.published_datetime] = {
-                    'groupcomment': comment,
+                group_comment_dict[group_comment.published_datetime] = {
+                    'group_comment': group_comment,
                     'files': comment_files
                 }
-        if len(commentdict) > 0:
-            commentdict = self.sort_dict(commentdict)
-        return commentdict
+                if group_comment.user_role == group_models.GroupComment.USER_ROLE_STUDENT:
+                    group_comment_dict[group_comment.published_datetime]['candidate'] = self._get_candidate_from_user(
+                        user=group_comment.user)
+                elif group_comment.user_role == group_models.GroupComment.USER_ROLE_EXAMINER:
+                    group_comment_dict[group_comment.published_datetime]['examiner'] = self._get_examiner_from_user(
+                        user=group_comment.user)
+        if len(group_comment_dict) > 0:
+            group_comment_dict = self.sort_dict(group_comment_dict)
+        return group_comment_dict
 
     def build(self):
         """

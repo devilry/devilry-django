@@ -11,8 +11,11 @@ from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Examiner, AssignmentGroup
 from devilry.apps.core.models import PointToGradeMap
 from devilry.apps.core.models.assignment import AssignmentHasGroupsError
+from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
 from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
+from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import FeedbackSet
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
@@ -655,114 +658,118 @@ class TestAssignmentQuerySetFilterExaminerHasAccess(TestCase):
 
 
 class TestAssignmentQuerySetAnnotateWithWaitingForFeedback(TestCase):
-    def test_annotate_with_waiting_for_feedback_count_nomatch_deadline_not_expired(self):
-        mommy.make('devilry_group.FeedbackSet',
-                   grading_published_datetime=None,
-                   group__parentnode__first_deadline=timezone.now() - timedelta(days=1),
-                   deadline_datetime=timezone.now() + timedelta(days=1),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
-                   is_last_in_group=True)
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_nomatch_deadline_not_expired_first_attempt(self):
+        mommy.make('core.AssignmentGroup',
+                   parentnode__first_deadline=ACTIVE_PERIOD_END)
         queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
         self.assertEqual(0, queryset.first().waiting_for_feedback_count)
 
-    def test_annotate_with_waiting_for_feedback_count_nomatch_deadline_not_expired_first_feedbackset(self):
-        mommy.make('devilry_group.FeedbackSet',
-                   group__parentnode__first_deadline=timezone.now() + timedelta(days=1),
-                   grading_published_datetime=None,
-                   deadline_datetime=None,
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
-                   is_last_in_group=True)
+    def test_nomatch_deadline_not_expired_new_attempt(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode__first_deadline=ACTIVE_PERIOD_START)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=group)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=group,
+            deadline_datetime=ACTIVE_PERIOD_END)
         queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
         self.assertEqual(0, queryset.first().waiting_for_feedback_count)
 
-    def test_annotate_with_waiting_for_feedback_count_nomatch_is_not_last_in_group(self):
-        mommy.make('devilry_group.FeedbackSet',
-                   grading_published_datetime=None,
-                   group__parentnode__first_deadline=timezone.now() - timedelta(days=2),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
-                   deadline_datetime=timezone.now() - timedelta(days=1),
-                   is_last_in_group=None)
-        queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
-        self.assertEqual(0, queryset.first().waiting_for_feedback_count)
-
-    def test_annotate_with_waiting_for_feedback_count_nomatch_grading_published(self):
-        mommy.make('devilry_group.FeedbackSet',
-                   grading_published_datetime=timezone.now() - timedelta(days=1),
-                   group__parentnode__first_deadline=timezone.now() - timedelta(days=2),
-                   deadline_datetime=timezone.now() - timedelta(days=2),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
-                   is_last_in_group=True)
-        queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
-        self.assertEqual(0, queryset.first().waiting_for_feedback_count)
-
-    def test_annotate_with_waiting_for_feedback_count_match_multiple_in_same_group(self):
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode__first_deadline=timezone.now() - timedelta(days=4))
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup,
-                   grading_published_datetime=timezone.now() - timedelta(days=1),
-                   deadline_datetime=timezone.now() - timedelta(days=2),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
-                   is_last_in_group=None)
-        mommy.make('devilry_group.FeedbackSet',
-                   group=testgroup,
-                   grading_published_datetime=None,
-                   deadline_datetime=timezone.now() - timedelta(days=1),
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
-                   is_last_in_group=True)
+    def test_match_deadline_expired_first_attempt(self):
+        mommy.make('core.AssignmentGroup',
+                   parentnode__first_deadline=ACTIVE_PERIOD_START)
         queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
         self.assertEqual(1, queryset.first().waiting_for_feedback_count)
 
-    def test_annotate_with_waiting_for_feedback_count_match_multiple_groups(self):
-        testassignment = mommy.make('core.Assignment',
-                                    first_deadline=timezone.now() - timedelta(days=4))
-        mommy.make('devilry_group.FeedbackSet',
-                   group__parentnode=testassignment,
-                   grading_published_datetime=timezone.now() - timedelta(days=1),
-                   deadline_datetime=timezone.now() - timedelta(days=2),
-                   is_last_in_group=None)
-        mommy.make('devilry_group.FeedbackSet',
-                   group__parentnode=testassignment,
-                   grading_published_datetime=None,
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
-                   is_last_in_group=True)
-        mommy.make('devilry_group.FeedbackSet',
-                   group__parentnode=testassignment,
-                   grading_published_datetime=None,
-                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
-                   is_last_in_group=True)
+    def test_match_deadline_expired_new_attempt(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode__first_deadline=ACTIVE_PERIOD_START)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=group)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=group,
+            deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=1))
+        queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
+        self.assertEqual(1, queryset.first().waiting_for_feedback_count)
+
+    def test_nomatch_grading_published_first_feedabackset(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode__first_deadline=ACTIVE_PERIOD_END)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=group)
+        queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
+        self.assertEqual(0, queryset.first().waiting_for_feedback_count)
+
+    def test_nomatch_grading_published(self):
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode__first_deadline=ACTIVE_PERIOD_END)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=group)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=group,
+            deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=1))
+        queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
+        self.assertEqual(0, queryset.first().waiting_for_feedback_count)
+
+    def test_match_multiple_groups(self):
+        assignment = mommy.make('core.Assignment',
+                                first_deadline=ACTIVE_PERIOD_START)
+
+        # These should match
+        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=group1)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=group2)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
+            group=group2)
+
+        # These should not match
+        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=group2)
+        group3 = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=group3)
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=group3)
+
         queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
         self.assertEqual(2, queryset.first().waiting_for_feedback_count)
 
-    def test_annotate_with_waiting_for_feedback_count_match_multiple_assignments(self):
-        testassignment1 = mommy.make('core.Assignment',
-                                     first_deadline=timezone.now() - timedelta(days=10))
-        testassignment2 = mommy.make('core.Assignment',
-                                     first_deadline=timezone.now() - timedelta(days=4))
-        mommy.make('devilry_group.FeedbackSet',
-                   group__parentnode=testassignment1,
-                   grading_published_datetime=timezone.now() - timedelta(days=1),
-                   deadline_datetime=timezone.now() - timedelta(days=2),
-                   is_last_in_group=None)
-        mommy.make('devilry_group.FeedbackSet',
-                   group__parentnode=testassignment1,
-                   grading_published_datetime=None,
-                   deadline_datetime=timezone.now() - timedelta(days=1),
-                   is_last_in_group=True)
-        mommy.make('devilry_group.FeedbackSet',
-                   group__parentnode=testassignment2,
-                   grading_published_datetime=None,
-                   deadline_datetime=timezone.now() - timedelta(days=1),
-                   is_last_in_group=True)
-        mommy.make('devilry_group.FeedbackSet',
-                   group__parentnode=testassignment2,
-                   grading_published_datetime=None,
-                   deadline_datetime=timezone.now() - timedelta(days=1),
-                   is_last_in_group=True)
+    def test_match_multiple_assignments(self):
+        assignment1 = mommy.make('core.Assignment',
+                                 first_deadline=ACTIVE_PERIOD_START)
+        assignment2 = mommy.make('core.Assignment',
+                                 first_deadline=ACTIVE_PERIOD_START)
+
+        # These should match
+        group1_1 = mommy.make('core.AssignmentGroup', parentnode=assignment1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=group1_1)
+        group2_1 = mommy.make('core.AssignmentGroup', parentnode=assignment2)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=group2_1)
+        group2_2 = mommy.make('core.AssignmentGroup', parentnode=assignment2)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
+            group=group2_2)
+
+        # These should not match
+        group1_2 = mommy.make('core.AssignmentGroup', parentnode=assignment1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=group1_2)
+        group2_3 = mommy.make('core.AssignmentGroup', parentnode=assignment2)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=group2_3)
+
         queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
         self.assertEqual(2, queryset.count())
-        self.assertEqual(1, queryset.get(pk=testassignment1.pk).waiting_for_feedback_count)
-        self.assertEqual(2, queryset.get(pk=testassignment2.pk).waiting_for_feedback_count)
+        self.assertEqual(1, queryset.get(pk=assignment1.pk).waiting_for_feedback_count)
+        self.assertEqual(2, queryset.get(pk=assignment2.pk).waiting_for_feedback_count)
 
 
 class TestAssignmentQuerySetFilterIsAdmin(TestCase):

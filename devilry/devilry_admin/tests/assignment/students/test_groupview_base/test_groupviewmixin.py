@@ -15,6 +15,7 @@ from devilry.devilry_admin.views.assignment.students import groupview_base
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import GroupComment, ImageAnnotationComment
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
 class MinimalGroupItemValue(listbuilder.itemvalue.TitleDescription):
@@ -43,6 +44,9 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockinstance = mock.MagicMock()
         mockinstance.get_devilryrole_for_requestuser.return_value = devilryrole
         return mockinstance
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_search_nomatch(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -318,7 +322,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup1,
+                   feedback_set=testgroup1.feedbackset_set.first(),
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=datetime(2011, 12, 24, 0, 0))
@@ -326,7 +330,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup2,
+                   feedback_set=testgroup2.feedbackset_set.first(),
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
@@ -347,7 +351,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup1,
+                   feedback_set=testgroup1.feedbackset_set.first(),
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=datetime(2011, 12, 24, 0, 0))
@@ -355,7 +359,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup2,
+                   feedback_set=testgroup2.feedbackset_set.first(),
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
@@ -376,7 +380,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup1,
+                   feedback_set=testgroup1.feedbackset_set.first(),
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=datetime(2011, 12, 24, 0, 0))
@@ -384,7 +388,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup2,
+                   feedback_set=testgroup2.feedbackset_set.first(),
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
@@ -405,7 +409,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup1,
+                   feedback_set=testgroup1.feedbackset_set.first(),
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=datetime(2011, 12, 24, 0, 0))
@@ -413,7 +417,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup2,
+                   feedback_set=testgroup2.feedbackset_set.first(),
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    published_datetime=datetime(2010, 12, 24, 0, 0))
@@ -717,6 +721,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_studentfile(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -725,6 +730,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         comment = mommy.make(
             'devilry_group.GroupComment',
             feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+            comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
             user_role=Comment.USER_ROLE_STUDENT,
             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mommy.make('devilry_comment.CommentFile', comment=comment)
@@ -742,6 +748,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_no_studentfile(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -750,6 +757,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         comment = mommy.make(
             'devilry_group.GroupComment',
             feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+            comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
             user_role=Comment.USER_ROLE_STUDENT,
             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mommy.make('devilry_comment.CommentFile', comment=comment)
@@ -767,6 +775,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_studentcomment_groupcomment(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -774,6 +783,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -797,6 +807,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -808,11 +819,13 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'filters_string': 'activity-studentcomment'},
             requestuser=testuser)
+
         self.assertEqual(
             {'user1'},
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_no_studentcomment(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -820,6 +833,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -827,6 +841,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup2),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -843,6 +858,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_examinercomment_groupcomment(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -850,6 +866,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -873,6 +890,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -889,6 +907,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_no_examinercomment(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -896,6 +915,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -903,6 +923,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup2, shortname='user2')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup2),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -919,6 +940,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             set(self.__get_titles(mockresponse.selector)))
 
     def test_filter_activity_admincomment_groupcomment(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 
@@ -926,6 +948,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_ADMIN,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -949,6 +972,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         devilry_core_mommy_factories.candidate(group=testgroup1, shortname='user1')
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
+                   comment_type=ImageAnnotationComment.COMMENT_TYPE_IMAGEANNOTATION,
                    user_role=Comment.USER_ROLE_ADMIN,
                    visibility=ImageAnnotationComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -1135,4 +1159,202 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser)
         self.assertEqual(
             ['a', 'b'],
+            self.__get_titles(mockresponse.selector))
+
+    def test_examiner_count_2(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup1,
+                   relatedstudent__user__shortname='a',
+                   relatedstudent__user__fullname='A')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup2,
+                   relatedstudent__user__shortname='b',
+                   relatedstudent__user__fullname='B')
+        devilry_core_mommy_factories.examiner(group=testgroup1)
+        devilry_core_mommy_factories.examiner(group=testgroup1)
+        devilry_core_mommy_factories.examiner(group=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'filters_string': 'examinercount-2'},
+            requestuser=testuser)
+        self.assertEqual(
+            ['a'],
+            self.__get_titles(mockresponse.selector))
+
+    def test_examiner_count_2_and_candidates_count_2(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup1,
+                   relatedstudent__user__shortname='b',
+                   relatedstudent__user__fullname='A')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup2,
+                   relatedstudent__user__shortname='a',
+                   relatedstudent__user__fullname='B')
+        devilry_core_mommy_factories.examiner(group=testgroup1)
+        devilry_core_mommy_factories.examiner(group=testgroup2)
+        devilry_core_mommy_factories.examiner(group=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'filters_string': 'examinercount-2'},
+            requestuser=testuser)
+        self.assertEqual(
+            ['a'],
+            self.__get_titles(mockresponse.selector))
+
+    def test_examiner_count_5(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup1,
+                   relatedstudent__user__shortname='b',
+                   relatedstudent__user__fullname='A')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup2,
+                   relatedstudent__user__shortname='a',
+                   relatedstudent__user__fullname='B')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup2,
+                   relatedstudent__user__shortname='c',
+                   relatedstudent__user__fullname='C')
+        for index in range(5):
+            devilry_core_mommy_factories.examiner(group=testgroup1)
+            devilry_core_mommy_factories.examiner(group=testgroup2)
+        devilry_core_mommy_factories.examiner(group=testgroup3)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'filters_string': 'examinercount-5'},
+            requestuser=testuser)
+        self.assertEqual(
+            ['b', 'a'],
+            self.__get_titles(mockresponse.selector))
+
+    def test_examiner_count_filter_not_found(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup1,
+                   relatedstudent__user__shortname='b',
+                   relatedstudent__user__fullname='A')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup2,
+                   relatedstudent__user__shortname='a',
+                   relatedstudent__user__fullname='B')
+        devilry_core_mommy_factories.examiner(group=testgroup1)
+        devilry_core_mommy_factories.examiner(group=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'filters_string': 'examinercount-2'},
+            requestuser=testuser)
+        self.assertEqual(
+            [],
+            self.__get_titles(mockresponse.selector))
+
+    def test_candidate_count_filter_1(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup1,
+                   relatedstudent__user__shortname='b',
+                   relatedstudent__user__fullname='A')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup2,
+                   relatedstudent__user__shortname='a',
+                   relatedstudent__user__fullname='B')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup3,
+                   _quantity=3)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'filters_string': 'candidatecount-1'},
+            requestuser=testuser)
+        self.assertEqual(
+            ['b', 'a'],
+            self.__get_titles(mockresponse.selector))
+
+    def test_candidate_count_filter_4(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup1,
+                   relatedstudent__user__shortname='b',
+                   relatedstudent__user__fullname='A')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup1,
+                   _quantity=3)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup2,
+                   relatedstudent__user__shortname='a',
+                   relatedstudent__user__fullname='B')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup2,
+                   _quantity=3)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup3,
+                   _quantity=7)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'filters_string': 'candidatecount-4'},
+            requestuser=testuser)
+        self.assertEqual(
+            ['b', 'a'],
+            self.__get_titles(mockresponse.selector))
+
+    def test_candidate_count_filter_not_found(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup1,
+                   relatedstudent__user__shortname='b',
+                   relatedstudent__user__fullname='A')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup2,
+                   relatedstudent__user__shortname='a',
+                   relatedstudent__user__fullname='B')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup3,
+                   _quantity=3)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'filters_string': 'candidatecount-2'},
+            requestuser=testuser)
+        self.assertEqual(
+            [],
             self.__get_titles(mockresponse.selector))

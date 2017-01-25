@@ -137,21 +137,21 @@ class AssignmentQuerySet(models.QuerySet):
 
         Groups waiting for feedback is all groups where
         The deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
-        has expired, and the feedbackset does not have a
+        has expired, and the last feedbackset does not have a
         :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
         """
-        from devilry.devilry_group.models import FeedbackSet
         now = timezone.now()
         whenquery = models.Q(
-            assignmentgroups__feedbackset__is_last_in_group=True,
-            assignmentgroups__feedbackset__grading_published_datetime__isnull=True
+            assignmentgroups__cached_data__last_feedbackset__grading_published_datetime__isnull=True
         ) & (
             models.Q(
-                models.Q(assignmentgroups__feedbackset__deadline_datetime__lt=now),
-                ~models.Q(assignmentgroups__feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
+                ~models.Q(assignmentgroups__cached_data__last_feedbackset=models.F(
+                    'assignmentgroups__cached_data__first_feedbackset')),
+                models.Q(assignmentgroups__cached_data__last_feedbackset__deadline_datetime__lt=now),
             ) |
             models.Q(
-                assignmentgroups__feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
+                models.Q(assignmentgroups__cached_data__last_feedbackset=models.F(
+                    'assignmentgroups__cached_data__first_feedbackset')),
                 first_deadline__lt=now
             )
         )
@@ -382,8 +382,20 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                           'examiners after the first feedback is provided.')
         ),
     ]
+
     #: Dictionary for getting the :obj:`~.Assignment.ANONYMIZATIONMODE_CHOICES` descriptions
     ANONYMIZATIONMODE_CHOICES_DICT = dict(ANONYMIZATIONMODE_CHOICES)
+
+    #: Dictionary mapping :obj:`.Assignment.anonymizationmode` choices to short
+    #: labels.
+    ANONYMIZATIONMODE_CHOICES_SHORT_LABEL_DICT = {
+        ANONYMIZATIONMODE_OFF: pgettext_lazy(
+            'assignment anonymizationmode', 'off'),
+        ANONYMIZATIONMODE_SEMI_ANONYMOUS: pgettext_lazy(
+            'assignment anonymizationmode', 'semi anonymous'),
+        ANONYMIZATIONMODE_FULLY_ANONYMOUS: pgettext_lazy(
+            'assignment anonymizationmode', 'fully anonymized'),
+    }
 
     #: A choicefield that specifies how the assignment is anonymized (or not).
     #:

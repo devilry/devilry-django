@@ -2,21 +2,21 @@
 
 <span class="devilry-core-comment-summary">
     <span class="devilry-core-comment-summary-studentcomments">
-        {% blocktrans trimmed count commentcount=group.number_of_groupcomments_from_students %}
+        {% blocktrans trimmed count commentcount=group.cached_data.public_student_comment_count %}
             {{ commentcount }} comment from student.
         {% plural %}
             {{ commentcount }} comments from student.
         {% endblocktrans %}
     </span>
     <span class="devilry-core-comment-summary-studentfiles">
-        {% blocktrans trimmed count filecount=group.number_of_commentfiles_from_students %}
+        {% blocktrans trimmed count filecount=group.cached_data.public_student_file_upload_count %}
             {{ filecount }} file from student.
         {% plural %}
             {{ filecount }} files from student.
         {% endblocktrans %}
     </span>
     <span class="devilry-core-comment-summary-examinercomments">
-        {% blocktrans trimmed count commentcount=group.number_of_groupcomments_from_examiners %}
+        {% blocktrans trimmed count commentcount=group.cached_data.public_examiner_comment_count %}
             {{ commentcount }} comment from examiner.
         {% plural %}
             {{ commentcount }} comments from examiner.

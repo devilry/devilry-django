@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
-from datetime import timedelta
+
+from datetime import timedelta, datetime
 
 import mock
 from django import test
@@ -13,6 +14,7 @@ from model_mommy import mommy
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
 from devilry.devilry_comment.models import Comment
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import GroupComment
 from devilry.devilry_student.views.dashboard import dashboard
@@ -20,6 +22,9 @@ from devilry.devilry_student.views.dashboard import dashboard
 
 class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = dashboard.DashboardView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_title(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -286,6 +291,25 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertFalse(
             mockresponse.selector.exists('.devilry-cradmin-groupitemvalue-examiners'))
 
+    def test_grouplist_deadline_sanity(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make(
+            'core.AssignmentGroup',
+            parentnode=mommy.make_recipe(
+                'devilry.apps.core.assignment_activeperiod_start',
+                first_deadline=datetime(2000, 1, 15, 12, 0)))
+        mommy.make('core.Candidate',
+                   relatedstudent__user=testuser,
+                   assignment_group=testgroup)
+        with self.settings(DATETIME_FORMAT='Y-m-d H:i', USE_L10N=False):
+            mockresponse = self.mock_http200_getrequest_htmls(
+                    requestuser=testuser)
+        self.assertEqual(
+            '2000-01-15 12:00',
+            mockresponse.selector.one(
+                    '.devilry-cradmin-groupitemvalue-deadline__datetime').alltext_normalized
+        )
+
     def test_grouplist_status_waiting_for_deliveries_sanity(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testgroup = mommy.make('core.AssignmentGroup',
@@ -294,9 +318,9 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=testgroup, grading_points=3, is_last_in_group=False)
+            group=testgroup, grading_points=3)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
-            group=testgroup, is_last_in_group=True,
+            group=testgroup,
             deadline_datetime=timezone.now() + timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=testuser)
@@ -318,9 +342,9 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=testgroup, grading_points=3, is_last_in_group=False)
+            group=testgroup, grading_points=3)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
-            group=testgroup, is_last_in_group=True,
+            group=testgroup,
             deadline_datetime=timezone.now() - timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=testuser)
@@ -342,9 +366,9 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user=testuser,
                    assignment_group=testgroup)
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
-            group=testgroup, grading_points=3, is_last_in_group=False)
+            group=testgroup, grading_points=3)
         devilry_group_mommy_factories.feedbackset_new_attempt_published(
-            group=testgroup, is_last_in_group=True, grading_points=2)
+            group=testgroup, grading_points=2)
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=testuser)
         self.assertFalse(
@@ -369,24 +393,27 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_STUDENT,
                    _quantity=2)
         mommy.make('devilry_comment.CommentFile',
                    comment=mommy.make('devilry_group.GroupComment',
                                       feedback_set=feedbackset,
                                       visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                                      comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                                       user_role=Comment.USER_ROLE_STUDENT))
         mommy.make('devilry_group.GroupComment',
                    feedback_set=feedbackset,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_EXAMINER,
                    _quantity=5)
         mommy.make('devilry_group.GroupComment',  # Should not be part of count
                    feedback_set=feedbackset,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                   comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_EXAMINER)
-        mockresponse = self.mock_http200_getrequest_htmls(
-                requestuser=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 '3 comments from student. 1 file from student. 5 comments from examiner.',
                 mockresponse.selector.one(

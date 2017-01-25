@@ -66,6 +66,7 @@ Apps
     devilry_qualifiesforexam2
     devilry_gradingsystem
     devilry_search
+    devilry_dbcache
     devilry_account
     devilry_group
     devilry_compressionutil

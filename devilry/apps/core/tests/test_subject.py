@@ -197,25 +197,25 @@ class TestSubjectQuerySetAnnotateWithHasActivePeriod(test.TestCase):
 class TestSubjectQuerySetPrefetchActivePeriodobjects(test.TestCase):
     def test_no_periods(self):
         mommy.make('core.Subject')
-        annotated_subject = Subject.objects.prefetch_active_periodobjects().first()
+        annotated_subject = Subject.objects.prefetch_active_period_objects().first()
         self.assertEqual([], annotated_subject.active_period_objects)
 
     def test_only_old_periods(self):
         testsubject = mommy.make('core.Subject')
         mommy.make_recipe('devilry.apps.core.period_old', parentnode=testsubject)
-        annotated_subject = Subject.objects.prefetch_active_periodobjects().first()
+        annotated_subject = Subject.objects.prefetch_active_period_objects().first()
         self.assertEqual([], annotated_subject.active_period_objects)
 
     def test_only_future_periods(self):
         testsubject = mommy.make('core.Subject')
         mommy.make_recipe('devilry.apps.core.period_future', parentnode=testsubject)
-        annotated_subject = Subject.objects.prefetch_active_periodobjects().first()
+        annotated_subject = Subject.objects.prefetch_active_period_objects().first()
         self.assertEqual([], annotated_subject.active_period_objects)
 
     def test_has_active_period(self):
         testsubject = mommy.make('core.Subject')
         testperiod = mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject)
-        annotated_subject = Subject.objects.prefetch_active_periodobjects().first()
+        annotated_subject = Subject.objects.prefetch_active_period_objects().first()
         self.assertEqual([testperiod],
                          annotated_subject.active_period_objects)
 
@@ -226,7 +226,7 @@ class TestSubjectQuerySetPrefetchActivePeriodobjects(test.TestCase):
                                         start_time=ACTIVE_PERIOD_START + timedelta(days=60))
         testperiod2 = mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject,
                                         start_time=ACTIVE_PERIOD_START + timedelta(days=30))
-        annotated_subject = Subject.objects.prefetch_active_periodobjects().first()
+        annotated_subject = Subject.objects.prefetch_active_period_objects().first()
         self.assertEqual([testperiod1, testperiod2, testperiod3],
                          annotated_subject.active_period_objects)
 
@@ -238,16 +238,16 @@ class TestSubjectQuerySetPrefetchActivePeriodobjects(test.TestCase):
         mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject,
                           start_time=ACTIVE_PERIOD_START + timedelta(days=60))
         with self.assertNumQueries(2):
-            annotated_subject = Subject.objects.prefetch_active_periodobjects().first()
+            annotated_subject = Subject.objects.prefetch_active_period_objects().first()
             str(annotated_subject.active_period_objects[0].short_name)
             str(annotated_subject.active_period_objects[1].short_name)
             str(annotated_subject.active_period_objects[2].short_name)
 
-    def test_last_active_period_not_using_prefetch_active_periodobjects(self):
+    def test_last_active_period_not_using_prefetch_active_period_objects(self):
         testsubject = mommy.make('core.Subject')
         with self.assertRaisesMessage(AttributeError,
                                       'The last_active_period property requires '
-                                      'SubjectQuerySet.prefetch_active_periodobjects()'):
+                                      'SubjectQuerySet.prefetch_active_period_objects()'):
             str(testsubject.last_active_period)
 
     def test_last_active_period(self):
@@ -257,5 +257,5 @@ class TestSubjectQuerySetPrefetchActivePeriodobjects(test.TestCase):
                                         start_time=ACTIVE_PERIOD_START + timedelta(days=60))
         mommy.make_recipe('devilry.apps.core.period_active', parentnode=testsubject,
                           start_time=ACTIVE_PERIOD_START + timedelta(days=30))
-        annotated_subject = Subject.objects.prefetch_active_periodobjects().first()
+        annotated_subject = Subject.objects.prefetch_active_period_objects().first()
         self.assertEqual(testperiod3, annotated_subject.last_active_period)

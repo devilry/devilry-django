@@ -1,36 +1,50 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-# Python imports
-import json
 import datetime
+import json
 from xml.sax.saxutils import quoteattr
 
-# Django imports
+from crispy_forms import layout
 from django import forms
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
-
-# Devilry/cradmin imports
-from devilry.devilry_group.feedbackfeed_builder import builder_base
-from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_timeline
-from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
-from devilry.devilry_group import models as group_models
-from devilry.devilry_comment import models as comment_models
-from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_timelinebuilder
-from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_sidebarbuilder
-from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
+from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
+from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.viewhelpers import create
 
-# 3rd party imports
-from crispy_forms import layout
+from devilry.devilry_comment import models as comment_models
+from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
+from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_timeline
+from devilry.devilry_group import models as group_models
+from devilry.devilry_group.feedbackfeed_builder import builder_base
+from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_sidebarbuilder
+from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_timelinebuilder
 
 
 class GroupCommentForm(forms.ModelForm):
     """
-    Model form for :class:`~devilry.apps.core.models.AssignmentGroup`
+    Abstract class for creating a :obj:`~.devilry.devilry_group.models.GroupComment`.
+
+    Defines the attributes for the ``GroupComment`` form.
+
+    Examples:
+
+        If you want to provide a check on the form data before save, just subclass this and
+        add your custom clean logic::
+
+            class StandardGroupCommentForm(GroupCommentForm):
+
+                def clean(self):
+                    super(GroupCommentForm, self).clean()
+                    if len(self.cleaned_data['text']) == 0 and self.cleaned_data['temporary_file_collection_id'] is None:
+                        raise ValidationError({
+                          'text': ugettext_lazy('A comment must have either text or a file attached, or both.'
+                                                ' An empty comment is not allowed.')
+                        })
+
     """
     class Meta:
         fields = ['text']
@@ -45,6 +59,21 @@ class GroupCommentForm(forms.ModelForm):
         return []
 
 
+class StandardGroupCommentForm(GroupCommentForm):
+    """
+    This should be used by all views that requires the comment to either contain a file/files OR text.
+
+    Failing to provide file/files or text will result in an error message. This is handled in clean.
+    """
+    def clean(self):
+        super(GroupCommentForm, self).clean()
+        if len(self.cleaned_data['text']) == 0 and self.cleaned_data['temporary_file_collection_id'] is None:
+            raise ValidationError({
+              'text': ugettext_lazy('A comment must have either text or a file attached, or both.'
+                                    ' An empty comment is not allowed.')
+            })
+
+
 class FeedbackFeedBaseView(create.CreateView):
     """
     Base feedbackfeed view.
@@ -55,7 +84,8 @@ class FeedbackFeedBaseView(create.CreateView):
     template_name = "devilry_group/feedbackfeed.django.html"
     model = group_models.GroupComment
     form_attributes = {
-        'django-cradmin-bulkfileupload-form': ''
+        'django-cradmin-bulkfileupload-form': '',
+        'django-cradmin-bulkfileupload-form-prevent-window-dragdrop': 'true'
     }
 
     submit_use_label = _('Post comment')
@@ -74,7 +104,7 @@ class FeedbackFeedBaseView(create.CreateView):
         raise NotImplementedError('Must be implemented in subclass')
 
     def get_form_class(self):
-        return GroupCommentForm
+        return StandardGroupCommentForm
 
     def get_form_kwargs(self):
         kwargs = super(FeedbackFeedBaseView, self).get_form_kwargs()
@@ -99,13 +129,15 @@ class FeedbackFeedBaseView(create.CreateView):
 
     def __build_sidebar(self, feedbackset_queryset):
         """
+        Building the sidebar that includes the files for each comment, and comments for each
+        FeedbackSet.
 
         Returns:
             :obj:`devilry.devilry_group.feedbackfeed_builder.FeedbackFeedSidebarBuilder`
         """
         sidebar_builder = feedbackfeed_sidebarbuilder.FeedbackFeedSidebarBuilder(
-            feedbacksets=feedbackset_queryset
-        )
+            feedbacksets=feedbackset_queryset,
+            group=self.request.cradmin_role)
         sidebar_builder.build()
         return sidebar_builder
 
@@ -170,8 +202,40 @@ class FeedbackFeedBaseView(create.CreateView):
     def get_buttons(self):
         return []
 
+    def get_form_heading_text_template_name(self):
+        """
+        Get template for rendering a heading text in the form.
+
+        Override this to provide an explanatory text added to the heading of the form
+        for posting a comment. This should include some information about what happens
+        when a comment is posted.
+
+        Returns:
+            (str): a string or path to html template or None.
+        """
+        return None
+
+    def _get_form_heading_text(self):
+        """
+        Loads information text for the comment form.
+
+        Returns:
+            (str): a rendered string(with render_to_string()) or None.
+        """
+        template_name = self.get_form_heading_text_template_name()
+        if template_name:
+            return render_to_string(template_name=template_name)
+        else:
+            return None
+
     def get_field_layout(self):
         field_layout = []
+        heading_text = self._get_form_heading_text()
+        if heading_text:
+            field_layout.append(layout.Div(
+                layout.HTML(heading_text),
+                css_class='devilry-group-feedbackfeed-form-heading'
+            ))
         field_layout.extend(self.get_form_class().get_field_layout())
         field_layout.append('text')
         field_layout.append(
@@ -180,22 +244,28 @@ class FeedbackFeedBaseView(create.CreateView):
                     'devilry_group/include/fileupload.django.html',
                     {
                         "apiparameters": quoteattr(json.dumps({
+                            "autosubmit": False,
+                            "uploadapiurl": reverse('cradmin_temporary_file_upload_api'),
                             "unique_filenames": True,
-                            "max_filename_length": comment_models.CommentFile.MAX_FILENAME_LENGTH
+                            "max_filename_length": comment_models.CommentFile.MAX_FILENAME_LENGTH,
+                            "errormessage503": "Server timeout while uploading the file. "
+                                               "This may be caused by a poor upload link and/or a too large file.",
+                            "apiparameters": {
+                                "singlemode": False,
+                            },
                         })),
                         "hiddenfieldname": "temporary_file_collection_id",
-                        "apiurl": reverse('cradmin_temporary_file_upload_api')
+
                     })),
                 # css_class='panel-footer'
             ))
         return [
-            layout.Fieldset(
-                '',
+            layout.Div(
                 layout.Div(
                     *field_layout
                 ),
                 layout.Div(
-                    layout.Div(*self.get_buttons()),
+                    *self.get_buttons(),
                     css_class="text-right"
                 ),
                 css_class='comment-form-container'
@@ -217,19 +287,21 @@ class FeedbackFeedBaseView(create.CreateView):
 
     def save_object(self, form, commit=False):
         """
-        How post of the should be handled. This can be handled more specifically in subclasses.
+        How post of the comment should be handled. This can be handled more specifically in subclasses.
 
         Add call to super in the subclass implementation on override.
 
         Args:
-            form (GroupCommentForm): Form thats passed on post.
+            form (GroupCommentForm): Posted form.
             commit (bool): If form-object(:class:`~devilry.devilry_group.models.GroupComment`) should be saved.
 
         Returns:
             GroupComment: The form-object :class:`~devilry.devilry_group.models.GroupComment`.
         """
-        obj = super(FeedbackFeedBaseView, self,).save_object(form, commit=commit)
-        return obj
+        groupcomment = super(FeedbackFeedBaseView, self,).save_object(form, commit=commit)
+        if commit:
+            self._convert_temporary_files_to_comment_files(form, groupcomment)
+        return groupcomment
 
     def get_collectionqueryset(self):
         """
@@ -263,10 +335,12 @@ class FeedbackFeedBaseView(create.CreateView):
         except TemporaryFileCollection.DoesNotExist:
             return False
 
+        # self._set_archive_meta_ready_for_delete(feedback_set=groupcomment.feedback_set)
+
         for temporaryfile in temporaryfilecollection.files.all():
             groupcomment.add_commentfile_from_temporary_file(tempfile=temporaryfile)
 
         return True
 
     def get_success_message(self, object):
-        return None
+        return _('Comment added!')

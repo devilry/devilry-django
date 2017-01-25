@@ -35,6 +35,22 @@
         color: @text-color;
       }
     }
+
+    &.btn-danger {
+      background: @btn-danger-bg;
+      border-color: @btn-danger-border;
+      color: @btn-danger-color;
+      &:hover, &:focus {
+        background: @btn-danger-bg;
+        border-color: @btn-danger-border;
+        color: @btn-danger-color;
+        @media (min-width: @screen-sm-min) {
+          background: @cradmin-btn-danger-hover-bg;
+          border-color: @cradmin-btn-danger-hover-border;
+          color: @cradmin-btn-danger-hover-color;
+        }
+      }
+    }
   }
 
   a.django-cradmin-listbuilder-itemframe-link {
@@ -81,6 +97,31 @@
     }
   }
 
+  .devilry-tabs {
+    &__tab-list {
+      border-bottom-color: @color-whiten;
+    }
+
+    &__tab {
+      background: #fff;
+      color: @text-color;
+      text-decoration: none;
+      &:hover, &:focus {
+        text-decoration: none;
+        background: @color-bright;
+        color: @text-color;
+      }
+
+      &--active {
+        &,
+        &:hover,
+        &:focus {
+          background: @color-whiten;
+          color: @text-color;
+        }
+      }
+    }
+  }
 }
 
 .devilry-body-admin {
@@ -91,6 +132,11 @@
           @devilry-brand-color-admin-light2,
           @devilry-brand-color-admin-light3
   );
+  .devilry-core-groupstatus {
+    &.devilry-core-groupstatus-waiting-for-feedback {
+      font-weight: bold;
+    }
+  }
 }
 
 .devilry-body-examiner {
@@ -101,6 +147,11 @@
           @devilry-brand-color-examiner-light2,
           @devilry-brand-color-examiner-light3
   );
+  .devilry-core-groupstatus {
+    &.devilry-core-groupstatus-waiting-for-feedback {
+      font-weight: bold;
+    }
+  }
 }
 
 .devilry-body-student {
@@ -111,4 +162,10 @@
           @devilry-brand-color-student-light2,
           @devilry-brand-color-student-light3
   );
+
+  .devilry-core-groupstatus {
+    &.devilry-core-groupstatus-waiting-for-deliveries {
+      font-weight: bold;
+    }
+  }
 }

@@ -39,7 +39,7 @@ CREATE TABLE auth_group (
 );
 
 
-ALTER TABLE auth_group OWNER TO dbdev;
+ALTER TABLE public.auth_group OWNER TO dbdev;
 
 --
 -- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -53,7 +53,7 @@ CREATE SEQUENCE auth_group_id_seq
     CACHE 1;
 
 
-ALTER TABLE auth_group_id_seq OWNER TO dbdev;
+ALTER TABLE public.auth_group_id_seq OWNER TO dbdev;
 
 --
 -- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -73,7 +73,7 @@ CREATE TABLE auth_group_permissions (
 );
 
 
-ALTER TABLE auth_group_permissions OWNER TO dbdev;
+ALTER TABLE public.auth_group_permissions OWNER TO dbdev;
 
 --
 -- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -87,7 +87,7 @@ CREATE SEQUENCE auth_group_permissions_id_seq
     CACHE 1;
 
 
-ALTER TABLE auth_group_permissions_id_seq OWNER TO dbdev;
+ALTER TABLE public.auth_group_permissions_id_seq OWNER TO dbdev;
 
 --
 -- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -108,7 +108,7 @@ CREATE TABLE auth_permission (
 );
 
 
-ALTER TABLE auth_permission OWNER TO dbdev;
+ALTER TABLE public.auth_permission OWNER TO dbdev;
 
 --
 -- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -122,7 +122,7 @@ CREATE SEQUENCE auth_permission_id_seq
     CACHE 1;
 
 
-ALTER TABLE auth_permission_id_seq OWNER TO dbdev;
+ALTER TABLE public.auth_permission_id_seq OWNER TO dbdev;
 
 --
 -- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -165,7 +165,7 @@ CREATE TABLE core_assignment (
 );
 
 
-ALTER TABLE core_assignment OWNER TO dbdev;
+ALTER TABLE public.core_assignment OWNER TO dbdev;
 
 --
 -- Name: core_assignment_admins; Type: TABLE; Schema: public; Owner: dbdev; Tablespace: 
@@ -178,7 +178,7 @@ CREATE TABLE core_assignment_admins (
 );
 
 
-ALTER TABLE core_assignment_admins OWNER TO dbdev;
+ALTER TABLE public.core_assignment_admins OWNER TO dbdev;
 
 --
 -- Name: core_assignment_admins_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -192,7 +192,7 @@ CREATE SEQUENCE core_assignment_admins_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_assignment_admins_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_assignment_admins_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_assignment_admins_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -213,7 +213,7 @@ CREATE SEQUENCE core_assignment_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_assignment_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_assignment_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_assignment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -241,7 +241,7 @@ CREATE TABLE core_assignmentgroup (
 );
 
 
-ALTER TABLE core_assignmentgroup OWNER TO dbdev;
+ALTER TABLE public.core_assignmentgroup OWNER TO dbdev;
 
 --
 -- Name: core_assignmentgroup_examiners; Type: TABLE; Schema: public; Owner: dbdev; Tablespace: 
@@ -255,7 +255,7 @@ CREATE TABLE core_assignmentgroup_examiners (
 );
 
 
-ALTER TABLE core_assignmentgroup_examiners OWNER TO dbdev;
+ALTER TABLE public.core_assignmentgroup_examiners OWNER TO dbdev;
 
 --
 -- Name: core_assignmentgroup_examiners_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -269,7 +269,7 @@ CREATE SEQUENCE core_assignmentgroup_examiners_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_assignmentgroup_examiners_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_assignmentgroup_examiners_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_assignmentgroup_examiners_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -290,7 +290,7 @@ CREATE SEQUENCE core_assignmentgroup_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_assignmentgroup_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_assignmentgroup_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_assignmentgroup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -310,7 +310,7 @@ CREATE TABLE core_assignmentgrouptag (
 );
 
 
-ALTER TABLE core_assignmentgrouptag OWNER TO dbdev;
+ALTER TABLE public.core_assignmentgrouptag OWNER TO dbdev;
 
 --
 -- Name: core_assignmentgrouptag_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -324,7 +324,7 @@ CREATE SEQUENCE core_assignmentgrouptag_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_assignmentgrouptag_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_assignmentgrouptag_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_assignmentgrouptag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -346,7 +346,7 @@ CREATE TABLE core_candidate (
 );
 
 
-ALTER TABLE core_candidate OWNER TO dbdev;
+ALTER TABLE public.core_candidate OWNER TO dbdev;
 
 --
 -- Name: core_candidate_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -360,7 +360,7 @@ CREATE SEQUENCE core_candidate_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_candidate_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_candidate_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_candidate_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -384,7 +384,7 @@ CREATE TABLE core_deadline (
 );
 
 
-ALTER TABLE core_deadline OWNER TO dbdev;
+ALTER TABLE public.core_deadline OWNER TO dbdev;
 
 --
 -- Name: core_deadline_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -398,7 +398,7 @@ CREATE SEQUENCE core_deadline_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_deadline_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_deadline_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_deadline_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -427,7 +427,7 @@ CREATE TABLE core_delivery (
 );
 
 
-ALTER TABLE core_delivery OWNER TO dbdev;
+ALTER TABLE public.core_delivery OWNER TO dbdev;
 
 --
 -- Name: core_delivery_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -441,7 +441,7 @@ CREATE SEQUENCE core_delivery_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_delivery_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_delivery_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_delivery_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -462,7 +462,7 @@ CREATE TABLE core_devilryuserprofile (
 );
 
 
-ALTER TABLE core_devilryuserprofile OWNER TO dbdev;
+ALTER TABLE public.core_devilryuserprofile OWNER TO dbdev;
 
 --
 -- Name: core_devilryuserprofile_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -476,7 +476,7 @@ CREATE SEQUENCE core_devilryuserprofile_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_devilryuserprofile_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_devilryuserprofile_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_devilryuserprofile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -497,7 +497,7 @@ CREATE TABLE core_filemeta (
 );
 
 
-ALTER TABLE core_filemeta OWNER TO dbdev;
+ALTER TABLE public.core_filemeta OWNER TO dbdev;
 
 --
 -- Name: core_filemeta_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -511,7 +511,7 @@ CREATE SEQUENCE core_filemeta_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_filemeta_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_filemeta_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_filemeta_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -535,7 +535,7 @@ CREATE TABLE core_groupinvite (
 );
 
 
-ALTER TABLE core_groupinvite OWNER TO dbdev;
+ALTER TABLE public.core_groupinvite OWNER TO dbdev;
 
 --
 -- Name: core_groupinvite_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -549,7 +549,7 @@ CREATE SEQUENCE core_groupinvite_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_groupinvite_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_groupinvite_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_groupinvite_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -571,7 +571,7 @@ CREATE TABLE core_node (
 );
 
 
-ALTER TABLE core_node OWNER TO dbdev;
+ALTER TABLE public.core_node OWNER TO dbdev;
 
 --
 -- Name: core_node_admins; Type: TABLE; Schema: public; Owner: dbdev; Tablespace: 
@@ -584,7 +584,7 @@ CREATE TABLE core_node_admins (
 );
 
 
-ALTER TABLE core_node_admins OWNER TO dbdev;
+ALTER TABLE public.core_node_admins OWNER TO dbdev;
 
 --
 -- Name: core_node_admins_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -598,7 +598,7 @@ CREATE SEQUENCE core_node_admins_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_node_admins_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_node_admins_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_node_admins_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -619,7 +619,7 @@ CREATE SEQUENCE core_node_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_node_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_node_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_node_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -643,7 +643,7 @@ CREATE TABLE core_period (
 );
 
 
-ALTER TABLE core_period OWNER TO dbdev;
+ALTER TABLE public.core_period OWNER TO dbdev;
 
 --
 -- Name: core_period_admins; Type: TABLE; Schema: public; Owner: dbdev; Tablespace: 
@@ -656,7 +656,7 @@ CREATE TABLE core_period_admins (
 );
 
 
-ALTER TABLE core_period_admins OWNER TO dbdev;
+ALTER TABLE public.core_period_admins OWNER TO dbdev;
 
 --
 -- Name: core_period_admins_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -670,7 +670,7 @@ CREATE SEQUENCE core_period_admins_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_period_admins_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_period_admins_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_period_admins_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -691,7 +691,7 @@ CREATE SEQUENCE core_period_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_period_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_period_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_period_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -713,7 +713,7 @@ CREATE TABLE core_periodapplicationkeyvalue (
 );
 
 
-ALTER TABLE core_periodapplicationkeyvalue OWNER TO dbdev;
+ALTER TABLE public.core_periodapplicationkeyvalue OWNER TO dbdev;
 
 --
 -- Name: core_periodapplicationkeyvalue_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -727,7 +727,7 @@ CREATE SEQUENCE core_periodapplicationkeyvalue_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_periodapplicationkeyvalue_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_periodapplicationkeyvalue_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_periodapplicationkeyvalue_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -751,7 +751,7 @@ CREATE TABLE core_pointrangetograde (
 );
 
 
-ALTER TABLE core_pointrangetograde OWNER TO dbdev;
+ALTER TABLE public.core_pointrangetograde OWNER TO dbdev;
 
 --
 -- Name: core_pointrangetograde_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -765,7 +765,7 @@ CREATE SEQUENCE core_pointrangetograde_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_pointrangetograde_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_pointrangetograde_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_pointrangetograde_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -785,7 +785,7 @@ CREATE TABLE core_pointtogrademap (
 );
 
 
-ALTER TABLE core_pointtogrademap OWNER TO dbdev;
+ALTER TABLE public.core_pointtogrademap OWNER TO dbdev;
 
 --
 -- Name: core_pointtogrademap_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -799,7 +799,7 @@ CREATE SEQUENCE core_pointtogrademap_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_pointtogrademap_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_pointtogrademap_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_pointtogrademap_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -822,7 +822,7 @@ CREATE TABLE core_relatedexaminer (
 );
 
 
-ALTER TABLE core_relatedexaminer OWNER TO dbdev;
+ALTER TABLE public.core_relatedexaminer OWNER TO dbdev;
 
 --
 -- Name: core_relatedexaminer_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -836,7 +836,7 @@ CREATE SEQUENCE core_relatedexaminer_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_relatedexaminer_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_relatedexaminer_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_relatedexaminer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -856,7 +856,7 @@ CREATE TABLE core_relatedexaminersyncsystemtag (
 );
 
 
-ALTER TABLE core_relatedexaminersyncsystemtag OWNER TO dbdev;
+ALTER TABLE public.core_relatedexaminersyncsystemtag OWNER TO dbdev;
 
 --
 -- Name: core_relatedexaminersyncsystemtag_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -870,7 +870,7 @@ CREATE SEQUENCE core_relatedexaminersyncsystemtag_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_relatedexaminersyncsystemtag_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_relatedexaminersyncsystemtag_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_relatedexaminersyncsystemtag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -894,7 +894,7 @@ CREATE TABLE core_relatedstudent (
 );
 
 
-ALTER TABLE core_relatedstudent OWNER TO dbdev;
+ALTER TABLE public.core_relatedstudent OWNER TO dbdev;
 
 --
 -- Name: core_relatedstudent_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -908,7 +908,7 @@ CREATE SEQUENCE core_relatedstudent_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_relatedstudent_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_relatedstudent_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_relatedstudent_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -931,7 +931,7 @@ CREATE TABLE core_relatedstudentkeyvalue (
 );
 
 
-ALTER TABLE core_relatedstudentkeyvalue OWNER TO dbdev;
+ALTER TABLE public.core_relatedstudentkeyvalue OWNER TO dbdev;
 
 --
 -- Name: core_relatedstudentkeyvalue_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -945,7 +945,7 @@ CREATE SEQUENCE core_relatedstudentkeyvalue_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_relatedstudentkeyvalue_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_relatedstudentkeyvalue_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_relatedstudentkeyvalue_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -965,7 +965,7 @@ CREATE TABLE core_relatedstudentsyncsystemtag (
 );
 
 
-ALTER TABLE core_relatedstudentsyncsystemtag OWNER TO dbdev;
+ALTER TABLE public.core_relatedstudentsyncsystemtag OWNER TO dbdev;
 
 --
 -- Name: core_relatedstudentsyncsystemtag_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -979,7 +979,7 @@ CREATE SEQUENCE core_relatedstudentsyncsystemtag_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_relatedstudentsyncsystemtag_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_relatedstudentsyncsystemtag_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_relatedstudentsyncsystemtag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1005,7 +1005,7 @@ CREATE TABLE core_staticfeedback (
 );
 
 
-ALTER TABLE core_staticfeedback OWNER TO dbdev;
+ALTER TABLE public.core_staticfeedback OWNER TO dbdev;
 
 --
 -- Name: core_staticfeedback_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1019,7 +1019,7 @@ CREATE SEQUENCE core_staticfeedback_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_staticfeedback_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_staticfeedback_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_staticfeedback_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1040,7 +1040,7 @@ CREATE TABLE core_staticfeedbackfileattachment (
 );
 
 
-ALTER TABLE core_staticfeedbackfileattachment OWNER TO dbdev;
+ALTER TABLE public.core_staticfeedbackfileattachment OWNER TO dbdev;
 
 --
 -- Name: core_staticfeedbackfileattachment_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1054,7 +1054,7 @@ CREATE SEQUENCE core_staticfeedbackfileattachment_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_staticfeedbackfileattachment_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_staticfeedbackfileattachment_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_staticfeedbackfileattachment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1076,7 +1076,7 @@ CREATE TABLE core_subject (
 );
 
 
-ALTER TABLE core_subject OWNER TO dbdev;
+ALTER TABLE public.core_subject OWNER TO dbdev;
 
 --
 -- Name: core_subject_admins; Type: TABLE; Schema: public; Owner: dbdev; Tablespace: 
@@ -1089,7 +1089,7 @@ CREATE TABLE core_subject_admins (
 );
 
 
-ALTER TABLE core_subject_admins OWNER TO dbdev;
+ALTER TABLE public.core_subject_admins OWNER TO dbdev;
 
 --
 -- Name: core_subject_admins_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1103,7 +1103,7 @@ CREATE SEQUENCE core_subject_admins_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_subject_admins_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_subject_admins_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_subject_admins_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1124,7 +1124,7 @@ CREATE SEQUENCE core_subject_id_seq
     CACHE 1;
 
 
-ALTER TABLE core_subject_id_seq OWNER TO dbdev;
+ALTER TABLE public.core_subject_id_seq OWNER TO dbdev;
 
 --
 -- Name: core_subject_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1151,7 +1151,7 @@ CREATE TABLE cradmin_generic_token_with_metadata_generictokenwithmetadata (
 );
 
 
-ALTER TABLE cradmin_generic_token_with_metadata_generictokenwithmetadata OWNER TO dbdev;
+ALTER TABLE public.cradmin_generic_token_with_metadata_generictokenwithmetadata OWNER TO dbdev;
 
 --
 -- Name: cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1165,7 +1165,7 @@ CREATE SEQUENCE cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq
     CACHE 1;
 
 
-ALTER TABLE cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq OWNER TO dbdev;
+ALTER TABLE public.cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq OWNER TO dbdev;
 
 --
 -- Name: cradmin_generic_token_with_metadata_generictokenwithmeta_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1187,7 +1187,7 @@ CREATE TABLE cradmin_temporaryfileuploadstore_temporaryfile (
 );
 
 
-ALTER TABLE cradmin_temporaryfileuploadstore_temporaryfile OWNER TO dbdev;
+ALTER TABLE public.cradmin_temporaryfileuploadstore_temporaryfile OWNER TO dbdev;
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfile_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1201,7 +1201,7 @@ CREATE SEQUENCE cradmin_temporaryfileuploadstore_temporaryfile_id_seq
     CACHE 1;
 
 
-ALTER TABLE cradmin_temporaryfileuploadstore_temporaryfile_id_seq OWNER TO dbdev;
+ALTER TABLE public.cradmin_temporaryfileuploadstore_temporaryfile_id_seq OWNER TO dbdev;
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1229,7 +1229,7 @@ CREATE TABLE cradmin_temporaryfileuploadstore_temporaryfilecollection (
 );
 
 
-ALTER TABLE cradmin_temporaryfileuploadstore_temporaryfilecollection OWNER TO dbdev;
+ALTER TABLE public.cradmin_temporaryfileuploadstore_temporaryfilecollection OWNER TO dbdev;
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1243,7 +1243,7 @@ CREATE SEQUENCE cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq
     CACHE 1;
 
 
-ALTER TABLE cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq OWNER TO dbdev;
+ALTER TABLE public.cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq OWNER TO dbdev;
 
 --
 -- Name: cradmin_temporaryfileuploadstore_temporaryfilecollection_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1263,7 +1263,7 @@ CREATE TABLE devilry_account_periodpermissiongroup (
 );
 
 
-ALTER TABLE devilry_account_periodpermissiongroup OWNER TO dbdev;
+ALTER TABLE public.devilry_account_periodpermissiongroup OWNER TO dbdev;
 
 --
 -- Name: devilry_account_periodpermissiongroup_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1277,7 +1277,7 @@ CREATE SEQUENCE devilry_account_periodpermissiongroup_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_account_periodpermissiongroup_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_account_periodpermissiongroup_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_account_periodpermissiongroup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1301,7 +1301,7 @@ CREATE TABLE devilry_account_permissiongroup (
 );
 
 
-ALTER TABLE devilry_account_permissiongroup OWNER TO dbdev;
+ALTER TABLE public.devilry_account_permissiongroup OWNER TO dbdev;
 
 --
 -- Name: devilry_account_permissiongroup_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1315,7 +1315,7 @@ CREATE SEQUENCE devilry_account_permissiongroup_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_account_permissiongroup_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_account_permissiongroup_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_account_permissiongroup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1335,7 +1335,7 @@ CREATE TABLE devilry_account_permissiongroupuser (
 );
 
 
-ALTER TABLE devilry_account_permissiongroupuser OWNER TO dbdev;
+ALTER TABLE public.devilry_account_permissiongroupuser OWNER TO dbdev;
 
 --
 -- Name: devilry_account_permissiongroupuser_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1349,7 +1349,7 @@ CREATE SEQUENCE devilry_account_permissiongroupuser_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_account_permissiongroupuser_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_account_permissiongroupuser_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_account_permissiongroupuser_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1369,7 +1369,7 @@ CREATE TABLE devilry_account_subjectpermissiongroup (
 );
 
 
-ALTER TABLE devilry_account_subjectpermissiongroup OWNER TO dbdev;
+ALTER TABLE public.devilry_account_subjectpermissiongroup OWNER TO dbdev;
 
 --
 -- Name: devilry_account_subjectpermissiongroup_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1383,7 +1383,7 @@ CREATE SEQUENCE devilry_account_subjectpermissiongroup_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_account_subjectpermissiongroup_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_account_subjectpermissiongroup_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_account_subjectpermissiongroup_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1411,7 +1411,7 @@ CREATE TABLE devilry_account_user (
 );
 
 
-ALTER TABLE devilry_account_user OWNER TO dbdev;
+ALTER TABLE public.devilry_account_user OWNER TO dbdev;
 
 --
 -- Name: devilry_account_user_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1425,7 +1425,7 @@ CREATE SEQUENCE devilry_account_user_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_account_user_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_account_user_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_account_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1449,7 +1449,7 @@ CREATE TABLE devilry_account_useremail (
 );
 
 
-ALTER TABLE devilry_account_useremail OWNER TO dbdev;
+ALTER TABLE public.devilry_account_useremail OWNER TO dbdev;
 
 --
 -- Name: devilry_account_useremail_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1463,7 +1463,7 @@ CREATE SEQUENCE devilry_account_useremail_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_account_useremail_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_account_useremail_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_account_useremail_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1486,7 +1486,7 @@ CREATE TABLE devilry_account_username (
 );
 
 
-ALTER TABLE devilry_account_username OWNER TO dbdev;
+ALTER TABLE public.devilry_account_username OWNER TO dbdev;
 
 --
 -- Name: devilry_account_username_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1500,7 +1500,7 @@ CREATE SEQUENCE devilry_account_username_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_account_username_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_account_username_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_account_username_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1526,7 +1526,7 @@ CREATE TABLE devilry_comment_comment (
 );
 
 
-ALTER TABLE devilry_comment_comment OWNER TO dbdev;
+ALTER TABLE public.devilry_comment_comment OWNER TO dbdev;
 
 --
 -- Name: devilry_comment_comment_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1540,7 +1540,7 @@ CREATE SEQUENCE devilry_comment_comment_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_comment_comment_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_comment_comment_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_comment_comment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1568,7 +1568,7 @@ CREATE TABLE devilry_comment_commentfile (
 );
 
 
-ALTER TABLE devilry_comment_commentfile OWNER TO dbdev;
+ALTER TABLE public.devilry_comment_commentfile OWNER TO dbdev;
 
 --
 -- Name: devilry_comment_commentfile_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1582,7 +1582,7 @@ CREATE SEQUENCE devilry_comment_commentfile_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_comment_commentfile_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_comment_commentfile_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_comment_commentfile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1611,7 +1611,7 @@ CREATE TABLE devilry_comment_commentfileimage (
 );
 
 
-ALTER TABLE devilry_comment_commentfileimage OWNER TO dbdev;
+ALTER TABLE public.devilry_comment_commentfileimage OWNER TO dbdev;
 
 --
 -- Name: devilry_comment_commentfileimage_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1625,7 +1625,7 @@ CREATE SEQUENCE devilry_comment_commentfileimage_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_comment_commentfileimage_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_comment_commentfileimage_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_comment_commentfileimage_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1648,7 +1648,7 @@ CREATE TABLE devilry_detektor_comparetwocacheitem (
 );
 
 
-ALTER TABLE devilry_detektor_comparetwocacheitem OWNER TO dbdev;
+ALTER TABLE public.devilry_detektor_comparetwocacheitem OWNER TO dbdev;
 
 --
 -- Name: devilry_detektor_comparetwocacheitem_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1662,7 +1662,7 @@ CREATE SEQUENCE devilry_detektor_comparetwocacheitem_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_detektor_comparetwocacheitem_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_detektor_comparetwocacheitem_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_detektor_comparetwocacheitem_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1684,7 +1684,7 @@ CREATE TABLE devilry_detektor_detektorassignment (
 );
 
 
-ALTER TABLE devilry_detektor_detektorassignment OWNER TO dbdev;
+ALTER TABLE public.devilry_detektor_detektorassignment OWNER TO dbdev;
 
 --
 -- Name: devilry_detektor_detektorassignment_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1698,7 +1698,7 @@ CREATE SEQUENCE devilry_detektor_detektorassignment_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_detektor_detektorassignment_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_detektor_detektorassignment_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_detektor_detektorassignment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1718,7 +1718,7 @@ CREATE TABLE devilry_detektor_detektorassignmentcachelanguage (
 );
 
 
-ALTER TABLE devilry_detektor_detektorassignmentcachelanguage OWNER TO dbdev;
+ALTER TABLE public.devilry_detektor_detektorassignmentcachelanguage OWNER TO dbdev;
 
 --
 -- Name: devilry_detektor_detektorassignmentcachelanguage_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1732,7 +1732,7 @@ CREATE SEQUENCE devilry_detektor_detektorassignmentcachelanguage_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_detektor_detektorassignmentcachelanguage_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_detektor_detektorassignmentcachelanguage_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_detektor_detektorassignmentcachelanguage_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1760,7 +1760,7 @@ CREATE TABLE devilry_detektor_detektordeliveryparseresult (
 );
 
 
-ALTER TABLE devilry_detektor_detektordeliveryparseresult OWNER TO dbdev;
+ALTER TABLE public.devilry_detektor_detektordeliveryparseresult OWNER TO dbdev;
 
 --
 -- Name: devilry_detektor_detektordeliveryparseresult_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1774,7 +1774,7 @@ CREATE SEQUENCE devilry_detektor_detektordeliveryparseresult_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_detektor_detektordeliveryparseresult_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_detektor_detektordeliveryparseresult_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_detektor_detektordeliveryparseresult_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1802,7 +1802,7 @@ CREATE TABLE devilry_gradingsystem_feedbackdraft (
 );
 
 
-ALTER TABLE devilry_gradingsystem_feedbackdraft OWNER TO dbdev;
+ALTER TABLE public.devilry_gradingsystem_feedbackdraft OWNER TO dbdev;
 
 --
 -- Name: devilry_gradingsystem_feedbackdraft_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1816,7 +1816,7 @@ CREATE SEQUENCE devilry_gradingsystem_feedbackdraft_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_gradingsystem_feedbackdraft_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_gradingsystem_feedbackdraft_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_gradingsystem_feedbackdraft_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1838,7 +1838,7 @@ CREATE TABLE devilry_gradingsystem_feedbackdraftfile (
 );
 
 
-ALTER TABLE devilry_gradingsystem_feedbackdraftfile OWNER TO dbdev;
+ALTER TABLE public.devilry_gradingsystem_feedbackdraftfile OWNER TO dbdev;
 
 --
 -- Name: devilry_gradingsystem_feedbackdraftfile_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1852,7 +1852,7 @@ CREATE SEQUENCE devilry_gradingsystem_feedbackdraftfile_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_gradingsystem_feedbackdraftfile_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_gradingsystem_feedbackdraftfile_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_gradingsystem_feedbackdraftfile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1881,7 +1881,7 @@ CREATE TABLE devilry_group_feedbackset (
 );
 
 
-ALTER TABLE devilry_group_feedbackset OWNER TO dbdev;
+ALTER TABLE public.devilry_group_feedbackset OWNER TO dbdev;
 
 --
 -- Name: devilry_group_feedbackset_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1895,7 +1895,7 @@ CREATE SEQUENCE devilry_group_feedbackset_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_group_feedbackset_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_group_feedbackset_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_group_feedbackset_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1916,7 +1916,7 @@ CREATE TABLE devilry_group_groupcomment (
 );
 
 
-ALTER TABLE devilry_group_groupcomment OWNER TO dbdev;
+ALTER TABLE public.devilry_group_groupcomment OWNER TO dbdev;
 
 --
 -- Name: devilry_group_imageannotationcomment; Type: TABLE; Schema: public; Owner: dbdev; Tablespace: 
@@ -1935,7 +1935,7 @@ CREATE TABLE devilry_group_imageannotationcomment (
 );
 
 
-ALTER TABLE devilry_group_imageannotationcomment OWNER TO dbdev;
+ALTER TABLE public.devilry_group_imageannotationcomment OWNER TO dbdev;
 
 --
 -- Name: devilry_qualifiesforexam_deadlinetag; Type: TABLE; Schema: public; Owner: dbdev; Tablespace: 
@@ -1948,7 +1948,7 @@ CREATE TABLE devilry_qualifiesforexam_deadlinetag (
 );
 
 
-ALTER TABLE devilry_qualifiesforexam_deadlinetag OWNER TO dbdev;
+ALTER TABLE public.devilry_qualifiesforexam_deadlinetag OWNER TO dbdev;
 
 --
 -- Name: devilry_qualifiesforexam_deadlinetag_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -1962,7 +1962,7 @@ CREATE SEQUENCE devilry_qualifiesforexam_deadlinetag_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_qualifiesforexam_deadlinetag_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_qualifiesforexam_deadlinetag_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_qualifiesforexam_deadlinetag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -1981,7 +1981,7 @@ CREATE TABLE devilry_qualifiesforexam_periodtag (
 );
 
 
-ALTER TABLE devilry_qualifiesforexam_periodtag OWNER TO dbdev;
+ALTER TABLE public.devilry_qualifiesforexam_periodtag OWNER TO dbdev;
 
 --
 -- Name: devilry_qualifiesforexam_qualifiesforfinalexam; Type: TABLE; Schema: public; Owner: dbdev; Tablespace: 
@@ -1995,7 +1995,7 @@ CREATE TABLE devilry_qualifiesforexam_qualifiesforfinalexam (
 );
 
 
-ALTER TABLE devilry_qualifiesforexam_qualifiesforfinalexam OWNER TO dbdev;
+ALTER TABLE public.devilry_qualifiesforexam_qualifiesforfinalexam OWNER TO dbdev;
 
 --
 -- Name: devilry_qualifiesforexam_qualifiesforfinalexam_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -2009,7 +2009,7 @@ CREATE SEQUENCE devilry_qualifiesforexam_qualifiesforfinalexam_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_qualifiesforexam_qualifiesforfinalexam_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_qualifiesforexam_qualifiesforfinalexam_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_qualifiesforexam_qualifiesforfinalexam_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -2034,7 +2034,7 @@ CREATE TABLE devilry_qualifiesforexam_status (
 );
 
 
-ALTER TABLE devilry_qualifiesforexam_status OWNER TO dbdev;
+ALTER TABLE public.devilry_qualifiesforexam_status OWNER TO dbdev;
 
 --
 -- Name: devilry_qualifiesforexam_status_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -2048,7 +2048,7 @@ CREATE SEQUENCE devilry_qualifiesforexam_status_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_qualifiesforexam_status_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_qualifiesforexam_status_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_qualifiesforexam_status_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -2071,7 +2071,7 @@ CREATE TABLE devilry_student_uploadeddeliveryfile (
 );
 
 
-ALTER TABLE devilry_student_uploadeddeliveryfile OWNER TO dbdev;
+ALTER TABLE public.devilry_student_uploadeddeliveryfile OWNER TO dbdev;
 
 --
 -- Name: devilry_student_uploadeddeliveryfile_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -2085,7 +2085,7 @@ CREATE SEQUENCE devilry_student_uploadeddeliveryfile_id_seq
     CACHE 1;
 
 
-ALTER TABLE devilry_student_uploadeddeliveryfile_id_seq OWNER TO dbdev;
+ALTER TABLE public.devilry_student_uploadeddeliveryfile_id_seq OWNER TO dbdev;
 
 --
 -- Name: devilry_student_uploadeddeliveryfile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -2111,7 +2111,7 @@ CREATE TABLE django_admin_log (
 );
 
 
-ALTER TABLE django_admin_log OWNER TO dbdev;
+ALTER TABLE public.django_admin_log OWNER TO dbdev;
 
 --
 -- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -2125,7 +2125,7 @@ CREATE SEQUENCE django_admin_log_id_seq
     CACHE 1;
 
 
-ALTER TABLE django_admin_log_id_seq OWNER TO dbdev;
+ALTER TABLE public.django_admin_log_id_seq OWNER TO dbdev;
 
 --
 -- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -2145,7 +2145,7 @@ CREATE TABLE django_content_type (
 );
 
 
-ALTER TABLE django_content_type OWNER TO dbdev;
+ALTER TABLE public.django_content_type OWNER TO dbdev;
 
 --
 -- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -2159,7 +2159,7 @@ CREATE SEQUENCE django_content_type_id_seq
     CACHE 1;
 
 
-ALTER TABLE django_content_type_id_seq OWNER TO dbdev;
+ALTER TABLE public.django_content_type_id_seq OWNER TO dbdev;
 
 --
 -- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -2180,7 +2180,7 @@ CREATE TABLE django_migrations (
 );
 
 
-ALTER TABLE django_migrations OWNER TO dbdev;
+ALTER TABLE public.django_migrations OWNER TO dbdev;
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -2194,7 +2194,7 @@ CREATE SEQUENCE django_migrations_id_seq
     CACHE 1;
 
 
-ALTER TABLE django_migrations_id_seq OWNER TO dbdev;
+ALTER TABLE public.django_migrations_id_seq OWNER TO dbdev;
 
 --
 -- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -2214,7 +2214,7 @@ CREATE TABLE django_session (
 );
 
 
-ALTER TABLE django_session OWNER TO dbdev;
+ALTER TABLE public.django_session OWNER TO dbdev;
 
 --
 -- Name: ievv_batchframework_batchoperation; Type: TABLE; Schema: public; Owner: dbdev; Tablespace: 
@@ -2237,7 +2237,7 @@ CREATE TABLE ievv_batchframework_batchoperation (
 );
 
 
-ALTER TABLE ievv_batchframework_batchoperation OWNER TO dbdev;
+ALTER TABLE public.ievv_batchframework_batchoperation OWNER TO dbdev;
 
 --
 -- Name: ievv_batchframework_batchoperation_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
@@ -2251,7 +2251,7 @@ CREATE SEQUENCE ievv_batchframework_batchoperation_id_seq
     CACHE 1;
 
 
-ALTER TABLE ievv_batchframework_batchoperation_id_seq OWNER TO dbdev;
+ALTER TABLE public.ievv_batchframework_batchoperation_id_seq OWNER TO dbdev;
 
 --
 -- Name: ievv_batchframework_batchoperation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
@@ -2559,6 +2559,7 @@ ALTER TABLE ONLY devilry_comment_commentfile ALTER COLUMN id SET DEFAULT nextval
 --
 
 ALTER TABLE ONLY devilry_comment_commentfileimage ALTER COLUMN id SET DEFAULT nextval('devilry_comment_commentfileimage_id_seq'::regclass);
+
 
 
 --
@@ -2869,6 +2870,9 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 166	Can add batch operation	56	add_batchoperation
 167	Can change batch operation	56	change_batchoperation
 168	Can delete batch operation	56	delete_batchoperation
+169	Can add assignment group cached data	57	add_assignmentgroupcacheddata
+170	Can change assignment group cached data	57	change_assignmentgroupcacheddata
+171	Can delete assignment group cached data	57	delete_assignmentgroupcacheddata
 \.
 
 
@@ -2876,7 +2880,7 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('auth_permission_id_seq', 168, true);
+SELECT pg_catalog.setval('auth_permission_id_seq', 171, true);
 
 
 --
@@ -3364,8 +3368,8 @@ SELECT pg_catalog.setval('core_staticfeedbackfileattachment_id_seq', 1, false);
 --
 
 COPY core_subject (id, short_name, long_name, etag, parentnode_id) FROM stdin;
-2	duck1100	Duck 1100 - Mathematical programming	2015-12-22 19:58:18.525346+01	\N
-1	duck1010	Duck 1010 - object oriented programming	2015-12-22 19:57:16.969003+01	\N
+1	duck1010	DUCK1010 - Object Oriented Programming	2015-12-22 19:57:16.969003+01	\N
+2	duck1100	DUCK1100 - Mathematical programming	2015-12-22 19:58:18.525346+01	\N
 \.
 
 
@@ -3531,7 +3535,7 @@ COPY devilry_account_user (id, password, last_login, is_superuser, shortname, fu
 12	md5$tT0zXYv0Zsuo$2b9bfb86f295cfd461b0ce2bb6ea2096	2016-02-06 18:04:02.493233+01	f	loki@example.com	Trickster and god of Mischief	Mischief	2016-01-03 00:01:23.945768+01	\N		
 5	md5$t9KMIxJyNWXg$7136c7c30e463d0c9525f4744ef624b4	2016-02-08 20:20:46.753706+01	f	april@example.com	April Duck	Duck	2016-01-03 00:01:23.92689+01	\N		
 13	md5$BVeSKhUc4Gkg$c5cfb847e6ef2a84bf2a0a3ab0424e8d	2016-02-08 20:21:32.438362+01	f	thor@example.com	God of thunder and Battle	Battle	2016-01-03 00:01:23.948728+01	\N		
-1	md5$wqtfXF0fIxXj$894c06ca065b6dfa906004e40da2e9a4	2016-02-08 20:24:20.870273+01	t	grandma@example.com			2015-12-21 18:01:21.212212+01	\N		
+1	md5$wqtfXF0fIxXj$894c06ca065b6dfa906004e40da2e9a4	2016-08-06 14:34:40.180078+02	t	grandma@example.com			2015-12-21 18:01:21.212212+01	\N		
 \.
 
 
@@ -3635,6 +3639,7 @@ COPY devilry_comment_commentfileimage (id, image, image_width, image_height, thu
 --
 
 SELECT pg_catalog.setval('devilry_comment_commentfileimage_id_seq', 1, false);
+
 
 
 --
@@ -3927,6 +3932,7 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 54	devilry_detektor	detektorassignmentcachelanguage
 55	devilry_detektor	comparetwocacheitem
 56	ievv_batchframework	batchoperation
+57	devilry_dbcache	assignmentgroupcacheddata
 \.
 
 
@@ -3934,7 +3940,7 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('django_content_type_id_seq', 56, true);
+SELECT pg_catalog.setval('django_content_type_id_seq', 57, true);
 
 
 --
@@ -4020,6 +4026,7 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 76	devilry_comment	0005_auto_20160122_1709	2016-02-02 12:40:04.57152+01
 77	devilry_group	0017_auto_20160122_1518	2016-02-02 12:40:04.783329+01
 78	devilry_group	0018_auto_20160122_1712	2016-02-02 12:40:04.889591+01
+79	ievv_batchframework	0002_auto_20160413_0154	2016-08-06 13:27:18.143708+02
 \.
 
 
@@ -4027,7 +4034,7 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('django_migrations_id_seq', 78, true);
+SELECT pg_catalog.setval('django_migrations_id_seq', 79, true);
 
 
 --
@@ -4046,6 +4053,7 @@ p95ggs9ihvz07g7qur3sp8pgeor2ji21	NDc0YWYzYzRmOTJhNzJhZDczYjM5NjA4ZmUyNWM5NmE3OWU
 b7f56fzonivzzldphn6dzbk84lnqwzz1	YWVlMWMzY2UwODBjYmZiOTRhNDRmZDVmNTRhNTI3OTFiMjQ1NGQ0Yjp7Il9hdXRoX3VzZXJfaGFzaCI6ImQwODJmYTFjOTgxNzI3NmU2ODg3MDkzM2NiNDgzN2VmMjczMzdjMmMiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiNSJ9	2016-02-22 20:20:46.760111+01
 i2m531v3ae0tk0bc8iqt3shjekhipet7	NGZmOGZlZWUzMTAyN2RhODYyNmZmNTIyZmVjMmEwYmFlOWY5ZmM2Mjp7Il9hdXRoX3VzZXJfaGFzaCI6ImMzYmE2MTgxYWExNjc4YmI0YzhiMDZiMzc3NDNiNWRmOTJhNTFkZTYiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMTMifQ==	2016-02-22 20:21:32.441645+01
 njzxgphcbque9ci5jvpdwqi1btswmeor	NDJiYzE0MzEyNjdjM2E0NGQ0ODY3OWUzZGQ2MzkyNjIxZjljNTFjZDp7Il9hdXRoX3VzZXJfaGFzaCI6IjViMjA4NzZkYjI5ZGY2ZmJlNDE4N2U1YjE1ZTAzZTIyMGRiYjBiN2QiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSJ9	2016-02-22 20:24:20.873582+01
+vetesjwpl7lf4cg2xdur1esdv2rgu1yk	NDJiYzE0MzEyNjdjM2E0NGQ0ODY3OWUzZGQ2MzkyNjIxZjljNTFjZDp7Il9hdXRoX3VzZXJfaGFzaCI6IjViMjA4NzZkYjI5ZGY2ZmJlNDE4N2U1YjE1ZTAzZTIyMGRiYjBiN2QiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkZXZpbHJ5LmRldmlscnlfYWNjb3VudC5hdXRoYmFja2VuZC5kZWZhdWx0LkVtYWlsQXV0aEJhY2tlbmQiLCJfYXV0aF91c2VyX2lkIjoiMSJ9	2016-08-20 14:34:40.183926+02
 \.
 
 

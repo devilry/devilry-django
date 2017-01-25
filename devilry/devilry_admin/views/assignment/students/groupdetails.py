@@ -38,22 +38,16 @@ class GroupDetailsView(detail.DetailView):
             .prefetch_related(
                 models.Prefetch('examiners',
                                 queryset=examinerqueryset))\
-            .annotate_with_grading_points()\
             .annotate_with_is_waiting_for_feedback()\
             .annotate_with_is_waiting_for_deliveries()\
-            .annotate_with_is_corrected()\
-            .annotate_with_number_of_commentfiles_from_students()\
-            .annotate_with_number_of_groupcomments_from_students()\
-            .annotate_with_number_of_groupcomments_from_examiners()\
-            .annotate_with_number_of_groupcomments_from_admins()\
-            .annotate_with_number_of_imageannotationcomments_from_students()\
-            .annotate_with_number_of_imageannotationcomments_from_examiners()\
-            .annotate_with_number_of_imageannotationcomments_from_admins()\
-            .annotate_with_number_of_published_feedbacksets()\
-            .annotate_with_has_unpublished_feedbackdraft()\
-            .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user)\
+            .annotate_with_is_corrected() \
+            .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user) \
             .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)\
-            .distinct()
+            .distinct() \
+            .select_related('cached_data__last_published_feedbackset',
+                            'cached_data__last_feedbackset',
+                            'cached_data__first_feedbackset',
+                            'parentnode')
 
     def dispatch(self, request, *args, **kwargs):
         self.group = self.get_object()

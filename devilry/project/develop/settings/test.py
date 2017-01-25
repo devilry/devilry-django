@@ -6,7 +6,7 @@ from .base import *  # noqa
 # Celery
 #
 ###############################################################################
-CELERY_ALWAYS_EAGER = False
+CELERY_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 CELERY_EAGER_TRANSACTION = True
 BROKER_BACKEND = 'memory'
@@ -36,6 +36,10 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
     },
 }
+
+INSTALLED_APPS += [
+    'devilry.devilry_dbcache.devilry_dbcache_testapp',
+]
 
 # We need to use this because loads of tests uses username and password to login
 DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND = False

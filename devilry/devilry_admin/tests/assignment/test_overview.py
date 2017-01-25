@@ -310,19 +310,19 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                         '#devilry_admin_assignment_overview_utilities_passed_previous p').alltext_normalized,
                 "Mark students that have passed this assignment previously.")
 
-    def test_utilities_row_detektor(self):
-        assignment = mommy.make('core.Assignment')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertEqual(
-                mockresponse.selector.one(
-                        '#devilry_admin_assignment_overview_utilities_detektor a').alltext_normalized,
-                "Detektor")
-
-    def test_utilities_row_detektor_description(self):
-        assignment = mommy.make('core.Assignment')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertEqual(
-                mockresponse.selector.one(
-                        '#devilry_admin_assignment_overview_utilities_detektor p').alltext_normalized,
-                'Compare programming code delivered by your students and '
-                'get statistics about similarities in the uploaded files.')
+    # def test_utilities_row_detektor(self):
+    #     assignment = mommy.make('core.Assignment')
+    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+    #     self.assertEqual(
+    #             mockresponse.selector.one(
+    #                     '#devilry_admin_assignment_overview_utilities_detektor a').alltext_normalized,
+    #             "Detektor")
+    #
+    # def test_utilities_row_detektor_description(self):
+    #     assignment = mommy.make('core.Assignment')
+    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+    #     self.assertEqual(
+    #             mockresponse.selector.one(
+    #                     '#devilry_admin_assignment_overview_utilities_detektor p').alltext_normalized,
+    #             'Compare programming code delivered by your students and '
+    #             'get statistics about similarities in the uploaded files.')

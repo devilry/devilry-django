@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.conf import settings
-from django.db import models
 from django.core import files
-from django.db.models.signals import post_save, post_delete
+from django.db import models
+from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.utils import timezone
 
@@ -81,15 +84,14 @@ class Comment(models.Model):
         Args:
             tempfile (TemporaryFile): Temporary file to convert.
         """
-        print "running add_commentfile_from_temporary_file"
         commentfile = CommentFile.objects.create(filename=tempfile.filename,
                                                  mimetype=tempfile.mimetype,
                                                  filesize=tempfile.file.size,
                                                  comment=self)
 
         commentfile.file = files.File(tempfile.file, tempfile.filename)
+        commentfile.clean()
         commentfile.save()
-        print "returning from add_commentfile_from_temporary_file"
 
 
 def commentfile_directory_path(instance, filename):
@@ -143,6 +145,26 @@ class CommentFile(models.Model):
     def __unicode__(self):
         return u'{} - {}'.format(self.comment.user, self.filename)
 
+    def copy_into_comment(self, target):
+        """
+        Copy CommentFile to ``target`` comment
+
+        Args:
+            target: :class:`~devilry_comment.Comment`
+
+        """
+        commentfilecopy = CommentFile(
+            comment=target,
+            filename=self.filename,
+            filesize=self.filesize,
+            mimetype=self.mimetype,
+            file=self.file,
+            processing_started_datetime=self.processing_started_datetime,
+            processing_completed_datetime=self.processing_completed_datetime,
+            processing_successful=self.processing_successful,
+            created_datetime=self.created_datetime
+        )
+        commentfilecopy.save()
 
 def commentfileimage_directory_path(instance, filename):
     if instance.id is None:

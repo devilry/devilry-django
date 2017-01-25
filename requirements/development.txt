@@ -29,7 +29,7 @@ djangosenchatools==1.0.5
 whoosh==2.5.7
 django-seleniumhelpers==1.1.1
 transifex-client==0.10
-mock==1.0.1
+mock==2.0.0
 fabric==1.8.3
 
 elasticsearch-dsl==0.0.4

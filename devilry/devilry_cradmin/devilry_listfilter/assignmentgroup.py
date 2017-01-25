@@ -43,7 +43,8 @@ class SearchAnonymousUsesCustomCandidateIds(AbstractSearch):
 
 
 class AbstractOrderBy(listfilter.django.single.select.AbstractOrderBy):
-    def __init__(self, label_is_screenreader_only=False):
+    def __init__(self, include_points=True, label_is_screenreader_only=False):
+        self.include_points = include_points
         super(AbstractOrderBy, self).__init__(
             slug='orderby',
             label=pgettext_lazy('orderby', 'Sort'),
@@ -54,17 +55,21 @@ class AbstractOrderBy(listfilter.django.single.select.AbstractOrderBy):
         return []
 
     def get_common_ordering_options(self):
-        return [
-            (pgettext_lazy('orderby', 'By points'), (
-                ('points_descending', {
-                    'label': pgettext_lazy('orderby', 'Points (highest first)'),
-                    'order_by': ['-grading_points'],
-                }),
-                ('points_ascending', {
-                    'label': pgettext_lazy('orderby', 'Points (lowest first)'),
-                    'order_by': ['grading_points'],
-                }),
-            )),
+        ordering_options_list = []
+        if self.include_points:
+            ordering_options_list.append(
+                (pgettext_lazy('orderby', 'By points'), (
+                    ('points_descending', {
+                        'label': pgettext_lazy('orderby', 'Points (highest first)'),
+                        'order_by': ['-cached_data__last_published_feedbackset__grading_points'],
+                    }),
+                    ('points_ascending', {
+                        'label': pgettext_lazy('orderby', 'Points (lowest first)'),
+                        'order_by': ['cached_data__last_published_feedbackset__grading_points'],
+                    }),
+                )),
+            )
+        ordering_options_list.append(
             (pgettext_lazy('orderby', 'By activity'), (
                 ('last_commented_by_student_descending', {
                     'label': pgettext_lazy('orderby', 'Recently commented by student'),
@@ -83,7 +88,8 @@ class AbstractOrderBy(listfilter.django.single.select.AbstractOrderBy):
                     'order_by': [],  # Handled with custom query in filter()
                 }),
             ))
-        ]
+        )
+        return ordering_options_list
 
     def get_ordering_options(self):
         ordering_options = [(
@@ -96,13 +102,13 @@ class AbstractOrderBy(listfilter.django.single.select.AbstractOrderBy):
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value() or ''
         if cleaned_value == 'last_commented_by_student_ascending':
-            return queryobject.extra_order_by_datetime_of_last_student_comment()
+            return queryobject.order_by('cached_data__last_public_comment_by_student_datetime')
         elif cleaned_value == 'last_commented_by_student_descending':
-            return queryobject.extra_order_by_datetime_of_last_student_comment(descending=True)
+            return queryobject.order_by('-cached_data__last_public_comment_by_student_datetime')
         elif cleaned_value == 'last_commented_by_examiner_ascending':
-            return queryobject.extra_order_by_datetime_of_last_examiner_comment()
+            return queryobject.order_by('cached_data__last_public_comment_by_examiner_datetime')
         elif cleaned_value == 'last_commented_by_examiner_descending':
-            return queryobject.extra_order_by_datetime_of_last_examiner_comment(descending=True)
+            return queryobject.order_by('-cached_data__last_public_comment_by_examiner_datetime')
         return super(AbstractOrderBy, self).filter(queryobject=queryobject).distinct()
 
 
@@ -260,11 +266,11 @@ class StatusRadioFilter(abstractradio.AbstractRadioFilter):
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value() or ''
         if cleaned_value == 'waiting-for-feedback':
-            queryobject = queryobject.filter(is_waiting_for_feedback=True)
+            queryobject = queryobject.filter(annotated_is_waiting_for_feedback=True)
         elif cleaned_value == 'waiting-for-deliveries':
-            queryobject = queryobject.filter(is_waiting_for_deliveries=True)
+            queryobject = queryobject.filter(annotated_is_waiting_for_deliveries=True)
         elif cleaned_value == 'corrected':
-            queryobject = queryobject.filter(is_corrected=True)
+            queryobject = queryobject.filter(annotated_is_corrected=True)
         return queryobject
 
 
@@ -286,11 +292,11 @@ class StatusSelectFilter(abstractselect.AbstractSelectFilter):
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value() or ''
         if cleaned_value == 'waiting-for-feedback':
-            queryobject = queryobject.filter(is_waiting_for_feedback=True)
+            queryobject = queryobject.filter(annotated_is_waiting_for_feedback=True)
         elif cleaned_value == 'waiting-for-deliveries':
-            queryobject = queryobject.filter(is_waiting_for_deliveries=True)
+            queryobject = queryobject.filter(annotated_is_waiting_for_deliveries=True)
         elif cleaned_value == 'corrected':
-            queryobject = queryobject.filter(is_corrected=True)
+            queryobject = queryobject.filter(annotated_is_corrected=True)
         return queryobject
 
 
@@ -302,7 +308,7 @@ class PointsFilter(listfilter.django.single.textinput.IntSearch):
         return pgettext_lazy('group points filter', 'Points')
 
     def get_modelfields(self):
-        return ['grading_points']
+        return ['cached_data__last_published_feedbackset__grading_points']
 
     # def get_placeholder(self):
     #     return pgettext_lazy('group points filter', 'Type a number ...')
@@ -426,7 +432,63 @@ class ExaminerCountFilter(abstractselect.AbstractSelectFilter):
         return None
 
     def apply_filter(self, queryobject, cleaned_value):
-        queryobject = queryobject.filter(number_of_examiners=int(cleaned_value))
+        queryobject = queryobject\
+            .filter(cached_data__examiner_count=int(cleaned_value))
+        return queryobject
+
+    def filter(self, queryobject):
+        cleaned_value = self.get_cleaned_value()
+        if cleaned_value is not None:
+            queryobject = self.apply_filter(queryobject=queryobject, cleaned_value=cleaned_value)
+        return queryobject
+
+
+class CandidateCountFilter(abstractselect.AbstractSelectFilter):
+    def __init__(self, **kwargs):
+        self.view = kwargs.pop('view', None)
+        super(CandidateCountFilter, self).__init__(**kwargs)
+
+    def copy(self):
+        copy = super(CandidateCountFilter, self).copy()
+        copy.view = self.view
+        return copy
+
+    def get_slug(self):
+        return 'candidatecount'
+
+    def get_label(self):
+        return pgettext_lazy('group student filter', 'Number of students')
+
+    def __get_student_name(self, relatedstudent):
+        return relatedstudent.user.get_full_name()
+
+    def __get_choices_cached(self):
+        if not hasattr(self, '_choices'):
+            self._choices = [(str(index), str(index))
+                             for index in range(0, len(self.view.get_distinct_relatedstudents()) + 1)]
+        return self._choices
+
+    def __get_valid_values(self):
+        return {str(choice[0])
+                for choice in self.__get_choices_cached()}
+
+    def get_choices(self):
+        choices = [
+            ('', '')
+        ]
+        choices.extend(self.__get_choices_cached())
+        return choices
+
+    def get_cleaned_value(self):
+        cleaned_value = super(CandidateCountFilter, self).get_cleaned_value()
+        if cleaned_value:
+            if cleaned_value in self.__get_valid_values():
+                return cleaned_value
+        return None
+
+    def apply_filter(self, queryobject, cleaned_value):
+        queryobject = queryobject\
+            .filter(cached_data__candidate_count=int(cleaned_value))
         return queryobject
 
     def filter(self, queryobject):
@@ -476,33 +538,24 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value()
         if cleaned_value == 'studentcomment':
-            queryobject = queryobject.filter(
-                models.Q(number_of_groupcomments_from_students__gt=0) |
-                models.Q(number_of_imageannotationcomments_from_students__gt=0))
+            queryobject = queryobject.filter(cached_data__public_student_comment_count__gt=0)
         elif cleaned_value == 'no-studentcomment':
-            queryobject = queryobject.filter(
-                models.Q(number_of_groupcomments_from_students=0) &
-                models.Q(number_of_imageannotationcomments_from_students=0))
+            queryobject = queryobject.filter(cached_data__public_student_comment_count=0)
         elif cleaned_value == 'studentfile':
-            queryobject = queryobject.filter(number_of_commentfiles_from_students__gt=0)
+            queryobject = queryobject.filter(cached_data__public_student_file_upload_count__gt=0)
         elif cleaned_value == 'no-studentfile':
-            queryobject = queryobject.filter(number_of_commentfiles_from_students=0)
+            queryobject = queryobject.filter(cached_data__public_student_file_upload_count=0)
         elif cleaned_value == 'examinercomment':
-            queryobject = queryobject.filter(
-                models.Q(number_of_groupcomments_from_examiners__gt=0) |
-                models.Q(number_of_imageannotationcomments_from_examiners__gt=0))
+            queryobject = queryobject.filter(cached_data__public_examiner_comment_count__gt=0)
         elif cleaned_value == 'no-examinercomment':
-            queryobject = queryobject.filter(
-                models.Q(number_of_groupcomments_from_examiners=0) &
-                models.Q(number_of_imageannotationcomments_from_examiners=0))
+            queryobject = queryobject.filter(cached_data__public_examiner_comment_count=0)
         elif cleaned_value == 'unpublishedfeedback':
-            queryobject = queryobject.filter(has_unpublished_feedbackdraft=True)
+            queryobject = queryobject.annotate_with_has_unpublished_feedbackdraft()
+            queryobject = queryobject.filter(annotated_has_unpublished_feedbackdraft=True)
         elif cleaned_value == 'admincomment':
-            queryobject = queryobject.filter(
-                models.Q(number_of_groupcomments_from_admins__gt=0) |
-                models.Q(number_of_imageannotationcomments_from_admins__gt=0))
+            queryobject = queryobject.filter(cached_data__public_admin_comment_count__gt=0)
         elif cleaned_value == 'privatecomment':
             queryobject = queryobject.filter(
                 models.Q(number_of_private_groupcomments_from_user__gt=0) |
-                models.Q(number_of_imageannotationcomments_from_user__gt=0))
+                models.Q(number_of_private_imageannotationcomments_from_user__gt=0))
         return queryobject

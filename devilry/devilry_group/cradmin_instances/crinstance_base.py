@@ -87,3 +87,6 @@ class CrInstanceBase(crinstance.BaseCrAdminInstance):
             NotImplementedError: Raised if implemented by subclass.
         """
         raise NotImplementedError('Must be implemented by subclass.')
+
+    def add_extra_instance_variables_to_request(self, request):
+        setattr(request, 'devilryrole', self.get_devilryrole_for_requestuser())

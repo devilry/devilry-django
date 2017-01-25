@@ -15,7 +15,7 @@ class FeedbackFeedTimelineBuilder(builder_base.FeedbackFeedBuilderBase):
     Builds a sorted timeline of events that occur in the feedbackfeed.
     Generates a dictionary of events such as comments, new deadlines, expired deadlines and grading.
     """
-    def __init__(self, group, **kwargs):
+    def __init__(self, **kwargs):
         """
         Initialize instance of :class:`~FeedbackFeedTimelineBuilder`.
 
@@ -24,60 +24,7 @@ class FeedbackFeedTimelineBuilder(builder_base.FeedbackFeedBuilderBase):
             feedbacksets: Fetched feedbacksets, comments and files.
         """
         super(FeedbackFeedTimelineBuilder, self). __init__(**kwargs)
-        # self.feedbacksets = list(feedbacksets)
-        self.group = group
-        self.__candidatemap = self.__make_candidatemap()
-        self.__examinermap = self.__make_examinermap()
         self.timeline = {}
-
-    def __make_candidatemap(self):
-        """
-        Create a map of :class:`devilry.apps.core.models.Candidate` objects with user id as key.
-
-        Returns:
-            dict: Map of candidates.
-        """
-        candidatemap = {}
-        for candidate in self.group.candidates.all():
-            candidatemap[candidate.relatedstudent.user_id] = candidate
-        return candidatemap
-
-    def __make_examinermap(self):
-        """
-        Create a map of :class:`devilry.apps.core.models.Examiner` objects with user id as key.
-
-        Returns:
-             dict: Map of examiners.
-        """
-        examinermap = {}
-        for examiner in self.group.examiners.all():
-            examinermap[examiner.relatedexaminer.user_id] = examiner
-        return examinermap
-
-    def __get_candidate_from_user(self, user):
-        """
-        Get the :class:`devilry.apps.core.models.Candidate` object based on the user from the
-        candidate map.
-
-        Args:
-            user: A class:`devilry.devilry_account.models.User` object.
-
-        Returns:
-             :class:`devilry.apps.core.models.Candidate`: A candidate or None.
-        """
-        return self.__candidatemap.get(user.id)
-
-    def __get_examiner_from_user(self, user):
-        """
-        Get the :class:`devilry.apps.core.models.Candidate` object based on the user from the
-        examiner map.
-
-        Args:
-            user: A :class:`devilry.devilry_account.models.User` object.
-        Returns:
-             :class:`devilry.apps.core.models.Examiner`: An examiner or None.
-        """
-        return self.__examinermap.get(user.id)
 
     def get_last_feedbackset(self):
         """
@@ -214,9 +161,9 @@ class FeedbackFeedTimelineBuilder(builder_base.FeedbackFeedBuilderBase):
             "related_deadline": self.__get_deadline_for_feedbackset(feedbackset=feedbackset),
         }
         if group_comment.user_role == Comment.USER_ROLE_STUDENT:
-            event_dict['candidate'] = self.__get_candidate_from_user(user=group_comment.user)
+            event_dict['candidate'] = self._get_candidate_from_user(user=group_comment.user)
         elif group_comment.user_role == Comment.USER_ROLE_EXAMINER:
-            event_dict['examiner'] = self.__get_examiner_from_user(user=group_comment.user)
+            event_dict['examiner'] = self._get_examiner_from_user(user=group_comment.user)
         self.__add_event_item_to_timeline(
             datetime=group_comment.published_datetime,
             event_dict=event_dict
@@ -257,7 +204,6 @@ class FeedbackFeedTimelineBuilder(builder_base.FeedbackFeedBuilderBase):
         """
         for feedbackset in self.feedbacksets:
             self.__add_feedbackset_to_timeline(feedbackset=feedbackset)
-
         self.timeline = self.sort_dict(self.timeline)
 
     def get_as_list(self):

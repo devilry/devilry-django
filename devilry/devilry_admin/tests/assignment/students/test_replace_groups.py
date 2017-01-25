@@ -13,11 +13,16 @@ from model_mommy import mommy
 from devilry.apps.core.models import AssignmentGroup, Candidate
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START
 from devilry.devilry_admin.views.assignment.students import replace_groups
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import FeedbackSet
 
 
 class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = replace_groups.ChooseMethod
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_redirect_if_assignment_is_published(self):
         testassignment = mommy.make('core.Assignment',
@@ -167,6 +172,9 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
 
 class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = replace_groups.ConfirmView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_redirect_if_assignment_is_published(self):
         testassignment = mommy.make('core.Assignment',
@@ -318,10 +326,9 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         candidate1 = mommy.make('core.Candidate',
                                 relatedstudent=relatedstudent1,
                                 assignment_group__parentnode=otherassignment)
-        mommy.make('devilry_group.FeedbackSet',
-                   group=candidate1.assignment_group,
-                   grading_published_datetime=timezone.now(),
-                   grading_points=1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=candidate1.assignment_group,
+            grading_points=1)
         mommy.make('core.Candidate',
                    relatedstudent=relatedstudent2,
                    assignment_group__parentnode=otherassignment)
@@ -442,10 +449,9 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         candidate1 = mommy.make('core.Candidate',
                                 relatedstudent=relatedstudent1,
                                 assignment_group__parentnode=otherassignment)
-        mommy.make('devilry_group.FeedbackSet',
-                   group=candidate1.assignment_group,
-                   grading_published_datetime=timezone.now(),
-                   grading_points=1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=candidate1.assignment_group,
+            grading_points=1)
 
         relatedstudent2 = mommy.make('core.RelatedStudent',
                                      user__fullname='User that is not candidate',
@@ -457,10 +463,9 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         candidate3 = mommy.make('core.Candidate',
                                 relatedstudent=relatedstudent3,
                                 assignment_group__parentnode=otherassignment)
-        mommy.make('devilry_group.FeedbackSet',
-                   group=candidate3.assignment_group,
-                   grading_published_datetime=timezone.now(),
-                   grading_points=0)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=candidate3.assignment_group,
+            grading_points=0)
 
         relatedstudent4 = mommy.make('core.RelatedStudent',
                                      user__fullname='User that is not on the other assignment',
@@ -609,6 +614,9 @@ class TestRelatedStudentMultiselectTarget(TestCase):
 
 class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = replace_groups.ManualSelectStudentsView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_redirect_if_assignment_is_published(self):
         testassignment = mommy.make('core.Assignment',

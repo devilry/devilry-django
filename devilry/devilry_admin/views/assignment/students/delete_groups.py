@@ -48,11 +48,9 @@ class DeleteGroupsView(groupview_base.BaseMultiselectView):
             return queryset
         else:
             return queryset\
-                .exclude(number_of_groupcomments_from_students__gt=0)\
-                .exclude(number_of_imageannotationcomments_from_students__gt=0)\
-                .exclude(number_of_groupcomments_from_examiners__gt=0)\
-                .exclude(number_of_imageannotationcomments_from_examiners__gt=0)\
-                .exclude(number_of_published_feedbacksets__gt=0)
+                .exclude(cached_data__public_student_comment_count__gt=0)\
+                .exclude(cached_data__public_examiner_comment_count__gt=0)\
+                .exclude(cached_data__last_published_feedbackset__isnull=False)
 
     def get_context_data(self, **kwargs):
         context = super(DeleteGroupsView, self).get_context_data(**kwargs)

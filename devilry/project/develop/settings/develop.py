@@ -24,7 +24,7 @@ if profiler_middleware:
 
 
 INSTALLED_APPS += [
-    'debug_toolbar'
+    # 'debug_toolbar'
 ]
 
 
@@ -152,6 +152,11 @@ IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
                     'bower_components',
                 ]
             ),
+            ievvbuildstatic.npmrun_jsbuild.Plugin(
+                extra_import_paths=[
+                    ievvbuildstatic.filepath.SourcePath('ievv_jsbase', 'scripts', 'javascript'),
+                ]
+            ),
             ievvbuildstatic.mediacopy.Plugin(),
         ]
     ),
@@ -175,3 +180,10 @@ IEVVTASKS_DEVRUN_RUNNABLES = {
 }
 
 IEVVTASKS_DOCS_DASH_NAME = 'Devilry'
+
+IEVVTASKS_RECREATE_DEVDB_POST_MANAGEMENT_COMMANDS = [
+    {
+        'name': 'ievvtasks_customsql',
+        'args': ['-i', '-r'],
+    },
+]

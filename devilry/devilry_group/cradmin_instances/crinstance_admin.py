@@ -1,19 +1,17 @@
-# Python imports
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-# Devilry/cradmin imports
 from django.http import Http404
-from django_cradmin import crmenu
+
 from devilry.devilry_account.models import PeriodPermissionGroup
+from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
 from devilry.devilry_group.cradmin_instances import crinstance_base
 from devilry.devilry_group.views.admin import feedbackfeed_admin
+from devilry.devilry_group.views.download_files import batch_download_files
 from devilry.devilry_group.views.download_files import feedbackfeed_bulkfiledownload
 
 
-class Menu(crmenu.Menu):
-    devilryrole = 'admin'
-
+class Menu(devilry_crmenu_admin.Menu):
     def build_menu(self):
         group = self.request.cradmin_role
         self.add_headeritem(
@@ -28,7 +26,8 @@ class AdminCrInstance(crinstance_base.CrInstanceBase):
     menuclass = Menu
     apps = [
         ('feedbackfeed', feedbackfeed_admin.App),
-        ('feedbackfeed', feedbackfeed_bulkfiledownload.App)
+        ('feedbackfeed', feedbackfeed_bulkfiledownload.App),
+        ('feedbackfeed', batch_download_files.App)
     ]
     id = 'devilry_group_admin'
 

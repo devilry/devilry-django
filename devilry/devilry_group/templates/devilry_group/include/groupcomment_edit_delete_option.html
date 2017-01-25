@@ -3,9 +3,9 @@
 
 {% if me.group_comment.visibility == 'private' %}
     <a href="{% cradmin_appurl "groupcomment-delete" pk=me.group_comment.id %}"
-       class="btn btn-danger">{% trans "Delete" %}
+       class="btn btn-sm btn-danger devilry-feedbackfeed-groupcomment-draft-delete">{% trans "Delete" %}
     </a>
     <a href="{% cradmin_appurl "groupcomment-edit" pk=me.group_comment.id %}"
-       class="btn btn-info">{% trans "Edit" %}
+       class="btn btn-sm btn-default devilry-feedbackfeed-groupcomment-draft-edit">{% trans "Edit" %}
     </a>
 {% endif %}

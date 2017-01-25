@@ -1,19 +1,55 @@
 from __future__ import unicode_literals
 
+from django import forms
+from django.utils.translation import pgettext_lazy
 from django_cradmin.viewhelpers.crudbase import OnlySaveButtonMixin
 from django_cradmin.viewhelpers.update import UpdateView
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy, ugettext_lazy
 
 from devilry.apps.core import models as coremodels
+from devilry.apps.core.models import Assignment
 
 
 class AssignmentAnonymizationmodeUpdateView(OnlySaveButtonMixin, UpdateView):
     model = coremodels.Assignment
-
     fields = ['anonymizationmode']
+
+    def __get_anonymizationmode_choices(self):
+        return [
+            (
+                Assignment.ANONYMIZATIONMODE_OFF,
+                Assignment.ANONYMIZATIONMODE_CHOICES_DICT[Assignment.ANONYMIZATIONMODE_OFF]
+            ),
+            (
+                Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+                Assignment.ANONYMIZATIONMODE_CHOICES_DICT[Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS]
+            ),
+        ]
+
+    def get_form(self, form_class=None):
+        form = super(AssignmentAnonymizationmodeUpdateView, self).get_form()
+        form.fields['anonymizationmode'].widget = forms.RadioSelect()
+        form.fields['anonymizationmode'].choices = self.__get_anonymizationmode_choices()
+        return form
 
     def get_pagetitle(self):
         return pgettext_lazy('assignment config', "Edit anonymization settings")
 
     def get_queryset_for_role(self, role):
         return self.model.objects.filter(id=self.request.cradmin_role.id)
+
+    def post(self, request, *args, **kwargs):
+        self._old_anonymization_mode = self.get_object().anonymizationmode
+        return super(AssignmentAnonymizationmodeUpdateView, self).post(request, *args, **kwargs)
+
+    def get_success_message(self, object):
+        assignment = object
+        old_anonymizationmode = Assignment.ANONYMIZATIONMODE_CHOICES_SHORT_LABEL_DICT[self._old_anonymization_mode]
+        new_anonymizationmode = Assignment.ANONYMIZATIONMODE_CHOICES_SHORT_LABEL_DICT[assignment.anonymizationmode]
+        return pgettext_lazy(
+            'assignment config',
+            'Changed anonymization mode from "%(old_anonymizationmode)s" '
+            'to "%(new_anonymizationmode)s".'
+        ) % {
+            'old_anonymizationmode': old_anonymizationmode,
+            'new_anonymizationmode': new_anonymizationmode
+        }

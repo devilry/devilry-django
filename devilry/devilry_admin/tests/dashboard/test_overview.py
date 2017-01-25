@@ -293,7 +293,8 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
 
     def test_nonempty_list(self):
         mommy.make('core.Subject')
-        mockresponse = self.mock_http200_getrequest_htmls()
+        requestuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
         self.assertFalse(mockresponse.selector.exists('.django-cradmin-listing-no-items-message'))
         self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-list'))
 

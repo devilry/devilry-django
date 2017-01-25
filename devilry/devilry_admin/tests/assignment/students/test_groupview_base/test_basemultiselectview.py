@@ -9,6 +9,7 @@ from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_admin.views.assignment.students import groupview_base
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories
 
 
@@ -22,6 +23,9 @@ class TestBaseMultiselectView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     devilry.devilry_admin.tests.assignment.students.test_groupview_base.test_groupviewmixin.TestGroupViewMixin
     """
     viewclass = MinimalMultiselectView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def __mockinstance_with_devilryrole(self, devilryrole):
         mockinstance = mock.MagicMock()
@@ -296,7 +300,7 @@ class TestBaseMultiselectView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mommy.make('core.Candidate',
                        relatedstudent__user__fullname='candidate{}'.format(number),
                        assignment_group=group)
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(11):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
                                                requestuser=testuser)
@@ -334,7 +338,7 @@ class TestBaseMultiselectView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             devilry_group_mommy_factories.feedbackset_first_attempt_published(
                 group=group, grading_points=3)
         prefetched_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(11):
             self.mock_http200_getrequest_htmls(cradmin_role=prefetched_assignment,
                                                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
                                                requestuser=testuser)
@@ -353,7 +357,7 @@ class TestBaseMultiselectView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mommy.make('core.Candidate',
                        relatedstudent__user__fullname='candidate{}'.format(number),
                        assignment_group=group)
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(11):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
                                                requestuser=testuser)

@@ -5,13 +5,36 @@
 {% load i18n %}
 
 {% block content %}
-    <dl>
-        <dt>
-            <a href="{% cradmin_appurl 'feedbackset-file-download' me.feedbackset.id %}">
-                {% blocktrans with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
-                    {{ verbose_feedbackset }} deadline
-                {% endblocktrans %}
-            </a>
-        </dt>
-    </dl>
+    <div class="devilry-batchprocessed-download devilry-batchprocessed-download--none"
+                data-ievv-jsbase-widget="devilry-download-compressed-archive"
+                data-ievv-jsbase-widget-config='{
+                     "apiurl": "{% cradmin_instance_url appname="download" viewname="feedbackset-file-download-api" content_object_id=me.feedbackset.id %}",
+                     "signalNameSpace": "download-feedbackset-{{ me.feedbackset.id }}"
+                }'>
+        <span class="devilry-batchprocessed-download__preparing-download">
+            <span class="fa fa-spinner fa-spin" aria-hidden="true"></span>
+            <span class="text-muted">{% trans "preparing download" %}</span>
+        </span>
+        <button class="btn btn-default devilry-batchprocessed-download__startbutton"
+                data-ievv-jsbase-widget="devilry-download-compressed-archive-startbutton"
+                    data-ievv-jsbase-widget-config='{
+                         "signalNameSpace": "download-feedbackset-{{ me.feedbackset.id }}"
+                    }'>
+            {% blocktrans with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
+                {{ verbose_feedbackset }} deadline
+            {% endblocktrans %}
+        </button>
+        <a class="btn btn-default devilry-batchprocessed-download__downloadlink"
+                data-ievv-jsbase-widget="devilry-download-compressed-archive-downloadlink"
+                data-ievv-jsbase-widget-config='{
+                     "signalNameSpace": "download-feedbackset-{{ me.feedbackset.id }}"
+                }'>
+            <small class="text-muted devilry-batchprocessed-download__download-ready-message">
+                {% trans "download is ready" %}
+            </small>
+            {% blocktrans with verbose_feedbackset=''|devilry_verbosenumber:me.feedbackset_num %}
+                {{ verbose_feedbackset }} deadline
+            {% endblocktrans %}
+        </a>
+    </div>
 {% endblock content %}

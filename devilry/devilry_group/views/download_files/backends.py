@@ -13,12 +13,13 @@ class DevilryGroupZipBackend(backends_base.PythonZipFileBackend):
 
     def __init__(self, **kwargs):
         super(DevilryGroupZipBackend, self).__init__(**kwargs)
-        # self.__create_path_if_not_exists()
 
-    # def __create_path_if_not_exists(self):
-    #     """
-    #     Create path if given path does not exist.
-    #     """
-    #     archivedirname = os.path.dirname(self.archive_path)
-    #     if not os.path.exists(archivedirname):
-    #         os.makedirs(archivedirname)
+    @classmethod
+    def delete_archive(cls, full_path):
+        if not os.path.exists(full_path):
+            return False
+        try:
+            os.remove(full_path)
+        except OSError:
+            return False
+        return True

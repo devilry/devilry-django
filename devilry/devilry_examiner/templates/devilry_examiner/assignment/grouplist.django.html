@@ -1,5 +1,6 @@
 {% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
 {% load i18n %}
+{% load cradmin_tags %}
 
 {% block pageheader-inner %}
     {{ block.super }}
@@ -7,6 +8,11 @@
 {#    </p>#}
 {% endblock pageheader-inner %}
 
+
+{% block listbuilderview_buttons %}
+        {{ block.super }}
+        <a id="devilry-examiner-bulk-feedback-button" class="btn btn-default" href="{% cradmin_appurl 'bulk-feedback' %}">{% trans "Bulk create feedback" %}</a>
+{% endblock %}
 
 {% block no-items-wrapper %}
     {% if excluding_filters_other_than_status_is_applied %}

@@ -34,9 +34,23 @@ class PeriodOverviewView(listbuilderview.FilterListMixin,
     paginate_by = 15
     template_name = 'devilry_student/period/overview.django.html'
 
+    def __get_assignment_id_to_assignment_map(self):
+        assignmentqueryset = Assignment.objects\
+            .filter_student_has_access(user=self.request.user)\
+            .filter(parentnode=self.request.cradmin_role)\
+            .select_related('parentnode__parentnode')\
+            .prefetch_point_to_grade_map()
+        assignment_id_to_assignment_map = {}
+        for assignment in assignmentqueryset:
+            assignment_id_to_assignment_map[assignment.id] = assignment
+        return assignment_id_to_assignment_map
+
     def get_value_and_frame_renderer_kwargs(self):
         kwargs = super(PeriodOverviewView, self).get_value_and_frame_renderer_kwargs()
-        kwargs['include_periodpath'] = False
+        kwargs.update({
+            'assignment_id_to_assignment_map': self.__get_assignment_id_to_assignment_map(),
+            'include_periodpath': False
+        })
         return kwargs
 
     def get_filterlist_url(self, filters_string):
@@ -63,19 +77,14 @@ class PeriodOverviewView(listbuilderview.FilterListMixin,
         return coremodels.AssignmentGroup.objects\
             .filter(parentnode__parentnode=period)\
             .filter_student_has_access(user=self.request.user)\
-            .annotate_with_grading_points()\
-            .annotate_with_is_waiting_for_feedback()\
-            .annotate_with_is_waiting_for_deliveries()\
-            .annotate_with_is_corrected()\
-            .annotate_with_number_of_commentfiles_from_students()\
-            .annotate_with_number_of_groupcomments_from_students()\
-            .annotate_with_number_of_groupcomments_from_examiners()\
-            .annotate_with_number_of_imageannotationcomments_from_students()\
-            .annotate_with_number_of_imageannotationcomments_from_examiners()\
             .distinct()\
-            .order_by('-parentnode__first_deadline', '-parentnode__publishing_time')\
-            .prefetch_assignment_with_points_to_grade_map(
-                assignmentqueryset=Assignment.objects.select_related('parentnode__parentnode'))
+            .select_related(
+                'parentnode',
+                'cached_data__last_published_feedbackset',
+                'cached_data__last_feedbackset',
+                'cached_data__first_feedbackset',
+            )\
+            .order_by('-parentnode__first_deadline', '-parentnode__publishing_time')
 
     def get_no_items_message(self):
         return pgettext_lazy('student period overview',

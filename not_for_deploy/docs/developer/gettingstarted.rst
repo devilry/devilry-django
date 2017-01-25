@@ -73,7 +73,7 @@ Ubuntu Linux
 ============
 ::
 
-    $ sudo apt-get install build-essential python-dev python-virtualenv libncurses5-dev virtualenvwrapper libxslt1-dev libxml2 libxml2-dev zlib1g-dev
+    $ sudo apt-get install build-essential python-dev python-virtualenv libncurses5-dev virtualenvwrapper libxslt1-dev libxml2 libxml2-dev zlib1g-dev libpq-dev
 
 
 

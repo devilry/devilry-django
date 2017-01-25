@@ -337,10 +337,8 @@ def devilry_comment_summary(group):
 
     Assumes that the AssignmentGroup has been annotated with:
 
-    - :meth:`~devilry.apps.core.models.AssignmentGroupQuerySet.annotate_with_number_of_groupcomments_from_students`.
-    - :meth:`~devilry.apps.core.models.AssignmentGroupQuerySet.annotate_with_number_of_commentfiles_from_students`.
-    - :meth:`~devilry.apps.core.models.AssignmentGroupQuerySet.annotate_with_number_of_groupcomments_from_examiners`.
     - :meth:`~devilry.apps.core.models.AssignmentGroupQuerySet.annotate_with_number_of_private_groupcomments_from_user`.
+    - :meth:`~devilry.apps.core.models.AssignmentGroupQuerySet.annotate_with_number_of_private_imageannotationcomments_from_user`.
 
     Args:
         group: An :class:`devilry.apps.core.models.AssignmentGroup` object annotated

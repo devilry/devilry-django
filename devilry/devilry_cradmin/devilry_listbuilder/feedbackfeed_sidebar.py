@@ -1,5 +1,6 @@
 # Devilry/cradmin imports
 from django_cradmin.viewhelpers import listbuilder
+from devilry.devilry_group import models as group_models
 
 
 class SidebarListBuilderList(listbuilder.base.List):
@@ -40,14 +41,14 @@ class SidebarListBuilderList(listbuilder.base.List):
         """
         self.append(renderable=FeedbackSetItemValue(value=feedbackset_dict['feedbackset'],
                                                     feedbackset_num=feedbackset_dict['feedbackset_num']))
-        valuerenderer = GroupCommentListBuilderList.from_groupcomments(
-                comment_list=feedbackset_dict['comments'])
-        self.append(renderable=valuerenderer)
+        # valuerenderer = GroupCommentListBuilderList.from_groupcomments(
+        #         comment_list=feedbackset_dict['comments'],
+        #         assignment=self.assignment,
+        #         devilryrole=self.devilryrole)
+        # self.append(renderable=valuerenderer)
 
-    def get_extra_css_classes_list(self):
-        css_classes_list = super(SidebarListBuilderList, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-group-feedbackfeed-sidebar-filecontent')
-        return css_classes_list
+    def get_base_css_classes_list(self):
+        return ['devilry-group-feedbackfeed-sidebar__list']
 
 
 class GroupCommentListBuilderList(listbuilder.base.List):
@@ -57,30 +58,47 @@ class GroupCommentListBuilderList(listbuilder.base.List):
     that belong to a FeedbackSet. See :class:`~FileListBuilder`.
     """
     @classmethod
-    def from_groupcomments(cls, comment_list, **kwargs):
+    def from_groupcomments(cls, comment_list, assignment, devilryrole, **kwargs):
         """Builds a list of :obj:`~devilry.devilry_group.models.GroupComment`s.
 
         Args:
-            comment_list (list): List of GroupComment dictionaries.
+            comment_list (List): List of GroupComment dictionaries.
+            assignment (:class:`~.devilry.apps.core.models.assignment.Assignment`): The assignment.
+            devilryrole (str): The viewrole for the user.
 
         Returns:
             List: Instance of CrAdmins renderable List.
         """
         groupcommentbuilder_list = cls(**kwargs)
         for comment_dict in comment_list:
-            groupcommentbuilder_list.append_dict(comment_dict=comment_dict)
+            groupcommentbuilder_list.append_dict(assignment=assignment, comment_dict=comment_dict, devilryrole=devilryrole)
         return groupcommentbuilder_list
 
-    def append_dict(self, comment_dict):
+    def append_dict(self, assignment, comment_dict, devilryrole):
         """Appends renderables to this list.
 
         Appends the ``published_date`` of a GroupComment and adds a list of CommentFiles for that GroupComment.
         See :class:`~GroupCommentDateTimeItemValue` and :class:`~FileListBuilderList`.
 
         Args:
+            assignment (:class:`~.devilry.apps.core.models.assignment.Assignment`):
+            comment_dict (dict): Dictionary of ``GroupComment``s and ``CommentFile``s.
+            devilryrole (str): The viewrole for the user.
+
+        Args:
             comment_dict (dict): Dictionary for a GroupComment.
         """
-        self.append(renderable=GroupCommentItemValue(value=comment_dict['groupcomment']))
+        group_comment = comment_dict.get('group_comment')
+        user_obj = None
+        if group_comment.user_role == group_models.GroupComment.USER_ROLE_STUDENT:
+            user_obj = comment_dict.get('candidate')
+        elif group_comment.user_role == group_models.GroupComment.USER_ROLE_EXAMINER:
+            user_obj = comment_dict.get('examiner')
+        self.append(renderable=GroupCommentItemValue(
+            value=group_comment,
+            user_obj=user_obj,
+            devilryrole=devilryrole,
+            assignment=assignment))
         valuerenderer = FileListBuilderList.from_files(comment_dict['files'])
         self.append(renderable=valuerenderer)
 
@@ -126,6 +144,12 @@ class GroupCommentItemValue(listbuilder.base.ItemValueRenderer):
     """
     valuealias = 'groupcomment'
     template_name = 'devilry_group/listbuilder_sidebar/sidebar_comment_item_value.django.html'
+
+    def __init__(self, *args, **kwargs):
+        super(GroupCommentItemValue, self).__init__(*args, **kwargs)
+        self.user_obj = kwargs.get('user_obj')
+        self.assignment = kwargs.get('assignment')
+        self.devilryrole = kwargs.get('devilryrole')
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(GroupCommentItemValue, self).get_extra_css_classes_list()
