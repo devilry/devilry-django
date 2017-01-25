@@ -14,7 +14,7 @@ class StatusAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'period',
-        'getStatusText',
+        'get_status_text',
         'createtime',
         'message',
     )

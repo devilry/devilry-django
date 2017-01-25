@@ -1,0 +1,21 @@
+{% extends 'django_cradmin/viewhelpers/listbuilder/base/itemvalue.django.html' %}
+
+{% load cradmin_tags %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block content %}
+    <h2>
+        <span class="devilry-qualifiesforexam-status-description-name">Status</span>
+        <span class="devilry-qualifiesforexam-status-description-date">{{ me.status.createtime }}</span>
+    </h2>
+    {% if me.status.status == 'ready' %}
+        <h2>
+            <span class="label label-success">{% trans "Ready" %}</span>
+        </h2>
+    {% else %}
+        <h2>
+            <span class="label label-warning">{% trans "Not ready" %}</span>
+        </h2>
+    {% endif %}
+{% endblock content %}

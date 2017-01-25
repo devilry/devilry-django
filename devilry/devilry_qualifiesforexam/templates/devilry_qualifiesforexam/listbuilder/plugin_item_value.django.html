@@ -1,0 +1,13 @@
+{% extends 'django_cradmin/viewhelpers/listbuilder/base/itemvalue.django.html' %}
+
+{% load cradmin_tags %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block content %}
+    <h2>{% trans me.plugin.get_human_readable_name %}</h2>
+    {% block details %}
+        <p class="muted"> <small>{% trans me.plugin.get_description %}</small></p>
+    {% endblock details %}
+
+{% endblock content %}

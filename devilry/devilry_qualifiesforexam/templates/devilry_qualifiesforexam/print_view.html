@@ -1,0 +1,48 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load i18n %}
+
+{% block title %}
+    {{ period }}
+{% endblock %}
+
+{% block content %}
+    {# Adds a simple css class does not show the button in the print version #}
+    <style>
+    @media print {
+        .no-print, no-print * {
+            display: none !important;
+        }
+    }
+    </style>
+
+    <h1>{{ period }}</h1>
+    <br>
+    <a id="devilry_qualifiesforexam_print_link" class="btn btn-primary no-print" onclick="window.print();">
+        {% trans "print" %}
+    </a>
+    <br>
+    <h1>
+        {% trans "Qualified for final exams" %}
+    </h1>
+    <br>
+    <ul>
+    {% for relatedstudent in qualifying_students %}
+        <li>
+            {{  relatedstudent.user.fullname }}({{ relatedstudent.user.shortname}})
+        </li>
+    {% endfor %}
+    </ul>
+    <br>
+    <br>
+    <h1>
+        {% trans "NOT qualified for final exams" %}
+    </h1>
+    <br>
+    <ul>
+    {% for relatedstudent in nonqualifying_students %}
+        <li>
+            {{  relatedstudent.user.fullname }}({{ relatedstudent.user.shortname}})
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "devilry_qualifiesforexam/base.django.html" %}
+
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block content %}
+    <div class="container">
+        <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
+            <h1>Students on {{ period }}</h1>
+            <h2>Preview and confirm</h2>
+            <p> This table shows the result of your choices</p>
+        </div>
+
+        <p class="devilry-buttonbar">
+            {# Add back button #}
+            <form action="" method="post">
+                {% csrf_token %}
+                <a id="devilry_qualifiesforexam_back_index_button" class="btn btn-primary"
+                   href="{% cradmin_instance_url appname='qualifiesforexam' viewname='configure-plugin' plugintypeid=plugintypeid %}">
+                    {% trans "Back" %}
+                </a>
+                <button id="devilry_qualifiesforexam_save_button" type="submit" value="Save" name="save" class="btn btn-primary">
+                    {% trans "Save" %}
+                </button>
+            </form>
+        </p>
+
+        {% cradmin_render_renderable table %}
+{#        {% include "devilry_qualifiesforexam/includes/qualification_table.django.html" %}#}
+    </div>
+{% endblock content %}

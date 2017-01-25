@@ -353,7 +353,7 @@ class FeedbackSet(models.Model):
                 self.group.assignment,
                 self.feedbackset_type,
                 self.group.get_unanonymized_long_displayname(),
-                self.deadline_datetime,
+                self.current_deadline(),
                 self.grading_points)
 
     def clean(self):

@@ -1,0 +1,6 @@
+{% extends "devilry_cradmin/devilry_tablebuilder/itemvalue.django.html" %}
+
+{% block content %}
+    <h3> {{ me.relatedstudent.user.fullname }}</h3>
+    <h5> {{ me.relatedstudent.user.shortname }}</h5>
+{% endblock %}
