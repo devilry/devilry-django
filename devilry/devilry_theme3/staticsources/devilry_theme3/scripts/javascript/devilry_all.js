@@ -1,6 +1,7 @@
 import DownloadCompressedArchiveWidget from "./widgets/DownloadCompressedArchiveWidget";
 import DownloadCompressedArchiveStartButtonWidget from "./widgets/DownloadCompressedArchiveStartButtonWidget";
 import DownloadCompressedArchiveDownloadLinkWidget from "./widgets/DownloadCompressedArchiveDownloadLinkWidget";
+import GradingConfigurationWidget from "./widgets/GradingConfigurationWidget";
 
 
 export default class DevilryTheme3All {
@@ -14,6 +15,8 @@ export default class DevilryTheme3All {
       DownloadCompressedArchiveStartButtonWidget);
     widgetRegistry.registerWidgetClass('devilry-download-compressed-archive-downloadlink',
       DownloadCompressedArchiveDownloadLinkWidget);
+    widgetRegistry.registerWidgetClass('devilry-grading-configuration',
+      GradingConfigurationWidget);
 
     if (document.readyState != 'loading'){
       widgetRegistry.initializeAllWidgetsWithinElement(document.body);
