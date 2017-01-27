@@ -2,8 +2,6 @@ from __future__ import unicode_literals
 
 from django import test
 from django.conf import settings
-from django.utils import timezone
-
 from model_mommy import mommy
 
 from devilry.devilry_admin.views.period import overview_all_results_collector
