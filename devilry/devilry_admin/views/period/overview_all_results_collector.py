@@ -9,7 +9,7 @@ from devilry.apps.core import models as core_models
 
 class RelatedStudentResults(object):
     """
-    Class encapsulates grading results for a RelatedStudent
+    Class encapsulates grading results for a RelatedStudent.
     """
     def __init__(self, relatedstudent, cached_data_dict):
         #: The RelatedStudent
@@ -35,33 +35,76 @@ class RelatedStudentResults(object):
             return False
         return True
 
+    def is_waiting_for_feedback(self, assignment_id):
+        """
+        Check if the student is waiting for feedback on the assignment.
+
+        The student is waiting for feedback if registered on the ``Assignment``, but the last ``FeedbackSet``
+        is not published.
+
+        Returns:
+            (bool): True if student is waiting for feedback, else false.
+
+        Raises:
+            (ValueError): If the student is not registered on the ``Assignment``.
+        """
+        if not self.student_is_registered_on_assignment(assignment_id=assignment_id):
+            raise ValueError('You are checking if the student is waiting for feedback when the student is not '
+                             'registered on the assignment. Maybe you should call '
+                             'student_is_registered_on_assignment(assignment_id=) first?')
+        cached_data = self.cached_data_dict[assignment_id]
+        if cached_data.last_published_feedbackset_is_last_feedbackset:
+            return False
+        return True
+
     def get_result_for_assignment(self, assignment_id):
         """
         Get the result of the RelatedStudent on Assignment.
+
+        Note::
+            If the student is registered on the ``Assignment``, but the ``FeedbackSet`` is not published,
+            0 is returned. The return-value would be the same if the ``FeedbackSet`` is published, but with
+            ``grading_points = 0``
 
         Args:
             assignment_id: id of the Assignment to get the result for.
 
         Returns:
-            (int or None): If the last FeedbackSet is published, the grading points are returned.
-                If the student has no published feedbacksets, none is returned.
+            (int or None): If the student is registered on the assignment, grading points or 0 is returned.
+             If the student is not registered on the assignment, None is returned.
         """
-        cached_data = self.cached_data_dict[assignment_id]
-        if not cached_data.last_published_feedbackset:
+        if not self.student_is_registered_on_assignment(assignment_id=assignment_id):
             return None
+        cached_data = self.cached_data_dict[assignment_id]
+        if not cached_data.last_published_feedbackset_is_last_feedbackset:
+            return 0
         return cached_data.last_published_feedbackset.grading_points
 
     def get_total_result(self):
         """
         Count the total number of points a student has for the period.
+        If the student has no published feedback for the assignment, this is regarded as 0 points.
 
         Returns:
             (int): total number of grading points.
         """
         total = 0
         for cached_data in self.cached_data_dict.values():
-            total += cached_data.last_published_feedbackset.grading_points
+            if cached_data.last_published_feedbackset_is_last_feedbackset:
+                total += cached_data.last_published_feedbackset.grading_points
         return total
+
+    def get_cached_data_list(self):
+        """
+        Get a list sorted by the current deadline of the last feedbackset for every
+        AssignmentGroupCachedData.
+
+        Returns:
+            (list): Sorted list of AssignmentGroupCachedData.
+        """
+        cached_data_list = [cached_data for cached_data in self.cached_data_dict.values()]
+        cached_data_list.sort(key=lambda cd: cd.last_feedbackset.current_deadline())
+        return cached_data_list
 
     def __serialize_user(self):
         user = self.relatedstudent.user
@@ -133,7 +176,9 @@ class PeriodAllResultsCollector(object):
                 'assignment_group__parentnode',
                 'assignment_group__parentnode__parentnode',
                 'assignment_group__parentnode__parentnode__parentnode',
-                'assignment_group__cached_data',
+                'assignment_group__cached_data__last_feedbackset__group',
+                'assignment_group__cached_data__last_feedbackset__group__parentnode',
+                'assignment_group__cached_data__last_feedbackset',
                 'assignment_group__cached_data__last_published_feedbackset')
 
     def __get_relatedstudents(self):
@@ -145,7 +190,7 @@ class PeriodAllResultsCollector(object):
         """
         relatedstudent_queryset = core_models.RelatedStudent.objects\
             .filter(period=self.period)\
-            .select_related('period', 'user')\
+            .select_related('period', 'period__parentnode', 'user')\
             .prefetch_related(
                 models.Prefetch(
                     'candidate_set',
@@ -179,6 +224,18 @@ class PeriodAllResultsCollector(object):
                     list(relatedstudent.candidate_set.all())
                 )
             )
+
+    def iter_related_student_results(self):
+        """
+        Get an iterator over the :obj:`~.RelatedStudentResults` on the period.
+
+        This is convenient if you want information about each ``RelatedStudent``, and is
+        a shortcut for iterating the :attr:`~.PeriodAllResultsCollector.results` dict.
+
+        Returns:
+            (iterator): iterator over :obj:`~.RelatedStudentResults`.
+        """
+        return self.results.itervalues()
 
     def serialize_all_results(self):
         serialized = {
