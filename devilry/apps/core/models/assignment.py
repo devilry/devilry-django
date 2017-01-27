@@ -455,12 +455,9 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     max_points = models.PositiveIntegerField(
         null=True, blank=True,
-        verbose_name=_('Maximum points'),
-        help_text=_('Specify the maximum number of points possible for this assignment.'),
         default=1)
     passing_grade_min_points = models.PositiveIntegerField(
         null=True, blank=True,
-        verbose_name=_('Minumum number of points required to pass'),
         default=1)
 
     #: The "passed-or-failed" value for :obj:`~.Assignment.points_to_grade_mapper`.
@@ -510,7 +507,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED = 'devilry_gradingsystemplugin_approved'
     GRADING_SYSTEM_PLUGIN_ID_POINTS = 'devilry_gradingsystemplugin_points'
-    GRADING_SYSTEM_PLUGIN_ID_SCHEMA = 'schema'
+    # GRADING_SYSTEM_PLUGIN_ID_SCHEMA = 'schema'
     GRADING_SYSTEM_PLUGIN_ID_CHOICES = [
         (
             GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
@@ -525,13 +522,14 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                 'POINTS. The examiner types in the number of points to award the '
                 'student(s) for this assignment.')
         ),
-        (
-            GRADING_SYSTEM_PLUGIN_ID_SCHEMA,
-            pgettext_lazy(
-                'assignment grading plugin',
-                'SCHEMA. The examiner fill in a schema defined by you.')
-        )
+        # (
+        #     GRADING_SYSTEM_PLUGIN_ID_SCHEMA,
+        #     pgettext_lazy(
+        #         'assignment grading plugin',
+        #         'SCHEMA. The examiner fill in a schema defined by you.')
+        # )
     ]
+
     #: Dictionary for getting the :obj:`~.Assignment.GRADING_SYSTEM_PLUGIN_ID_CHOICES` descriptions
     GRADING_SYSTEM_PLUGIN_ID_CHOICES_DICT = dict(GRADING_SYSTEM_PLUGIN_ID_CHOICES)
 

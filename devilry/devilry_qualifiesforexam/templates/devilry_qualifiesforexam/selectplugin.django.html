@@ -1,0 +1,21 @@
+{% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
+
+{% load devilry_account_tags %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block pageheader-inner %}
+    {{ block.super }}
+    <h1>{{ headline }}</h1>
+    <p class="devilry-page-subheader">
+        {% trans help_text %}
+    </p>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    {{ block.super }}
+    <div class="container">
+        {% cradmin_render_renderable plugin_listbuilder_list %}
+    </div>
+{% endblock content %}

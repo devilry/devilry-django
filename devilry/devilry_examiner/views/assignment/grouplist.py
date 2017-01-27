@@ -210,13 +210,21 @@ class App(crapp.App):
         crapp.Url(r'^filter/(?P<filters_string>.+)?$',
                   GroupListView.as_view(),
                   name='filter'),
-        crapp.Url(r'bulk-feedback$',
+
+        # Bulk feedback views
+        crapp.Url(r'^bulk-feedback$',
                   bulk_feedback.BulkFeedbackRedirectView.as_view(),
                   name='bulk-feedback'),
-        crapp.Url(r'bulk-feedback-points$',
+        crapp.Url(r'^bulk-feedback-points$',
                   bulk_feedback.BulkFeedbackPointsView.as_view(),
                   name='bulk-feedback-points'),
-        crapp.Url(r'bulk-feedback-passedfailed',
+        crapp.Url(r'^bulk-feedback-passedfailed$',
                   bulk_feedback.BulkFeedbackPassedFailedView.as_view(),
-                  name='bulk-feedback-passedfailed')
+                  name='bulk-feedback-passedfailed'),
+        crapp.Url(r'^bulk-feedback-points-filter/filter/(?P<filters_string>.+)?$',
+                  bulk_feedback.BulkFeedbackPointsView.as_view(),
+                  name='bulk-feedback-points-filter'),
+        crapp.Url(r'^bulk-feedback-passedfailed/filter/(?P<filters_string>.+)?$',
+                  bulk_feedback.BulkFeedbackPassedFailedView.as_view(),
+                  name='bulk-feedback-passedfailed-filter')
     ]

@@ -208,15 +208,15 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                 str(Assignment.GRADING_SYSTEM_PLUGIN_ID_CHOICES_DICT.get(
                         Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)))
 
-    def test_gradingconfiguration_examiner_chooses_schema(self):
-        assignment = mommy.make('core.Assignment', grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_SCHEMA)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertEqual(
-                mockresponse.selector.one(
-                        '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(1) td:nth-child(2)').alltext_normalized,
-                str(Assignment.GRADING_SYSTEM_PLUGIN_ID_CHOICES_DICT.get(
-                        Assignment.GRADING_SYSTEM_PLUGIN_ID_SCHEMA)))
+    # def test_gradingconfiguration_examiner_chooses_schema(self):
+    #     assignment = mommy.make('core.Assignment', grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_SCHEMA)
+    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+    #     self.assertEqual(
+    #             mockresponse.selector.one(
+    #                     '#devilry_admin_assignment_overview_gradingconfiguration_information '
+    #                     'table tbody tr:nth-child(1) td:nth-child(2)').alltext_normalized,
+    #             str(Assignment.GRADING_SYSTEM_PLUGIN_ID_CHOICES_DICT.get(
+    #                     Assignment.GRADING_SYSTEM_PLUGIN_ID_SCHEMA)))
 
     def test_gradingconfiguration_students_see(self):
         assignment = mommy.make('core.Assignment')
