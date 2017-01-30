@@ -3,6 +3,7 @@ from datetime import datetime
 
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
@@ -1526,7 +1527,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         self._merge_candidates_into(target)
         self._merge_examiners_into(target)
         self._merge_tags_into(target)
-
         self.delete()
 
     def can_merge(self, target):
@@ -1573,10 +1573,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         grouphistory.merge_assignment_group_history(groups)
 
         # Merge groups
-        for group in groups:
-            group.merge_into(target_group)
-
-        grouphistory.save()
+        with transaction.atomic():
+            for group in groups:
+                group.merge_into(target_group)
+            grouphistory.save()
 
     def pop_candidate(self, candidate):
         """

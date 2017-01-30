@@ -24,7 +24,7 @@ DECLARE
 BEGIN
     var_group_id = devilry__get_group_id_from_comment_id(OLD.comment_id);
     IF var_group_id IS NOT NULL THEN
-        PERFORM devilry__rebuild_assignmentgroupcacheddata(var_group_id);
+        PERFORM devilry__rebuild_assignmentgroupcacheddata_on_delete(var_group_id, TG_TABLE_NAME);
     END IF;
     RETURN NEW;
 END

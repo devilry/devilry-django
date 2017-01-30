@@ -251,6 +251,22 @@ BEGIN
 END
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION devilry__rebuild_assignmentgroupcacheddata_on_delete(
+    param_group_id integer, param_table_name text)
+RETURNS VOID AS $$
+BEGIN
+  IF param_table_name = 'core_examiner' OR
+      param_table_name = 'core_candidate' OR
+      param_table_name = 'devilry_group_feedbackset' OR
+      param_table_name = 'devilry_group_groupcomment' OR
+      param_table_name = 'devilry_group_imageannotationcomment' OR
+      param_table_name = 'devilry_comment_commentfile'
+  THEN
+      PERFORM devilry__rebuild_assignmentgroupcacheddata(param_group_id);
+  END IF;
+END
+$$ LANGUAGE plpgsql;
+
 
 CREATE OR REPLACE FUNCTION devilry__rebuild_assignmentgroupcacheddata(
     param_group_id integer)

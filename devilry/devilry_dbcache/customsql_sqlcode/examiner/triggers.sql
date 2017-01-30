@@ -14,7 +14,7 @@ CREATE TRIGGER devilry__on_examiner_after_insert_or_update
 
 CREATE OR REPLACE FUNCTION devilry__on_examiner_after_delete() RETURNS TRIGGER AS $$
 BEGIN
-    PERFORM devilry__rebuild_assignmentgroupcacheddata(OLD.assignmentgroup_id);
+    PERFORM devilry__rebuild_assignmentgroupcacheddata_on_delete(OLD.assignmentgroup_id, TG_TABLE_NAME);
     RETURN NEW;
 END
 $$ LANGUAGE plpgsql;

@@ -135,6 +135,35 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEquals(AssignmentGroup.objects.get(id=group1.id).candidates.count(), 2)
         self.assertEquals(AssignmentGroup.objects.get(id=group1.id).feedbackset_set.count(), 2)
 
+    def test_success_merge_multiple_groups_db(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        core_mommy.candidate(group=group1)
+        core_mommy.candidate(group=group2)
+        core_mommy.candidate(group=group3)
+        core_mommy.candidate(group=group4)
+        core_mommy.examiner(group=group1)
+        core_mommy.examiner(group=group2)
+        core_mommy.examiner(group=group3)
+        core_mommy.examiner(group=group4)
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            requestuser=testuser,
+            requestkwargs={
+                'data': {
+                    'selected_items': [group1.id, group2.id, group3.id, group4.id]
+                }
+            })
+        self.assertFalse(AssignmentGroup.objects.filter(id=group2.id).exists())
+        self.assertFalse(AssignmentGroup.objects.filter(id=group3.id).exists())
+        self.assertFalse(AssignmentGroup.objects.filter(id=group4.id).exists())
+        self.assertTrue(AssignmentGroup.objects.filter(id=group1.id).exists())
+
     def test_candidate_count_filter(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')

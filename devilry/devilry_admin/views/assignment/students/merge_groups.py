@@ -22,10 +22,16 @@ class MergeGroupsView(groupview_base.BaseMultiselectView):
     filterview_name = 'filter'
     template_name = 'devilry_admin/assignment/students/merge_groups.django.html'
 
-    def get_success_url(self):
+    def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
-            'filter', kwargs={'filters_string': self.get_filters_string()}
-        )
+            'filter',
+            kwargs={'filters_string': filters_string})
+
+    def get_success_url(self):
+        if self.get_filters_string():
+            return self.get_filterlist_url(self.get_filters_string())
+        else:
+            return self.request.cradmin_app.reverse_appindexurl()
 
     def add_filterlist_items(self, filterlist):
         filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())
@@ -39,8 +45,8 @@ class MergeGroupsView(groupview_base.BaseMultiselectView):
     def get_target_renderer_class(self):
         return MergeGroupsTargetRenderer
 
-    def __get_merged_candidates_short_name(self, group_queryset):
-        candidates = Candidate.objects.filter(assignment_group__in=group_queryset)\
+    def __get_merged_candidates_short_name(self, group):
+        candidates = Candidate.objects.filter(assignment_group=group)\
             .select_related('relatedstudent__user')
         ret = ""
         for candidate in candidates:
@@ -49,12 +55,12 @@ class MergeGroupsView(groupview_base.BaseMultiselectView):
 
     def __get_groups_from_form(self, form):
         target_group_id = self.request.POST.getlist('selected_items')[0]
-        target_group = form.cleaned_data['selected_items'].get(id=target_group_id)
+        self.target_group = form.cleaned_data['selected_items'].get(id=target_group_id)
         groups = []
         for group in form.cleaned_data['selected_items']:
-            if group != target_group:
+            if group != self.target_group:
                 groups.append(group)
-        groups.insert(0, target_group)
+        groups.insert(0, self.target_group)
         return groups
 
     def form_valid(self, form):
@@ -68,7 +74,7 @@ class MergeGroupsView(groupview_base.BaseMultiselectView):
             messages.success(
                 self.request,
                 "A group with {} has been created!".format(
-                    self.__get_merged_candidates_short_name(form.cleaned_data['selected_items'])
+                    self.__get_merged_candidates_short_name(self.target_group)
                 )
             )
         return super(MergeGroupsView, self).form_valid(form)
