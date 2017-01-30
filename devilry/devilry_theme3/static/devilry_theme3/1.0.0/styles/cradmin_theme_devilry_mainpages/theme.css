@@ -8988,73 +8988,34 @@ ul.devilry-admin-assigments-students-and-examiners li p {
   font-size: 14px;
 }
 .devilry-tabulardata-list--as-table {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.devilry-tabulardata-list--as-table .devilry-tabulardata-list__content {
   display: table;
 }
-.devilry-tabulardata-list--as-table .devilry-tabulardata-list__header {
+.devilry-tabulardata-list .devilry-tabulardata-list__header {
   display: table-row-group;
   font-size: 18px;
   font-weight: bold;
 }
-.devilry-tabulardata-list--as-table .devilry-tabulardata-list__body {
+.devilry-tabulardata-list .devilry-tabulardata-list__body {
   display: table-row-group;
 }
-.devilry-tabulardata-list--as-table .devilry-tabulardata-list__row {
+.devilry-tabulardata-list .devilry-tabulardata-list__row {
   display: table-row;
   clear: both;
 }
-.devilry-tabulardata-list--as-table .devilry-tabulardata-list__row:nth-child(even) {
-  background-color: #eeddee;
+.devilry-tabulardata-list .devilry-tabulardata-list__row--result-info:hover {
+  background-color: #ebd9e8;
 }
-.devilry-tabulardata-list--as-table .devilry-tabulardata-list__row--result-info {
-  display: table-row;
-  clear: both;
-}
-.devilry-tabulardata-list--as-table .devilry-tabulardata-list__row--result-info:nth-child(even) {
-  background-color: #eeddee;
-}
-.devilry-tabulardata-list--as-table .devilry-tabulardata-list__row--result-info:hover {
-  background-color: #c78fbe;
-}
-.devilry-tabulardata-list--as-table .devilry-tabulardata-list__cell {
+.devilry-tabulardata-list .devilry-tabulardata-list__cell {
   display: table-cell;
   padding: 20px;
+  border-bottom: 1px solid #ebd9e8;
 }
-.devilry-tabulardata-list--as-table .devilry-tabulardata-list__cell--columnheader {
-  display: table-cell;
-  padding: 20px;
-  border-bottom: solid #B568A9;
-}
-@media only screen and (max-width: 768px) {
-  .devilry-tabulardata-list--as-table {
-    position: relative;
-    width: 100%;
-  }
-  .devilry-tabulardata-list--as-table .devilry-tabulardata-list__header {
-    display: inline-block;
-    width: 100%;
-    border-bottom: solid #B568A9;
-  }
-  .devilry-tabulardata-list--as-table .devilry-tabulardata-list__body {
-    display: inline-block;
-    width: 100%;
-  }
-  .devilry-tabulardata-list--as-table .devilry-tabulardata-list__row {
-    display: inline-block;
-    width: 100%;
-  }
-  .devilry-tabulardata-list--as-table .devilry-tabulardata-list__row:nth-child(even) {
-    background-color: #eeddee;
-  }
-  .devilry-tabulardata-list--as-table .devilry-tabulardata-list__cell {
-    display: inline-block;
-    width: 100%;
-    border-bottom: 0;
-  }
-  .devilry-tabulardata-list--as-table .devilry-tabulardata-list__cell--columnheader {
-    border-bottom: 0;
-    display: inline-block;
-    width: 100%;
-  }
+.devilry-tabulardata-list .devilry-tabulardata-list__cell--columnheader {
+  border-bottom: 5px solid #B568A9;
 }
 .devilry-qualifiesforexam-cellbase {
   border-top: 1px solid #dddddd;

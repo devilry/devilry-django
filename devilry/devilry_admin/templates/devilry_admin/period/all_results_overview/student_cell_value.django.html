@@ -1,9 +1,9 @@
-{% extends "devilry_admin/period/all_results_overview/devilry_admin_all_results_overview_cellbase.django.html" %}
+{% extends "devilry_admin/period/all_results_overview/base_cell.django.html" %}
 
 {% load i18n %}
 {% load cradmin_tags %}
+{% load devilry_account_tags %}
 
 {% block content %}
-    {{ me.related_student.user.fullname }}<br>
-    <p>({{ me.related_student.user.shortname }})</p>
+    {% devilry_user_verbose_inline me.related_student.user %}
 {% endblock content %}

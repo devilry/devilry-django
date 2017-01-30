@@ -1,11 +1,11 @@
 from django_cradmin import crapp
 from django_cradmin import renderable
 from django_cradmin.viewhelpers import listbuilderview
-from django_cradmin.viewhelpers import listfilter
 from django_cradmin.viewhelpers.listbuilder import base
 from django_cradmin.viewhelpers.listbuilderview import FilterListMixin
 
 from devilry.apps.core import models as core_models
+from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser
 from devilry.devilry_admin.views.period import overview_all_results_collector
 
 
@@ -80,7 +80,7 @@ class AbstractRowList(base.List):
     The subclasses that inherits from this has access to ``renderable_list`` where renderables can be added.
     """
     valuealias = 'related_student_results'
-    template_name = 'devilry_admin/period/all_results_overview/devilry_admin_all_results_overview_baserow.django.html'
+    template_name = 'devilry_admin/period/all_results_overview/base_row.django.html'
 
 
 class StudentRowList(AbstractRowList):
@@ -127,8 +127,24 @@ class ListAsTable(base.List):
     """
     template_name = 'devilry_admin/period/all_results_overview/devilry_admin_all_results_overview_table.django.html'
 
-    def __init__(self, assignments, collector):
+    def __init__(self, assignments, collector, is_paginated=None, page_obj=None):
+        """
+        Args:
+            is_paginated (bool): Should use pagination
+
+            page_obj (django.core.paginator.Page): Page used for pagination.
+
+            assignments (QuerySet): QuerySet of :class:`~.devilry.apps.core.models.Assignment` objects.
+
+            collector (PeriodResultsCollector): instance of
+                :obj:`~.devilry.devilry_admin.views.period.overview_all_results_collector.PeriodAllResultsCollector`
+
+            header_renderable (:obj:`~.HeaderList`): A subclass of :class:`~.AbstractRowList`` to render
+                the table header.
+        """
         super(ListAsTable, self).__init__()
+        self.is_paginated = is_paginated
+        self.page_obj = page_obj
         self.assignments = assignments
         self.collector = collector
         self.header_renderable = HeaderList()
@@ -156,34 +172,42 @@ class ListAsTable(base.List):
         for related_student_result in self.collector.results.values():
             self.append(StudentRowList(assignments=self.assignments, related_student_result=related_student_result))
 
+    def get_context_data(self, request=None):
+        context_data = super(ListAsTable, self).get_context_data(request=request)
+        context_data['page_obj'] = self.page_obj
+        context_data['is_paginated'] = self.is_paginated
+        return context_data
+
 
 class RelatedStudentsAllResultsOverview(FilterListMixin, listbuilderview.View):
     model = core_models.RelatedStudent
+    template_name = "devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html"
+    max_before_pagination = 20
 
     def get_filterlist_position(self):
         return 'top'
 
     def add_filterlist_items(self, filterlist):
-        filterlist.append(listfilter.django.single.textinput.Search(
-            slug='Search',
-            modelfields=[
-                'user__fullname',
-                'user__shortname',
-            ],
-            label_is_screenreader_only=True
-        ))
+        filterlist.append(listfilter_relateduser.Search())
+        filterlist.append(listfilter_relateduser.OrderRelatedStudentsFilter())
 
     def get_listbuilder_list(self, context):
         period = self.request.cradmin_role
-        assignments = period.assignments.all().order_by('publishing_time')
-        student_ids = self.get_queryset().values_list('id', flat=True)
-        collector_class = self.get_results_collector_class()
-        return ListAsTable(assignments=assignments,
-                           collector=collector_class(period=period, related_student_ids=student_ids))
+        student_ids = [relatedstudent.id for relatedstudent in self.get_listbuilder_list_value_iterable(context)]
+        return ListAsTable(
+            assignments=period.assignments.all().order_by('first_deadline'),
+            collector=self.get_results_collector_class()(period=period, related_student_ids=student_ids),
+            is_paginated=True,
+            page_obj=context['page_obj']
+        )
 
     def get_unfiltered_queryset_for_role(self, role):
         period = self.request.cradmin_role
-        return core_models.RelatedStudent.objects.filter(period=period)
+        related_student_queryset = core_models.RelatedStudent.objects\
+            .filter(period=period)
+        if related_student_queryset.count() > self.max_before_pagination:
+            self.paginate_by = 10
+        return related_student_queryset
 
     def get_results_collector_class(self):
         """
@@ -191,7 +215,7 @@ class RelatedStudentsAllResultsOverview(FilterListMixin, listbuilderview.View):
 
         Returns:
             (:class:`~.devilry.devilry_admin.view.period.overview_all_results_collector.PeriodAllResultsCollector`):
-                Class of the collector to be used.
+                The collector class to be used.
         """
         return overview_all_results_collector.PeriodAllResultsCollector
 
