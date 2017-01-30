@@ -1,0 +1,13 @@
+{% load i18n %}
+{% load cradmin_tags %}
+
+<div class="devilry-tabulardata-list devilry-tabulardata-list--as-table">
+    <div class="devilry-tabulardata-list__header">
+        {% cradmin_render_renderable me.header_renderable %}
+    </div>
+    <div class="devilry-tabulardata-list__body">
+        {% for renderable in me.iter_renderables %}
+            {% cradmin_render_renderable renderable %}
+        {% endfor %}
+    </div>
+</div>

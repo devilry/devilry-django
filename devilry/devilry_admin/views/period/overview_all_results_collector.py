@@ -103,7 +103,7 @@ class RelatedStudentResults(object):
             (list): Sorted list of AssignmentGroupCachedData.
         """
         cached_data_list = [cached_data for cached_data in self.cached_data_dict.values()]
-        cached_data_list.sort(key=lambda cd: cd.last_feedbackset.current_deadline())
+        cached_data_list.sort(key=lambda cd: cd.group.assignment.publishing_time)
         return cached_data_list
 
     def __serialize_user(self):
@@ -152,10 +152,22 @@ class PeriodAllResultsCollector(object):
     """
     Collects information about RelatedStudents and builds a structure containing
     the information needed.
+
+    Attributes:
+        period (:class:`~.devilry.apps.core.models.Period`): The ``period`` to collect results for.
+
+        related_student_ids (list): List of :attr:`~.devilry.apps.core.RelatedStudent.id`s for the students
+            registered on the period.
+
+        results (dict): Dictionary with :attr:`~.devilry.apps.core.RelatedStudent.id` as keys and an instance of
+        :class:`~.RelatedStudentResults` as value for each key.
     """
-    def __init__(self, period):
+    def __init__(self, period, related_student_ids):
         #: The period the result info gathering is for.
         self.period = period
+
+        #: IDs of the ``RelatedStudents`` on the period.
+        self.related_student_ids = related_student_ids
 
         #: A dictionary with results for all RelatedStudents, where the key is the RelatedStudent.id
         #: and the value is an instance of RelatedStudentResults.
@@ -165,10 +177,10 @@ class PeriodAllResultsCollector(object):
 
     def __get_candidate_queryset(self):
         """
-        Get a queryset of Candidates with prefetched groups and results.
+        Get a queryset of ``Candidates`` with prefetched groups and results.
 
         Returns:
-            (QuerySet): a QuerySet of candidates.
+            (QuerySet): a QuerySet of :class:`~.devilry.apps.core.models.Candidate`.
         """
         return core_models.Candidate.objects\
             .select_related(
@@ -183,13 +195,14 @@ class PeriodAllResultsCollector(object):
 
     def __get_relatedstudents(self):
         """
-        Get all RelatedStudents for the period.
+        Get all ``RelatedStudents`` for the period.
 
         Returns:
-            (QuerySet): QuerySet of RelatedStudents.
+            (QuerySet): QuerySet of :class:`~.devilry.apps.core.models.RelatedStudents`.
         """
         relatedstudent_queryset = core_models.RelatedStudent.objects\
             .filter(period=self.period)\
+            .filter(id__in=self.related_student_ids)\
             .select_related('period', 'period__parentnode', 'user')\
             .prefetch_related(
                 models.Prefetch(

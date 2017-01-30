@@ -1,0 +1,8 @@
+{% load i18n %}
+{% load cradmin_tags %}
+
+<div class="devilry-tabulardata-list__row {{ me.get_css_classes_string }}">
+    {% for renderable in me.iter_renderables %}
+        {% cradmin_render_renderable renderable %}
+    {% endfor %}
+</div>
