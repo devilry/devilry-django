@@ -10,6 +10,7 @@ from devilry.devilry_admin.views.period import examiners
 from devilry.devilry_admin.views.period import overview
 from devilry.devilry_admin.views.period import students
 from devilry.devilry_admin.views.period import edit
+from devilry.devilry_admin.views.period import overview_all_results
 from devilry.devilry_qualifiesforexam import cradmin_app as qualifiesforexam
 
 
@@ -32,6 +33,7 @@ class CrAdminInstance(devilry_crinstance_admin.BaseCrInstanceAdmin):
         ('admins', admins.App),
         ('createassignment', createassignment.App),
         ('edit', edit.App),
+        ('overview_all_results', overview_all_results.App),
         ('qualifiesforexam', qualifiesforexam.App),
     ]
     id = 'devilry_admin_periodadmin'

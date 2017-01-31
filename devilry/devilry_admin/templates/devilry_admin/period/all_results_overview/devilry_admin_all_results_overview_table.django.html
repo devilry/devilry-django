@@ -1,0 +1,19 @@
+{% load i18n %}
+{% load cradmin_tags %}
+
+
+<div class="devilry-tabulardata-list devilry-tabulardata-list--as-table">
+    <div class="devilry-tabulardata-list__content">
+        <div class="devilry-tabulardata-list__header">
+            {% cradmin_render_renderable me.header_renderable %}
+        </div>
+        <div id="django_cradmin_listbuilderview_listwrapper"
+            class="devilry-tabulardata-list__body"
+            aria-live="polite">
+            {% for renderable in me.iter_renderables %}
+                {% cradmin_render_renderable renderable %}
+            {% endfor %}
+            {% include "django_cradmin/viewhelpers/listbuilderview/includes/loadmorepager.django.html" %}
+        </div>
+    </div>
+</div>

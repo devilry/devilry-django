@@ -1,0 +1,8 @@
+{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-top.django.html" %}
+
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block listbuilderlist %}
+    {% cradmin_render_renderable listbuilder_list %}
+{% endblock listbuilderlist %}
