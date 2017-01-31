@@ -31,6 +31,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_table_class(self):
         testperiod = mommy.make('core.Period')
         testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.RelatedStudent', period=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             requestuser=testuser
