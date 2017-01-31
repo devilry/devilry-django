@@ -1311,15 +1311,20 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent__user__shortname='b',
                    relatedstudent__user__fullname='A')
         mommy.make('core.Candidate',
-                   assignment_group=testgroup1,
-                   _quantity=3)
-        mommy.make('core.Candidate',
                    assignment_group=testgroup2,
                    relatedstudent__user__shortname='a',
                    relatedstudent__user__fullname='B')
-        mommy.make('core.Candidate',
-                   assignment_group=testgroup2,
-                   _quantity=3)
+        for index in range(3):
+
+            mommy.make('core.Candidate',
+                       assignment_group=testgroup1,
+                       relatedstudent__user__shortname='Q{}'.format(index),
+                       relatedstudent__user__fullname='Q{}'.format(index))
+
+            mommy.make('core.Candidate',
+                       assignment_group=testgroup2,
+                       relatedstudent__user__shortname='P{}'.format(index),
+                       relatedstudent__user__fullname='P{}'.format(index))
         mommy.make('core.Candidate',
                    assignment_group=testgroup3,
                    _quantity=7)

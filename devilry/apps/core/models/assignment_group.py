@@ -3,6 +3,7 @@ from datetime import datetime
 
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
@@ -1417,16 +1418,12 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             target: :class:`~core.AssignmentGroup` to be merged into
 
         """
-        tag_queryset = self.tags.exclude(
-            tag__in=target.tags.values_list(
-                'tag',
-                flat=True
-            )
-        )
-
-        for tag in tag_queryset:
-            tag.assignment_group = target
-            tag.save()
+        for tag in self.tags.all():
+            if target.tags.filter(tag=tag.tag).exists():
+                tag.delete()
+            else:
+                tag.assignment_group = target
+                tag.save()
 
     def _merge_examiners_into(self, target):
         """
@@ -1437,16 +1434,12 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             target: :class:`~core.AssignmentGroup` to be merged into
 
         """
-        examiner_queryset = self.examiners.exclude(
-            relatedexaminer__user_id__in=target.examiners.values_list(
-                'relatedexaminer__user_id',
-                flat=True
-            )
-        )
-
-        for examiner in examiner_queryset:
-            examiner.assignmentgroup = target
-            examiner.save()
+        for examiner in self.examiners.all():
+            if target.examiners.filter(relatedexaminer__user_id=examiner.relatedexaminer.user_id).exists():
+                examiner.delete()
+            else:
+                examiner.assignmentgroup = target
+                examiner.save()
 
     def _merge_candidates_into(self, target):
         """
@@ -1457,16 +1450,12 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             target: :class:`~core.AssignmentGroup` to be merged into
 
         """
-        candidate_queryset = self.candidates.exclude(
-            relatedstudent__user_id__in=target.candidates.values_list(
-                'relatedstudent__user_id',
-                flat=True
-            )
-        )
-
-        for candidate in candidate_queryset:
-            candidate.assignment_group = target
-            candidate.save()
+        for candidate in self.candidates.all():
+            if target.candidates.filter(relatedstudent__user_id=candidate.relatedstudent.user_id).exists():
+                candidate.delete()
+            else:
+                candidate.assignment_group = target
+                candidate.save()
 
     def _merge_feedbackset_into(self, target):
         """
@@ -1526,7 +1515,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         self._merge_candidates_into(target)
         self._merge_examiners_into(target)
         self._merge_tags_into(target)
-
         self.delete()
 
     def can_merge(self, target):
@@ -1573,10 +1561,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         grouphistory.merge_assignment_group_history(groups)
 
         # Merge groups
-        for group in groups:
-            group.merge_into(target_group)
-
-        grouphistory.save()
+        with transaction.atomic():
+            for group in groups:
+                group.merge_into(target_group)
+            grouphistory.save()
 
     def pop_candidate(self, candidate):
         """
