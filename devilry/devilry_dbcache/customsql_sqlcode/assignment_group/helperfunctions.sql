@@ -5,7 +5,7 @@ DECLARE
     var_group_id integer;
 BEGIN
     SELECT core_assignment.id
-    FROM core_assignment
+    FROM core_assignmentgroup
     WHERE
         core_assignment.id = param_group_id
     INTO var_group_id;
