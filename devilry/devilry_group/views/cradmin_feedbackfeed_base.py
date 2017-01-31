@@ -176,14 +176,29 @@ class FeedbackFeedBaseView(create.CreateView):
         )
 
         # Build the sidebar using the fetched data from timelinebuilder
-        built_sidebar = self.__build_sidebar(builder_queryset)
-        context['sidebarbuilder_list'] = feedbackfeed_sidebar.SidebarListBuilderList.from_built_sidebar(
-            built_sidebar,
-            group=self.request.cradmin_role,
-            devilryrole=self.get_devilryrole(),
-            assignment=context['assignment']
-        )
+        if self.get_available_commentfile_count_for_user() > 0:
+            built_sidebar = self.__build_sidebar(builder_queryset)
+            context['sidebarbuilder_list'] = feedbackfeed_sidebar.SidebarListBuilderList.from_built_sidebar(
+                built_sidebar,
+                group=self.request.cradmin_role,
+                devilryrole=self.get_devilryrole(),
+                assignment=context['assignment']
+            )
+        else:
+            context['sidebarbuilder_list'] = None
+
         return context
+
+    def get_available_commentfile_count_for_user(self):
+        """
+        """
+        group_comment_ids_list = group_models.GroupComment.objects\
+            .filter(feedback_set__group=self.request.cradmin_role)\
+            .exclude_private_comments_from_other_users(user=self.request.user)\
+            .values_list('id', flat=True)
+        return comment_models.CommentFile.objects\
+            .filter(comment__id__in=group_comment_ids_list)\
+            .count()
 
     def get_button_layout(self):
         """
@@ -334,8 +349,6 @@ class FeedbackFeedBaseView(create.CreateView):
             temporaryfilecollection = self.get_collectionqueryset().get(id=filecollection_id)
         except TemporaryFileCollection.DoesNotExist:
             return False
-
-        # self._set_archive_meta_ready_for_delete(feedback_set=groupcomment.feedback_set)
 
         for temporaryfile in temporaryfilecollection.files.all():
             groupcomment.add_commentfile_from_temporary_file(tempfile=temporaryfile)

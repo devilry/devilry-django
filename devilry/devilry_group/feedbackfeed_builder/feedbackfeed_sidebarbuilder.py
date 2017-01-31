@@ -57,44 +57,44 @@ class FeedbackFeedSidebarBuilder(builder_base.FeedbackFeedBuilderBase):
             commentfilelist.append(commentfile)
         return commentfilelist
 
-    def __get_comments_for_feedbackset(self, feedbackset):
-        """Get all :class:`~devilry.devilry_group.GroupComment`s for ``feedbackset`
-
-        Args:
-            feedbackset (FeedbackSet): Get :obj:`~devilry.devilry_group.models.GroupComment` objects for.
-
-        Returns:
-            dict: Sorted dictionary of :class:`~devilry.devilry_group.GroupComment`s.
-        """
-        group_comments = feedbackset.groupcomment_set.all()
-        group_comment_dict = {}
-        for group_comment in group_comments:
-            comment_files = self.__get_files_for_comment(comment=group_comment)
-            if comment_files:
-                group_comment_dict[group_comment.published_datetime] = {
-                    'group_comment': group_comment,
-                    'files': comment_files
-                }
-                if group_comment.user_role == group_models.GroupComment.USER_ROLE_STUDENT:
-                    group_comment_dict[group_comment.published_datetime]['candidate'] = self._get_candidate_from_user(
-                        user=group_comment.user)
-                elif group_comment.user_role == group_models.GroupComment.USER_ROLE_EXAMINER:
-                    group_comment_dict[group_comment.published_datetime]['examiner'] = self._get_examiner_from_user(
-                        user=group_comment.user)
-        if len(group_comment_dict) > 0:
-            group_comment_dict = self.sort_dict(group_comment_dict)
-        return group_comment_dict
+    # def __get_comments_for_feedbackset(self, feedbackset):
+    #     """Get all :class:`~devilry.devilry_group.GroupComment`s for ``feedbackset`
+    #
+    #     Args:
+    #         feedbackset (FeedbackSet): Get :obj:`~devilry.devilry_group.models.GroupComment` objects for.
+    #
+    #     Returns:
+    #         dict: Sorted dictionary of :class:`~devilry.devilry_group.GroupComment`s.
+    #     """
+    #     group_comments = feedbackset.groupcomment_set.all()
+    #     group_comment_dict = {}
+    #     for group_comment in group_comments:
+    #         comment_files = self.__get_files_for_comment(comment=group_comment)
+    #         if comment_files:
+    #             group_comment_dict[group_comment.published_datetime] = {
+    #                 'group_comment': group_comment,
+    #                 'files': comment_files
+    #             }
+    #             if group_comment.user_role == group_models.GroupComment.USER_ROLE_STUDENT:
+    #                 group_comment_dict[group_comment.published_datetime]['candidate'] = self._get_candidate_from_user(
+    #                     user=group_comment.user)
+    #             elif group_comment.user_role == group_models.GroupComment.USER_ROLE_EXAMINER:
+    #                 group_comment_dict[group_comment.published_datetime]['examiner'] = self._get_examiner_from_user(
+    #                     user=group_comment.user)
+    #     if len(group_comment_dict) > 0:
+    #         group_comment_dict = self.sort_dict(group_comment_dict)
+    #     return group_comment_dict
 
     def build(self):
         """
         Build a dictionary with a list of all files for each feedbackset and sorts it.
         """
         for feedbackset in self.feedbacksets:
-            commentdict = self.__get_comments_for_feedbackset(feedbackset=feedbackset)
+            # commentdict = self.__get_comments_for_feedbackset(feedbackset=feedbackset)
             self.feedbackset_dict[feedbackset.created_datetime] = {
                 'feedbackset_num': 0,
                 'feedbackset': feedbackset,
-                'comments': commentdict
+                # 'comments': commentdict
             }
         self.feedbackset_dict = self.sort_dict(self.feedbackset_dict)
 
@@ -137,11 +137,11 @@ class FeedbackFeedSidebarBuilder(builder_base.FeedbackFeedBuilderBase):
             feedbacksets['feedbackset_num'] = num
 
             # Create list of comments.
-            commentlist = []
-            for commentkey in sorted(feedbacksets['comments'].keys()):
-                commentdict = feedbacksets['comments'][commentkey]
-                commentlist.append(commentdict)
-            feedbacksets['comments'] = commentlist
+            # commentlist = []
+            # for commentkey in sorted(feedbacksets['comments'].keys()):
+            #     commentdict = feedbacksets['comments'][commentkey]
+            #     commentlist.append(commentdict)
+            # feedbacksets['comments'] = commentlist
             feedbackset_list.append(feedbacksets)
             num += 1
         return feedbackset_list
