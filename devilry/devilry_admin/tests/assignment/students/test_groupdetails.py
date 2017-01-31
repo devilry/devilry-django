@@ -203,6 +203,22 @@ class TestGroupDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             'Test User',
             mockresponse.selector.one('h1').alltext_normalized)
 
+    def test_links(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
+            viewkwargs={'pk': testgroup.id})
+        self.assertEquals(2, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEquals(
+            mock.call(appname='studentoverview', args=(), viewname='INDEX', kwargs={}),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
+        )
+        self.assertEquals(
+            mock.call(appname='split_group', args=(), viewname='INDEX', kwargs={'pk': testgroup.id}),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[1]
+        )
+
     def test_title_multiple_candidates(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_core_mommy_factories.candidate(group=testgroup,

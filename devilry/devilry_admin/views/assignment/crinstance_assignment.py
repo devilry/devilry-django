@@ -14,6 +14,7 @@ from devilry.devilry_admin.views.assignment.students import groupdetails
 from devilry.devilry_admin.views.assignment.students import merge_groups
 from devilry.devilry_admin.views.assignment.students import overview as studentoverview
 from devilry.devilry_admin.views.assignment.students import replace_groups
+from devilry.devilry_admin.views.assignment.students import split_group
 
 
 class Menu(devilry_crmenu_admin.Menu):
@@ -36,6 +37,7 @@ class CrAdminInstance(devilry_crinstance_admin.BaseCrInstanceAdmin):
         ('create_groups', create_groups.App),
         ('replace_groups', replace_groups.App),
         ('merge_groups', merge_groups.App),
+        ('split_group', split_group.App),
         ('delete_groups', delete_groups.App),
         ('groupdetails', groupdetails.App),
         ('examineroverview', examineroverview.App),
