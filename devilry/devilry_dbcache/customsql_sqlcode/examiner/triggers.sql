@@ -18,7 +18,7 @@ DECLARE
 BEGIN
     var_group_id = devilry__get_group_id_from_group_id(OLD.assignmentgroup_id);
     IF var_group_id is NOT NULL THEN
-        PERFORM devilry__rebuild_assignmentgroupcacheddata_on_delete(var_group_id, TG_TABLE_NAME);
+        PERFORM devilry__rebuild_assignmentgroupcacheddata(var_group_id);
     END IF;
 
     RETURN NEW;

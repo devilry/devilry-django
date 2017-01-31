@@ -21,7 +21,7 @@ DECLARE
     var_group_id integer;
 BEGIN
     var_group_id = devilry__get_group_id_from_feedbackset_id(OLD.feedback_set_id);
-    PERFORM devilry__rebuild_assignmentgroupcacheddata_on_delete(var_group_id, TG_TABLE_NAME);
+    PERFORM devilry__rebuild_assignmentgroupcacheddata(var_group_id);
     RETURN NEW;
 END
 $$ LANGUAGE plpgsql;
