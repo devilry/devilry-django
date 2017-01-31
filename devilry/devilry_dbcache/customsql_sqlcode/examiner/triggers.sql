@@ -1,6 +1,10 @@
 CREATE OR REPLACE FUNCTION devilry__on_examiner_after_insert_or_update() RETURNS TRIGGER AS $$
 BEGIN
+    RAISE LOG '% EXAMINER %', TG_OP, NEW.id;
     PERFORM devilry__rebuild_assignmentgroupcacheddata(NEW.assignmentgroup_id);
+     IF TG_OP = 'UPDATE' THEN
+        PERFORM devilry__rebuild_assignmentgroupcacheddata(OLD.assignmentgroup_id);
+    END IF;
     RETURN NEW;
 END
 $$ LANGUAGE plpgsql;

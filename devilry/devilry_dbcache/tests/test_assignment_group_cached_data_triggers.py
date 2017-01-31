@@ -152,6 +152,22 @@ class TestAssignmentGroupCachedDataExaminerCount(test.TestCase):
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.examiner_count, 1)
 
+    def test_examiner_count_when_examiner_moved(self):
+        group1 = mommy.make('core.AssignmentGroup')
+        group2 = mommy.make('core.AssignmentGroup')
+        core_mommy.examiner(group=group1)
+        core_mommy.examiner(group=group2)
+        examiner = core_mommy.examiner(group=group1)
+        core_mommy.examiner(group=group2)
+        self.assertEqual(group1.cached_data.examiner_count, 2)
+        self.assertEqual(group2.cached_data.examiner_count, 2)
+        examiner.assignmentgroup = group2
+        examiner.save()
+        group1.cached_data.refresh_from_db()
+        self.assertEqual(group1.cached_data.examiner_count, 1)
+        group2.cached_data.refresh_from_db()
+        self.assertEqual(group2.cached_data.examiner_count, 3)
+
 
 class TestAssignmentGroupCachedDataCandidateCount(test.TestCase):
     def setUp(self):
@@ -192,6 +208,22 @@ class TestAssignmentGroupCachedDataCandidateCount(test.TestCase):
         core_mommy.examiner(group=group)
         with self.assertNumQueries(18):
             group.delete()
+
+    def test_candidate_count_when_candidate_moved(self):
+        group1 = mommy.make('core.AssignmentGroup')
+        group2 = mommy.make('core.AssignmentGroup')
+        core_mommy.candidate(group=group1)
+        core_mommy.candidate(group=group2)
+        candidate = core_mommy.candidate(group=group1)
+        core_mommy.candidate(group=group2)
+        self.assertEqual(group1.cached_data.candidate_count, 2)
+        self.assertEqual(group2.cached_data.candidate_count, 2)
+        candidate.assignment_group = group2
+        candidate.save()
+        group1.cached_data.refresh_from_db()
+        self.assertEqual(group1.cached_data.candidate_count, 1)
+        group2.cached_data.refresh_from_db()
+        self.assertEqual(group2.cached_data.candidate_count, 3)
 
 
 class TestAssignmentGroupCachedDataPublicTotalCommentCount(test.TestCase):

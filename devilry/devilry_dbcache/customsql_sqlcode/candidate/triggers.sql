@@ -1,6 +1,10 @@
 CREATE OR REPLACE FUNCTION devilry__on_candidate_after_insert_or_update() RETURNS TRIGGER AS $$
 BEGIN
+    RAISE LOG '% CANDIDATE %', TG_OP, NEW.id;
     PERFORM devilry__rebuild_assignmentgroupcacheddata(NEW.assignment_group_id);
+    IF TG_OP = 'UPDATE' THEN
+        PERFORM devilry__rebuild_assignmentgroupcacheddata(OLD.assignment_group_id);
+    END IF;
     RETURN NEW;
 END
 $$ LANGUAGE plpgsql;
