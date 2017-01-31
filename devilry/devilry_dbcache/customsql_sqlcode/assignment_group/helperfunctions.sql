@@ -4,10 +4,10 @@ RETURNS integer AS $$
 DECLARE
     var_group_id integer;
 BEGIN
-    SELECT core_assignment.id
+    SELECT core_assignmentgroup.id
     FROM core_assignmentgroup
     WHERE
-        core_assignment.id = param_group_id
+        core_assignmentgroup.id = param_group_id
     INTO var_group_id;
 
     RETURN var_group_id;
