@@ -1418,16 +1418,12 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             target: :class:`~core.AssignmentGroup` to be merged into
 
         """
-        tag_queryset = self.tags.exclude(
-            tag__in=target.tags.values_list(
-                'tag',
-                flat=True
-            )
-        )
-
-        for tag in tag_queryset:
-            tag.assignment_group = target
-            tag.save()
+        for tag in self.tags.all():
+            if target.tags.filter(tag=tag.tag).exists():
+                tag.delete()
+            else:
+                tag.assignment_group = target
+                tag.save()
 
     def _merge_examiners_into(self, target):
         """
@@ -1438,16 +1434,12 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             target: :class:`~core.AssignmentGroup` to be merged into
 
         """
-        examiner_queryset = self.examiners.exclude(
-            relatedexaminer__user_id__in=target.examiners.values_list(
-                'relatedexaminer__user_id',
-                flat=True
-            )
-        )
-
-        for examiner in examiner_queryset:
-            examiner.assignmentgroup = target
-            examiner.save()
+        for examiner in self.examiners.all():
+            if target.examiners.filter(relatedexaminer__user_id=examiner.relatedexaminer.user_id).exists():
+                examiner.delete()
+            else:
+                examiner.assignmentgroup = target
+                examiner.save()
 
     def _merge_candidates_into(self, target):
         """
@@ -1458,16 +1450,12 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             target: :class:`~core.AssignmentGroup` to be merged into
 
         """
-        candidate_queryset = self.candidates.exclude(
-            relatedstudent__user_id__in=target.candidates.values_list(
-                'relatedstudent__user_id',
-                flat=True
-            )
-        )
-
-        for candidate in candidate_queryset:
-            candidate.assignment_group = target
-            candidate.save()
+        for candidate in self.candidates.all():
+            if target.candidates.filter(relatedstudent__user_id=candidate.relatedstudent.user_id).exists():
+                candidate.delete()
+            else:
+                candidate.assignment_group = target
+                candidate.save()
 
     def _merge_feedbackset_into(self, target):
         """
