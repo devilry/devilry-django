@@ -16,7 +16,6 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
             'general_purpose_functions.sql',
             'feedbackset/helperfunctions.sql',
             'commentfile/helperfunctions.sql',
-            'assignment_group/helperfunctions.sql',
             'assignment_group/triggers.sql',
             'feedbackset/validate.sql',
             'feedbackset/triggers.sql',

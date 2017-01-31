@@ -13,14 +13,8 @@ CREATE TRIGGER devilry__on_examiner_after_insert_or_update
         EXECUTE PROCEDURE devilry__on_examiner_after_insert_or_update();
 
 CREATE OR REPLACE FUNCTION devilry__on_examiner_after_delete() RETURNS TRIGGER AS $$
-DECLARE
-    var_group_id integer;
 BEGIN
-    var_group_id = devilry__get_group_id_from_group_id(OLD.assignmentgroup_id);
-    IF var_group_id is NOT NULL THEN
-        PERFORM devilry__rebuild_assignmentgroupcacheddata(var_group_id);
-    END IF;
-
+    PERFORM devilry__rebuild_assignmentgroupcacheddata(OLD.assignmentgroup_id);
     RETURN NEW;
 END
 $$ LANGUAGE plpgsql;
