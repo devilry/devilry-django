@@ -238,6 +238,14 @@ class PeriodAllResultsCollector(object):
                 )
             )
 
+    def has_students(self):
+        """
+
+        Returns:
+
+        """
+        return len(self.related_student_ids) > 0
+
     def iter_related_student_results(self):
         """
         Get an iterator over the :obj:`~.RelatedStudentResults` on the period.

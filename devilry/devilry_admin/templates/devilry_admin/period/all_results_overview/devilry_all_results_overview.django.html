@@ -4,5 +4,15 @@
 {% load cradmin_tags %}
 
 {% block listbuilderlist %}
-    {% cradmin_render_renderable listbuilder_list %}
+    {% if listbuilder_list.has_items %}
+        {% cradmin_render_renderable listbuilder_list %}
+    {% else %}
+        {% block no-items-wrapper %}
+            <p class="django-cradmin-listing-no-items-message django-cradmin-listbuilderview-no-items-message">
+                {% block no-items-paragraph-contents %}
+                    {{ no_items_message }}
+                {% endblock no-items-paragraph-contents %}
+            </p>
+        {% endblock no-items-wrapper %}
+    {% endif %}
 {% endblock listbuilderlist %}

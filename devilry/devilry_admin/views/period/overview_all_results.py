@@ -1,23 +1,19 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+from django.utils.translation import ugettext_lazy
+
 from django_cradmin import crapp
-from django_cradmin import renderable
 from django_cradmin.viewhelpers import listbuilderview
-from django_cradmin.viewhelpers.listbuilder import base
 from django_cradmin.viewhelpers.listbuilderview import FilterListMixin
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser
 from devilry.devilry_admin.views.period import overview_all_results_collector
+from devilry.devilry_cradmin.devilry_tablebuilder import base_new
 
 
-class AbstractCellRenderer(renderable.AbstractRenderableWithCss):
-    """
-    Abstract class for cells which cell-renderers should inherit from.
-    """
-    def get_base_css_classes_list(self):
-        return ['devilry-tabulardata-list__cell']
-
-
-class RelatedStudentItemValue(AbstractCellRenderer):
+class RelatedStudentItemValue(base_new.AbstractCellRenderer):
     """
     Cell-renderer for a ``RelatedStudent``.
 
@@ -32,7 +28,7 @@ class RelatedStudentItemValue(AbstractCellRenderer):
         super(RelatedStudentItemValue, self).__init__()
 
 
-class ResultItemValue(AbstractCellRenderer):
+class ResultItemValue(base_new.AbstractCellRenderer):
     """
     Cell-renderer for the result on an assignment for a ``RelatedStudent``.
 
@@ -55,7 +51,7 @@ class ResultItemValue(AbstractCellRenderer):
         super(ResultItemValue, self).__init__()
 
 
-class ColumnHeader(AbstractCellRenderer):
+class ColumnHeader(base_new.AbstractCellRenderer):
     """
     Cell-renderer for the header-row.
 
@@ -73,23 +69,15 @@ class ColumnHeader(AbstractCellRenderer):
         return css_classes_list
 
 
-class AbstractRowList(base.List):
-    """
-    Abstract class that inherits for ``base.List``.
-
-    The subclasses that inherits from this has access to ``renderable_list`` where renderables can be added.
-    """
-    valuealias = 'related_student_results'
-    template_name = 'devilry_admin/period/all_results_overview/base_row.django.html'
-
-
-class StudentRowList(AbstractRowList):
+class StudentRowList(base_new.AbstractRowList):
     """
     Row-renderer for a ``RelatedStudent``.
 
     Adds a renderable structure to its ``renderable_list`` with information about the student and the results on
     each assignment. This must of course reflect the structure header row.
     """
+    valuealias = 'related_student_results'
+
     def __init__(self, assignments, related_student_result):
         super(StudentRowList, self).__init__()
 
@@ -110,15 +98,7 @@ class StudentRowList(AbstractRowList):
         return css_classes_list
 
 
-class HeaderList(AbstractRowList):
-    """
-    Row-renderer for the header part of the table.
-    """
-    def __init__(self):
-        super(HeaderList, self).__init__()
-        
-    
-class ListAsTable(base.List):
+class ListAsTable(base_new.AbstractListAsTable):
     """
     A renderable list used as the table for the overview.
 
@@ -127,43 +107,28 @@ class ListAsTable(base.List):
     """
     template_name = 'devilry_admin/period/all_results_overview/devilry_admin_all_results_overview_table.django.html'
 
-    def __init__(self, assignments, collector, is_paginated=None, page_obj=None):
+    def __init__(self, assignments, collector, **kwargs):
         """
         Args:
-            is_paginated (bool): Should use pagination
-
-            page_obj (django.core.paginator.Page): Page used for pagination.
-
             assignments (QuerySet): QuerySet of :class:`~.devilry.apps.core.models.Assignment` objects.
 
             collector (PeriodResultsCollector): instance of
                 :obj:`~.devilry.devilry_admin.views.period.overview_all_results_collector.PeriodAllResultsCollector`
-
-            header_renderable (:obj:`~.HeaderList`): A subclass of :class:`~.AbstractRowList`` to render
-                the table header.
         """
-        super(ListAsTable, self).__init__()
-        self.is_paginated = is_paginated
-        self.page_obj = page_obj
         self.assignments = assignments
         self.collector = collector
-        self.header_renderable = HeaderList()
+        super(ListAsTable, self).__init__(**kwargs)
 
-        # Build header
-        self.__build_header()
-
-        # Build body
-        self.__build_student_result_row()
-
-    def __build_header(self):
+    def add_header(self):
         """
         Builds the header of the table.
         """
-        self.header_renderable.append(ColumnHeader(header_text='Students'))
-        for assignment in self.assignments:
-            self.header_renderable.append(ColumnHeader(header_text=assignment.short_name))
+        if self.collector.has_students():
+            self.append_header_renderable(ColumnHeader(header_text='Student'))
+            for assignment in self.assignments:
+                self.append_header_renderable(ColumnHeader(header_text=assignment.short_name))
 
-    def __build_student_result_row(self):
+    def add_rows(self):
         """
         Builds the "body" of the table. Each element(row) added is its own list with renderables.
 
@@ -172,17 +137,17 @@ class ListAsTable(base.List):
         for related_student_result in self.collector.results.values():
             self.append(StudentRowList(assignments=self.assignments, related_student_result=related_student_result))
 
-    def get_context_data(self, request=None):
-        context_data = super(ListAsTable, self).get_context_data(request=request)
-        context_data['page_obj'] = self.page_obj
-        context_data['is_paginated'] = self.is_paginated
-        return context_data
-
 
 class RelatedStudentsAllResultsOverview(FilterListMixin, listbuilderview.View):
     model = core_models.RelatedStudent
     template_name = "devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html"
     max_before_pagination = 20
+
+    def get_pagetitle(self):
+        return ugettext_lazy('All students results')
+
+    def get_no_items_message(self):
+        return ugettext_lazy('No students on period')
 
     def get_filterlist_position(self):
         return 'top'
