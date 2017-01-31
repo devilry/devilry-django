@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django import test
 from django.contrib import messages
 
@@ -165,22 +168,21 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
         mommy.make('core.Examiner',
                    assignmentgroup=testgroup2,
                    relatedexaminer__user=examiner_user)
-        candidate1 = mommy.make('core.Candidate',
-                                relatedstudent__user__fullname='Donald Duck',
-                                relatedstudent__user__shortname='donaldduck',
-                                assignment_group=testgroup1)
-        candidate2 = mommy.make('core.Candidate',
-                                relatedstudent__user__fullname='April Duck',
-                                relatedstudent__user__shortname='aprilduck',
-                                assignment_group=testgroup2)
+        candidate = mommy.make('core.Candidate',
+                               relatedstudent__user__fullname='Donald Duck',
+                               relatedstudent__user__shortname='donaldduck',
+                               assignment_group=testgroup1)
+        mommy.make('core.Candidate',
+                   relatedstudent__user__fullname='April Duck',
+                   relatedstudent__user__shortname='aprilduck',
+                   assignment_group=testgroup2)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             requestuser=examiner_user,
             viewkwargs={'filters_string': 'search-Donald'}
         )
-        # print mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue')
         self.assertEquals(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
-        candidate1_user = candidate1.relatedstudent.user
+        candidate1_user = candidate.relatedstudent.user
         self.assertEquals(
             '{}({})'.format(candidate1_user.fullname, candidate1_user.shortname),
             mockresponse.selector.one(
