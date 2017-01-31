@@ -14,8 +14,14 @@ CREATE TRIGGER devilry__on_candidate_after_insert_or_update
 
 
 CREATE OR REPLACE FUNCTION devilry__on_candidate_after_delete() RETURNS TRIGGER AS $$
+DECLARE
+    var_group_id integer;
 BEGIN
-    PERFORM devilry__rebuild_assignmentgroupcacheddata_on_delete(OLD.assignment_group_id, TG_TABLE_NAME);
+    var_group_id = devilry__get_group_id_from_group_id(OLD.assignment_group_id);
+    IF var_group_id is NOT NULL THEN
+        PERFORM devilry__rebuild_assignmentgroupcacheddata_on_delete(var_group_id, TG_TABLE_NAME);
+    END IF;
+
     RETURN NEW;
 END
 $$ LANGUAGE plpgsql;

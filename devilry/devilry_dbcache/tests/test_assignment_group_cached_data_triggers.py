@@ -186,6 +186,13 @@ class TestAssignmentGroupCachedDataCandidateCount(test.TestCase):
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.candidate_count, 1)
 
+    def test_num_queries(self):
+        group = mommy.make('core.AssignmentGroup')
+        core_mommy.candidate(group=group)
+        core_mommy.examiner(group=group)
+        with self.assertNumQueries(18):
+            group.delete()
+
 
 class TestAssignmentGroupCachedDataPublicTotalCommentCount(test.TestCase):
     def setUp(self):
