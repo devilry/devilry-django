@@ -961,7 +961,8 @@ class TestAssignmentGroupPopCandidate(TestCase):
         testgroup1.pop_candidate(testcandidate2)
 
         # testgroup1 contains 1 candidate
-        self.assertEqual(len(testgroup1.candidates.all()), 1)
+        # testgroup1.cached_data.refresh_from_db()
+        self.assertEqual(testgroup1.cached_data.candidate_count, 1)
         self.assertFalse(testgroup1.candidates.filter(id=testcandidate2.id).exists())
 
         # testgroup1 and testgroup2 is different
@@ -969,7 +970,7 @@ class TestAssignmentGroupPopCandidate(TestCase):
         self.assertNotEqual(testgroup1, testgroup2)
 
         # testgroup2 contains 1 candidate
-        self.assertEqual(len(testgroup2.candidates.all()), 1)
+        self.assertEqual(testgroup2.cached_data.candidate_count, 1)
         self.assertFalse(testgroup2.candidates.filter(id=testcandidate1.id).exists())
 
     def test_pop_candidate_first_feedbackset_cointains_equal_amount_of_comments(self):
