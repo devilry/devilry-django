@@ -26,8 +26,7 @@ class AdminCrInstance(crinstance_base.CrInstanceBase):
     menuclass = Menu
     apps = [
         ('feedbackfeed', feedbackfeed_admin.App),
-        ('feedbackfeed', feedbackfeed_bulkfiledownload.App),
-        ('feedbackfeed', batch_download_files.App)
+        ('download', batch_download_files.App)
     ]
     id = 'devilry_group_admin'
 
