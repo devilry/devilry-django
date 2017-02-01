@@ -7895,6 +7895,9 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field.not-published-badge {
   background-color: #0093D0;
 }
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field.not-published-badge-admin {
+  background-color: #B568A9;
+}
 .devilry-group-feedbackfeed-badge-text {
   font-size: 1em;
   font-weight: bold;

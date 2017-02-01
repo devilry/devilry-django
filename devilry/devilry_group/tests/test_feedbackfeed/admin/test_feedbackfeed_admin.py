@@ -1,185 +1,35 @@
-import mock
-from django import http
-from django.conf import settings
-from django.http import Http404
-from django.test import TestCase
-from django.utils import timezone
-from django_cradmin.cradmin_testhelpers import TestCaseMixin
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from model_mommy import mommy
 
-# devilry imports
-from devilry.apps.core import models as core_models
-from devilry.devilry_account import models as account_models
-from devilry.devilry_account.models import PeriodPermissionGroup
-from devilry.devilry_group.cradmin_instances import crinstance_admin
-from devilry.devilry_group.tests.test_feedbackfeed.mixins import test_feedbackfeed_common
-from devilry.devilry_group.views.admin import feedbackfeed_admin
-from devilry.devilry_group import models as group_models
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from django.test import TestCase
+from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
+
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group import models as group_models
+from devilry.devilry_group.tests.test_feedbackfeed.mixins.test_feedbackfeed_admin import TestFeedbackfeedAdminMixin
+from devilry.devilry_group.views.admin import feedbackfeed_admin
+from devilry.devilry_comment import models as comment_models
 
 
-class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
-    viewclass = feedbackfeed_admin.AdminFeedbackFeedView
+class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixin):
+    viewclass = feedbackfeed_admin.AdminPublicDiscussView
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def test_get(self):
-        candidate = mommy.make('core.Candidate',
-                               relatedstudent=mommy.make('core.RelatedStudent'))
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-                                                          requestuser=candidate.relatedstudent.user)
-        self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
-                          candidate.assignment_group.assignment.get_path())
-
-    def test_get_feedbackfeed_event_delivery_passed(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       max_points=10,
-                                       passing_grade_min_points=5)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = group_mommy.feedbackset_first_attempt_published(
-                group=testgroup,
-                grading_points=7)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
-        self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-passed'))
-        self.assertFalse(mockresponse.selector.exists('.devilry-core-grade-failed'))
-
-    def test_get_feedbackfeed_event_delivery_failed(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       max_points=10,
-                                       passing_grade_min_points=5)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = group_mommy.feedbackset_first_attempt_published(
-                group=testgroup,
-                grading_points=0)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
-        self.assertTrue(mockresponse.selector.exists('.devilry-core-grade-failed'))
-        self.assertFalse(mockresponse.selector.exists('.devilry-core-grade-passed'))
-
-    def test_get_feedbackfeed_periodadmin(self):
-        period = mommy.make('core.Period')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
-        admin = mommy.make(settings.AUTH_USER_MODEL)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        mommy.make('devilry_account.PermissionGroupUser',
-                   user=admin,
-                   permissiongroup=mommy.make(
-                           'devilry_account.PeriodPermissionGroup',
-                           permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_PERIODADMIN,
-                           period=period).permissiongroup)
-
-        comment = mommy.make('devilry_group.GroupComment',
-                             user_role='admin',
-                             user=admin,
-                             text='Hello, is it me you\'re looking for?',
-                             feedback_set=testfeedbackset,
-                             visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
-        self.assertEqual(
-            'periodadmin',
-            PeriodPermissionGroup.objects.get_devilryrole_for_user_on_period(
-                period=period, user=admin))
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
-
-    def test_get_feedbackfeed_comment_admin(self):
-        admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor the norse god')
-        period = mommy.make_recipe('devilry.apps.core.period_active',
-                                   admins=[admin],
-                                   parentnode__admins=[mommy.make('devilry_account.User', shortname='subjectadmin')],
-                                   parentnode__parentnode__admins=[mommy.make('devilry_account.User',
-                                                                              shortname='nodeadmin')])
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
-        admin = mommy.make(settings.AUTH_USER_MODEL)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        comment = mommy.make('devilry_group.GroupComment',
-                             user_role='admin',
-                             user=admin,
-                             feedback_set=testfeedbackset,
-                             visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
-
-    def test_get_feedbackfeed_periodadmin_raise_404_semi_anonymous(self):
-        # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
-        # It's easier to read if we mock the return value rather than creating a
-        # permission group(this crinstance-function with permission groups is tested separately for the instance)
-        testperiod = mommy.make('core.Period')
-        testassignment = mommy.make('core.Assignment',
-                                    parentnode=testperiod,
-                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-        mockrequest = mock.MagicMock()
-        mockrequest.cradmin_instance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
-        with self.assertRaisesMessage(http.Http404, ''):
-            self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup,
-                                 cradmin_instance=mockrequest.cradmin_instance)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
-
-    def test_get_feedbackfeed_periodadmin_raise_404_fully_anonymous(self):
-        # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
-        # It's easier to read if we mock the return value rather than creating a
-        # permission group(this crinstance-function with permission groups is tested separately for the instance)
-        testperiod = mommy.make('core.Period')
-        testassignment = mommy.make('core.Assignment',
-                                    parentnode=testperiod,
-                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-        mockrequest = mock.MagicMock()
-        mockrequest.cradmin_instance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
-        with self.assertRaisesMessage(http.Http404, ''):
-            self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup,
-                                 cradmin_instance=mockrequest.cradmin_instance)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
-
-    def test_get_feedbackfeed_subjectadmin_can_see_student_name_semi_anonymous(self):
-        # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
-        # It's easier to read if we mock the return value rather than creating a
-        # permission group(this crinstance-function with permission groups is tested separately for the instance)
-        testassignment = mommy.make('core.Assignment',
-                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        candidate = mommy.make('core.Candidate',
-                               assignment_group=testgroup,
-                               relatedstudent__user__shortname='teststudent')
-        mommy.make('devilry_group.GroupComment',
-                   user=candidate.relatedstudent.user,
-                   user_role='student',
-                   feedback_set=testfeedbackset)
-        mockrequest = mock.MagicMock()
-        mockrequest.cradmin_instance.get_devilryrole_for_requestuser.return_value = 'subjectadmin'
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
-                                                          cradmin_instance=mockrequest.cradmin_instance)
-
-        self.assertFalse(mockresponse.selector.exists('.devilry-core-candidate-anonymous-name'))
-        self.assertTrue(mockresponse.selector.exists('.devilry-user-verbose-inline'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
-
-    def test_get_feedbackfeed_subjectadmin_raise_404_fully_anonymous(self):
-        # Mocks the return value of the crinstance's get_devilry_role_for_requestuser to return the user role.
-        # It's easier to read if we mock the return value rather than creating a
-        # permission group(this crinstance-function with permission groups is tested separately for the instance)
-        testassignment = mommy.make('core.Assignment',
-                                    anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-        mockrequest = mock.MagicMock()
-        mockrequest.cradmin_instance.get_devilryrole_for_requestuser.return_value = 'subjectadmin'
-        with self.assertRaisesMessage(http.Http404, ''):
-            self.mock_getrequest(requestuser=testuser, cradmin_role=testgroup,
-                                 cradmin_instance=mockrequest.cradmin_instance)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
-
-    def test_get_feedbackfeed_admin_wysiwyg_get_comment_choice_add_comment_for_examiners_and_admins_button(self):
+    def test_get_admin_form_heading(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
-        self.assertTrue(mockresponse.selector.exists('#submit-id-admin_add_comment_for_examiners'))
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-form-heading'))
+        self.assertEquals(
+            'Here you can discuss with students and examiners on the group, as well as admins. '
+            'You can also upload files. The uploaded files will be visible to everyone with access to this group.',
+            mockresponse.selector.one('.devilry-group-feedbackfeed-form-heading').alltext_normalized
+        )
 
     def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choice_add_comment_public_button(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -189,8 +39,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
 
     def test_post_feedbackset_comment_visible_to_everyone(self):
         admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor')
-        period = mommy.make_recipe('devilry.apps.core.period_active',
-                                   admins=[admin])
+        period = mommy.make_recipe('devilry.apps.core.period_active', admins=[admin])
         testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         self.mock_http302_postrequest(
@@ -199,8 +48,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
             viewkwargs={'pk': testgroup.id},
             requestkwargs={
                 'data': {
-                    'text': 'This is a comment',
-                    'admin_add_public_comment': 'unused value'
+                    'text': 'This is a comment'
                 }
             })
         comments = group_models.GroupComment.objects.all()
@@ -208,6 +56,182 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         self.assertEquals('visible-to-everyone', comments[0].visibility)
         self.assertEquals('periodadmin', comments[0].user.shortname)
         self.assertEquals(feedbackset.id, comments[0].feedback_set.id)
+        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+
+    def test_upload_single_file_visibility_everyone(self):
+        # Test that a CommentFile is created on upload.
+        # Posting comment with visibility visible to everyone
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfile(
+            user=testuser)
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=testuser,
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEquals(1, comment_models.CommentFile.objects.count())
+
+    def test_upload_single_file_content_visibility_everyone(self):
+        # Test the content of a CommentFile after upload.
+        # Posting comment with visibility visible to everyone
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile.txt', content=b'Test content', content_type='text/txt')
+            ],
+            user=testuser
+        )
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=testuser,
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(1, comment_models.CommentFile.objects.count())
+        comment_file = comment_models.CommentFile.objects.all()[0]
+        group_comment = group_models.GroupComment.objects.get(id=comment_file.comment.id)
+        self.assertEquals(group_comment.visibility, group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        self.assertEquals('testfile.txt', comment_file.filename)
+        self.assertEquals('Test content', comment_file.file.file.read())
+        self.assertEquals(len('Test content'), comment_file.filesize)
+        self.assertEquals('text/txt', comment_file.mimetype)
+
+    def test_upload_multiple_files_visibility_everyone(self):
+        # Test the content of CommentFiles after upload.
+        # Posting comment with visibility visible to everyone
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
+            ],
+            user=testuser
+        )
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=testuser,
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEqual(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                         group_models.GroupComment.objects.all()[0].visibility)
+        self.assertEquals(3, comment_models.CommentFile.objects.count())
+
+    def test_upload_multiple_files_contents_visibility_everyone(self):
+        # Test the content of a CommentFile after upload.
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
+            ],
+            user=testuser
+        )
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=testuser,
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEqual(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                         group_models.GroupComment.objects.all()[0].visibility)
+        self.assertEquals(3, comment_models.CommentFile.objects.count())
+        comment_file1 = comment_models.CommentFile.objects.get(filename='testfile1.txt')
+        comment_file2 = comment_models.CommentFile.objects.get(filename='testfile2.txt')
+        comment_file3 = comment_models.CommentFile.objects.get(filename='testfile3.txt')
+
+        # Check content of testfile 1.
+        self.assertEqual('testfile1.txt', comment_file1.filename)
+        self.assertEqual('Test content1', comment_file1.file.file.read())
+        self.assertEqual(len('Test content1'), comment_file1.filesize)
+        self.assertEqual('text/txt', comment_file1.mimetype)
+
+        # Check content of testfile 2.
+        self.assertEqual('testfile2.txt', comment_file2.filename)
+        self.assertEqual('Test content2', comment_file2.file.file.read())
+        self.assertEqual(len('Test content2'), comment_file2.filesize)
+        self.assertEqual('text/txt', comment_file2.mimetype)
+
+        # Check content of testfile 3.
+        self.assertEqual('testfile3.txt', comment_file3.filename)
+        self.assertEqual('Test content3', comment_file3.file.file.read())
+        self.assertEqual(len('Test content3'), comment_file3.filesize)
+        self.assertEqual('text/txt', comment_file3.mimetype)
+
+    def test_upload_files_and_comment_text(self):
+        # Test the content of a CommentFile after upload.
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
+            ],
+            user=testuser
+        )
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=testuser,
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data': {
+                    'text': 'Test comment',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(2, comment_models.CommentFile.objects.count())
+        self.assertEqual(1, group_models.GroupComment.objects.count())
+        group_comments = group_models.GroupComment.objects.all()
+        self.assertEquals('Test comment', group_comments[0].text)
+
+
+class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAdminMixin):
+    viewclass = feedbackfeed_admin.AdminWithExaminersDiscussView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_get_admin_form_heading(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-form-heading'))
+        self.assertEquals(
+            'Here you can discuss with other examiners on the group and admins - no students. '
+            'You can also upload files. The uploaded files will only be visible to '
+            'examiners and admins with access to this group.',
+            mockresponse.selector.one('.devilry-group-feedbackfeed-form-heading').alltext_normalized
+        )
+
+    def test_get_feedbackfeed_admin_wysiwyg_get_comment_choice_add_comment_for_examiners_and_admins_button(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
+        self.assertTrue(mockresponse.selector.exists('#submit-id-admin_add_comment_for_examiners_and_admins'))
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_post_feedbackset_comment_visible_to_examiner_and_admins(self):
@@ -222,8 +246,7 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
             viewkwargs={'pk': testgroup.id},
             requestkwargs={
                 'data': {
-                    'text': 'This is a comment',
-                    'admin_add_comment_for_examiners': 'unused value'
+                    'text': 'This is a comment'
                 }
             })
         comments = group_models.GroupComment.objects.all()
@@ -233,296 +256,131 @@ class TestFeedbackfeedAdmin(TestCase, test_feedbackfeed_common.TestFeedbackFeedM
         self.assertEquals(feedbackset.id, comments[0].feedback_set.id)
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
-    def test_get_num_queries(self):
-        period = mommy.make('core.Period')
-        admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-        mommy.make('devilry_account.PermissionGroupUser',
-                   user=admin,
-                   permissiongroup=mommy.make(
-                           'devilry_account.PeriodPermissionGroup',
-                           permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_PERIODADMIN,
-                           period=period).permissiongroup)
+    def test_upload_single_file_visibility_examiners_and_admins(self):
+        # Test that a CommentFile is created on upload.
+        # Posting comment with visibility visible to examiners and admins
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfile(
+            user=testuser)
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=testuser,
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEqual(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                         group_models.GroupComment.objects.all()[0].visibility)
+        self.assertEquals(1, comment_models.CommentFile.objects.count())
 
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        mommy.make('core.Candidate', assignment_group=testgroup, _quantity=50)
-        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
-        mommy.make('core.Examiner', assignmentgroup=testgroup, _quantity=50)
-        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
-        mommy.make('devilry_group.GroupComment',
-                   user=candidate.relatedstudent.user,
-                   user_role='student',
-                   feedback_set=testfeedbackset,
-                   _quantity=20)
-        mommy.make('devilry_group.GroupComment',
-                   user=examiner.relatedexaminer.user,
-                   user_role='examiner',
-                   feedback_set=testfeedbackset,
-                   _quantity=20)
-        mock_cradmininstance = mock.MagicMock()
-        mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
-        with self.assertNumQueries(12):
-            self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
-                                               requestuser=admin,
-                                               cradmin_instance=mock_cradmininstance)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+    def test_upload_single_file_content_visibility_examiners_and_admins(self):
+        # Test the content of a CommentFile after upload.
+        # Posting comment with visibility visible to examiners and admins
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile.txt', content=b'Test content', content_type='text/txt')
+            ],
+            user=testuser
+        )
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=testuser,
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEqual(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                         group_models.GroupComment.objects.all()[0].visibility)
+        self.assertEquals(1, comment_models.CommentFile.objects.count())
+        comment_file = comment_models.CommentFile.objects.all()[0]
+        self.assertEqual('testfile.txt', comment_file.filename)
+        self.assertEqual('Test content', comment_file.file.file.read())
+        self.assertEqual(len('Test content'), comment_file.filesize)
+        self.assertEqual('text/txt', comment_file.mimetype)
 
-    def test_get_num_queries_with_commentfiles(self):
-        """
-        NOTE: (works as it should)
-        Checking that no more queries are executed even though the
-        :func:`devilry.devilry_group.feedbackfeed_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
-        duplicates comment_file query.
-        """
-        period = mommy.make('core.Period')
-        admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-        mommy.make('devilry_account.PermissionGroupUser',
-                   user=admin,
-                   permissiongroup=mommy.make(
-                           'devilry_account.PeriodPermissionGroup',
-                           permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_PERIODADMIN,
-                           period=period).permissiongroup)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        mommy.make('core.Candidate', assignment_group=testgroup, _quantity=50)
-        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
-        mommy.make('core.Examiner', assignmentgroup=testgroup, _quantity=50)
-        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
-        comment = mommy.make('devilry_group.GroupComment',
-                             user=candidate.relatedstudent.user,
-                             user_role='student',
-                             feedback_set=testfeedbackset)
-        comment2 = mommy.make('devilry_group.GroupComment',
-                              user=examiner.relatedexaminer.user,
-                              user_role='examiner',
-                              feedback_set=testfeedbackset)
-        mommy.make('devilry_comment.CommentFile',
-                   filename='test.py',
-                   comment=comment,
-                   _quantity=20)
-        mommy.make('devilry_comment.CommentFile',
-                   filename='test2.py',
-                   comment=comment2,
-                   _quantity=20)
-        mock_cradmininstance = mock.MagicMock()
-        mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
-        with self.assertNumQueries(12):
-            self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
-                                               requestuser=admin,
-                                               cradmin_instance=mock_cradmininstance)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+    def test_upload_multiple_files_visibility_examiners_and_admins(self):
+        # Test the content of CommentFiles after upload.
+        # Posting comment with visibility visible to everyone
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
+            ],
+            user=testuser
+        )
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=testuser,
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEqual(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                         group_models.GroupComment.objects.all()[0].visibility)
+        self.assertEquals(3, comment_models.CommentFile.objects.count())
 
-    # def test_get_feedbackfeed_sidebarfiles_periodadmin_uploaded_by_student(self):
-    #     testassignment = mommy.make('core.Assignment')
-    #     testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
-    #     admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-    #     candidate = mommy.make('core.Candidate',
-    #                            assignment_group=testfeedbackset.group)
-    #     testcomment = mommy.make('devilry_group.GroupComment',
-    #                              user_role='student',
-    #                              user=candidate.relatedstudent.user,
-    #                              feedback_set=testfeedbackset)
-    #     mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-    #     mock_cradmininstance = mock.MagicMock()
-    #     mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group,
-    #                                                       requestuser=admin,
-    #                                                       cradmin_instance=mock_cradmininstance)
-    #     self.assertEquals('testfile.txt',
-    #                       mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-files').alltext_normalized)
-    #
-    # def test_get_feedbackfeed_sidebarfiles_subjectadmin_uploaded_by_student(self):
-    #     testassignment = mommy.make('core.Assignment')
-    #     testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
-    #     admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-    #     candidate = mommy.make('core.Candidate',
-    #                            assignment_group=testfeedbackset.group)
-    #     testcomment = mommy.make('devilry_group.GroupComment',
-    #                              user_role='student',
-    #                              user=candidate.relatedstudent.user,
-    #                              feedback_set=testfeedbackset)
-    #     mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-    #     mock_cradmininstance = mock.MagicMock()
-    #     mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'subjectadmin'
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group,
-    #                                                       requestuser=admin,
-    #                                                       cradmin_instance=mock_cradmininstance)
-    #     self.assertEquals('testfile.txt',
-    #                       mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-files').alltext_normalized)
-    #
-    # def test_get_feedbackfeed_sidebarfiles_departmentadmin_uploaded_by_student(self):
-    #     testassignment = mommy.make('core.Assignment')
-    #     testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
-    #     admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-    #     candidate = mommy.make('core.Candidate',
-    #                            assignment_group=testfeedbackset.group)
-    #     testcomment = mommy.make('devilry_group.GroupComment',
-    #                              user_role='student',
-    #                              user=candidate.relatedstudent.user,
-    #                              feedback_set=testfeedbackset)
-    #     mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-    #     mock_cradmininstance = mock.MagicMock()
-    #     mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'departmentadmin'
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group,
-    #                                                       requestuser=admin,
-    #                                                       cradmin_instance=mock_cradmininstance)
-    #     self.assertEquals('testfile.txt',
-    #                       mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-files').alltext_normalized)
-    #
-    # def test_get_feedbackfeed_sidebarfiles_periodadmin_uploaded_by_examiner(self):
-    #     testassignment = mommy.make('core.Assignment')
-    #     testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
-    #     admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-    #     examiner = mommy.make('core.Examiner',
-    #                           assignmentgroup=testfeedbackset.group)
-    #     testcomment = mommy.make('devilry_group.GroupComment',
-    #                              user_role='examiner',
-    #                              user=examiner.relatedexaminer.user,
-    #                              feedback_set=testfeedbackset)
-    #     mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-    #     mock_cradmininstance = mock.MagicMock()
-    #     mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group,
-    #                                                       requestuser=admin,
-    #                                                       cradmin_instance=mock_cradmininstance)
-    #     self.assertEquals('testfile.txt',
-    #                       mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-files').alltext_normalized)
-    #
-    # def test_get_feedbackfeed_sidebarfiles_subjectadmin_uploaded_by_examiner(self):
-    #     testassignment = mommy.make('core.Assignment')
-    #     testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
-    #     admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-    #     examiner = mommy.make('core.Examiner',
-    #                           assignmentgroup=testfeedbackset.group)
-    #     testcomment = mommy.make('devilry_group.GroupComment',
-    #                              user_role='examiner',
-    #                              user=examiner.relatedexaminer.user,
-    #                              feedback_set=testfeedbackset)
-    #     mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-    #     mock_cradmininstance = mock.MagicMock()
-    #     mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'subjectadmin'
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group,
-    #                                                       requestuser=admin,
-    #                                                       cradmin_instance=mock_cradmininstance)
-    #     self.assertEquals('testfile.txt',
-    #                       mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-files').alltext_normalized)
-    #
-    # def test_get_feedbackfeed_sidebarfiles_departmentadmin_uploaded_by_examiner(self):
-    #     testassignment = mommy.make('core.Assignment')
-    #     testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
-    #     admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-    #     examiner = mommy.make('core.Examiner',
-    #                           assignmentgroup=testfeedbackset.group)
-    #     testcomment = mommy.make('devilry_group.GroupComment',
-    #                              user_role='examiner',
-    #                              user=examiner.relatedexaminer.user,
-    #                              feedback_set=testfeedbackset)
-    #     mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-    #     mock_cradmininstance = mock.MagicMock()
-    #     mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'departmentadmin'
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group,
-    #                                                       requestuser=admin,
-    #                                                       cradmin_instance=mock_cradmininstance)
-    #     self.assertEquals('testfile.txt',
-    #                       mockresponse.selector.one('.devilry-group-feedbackfeed-sidebar-files').alltext_normalized)
-    #
-    # def test_get_files_in_sidebar(self):
-    #     """
-    #     NOTE: (works as it should)
-    #     Checking that no more queries are executed even though the
-    #     :func:`devilry.devilry_group.feedbackfeed_builder.FeedbackFeedTimelineBuilder.__get_feedbackset_queryset`
-    #     duplicates comment_file query.
-    #     """
-    #     period = mommy.make('core.Period')
-    #     admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')
-    #     mommy.make('devilry_account.PermissionGroupUser',
-    #                user=admin,
-    #                permissiongroup=mommy.make(
-    #                        'devilry_account.PeriodPermissionGroup',
-    #                        permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_PERIODADMIN,
-    #                        period=period).permissiongroup)
-    #     testgroup = mommy.make('core.AssignmentGroup')
-    #     candidate = mommy.make('core.Candidate', assignment_group=testgroup)
-    #     testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-    #     comment = mommy.make('devilry_group.GroupComment',
-    #                          user=candidate.relatedstudent.user,
-    #                          user_role='student',
-    #                          feedback_set=testfeedbackset)
-    #     comment2 = mommy.make('devilry_group.GroupComment',
-    #                           user=candidate.relatedstudent.user,
-    #                           user_role='student',
-    #                           feedback_set=testfeedbackset)
-    #     mommy.make('devilry_comment.CommentFile',
-    #                filename='test.py',
-    #                comment=comment,
-    #                _quantity=100)
-    #     mommy.make('devilry_comment.CommentFile',
-    #                filename='test2.py',
-    #                comment=comment2,
-    #                _quantity=100)
-    #     mock_cradmininstance = mock.MagicMock()
-    #     mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
-    #                                                       requestuser=admin,
-    #                                                       cradmin_instance=mock_cradmininstance)
-    #     self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar'))
-    #     self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar-uploaded-files'))
-    #     self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar-deadlines'))
-    #     self.assertEquals(1, group_models.FeedbackSet.objects.count())
+    def test_upload_multiple_files_contents_visibility_examiners_and_admins(self):
+        # Test the content of a CommentFile after upload.
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile2.txt', content=b'Test content2', content_type='text/txt'),
+                SimpleUploadedFile(name='testfile3.txt', content=b'Test content3', content_type='text/txt')
+            ],
+            user=testuser
+        )
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=testuser,
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEquals(1, group_models.GroupComment.objects.count())
+        self.assertEqual(group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                         group_models.GroupComment.objects.all()[0].visibility)
+        self.assertEquals(3, comment_models.CommentFile.objects.count())
+        comment_file1 = comment_models.CommentFile.objects.get(filename='testfile1.txt')
+        comment_file2 = comment_models.CommentFile.objects.get(filename='testfile2.txt')
+        comment_file3 = comment_models.CommentFile.objects.get(filename='testfile3.txt')
 
+        # Check content of testfile 1.
+        self.assertEqual('testfile1.txt', comment_file1.filename)
+        self.assertEqual('Test content1', comment_file1.file.file.read())
+        self.assertEqual(len('Test content1'), comment_file1.filesize)
+        self.assertEqual('text/txt', comment_file1.mimetype)
 
-class TestFeedbackfeedAdminPermissions(TestCase, TestCaseMixin):
-    """
-    "End"-testing for view permission. The PermissionGroups are also
-    tested in tests/crinstance/test_crinstance_admin.py.
-    """
-    viewclass = feedbackfeed_admin.AdminFeedbackFeedView
+        # Check content of testfile 2.
+        self.assertEqual('testfile2.txt', comment_file2.filename)
+        self.assertEqual('Test content2', comment_file2.file.file.read())
+        self.assertEqual(len('Test content2'), comment_file2.filesize)
+        self.assertEqual('text/txt', comment_file2.mimetype)
 
-    def setUp(self):
-        AssignmentGroupDbCacheCustomSql().initialize()
-
-    def test_get_periodadmin_no_access(self):
-        # Periodadmin does not have access to view when the user is not periodadmin for that period.
-        period1 = mommy.make('core.Period')
-        period2 = mommy.make('core.Period')
-        admin = mommy.make(settings.AUTH_USER_MODEL)
-        permissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
-                                     permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_PERIODADMIN,
-                                     period=period2)
-        mommy.make('devilry_account.PermissionGroupUser',
-                   user=admin,
-                   permissiongroup=permissiongroup.permissiongroup)
-
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period1)
-
-        mockrequest = mock.MagicMock()
-        mockrequest.user = admin
-        mockrequest.cradmin_role = testgroup
-        crinstance = crinstance_admin.AdminCrInstance(request=mockrequest)
-
-        with self.assertRaises(Http404):
-            self.mock_getrequest(cradmin_role=testgroup, cradmin_instance=crinstance)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
-
-    def test_get_subjectadmin_no_access(self):
-        # Subjectadmin does not have access to view when the user is not subjectadmin for that perdiod
-        subject1 = mommy.make('core.Subject')
-        subject2 = mommy.make('core.Subject')
-        admin = mommy.make(settings.AUTH_USER_MODEL)
-        permissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
-                                     permissiongroup__grouptype=account_models.PermissionGroup.GROUPTYPE_SUBJECTADMIN,
-                                     subject=subject2)
-        mommy.make('devilry_account.PermissionGroupUser',
-                   user=admin,
-                   permissiongroup=permissiongroup.permissiongroup)
-
-        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode__parentnode=subject1)
-
-        mockrequest = mock.MagicMock()
-        mockrequest.user = admin
-        mockrequest.cradmin_role = testgroup
-        crinstance = crinstance_admin.AdminCrInstance(request=mockrequest)
-
-        with self.assertRaises(Http404):
-            self.mock_getrequest(cradmin_role=testgroup, cradmin_instance=crinstance)
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        # Check content of testfile 3.
+        self.assertEqual('testfile3.txt', comment_file3.filename)
+        self.assertEqual('Test content3', comment_file3.file.file.read())
+        self.assertEqual(len('Test content3'), comment_file3.filesize)
+        self.assertEqual('text/txt', comment_file3.mimetype)

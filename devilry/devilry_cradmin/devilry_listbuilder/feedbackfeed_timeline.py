@@ -146,6 +146,11 @@ class BaseGroupCommentItemValue(BaseItemValue):
         self.user_obj = kwargs.get('user_obj')
         self.assignment = kwargs.get('assignment')
 
+    def _should_add_with_badge_css_class(self):
+        return (
+            self.group_comment.part_of_grading or
+            self.group_comment.visibility == GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+
     def get_extra_css_classes_list(self):
         css_classes_list = super(BaseGroupCommentItemValue, self).get_extra_css_classes_list()
         css_classes_list.append('devilry-group-feedbackfeed-comment')
@@ -173,15 +178,10 @@ class ExaminerGroupCommentItemValue(BaseGroupCommentItemValue):
     valuealias = 'group_comment'
     template_name = 'devilry_group/listbuilder_feedbackfeed/examiner_groupcomment_item_value.django.html'
 
-    def __should_add_with_badge_css_class(self):
-        return (
-            self.group_comment.part_of_grading or
-            self.group_comment.visibility == GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
-
     def get_extra_css_classes_list(self):
         css_classes_list = super(ExaminerGroupCommentItemValue, self).get_extra_css_classes_list()
         css_classes_list.append('devilry-group-feedbackfeed-comment-examiner')
-        if self.__should_add_with_badge_css_class():
+        if self._should_add_with_badge_css_class():
             css_classes_list.append('devilry-group-feedbackfeed-comment--with-badge')
         return css_classes_list
 
@@ -195,6 +195,8 @@ class AdminGroupCommentItemValue(BaseGroupCommentItemValue):
     def get_extra_css_classes_list(self):
         css_classes_list = super(AdminGroupCommentItemValue, self).get_extra_css_classes_list()
         css_classes_list.append('devilry-group-feedbackfeed-comment-admin')
+        if self._should_add_with_badge_css_class():
+            css_classes_list.append('devilry-group-feedbackfeed-comment--with-badge')
         return css_classes_list
 
 

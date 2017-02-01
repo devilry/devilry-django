@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from datetime import datetime
+
 # Django imports
 from django import forms
 from django.core.exceptions import PermissionDenied
@@ -135,7 +136,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
     If the last FeedbackSet is published, this view redirects to :class:`.ExaminerFeedbackCreateFeedbackSetView`.
     See :func:`dispatch`.
     """
-    template_name = 'devilry_group/feedbackfeed_examiner_feedback.django.html'
+    template_name = 'devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_feedback.django.html'
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -238,7 +239,7 @@ class ExaminerPublicDiscussView(ExaminerBaseFeedbackFeedView):
 
     All comments posted here are visible to everyone that has access to the group.
     """
-    template_name = 'devilry_group/feedbackfeed_examiner_discuss.django.html'
+    template_name = 'devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_discuss.django.html'
 
     def get_form_heading_text_template_name(self):
         return 'devilry_group/include/examiner_commentform_discuss_public_headingtext.django.html'
@@ -270,7 +271,7 @@ class ExaminerWithAdminsDiscussView(ExaminerBaseFeedbackFeedView):
     All comments posted here are only visible to examiners and admins with access to
     the group.
     """
-    template_name = 'devilry_group/feedbackfeed_examiner_examiner_admin_discuss.django.html'
+    template_name = 'devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_examiner_admin_discuss.django.html'
 
     def get_form_heading_text_template_name(self):
         return 'devilry_group/include/examiner_commentform_discuss_examiner_headingtext.django.html'
@@ -302,7 +303,7 @@ class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
     When a new unpublished FeedbackSet is created, this view redirects to :class:`.ExaminerFeedbackView`.
     See :func:`dispatch`.
     """
-    template_name = 'devilry_group/feedbackfeed_examiner_feedback.django.html'
+    template_name = 'devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_feedback.django.html'
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -430,7 +431,7 @@ class GroupCommentDeleteView(GroupCommentEditDeleteMixin, delete.DeleteView):
     View for deleting an existing groupcomment with visibility set to private.
     When a groupcomment has visibility set to private, this means it's a feedbackdraft.
     """
-    template_name = 'devilry_group/feedbackfeed_examiner_delete_groupcomment.html'
+    template_name = 'devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_delete_groupcomment.html'
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -464,7 +465,7 @@ class GroupCommentEditView(GroupCommentEditDeleteMixin, update.UpdateView):
     Makes it possible for an Examiner to edit the ``text``-attribute value of a
     :class:`~devilry.devilry_group.models.GroupComment` that's saved as a draft.
     """
-    template_name = 'devilry_group/feedbackfeed_examiner_edit_groupcomment.html'
+    template_name = 'devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_edit_groupcomment.html'
 
     def dispatch(self, request, *args, **kwargs):
         """

@@ -191,14 +191,24 @@ class FeedbackFeedBaseView(create.CreateView):
 
     def get_available_commentfile_count_for_user(self):
         """
+        Get the total amount of CommentFiles available for the student.
+
+        Returns:
+            (int): Count of CommentFiles available for the user.
         """
-        group_comment_ids_list = group_models.GroupComment.objects\
+        group_comment_queryset = group_models.GroupComment.objects\
             .filter(feedback_set__group=self.request.cradmin_role)\
             .exclude_private_comments_from_other_users(user=self.request.user)\
-            .values_list('id', flat=True)
-        return comment_models.CommentFile.objects\
-            .filter(comment__id__in=group_comment_ids_list)\
-            .count()
+            .exclude_is_part_of_grading_feedbackset_unpublished()
+
+        if self.get_devilryrole() == 'student':
+            group_comment_queryset = group_comment_queryset\
+                .exclude(visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+
+        comment_file_queryset = comment_models.CommentFile.objects\
+            .filter(comment_id__in=group_comment_queryset.values_list('id', flat=True))
+
+        return comment_file_queryset.count()
 
     def get_button_layout(self):
         """

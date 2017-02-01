@@ -1,16 +1,18 @@
-from django.utils import timezone
 from model_mommy import mommy
+
+from django.utils import timezone
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.models import GroupComment
 from devilry.devilry_group.tests.test_feedbackfeed.mixins import test_feedbackfeed_common
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 
 
 class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMixin):
     """
-    General mixin testclass with tests that should work on all examiner feedback views.
+    Mixin testclass for examiner feedbackfeed tests.
+
+    Add tests for functionality and ui that all examiner views share.
     """
     def test_get(self):
         examiner = mommy.make('core.Examiner')

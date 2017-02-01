@@ -31,6 +31,25 @@ class TestCompressed(TestCase):
         shutil.rmtree(self.backend_path, ignore_errors=True)
         shutil.rmtree('devilry_testfiles/filestore/', ignore_errors=True)
 
+    def _run_actiongroup(self, name, task, context_object, started_by):
+        """
+        Helper method for adding operation and running task.
+
+        Saves a little code in the test-function.
+        """
+        batchregistry.Registry.get_instance().add_actiongroup(
+            batchregistry.ActionGroup(
+                name=name,
+                mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
+                actions=[
+                    task
+                ]))
+        batchregistry.Registry.get_instance().run(
+            actiongroup_name=name,
+            context_object=context_object,
+            started_by=started_by,
+            test='test')
+
 
 class TestFeedbackSetBatchTask(TestCompressed):
 
@@ -45,17 +64,11 @@ class TestFeedbackSetBatchTask(TestCompressed):
             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
             commentfile.file.save('testfile.txt', ContentFile('testcontent'))
 
-            batchregistry.Registry.get_instance().add_actiongroup(
-                batchregistry.ActionGroup(
-                    name='batchframework_feedbackset',
-                    mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
-                    actions=[
-                        tasks.FeedbackSetCompressAction
-                    ]))
-            batchregistry.Registry.get_instance().run(
-                    actiongroup_name='batchframework_feedbackset',
-                    context_object=testfeedbackset,
-                    test='test')
+            # Run batch operation
+            self._run_actiongroup(name='batchframework_feedbackset',
+                                  task=tasks.FeedbackSetCompressAction,
+                                  context_object=testfeedbackset,
+                                  started_by=None)
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
             self.assertIsNotNone(archive_meta)
@@ -72,17 +85,11 @@ class TestFeedbackSetBatchTask(TestCompressed):
             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
             commentfile.file.save('testfile.txt', ContentFile('testcontent'))
 
-            batchregistry.Registry.get_instance().add_actiongroup(
-                batchregistry.ActionGroup(
-                    name='batchframework_feedbackset',
-                    mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
-                    actions=[
-                        tasks.FeedbackSetCompressAction
-                    ]))
-            batchregistry.Registry.get_instance().run(
-                    actiongroup_name='batchframework_feedbackset',
-                    context_object=testfeedbackset,
-                    test='test')
+            # Run batch operation
+            self._run_actiongroup(name='batchframework_feedbackset',
+                                  task=tasks.FeedbackSetCompressAction,
+                                  context_object=testfeedbackset,
+                                  started_by=None)
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
             archive_path = archive_meta.archive_path
@@ -107,17 +114,11 @@ class TestFeedbackSetBatchTask(TestCompressed):
             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
             commentfile.file.save('testfile.txt', ContentFile('student testcontent'))
 
-            batchregistry.Registry.get_instance().add_actiongroup(
-                batchregistry.ActionGroup(
-                    name='batchframework_feedbackset',
-                    mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
-                    actions=[
-                        tasks.FeedbackSetCompressAction
-                    ]))
-            batchregistry.Registry.get_instance().run(
-                    actiongroup_name='batchframework_feedbackset',
-                    context_object=testfeedbackset,
-                    test='test')
+            # Run batch operation
+            self._run_actiongroup(name='batchframework_feedbackset',
+                                  task=tasks.FeedbackSetCompressAction,
+                                  context_object=testfeedbackset,
+                                  started_by=None)
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
@@ -137,17 +138,11 @@ class TestFeedbackSetBatchTask(TestCompressed):
             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
             commentfile.file.save('testfile.txt', ContentFile('student testcontent'))
 
-            batchregistry.Registry.get_instance().add_actiongroup(
-                batchregistry.ActionGroup(
-                    name='batchframework_feedbackset',
-                    mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
-                    actions=[
-                        tasks.FeedbackSetCompressAction
-                    ]))
-            batchregistry.Registry.get_instance().run(
-                    actiongroup_name='batchframework_feedbackset',
-                    context_object=testfeedbackset,
-                    test='test')
+            # Run batch operation
+            self._run_actiongroup(name='batchframework_feedbackset',
+                                  task=tasks.FeedbackSetCompressAction,
+                                  context_object=testfeedbackset,
+                                  started_by=None)
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
@@ -164,17 +159,11 @@ class TestFeedbackSetBatchTask(TestCompressed):
             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
             commentfile.file.save('testfile.txt', ContentFile('examiner testcontent'))
 
-            batchregistry.Registry.get_instance().add_actiongroup(
-                batchregistry.ActionGroup(
-                    name='batchframework_feedbackset',
-                    mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
-                    actions=[
-                        tasks.FeedbackSetCompressAction
-                    ]))
-            batchregistry.Registry.get_instance().run(
-                    actiongroup_name='batchframework_feedbackset',
-                    context_object=testfeedbackset,
-                    test='test')
+            # Run batch operation
+            self._run_actiongroup(name='batchframework_feedbackset',
+                                  task=tasks.FeedbackSetCompressAction,
+                                  context_object=testfeedbackset,
+                                  started_by=None)
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
@@ -205,17 +194,11 @@ class TestFeedbackSetBatchTask(TestCompressed):
                                      filename='testfile_student.txt')
             commentfile.file.save('testfile_student.txt', ContentFile('student testcontent'))
 
-            batchregistry.Registry.get_instance().add_actiongroup(
-                batchregistry.ActionGroup(
-                    name='batchframework_feedbackset',
-                    mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
-                    actions=[
-                        tasks.FeedbackSetCompressAction
-                    ]))
-            batchregistry.Registry.get_instance().run(
-                    actiongroup_name='batchframework_feedbackset',
-                    context_object=testfeedbackset,
-                    test='test')
+            # Run batch operation
+            self._run_actiongroup(name='batchframework_feedbackset',
+                                  task=tasks.FeedbackSetCompressAction,
+                                  context_object=testfeedbackset,
+                                  started_by=None)
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
@@ -225,25 +208,6 @@ class TestFeedbackSetBatchTask(TestCompressed):
 
 
 class TestAssignmentBatchTask(TestCompressed):
-
-    def __run_actiongroup(self, context_object, started_by):
-        """
-        Helper method for adding operation and running task.
-
-        Saves a little code in the test-function.
-        """
-        batchregistry.Registry.get_instance().add_actiongroup(
-            batchregistry.ActionGroup(
-                name='batchframework_assignment',
-                mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
-                actions=[
-                    tasks.AssignmentCompressAction
-                ]))
-        batchregistry.Registry.get_instance().run(
-            actiongroup_name='batchframework_assignment',
-            context_object=context_object,
-            started_by=started_by,
-            test='test')
 
     def test_only_groups_examiner_has_access_to(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
@@ -261,23 +225,26 @@ class TestAssignmentBatchTask(TestCompressed):
             # Add feedbackset with commentfile to the group the examiner has access to.
             testfeedbackset1 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
             testcomment1 = mommy.make('devilry_group.GroupComment',
-                                     feedback_set=testfeedbackset1,
-                                     user_role='student',
-                                     user__shortname='testuser1@example.com')
+                                      feedback_set=testfeedbackset1,
+                                      user_role='student',
+                                      user__shortname='testuser1@example.com')
             commentfile1 = mommy.make('devilry_comment.CommentFile', comment=testcomment1, filename='testfile.txt')
             commentfile1.file.save('testfile.txt', ContentFile('testcontent'))
 
             # Add feedbackset with commentfile to the group the examiner does not have access to.
             testfeedbackset2 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
             testcomment2 = mommy.make('devilry_group.GroupComment',
-                                     feedback_set=testfeedbackset2,
-                                     user_role='student',
-                                     user__shortname='testuser2@example.com')
+                                      feedback_set=testfeedbackset2,
+                                      user_role='student',
+                                      user__shortname='testuser2@example.com')
             commentfile2 = mommy.make('devilry_comment.CommentFile', comment=testcomment2, filename='testfile.txt')
             commentfile2.file.save('testfile.txt', ContentFile('testcontent'))
 
             # run actiongroup
-            self.__run_actiongroup(context_object=testassignment, started_by=testuser)
+            self._run_actiongroup(name='batchframework_assignment',
+                                  task=tasks.AssignmentCompressAction,
+                                  context_object=testassignment,
+                                  started_by=testuser)
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
@@ -307,7 +274,10 @@ class TestAssignmentBatchTask(TestCompressed):
             commentfile.file.save('testfile.txt', ContentFile('testcontent'))
 
             # run actiongroup
-            self.__run_actiongroup(context_object=testassignment, started_by=testuser)
+            self._run_actiongroup(name='batchframework_assignment',
+                                  task=tasks.AssignmentCompressAction,
+                                  context_object=testassignment,
+                                  started_by=testuser)
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
@@ -340,7 +310,10 @@ class TestAssignmentBatchTask(TestCompressed):
             commentfile.file.save('testfile.txt', ContentFile('testcontent'))
 
             # run actiongroup
-            self.__run_actiongroup(context_object=testassignment, started_by=testuser)
+            self._run_actiongroup(name='batchframework_assignment',
+                                  task=tasks.AssignmentCompressAction,
+                                  context_object=testassignment,
+                                  started_by=testuser)
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
@@ -395,7 +368,10 @@ class TestAssignmentBatchTask(TestCompressed):
             commentfile3.file.save('testfile.txt', ContentFile('testcontent group 3'))
 
             # run actiongroup
-            self.__run_actiongroup(context_object=testassignment, started_by=testuser)
+            self._run_actiongroup(name='batchframework_assignment',
+                                  task=tasks.AssignmentCompressAction,
+                                  context_object=testassignment,
+                                  started_by=testuser)
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
@@ -459,7 +435,10 @@ class TestAssignmentBatchTask(TestCompressed):
             commentfile3.file.save('testfile.txt', ContentFile('testcontent group 3'))
 
             # run actiongroup
-            self.__run_actiongroup(context_object=testassignment, started_by=testuser)
+            self._run_actiongroup(name='batchframework_assignment',
+                                  task=tasks.AssignmentCompressAction,
+                                  context_object=testassignment,
+                                  started_by=testuser)
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
             zipfileobject = ZipFile(archive_meta.archive_path)

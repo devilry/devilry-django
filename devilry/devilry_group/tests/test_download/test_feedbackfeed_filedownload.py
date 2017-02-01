@@ -2,28 +2,17 @@
 import shutil
 import unittest
 
-from django.http import Http404
-from model_mommy import mommy
-from StringIO import StringIO
-from zipfile import ZipFile
-
-# Django imports
-from django.test import TestCase
 from django.conf import settings
 from django.core.files.base import ContentFile
-
-# Ievv imports
-from ievv_opensource.ievv_batchframework import batchregistry
-
-# CrAdmin imports
+from django.http import Http404
+from django.test import TestCase
 from django_cradmin.cradmin_testhelpers import TestCaseMixin
+from model_mommy import mommy
 
-# Devilry imports
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_group.views.download_files import batch_download_files
-from devilry.devilry_group import models as group_models
-from devilry.devilry_group import tasks
 from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group import models as group_models
+from devilry.devilry_group.views.download_files import batch_download_files
 
 
 class AbstractTestCase(TestCase):
@@ -130,30 +119,6 @@ class TestFileDownloadFeedbackfeedView(TestCase, TestCaseMixin):
                 })
 
 
-class TestCompressedGroupCommentFileDownload(AbstractTestCase, TestCaseMixin):
-    """
-    Test GroupComment files download.
-    """
-    viewclass = batch_download_files.CompressedGroupCommentFileDownloadView
-
-    @unittest.skip('Skipped for new batch download api, will probably be removed')
-    def test_groupcomment_files_download(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            # Test download of all files for GroupComment.
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
-            testcomment = mommy.make('devilry_group.GroupComment', user=testuser, user_role='student')
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-            commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-
-            mockresponse = self.mock_getrequest(
-                    cradmin_role=testcomment.feedback_set.group,
-                    viewkwargs={
-                        'groupcomment_id': testcomment.id
-                    }
-            )
-            self.assertEquals(mockresponse.response.status_code, 302)
-
-
 class TestCompressedFeedbackSetFileDownload(AbstractTestCase, TestCaseMixin):
     """
     Test FeedbackSet files download.
@@ -178,103 +143,3 @@ class TestCompressedFeedbackSetFileDownload(AbstractTestCase, TestCaseMixin):
                     }
             )
             self.assertEquals(mockresponse.response.status_code, 302)
-
-
-# class TestWaitForDownloadView(AbstractTestCase, TestCaseMixin):
-#     viewclass = batch_download_files.WaitForDownload
-#
-#     def test_groupcomment_response_200(self):
-#         with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
-#             testcomment = mommy.make('devilry_group.GroupComment',
-#                                      user_role='student',
-#                                      user__shortname='testuser@example.com')
-#             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-#             commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-#
-#             batchregistry.Registry.get_instance().add_actiongroup(
-#                 batchregistry.ActionGroup(
-#                     name='batchframework_groupcomment',
-#                     mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
-#                     actions=[
-#                         tasks.GroupCommentCompressAction
-#                     ]))
-#             batchregistry.Registry.get_instance().run(actiongroup_name='batchframework_groupcomment',
-#                                                       context_object=testcomment,
-#                                                       test='test')
-#             mockresponse = self.mock_getrequest(viewkwargs={'pk': testcomment.id})
-#             self.assertEquals(mockresponse.response.status_code, 200)
-#
-#     def test_groupcomment_response_archive(self):
-#         with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
-#             testcomment = mommy.make('devilry_group.GroupComment',
-#                                      user_role='student',
-#                                      user__shortname='testuser@example.com')
-#             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-#             commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-#
-#             batchregistry.Registry.get_instance().add_actiongroup(
-#                 batchregistry.ActionGroup(
-#                     name='batchframework_groupcomment',
-#                     mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
-#                     actions=[
-#                         tasks.GroupCommentCompressAction
-#                     ]))
-#             batchregistry.Registry.get_instance().run(actiongroup_name='batchframework_groupcomment',
-#                                                       context_object=testcomment,
-#                                                       test='test')
-#             mockresponse = self.mock_getrequest(viewkwargs={'pk': testcomment.id})
-#             zipfile = ZipFile(StringIO(mockresponse.response.content))
-#             filecontents = zipfile.read('testfile.txt')
-#             self.assertEquals(mockresponse.response.status_code, 200)
-#             self.assertEquals(filecontents, 'testcontent')
-#
-#     def test_feedbackset_response_200(self):
-#         with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
-#             testfeedbackset = mommy.make('devilry_group.FeedbackSet')
-#             testcomment = mommy.make('devilry_group.GroupComment',
-#                                      feedback_set=testfeedbackset,
-#                                      user_role='student',
-#                                      user__shortname='testuser@example.com')
-#             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-#             commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-#
-#             batchregistry.Registry.get_instance().add_actiongroup(
-#                 batchregistry.ActionGroup(
-#                     name='batchframework_feedbackset',
-#                     mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
-#                     actions=[
-#                         tasks.FeedbackSetCompressAction
-#                     ]))
-#             batchregistry.Registry.get_instance()\
-#                 .run(actiongroup_name='batchframework_feedbackset',
-#                      context_object=testfeedbackset,
-#                      test='test')
-#             mockresponse = self.mock_getrequest(viewkwargs={'pk': testfeedbackset.id})
-#             self.assertEquals(mockresponse.response.status_code, 200)
-#
-#     def test_feedbackset_response_archive(self):
-#         with self.settings(DEVILRY_ZIPFILE_DIRECTORY=self.backend_path):
-#             testfeedbackset = mommy.make('devilry_group.FeedbackSet')
-#             testcomment = mommy.make('devilry_group.GroupComment',
-#                                      feedback_set=testfeedbackset,
-#                                      user_role='student',
-#                                      user__shortname='testuser@example.com')
-#             commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-#             commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-#
-#             batchregistry.Registry.get_instance().add_actiongroup(
-#                 batchregistry.ActionGroup(
-#                     name='batchframework_feedbackset',
-#                     mode=batchregistry.ActionGroup.MODE_SYNCHRONOUS,
-#                     actions=[
-#                         tasks.FeedbackSetCompressAction
-#                     ]))
-#             batchregistry.Registry.get_instance()\
-#                 .run(actiongroup_name='batchframework_feedbackset',
-#                      context_object=testfeedbackset,
-#                      test='test')
-#             mockresponse = self.mock_getrequest(viewkwargs={'pk': testfeedbackset.id})
-#             zipfile = ZipFile(StringIO(mockresponse.response.content))
-#             filecontents = zipfile.read('delivery/testfile.txt')
-#             self.assertEquals(mockresponse.response.status_code, 200)
-#             self.assertEquals(filecontents, 'testcontent')

@@ -8,7 +8,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views import generic
-from django.views.generic import TemplateView
 from django_cradmin import crapp
 
 from devilry.devilry_comment import models as comment_models
@@ -41,7 +40,8 @@ class FileDownloadFeedbackfeedView(generic.TemplateView):
 
         # If it's a private GroupComment, the request.user must be the one that created the comment.
         if groupcomment.visibility != group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
-            raise Http404()
+            if groupcomment.user != self.request.user:
+                raise Http404()
 
         # Load file as chunks rather than loading the whole file into memory
         filewrapper = FileWrapper(comment_file.file)
@@ -51,42 +51,6 @@ class FileDownloadFeedbackfeedView(generic.TemplateView):
         response['content-length'] = comment_file.filesize
 
         return response
-
-
-class CompressedGroupCommentFileDownloadView(generic.TemplateView):
-    """Compress all files from a specific GroupComment into a zipped folder
-    """
-
-    def get(self, request, *args, **kwargs):
-        """
-        Checks permission
-
-        Args:
-            request (HttpRequest): Request from client.
-
-        Returns:
-            Response: redirects to wait-for-download view,
-                see :class:`~devilry.devilry_group.views.download_files.feedbackfeed_downloadviews.WaitForDownload`, or
-                returns the content, see `~devilry.devilry_group.utils.download_response`.
-        """
-        groupcomment_id = kwargs.get('groupcomment_id')
-        groupcomment = get_object_or_404(group_models.GroupComment, id=groupcomment_id)
-
-        # Check that the cradmin role and the AssignmentGroup is the same.
-        if groupcomment.feedback_set.group.id != request.cradmin_role.id:
-            raise Http404()
-
-        # If it's a private GroupComment, the request.user must be the one that created the comment.
-        if groupcomment.visibility != group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
-            raise Http404()
-
-        archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=groupcomment_id)
-        return download_response.download_response(
-                content_path=archive_meta.archive_path,
-                content_name=archive_meta.archive_name,
-                content_type='application/zip',
-                content_size=archive_meta.archive_size,
-                streaming_response=True)
 
 
 class CompressedFeedbackSetFileDownloadView(generic.TemplateView):
@@ -133,18 +97,9 @@ class App(crapp.App):
             FileDownloadFeedbackfeedView.as_view(),
             name='file-download'),
         crapp.Url(
-            r'^groupcomment-file-download/(?P<groupcomment_id>[0-9]+)$',
-            CompressedGroupCommentFileDownloadView.as_view(),
-            name='groupcomment-file-download'),
-        crapp.Url(
             r'^feedbackset-file-download/(?P<feedbackset_id>[0-9]+)$',
             CompressedFeedbackSetFileDownloadView.as_view(),
             name='feedbackset-file-download'),
-        # crapp.Url(
-        #     r'groupcomment-download-api/(?P<content_object_id>[0-9]+)$',
-        #     BatchCompressionAPIGroupCommentView.as_view(),
-        #     name='groupcomment-file-download-api'
-        # ),
         crapp.Url(
             r'feedbackset-download-api/(?P<content_object_id>[0-9]+)$',
             BatchCompressionAPIFeedbackSetView.as_view(),

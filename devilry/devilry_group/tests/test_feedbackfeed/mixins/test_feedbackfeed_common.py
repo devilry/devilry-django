@@ -1,6 +1,5 @@
-import unittest
-
 import mock
+
 from django.utils import formats
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
@@ -274,6 +273,11 @@ class TestFeedbackFeedGroupCommentMixin(cradmin_testhelpers.TestCaseMixin):
 
 
 class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCommentMixin):
+    """
+    Mixin testclass for all feedbackfeed tests.
+
+    Add tests for functionality and ui that all feedbackfeed views share.
+    """
     viewclass = None  # must be implemented in subclass
 
     def test_get(self):
