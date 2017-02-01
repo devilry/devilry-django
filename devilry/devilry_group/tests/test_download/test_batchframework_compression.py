@@ -14,7 +14,6 @@ from django.core.files.base import ContentFile
 from django.utils import timezone
 
 # Devilry imports
-from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import tasks
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
@@ -186,7 +185,6 @@ class TestFeedbackSetBatchTask(TestCompressed):
         # Tests that the file uploaded by examiner is added to 'uploaded_by_examiner' subfolder,
         # and that file from student is added under 'delivery'.
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            # testfeedbackset = mommy.make('devilry_group.FeedbackSet')
             testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
 
             # examiner-comment with file.
