@@ -8,6 +8,7 @@ from django.views.generic import View
 from ievv_opensource.ievv_batchframework import batchregistry
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 
+from devilry.apps.core import models as core_models
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_compressionutil import models as compression_models
 from devilry.devilry_group import models as group_models
@@ -41,9 +42,14 @@ class AbstractBatchCompressionAPIView(View):
 
     Attributes::
         model_class: Model used, defined in subclass.
+
+        batchoperation_type (str): This is the type of ``BatchOperation``. This must be unique for each usecase
+            as there may be multiple ``BatchOperation``s running for the same model(``BatchOperation.context_object``).
+
         content_object: This will be a instance set in :func:`~.dispatch()` from the ``model_class``.
     """
     model_class = None
+    batchoperation_type = None
 
     class Meta:
         abstract = True
@@ -170,7 +176,8 @@ class AbstractBatchCompressionAPIView(View):
         """
         batchoperation = BatchOperation.objects\
             .filter(context_object_id=context_object_id,
-                    context_content_type=ContentType.objects.get_for_model(model=self.content_object))\
+                    context_content_type=ContentType.objects.get_for_model(model=self.content_object),
+                    operationtype=self.batchoperation_type)\
             .exclude(status=BatchOperation.STATUS_FINISHED)\
             .order_by('-created_datetime')\
             .first()
@@ -256,6 +263,7 @@ class BatchCompressionAPIFeedbackSetView(AbstractBatchCompressionAPIView):
     API for checking if a compressed ``FeedbackSet`` is ready for download.
     """
     model_class = group_models.FeedbackSet
+    batchoperation_type = 'devilry_group_feedbackset_compression'
 
     def has_no_files(self):
         group_comment_id = GroupComment.objects\
@@ -282,5 +290,6 @@ class BatchCompressionAPIFeedbackSetView(AbstractBatchCompressionAPIView):
     def start_compression_task(self, content_object_id):
         batchregistry.Registry.get_instance().run(
             actiongroup_name='batchframework_compress_feedbackset',
-            context_object=self.content_object
+            context_object=self.content_object,
+            operationtype=self.batchoperation_type,
         )

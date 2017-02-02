@@ -16,7 +16,7 @@ from devilry.devilry_compressionutil.models import CompressedArchiveMeta
 from devilry.devilry_dbcache import customsql
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group import tasks
-from devilry.devilry_group.views.download_files import batch_download_api
+from devilry.devilry_group.views.download_files.batch_download_api import BatchCompressionAPIFeedbackSetView
 
 
 class TestHelper(object):
@@ -28,6 +28,7 @@ class TestHelper(object):
         # Set the BatchOperation.status to the desired status for testing.
         # Defaults to unprocessed.
         batchoperation = BatchOperation.objects.get(context_object_id=context_object_id)
+        batchoperation.operationtype = BatchCompressionAPIFeedbackSetView.batchoperation_type
         batchoperation.status = status
         batchoperation.save()
 
@@ -51,7 +52,7 @@ class TestHelper(object):
 class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
     """
     """
-    viewclass = batch_download_api.BatchCompressionAPIFeedbackSetView
+    viewclass = BatchCompressionAPIFeedbackSetView
 
     def setUp(self):
         customsql.AssignmentGroupDbCacheCustomSql().initialize()
@@ -171,7 +172,7 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         self.assertEquals(mockresponse.response.content, '{"status": "running"}')
 
     def test_get_status_finished_with_compressed_archive_meta(self):
-        # When the task is BatchOperation is complete, it creates a CompressedArchiveMeta entry in
+        # When the task is complete, it creates a CompressedArchiveMeta entry in
         # the database. This is simulated by NOT creating a BatchOperation, but just creating a CompressedArchive
         # instead. This is the first thing that gets checked in API.
         testgroup = mommy.make('core.AssignmentGroup')

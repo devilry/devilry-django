@@ -76,7 +76,6 @@ class CompressedFeedbackSetFileDownloadView(generic.TemplateView):
         if feedbackset.group.id != request.cradmin_role.id:
             raise Http404()
 
-        # archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=feedbackset_id)
         archive_meta = archivemodels.CompressedArchiveMeta.objects.exclude()\
             .filter(content_object_id=feedbackset_id,
                     content_type=ContentType.objects.get_for_model(model=feedbackset),
