@@ -141,7 +141,6 @@ class ListAsTable(base_new.AbstractListAsTable):
 class RelatedStudentsAllResultsOverview(FilterListMixin, listbuilderview.View):
     model = core_models.RelatedStudent
     template_name = "devilry_admin/period/all_results_overview/devilry_all_results_overview.django.html"
-    max_before_pagination = 20
 
     def get_pagetitle(self):
         return ugettext_lazy('All students results')
@@ -166,12 +165,13 @@ class RelatedStudentsAllResultsOverview(FilterListMixin, listbuilderview.View):
             page_obj=context['page_obj']
         )
 
+    def get_paginate_by(self, queryset):
+        return 40
+
     def get_unfiltered_queryset_for_role(self, role):
         period = self.request.cradmin_role
         related_student_queryset = core_models.RelatedStudent.objects\
             .filter(period=period)
-        if related_student_queryset.count() > self.max_before_pagination:
-            self.paginate_by = 10
         return related_student_queryset
 
     def get_results_collector_class(self):

@@ -15,12 +15,12 @@ if profiler_middleware:
         'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
     ]
 
-#DELAY_MIDDLEWARE_TIME = (80, 120) # Wait for randint(*DELAY_MIDDLEWARE_TIME)/100.0 before responding to each request when using DelayMiddleware
-#delay_middleware = True
-#if delay_middleware:
-    #MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
-        #'devilry.utils.delay_middleware.DelayMiddleware'
-    #]
+# DELAY_MIDDLEWARE_TIME = (80, 120) # Wait for randint(*DELAY_MIDDLEWARE_TIME)/100.0 before responding to each request when using DelayMiddleware
+# delay_middleware = True
+# if delay_middleware:
+#     MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
+#         'devilry.utils.delay_middleware.DelayMiddleware'
+#     ]
 
 
 INSTALLED_APPS += [

@@ -6,6 +6,7 @@ from devilry.apps.core.models import Assignment
 from devilry.devilry_examiner.cradminextensions import devilry_crmenu_examiner
 from devilry.devilry_examiner.cradminextensions import devilry_crinstance_examiner
 from devilry.devilry_examiner.views.assignment import grouplist
+from devilry.devilry_examiner.views.assignment.download_files import download_archive
 
 
 class Menu(devilry_crmenu_examiner.Menu):
@@ -21,6 +22,7 @@ class CrAdminInstance(devilry_crinstance_examiner.BaseCrInstanceExaminer):
     roleclass = Assignment
     apps = [
         ('grouplist', grouplist.App),
+        ('download', download_archive.App)
     ]
     id = 'devilry_examiner_assignment'
     rolefrontpage_appname = 'grouplist'

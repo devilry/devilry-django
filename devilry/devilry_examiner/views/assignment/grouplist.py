@@ -194,6 +194,7 @@ class GroupListView(listbuilderview.FilterListMixin,
 
     def get_context_data(self, **kwargs):
         context = super(GroupListView, self).get_context_data(**kwargs)
+        context['assignment'] = self.assignment
         context['status_filter_value_normalized'] = self.__get_status_filter_value()
         total_groupcount = self.__get_total_groupcount()
         context['excluding_filters_other_than_status_is_applied'] = \
