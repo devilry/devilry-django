@@ -117,29 +117,3 @@ class TestFileDownloadFeedbackfeedView(TestCase, TestCaseMixin):
                 viewkwargs={
                     'commentfile_id': commentfile.id
                 })
-
-
-class TestCompressedFeedbackSetFileDownload(AbstractTestCase, TestCaseMixin):
-    """
-    Test FeedbackSet files download.
-    """
-    viewclass = batch_download_files.CompressedFeedbackSetFileDownloadView
-
-    @unittest.skip('Skipped for new batch download api, will probably be removed')
-    def test_feedbackset_files_download(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            # Test download feedbackset files.
-            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey@example.com', fullname='Dewey Duck')
-            testfeedbackset = mommy.make('devilry_group.FeedbackSet')
-            testcomment = mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset, user=testuser,
-                                     user_role='student')
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-            commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-
-            mockresponse = self.mock_getrequest(
-                    cradmin_role=testfeedbackset.group,
-                    viewkwargs={
-                        'feedbackset_id': testfeedbackset.id
-                    }
-            )
-            self.assertEquals(mockresponse.response.status_code, 302)
