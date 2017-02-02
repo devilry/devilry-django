@@ -223,8 +223,7 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-form-heading'))
         self.assertEquals(
             'Here you can discuss with other examiners on the group and admins - no students. '
-            'You can also upload files. The uploaded files will only be visible to '
-            'examiners and admins with access to this group.',
+            'The files you upload here will will only be visible to examiners and admins with access to this group.',
             mockresponse.selector.one('.devilry-group-feedbackfeed-form-heading').alltext_normalized
         )
 

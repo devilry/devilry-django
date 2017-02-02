@@ -45,7 +45,7 @@ class AdminPublicDiscussView(AdminBaseFeedbackFeedView):
     template_name = 'devilry_group/feedbackfeed_admin/feedbackfeed_admin_discuss.django.html'
 
     def get_form_heading_text_template_name(self):
-        return 'devilry_group/include/examiner_commentform_discuss_public_headingtext.django.html'
+        return 'devilry_group/include/admin_commentform_discuss_public_headingtext.django.html'
 
     def get_buttons(self):
         buttons = super(AdminPublicDiscussView, self).get_buttons()
@@ -77,7 +77,7 @@ class AdminWithExaminersDiscussView(AdminBaseFeedbackFeedView):
     template_name = 'devilry_group/feedbackfeed_admin/feedbackfeed_admin_examiner_admin_discuss.django.html'
 
     def get_form_heading_text_template_name(self):
-        return 'devilry_group/include/examiner_commentform_discuss_examiner_headingtext.django.html'
+        return 'devilry_group/include/admin_commentform_discuss_examiner_headingtext.django.html'
 
     def get_buttons(self):
         buttons = super(AdminWithExaminersDiscussView, self).get_buttons()
