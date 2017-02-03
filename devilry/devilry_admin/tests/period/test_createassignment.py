@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 
+import unittest
+
 from django.test import TestCase
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
@@ -47,6 +49,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(mockresponse.selector.one('input[name=long_name]').get('value', ''), 'Test2')
         self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), 'test2')
 
+    @unittest.skip('Must be revised. Depends on Assignment.first_deadline being None.')
     def test_get_suggested_name_previous_assignment_suffixed_with_number_namecollision_no_first_deadline(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -92,6 +95,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(mockresponse.selector.exists(
             '#devilry_admin_createassignment_suggested_deadlines'))
 
+    @unittest.skip('Must be revised. Depends on Assignment.first_deadline being None.')
     def test_get_suggested_deadlines_not_first_assignment_no_previous_with_deadline(self):
         period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                    first_deadline=None).period

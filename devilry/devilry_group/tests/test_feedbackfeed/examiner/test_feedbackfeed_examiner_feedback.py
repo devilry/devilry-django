@@ -206,30 +206,30 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def test_post_can_not_publish_with_first_deadline_as_none(self):
-        assignment = mommy.make_recipe(
-                'devilry.apps.core.assignment_activeperiod_start',
-                grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
-                first_deadline=None)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        examiner = mommy.make('core.Examiner',
-                              assignmentgroup=testgroup,
-                              relatedexaminer=mommy.make('core.RelatedExaminer'))
-        self.mock_http302_postrequest(
-            cradmin_role=examiner.assignmentgroup,
-            requestuser=examiner.relatedexaminer.user,
-            viewkwargs={'pk': feedbackset.group.id},
-            requestkwargs={
-                'data': {
-                    'text': 'This is a feedback',
-                    'examiner_publish_feedback': 'unused value',
-                }
-            })
-        self.assertEquals(1, group_models.FeedbackSet.objects.all().count())
-        self.assertIsNone(group_models.FeedbackSet.objects.all()[0].grading_published_datetime)
-        cached_group = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
-        self.assertIsNone(cached_group.last_published_feedbackset)
+    # def test_post_can_not_publish_with_first_deadline_as_none(self):
+    #     assignment = mommy.make_recipe(
+    #             'devilry.apps.core.assignment_activeperiod_start',
+    #             grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
+    #             first_deadline=None)
+    #     testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+    #     feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+    #     examiner = mommy.make('core.Examiner',
+    #                           assignmentgroup=testgroup,
+    #                           relatedexaminer=mommy.make('core.RelatedExaminer'))
+    #     self.mock_http302_postrequest(
+    #         cradmin_role=examiner.assignmentgroup,
+    #         requestuser=examiner.relatedexaminer.user,
+    #         viewkwargs={'pk': feedbackset.group.id},
+    #         requestkwargs={
+    #             'data': {
+    #                 'text': 'This is a feedback',
+    #                 'examiner_publish_feedback': 'unused value',
+    #             }
+    #         })
+    #     self.assertEquals(1, group_models.FeedbackSet.objects.all().count())
+    #     self.assertIsNone(group_models.FeedbackSet.objects.all()[0].grading_published_datetime)
+    #     cached_group = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
+    #     self.assertIsNone(cached_group.last_published_feedbackset)
 
     def test_post_first_attempt_draft_appear_before_grading_event(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')

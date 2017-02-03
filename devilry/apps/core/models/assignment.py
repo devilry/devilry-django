@@ -451,7 +451,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         help_text=('Percent to scale points on this assignment by for '
                    'period overviews. The default is 100, which means '
                    'no change to the points.'))
-    first_deadline = models.DateTimeField(blank=True, null=True)
+    first_deadline = models.DateTimeField(blank=False, null=False)
 
     max_points = models.PositiveIntegerField(
         null=True, blank=True,
@@ -916,7 +916,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     def _clean_first_deadline(self, errors):
         # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
-        self.first_deadline = self.first_deadline.replace(microsecond=0, tzinfo=None)
+        self.first_deadline = self.first_deadline.replace(second=0, microsecond=0, tzinfo=None)
 
         if self.first_deadline > self.parentnode.end_time or self.first_deadline < self.parentnode.start_time:
             errors['first_deadline'] = _("First deadline must be within %(periodname)s, "

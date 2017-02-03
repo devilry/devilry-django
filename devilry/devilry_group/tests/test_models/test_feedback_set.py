@@ -1,4 +1,5 @@
 import json
+import unittest
 from datetime import datetime
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -81,6 +82,7 @@ class TestFeedbackSetModel(TestCase):
         self.assertEquals(test_feedbackset.current_deadline(), test_feedbackset.deadline_datetime)
         self.assertNotEquals(test_feedbackset.current_deadline(), test_assignment.first_deadline)
 
+    @unittest.skip("Depends on FeedbackSets deadline_datetime being None. Will be removed")
     def test_feedbackset_current_deadline_is_none(self):
         test_assignment = mommy.make('core.Assignment')
         test_feedbackset = group_mommy.make_first_feedbackset_in_group(
@@ -131,6 +133,7 @@ class TestFeedbackSetModel(TestCase):
         self.assertEquals(groupcomments[1].text, 'comment2')
         self.assertEquals(groupcomments[2].text, 'comment3')
 
+    @unittest.skip("Depends on FeedbackSets deadline_datetime being None. Will be removed")
     def test_feedbackset_publish_current_deadline_is_none(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         grading_points = 10

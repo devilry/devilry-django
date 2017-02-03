@@ -103,26 +103,28 @@ class TestFeedbackSetBatchTask(TestCompressed):
                 archivemodels.CompressedArchiveMeta.objects.get(id=archive_meta_id)
             self.assertFalse(os.path.exists(archive_path))
 
-    def test_batchframework_feedbackset_student_without_deadline(self):
-        # Tests that files added when the FeedbackSet has no deadline is added under 'delivery'.
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
-            testcomment = mommy.make('devilry_group.GroupComment',
-                                     feedback_set=testfeedbackset,
-                                     user_role='student',
-                                     user__shortname='testuser@example.com')
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-            commentfile.file.save('testfile.txt', ContentFile('student testcontent'))
-
-            # Run batch operation
-            self._run_actiongroup(name='batchframework_feedbackset',
-                                  task=tasks.FeedbackSetCompressAction,
-                                  context_object=testfeedbackset,
-                                  started_by=None)
-
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
-            zipfileobject = ZipFile(archive_meta.archive_path)
-            self.assertEquals(zipfileobject.read('delivery/testfile.txt'), 'student testcontent')
+    # def test_batchframework_feedbackset_student_without_deadline(self):
+    #     # Tests that files added when the FeedbackSet has no deadline is added under 'delivery'.
+    #     with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
+    #         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+    #         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    #         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+    #         testcomment = mommy.make('devilry_group.GroupComment',
+    #                                  feedback_set=testfeedbackset,
+    #                                  user_role='student',
+    #                                  user__shortname='testuser@example.com')
+    #         commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+    #         commentfile.file.save('testfile.txt', ContentFile('student testcontent'))
+    #
+    #         # Run batch operation
+    #         self._run_actiongroup(name='batchframework_feedbackset',
+    #                               task=tasks.FeedbackSetCompressAction,
+    #                               context_object=testfeedbackset,
+    #                               started_by=None)
+    #
+    #         archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
+    #         zipfileobject = ZipFile(archive_meta.archive_path)
+    #         self.assertEquals(zipfileobject.read('delivery/testfile.txt'), 'student testcontent')
 
     def test_batchframework_feedbackset_student_after_deadline(self):
         # Tests that files added after the deadline returned from FeedbackSet.get_current_deadline() is added under
@@ -174,7 +176,9 @@ class TestFeedbackSetBatchTask(TestCompressed):
         # Tests that the file uploaded by examiner is added to 'uploaded_by_examiner' subfolder,
         # and that file from student is added under 'delivery'.
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                               first_deadline=timezone.now() + timezone.timedelta(days=1))
+            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
 
             # examiner-comment with file.
             testcomment = mommy.make('devilry_group.GroupComment',
