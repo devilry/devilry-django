@@ -263,7 +263,7 @@ class BatchCompressionAPIFeedbackSetView(AbstractBatchCompressionAPIView):
     API for checking if a compressed ``FeedbackSet`` is ready for download.
     """
     model_class = group_models.FeedbackSet
-    batchoperation_type = 'devilry_group_feedbackset_compression'
+    batchoperation_type = 'batchframework_compress_feedbackset'
 
     def has_no_files(self):
         group_comment_id = GroupComment.objects\
@@ -289,7 +289,7 @@ class BatchCompressionAPIFeedbackSetView(AbstractBatchCompressionAPIView):
 
     def start_compression_task(self, content_object_id):
         batchregistry.Registry.get_instance().run(
-            actiongroup_name='batchframework_compress_feedbackset',
+            actiongroup_name=self.batchoperation_type,
             context_object=self.content_object,
             operationtype=self.batchoperation_type,
         )

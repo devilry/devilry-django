@@ -14,7 +14,7 @@ class BatchCompressionAPIAssignmentView(AbstractBatchCompressionAPIView):
     API for checking if a compressed ``Assignment`` is ready for download.
     """
     model_class = core_models.Assignment
-    batchoperation_type = 'devilry_examiner_assignment_compression'
+    batchoperation_type = 'batchframework_compress_assignment'
 
     def _get_comment_file_queryset(self):
         assignment_group_ids = core_models.AssignmentGroup.objects \
@@ -46,7 +46,7 @@ class BatchCompressionAPIAssignmentView(AbstractBatchCompressionAPIView):
 
     def start_compression_task(self, content_object_id):
         batchregistry.Registry.get_instance().run(
-            actiongroup_name='batchframework_compress_assignment',
+            actiongroup_name=self.batchoperation_type,
             context_object=self.content_object,
             operationtype=self.batchoperation_type,
             started_by=self.request.user
