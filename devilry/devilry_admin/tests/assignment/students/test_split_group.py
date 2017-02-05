@@ -3,6 +3,7 @@ import mock
 from django import forms
 from django.contrib import messages
 from django.http import Http404
+from django.conf import settings
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
@@ -71,7 +72,7 @@ class TestSplitGroup(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             viewkwargs={'pk': testgroup.id}
         )
-        selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('#id_candidates > option')]
+        selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('#id_students > option')]
         self.assertIn(candidate1.relatedstudent.user.get_displayname(), selectlist)
         self.assertIn(candidate2.relatedstudent.user.get_displayname(), selectlist)
         self.assertIn(candidate3.relatedstudent.user.get_displayname(), selectlist)
@@ -86,3 +87,83 @@ class TestSplitGroup(TestCase, cradmin_testhelpers.TestCaseMixin):
                 viewkwargs={'pk': testgroup.id}
             )
 
+    def test_semi_anonymous(self):
+        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        with self.assertRaises(Http404):
+            self.mock_getrequest(
+                cradmin_role=testassignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('periodadmin'),
+                viewkwargs={'pk': testgroup.id}
+            )
+
+    def test_links(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
+            viewkwargs={'pk': testgroup.id})
+        self.assertEquals(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(
+            mock.call(appname='groupdetails', args=(), viewname='groupdetails', kwargs={'pk': testgroup.id}),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
+        )
+
+    def test_cannot_pop_candidate_if_there_is_only_one(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        candidate = core_mommy.candidate(group=testgroup)
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup.parentnode,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            messagesmock=messagesmock,
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data':
+                    {'students': candidate.id}
+            }
+        )
+        messagesmock.add.assert_called_once_with(
+            messages.WARNING,
+            'Cannot split student if there is less than 2 students in project group.',
+            ''
+        )
+
+    def test_pop_candidate_sanity(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        core_mommy.candidate(group=testgroup)
+        candidate = core_mommy.candidate(group=testgroup, shortname='sirtoby', fullname='sir. Toby')
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup.parentnode,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            messagesmock=messagesmock,
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data':
+                    {'students': candidate.id}
+            }
+        )
+        messagesmock.add.assert_called_once_with(
+            messages.SUCCESS,
+            '{} was removed from the project group'.format(candidate.relatedstudent.user.get_displayname()),
+            ''
+        )
+
+    def test_pop_candidate_db(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        core_mommy.candidate(group=testgroup)
+        candidate = core_mommy.candidate(group=testgroup, shortname='sirtoby', fullname='sir. Toby')
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup.parentnode,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data':
+                    {'students': candidate.id}
+            }
+        )
+        candidate = Candidate.objects.get(id=candidate.id)
+        self.assertNotEqual(candidate.assignment_group, testgroup)
+        testgroup = AssignmentGroup.objects.get(id=testgroup.id)
+        self.assertEqual(1, testgroup.cached_data.candidate_count);

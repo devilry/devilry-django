@@ -17,8 +17,8 @@ from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import Examiner
 from devilry.apps.core.models import deliverytypes, Assignment, RelatedStudent
-from devilry.apps.core.models.assignment_group import GroupPopNotCandiateError, AssignmentGroupTag
-from devilry.apps.core.models.assignment_group import GroupPopToFewCandiatesError
+from devilry.apps.core.models.assignment_group import GroupPopNotCandidateError, AssignmentGroupTag
+from devilry.apps.core.models.assignment_group import GroupPopToFewCandidatesError
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
 from devilry.devilry_comment.models import Comment, CommentFile
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
@@ -945,14 +945,14 @@ class TestAssignmentGroupPopCandidate(TestCase):
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         core_mommy.candidate(group=testgroup1)
         testcandidate = core_mommy.candidate(group=testgroup2)
-        with self.assertRaises(GroupPopNotCandiateError):
+        with self.assertRaises(GroupPopNotCandidateError):
             testgroup1.pop_candidate(testcandidate)
 
     def test_pop_candidate_when_there_is_only_one(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testcandidate = core_mommy.candidate(group=testgroup)
-        with self.assertRaises(GroupPopToFewCandiatesError):
+        with self.assertRaises(GroupPopToFewCandidatesError):
             testgroup.pop_candidate(testcandidate)
 
     def test_pop_candidate_has_left_from_assignment_group(self):
