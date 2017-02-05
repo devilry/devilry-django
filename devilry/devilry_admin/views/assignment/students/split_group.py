@@ -1,17 +1,17 @@
 from __future__ import unicode_literals
 
 from crispy_forms import layout
+from django import forms
+from django.contrib import messages
+from django.http import Http404
+from django.shortcuts import redirect
+from django.utils.translation import ugettext_lazy
 from django.views.generic.detail import SingleObjectMixin
+from django_cradmin import crapp
 from django_cradmin.crispylayouts import PrimarySubmit
 from django_cradmin.viewhelpers import formbase
-from django.shortcuts import redirect
-from django import forms
-from django.http import Http404
-from django_cradmin import crapp, crinstance
-from django.utils.translation import ugettext_lazy
 from django_cradmin.viewhelpers.mixins import QuerysetForRoleMixin
 from django_cradmin.widgets.selectwidgets import WrappedSelect
-from django.contrib import messages
 
 from devilry.apps.core.models import AssignmentGroup, Candidate
 from devilry.apps.core.models.assignment_group import GroupPopNotCandidateError, GroupPopToFewCandidatesError
@@ -44,6 +44,8 @@ class SplitGroupView(QuerysetForRoleMixin, SingleObjectMixin, formbase.FormView)
         self.assignment = self.request.cradmin_role
         self.devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()
         if self.assignment.is_fully_anonymous and self.devilryrole != 'departmentadmin':
+            raise Http404()
+        if self.assignment.is_semi_anonymous and self.devilryrole == 'periodadmin':
             raise Http404()
         return super(SplitGroupView, self).dispatch(request, *args, **kwargs)
 

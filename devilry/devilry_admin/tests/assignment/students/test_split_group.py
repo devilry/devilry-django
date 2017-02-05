@@ -1,17 +1,15 @@
-import htmls
 import mock
-from django import forms
 from django.contrib import messages
 from django.http import Http404
-from django.conf import settings
 from django.test import TestCase
+from django.conf import settings
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
+from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.apps.core.models import AssignmentGroup, Candidate, Assignment
 from devilry.devilry_admin.views.assignment.students import split_group
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 
 
 class TestSplitGroup(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -76,26 +74,6 @@ class TestSplitGroup(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIn(candidate1.relatedstudent.user.get_displayname(), selectlist)
         self.assertIn(candidate2.relatedstudent.user.get_displayname(), selectlist)
         self.assertIn(candidate3.relatedstudent.user.get_displayname(), selectlist)
-
-    def test_fully_anonymous(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        with self.assertRaises(Http404):
-            self.mock_getrequest(
-                cradmin_role=testassignment,
-                cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
-                viewkwargs={'pk': testgroup.id}
-            )
-
-    def test_semi_anonymous(self):
-        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        with self.assertRaises(Http404):
-            self.mock_getrequest(
-                cradmin_role=testassignment,
-                cradmin_instance=self.__mockinstance_with_devilryrole('periodadmin'),
-                viewkwargs={'pk': testgroup.id}
-            )
 
     def test_links(self):
         testgroup = mommy.make('core.AssignmentGroup')
@@ -167,3 +145,90 @@ class TestSplitGroup(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertNotEqual(candidate.assignment_group, testgroup)
         testgroup = AssignmentGroup.objects.get(id=testgroup.id)
         self.assertEqual(1, testgroup.cached_data.candidate_count);
+
+
+class TestMergeGroupsAnonymization(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = split_group.SplitGroupView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def __mockinstance_with_devilryrole(self, devilryrole):
+        mockinstance = mock.MagicMock()
+        mockinstance.get_devilryrole_for_requestuser.return_value = devilryrole
+        return mockinstance
+
+    def test_404_anonymizationmode_fully_subjectadmin(self):
+        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                viewkwargs={'pk': testgroup.id},
+                cradmin_role=testassignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
+
+    def test_404_anonymizationmode_semi_periodadmin(self):
+        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                viewkwargs={'pk': testgroup.id},
+                cradmin_role=testassignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('periodadmin'))
+
+    def test_404_anonymizationmode_fully_periodadmin(self):
+        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                viewkwargs={'pk': testgroup.id},
+                cradmin_role=testassignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('periodadmin'))
+
+    def test_anonymizationmode_fully_departmentadmin(self):
+        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'pk': testgroup.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+
+    def test_anonymizationmode_semi_departmentadmin(self):
+        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'pk': testgroup.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+
+    def test_anonymizationmode_off_departmentadmin(self):
+        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'pk': testgroup.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
+
+    def test_anonymizationmode_semi_subjectadmin(self):
+        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'pk': testgroup.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
+
+    def test_anonymizationmode_off_subjectadmin(self):
+        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'pk': testgroup.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'))
+
+    def test_anonymizationmode_off_period(self):
+        testassignment = mommy.make('core.Assignment', anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'pk': testgroup.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('periodadmin'))
