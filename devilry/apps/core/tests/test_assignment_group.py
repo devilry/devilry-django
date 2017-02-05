@@ -918,7 +918,7 @@ class TestAssignmentGroupPopCandidate(TestCase):
                                      feedback_set=feedbackset,
                                      user=testcandidate1.relatedstudent.user,
                                      user_role=GroupComment.USER_ROLE_STUDENT,
-                                     _fill_optional=True)
+                                     text='imba{}'.format(index+200))
                 testcommentfile1 = mommy.make('devilry_comment.CommentFile', filename='testfile1.txt', comment=comment)
                 testcommentfile1.file.save('testfile1.txt', ContentFile('test1'))
                 testcommentfile2 = mommy.make('devilry_comment.CommentFile', filename='testfile2.txt', comment=comment)
@@ -929,13 +929,13 @@ class TestAssignmentGroupPopCandidate(TestCase):
                            feedback_set=feedbackset,
                            user=testcandidate2.relatedstudent.user,
                            user_role=GroupComment.USER_ROLE_STUDENT,
-                           _fill_optional=True)
+                           text='lol{}'.format(index+100))
 
             for index in range(7):
                 mommy.make('devilry_group.GroupComment',
                            feedback_set=feedbackset,
                            user_role=GroupComment.USER_ROLE_EXAMINER,
-                           _fill_optional=True)
+                           text='cool{}'.format(index+7))
 
         return (testgroup1, testcandidate1, testcandidate2)
 
