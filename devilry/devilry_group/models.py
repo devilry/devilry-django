@@ -519,6 +519,23 @@ class FeedbackSet(models.Model):
             delattr(self, '_gradeform_data')
 
 
+class FeedbackSetDeadlineHistory(models.Model):
+    """
+    Logs change in deadline for a FeedbackSet.
+    """
+    #: The :class:`~.FeedbackSet` the change is for.
+    feedback_set = models.ForeignKey(FeedbackSet)
+
+    #: The User that made the deadline change.
+    changed_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+
+    #: The old :attr:`~.FeedbackDet.deadline_datetime`.
+    deadline_old = models.DateTimeField(null=False, blank=False)
+
+    #: The new :attr:`~.FeedbackDet.deadline_datetime`.
+    deadline_new = models.DateTimeField(null=False, blank=False)
+
+
 class GroupCommentQuerySet(AbstractGroupCommentQuerySet):
     """
     QuerySet for :class:`.GroupComment`.
