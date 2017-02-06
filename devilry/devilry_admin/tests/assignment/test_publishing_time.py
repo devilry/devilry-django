@@ -33,9 +33,9 @@ class TestPublishNowRedirectView(TestCase, cradmin_testhelpers.TestCaseMixin):
         assignment = mommy.make('core.Assignment', publishing_time=datetime(2000, 1, 1))
         self.mock_http302_postrequest(cradmin_role=assignment)
         assignment = Assignment.objects.get(id=assignment.id)
-        assignment_publishing_time_ignore_ms = assignment.publishing_time.replace(microsecond=0)
-        now_ignore_ms = datetime.now().replace(microsecond=0)
-        self.assertEquals(assignment_publishing_time_ignore_ms, now_ignore_ms)
+        assignment_publishing_time_ignore_sec_and_ms = assignment.publishing_time.replace(second=0, microsecond=0)
+        now_ignore_sec_and_ms = datetime.now().replace(second=0, microsecond=0)
+        self.assertEquals(assignment_publishing_time_ignore_sec_and_ms, now_ignore_sec_and_ms)
 
     def test_update_publishing_time_on_correct_assignment(self):
         assignment1 = mommy.make('core.Assignment', publishing_time=datetime(2000, 1, 1))

@@ -548,7 +548,7 @@ class TestAssignmentGroup(TestCase):
 
         for created_feedbackset in FeedbackSet.objects.all():
             self.assertEqual(testuser, created_feedbackset.created_by)
-            self.assertIsNone(created_feedbackset.deadline_datetime)
+            self.assertIsNotNone(created_feedbackset.deadline_datetime)
 
     def test_bulk_create_groups_multiple(self):
         testperiod = mommy.make('core.Period')
@@ -1856,7 +1856,7 @@ class TestAssignmentGroupIsWaitingForFeedback(TestCase):
             group=testgroup)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
-            deadline_datetime=ACTIVE_PERIOD_START)
+            deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=10))
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.is_waiting_for_feedback)
 
@@ -1908,7 +1908,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
             group=testgroup)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
-            deadline_datetime=ACTIVE_PERIOD_START)
+            deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=10))
         annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
         self.assertTrue(annotated_group.annotated_is_waiting_for_feedback)
 

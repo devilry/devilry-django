@@ -25,6 +25,7 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
             'examiner/triggers.sql',
             'candidate/triggers.sql',
             'assignment_group_cached_data/rebuild.sql',
+            'assignment/triggers.sql'
         ])
 
     def recreate_data(self):
