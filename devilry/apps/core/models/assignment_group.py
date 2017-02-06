@@ -28,14 +28,14 @@ class GroupPopValueError(ValueError):
     """
 
 
-class GroupPopToFewCandiatesError(GroupPopValueError):
+class GroupPopToFewCandidatesError(GroupPopValueError):
     """
     Raised when meth:`AssignmentGroup.pop_candidate` is called on a group with
     1 or less candidates.
     """
 
 
-class GroupPopNotCandiateError(GroupPopValueError):
+class GroupPopNotCandidateError(GroupPopValueError):
     """
     Raised when meth:`AssignmentGroup.pop_candidate` is called with a candidate
     that is not on the group.
@@ -1574,9 +1574,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         """
         if not self.candidates.filter(id=candidate.id).exists():
-            raise GroupPopNotCandiateError('candidate is not part of AssignmentGroup')
+            raise GroupPopNotCandidateError('candidate is not part of AssignmentGroup')
         if len(self.candidates.all()) < 2:
-            raise GroupPopToFewCandiatesError('cannot pop candidate from AssignmentGroup when there is only one')
+            raise GroupPopToFewCandidatesError('cannot pop candidate from AssignmentGroup when there is only one')
 
         groupcopy = self.copy_all_except_candidates()
         candidate.assignment_group = groupcopy

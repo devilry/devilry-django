@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.shortcuts import redirect
+from django.http import Http404
 from django.utils.translation import ugettext_lazy
 from django_cradmin import crapp
 
@@ -21,6 +21,15 @@ class MergeGroupsTargetRenderer(devilry_listbuilder.assignmentgroup.GroupTargetR
 class MergeGroupsView(groupview_base.BaseMultiselectView):
     filterview_name = 'filter'
     template_name = 'devilry_admin/assignment/students/merge_groups.django.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.assignment = self.request.cradmin_role
+        self.devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()
+        if self.assignment.is_fully_anonymous and self.devilryrole != 'departmentadmin':
+            raise Http404()
+        elif (self.assignment.is_semi_anonymous and self.devilryrole == 'periodadmin'):
+            raise Http404()
+        return super(MergeGroupsView, self).dispatch(request, *args, **kwargs)
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(

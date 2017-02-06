@@ -17,8 +17,8 @@ from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import Examiner
 from devilry.apps.core.models import deliverytypes, Assignment, RelatedStudent
-from devilry.apps.core.models.assignment_group import GroupPopNotCandiateError, AssignmentGroupTag
-from devilry.apps.core.models.assignment_group import GroupPopToFewCandiatesError
+from devilry.apps.core.models.assignment_group import GroupPopNotCandidateError, AssignmentGroupTag
+from devilry.apps.core.models.assignment_group import GroupPopToFewCandidatesError
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
 from devilry.devilry_comment.models import Comment, CommentFile
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
@@ -918,7 +918,7 @@ class TestAssignmentGroupPopCandidate(TestCase):
                                      feedback_set=feedbackset,
                                      user=testcandidate1.relatedstudent.user,
                                      user_role=GroupComment.USER_ROLE_STUDENT,
-                                     _fill_optional=True)
+                                     text='imba{}'.format(index+200))
                 testcommentfile1 = mommy.make('devilry_comment.CommentFile', filename='testfile1.txt', comment=comment)
                 testcommentfile1.file.save('testfile1.txt', ContentFile('test1'))
                 testcommentfile2 = mommy.make('devilry_comment.CommentFile', filename='testfile2.txt', comment=comment)
@@ -929,13 +929,13 @@ class TestAssignmentGroupPopCandidate(TestCase):
                            feedback_set=feedbackset,
                            user=testcandidate2.relatedstudent.user,
                            user_role=GroupComment.USER_ROLE_STUDENT,
-                           _fill_optional=True)
+                           text='lol{}'.format(index+100))
 
             for index in range(7):
                 mommy.make('devilry_group.GroupComment',
                            feedback_set=feedbackset,
                            user_role=GroupComment.USER_ROLE_EXAMINER,
-                           _fill_optional=True)
+                           text='cool{}'.format(index+7))
 
         return (testgroup1, testcandidate1, testcandidate2)
 
@@ -945,14 +945,14 @@ class TestAssignmentGroupPopCandidate(TestCase):
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         core_mommy.candidate(group=testgroup1)
         testcandidate = core_mommy.candidate(group=testgroup2)
-        with self.assertRaises(GroupPopNotCandiateError):
+        with self.assertRaises(GroupPopNotCandidateError):
             testgroup1.pop_candidate(testcandidate)
 
     def test_pop_candidate_when_there_is_only_one(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testcandidate = core_mommy.candidate(group=testgroup)
-        with self.assertRaises(GroupPopToFewCandiatesError):
+        with self.assertRaises(GroupPopToFewCandidatesError):
             testgroup.pop_candidate(testcandidate)
 
     def test_pop_candidate_has_left_from_assignment_group(self):
