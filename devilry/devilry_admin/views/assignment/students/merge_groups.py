@@ -78,12 +78,12 @@ class MergeGroupsView(groupview_base.BaseMultiselectView):
         except ValidationError as e:
             messages.warning(
                 self.request,
-                str(e.message))
+                ugettext_lazy(str(e.message)))
         else:
             messages.success(
                 self.request,
-                "A group with {} has been created!".format(
-                    self.__get_merged_candidates_short_name(self.target_group)
+                ugettext_lazy("A group with {} has been created!".format(
+                    self.__get_merged_candidates_short_name(self.target_group))
                 )
             )
         return super(MergeGroupsView, self).form_valid(form)
