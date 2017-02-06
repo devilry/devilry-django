@@ -529,6 +529,10 @@ class FeedbackSetDeadlineHistory(models.Model):
     #: The User that made the deadline change.
     changed_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
 
+    #: Time of change.
+    #: Defaults to ``timezone.now``.
+    changed_datetime = models.DateTimeField(null=False, blank=False, default=timezone.now)
+
     #: The old :attr:`~.FeedbackDet.deadline_datetime`.
     deadline_old = models.DateTimeField(null=False, blank=False)
 
