@@ -311,7 +311,7 @@ class FeedbackSet(models.Model):
     #: (ordered by :obj:`~.FeedbackSet.created_datetime`) does not
     #: have a deadline. It inherits this from the ``first_deadline`` field
     #: of :class:`devilry.apps.core.models.assignment.Assignment`.
-    deadline_datetime = models.DateTimeField(null=True, blank=True)
+    deadline_datetime = models.DateTimeField(null=False, blank=False)
 
     #: The datetime when the feedback was published.
     #: Set when an examiner publishes the feedback for this FeedbackSet.
