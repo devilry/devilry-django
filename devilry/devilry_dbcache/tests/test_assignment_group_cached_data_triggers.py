@@ -29,7 +29,8 @@ class TestAssignmentGroupCachedDataBasics(test.TestCase):
         self.assertEqual(group.cached_data.last_published_feedbackset, None)
 
     def test_first_feedbackset(self):
-        group = mommy.make('core.AssignmentGroup')
+        assignment = mommy.make('core.Assignment', first_deadline=ACTIVE_PERIOD_START - timedelta(days=2))
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         first_feedbackset = group.feedbackset_set.first()
         mommy.make('devilry_group.FeedbackSet',
                    group=group,
@@ -41,7 +42,8 @@ class TestAssignmentGroupCachedDataBasics(test.TestCase):
         self.assertEqual(group.cached_data.first_feedbackset, first_feedbackset)
 
     def test_last_feedbackset(self):
-        group = mommy.make('core.AssignmentGroup')
+        assignment = mommy.make('core.Assignment', first_deadline=ACTIVE_PERIOD_START - timedelta(days=2))
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         mommy.make('devilry_group.FeedbackSet',
                    group=group,
                    deadline_datetime=ACTIVE_PERIOD_START)

@@ -128,10 +128,7 @@ class AssignmentGroupCachedData(models.Model):
         :obj:`devilry.devilry_group.models.FeedbackSet.deadline_datetime` of the
         last feedbackset.
         """
-        if self.last_feedbackset == self.first_feedbackset:
-            return self.group.assignment.first_deadline
-        else:
-            return self.last_feedbackset.deadline_datetime
+        return self.last_feedbackset.deadline_datetime
 
     @property
     def prettyformat_current_attempt_number(self):

@@ -42,6 +42,7 @@ class TestFeedbackSetModel(TestCase):
         feedbackset = group_mommy.make_first_feedbackset_in_group()
         self.assertIsNotNone(feedbackset.created_datetime)
 
+    @unittest.skip('Will be removed after deadline_datetime migration.')
     def test_feedbackset_deadline_datetime_default_none(self):
         feedbackset = group_mommy.make_first_feedbackset_in_group()
         self.assertIsNone(feedbackset.deadline_datetime)

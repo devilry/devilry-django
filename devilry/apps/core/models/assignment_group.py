@@ -686,17 +686,10 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         """
         now = timezone.now()
         whenquery = models.Q(
-            cached_data__last_feedbackset__grading_published_datetime__isnull=True
-        ) & (
-            models.Q(
-                ~models.Q(cached_data__last_feedbackset=models.F('cached_data__first_feedbackset')),
-                models.Q(cached_data__last_feedbackset__deadline_datetime__lt=now),
-            ) |
-            models.Q(
-                models.Q(cached_data__last_feedbackset=models.F('cached_data__first_feedbackset')),
-                parentnode__first_deadline__lt=now
-            )
+            cached_data__last_feedbackset__grading_published_datetime__isnull=True,
+            cached_data__last_feedbackset__deadline_datetime__lt=now
         )
+
         return self.annotate(
             annotated_is_waiting_for_feedback=devilry_djangoaggregate_functions.BooleanCount(
                 models.Case(
