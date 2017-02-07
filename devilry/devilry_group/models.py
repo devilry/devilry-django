@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy
 
 from devilry.apps.core.models import assignment_group
+from devilry.apps.core.models.custom_db_fields import ShortNameField, LongNameField
 from devilry.devilry_comment import models as comment_models
 
 
@@ -517,6 +518,57 @@ class FeedbackSet(models.Model):
         self.gradeform_data_json = json.dumps(gradeform_data)
         if hasattr(self, '_gradeform_data'):
             delattr(self, '_gradeform_data')
+
+
+class FeedbacksetPassedPreviousPeriod(models.Model):
+    """
+    This model is used when a student have passed an assignment in previous period.
+    Therefore we need to save some old data about the :class:`core.Assignment`, :class:`devilry_group.FeedbackSet`
+    and :class:`core.Period` from previous period.
+    """
+
+    #: Foreign key to class:`devilry_group.FeedbackSet` in current period.
+    feedbackset = models.ForeignKey(FeedbackSet, null=True, blank=True,
+                                    on_delete=models.SET_NULL)
+
+    #: Old :attr:`core.Assignment.short_name`.
+    assignment_short_name = ShortNameField()
+
+    #: Old :attr:`core.Assignment.long_name`.
+    assignment_long_name = LongNameField()
+
+    # Old :attr:`core.Assignment.max_points`.
+    assignment_max_points = models.PositiveIntegerField(default=0)
+
+    # Old :attr:`core.Assignment.passing_grade_min_points`
+    assignment_passing_grade_min_points = models.PositiveIntegerField(default=0)
+
+    # Old :attr:`core.Period.short_name`.
+    period_short_name = ShortNameField()
+
+    # Old :attr:`core.Period.long_name`
+    period_long_name = LongNameField()
+
+    # Old :attr:`core.Period.start_time`
+    period_start_time = models.DateTimeField()
+
+    # Old :attr:`core.Period.end_time`
+    period_end_time = models.DateField()
+
+    # Old :attr:`FeedbackSet.grading_points`.
+    grading_points = models.PositiveIntegerField(default=0)
+
+    # Old :attr:`FeedbackSet.grading_published_by`.
+    grading_published_by = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        null=True, blank=True
+    )
+
+    # Old :attr:`FeedbackSet.grading_published_datetime`.
+    grading_published_datetime = models.DateTimeField(
+        null=True,
+        blank=True
+    )
 
 
 class GroupCommentQuerySet(AbstractGroupCommentQuerySet):
