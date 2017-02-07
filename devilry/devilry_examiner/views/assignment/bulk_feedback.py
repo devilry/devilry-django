@@ -314,6 +314,7 @@ class AssignmentGroupItemListView(multiselect2view.ListbuilderFilterView):
         Note:
             Using ``transaction.atomic()`` for single transaction when creating ``GroupComment``s and
             updating the ``FeedbackSet``s.
+            If anything goes wrong, the transaction is rolled back and nothing is saved to the database.
 
         Args:
             form: cleaned form.

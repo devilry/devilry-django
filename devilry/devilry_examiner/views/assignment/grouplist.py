@@ -11,6 +11,7 @@ from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
 from devilry.devilry_examiner.views.assignment import bulk_feedback
+from devilry.devilry_examiner.views.assignment import bulk_feedback_simple
 
 
 class GroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -227,5 +228,10 @@ class App(crapp.App):
                   name='bulk-feedback-points-filter'),
         crapp.Url(r'^bulk-feedback-passedfailed/filter/(?P<filters_string>.+)?$',
                   bulk_feedback.BulkFeedbackPassedFailedView.as_view(),
-                  name='bulk-feedback-passedfailed-filter')
+                  name='bulk-feedback-passedfailed-filter'),
+
+        # Bulk feedback single
+        crapp.Url(r'^bulk-feedback-simple$',
+                  bulk_feedback_simple.SingleGroupBulkFeedbackView.as_view(),
+                  name='bulk-feedback-simple')
     ]

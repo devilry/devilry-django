@@ -11,7 +11,10 @@
 
 {% block listbuilderview_buttons %}
         {{ block.super }}
-        <a id="devilry-examiner-bulk-feedback-button" class="btn btn-default" href="{% cradmin_appurl 'bulk-feedback' %}">{% trans "Bulk create feedback" %}</a>
+        <a id="devilry-examiner-bulk-feedback-button" class="btn btn-default"
+           href="{% cradmin_appurl 'bulk-feedback' %}">
+            {% trans "Bulk create feedback" %}
+        </a>
         {% include "devilry_examiner/assignment/includes/batchdownload_assignment.django.html" %}
 {% endblock %}
 

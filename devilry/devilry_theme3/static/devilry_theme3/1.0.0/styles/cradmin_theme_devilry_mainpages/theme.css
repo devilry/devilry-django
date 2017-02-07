@@ -9020,6 +9020,14 @@ ul.devilry-admin-assigments-students-and-examiners li p {
 .devilry-tabulardata-list .devilry-tabulardata-list__cell--columnheader {
   border-bottom: 5px solid #B568A9;
 }
+.devilry-tabulardata-list .devilry-tabulardata-list__cell-examiner {
+  display: table-cell;
+  padding: 20px;
+  border-bottom: 1px solid #c0e4f2;
+}
+.devilry-tabulardata-list .devilry-tabulardata-list__cell-examiner--columnheader {
+  border-bottom: 5px solid #0093D0;
+}
 .devilry-qualifiesforexam-cellbase {
   border-top: 1px solid #dddddd;
   border-bottom: 1px solid #dddddd;

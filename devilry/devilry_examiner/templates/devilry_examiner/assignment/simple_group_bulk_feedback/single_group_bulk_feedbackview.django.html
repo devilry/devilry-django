@@ -1,0 +1,39 @@
+{#{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}#}
+{% extends "django_cradmin/viewhelpers/listbuilderview/default.django.html" %}
+
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_appindex_url  %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    {{ block.super }}
+{% endblock pageheader-inner %}
+
+{% block list %}
+    {% if listbuilder_list.has_items %}
+        <form action="{% cradmin_appurl 'bulk-feedback-simple' %}" method="POST">
+            {% csrf_token %}
+            {% cradmin_render_renderable listbuilder_list %}
+            <input type="submit" value="OK" class="btn btn-default">
+        </form>
+    {% else %}
+        {% block no-items-wrapper %}
+            <p class="django-cradmin-listing-no-items-message django-cradmin-listbuilderview-no-items-message">
+                {% block no-items-paragraph-contents %}
+                    {{ no_items_message }}
+                {% endblock no-items-paragraph-contents %}
+            </p>
+        {% endblock no-items-wrapper %}
+    {% endif %}
+{% endblock list %}
