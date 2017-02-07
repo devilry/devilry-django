@@ -20,7 +20,7 @@ class AbstractExaminerCell(base_new.AbstractCellRenderer):
 
 
 class GroupItemValue(AbstractExaminerCell):
-    template_name = 'devilry_examiner/assignment/single_group_bulk_feedback/group_cell_value.django.html'
+    template_name = 'devilry_examiner/assignment/simple_group_bulk_feedback/group_cell_value.django.html'
     valuealias = 'assignment_group'
 
     def __init__(self, assignment_group):
@@ -31,7 +31,7 @@ class GroupItemValue(AbstractExaminerCell):
 
 
 class GradeFormFieldItemValue(AbstractExaminerCell):
-    template_name = 'devilry_examiner/assignment/single_group_bulk_feedback/grade_cell_value.django.html'
+    template_name = 'devilry_examiner/assignment/simple_group_bulk_feedback/grade_cell_value.django.html'
 
     def __init__(self, assignment_group_id):
         self.field_name = 'grade_{}'.format(assignment_group_id)
@@ -39,7 +39,7 @@ class GradeFormFieldItemValue(AbstractExaminerCell):
 
 
 class CommentTextFormFieldItemValue(AbstractExaminerCell):
-    template_name = 'devilry_examiner/assignment/single_group_bulk_feedback/text_cell_value.django.html'
+    template_name = 'devilry_examiner/assignment/simple_group_bulk_feedback/text_cell_value.django.html'
 
     def __init__(self, assignment_group_id):
         self.field_name = 'comment_text_{}'.format(assignment_group_id)
@@ -47,7 +47,7 @@ class CommentTextFormFieldItemValue(AbstractExaminerCell):
 
 
 class ColumnHeader(AbstractExaminerCell):
-    template_name = 'devilry_examiner/assignment/single_group_bulk_feedback/column_header_item.django.html'
+    template_name = 'devilry_examiner/assignment/simple_group_bulk_feedback/column_header_item.django.html'
 
     def __init__(self, header_text):
         self.header_text = header_text

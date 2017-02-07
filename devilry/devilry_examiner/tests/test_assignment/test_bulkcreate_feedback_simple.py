@@ -15,7 +15,7 @@ from devilry.apps.core import models as core_models
 
 
 class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
-    viewclass = bulk_feedback_simple.SingleGroupBulkFeedbackView
+    viewclass = bulk_feedback_simple.SimpleGroupBulkFeedbackView
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
@@ -317,7 +317,7 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
 
 
 class TestBulkCreateFeedbackSimplePointsPlugin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
-    viewclass = bulk_feedback_simple.SingleGroupBulkFeedbackView
+    viewclass = bulk_feedback_simple.SimpleGroupBulkFeedbackView
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()

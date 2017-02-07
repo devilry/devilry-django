@@ -232,6 +232,6 @@ class App(crapp.App):
 
         # Bulk feedback single
         crapp.Url(r'^bulk-feedback-simple$',
-                  bulk_feedback_simple.SingleGroupBulkFeedbackView.as_view(),
+                  bulk_feedback_simple.SimpleGroupBulkFeedbackView.as_view(),
                   name='bulk-feedback-simple')
     ]
