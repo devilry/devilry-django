@@ -4,10 +4,11 @@ from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import Candidate
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group.models import FeedbackSet, FeedbacksetPassedPreviousPeriod
-from devilry.utils.passed_in_previous_period import PassedInPreviousPeriod
+from devilry.utils.passed_in_previous_period import PassedInPreviousPeriod, SomeCandidatesDoesNotQualifyToPass
 
 
 class TestPassedInPreviousPeriodQueryset(TestCase):
@@ -229,7 +230,7 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
             [candidate3.relatedstudent.user.get_displayname()]
         )
 
-    def test_current_assignment_is_excluded(self):
+    def test_candidates_who_got_graded_on_current_assignment_is_filtered_away(self):
         assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
             short_name='Cool',
@@ -253,7 +254,6 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
             passing_grade_min_points=5
         )
         current_group1 = mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1')
-        group_mommy.feedbackset_first_attempt_published(group=current_group1, grading_points=7)
         mommy.make('core.Candidate', assignment_group=current_group1,
                    relatedstudent__user=candidate1.relatedstudent.user)
         current_group2 = mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1')
@@ -266,10 +266,10 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
                    relatedstudent__user=candidate3.relatedstudent.user)
 
         passed_in_previous = PassedInPreviousPeriod(current_assignment, assignment.parentnode)
-        self.assertListEqual(
-            [candidate.assignment_group.name for candidate in passed_in_previous.get_queryset()],
-            [group1.name, group2.name, group3.name]
-        )
+        candidate_queryset = passed_in_previous.get_queryset()
+        self.assertEqual(candidate_queryset.count(), 1)
+        self.assertEqual(candidate_queryset.first().relatedstudent.user.get_displayname(),
+                         candidate1.relatedstudent.user.get_displayname())
 
     def test_num_queries(self):
         assignment = mommy.make_recipe(
@@ -462,7 +462,7 @@ class TestPassedInPreviousPeriod(TestCase):
             self.assertEqual(new_feedbackset.grading_points,
                              passed_in_previous.convert_points(prev_feedbackset))
 
-    def test_only_selected_candidates_will_pass_in_current_period(self):
+    def test_multiple_candidates_passed_in_a_different_order(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
@@ -475,7 +475,7 @@ class TestPassedInPreviousPeriod(TestCase):
         candidate1 = core_mommy.candidate(group=group1, fullname='Mr. Pomeroy', shortname='mrpomeroy')
 
         group2 = mommy.make('core.AssignmentGroup', parentnode=assignment, name='group2')
-        group_mommy.feedbackset_new_attempt_published(group=group2, grading_points=6)
+        previous_feedbacksets.append(group_mommy.feedbackset_new_attempt_published(group=group2, grading_points=6))
         candidate2 = core_mommy.candidate(group=group2, fullname='Mr. Winterbottom', shortname='mrwinterbottom')
 
         group3 = mommy.make('core.AssignmentGroup', parentnode=assignment, name='group3')
@@ -491,16 +491,15 @@ class TestPassedInPreviousPeriod(TestCase):
         current_groups.append(mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1'))
         mommy.make('core.Candidate', assignment_group=current_groups[0],
                    relatedstudent__user=candidate1.relatedstudent.user)
-        current_group2 = mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1')
-        mommy.make('core.Candidate', assignment_group=current_group2,
-                   relatedstudent__user=candidate2.relatedstudent.user)
         current_groups.append(mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1'))
         mommy.make('core.Candidate', assignment_group=current_groups[1],
+                   relatedstudent__user=candidate2.relatedstudent.user)
+        current_groups.append(mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1'))
+        mommy.make('core.Candidate', assignment_group=current_groups[2],
                    relatedstudent__user=candidate3.relatedstudent.user)
 
         passed_in_previous = PassedInPreviousPeriod(current_assignment, assignment.parentnode)
-        candidate_queryset = passed_in_previous.get_queryset().exclude(id=candidate2.id)
-        self.assertEqual(2, candidate_queryset.count())
+        candidate_queryset = passed_in_previous.get_queryset().order_by('-relatedstudent__user_id')
         passed_in_previous.set_passed_in_current_period(candidate_queryset, testuser)
         published_feedbacksets = FeedbackSet.objects.filter(group__in=current_groups).order_by('id')
         for new_feedbackset, prev_feedbackset in zip(published_feedbacksets, previous_feedbacksets):
@@ -510,9 +509,180 @@ class TestPassedInPreviousPeriod(TestCase):
             self.assertEqual(new_feedbackset.grading_published_by, testuser)
             self.assertEqual(new_feedbackset.grading_points,
                              passed_in_previous.convert_points(prev_feedbackset))
-        self.assertIsNone(AssignmentGroup.objects.get(id=current_group2.id).cached_data.last_published_feedbackset)
-        self.assertIsNone(AssignmentGroup.objects.get(
-            id=current_group2.id).cached_data.first_feedbackset.grading_published_datetime)
+
+    def test_some_selected_students_did_not_qualify_to_pass(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        assignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            short_name='Cool',
+            passing_grade_min_points=5
+        )
+        previous_feedbacksets = []
+        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment, name='group1')
+        previous_feedbacksets.append(group_mommy.feedbackset_new_attempt_published(group=group1, grading_points=6))
+        candidate1 = core_mommy.candidate(group=group1, fullname='Mr. Pomeroy', shortname='mrpomeroy')
+
+        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment, name='group2')
+        previous_feedbacksets.append(group_mommy.feedbackset_new_attempt_published(group=group2, grading_points=6))
+        candidate2 = core_mommy.candidate(group=group2, fullname='Mr. Winterbottom', shortname='mrwinterbottom')
+
+        group3 = mommy.make('core.AssignmentGroup', parentnode=assignment, name='group3')
+        previous_feedbacksets.append(group_mommy.feedbackset_new_attempt_published(group=group3, grading_points=6))
+        candidate3 = core_mommy.candidate(group=group3, fullname='Sir. Toby', shortname='sirtoby')
+
+        current_assignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='Cool',
+            passing_grade_min_points=5
+        )
+        current_groups = []
+        current_groups.append(mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1'))
+        mommy.make('core.Candidate', assignment_group=current_groups[0],
+                   relatedstudent__user=candidate1.relatedstudent.user)
+        current_groups.append(mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1'))
+        mommy.make('core.Candidate', assignment_group=current_groups[1],
+                   relatedstudent__user=candidate2.relatedstudent.user)
+        current_groups.append(mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1'))
+        mommy.make('core.Candidate', assignment_group=current_groups[2],
+                   relatedstudent__user=candidate3.relatedstudent.user)
+
+        passed_in_previous = PassedInPreviousPeriod(current_assignment, assignment.parentnode)
+        candidate_queryset = passed_in_previous.get_queryset()
+        passed_in_previous.set_passed_in_current_period(candidate_queryset, testuser)
+        published_feedbacksets = FeedbackSet.objects.filter(group__in=current_groups).order_by('id')
+        for new_feedbackset, prev_feedbackset in zip(published_feedbacksets, previous_feedbacksets):
+            self.assertIsNotNone(
+                FeedbacksetPassedPreviousPeriod.objects.filter(feedbackset=new_feedbackset).first())
+            self.assertIsNotNone(new_feedbackset.grading_published_datetime)
+            self.assertEqual(new_feedbackset.grading_published_by, testuser)
+            self.assertEqual(new_feedbackset.grading_points,
+                             passed_in_previous.convert_points(prev_feedbackset))
+
+    def test_a_selected_student_did_not_pass(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        assignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            short_name='Cool',
+            passing_grade_min_points=5
+        )
+        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment, name='group1')
+        group_mommy.feedbackset_new_attempt_published(group=group1, grading_points=4)
+        candidate1 = core_mommy.candidate(group=group1, fullname='Mr. Pomeroy', shortname='mrpomeroy')
+
+        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment, name='group2')
+        group_mommy.feedbackset_new_attempt_published(group=group2, grading_points=6)
+        candidate2 = core_mommy.candidate(group=group2, fullname='Mr. Winterbottom', shortname='mrwinterbottom')
+
+        group3 = mommy.make('core.AssignmentGroup', parentnode=assignment, name='group3')
+        group_mommy.feedbackset_new_attempt_published(group=group3, grading_points=6)
+        candidate3 = core_mommy.candidate(group=group3, fullname='Sir. Toby', shortname='sirtoby')
+
+        current_assignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='Cool',
+            passing_grade_min_points=5
+        )
+
+        current_group1 = mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1')
+        mommy.make('core.Candidate', assignment_group=current_group1,
+                   relatedstudent__user=candidate1.relatedstudent.user)
+        current_group2 = mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1')
+        mommy.make('core.Candidate', assignment_group=current_group2,
+                   relatedstudent__user=candidate2.relatedstudent.user)
+        current_group3 = mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1')
+        mommy.make('core.Candidate', assignment_group=current_group3,
+                   relatedstudent__user=candidate3.relatedstudent.user)
+
+        passed_in_previous = PassedInPreviousPeriod(current_assignment, assignment.parentnode)
+        candidate_queryset = Candidate.objects.filter(assignment_group__parentnode=assignment)
+        self.assertEqual(3, candidate_queryset.count())
+        with self.assertRaises(SomeCandidatesDoesNotQualifyToPass):
+            passed_in_previous.set_passed_in_current_period(candidate_queryset, testuser)
+
+    def test_a_selected_student_is_not_part_of_current_assignment(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        assignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            short_name='Cool',
+            passing_grade_min_points=5
+        )
+        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment, name='group1')
+        group_mommy.feedbackset_new_attempt_published(group=group1, grading_points=6)
+        candidate1 = core_mommy.candidate(group=group1, fullname='Mr. Pomeroy', shortname='mrpomeroy')
+
+        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment, name='group2')
+        group_mommy.feedbackset_new_attempt_published(group=group2, grading_points=6)
+        candidate2 = core_mommy.candidate(group=group2, fullname='Mr. Winterbottom', shortname='mrwinterbottom')
+
+        group3 = mommy.make('core.AssignmentGroup', parentnode=assignment, name='group3')
+        group_mommy.feedbackset_new_attempt_published(group=group3, grading_points=6)
+        core_mommy.candidate(group=group3, fullname='Sir. Toby', shortname='sirtoby')
+
+        current_assignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='Cool',
+            passing_grade_min_points=5
+        )
+
+        current_group1 = mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1')
+        mommy.make('core.Candidate', assignment_group=current_group1,
+                   relatedstudent__user=candidate1.relatedstudent.user)
+        current_group2 = mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1')
+        mommy.make('core.Candidate', assignment_group=current_group2,
+                   relatedstudent__user=candidate2.relatedstudent.user)
+
+        passed_in_previous = PassedInPreviousPeriod(current_assignment, assignment.parentnode)
+        candidate_queryset = Candidate.objects.filter(assignment_group__parentnode=assignment)
+        self.assertEqual(3, candidate_queryset.count())
+        with self.assertRaises(SomeCandidatesDoesNotQualifyToPass):
+            passed_in_previous.set_passed_in_current_period(candidate_queryset, testuser)
+
+    def test_a_selected_student_has_never_done_the_previous_assignment(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        assignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            short_name='Cool',
+            passing_grade_min_points=5
+        )
+        assignment2 = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            parentnode=assignment.parentnode,
+            short_name='imba'
+        )
+
+        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment, name='group1')
+        group_mommy.feedbackset_new_attempt_published(group=group1, grading_points=6)
+        candidate1 = core_mommy.candidate(group=group1, fullname='Mr. Pomeroy', shortname='mrpomeroy')
+
+        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment, name='group2')
+        group_mommy.feedbackset_new_attempt_published(group=group2, grading_points=6)
+        candidate2 = core_mommy.candidate(group=group2, fullname='Mr. Winterbottom', shortname='mrwinterbottom')
+
+        group3 = mommy.make('core.AssignmentGroup', parentnode=assignment2, name='group3')
+        group_mommy.feedbackset_new_attempt_published(group=group3, grading_points=6)
+        candidate3 = core_mommy.candidate(group=group3, fullname='Sir. Toby', shortname='sirtoby')
+
+        current_assignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='Cool',
+            passing_grade_min_points=5
+        )
+
+        current_group1 = mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1')
+        mommy.make('core.Candidate', assignment_group=current_group1,
+                   relatedstudent__user=candidate1.relatedstudent.user)
+        current_group2 = mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1')
+        mommy.make('core.Candidate', assignment_group=current_group2,
+                   relatedstudent__user=candidate2.relatedstudent.user)
+        current_group3 = mommy.make('core.AssignmentGroup', parentnode=current_assignment, name='current_group1')
+        mommy.make('core.Candidate', assignment_group=current_group3,
+                   relatedstudent__user=candidate3.relatedstudent.user)
+
+        passed_in_previous = PassedInPreviousPeriod(current_assignment, assignment.parentnode)
+        candidate_queryset = Candidate.objects.filter(assignment_group__parentnode__parentnode=assignment.period)
+        self.assertEqual(3, candidate_queryset.count())
+        with self.assertRaises(SomeCandidatesDoesNotQualifyToPass):
+            passed_in_previous.set_passed_in_current_period(candidate_queryset, testuser)
 
     def test_num_queries(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -552,5 +722,5 @@ class TestPassedInPreviousPeriod(TestCase):
 
         passed_in_previous = PassedInPreviousPeriod(current_assignment, assignment.parentnode)
         candidate_queryset = passed_in_previous.get_queryset()
-        with self.assertNumQueries(14):
+        with self.assertNumQueries(16):
             passed_in_previous.set_passed_in_current_period(candidate_queryset, testuser)

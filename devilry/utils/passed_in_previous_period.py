@@ -14,7 +14,16 @@ class PassedInPreviousPeriodError(ValidationError):
 
 
 class FeedbackSetIsAlreadyGraded(PassedInPreviousPeriodError):
-    pass
+    """
+    Will be raised when a candidate is graded on the current assignment
+    """
+
+
+class SomeCandidatesDoesNotQualifyToPass(PassedInPreviousPeriodError):
+    """
+    Will be raised when one or more candidates passed into :meth:`.PassedInPreviousPeriod.set_passed_in_current_period`
+    does not qualify to pass the assignment.
+    """
 
 
 class PassedInPreviousPeriod(object):
@@ -64,7 +73,8 @@ class PassedInPreviousPeriod(object):
         ).select_related('parentnode__parentnode', 'cached_data__last_published_feedbackset')
 
         students_on_current = Candidate.objects.filter(
-            assignment_group__parentnode=self.assignment
+            assignment_group__parentnode=self.assignment,
+            assignment_group__cached_data__last_published_feedbackset__isnull=True
         ).select_related('assignment_group__parentnode', 'relatedstudent__user')\
             .values_list('relatedstudent__user', flat=True).distinct()
 
@@ -80,17 +90,26 @@ class PassedInPreviousPeriod(object):
 
     def get_current_candidate_queryset(self, candidates):
         """
-        Gets a queryset with candidates :class:`core.Candidate` in current assignment ``self.assignment``
+        Gets a queryset with candidates :class:`core.Candidate` on current assignment ``self.assignment``
 
         Args:
-            candidates:
+            candidates: :class:`core.Candidate` candidates from previous assignments
 
         Returns:
+            candidate queryset on current assignment
 
+        Raises:
+            :class:`.SomeCandidatesDoesNotQualifyToPass`
+                raises when one or more candidates does not qualify to pass the assignment
         """
+        selected_candidate_users = candidates.values_list('relatedstudent__user', flat=True)
+        if (self.get_queryset().filter(relatedstudent__user__in=selected_candidate_users).count() !=
+                len(selected_candidate_users)):
+            raise SomeCandidatesDoesNotQualifyToPass('Some of the selected candidates did not qualify to pass')
+
         return Candidate.objects.filter(
             assignment_group__parentnode=self.assignment,
-            relatedstudent__user__in=candidates.values_list('relatedstudent__user', flat=True)
+            relatedstudent__user__in=selected_candidate_users
         ).select_related('assignment_group',
                          'relatedstudent',
                          'assignment_group__cached_data__first_feedbackset')\
@@ -148,9 +167,9 @@ class PassedInPreviousPeriod(object):
             grading_published_datetime=old_feedbackset.grading_published_datetime
         ).save()
 
-    def __publish_grading_in_current_period(self, old_candidate, new_candidate, published_by):
+    def __publish_grading_on_current_assignment(self, old_candidate, new_candidate, published_by):
         """
-        Publish grading in current period
+        Publish grading on current assignment ``self.assignment``
 
         Args:
             old_candidate: :class:`core.Candidate` the candidate in the previous passed assignment
@@ -172,8 +191,10 @@ class PassedInPreviousPeriod(object):
         """
         if new_candidate.assignment_group.cached_data.last_published_feedbackset:
             raise FeedbackSetIsAlreadyGraded('Feedbackset is already graded')
+        if new_candidate.relatedstudent.user_id != old_candidate.relatedstudent.user_id:
+            raise
         self.__create_feedbackset_passed_previous_period(old_candidate, new_candidate)
-        self.__publish_grading_in_current_period(old_candidate, new_candidate, published_by)
+        self.__publish_grading_on_current_assignment(old_candidate, new_candidate, published_by)
 
     def set_passed_in_current_period(self, candidates, published_by):
         """
@@ -184,7 +205,11 @@ class PassedInPreviousPeriod(object):
                 that will pass the assignment in current period
             published_by: will be published by this user
         """
-        candidates = candidates.order_by('relatedstudent__user')
+        old_candidates_dict = {}
+        for candidate in candidates:
+            old_candidates_dict[candidate.relatedstudent.user_id] = candidate
+
         with transaction.atomic():
-            for old_candidate, new_candidate in zip(candidates, self.get_current_candidate_queryset(candidates)):
-                self.__set_passed(old_candidate, new_candidate, published_by)
+            for new_candidate in self.get_current_candidate_queryset(candidates):
+                self.__set_passed(old_candidates_dict[new_candidate.relatedstudent.user_id],
+                                  new_candidate, published_by)
