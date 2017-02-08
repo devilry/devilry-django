@@ -553,18 +553,18 @@ class FeedbacksetPassedPreviousPeriod(models.Model):
     period_start_time = models.DateTimeField()
 
     # Old :attr:`core.Period.end_time`
-    period_end_time = models.DateField()
+    period_end_time = models.DateTimeField()
 
     # Old :attr:`FeedbackSet.grading_points`.
     grading_points = models.PositiveIntegerField(default=0)
 
-    # Old :attr:`FeedbackSet.grading_published_by`.
+    # Old :attr:`FeedbackSet.grading_published_by`
     grading_published_by = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         null=True, blank=True
     )
 
-    # Old :attr:`FeedbackSet.grading_published_datetime`.
+    # Old :attr:`FeedbackSet.
     grading_published_datetime = models.DateTimeField(
         null=True,
         blank=True

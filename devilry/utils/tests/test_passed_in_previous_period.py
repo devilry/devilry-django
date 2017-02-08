@@ -6,7 +6,7 @@ from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
-from devilry.devilry_group.models import FeedbackSet
+from devilry.devilry_group.models import FeedbackSet, FeedbacksetPassedPreviousPeriod
 from devilry.utils.passed_in_previous_period import PassedInPreviousPeriod
 
 
@@ -404,10 +404,12 @@ class TestPassedInPreviousPeriod(TestCase):
 
         passed_in_previous = PassedInPreviousPeriod(current_assignment, assignment.parentnode)
         candidate_queryset = passed_in_previous.get_queryset()
+        self.assertEqual(1, candidate_queryset.count())
         passed_in_previous.set_passed_in_current_period(candidate_queryset, testuser)
 
         published_feedbackset = AssignmentGroup.objects.get(id=current_group.id)\
             .cached_data.last_published_feedbackset
+        self.assertIsNotNone(FeedbacksetPassedPreviousPeriod.objects.filter(feedbackset=published_feedbackset).first())
         self.assertIsNotNone(published_feedbackset.grading_published_datetime)
         self.assertEqual(published_feedbackset.grading_published_by, testuser)
         self.assertEqual(published_feedbackset.grading_points, passed_in_previous.convert_points(previous_feedbackset))
@@ -453,6 +455,8 @@ class TestPassedInPreviousPeriod(TestCase):
         passed_in_previous.set_passed_in_current_period(candidate_queryset, testuser)
         published_feedbacksets = FeedbackSet.objects.filter(group__in=current_groups).order_by('id')
         for new_feedbackset, prev_feedbackset in zip(published_feedbacksets, previous_feedbacksets):
+            self.assertIsNotNone(
+                FeedbacksetPassedPreviousPeriod.objects.filter(feedbackset=new_feedbackset).first())
             self.assertIsNotNone(new_feedbackset.grading_published_datetime)
             self.assertEqual(new_feedbackset.grading_published_by, testuser)
             self.assertEqual(new_feedbackset.grading_points,
@@ -500,6 +504,8 @@ class TestPassedInPreviousPeriod(TestCase):
         passed_in_previous.set_passed_in_current_period(candidate_queryset, testuser)
         published_feedbacksets = FeedbackSet.objects.filter(group__in=current_groups).order_by('id')
         for new_feedbackset, prev_feedbackset in zip(published_feedbacksets, previous_feedbacksets):
+            self.assertIsNotNone(
+                FeedbacksetPassedPreviousPeriod.objects.filter(feedbackset=new_feedbackset).first())
             self.assertIsNotNone(new_feedbackset.grading_published_datetime)
             self.assertEqual(new_feedbackset.grading_published_by, testuser)
             self.assertEqual(new_feedbackset.grading_points,
