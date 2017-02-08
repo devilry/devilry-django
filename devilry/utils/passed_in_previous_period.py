@@ -23,6 +23,8 @@ class SomeCandidatesDoesNotQualifyToPass(PassedInPreviousPeriodError):
     """
     Will be raised when one or more candidates passed into :meth:`.PassedInPreviousPeriod.set_passed_in_current_period`
     does not qualify to pass the assignment.
+    see meth:`.PassedInPreviousPeriod.get_queryset` the passed candidates will be crosschecked against the queryset
+    on submit.
     """
 
 
@@ -50,7 +52,7 @@ class PassedInPreviousPeriod(object):
         1.  Get all feedbacksets that have passed the assignment in previous periods,
                 and exclude feedbacksets in current period
         2. Get all the assignment groups that have passed after ``self.from_period.start_time``
-        3. Get students on current assignment ``self.assignment``
+        3. Get students on current assignment ``self.assignment`` and filter away candidates who have been graded.
         4. Get all :class:`core.Candidate` objects that have passed the assignment in previous periods,
                 and ensure that the newest feedback is taken in account.
         Returns:
@@ -189,8 +191,6 @@ class PassedInPreviousPeriod(object):
             new_candidate: :class:`core.Candidate` the candidate in the current period on assignment
             published_by: will be published by this user
         """
-        if new_candidate.assignment_group.cached_data.last_published_feedbackset:
-            raise FeedbackSetIsAlreadyGraded('Feedbackset is already graded')
         if new_candidate.relatedstudent.user_id != old_candidate.relatedstudent.user_id:
             raise
         self.__create_feedbackset_passed_previous_period(old_candidate, new_candidate)
