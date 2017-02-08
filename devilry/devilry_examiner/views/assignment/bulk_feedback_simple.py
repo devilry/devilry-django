@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django import http
+from django.contrib import messages
 from django.db import models
 from django.db import transaction
 from django.db.models.functions import Concat, Lower
@@ -55,7 +56,7 @@ class ColumnHeader(AbstractExaminerCell):
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(ColumnHeader, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-tabulardata-list__cell--columnheader')
+        css_classes_list.append('devilry-tabulardata-list__cell-examiner--columnheader')
         return css_classes_list
 
 
@@ -86,7 +87,7 @@ class ListAsTable(base_new.AbstractListAsTable):
 
 class SimpleGroupBulkFeedbackView(listbuilderview.View):
     model = core_models.AssignmentGroup
-    template_name = 'devilry_examiner/assignment/simple_group_bulk_feedback/single_group_bulk_feedbackview.django.html'
+    template_name = 'devilry_examiner/assignment/simple_group_bulk_feedback/simple_group_bulk_feedbackview.django.html'
 
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
@@ -216,8 +217,14 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
                 feedbackset.save(update_fields=['grading_published_by', 'grading_published_datetime', 'grading_points'])
 
     def post(self, request, *args, **kwargs):
-        dct = self.__collect_data_for_groups(posted_data=request.POST)
-        self.__publish(dct)
+        feedbackset_data_dict = self.__collect_data_for_groups(posted_data=request.POST)
+        if feedbackset_data_dict:
+            self.__publish(feedbackset_data_dict)
+            messages.success(request,
+                             message=ugettext_lazy('Feedback published for {} groups').format(
+                                 len(feedbackset_data_dict.keys())))
+        else:
+            messages.warning(request, message=ugettext_lazy('You must set a grade for at least one group.'))
         return http.HttpResponseRedirect(
             self.request.cradmin_app.reverse_appurl(viewname='bulk-feedback-simple')
         )

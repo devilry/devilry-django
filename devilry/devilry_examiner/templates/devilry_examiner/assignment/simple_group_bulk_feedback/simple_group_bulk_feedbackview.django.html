@@ -22,10 +22,25 @@
 
 {% block list %}
     {% if listbuilder_list.has_items %}
+        <div class="devilry-dashboard-container">
+            <p class="text-muted">
+                {% blocktrans %}
+                    Here you can set a grade for each group and add a comment that will be created when the feedback is
+                    published.
+                    <br>
+                    Note that no feedback will be published for groups without a grade set. Comment text is optional.
+                {% endblocktrans %}
+            </p>
+        </div>
         <form action="{% cradmin_appurl 'bulk-feedback-simple' %}" method="POST">
             {% csrf_token %}
             {% cradmin_render_renderable listbuilder_list %}
-            <input type="submit" value="OK" class="btn btn-default">
+            <div class="devilry-dashboard-container">
+                <input type="submit" value="Publish feedbacks" class="btn btn-default">
+                {% blocktrans %}
+                    When submitted, the operation cannot be undone.
+                {% endblocktrans %}
+            </div>
         </form>
     {% else %}
         {% block no-items-wrapper %}

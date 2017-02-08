@@ -11,10 +11,25 @@
 
 {% block listbuilderview_buttons %}
         {{ block.super }}
-        <a id="devilry-examiner-bulk-feedback-button" class="btn btn-default"
-           href="{% cradmin_appurl 'bulk-feedback' %}">
-            {% trans "Bulk create feedback" %}
-        </a>
+        <div class="devilry-dashboard-container">
+            <h2>{% trans "Bulk operations" %}</h2>
+            <p class="text-muted">
+                {% blocktrans %}
+                    Choose the bulk operation you would like to perform. Bulk create feedback with same grade for all
+                    selected groups, or grade each group individually with simple bulk feedback.
+                {% endblocktrans %}
+            </p>
+            <p>
+                <a id="devilry-examiner-bulk-feedback-button" class="btn btn-default"
+                    href="{% cradmin_appurl 'bulk-feedback' %}">
+                    {% trans "Bulk feedback" %}
+                </a>
+                <a id="devilry-examiner-simple-bulk-feedback-button" class="btn btn-default"
+                    href="{% cradmin_appurl 'bulk-feedback-simple' %}">
+                    {% trans "Simple bulk feedback" %}
+                </a>
+            </p>
+        </div>
         {% include "devilry_examiner/assignment/includes/batchdownload_assignment.django.html" %}
 {% endblock %}
 
