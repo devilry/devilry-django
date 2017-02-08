@@ -7,22 +7,15 @@ from django.contrib import messages
 from django.db import transaction
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy
-
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_cradmin import devilry_listbuilder
-from devilry.devilry_examiner.views.assignment.bulk_feedback import AbstractAssignmentGroupItemListView
-from devilry.devilry_examiner.views.assignment.bulk_feedback import AssignmentGroupTargetRenderer
-from devilry.devilry_examiner.views.assignment.bulk_feedback import SelectedAssignmentGroupForm
+from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_operations_grouplist
 from devilry.devilry_group.models import GroupComment, FeedbackSet
-from devilry.devilry_cradmin import devilry_listfilter
 
 
-class NewAttemptDeadlineForm(SelectedAssignmentGroupForm):
-    """
-    Subclasses :class:`~.devilry.devilry_examiner.views.assignment.bulk_feedback.SelectedAssignmentGroupForm`
-    """
+class NewAttemptDeadlineForm(bulk_operations_grouplist.SelectedAssignmentGroupForm):
     new_deadline = forms.DateTimeField(widget=DateTimePickerWidget)
 
     def clean(self):
@@ -34,14 +27,14 @@ class NewAttemptDeadlineForm(SelectedAssignmentGroupForm):
         return self.cleaned_data['new_deadline']
 
 
-class NewAttemptDeadlineTargetRenderer(AssignmentGroupTargetRenderer):
+class NewAttemptDeadlineTargetRenderer(bulk_operations_grouplist.AssignmentGroupTargetRenderer):
     def get_field_layout(self):
         layout = super(NewAttemptDeadlineTargetRenderer, self).get_field_layout()
         layout.append('new_deadline')
         return layout
 
 
-class BulkAddNewAttemptListView(AbstractAssignmentGroupItemListView):
+class BulkAddNewAttemptListView(bulk_operations_grouplist.AbstractAssignmentGroupItemListView):
     model = core_models.AssignmentGroup
     value_renderer_class = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
     template_name = 'devilry_examiner/assignment/bulk_new_attempt.django.html'

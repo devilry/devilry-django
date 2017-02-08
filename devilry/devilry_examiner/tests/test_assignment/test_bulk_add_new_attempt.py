@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-
+import mock
 from django import http
 from django import test
+from django.contrib import messages
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
-from django.contrib import messages
-
-import mock
 from model_mommy import mommy
 
 from devilry.devilry_dbcache import customsql
 from devilry.devilry_dbcache import models as cache_models
-from devilry.devilry_examiner.views.assignment import bulk_add_new_attempt
+from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_add_new_attempt
 from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group import models as group_models
 from devilry.project.common import settings

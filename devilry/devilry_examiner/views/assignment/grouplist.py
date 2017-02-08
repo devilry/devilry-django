@@ -10,9 +10,9 @@ from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
-from devilry.devilry_examiner.views.assignment import bulk_feedback
-from devilry.devilry_examiner.views.assignment import bulk_feedback_simple
-from devilry.devilry_examiner.views.assignment import bulk_add_new_attempt
+from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_add_new_attempt
+from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_feedback
+from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_feedback_simple
 
 
 class GroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):

@@ -2,17 +2,15 @@
 from __future__ import unicode_literals
 
 from django import test
-
+from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
-from django_cradmin import cradmin_testhelpers
-
-from devilry.devilry_group import models as group_models
-from devilry.devilry_examiner.views.assignment import bulk_feedback_simple
+from devilry.apps.core import models as core_models
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_dbcache.models import AssignmentGroupCachedData
+from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_feedback_simple
+from devilry.devilry_group import models as group_models
 from devilry.project.common import settings
-from devilry.apps.core import models as core_models
 
 
 class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_testhelpers.TestCaseMixin):

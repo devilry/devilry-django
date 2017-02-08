@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import mock
 from django import test
 from django.contrib import messages
-
-from model_mommy import mommy
-import mock
-
 from django_cradmin import cradmin_testhelpers
-from devilry.devilry_group import models as group_models
-from devilry.devilry_group import devilry_group_mommy_factories
-from devilry.devilry_examiner.views.assignment import bulk_feedback
+from model_mommy import mommy
+
+from devilry.apps.core import models as core_models
 from devilry.devilry_dbcache import customsql
 from devilry.devilry_dbcache import models as cache_models
+from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_feedback
+from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group import models as group_models
 from devilry.project.common import settings
-from devilry.apps.core import models as core_models
 
 
 class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
