@@ -78,12 +78,12 @@ class SplitGroupView(QuerysetForRoleMixin, SingleObjectMixin, formbase.FormView)
         except GroupPopNotCandidateError:
             messages.warning(
                 self.request,
-                'student is not part of project group'
+                ugettext_lazy('student is not part of project group')
             )
         except GroupPopToFewCandidatesError as e:
             messages.warning(
                 self.request,
-                'Cannot split student if there is less than 2 students in project group.'
+                ugettext_lazy('Cannot split student if there is less than 2 students in project group.')
             )
         else:
             messages.success(
