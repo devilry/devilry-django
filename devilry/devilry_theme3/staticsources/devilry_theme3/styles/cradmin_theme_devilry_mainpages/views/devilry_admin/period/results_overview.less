@@ -4,6 +4,7 @@
     overflow-x: auto;
 
     .devilry-tabulardata-list__content{
+      min-width: 100%;
       display: table;
     }
   }
@@ -36,6 +37,16 @@
 
     &--columnheader{
       border-bottom: 5px solid @devilry-brand-color-admin;
+    }
+  }
+
+  .devilry-tabulardata-list__cell-examiner {
+    display: table-cell;
+    padding: 20px;
+    border-bottom: 1px solid @devilry-brand-color-examiner-light3;
+
+    &--columnheader{
+      border-bottom: 5px solid @devilry-brand-color-examiner;
     }
   }
 }
