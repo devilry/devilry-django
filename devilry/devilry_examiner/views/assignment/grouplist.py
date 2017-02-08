@@ -12,6 +12,7 @@ from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
 from devilry.devilry_examiner.views.assignment import bulk_feedback
 from devilry.devilry_examiner.views.assignment import bulk_feedback_simple
+from devilry.devilry_examiner.views.assignment import bulk_add_new_attempt
 
 
 class GroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -201,6 +202,7 @@ class GroupListView(listbuilderview.FilterListMixin,
         context['excluding_filters_other_than_status_is_applied'] = \
             self.__get_excluding_filters_other_than_status_is_applied(
                 total_groupcount=total_groupcount)
+        context['received_feedback'] = self.get_filtered_corrected_count() > 0
         return context
 
 
@@ -230,7 +232,15 @@ class App(crapp.App):
                   bulk_feedback.BulkFeedbackPassedFailedView.as_view(),
                   name='bulk-feedback-passedfailed-filter'),
 
-        # Bulk feedback single
+        # Bulk add new attempt
+        crapp.Url(r'^bulk-new-attempt$',
+                  bulk_add_new_attempt.BulkAddNewAttemptListView.as_view(),
+                  name='bulk-new-attempt'),
+        crapp.Url(r'^bulk-new-attempt/filter/(?P<filters_string>.+)?$',
+                  bulk_add_new_attempt.BulkAddNewAttemptListView.as_view(),
+                  name='bulk-new-attempt-filter'),
+
+        # Bulk feedback simple
         crapp.Url(r'^bulk-feedback-simple$',
                   bulk_feedback_simple.SimpleGroupBulkFeedbackView.as_view(),
                   name='bulk-feedback-simple')

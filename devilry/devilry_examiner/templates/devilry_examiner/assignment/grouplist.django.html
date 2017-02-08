@@ -30,6 +30,23 @@
                 </a>
             </p>
         </div>
+        {% if assignment.assignmentgroups.all.count > 1 and received_feedback %}
+            <div class="devilry-dashboard-container">
+                <h2>{% trans "Bulk new attempt" %}</h2>
+                <p class="text-muted">
+                    {% blocktrans %}
+                        Group(s) have received feedback. Did you know that you can give all or some of them a new
+                        attempt?
+                    {% endblocktrans %}
+                </p>
+                <p>
+                    <a id="devilry-examiner-bulk-new-attempt-button" class="btn btn-default"
+                        href="{% cradmin_appurl 'bulk-new-attempt' %}">
+                        {% trans "Bulk new attempt" %}
+                    </a>
+                </p>
+            </div>
+        {% endif %}
         {% include "devilry_examiner/assignment/includes/batchdownload_assignment.django.html" %}
 {% endblock %}
 

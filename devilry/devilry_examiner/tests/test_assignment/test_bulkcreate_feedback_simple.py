@@ -6,6 +6,7 @@ from django import test
 from model_mommy import mommy
 
 from django_cradmin import cradmin_testhelpers
+
 from devilry.devilry_group import models as group_models
 from devilry.devilry_examiner.views.assignment import bulk_feedback_simple
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql

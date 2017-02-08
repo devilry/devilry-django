@@ -147,7 +147,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mommy.make('core.Candidate',
                        relatedstudent__user__fullname='candidate{}'.format(number),
                        assignment_group=group)
-        with self.assertNumQueries(11):
+        with self.assertNumQueries(13):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                requestuser=testuser)
 
@@ -168,7 +168,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mommy.make('core.Candidate',
                        relatedstudent__user__fullname='candidate{}'.format(number),
                        assignment_group=group)
-        with self.assertNumQueries(11):
+        with self.assertNumQueries(13):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                requestuser=testuser)
 
@@ -205,7 +205,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             devilry_group_mommy_factories.feedbackset_first_attempt_published(
                 group=group, grading_points=3)
         prefetched_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
-        with self.assertNumQueries(11):
+        with self.assertNumQueries(13):
             self.mock_http200_getrequest_htmls(cradmin_role=prefetched_assignment,
                                                requestuser=testuser)
 
