@@ -10,46 +10,26 @@
 
 
 {% block listbuilderview_buttons %}
-        {{ block.super }}
+    {{ block.super }}
+    <p id="devilry_examiner_bulk_operations_overview_buttonbar" class="devilry-buttonbar devilry-buttonbar-fullwidth">
         {% if waiting_for_feedback_count > 0 %}
-            <div class="devilry-dashboard-container devilry-examiner-dashboard-container-bulk-feedback-choices">
-                <h2>{% trans "Bulk operations" %}</h2>
-                <p class="text-muted devilry-examiner-bulk-feedback-choices-info-text">
-                    {% blocktrans %}
-                        Choose the bulk operation you would like to perform. Bulk create feedback with the same grade
-                        for all selected groups, or grade each group individually with simple bulk feedback.
-                    {% endblocktrans %}
-                </p>
-                <p>
-                    <a id="devilry-examiner-bulk-feedback-button" class="btn btn-default"
-                        href="{% cradmin_appurl 'bulk-feedback' %}">
-                        {% trans "Bulk feedback" %}
-                    </a>
-                    <a id="devilry-examiner-simple-bulk-feedback-button" class="btn btn-default"
-                        href="{% cradmin_appurl 'bulk-feedback-simple' %}">
-                        {% trans "Simple bulk feedback" %}
-                    </a>
-                </p>
-            </div>
+                <a id="devilry-examiner-bulk-feedback-button" class="btn btn-default"
+                    href="{% cradmin_appurl 'bulk-feedback' %}">
+                    {% trans "Bulk feedback" %}
+                </a>
+                <a id="devilry-examiner-simple-bulk-feedback-button" class="btn btn-default"
+                    href="{% cradmin_appurl 'bulk-feedback-simple' %}">
+                    {% trans "Simple bulk feedback" %}
+                </a>
         {% endif %}
         {% if total_group_count > 1 and corrected_count > 1 %}
-            <div class="devilry-dashboard-container devilry-examiner-dashboard-container-bulk-new-attempt">
-                <h2>{% trans "Bulk new attempt" %}</h2>
-                <p class="text-muted devilry-examiner-bulk-new-attempt-info-text">
-                    {% blocktrans %}
-                        {{ corrected_count }} group(s) have received feedback.
-                        Did you know that you can give all or some of them a new attempt?
-                    {% endblocktrans %}
-                </p>
-                <p>
-                    <a id="devilry-examiner-bulk-new-attempt-button" class="btn btn-default"
-                        href="{% cradmin_appurl 'bulk-new-attempt' %}">
-                        {% trans "Bulk new attempt" %}
-                    </a>
-                </p>
-            </div>
+            <a id="devilry-examiner-bulk-new-attempt-button" class="btn btn-default"
+                href="{% cradmin_appurl 'bulk-new-attempt' %}">
+                {% trans "Bulk new attempt" %}
+            </a>
         {% endif %}
-        {% include "devilry_examiner/assignment/includes/batchdownload_assignment.django.html" %}
+    </p>
+    {% include "devilry_examiner/assignment/includes/batchdownload_assignment.django.html" %}
 {% endblock %}
 
 {% block no-items-wrapper %}
