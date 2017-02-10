@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import warnings
 import json
 
 from django.conf import settings
@@ -400,25 +401,7 @@ class FeedbackSet(models.Model):
                 })
 
     def current_deadline(self, assignment=None):
-        """
-        If :obj:`~.FeedbackSet.feedbackset_type` IS :obj:`~.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT`, it will try to
-        return :obj:`~.FeedbackSet.deadline_datetime` if not ``None``, else it will try to return ``first_deadline`` in
-        :class:`~devilry.apps.core.models.assignment.Assignment`
-
-        If :obj:`~.FeedbackSet.feedbackset_type` IS NOT :obj:`~.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT`,
-        :obj:`~.FeedbackSet.deadline_datetime` will be returned without checking ``first_deadline`` in
-        :class:`~devilry.apps.core.models.assignment.Assignment`.
-
-        Args:
-            assignment: Uses first_deadline of this assignment if not ``None``.
-
-        Returns:
-            datetime or ``None``.
-        """
-        if self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
-            if assignment:
-                return self.deadline_datetime or assignment.first_deadline
-            return self.deadline_datetime or self.group.assignment.first_deadline
+        warnings.warn("deprecated, use FeedbackSet.deadline_datetime instead", DeprecationWarning)
         return self.deadline_datetime
 
     def __get_drafted_comments(self, user):

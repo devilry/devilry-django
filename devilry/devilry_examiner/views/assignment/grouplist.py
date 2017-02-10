@@ -173,7 +173,7 @@ class GroupListView(listbuilderview.FilterListMixin,
         return self.get_filterlist()\
             .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
                     exclude={'status'})\
-            .filter(annotated_is_corrected=True)\
+            .filter(annotated_is_corrected__gt=0)\
             .count()
 
     def __get_distinct_relatedexaminer_ids(self):
@@ -202,7 +202,13 @@ class GroupListView(listbuilderview.FilterListMixin,
         context['excluding_filters_other_than_status_is_applied'] = \
             self.__get_excluding_filters_other_than_status_is_applied(
                 total_groupcount=total_groupcount)
-        context['received_feedback'] = self.get_filtered_corrected_count() > 0
+        context['total_group_count'] = total_groupcount
+        context['waiting_for_feedback_count'] = self.get_filtered_waiting_for_feedback_count()
+        context['corrected_count'] = self.__get_unfiltered_queryset_for_role().filter(annotated_is_corrected__gt=0).count()
+        # for group in self.__get_unfiltered_queryset_for_role():
+        #     print '{}: {}'.format(group, group.annotated_is_corrected)
+        # print context['total_group_count']
+        # print context['corrected_count']
         return context
 
 

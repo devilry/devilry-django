@@ -35,6 +35,417 @@ class TestUIPassedFailedBulkCreateView(test.TestCase, cradmin_testhelpers.TestCa
             'Bulk create feedback',
             mockresponse.selector.one('title').alltext_normalized)
 
+    def test_no_groups_where_not_examiner(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup__parentnode=testassignment,
+                   relatedexaminer__user=examiner_user)
+        mommy.make('core.Examiner', assignmentgroup__parentnode=testassignment,
+                   relatedexaminer__user=examiner_user)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser
+        )
+        self.assertEquals(
+            0,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue')
+        )
+
+    def test_groups_sanity_unpublished(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup__parentnode=testassignment,
+                   relatedexaminer__user=examiner_user)
+        mommy.make('core.Examiner', assignmentgroup__parentnode=testassignment,
+                   relatedexaminer__user=examiner_user)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=examiner_user
+        )
+        self.assertEquals(
+            2,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue')
+        )
+
+    def test_groups_sanity_published(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup2)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1,
+                   relatedexaminer__user=examiner_user)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2,
+                   relatedexaminer__user=examiner_user)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=examiner_user
+        )
+        self.assertEquals(
+            0,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue')
+        )
+
+    def test_anonymizationmode_off_canidates(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        examineruser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examineruser,
+                   assignmentgroup=testgroup)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__shortname='unanonymizedfullname',
+                   relatedstudent__user__fullname='A un-anonymized fullname',
+                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=examineruser
+        )
+        self.assertIn('unanonymizedfullname', mockresponse.response.content)
+        self.assertIn('A un-anonymized fullname', mockresponse.response.content)
+        self.assertNotIn('MyAnonymousID', mockresponse.response.content)
+
+    def test_anonymizationmode_semi_anonymous_canidates(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        examineruser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examineruser,
+                   assignmentgroup=testgroup)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__shortname='unanonymizedfullname',
+                   relatedstudent__user__fullname='A un-anonymized fullname',
+                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=examineruser
+        )
+        self.assertNotIn('unanonymizedfullname', mockresponse.response.content)
+        self.assertNotIn('A un-anonymized fullname', mockresponse.response.content)
+        self.assertIn('MyAnonymousID', mockresponse.response.content)
+
+    def test_anonymizationmode_fully_anonymous_canidates(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        examineruser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examineruser,
+                   assignmentgroup=testgroup)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__shortname='unanonymizedfullname',
+                   relatedstudent__user__fullname='A un-anonymized fullname',
+                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=examineruser
+        )
+        self.assertNotIn('unanonymizedfullname', mockresponse.response.content)
+        self.assertNotIn('A un-anonymized fullname', mockresponse.response.content)
+        self.assertIn('MyAnonymousID', mockresponse.response.content)
+
+    def test_group_render_title_name_order(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__shortname='userb')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__shortname='usera')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
+                                                          requestuser=testuser)
+        self.assertEqual(
+            'usera , userb',
+            mockresponse.selector.one(
+                '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_group_render_title_name_order_fullname(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__shortname='userb')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__shortname='userc',
+                   relatedstudent__user__fullname='A user')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__shortname='usera')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
+                                                          requestuser=testuser)
+        self.assertEqual(
+            'A user(userc) , usera , userb',
+            mockresponse.selector.one(
+                '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_search_nomatch(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__shortname='testuser')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                viewkwargs={'filters_string': 'search-nomatch'},
+                requestuser=testuser)
+        self.assertEqual(
+            0,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_search_match_fullname(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='TestUser')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                viewkwargs={'filters_string': 'search-TestUser'},
+                requestuser=testuser)
+        self.assertEqual(
+            1,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_search_match_shortname(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__shortname='testuser')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                viewkwargs={'filters_string': 'search-testuser'},
+                requestuser=testuser)
+        self.assertEqual(
+            1,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_search_anonymous_nomatch_fullname(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='TestUser')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                viewkwargs={'filters_string': 'search-TestUser'},
+                requestuser=testuser)
+        self.assertEqual(
+            0,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_search_anonymous_nomatch_shortname(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__shortname='testuser')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                viewkwargs={'filters_string': 'search-testuser'},
+                requestuser=testuser)
+        self.assertEqual(
+            0,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_search_anonymous_nomatch_candidate_id_from_candidate(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   candidate_id='MyCandidateID')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                viewkwargs={'filters_string': 'search-MyCandidateID'},
+                requestuser=testuser)
+        self.assertEqual(
+            0,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_search_anonymous_match_automatic_candidate_id_from_relatedstudent(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='TestUser',
+                   relatedstudent__candidate_id='MyCandidateID')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                viewkwargs={'filters_string': 'search-MyCandidateID'},
+                requestuser=testuser)
+        self.assertEqual(
+            1,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_search_anonymous_match_automatic_anonymous_id(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='TestUser',
+                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                viewkwargs={'filters_string': 'search-MyAnonymousID'},
+                requestuser=testuser)
+        self.assertEqual(
+            1,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_search_anonymous_uses_custom_candidate_ids_nomatch_fullname(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           uses_custom_candidate_ids=True,
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='TestUser')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                viewkwargs={'filters_string': 'search-TestUser'},
+                requestuser=testuser)
+        self.assertEqual(
+            0,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_search_anonymous_uses_custom_candidate_ids_nomatch_shortname(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           uses_custom_candidate_ids=True,
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__shortname='testuser')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                viewkwargs={'filters_string': 'search-testuser'},
+                requestuser=testuser)
+        self.assertEqual(
+            0,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_search_anonymous_uses_custom_candidate_ids_nomatch_automatic_candidate_id_from_relatedstudent(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           uses_custom_candidate_ids=True,
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='TestUser',
+                   relatedstudent__candidate_id='MyCandidateID')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                viewkwargs={'filters_string': 'search-MyCandidateID'},
+                requestuser=testuser)
+        self.assertEqual(
+            0,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_search_anonymous_uses_custom_candidate_ids_nomatch_automatic_anonymous_id(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           uses_custom_candidate_ids=True,
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__fullname='TestUser',
+                   relatedstudent__automatic_anonymous_id='MyAnonymousID')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                viewkwargs={'filters_string': 'search-MyAnonymousID'},
+                requestuser=testuser)
+        self.assertEqual(
+            0,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_search_anonymous_uses_custom_candidate_ids_match_candidate_id_from_candidate(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           uses_custom_candidate_ids=True,
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   candidate_id='MyCandidateID')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup.assignment,
+                viewkwargs={'filters_string': 'search-MyCandidateID'},
+                requestuser=testuser)
+        self.assertEqual(
+            1,
+            mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
     def test_groups_not_selected_by_default(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 0')

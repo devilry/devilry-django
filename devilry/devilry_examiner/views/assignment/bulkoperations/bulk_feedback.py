@@ -65,7 +65,7 @@ class PassedFailedTargetRenderer(bulk_operations_grouplist.AssignmentGroupTarget
         return layout
 
 
-class AbstractBulkFeedbackListView(bulk_operations_grouplist.AbstractAssignmentGroupItemListView):
+class AbstractBulkFeedbackListView(bulk_operations_grouplist.AbstractAssignmentGroupMultiSelectListFilterView):
     """
     Base class that handles all the logic of bulk creating feedbacks.
 
@@ -87,7 +87,6 @@ class AbstractBulkFeedbackListView(bulk_operations_grouplist.AbstractAssignmentG
                 def get_form_class(self):
                     return AssignPassedFailedForm
     """
-    model = core_models.AssignmentGroup
     value_renderer_class = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
     template_name = 'devilry_examiner/assignment/bulk_create_feedback.django.html'
 

@@ -7,9 +7,11 @@ from django_cradmin import cradmin_testhelpers
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 from model_mommy import mommy
+import mock
 
 from devilry.apps.core import devilry_core_mommy_factories
 from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_examiner.views.assignment import grouplist
@@ -1998,3 +2000,215 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(
             mockresponse.selector.one('.devilry-examiner-grouplist-empty').hasclass(
                 'devilry-examiner-grouplist-empty-corrected'))
+
+    def test_bulk_feedback_choices_not_rendered_no_groups_waiting_for_feedback(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                   'devilry.apps.core.assignment_activeperiod_start'))
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.parentnode,
+            requestuser=testuser
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-examiner-dashboard-container-bulk-feedback-choices'))
+
+    def test_bulk_feedback_choices_rendered_group_waiting_for_feedback(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                   'devilry.apps.core.assignment_activeperiod_start',
+                                   first_deadline=timezone.now() - timezone.timedelta(days=1)))
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.parentnode,
+            requestuser=testuser
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-examiner-dashboard-container-bulk-feedback-choices'))
+
+    def test_bulk_feedback_choices_rendered_info_text(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                   'devilry.apps.core.assignment_activeperiod_start',
+                                   first_deadline=timezone.now() - timezone.timedelta(days=1)))
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.parentnode,
+            requestuser=testuser
+        )
+        self.assertEquals(
+            'Choose the bulk operation you would like to perform. Bulk create feedback with the same grade for all '
+            'selected groups, or grade each group individually with simple bulk feedback.',
+            mockresponse.selector.one('.devilry-examiner-bulk-feedback-choices-info-text').alltext_normalized)
+
+    def test_bulk_feedback_choices_rendered_bulk_feedback_button(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                   'devilry.apps.core.assignment_activeperiod_start',
+                                   first_deadline=timezone.now() - timezone.timedelta(days=1)))
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.parentnode,
+            requestuser=testuser
+        )
+        self.assertEquals(
+            'Bulk feedback',
+            mockresponse.selector.one('#devilry-examiner-bulk-feedback-button').alltext_normalized
+        )
+
+    def test_bulk_feedback_choices_rendered_simple_bulk_feedback_button(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                   'devilry.apps.core.assignment_activeperiod_start',
+                                   first_deadline=timezone.now() - timezone.timedelta(days=1)))
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.parentnode,
+            requestuser=testuser
+        )
+        self.assertEquals(
+            'Simple bulk feedback',
+            mockresponse.selector.one('#devilry-examiner-simple-bulk-feedback-button').alltext_normalized
+        )
+
+    def test_new_attempt_box_not_rendered_one_group_not_corrected(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                   'devilry.apps.core.assignment_activeperiod_start'))
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.parentnode,
+            requestuser=testuser
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-examiner-dashboard-container-bulk-new-attempt'))
+
+    def test_new_attempt_box_not_rendered_more_than_one_group_but_no_corrected(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-examiner-dashboard-container-bulk-new-attempt'))
+
+    def test_new_attempt_box_not_rendered_one_group_corrected(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode=mommy.make_recipe(
+                                   'devilry.apps.core.assignment_activeperiod_start'))
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.parentnode,
+            requestuser=testuser
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-examiner-dashboard-container-bulk-new-attempt'))
+
+    def test_new_attempt_box_rendered(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup2)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-examiner-dashboard-container-bulk-new-attempt'))
+
+    def test_new_attempt_box_rendered_info_text_one_group_received_feedback(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup2)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser
+        )
+        self.assertEquals(
+            '{} group(s) have received feedback. Did you know that you can give all or some of them a new attempt?'.format(2),
+            mockresponse.selector.one('.devilry-examiner-bulk-new-attempt-info-text').alltext_normalized)
+
+    def test_new_attempt_box_rendered_info_text_two_groups_received_feedback(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup2)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser
+        )
+        self.assertEquals(
+            '{} group(s) have received feedback. Did you know that you can give all or some of them a new attempt?'.format(2),
+            mockresponse.selector.one('.devilry-examiner-bulk-new-attempt-info-text').alltext_normalized)
+
+    def test_new_attempt_box_rendered_button_text(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup2)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser
+        )
+        self.assertEquals(
+            'Bulk new attempt',
+            mockresponse.selector.one('#devilry-examiner-bulk-new-attempt-button').alltext_normalized)

@@ -9,8 +9,8 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
-from devilry.apps.core import models as core_models
 from devilry.devilry_cradmin import devilry_listbuilder
+from devilry.devilry_cradmin import devilry_listfilter
 from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_operations_grouplist
 from devilry.devilry_group.models import GroupComment, FeedbackSet
 
@@ -19,6 +19,8 @@ class NewAttemptDeadlineForm(bulk_operations_grouplist.SelectedAssignmentGroupFo
     new_deadline = forms.DateTimeField(widget=DateTimePickerWidget)
 
     def clean(self):
+        if 'new_deadline' not in self.cleaned_data:
+            raise forms.ValidationError('You must provide a deadline.')
         deadline = self.cleaned_data['new_deadline']
         if deadline <= timezone.now():
             raise forms.ValidationError('The deadline has to be in the future.')
@@ -34,20 +36,24 @@ class NewAttemptDeadlineTargetRenderer(bulk_operations_grouplist.AssignmentGroup
         return layout
 
 
-class BulkAddNewAttemptListView(bulk_operations_grouplist.AbstractAssignmentGroupItemListView):
-    model = core_models.AssignmentGroup
+class BulkAddNewAttemptListView(bulk_operations_grouplist.AbstractAssignmentGroupMultiSelectListFilterView):
     value_renderer_class = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
     template_name = 'devilry_examiner/assignment/bulk_new_attempt.django.html'
 
     def dispatch(self, request, *args, **kwargs):
-        if self.request.cradmin_role.assignmentgroups.all().count() < 2:
+        if self.get_unfiltered_queryset_for_role(self.request.cradmin_role).count() < 2:
             # Should not have access if assignment has less than 2 groups.
             raise http.Http404()
         return super(BulkAddNewAttemptListView, self).dispatch(request, *args, **kwargs)
     
     def get_pagetitle(self):
         return ugettext_lazy('Bulk add new attempt')
-
+    
+    def add_filterlist_items(self, filterlist):
+        super(BulkAddNewAttemptListView, self).add_filterlist_items(filterlist)
+        filterlist.append(devilry_listfilter.assignmentgroup.IsPassingGradeFilter())
+        filterlist.append(devilry_listfilter.assignmentgroup.PointsFilter())
+    
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
             'bulk-new-attempt-filter', kwargs={'filters_string': filters_string})
@@ -103,7 +109,7 @@ class BulkAddNewAttemptListView(bulk_operations_grouplist.AbstractAssignmentGrou
                     text=comment_text)
         self.add_success_message(anonymous_displaynames)
         return super(BulkAddNewAttemptListView, self).form_valid(form=form)
-    
+
     def add_success_message(self, anonymous_display_names):
         message = ugettext_lazy('Bulk added new attempt for %(group_names)s') % {
             'group_names': ', '.join(anonymous_display_names)}
