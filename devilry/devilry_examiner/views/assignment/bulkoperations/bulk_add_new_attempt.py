@@ -6,7 +6,7 @@ from django import http
 from django.contrib import messages
 from django.db import transaction
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
 from devilry.devilry_cradmin import devilry_listbuilder
@@ -17,6 +17,10 @@ from devilry.devilry_group.models import GroupComment, FeedbackSet
 
 class NewAttemptDeadlineForm(bulk_operations_grouplist.SelectedAssignmentGroupForm):
     new_deadline = forms.DateTimeField(widget=DateTimePickerWidget)
+    invalid_qualification_item_message = pgettext_lazy(
+        'examiner group multiselect submit',
+        'Something went wrong. This may happen if the selected groups received a new attempt '
+        'while you where working on them. Please try again')
 
     def clean(self):
         if 'new_deadline' not in self.cleaned_data:
