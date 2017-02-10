@@ -266,11 +266,11 @@ class StatusRadioFilter(abstractradio.AbstractRadioFilter):
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value() or ''
         if cleaned_value == 'waiting-for-feedback':
-            queryobject = queryobject.filter(annotated_is_waiting_for_feedback=True)
+            queryobject = queryobject.filter(annotated_is_waiting_for_feedback__gt=0)
         elif cleaned_value == 'waiting-for-deliveries':
-            queryobject = queryobject.filter(annotated_is_waiting_for_deliveries=True)
+            queryobject = queryobject.filter(annotated_is_waiting_for_deliveries__gt=0)
         elif cleaned_value == 'corrected':
-            queryobject = queryobject.filter(annotated_is_corrected=True)
+            queryobject = queryobject.filter(annotated_is_corrected__gt=0)
         return queryobject
 
 
@@ -292,11 +292,11 @@ class StatusSelectFilter(abstractselect.AbstractSelectFilter):
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value() or ''
         if cleaned_value == 'waiting-for-feedback':
-            queryobject = queryobject.filter(annotated_is_waiting_for_feedback=True)
+            queryobject = queryobject.filter(annotated_is_waiting_for_feedback__gt=0)
         elif cleaned_value == 'waiting-for-deliveries':
-            queryobject = queryobject.filter(annotated_is_waiting_for_deliveries=True)
+            queryobject = queryobject.filter(annotated_is_waiting_for_deliveries__gt=0)
         elif cleaned_value == 'corrected':
-            queryobject = queryobject.filter(annotated_is_corrected=True)
+            queryobject = queryobject.filter(annotated_is_corrected__gt=0)
         return queryobject
 
 
@@ -326,7 +326,7 @@ class IsPassingGradeFilter(abstractselect.AbstractBoolean):
         cleaned_value = self.get_cleaned_value()
         if cleaned_value in ('true', 'false'):
             query = models.Q(is_passing_grade=False)
-            queryobject = queryobject.annotate_with_is_passing_grade()
+            queryobject = queryobject.annotate_with_is_passing_grade_count()
             if cleaned_value == 'true':
                 queryobject = queryobject.exclude(query)
             elif cleaned_value == 'false':
@@ -550,8 +550,8 @@ class ActivityFilter(abstractselect.AbstractSelectFilter):
         elif cleaned_value == 'no-examinercomment':
             queryobject = queryobject.filter(cached_data__public_examiner_comment_count=0)
         elif cleaned_value == 'unpublishedfeedback':
-            queryobject = queryobject.annotate_with_has_unpublished_feedbackdraft()
-            queryobject = queryobject.filter(annotated_has_unpublished_feedbackdraft=True)
+            queryobject = queryobject.annotate_with_has_unpublished_feedbackdraft_count()
+            queryobject = queryobject.filter(annotated_has_unpublished_feedbackdraft__gt=0)
         elif cleaned_value == 'admincomment':
             queryobject = queryobject.filter(cached_data__public_admin_comment_count__gt=0)
         elif cleaned_value == 'privatecomment':

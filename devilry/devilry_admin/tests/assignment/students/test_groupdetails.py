@@ -120,7 +120,7 @@ class TestGroupDetailsRenderable(test.TestCase):
     def test_status_is_corrected(self):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             grading_points=1)
-        testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        testgroup = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
                                                                assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-status'))
@@ -128,7 +128,7 @@ class TestGroupDetailsRenderable(test.TestCase):
     def test_status_is_waiting_for_feedback(self):
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+        testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count().first()
         selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
                                                                assignment=testgroup.assignment).render())
         self.assertEqual(
@@ -140,7 +140,7 @@ class TestGroupDetailsRenderable(test.TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                 first_deadline=timezone.now() + timedelta(days=2)))
-        testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count().first()
         selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
                                                                assignment=testgroup.assignment).render())
         self.assertEqual(
@@ -150,7 +150,7 @@ class TestGroupDetailsRenderable(test.TestCase):
 
     def test_grade_not_available_unless_corrected(self):
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished()
-        testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        testgroup = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
                                                                assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))

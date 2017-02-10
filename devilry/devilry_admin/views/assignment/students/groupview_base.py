@@ -74,9 +74,9 @@ class GroupViewMixin(object):
             .prefetch_related(
                 models.Prefetch('examiners',
                                 queryset=examinerqueryset))\
-            .annotate_with_is_waiting_for_feedback()\
-            .annotate_with_is_waiting_for_deliveries()\
-            .annotate_with_is_corrected() \
+            .annotate_with_is_waiting_for_feedback_count()\
+            .annotate_with_is_waiting_for_deliveries_count()\
+            .annotate_with_is_corrected_count() \
             .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user) \
             .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)\
             .distinct() \
@@ -118,21 +118,21 @@ class GroupViewMixin(object):
         return self.get_filterlist()\
             .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
                     exclude={'status'})\
-            .filter(annotated_is_waiting_for_feedback=True)\
+            .filter(annotated_is_waiting_for_feedback__gt=0)\
             .count()
 
     def get_filtered_waiting_for_deliveries_count(self):
         return self.get_filterlist()\
             .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
                     exclude={'status'})\
-            .filter(annotated_is_waiting_for_deliveries=True)\
+            .filter(annotated_is_waiting_for_deliveries__gt=0)\
             .count()
 
     def get_filtered_corrected_count(self):
         return self.get_filterlist()\
             .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
                     exclude={'status'})\
-            .filter(annotated_is_corrected=True)\
+            .filter(annotated_is_corrected__gt=0)\
             .count()
 
     def __get_distinct_relatedexaminer_ids(self):

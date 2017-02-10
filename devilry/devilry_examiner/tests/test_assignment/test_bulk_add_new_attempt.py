@@ -106,7 +106,7 @@ class TestBulkAddNewAttempt(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             'Bulk added new attempt for {}'.format(testgroup1.get_anonymous_displayname(assignment=testassignment)),
             '')
 
-    def test_anonymizationmode_off_canidates(self):
+    def test_anonymizationmode_off_candidates(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -133,7 +133,7 @@ class TestBulkAddNewAttempt(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIn('A un-anonymized fullname', mockresponse.response.content)
         self.assertNotIn('MyAnonymousID', mockresponse.response.content)
 
-    def test_anonymizationmode_semi_anonymous_canidates(self):
+    def test_anonymizationmode_semi_anonymous_candidates(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -160,7 +160,7 @@ class TestBulkAddNewAttempt(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertNotIn('A un-anonymized fullname', mockresponse.response.content)
         self.assertIn('MyAnonymousID', mockresponse.response.content)
 
-    def test_anonymizationmode_fully_anonymous_canidates(self):
+    def test_anonymizationmode_fully_anonymous_candidates(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)

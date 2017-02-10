@@ -42,7 +42,7 @@ class BulkAddNewAttemptListView(bulk_operations_grouplist.AbstractAssignmentGrou
 
     def dispatch(self, request, *args, **kwargs):
         if self.get_unfiltered_queryset_for_role(self.request.cradmin_role).count() < 2:
-            # Should not have access if assignment has less than 2 groups.
+            # Should not have access if assignment has less than two corrected groups.
             raise http.Http404()
         return super(BulkAddNewAttemptListView, self).dispatch(request, *args, **kwargs)
     
@@ -60,9 +60,10 @@ class BulkAddNewAttemptListView(bulk_operations_grouplist.AbstractAssignmentGrou
 
     def get_unfiltered_queryset_for_role(self, role):
         queryset = super(BulkAddNewAttemptListView, self).get_unfiltered_queryset_for_role(role)
-        return queryset\
+        queryset = queryset\
             .filter_examiner_has_access(user=self.request.user)\
-            .filter(annotated_is_corrected=1)
+            .filter(annotated_is_corrected__gt=0)
+        return queryset
 
     def get_target_renderer_class(self):
         return NewAttemptDeadlineTargetRenderer

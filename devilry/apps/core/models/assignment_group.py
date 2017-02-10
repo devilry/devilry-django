@@ -669,7 +669,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
                                                      queryset=assignmentqueryset,
                                                      to_attr='prefetched_assignment'))
 
-    def annotate_with_is_waiting_for_feedback(self):
+    def annotate_with_is_waiting_for_feedback_count(self):
         """
         Annotate the queryset with ``annotated_is_waiting_for_feedback``.
         Groups waiting for feedback is all groups where
@@ -691,14 +691,14 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         )
 
         return self.annotate(
-            annotated_is_waiting_for_feedback=devilry_djangoaggregate_functions.BooleanCount(
+            annotated_is_waiting_for_feedback=models.Count(
                 models.Case(
                     models.When(whenquery, then=1)
                 )
             )
         )
 
-    def annotate_with_is_waiting_for_deliveries(self):
+    def annotate_with_is_waiting_for_deliveries_count(self):
         """
         Annotate the queryset with ``annotated_is_waiting_for_deliveries``.
         Groups waiting for deliveries is all groups where
@@ -727,14 +727,14 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             )
         )
         return self.annotate(
-            annotated_is_waiting_for_deliveries=devilry_djangoaggregate_functions.BooleanCount(
+            annotated_is_waiting_for_deliveries=models.Count(
                 models.Case(
                     models.When(whenquery, then=1)
                 )
             )
         )
 
-    def annotate_with_is_corrected(self):
+    def annotate_with_is_corrected_count(self):
         """
         Annotate the queryset with ``annotated_is_corrected``.
 
@@ -753,14 +753,14 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
                 'cached_data__last_published_feedbackset')),
         )
         return self.annotate(
-            annotated_is_corrected=devilry_djangoaggregate_functions.BooleanCount(
+            annotated_is_corrected=models.Count(
                 models.Case(
                     models.When(whenquery, then=1)
                 )
             )
         )
 
-    def annotate_with_is_passing_grade(self):
+    def annotate_with_is_passing_grade_count(self):
         """
         Annotate the queryset with ``is_passing_grade``.
         ``is_passing_grade`` is ``True`` if the following is true
@@ -771,7 +771,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
           :class:`.devilry.apps.core.models.Assignment`.
         """
         return self.annotate(
-            is_passing_grade=devilry_djangoaggregate_functions.BooleanCount(
+            is_passing_grade=models.Count(
                 models.Case(
                     models.When(
                         cached_data__last_published_feedbackset__isnull=False,
@@ -784,7 +784,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             )
         )
 
-    def annotate_with_has_unpublished_feedbackdraft(self):
+    def annotate_with_has_unpublished_feedbackdraft_count(self):
         """
         Annotate the queryset with ``annotated_has_unpublished_feedbackdraft``.
         A group is considered to have an unpublished feedback draft if the following
@@ -807,7 +807,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             cached_data__last_feedbackset__grading_published_datetime__isnull=True,
             cached_data__last_feedbackset__grading_points__isnull=False)
         return self.annotate(
-            annotated_has_unpublished_feedbackdraft=devilry_djangoaggregate_functions.BooleanCount(
+            annotated_has_unpublished_feedbackdraft=models.Count(
                 models.Case(models.When(whenquery, then=1))
             )
         )

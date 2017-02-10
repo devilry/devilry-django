@@ -1870,13 +1870,13 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_published_datetime=ACTIVE_PERIOD_START)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count().first()
         self.assertFalse(annotated_group.annotated_is_waiting_for_feedback)
 
     def test_ignore_deadline_not_expired_first_attempt(self):
         mommy.make('core.AssignmentGroup',
                    parentnode__first_deadline=ACTIVE_PERIOD_END)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count().first()
         self.assertFalse(annotated_group.annotated_is_waiting_for_feedback)
 
     def test_ignore_deadline_not_expired_new_attempt(self):
@@ -1884,13 +1884,13 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             deadline_datetime=ACTIVE_PERIOD_END)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count().first()
         self.assertFalse(annotated_group.annotated_is_waiting_for_feedback)
 
     def test_include_deadline_expired_first_attempt(self):
         mommy.make('core.AssignmentGroup',
                    parentnode__first_deadline=ACTIVE_PERIOD_START)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count().first()
         self.assertTrue(annotated_group.annotated_is_waiting_for_feedback)
 
     def test_include_deadline_expired_new_attempt(self):
@@ -1898,7 +1898,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             deadline_datetime=ACTIVE_PERIOD_START)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count().first()
         self.assertTrue(annotated_group.annotated_is_waiting_for_feedback)
 
     def test_include_multiple_feedbacksets(self):
@@ -1909,7 +1909,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=10))
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count().first()
         self.assertTrue(annotated_group.annotated_is_waiting_for_feedback)
 
     def test_multiple_groups(self):
@@ -1943,7 +1943,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup5)
 
-        annotated_groups = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback()
+        annotated_groups = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count()
         self.assertTrue(annotated_groups.get(id=testgroup1.id).annotated_is_waiting_for_feedback)
         self.assertTrue(annotated_groups.get(id=testgroup2.id).annotated_is_waiting_for_feedback)
         self.assertFalse(annotated_groups.get(id=testgroup3.id).annotated_is_waiting_for_feedback)
@@ -2012,13 +2012,13 @@ class TestAssignmentGroupQuerysetAnnotateWithIsWaitingForDeliveries(TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count().first()
         self.assertFalse(annotated_group.annotated_is_waiting_for_deliveries)
 
     def test_false_deadline_expired_first_attempt(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__first_deadline=ACTIVE_PERIOD_START)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count().first()
         self.assertFalse(annotated_group.annotated_is_waiting_for_deliveries)
 
     def test_false_deadline_expired_new_attempt(self):
@@ -2026,7 +2026,7 @@ class TestAssignmentGroupQuerysetAnnotateWithIsWaitingForDeliveries(TestCase):
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             deadline_datetime=ACTIVE_PERIOD_START)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count().first()
         self.assertFalse(annotated_group.annotated_is_waiting_for_deliveries)
 
     def test_true_deadline_not_expired_first_attempt(self):
@@ -2034,7 +2034,7 @@ class TestAssignmentGroupQuerysetAnnotateWithIsWaitingForDeliveries(TestCase):
                                parentnode__first_deadline=ACTIVE_PERIOD_END)
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count().first()
         self.assertTrue(annotated_group.annotated_is_waiting_for_deliveries)
 
     def test_true_deadline_not_expired_new_attempt(self):
@@ -2042,7 +2042,7 @@ class TestAssignmentGroupQuerysetAnnotateWithIsWaitingForDeliveries(TestCase):
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             deadline_datetime=ACTIVE_PERIOD_END)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count().first()
         self.assertTrue(annotated_group.annotated_is_waiting_for_deliveries)
 
     def test_true_multiple_feedbacksets(self):
@@ -2053,7 +2053,7 @@ class TestAssignmentGroupQuerysetAnnotateWithIsWaitingForDeliveries(TestCase):
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             deadline_datetime=timezone.now() + timedelta(days=1))
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count().first()
         self.assertTrue(annotated_group.annotated_is_waiting_for_deliveries)
 
     def test_multiple_groups(self):
@@ -2087,7 +2087,7 @@ class TestAssignmentGroupQuerysetAnnotateWithIsWaitingForDeliveries(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup5)
 
-        annotated_groups = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries()
+        annotated_groups = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count()
         self.assertTrue(annotated_groups.get(id=testgroup1.id).annotated_is_waiting_for_deliveries)
         self.assertTrue(annotated_groups.get(id=testgroup2.id).annotated_is_waiting_for_deliveries)
         self.assertFalse(annotated_groups.get(id=testgroup3.id).annotated_is_waiting_for_deliveries)
@@ -2156,21 +2156,21 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
 
     def test_false_feedback_not_published_first_attempt(self):
         mommy.make('core.AssignmentGroup')
-        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         self.assertFalse(annotated_group.annotated_is_corrected)
 
     def test_false_feedback_not_published_new_attempt(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         self.assertFalse(annotated_group.annotated_is_corrected)
 
     def test_true_feedback_is_published_first_attempt(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         self.assertTrue(annotated_group.annotated_is_corrected)
 
     def test_true_feedback_is_published_new_attempt(self):
@@ -2179,7 +2179,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
             group=testgroup)
         devilry_group_mommy_factories.feedbackset_new_attempt_published(
             group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         self.assertTrue(annotated_group.annotated_is_corrected)
 
     def test_false_multiple_feedbacksets_last_is_not_published(self):
@@ -2190,7 +2190,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
             group=testgroup)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         self.assertFalse(annotated_group.annotated_is_corrected)
 
     def test_true_multiple_feedbacksets_last_is_published(self):
@@ -2201,7 +2201,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
             group=testgroup)
         devilry_group_mommy_factories.feedbackset_new_attempt_published(
             group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         self.assertTrue(annotated_group.annotated_is_corrected)
 
     def test_multiple_groups(self):
@@ -2230,7 +2230,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup4)
 
-        annotated_groups = AssignmentGroup.objects.annotate_with_is_corrected()
+        annotated_groups = AssignmentGroup.objects.annotate_with_is_corrected_count()
         self.assertTrue(annotated_groups.get(id=testgroup1.id).annotated_is_corrected)
         self.assertTrue(annotated_groups.get(id=testgroup2.id).annotated_is_corrected)
         self.assertFalse(annotated_groups.get(id=testgroup3.id).annotated_is_corrected)
@@ -2790,26 +2790,26 @@ class TestAssignmentGroupAnnotateWithHasUnpublishedFeedbackset(TestCase):
 
     def test_no_feedbackset(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft_count().first()
         self.assertFalse(annotated_group.annotated_has_unpublished_feedbackdraft)
 
     def test_false_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft_count().first()
         self.assertFalse(annotated_group.annotated_has_unpublished_feedbackdraft)
 
     def test_false_no_grading_points(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft_count().first()
         self.assertFalse(annotated_group.annotated_has_unpublished_feedbackdraft)
 
     def test_true(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup, grading_points=1)
-        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft_count().first()
         self.assertTrue(annotated_group.annotated_has_unpublished_feedbackdraft)
 
     def test_multiple_feedbacksets(self):
@@ -2818,7 +2818,7 @@ class TestAssignmentGroupAnnotateWithHasUnpublishedFeedbackset(TestCase):
             group=testgroup)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup, grading_points=1)
-        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft_count().first()
         self.assertTrue(annotated_group.annotated_has_unpublished_feedbackdraft)
 
 
@@ -3015,7 +3015,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup,
             grading_points=10)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade_count()
         self.assertFalse(queryset.first().is_passing_grade)
 
     def test_false_published(self):
@@ -3024,7 +3024,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=9)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade_count()
         self.assertFalse(queryset.first().is_passing_grade)
 
     def test_true(self):
@@ -3033,7 +3033,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=20)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade_count()
         self.assertTrue(queryset.first().is_passing_grade)
 
     def test_true_gte(self):
@@ -3042,7 +3042,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=10)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade_count()
         self.assertTrue(queryset.first().is_passing_grade)
 
     def test_multiple_last_published(self):
@@ -3054,7 +3054,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
         devilry_group_mommy_factories.feedbackset_new_attempt_published(
             group=testgroup,
             grading_points=15)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade_count()
         self.assertTrue(queryset.first().is_passing_grade)
 
     def test_multiple_last_unpublished(self):
@@ -3066,7 +3066,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             grading_points=20)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade_count()
         self.assertFalse(queryset.first().is_passing_grade)
 
     def test_multiple_groups(self):
@@ -3085,7 +3085,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup3,
             grading_points=30)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade_count()
         self.assertTrue(queryset.get(id=testgroup1.id).is_passing_grade)
         self.assertFalse(queryset.get(id=testgroup2.id).is_passing_grade)
         self.assertTrue(queryset.get(id=testgroup3.id).is_passing_grade)
