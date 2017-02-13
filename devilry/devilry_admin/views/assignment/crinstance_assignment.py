@@ -15,6 +15,7 @@ from devilry.devilry_admin.views.assignment.students import merge_groups
 from devilry.devilry_admin.views.assignment.students import overview as studentoverview
 from devilry.devilry_admin.views.assignment.students import replace_groups
 from devilry.devilry_admin.views.assignment.students import split_group
+from devilry.devilry_admin.views.assignment.students import passed_previous_period
 
 
 class Menu(devilry_crmenu_admin.Menu):
@@ -45,6 +46,7 @@ class CrAdminInstance(devilry_crinstance_admin.BaseCrInstanceAdmin):
         ('add_groups_to_examiner', add_groups_to_examiner.App),
         ('remove_groups_from_examiner', remove_groups_from_examiner.App),
         ('bulk_organize_examiners', bulk_organize_examiners.App),
+        ('passed_previous_period', passed_previous_period.App)
     ]
     id = 'devilry_admin_assignmentadmin'
     rolefrontpage_appname = 'overview'
