@@ -170,6 +170,7 @@ class TestFeedbackSetTriggers(test.TestCase):
         group_mommy.feedbackset_first_attempt_published(group=group)
 
         new_attempt_deadline = timezone.now() + timezone.timedelta(days=1)
+        new_attempt_deadline = new_attempt_deadline.replace(microsecond=0)
         feedback_set_new_attempt = group_mommy.feedbackset_new_attempt_unpublished(
             group=group,
             deadline_datetime=new_attempt_deadline)

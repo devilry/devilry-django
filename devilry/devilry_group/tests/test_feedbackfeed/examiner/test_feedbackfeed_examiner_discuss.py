@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from datetime import timedelta
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
+from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.devilry_comment import models as comment_models
@@ -38,7 +40,9 @@ class TestFeedbackfeedExaminerDiscussMixin(test_feedbackfeed_examiner.TestFeedba
 
     def test_get_examiner_new_attempt_feedback_tab_does_not_exist_if_last_feedbackset_is_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        group_mommy.feedbackset_new_attempt_published(group=testgroup)
+        group_mommy.feedbackset_new_attempt_published(
+            group=testgroup,
+            deadline_datetime=timezone.now() + timedelta(days=3))
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup,

@@ -88,7 +88,7 @@ def make_first_feedbackset_in_group(group=None, **feedbackset_attributes):
             (and saved to the database). Does not clean before saving.
 
     Returns:
-        devilry.devilry_group.models.FeedbackSet: The retrived
+        devilry.devilry_group.models.FeedbackSet: The retrieved
             (and updated if feedbackset_attributes is provided) FeedbackSet.
     """
     group = _make_assignment_group_for_feedbackset(group=group, **feedbackset_attributes)
@@ -210,7 +210,7 @@ def feedbackset_new_attempt_unpublished(group, **kwargs):
     """
     if not group:
         raise ValueError('A FeedbackSet as a new attempt must have a pre-existing group!')
-    kwargs.setdefault('deadline_datetime', timezone.now())
+    kwargs.setdefault('deadline_datetime', timezone.now() + timezone.timedelta(days=3))
     feedbackset = mommy.prepare(
         'devilry_group.FeedbackSet',
         group=group,

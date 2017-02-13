@@ -103,7 +103,8 @@ class TestDevilryGroupMommyFactories(TestCase):
         grading_datetime = timezone.now()
         testfeedbackset = devilry_group_mommy_factories.feedbackset_new_attempt_published(
             group=testgroup,
-            grading_published_datetime=grading_datetime
+            grading_published_datetime=grading_datetime,
+            deadline_datetime=timezone.now() + timezone.timedelta(days=3)
         )
         self.assertEquals(2, group_models.FeedbackSet.objects.count())
         self.assertEquals(testfeedbackset_first.group.id, testfeedbackset.group.id)
@@ -123,7 +124,8 @@ class TestDevilryGroupMommyFactories(TestCase):
             group=testgroup
         )
         testfeedbackset = devilry_group_mommy_factories.feedbackset_new_attempt_published(
-            group=testgroup
+            group=testgroup,
+            deadline_datetime=timezone.now() + timezone.timedelta(days=3)
         )
         self.assertEquals(2, group_models.FeedbackSet.objects.count())
         self.assertEquals(testfeedbackset_first.group.id, testfeedbackset.group.id)

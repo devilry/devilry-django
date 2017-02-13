@@ -2272,7 +2272,8 @@ class TestAssignmentGroupPublishedGradingPoints(TestCase):
             grading_points=10)
         devilry_group_mommy_factories.feedbackset_new_attempt_published(
             group=testgroup,
-            grading_points=20)
+            grading_points=20,
+            deadline_datetime=timezone.now() + timedelta(days=3))
         testgroup.refresh_from_db()
         self.assertEqual(20, testgroup.published_grading_points)
 
@@ -2367,7 +2368,8 @@ class TestAssignmentGroupPublishedGradeIsPassingGrade(TestCase):
             grading_points=5)
         devilry_group_mommy_factories.feedbackset_new_attempt_published(
             group=testgroup,
-            grading_points=15)
+            grading_points=15,
+            deadline_datetime=timezone.now() + timedelta(days=3))
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.published_grade_is_passing_grade)
 
@@ -3053,7 +3055,8 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
             grading_points=5)
         devilry_group_mommy_factories.feedbackset_new_attempt_published(
             group=testgroup,
-            grading_points=15)
+            grading_points=15,
+            deadline_datetime=timezone.now() + timedelta(days=3))
         queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade_count()
         self.assertTrue(queryset.first().is_passing_grade)
 
