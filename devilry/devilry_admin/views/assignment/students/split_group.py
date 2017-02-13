@@ -63,9 +63,6 @@ class SplitGroupView(QuerysetForRoleMixin, SingleObjectMixin, formbase.FormView)
     def get_queryset_for_role(self, role):
         return AssignmentGroup.objects.filter(parentnode=role).select_related('parentnode')
 
-    def form_valid(self, form):
-        return super(SplitGroupView, self).form_valid(form)
-
     def get_field_layout(self):
         return [
             layout.Div('students', css_class='')
