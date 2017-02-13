@@ -726,7 +726,8 @@ class TestAssignmentQuerySetAnnotateWithWaitingForFeedback(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=group2)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
-            group=group2)
+            group=group2,
+            deadline_datetime=timezone.now())
 
         # These should not match
         group2 = mommy.make('core.AssignmentGroup', parentnode=assignment)
