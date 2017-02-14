@@ -12,7 +12,7 @@ from devilry.devilry_admin.views.assignment.students import passed_previous_peri
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
-class TestMergeGroupsAnonymization(TestCase, cradmin_testhelpers.TestCaseMixin):
+class TestPassedPreviousAnonymization(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = passed_previous_period.SelectPeriodView
 
     def setUp(self):
