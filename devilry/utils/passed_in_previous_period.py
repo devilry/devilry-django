@@ -84,7 +84,7 @@ class PassedInPreviousPeriod(object):
             assignment_group__in=group_queryset,
             relatedstudent__user__in=students_on_current
         ).select_related('relatedstudent__user',
-                         'assignment_group__parentnode',
+                         'assignment_group__parentnode__parentnode',
                          'assignment_group__cached_data')\
             .order_by('relatedstudent__user', '-assignment_group__parentnode__publishing_time')\
             .distinct('relatedstudent__user')
@@ -135,10 +135,16 @@ class PassedInPreviousPeriod(object):
         new_passing_grade_min_points = self.assignment.passing_grade_min_points
         new_max_points = self.assignment.max_points
 
-        new_grading_points = math.ceil((((old_grading_points - old_passing_grade_min_points)
-                                         * (new_max_points - new_passing_grade_min_points))
-                                        / float(old_max_points - old_passing_grade_min_points))
-                                       + new_passing_grade_min_points)
+        if old_max_points == old_grading_points:
+            return new_max_points
+
+        old_range = old_max_points - old_passing_grade_min_points
+        new_range = new_max_points - new_passing_grade_min_points
+
+        new_grading_points = ((old_grading_points - old_passing_grade_min_points) * new_range)
+        new_grading_points = new_grading_points / float(old_range) if old_range > 0 else + 0
+        new_grading_points = math.ceil(new_grading_points + new_passing_grade_min_points)
+
         return new_grading_points if new_grading_points <= new_max_points else new_max_points
 
     def __create_feedbackset_passed_previous_period(self, old_candidate, new_candidate):
