@@ -1,15 +1,14 @@
 import mock
-from django.contrib import messages
 from django.http import Http404
 from django.test import TestCase
-from django.conf import settings
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
-from devilry.apps.core.models import AssignmentGroup, Candidate, Assignment
+from devilry.apps.core.models import Assignment
 from devilry.devilry_admin.views.assignment.students import passed_previous_period
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 
 
 class TestSelectPeriodViewAnonymization(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -452,6 +451,11 @@ class TestPassedPreviousAssignmentView(TestCase, cradmin_testhelpers.TestCaseMix
             mock.call(appname='passed_previous_period', args=(), kwargs={}, viewname='INDEX'),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
         )
+        self.assertEqual(
+            mock.call(appname='passed_previous_period', args=(),
+                      kwargs={'period_id': testassignment.parentnode.id}, viewname='confirm'),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[1]
+        )
 
 
 class TestPassedPreviousAssignmentViewListbuilder(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -683,5 +687,213 @@ class TestPassedPreviousAssignmentViewListbuilder(TestCase, cradmin_testhelpers.
         )
         self.assertNotIn(
             '{} - {}'.format(testassignment3.long_name, testassignment3.parentnode.long_name),
+            valuelist
+        )
+
+
+class TestApprovePreviousViewAnonymization(TestAssignmentViewAnonymization):
+    viewclass = passed_previous_period.ApprovePreviousAssignments
+
+
+class TestApprovePreviousView(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = passed_previous_period.ApprovePreviousAssignments
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def __mockinstance_with_devilryrole(self, devilryrole):
+        mockinstance = mock.MagicMock()
+        mockinstance.get_devilryrole_for_requestuser.return_value = devilryrole
+        return mockinstance
+
+    def test_title(self):
+        testassignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'period_id': testassignment.parentnode.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
+        )
+        self.assertIn(
+            'Approve assignments',
+            mockresponse.selector.one('title').alltext_normalized)
+
+    def test_h1(self):
+        testassignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'period_id': testassignment.parentnode.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
+        )
+        self.assertIn(
+            'Step 3 of 3: Approve assignments for the following students.',
+            mockresponse.selector.one('h1').alltext_normalized)
+
+    def test_confirm_button(self):
+        testassignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'period_id': testassignment.parentnode.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
+        )
+        self.assertIn(
+            'Confirm',
+            mockresponse.selector.one('#submit-id-confirm').alltext_normalized)
+
+    def test_links(self):
+        testassignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'period_id': testassignment.parentnode.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
+        )
+
+        self.assertEquals(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEqual(
+            mock.call(appname='passed_previous_period', args=(),
+                      kwargs={'period_id': testassignment.parentnode.id}, viewname='assignments'),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
+        )
+
+
+class TestCandidateListbuilder(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = passed_previous_period.ApprovePreviousAssignments
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def __mockinstance_with_devilryrole(self, devilryrole):
+        mockinstance = mock.MagicMock()
+        mockinstance.get_devilryrole_for_requestuser.return_value = devilryrole
+        return mockinstance
+
+    def test_simple_title(self):
+        testassignment1 = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            short_name='cool',
+            parentnode__short_name='s16',
+            parentnode__long_name='spring16',
+            passing_grade_min_points=1,
+            max_points=1,
+        )
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate1 = core_mommy.candidate(group=group1, shortname='april', fullname='April Duck')
+        group_mommy.feedbackset_first_attempt_published(group=group1, grading_points=1)
+
+        testassignment2 = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='cool',
+            parentnode__parentnode=testassignment1.parentnode.parentnode,
+            passing_grade_min_points=2,
+            max_points=3,
+        )
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        mommy.make('core.Candidate', assignment_group=group2, relatedstudent__user=candidate1.relatedstudent.user)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment2,
+            viewkwargs={'period_id': testassignment1.parentnode.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
+        )
+
+        valuelist = [elem.alltext_normalized for elem in mockresponse.selector.list(
+            '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+        self.assertEqual(1, len(valuelist))
+        self.assertIn(
+            '{}({})'.format(candidate1.relatedstudent.user.fullname, candidate1.relatedstudent.user.shortname),
+            valuelist
+        )
+
+    def test_simple_description(self):
+        testassignment1 = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            short_name='cool',
+            parentnode__short_name='s16',
+            parentnode__long_name='spring16',
+            passing_grade_min_points=1,
+            max_points=1,
+        )
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate1 = core_mommy.candidate(group=group1, shortname='april', fullname='April Duck')
+        group_mommy.feedbackset_first_attempt_published(group=group1, grading_points=1)
+
+        testassignment2 = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='cool',
+            parentnode__parentnode=testassignment1.parentnode.parentnode,
+            passing_grade_min_points=2,
+            max_points=3,
+        )
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        mommy.make('core.Candidate', assignment_group=group2, relatedstudent__user=candidate1.relatedstudent.user)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment2,
+            viewkwargs={'period_id': testassignment1.parentnode.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
+        )
+
+        valuelist = [elem.alltext_normalized for elem in mockresponse.selector.list(
+            '.django-cradmin-listbuilder-itemvalue-titledescription-description')]
+        self.assertEqual(3, len(valuelist))
+        self.assertIn('{} - {}'.format(testassignment1.long_name, testassignment1.parentnode.long_name), valuelist)
+        self.assertIn('01.1000 - 12.1999 (semester start/semester end)', valuelist)
+        self.assertIn('passed (1/1) passed (3/3)', valuelist)
+
+    def test_multiple_title(self):
+        testassignment1 = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            short_name='cool',
+            parentnode__short_name='s16',
+            parentnode__long_name='spring16',
+            passing_grade_min_points=1,
+            max_points=1,
+        )
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate1 = core_mommy.candidate(group=group1, shortname='april', fullname='April Duck')
+        group_mommy.feedbackset_first_attempt_published(group=group1, grading_points=1)
+
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate2 = core_mommy.candidate(group=group2, shortname='donald', fullname='Donald Duck')
+        group_mommy.feedbackset_first_attempt_published(group=group2, grading_points=1)
+
+        group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate3 = core_mommy.candidate(group=group3, shortname='dewey', fullname='Dewey Duck')
+        group_mommy.feedbackset_first_attempt_published(group=group3, grading_points=1)
+
+        testassignment2 = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='cool',
+            parentnode__parentnode=testassignment1.parentnode.parentnode,
+            passing_grade_min_points=2,
+            max_points=3,
+        )
+        new_group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        mommy.make('core.Candidate', assignment_group=new_group1, relatedstudent__user=candidate1.relatedstudent.user)
+
+        new_group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        mommy.make('core.Candidate', assignment_group=new_group2, relatedstudent__user=candidate2.relatedstudent.user)
+
+        new_group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        mommy.make('core.Candidate', assignment_group=new_group3, relatedstudent__user=candidate3.relatedstudent.user)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment2,
+            viewkwargs={'period_id': testassignment1.parentnode.id},
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
+        )
+
+        valuelist = [elem.alltext_normalized for elem in mockresponse.selector.list(
+            '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+        self.assertEqual(3, len(valuelist))
+        self.assertIn(
+            '{}({})'.format(candidate1.relatedstudent.user.fullname, candidate1.relatedstudent.user.shortname),
+            valuelist
+        )
+        self.assertIn(
+            '{}({})'.format(candidate2.relatedstudent.user.fullname, candidate2.relatedstudent.user.shortname),
+            valuelist
+        )
+        self.assertIn(
+            '{}({})'.format(candidate3.relatedstudent.user.fullname, candidate3.relatedstudent.user.shortname),
             valuelist
         )

@@ -27,7 +27,7 @@
 
 {% block list %}
     {{ block.super }}
-    <a href="{% cradmin_instance_appindex_url 'passed_previous_period' %}" class="btn btn-primary">
+    <a href="{% cradmin_instance_url 'passed_previous_period' 'confirm' period_id=period_id %}" class="btn btn-primary">
         {% trans "Next" %}
     </a>
 {% endblock %}
