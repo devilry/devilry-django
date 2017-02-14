@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
+import json
 
+from django.contrib import messages
 from crispy_forms import layout
 from django import forms
 from django.http import Http404
@@ -12,8 +14,10 @@ from django_cradmin.viewhelpers import listbuilder
 from django_cradmin.viewhelpers import listbuilderview
 
 from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Period
-from devilry.utils.passed_in_previous_period import PassedInPreviousPeriod
+from devilry.utils.passed_in_previous_period import PassedInPreviousPeriod, SomeCandidatesDoesNotQualifyToPass, \
+    NoCandidatesPassed
 
 
 class SelectPeriodForm(forms.Form):
@@ -161,6 +165,7 @@ class CandidateListbuilder(listbuilder.base.List):
         self.extend_with_values(
             value_iterable=self.__get_candidate_queryset(),
             value_renderer_class=CandidateItemValue,
+            frame_renderer_class=listbuilder.itemframe.DefaultSpacingItemFrame,
             value_and_frame_renderer_kwargs={
                 'current_assignment': self.current_assignment,
                 'devilryrole': self.devilry_role,
@@ -168,8 +173,12 @@ class CandidateListbuilder(listbuilder.base.List):
             })
 
 
+class ApprovePreviousForm(forms.Form):
+    candidates = forms.HiddenInput()
+
+
 class ApprovePreviousAssignments(formbase.FormView):
-    form_class = forms.Form
+    form_class = ApprovePreviousForm
     template_name = 'devilry_admin/assignment/students/passed_previous_period/confirm-view.django.html'
 
     def dispatch(self, request, *args, **kwargs):
@@ -191,6 +200,9 @@ class ApprovePreviousAssignments(formbase.FormView):
         listbuilder.build()
         return listbuilder
 
+    def __get_candidate_ids(self):
+        return [candidate.id for candidate in self.util_class.get_queryset()]
+
     def get_context_data(self, **kwargs):
         context = super(ApprovePreviousAssignments, self).get_context_data(**kwargs)
         context['period_id'] = self.period.id
@@ -204,11 +216,44 @@ class ApprovePreviousAssignments(formbase.FormView):
 
     def get_field_layout(self):
         return [
+            layout.Hidden('candidates', self.__get_candidate_ids())
         ]
 
     def form_valid(self, form):
-        #: TODO: implement this
-        return super(ApprovePreviousAssignments, self).form_valid(form)
+        print(json.loads(form.data['candidates']))
+        try:
+            candidates = Candidate.objects.filter(id__in=json.loads(form.data['candidates']))\
+                .select_related('relatedstudent__user')
+            candidate_short_name = [candidate.relatedstudent.user.get_displayname() for candidate in candidates]
+            self.util_class.set_passed_in_current_period(
+                candidates,
+                self.request.user
+            )
+        except SomeCandidatesDoesNotQualifyToPass as e:
+            messages.warning(
+                self.request,
+                ugettext_lazy(str(e))
+            )
+        except NoCandidatesPassed:
+            messages.warning(
+                self.request,
+                ugettext_lazy('No students are qualified to get approved '
+                              'for this assignment from a previous assignment.')
+            )
+        except:
+            messages.warning(
+                self.request,
+                ugettext_lazy('An error occurred.')
+            )
+        else:
+            messages.success(
+                self.request,
+                ugettext_lazy('Sucess: {} got approved for this assignment.'.format(candidate_short_name))
+            )
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return self.request.cradmin_instance.reverse_url(appname="overview", viewname=crapp.INDEXVIEW_NAME)
 
 
 class App(crapp.App):
