@@ -742,5 +742,5 @@ class TestPassedInPreviousPeriod(TestCase):
 
         passed_in_previous = PassedInPreviousPeriod(current_assignment, assignment.parentnode)
         candidate_queryset = passed_in_previous.get_queryset()
-        with self.assertNumQueries(15):
+        with self.assertNumQueries(16):
             passed_in_previous.set_passed_in_current_period(candidate_queryset, testuser)
