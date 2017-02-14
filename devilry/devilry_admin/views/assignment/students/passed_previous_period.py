@@ -138,6 +138,8 @@ class PassedPreviousAssignmentView(listbuilderview.View):
     #     }
 
 
+
+
 class App(crapp.App):
     appurls = [
         crapp.Url(r'^$', SelectPeriodView.as_view(), name=crapp.INDEXVIEW_NAME),

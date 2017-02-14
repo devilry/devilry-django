@@ -437,7 +437,7 @@ class TestPassedPreviousAssignmentView(TestCase, cradmin_testhelpers.TestCaseMix
         )
         self.assertIn(
             'Next',
-            mockresponse.selector.one('.btn-default').alltext_normalized)
+            mockresponse.selector.one('.btn-primary').alltext_normalized)
 
     def test_links(self):
         testassignment = mommy.make('core.Assignment')
