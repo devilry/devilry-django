@@ -123,11 +123,18 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('#submit-id-next').alltext_normalized)
 
     def test_select_previous_period_simple(self):
+        period = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            short_name='cool',
+            parentnode__short_name='s16',
+            parentnode__long_name='spring16'
+        ).parentnode
         testassignment = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
             short_name='cool',
             parentnode__short_name='s17',
-            parentnode__long_name='spring17'
+            parentnode__long_name='spring17',
+            parentnode__parentnode=period.parentnode
         )
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
@@ -135,8 +142,12 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('.controls  > .radio')]
         self.assertEqual(2, len(selectlist))
-        self.assertIn(
+        self.assertNotIn(
             '{} - {}'.format(testassignment.parentnode.short_name, testassignment.parentnode.long_name),
+            selectlist
+        )
+        self.assertIn(
+            '{} - {}'.format(period.short_name, period.long_name),
             selectlist
         )
 
@@ -173,8 +184,8 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
         selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('.controls  > .radio')]
-        self.assertEqual(5, len(selectlist))
-        self.assertIn(
+        self.assertEqual(4, len(selectlist))
+        self.assertNotIn(
             '{} - {}'.format(testassignment.parentnode.short_name, testassignment.parentnode.long_name),
             selectlist
         )
@@ -191,7 +202,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             selectlist
         )
 
-    def test_select_period_multiple_not_in(self):
+    def test_select_previous_period_multiple_not_in(self):
         period1 = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
             short_name='assignment1',
@@ -223,8 +234,8 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
         selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('.controls  > .radio')]
-        self.assertEqual(3, len(selectlist))
-        self.assertIn(
+        self.assertEqual(2, len(selectlist))
+        self.assertNotIn(
             '{} - {}'.format(testassignment.parentnode.short_name, testassignment.parentnode.long_name),
             selectlist
         )
@@ -237,6 +248,58 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             selectlist
         )
         self.assertIn(
+            '{} - {}'.format(period3.short_name, period3.long_name),
+            selectlist
+        )
+
+    def test_select_previous_period_multiple_future_not_in(self):
+        period1 = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_middle',
+            short_name='cool',
+            parentnode__short_name='ghdfg',
+            parentnode__long_name='Oijjop'
+        ).parentnode
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='cool',
+            parentnode__short_name='s17',
+            parentnode__long_name='spring17',
+            parentnode__parentnode=period1.parentnode
+        )
+        period2 = mommy.make_recipe(
+            'devilry.apps.core.assignment_futureperiod_start',
+            short_name='cool',
+            parentnode__short_name='sdgf',
+            parentnnode__long_name='opkjmdgf',
+            parentnode__parentnode=period1.parentnode
+        ).parentnode
+        period3 = mommy.make_recipe(
+            'devilry.apps.core.assignment_futureperiod_middle',
+            short_name='cool',
+            parentnode__short_name='hgdf',
+            parentnnode__long_name='asdads',
+            parentnode__parentnode=period1.parentnode
+        ).parentnode
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
+        )
+        selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('.controls  > .radio')]
+        self.assertEqual(2, len(selectlist))
+        self.assertNotIn(
+            '{} - {}'.format(testassignment.parentnode.short_name, testassignment.parentnode.long_name),
+            selectlist
+        )
+        self.assertIn(
+            '{} - {}'.format(period1.short_name, period1.long_name),
+            selectlist
+        )
+        self.assertNotIn(
+            '{} - {}'.format(period2.short_name, period2.long_name),
+            selectlist
+        )
+        self.assertNotIn(
             '{} - {}'.format(period3.short_name, period3.long_name),
             selectlist
         )
