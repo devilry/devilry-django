@@ -11,6 +11,7 @@ from django.views.generic.detail import SingleObjectMixin
 from django_cradmin.crispylayouts import PrimarySubmit
 from django.utils.translation import ugettext_lazy
 from django_cradmin.viewhelpers import listbuilderview
+from django_cradmin.viewhelpers.listbuilder import itemvalue
 from devilry.apps.core.models import Assignment
 from django_cradmin.viewhelpers.mixins import QuerysetForRoleMixin
 from django_cradmin.widgets.selectwidgets import WrappedSelect
@@ -87,17 +88,31 @@ class SelectPeriodView(formbase.FormView):
     def get_redirect_url(self, period):
         return self.request.cradmin_app.reverse_appurl(
             'assignments',
-            kwargs={'pk': period.id}
+            kwargs={'period_id': period.id}
         )
 
 
-class PassedPreviousAssignmentView(SingleObjectMixin, listbuilderview.View):
+class AssignmentItemValue(itemvalue.TitleDescription):
+    template_name = 'devilry_admin/assignment/students/passed_previous_period/assignment-item-value.django.html'
+
+    def __init__(self, **kwargs):
+        super(AssignmentItemValue, self).__init__(**kwargs)
+        self.period_start = self.value.parentnode.start_time
+        self.period_end = self.value.parentnode.end_time
+        self.max_points = self.value.max_points
+        self.passing_grade_min_points = self.value.passing_grade_min_points
+
+    def get_title(self):
+        return '{} - {}'.format(self.value.long_name, self.value.parentnode.long_name)
+
+
+class PassedPreviousAssignmentView(listbuilderview.View):
     model = Assignment
     template_name = 'devilry_admin/assignment/students/passed_previous_period/assignment-overview.django.html'
+    value_renderer_class = AssignmentItemValue
 
     def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.period = self.get_object()
+        self.period = Period.objects.get(id=kwargs.pop('period_id'))
         self.assignment = self.request.cradmin_role
         self.devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()
         if self.assignment.is_fully_anonymous and self.devilryrole != 'departmentadmin':
@@ -107,17 +122,24 @@ class PassedPreviousAssignmentView(SingleObjectMixin, listbuilderview.View):
         return super(PassedPreviousAssignmentView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset_for_role(self, role):
-        return Period.objects.filter(assignments__short_name=role.short_name)\
-            .prefetch_related('assignments')
+        return self.model.objects.filter(
+            short_name=role.short_name,
+            parentnode__start_time__gte=self.period.start_time,
+            parentnode__end_time__lt=self.assignment.period.end_time,
+            parentnode__parentnode=self.assignment.parentnode.parentnode
+        ).select_related('parentnode__parentnode')
 
     def get_pagetitle(self):
         return ugettext_lazy('Confirm assignmnets')
 
-
+    # def get_value_and_frame_renderer_kwargs(self):
+    #     return {
+    #         'cool': 'imba'
+    #     }
 
 
 class App(crapp.App):
     appurls = [
         crapp.Url(r'^$', SelectPeriodView.as_view(), name=crapp.INDEXVIEW_NAME),
-        crapp.Url(r'^assignment/(?P<pk>\d+)$', PassedPreviousAssignmentView.as_view(), name='assignments')
+        crapp.Url(r'^assignment/(?P<period_id>\d+)$', PassedPreviousAssignmentView.as_view(), name='assignments')
     ]

@@ -23,3 +23,11 @@
         {% trans 'upon approval of passing grade this semester.' %}
     </p>
 {% endblock pageheader-inner %}
+
+
+{% block list %}
+    {{ block.super }}
+    <a href="{% cradmin_instance_appindex_url 'passed_previous_period' %}" class="btn btn-default">
+        {% trans "Next" %}
+    </a>
+{% endblock %}
