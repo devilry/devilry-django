@@ -1,4 +1,5 @@
 import mock
+from django.contrib import messages
 from django.http import Http404
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
@@ -896,4 +897,206 @@ class TestCandidateListbuilder(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIn(
             '{}({})'.format(candidate3.relatedstudent.user.fullname, candidate3.relatedstudent.user.shortname),
             valuelist
+        )
+
+
+class TestApprovePreviousPostView(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = passed_previous_period.ApprovePreviousAssignments
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def __mockinstance_with_devilryrole(self, devilryrole):
+        mockinstance = mock.MagicMock()
+        mockinstance.get_devilryrole_for_requestuser.return_value = devilryrole
+        return mockinstance
+
+    def test_no_candidates_passed(self):
+        testassignment2 = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='cool',
+            passing_grade_min_points=2,
+            max_points=3,
+        )
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment2,
+            viewkwargs={'period_id': testassignment2.parentnode.id},
+            messagesmock=messagesmock,
+            requestkwargs={
+                'data': {
+                    'candidates': '[]'
+                }
+            },
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
+        )
+        messagesmock.add.assert_called_once_with(
+            messages.WARNING,
+            'No students are qualified to get approved for this assignment from a previous assignment.',
+            ''
+        )
+
+    def test_success_simple(self):
+        testassignment1 = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            short_name='cool',
+            parentnode__short_name='s16',
+            parentnode__long_name='spring16',
+            passing_grade_min_points=1,
+            max_points=1,
+        )
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate1 = core_mommy.candidate(group=group1, shortname='april', fullname='April Duck')
+        group_mommy.feedbackset_first_attempt_published(group=group1, grading_points=1)
+
+        testassignment2 = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='cool',
+            parentnode__parentnode=testassignment1.parentnode.parentnode,
+            passing_grade_min_points=2,
+            max_points=3,
+        )
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        mommy.make('core.Candidate', assignment_group=group2, relatedstudent__user=candidate1.relatedstudent.user)
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment2,
+            viewkwargs={'period_id': testassignment1.parentnode.id},
+            messagesmock=messagesmock,
+            requestkwargs={
+                'data': {
+                    'candidates': '[{}]'.format(candidate1.id)
+                }
+            },
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
+        )
+        messagesmock.add.assert_called_once_with(
+            messages.SUCCESS,
+            'Success: {} got approved for this assignment.'.format(candidate1.relatedstudent.user.get_displayname()),
+            ''
+        )
+
+    def test_success_multiple(self):
+        testassignment1 = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            short_name='cool',
+            passing_grade_min_points=1,
+            max_points=1,
+        )
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate1 = core_mommy.candidate(group=group1, shortname='april', fullname='April Duck')
+        group_mommy.feedbackset_first_attempt_published(group=group1, grading_points=1)
+
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate2 = core_mommy.candidate(group=group2, shortname='donald', fullname='Donald Duck')
+        group_mommy.feedbackset_first_attempt_published(group=group2, grading_points=1)
+
+        testassignment0 = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_middle',
+            short_name='cool',
+            parentnode__parentnode=testassignment1.parentnode.parentnode,
+            passing_grade_min_points=1,
+            max_points=1,
+        )
+
+        group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment0)
+        candidate3 = core_mommy.candidate(group=group3, shortname='dewey', fullname='Dewey Duck')
+        group_mommy.feedbackset_first_attempt_published(group=group3, grading_points=1)
+
+        testassignment2 = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='cool',
+            parentnode__parentnode=testassignment1.parentnode.parentnode,
+            passing_grade_min_points=2,
+            max_points=3,
+        )
+        new_group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        mommy.make('core.Candidate', assignment_group=new_group1, relatedstudent__user=candidate1.relatedstudent.user)
+
+        new_group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        mommy.make('core.Candidate', assignment_group=new_group2, relatedstudent__user=candidate2.relatedstudent.user)
+
+        new_group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        mommy.make('core.Candidate', assignment_group=new_group3, relatedstudent__user=candidate3.relatedstudent.user)
+
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment2,
+            viewkwargs={'period_id': testassignment1.parentnode.id},
+            messagesmock=messagesmock,
+            requestkwargs={
+                'data': {
+                    'candidates': '[{}, {}, {}]'.format(candidate1.id, candidate2.id, candidate3.id)
+                }
+            },
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
+        )
+        messagesmock.add.assert_called_once_with(
+            messages.SUCCESS,
+            'Success: {}, {}, {} got approved for this assignment.'
+            ''.format(candidate1.relatedstudent.user.get_displayname(),
+                      candidate2.relatedstudent.user.get_displayname(),
+                      candidate3.relatedstudent.user.get_displayname()),
+            ''
+        )
+
+    def test_warning_some_candidates_does_not_qualify(self):
+        testassignment1 = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            short_name='cool',
+            passing_grade_min_points=1,
+            max_points=1,
+        )
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate1 = core_mommy.candidate(group=group1, shortname='april', fullname='April Duck')
+        group_mommy.feedbackset_first_attempt_published(group=group1, grading_points=1)
+
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        candidate2 = core_mommy.candidate(group=group2, shortname='donald', fullname='Donald Duck')
+        group_mommy.feedbackset_first_attempt_published(group=group2, grading_points=1)
+
+        testassignment0 = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_middle',
+            short_name='imba',
+            parentnode__parentnode=testassignment1.parentnode.parentnode,
+            passing_grade_min_points=1,
+            max_points=1,
+        )
+
+        group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment0)
+        candidate3 = core_mommy.candidate(group=group3, shortname='dewey', fullname='Dewey Duck')
+        group_mommy.feedbackset_first_attempt_published(group=group3, grading_points=1)
+
+        testassignment2 = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='cool',
+            parentnode__parentnode=testassignment1.parentnode.parentnode,
+            passing_grade_min_points=2,
+            max_points=3,
+        )
+        new_group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        mommy.make('core.Candidate', assignment_group=new_group1, relatedstudent__user=candidate1.relatedstudent.user)
+
+        new_group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        mommy.make('core.Candidate', assignment_group=new_group2, relatedstudent__user=candidate2.relatedstudent.user)
+
+        new_group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        mommy.make('core.Candidate', assignment_group=new_group3, relatedstudent__user=candidate3.relatedstudent.user)
+
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment2,
+            viewkwargs={'period_id': testassignment1.parentnode.id},
+            messagesmock=messagesmock,
+            requestkwargs={
+                'data': {
+                    'candidates': '[{}, {}, {}]'.format(candidate1.id, candidate2.id, candidate3.id)
+                }
+            },
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
+        )
+        messagesmock.add.assert_called_once_with(
+            messages.WARNING,
+            'Some students does not qualify to pass the assignment.',
+            ''
         )

@@ -219,12 +219,16 @@ class ApprovePreviousAssignments(formbase.FormView):
             layout.Hidden('candidates', self.__get_candidate_ids())
         ]
 
+    def __get_candidates_displayname(self, candidates):
+        candidate_short_name = ""
+        for candidate in candidates:
+            candidate_short_name += '{}, '.format(candidate.relatedstudent.user.get_displayname())
+        return candidate_short_name[:-2]
+
     def form_valid(self, form):
-        print(json.loads(form.data['candidates']))
         try:
             candidates = Candidate.objects.filter(id__in=json.loads(form.data['candidates']))\
                 .select_related('relatedstudent__user')
-            candidate_short_name = [candidate.relatedstudent.user.get_displayname() for candidate in candidates]
             self.util_class.set_passed_in_current_period(
                 candidates,
                 self.request.user
@@ -232,7 +236,7 @@ class ApprovePreviousAssignments(formbase.FormView):
         except SomeCandidatesDoesNotQualifyToPass as e:
             messages.warning(
                 self.request,
-                ugettext_lazy(str(e))
+                ugettext_lazy('Some students does not qualify to pass the assignment.')
             )
         except NoCandidatesPassed:
             messages.warning(
@@ -248,7 +252,9 @@ class ApprovePreviousAssignments(formbase.FormView):
         else:
             messages.success(
                 self.request,
-                ugettext_lazy('Sucess: {} got approved for this assignment.'.format(candidate_short_name))
+                ugettext_lazy(
+                    'Success: {} got approved for this assignment.'
+                    ''.format(self.__get_candidates_displayname(candidates)))
             )
         return redirect(self.get_success_url())
 
