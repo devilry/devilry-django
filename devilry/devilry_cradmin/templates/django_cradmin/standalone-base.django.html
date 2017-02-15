@@ -13,7 +13,7 @@
 {% endblock global-pre-body %}
 
 {% block global-bodyclass %}
-    {% if request.devilryrole %}
-        devilry-body-{{ request.devilryrole }}
+    {% if request.devilryrole_type %}
+        devilry-body-{{ request.devilryrole_type }}
     {% endif %}
 {% endblock global-bodyclass %}

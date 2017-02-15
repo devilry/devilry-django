@@ -5,6 +5,7 @@ from django.http import Http404
 
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
+from devilry.devilry_cradmin import devilry_crinstance
 from devilry.devilry_group.cradmin_instances import crinstance_base
 from devilry.devilry_group.views.admin import feedbackfeed_admin
 from devilry.devilry_group.views.download_files import batch_download_files
@@ -18,7 +19,7 @@ class Menu(devilry_crmenu_admin.Menu):
         self.add_assignment_breadcrumb_item(assignment=group.assignment)
 
 
-class AdminCrInstance(crinstance_base.CrInstanceBase):
+class AdminCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_crinstance.BaseCrInstanceAdmin):
     """
     CrInstance class for admins.
     """
@@ -32,9 +33,6 @@ class AdminCrInstance(crinstance_base.CrInstanceBase):
     @classmethod
     def matches_urlpath(cls, urlpath):
         return urlpath.startswith('/devilry_group/admin')
-
-    def add_extra_instance_variables_to_request(self, request):
-        setattr(request, 'devilryrole', 'admin')
 
     def get_rolequeryset(self):
         """

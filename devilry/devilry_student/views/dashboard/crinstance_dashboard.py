@@ -1,6 +1,6 @@
 import re
 
-from devilry.devilry_student.cradminextensions import devilry_crinstance_student
+from devilry.devilry_cradmin import devilry_crinstance
 from devilry.devilry_student.cradminextensions import devilry_crmenu_student
 from devilry.devilry_student.views.dashboard import allperiods
 from devilry.devilry_student.views.dashboard import dashboard
@@ -16,7 +16,7 @@ class Menu(devilry_crmenu_student.Menu):
             self.add_role_menuitem_object(active=True)
 
 
-class CrAdminInstance(devilry_crinstance_student.BaseCrInstanceStudent):
+class CrAdminInstance(devilry_crinstance.BaseCrInstanceStudent):
     id = 'devilry_student'
     menuclass = Menu
     rolefrontpage_appname = 'dashboard'

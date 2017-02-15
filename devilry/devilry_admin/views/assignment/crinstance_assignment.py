@@ -1,6 +1,6 @@
 from devilry.apps.core.models import Assignment
 from devilry.devilry_account.models import PeriodPermissionGroup
-from devilry.devilry_admin.cradminextensions import devilry_crinstance_admin
+from devilry.devilry_cradmin import devilry_crinstance
 from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
 from devilry.devilry_admin.views.assignment import overview
 from devilry.devilry_admin.views.assignment.examiners import add_groups_to_examiner
@@ -28,7 +28,7 @@ class Menu(devilry_crmenu_admin.Menu):
                                             active=True)
 
 
-class CrAdminInstance(devilry_crinstance_admin.BaseCrInstanceAdmin):
+class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
     menuclass = Menu
     roleclass = Assignment
     apps = [

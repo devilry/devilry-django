@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from devilry.devilry_examiner.cradminextensions import devilry_crmenu_examiner
+from devilry.devilry_cradmin import devilry_crinstance
 from devilry.devilry_group.cradmin_instances import crinstance_base
 from devilry.devilry_group.views.download_files import batch_download_files
 from devilry.devilry_group.views.examiner import feedbackfeed_examiner
@@ -18,7 +19,7 @@ class Menu(devilry_crmenu_examiner.Menu):
         self.add_group_breadcrumb_item(group=group, active=True)
 
 
-class ExaminerCrInstance(crinstance_base.CrInstanceBase):
+class ExaminerCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_crinstance.BaseCrInstanceExaminer):
     """
     CrInstance class for examiners.
     """
@@ -44,12 +45,3 @@ class ExaminerCrInstance(crinstance_base.CrInstanceBase):
         """
         return self._get_base_rolequeryset()\
             .filter_examiner_has_access(self.request.user)
-
-    def get_devilryrole_for_requestuser(self):
-        """
-        Get the role of the user.
-
-        Returns:
-            str: ``examiner`` as devilryrole.
-        """
-        return 'examiner'
