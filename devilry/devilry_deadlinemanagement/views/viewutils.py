@@ -3,15 +3,63 @@ from __future__ import unicode_literals
 
 from django import forms
 from django.db import models
-from django.db.models.functions import Lower, Concat
+from django import http
 from django.utils.translation import ugettext_lazy
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 from django_cradmin.viewhelpers import multiselect2
 from django_cradmin.viewhelpers import multiselect2view
+from django_cradmin.crispylayouts import PrimarySubmitBlock, DefaultSubmitBlock
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
+from devilry.utils import datetimeutils
+
+
+class GroupQuerySetMixin(object):
+
+    def get_candidate_queryset(self):
+        return core_models.Candidate.objects\
+            .select_related('relatedstudent__user')\
+            .only(
+                'candidate_id',
+                'assignment_group',
+                'relatedstudent__candidate_id',
+                'relatedstudent__automatic_anonymous_id',
+                'relatedstudent__user__shortname',
+                'relatedstudent__user__fullname',
+            )
+
+    def get_examiner_queryset(self):
+        return core_models.Examiner.objects\
+            .select_related('relatedexaminer__user')\
+            .only(
+                'relatedexaminer',
+                'assignmentgroup',
+                'relatedexaminer__automatic_anonymous_id',
+                'relatedexaminer__user__shortname',
+                'relatedexaminer__user__fullname',
+            )
+
+    def get_queryset_for_role_filtered(self, role):
+        queryset = self.request.cradmin_app.get_accessible_group_queryset()
+        assignment = role
+        return queryset\
+            .filter(parentnode=assignment)\
+            .prefetch_related(
+                models.Prefetch(
+                    'candidates',
+                    queryset=self.get_candidate_queryset()))\
+            .prefetch_related(
+                models.Prefetch(
+                    'examiners',
+                    queryset=self.get_examiner_queryset()))\
+            .select_related(
+                'cached_data__last_published_feedbackset',
+                'cached_data__last_feedbackset',
+                'cached_data__first_feedbackset',
+                'parentnode'
+            )
 
 
 class SelectedAssignmentGroupForm(forms.Form):
@@ -36,7 +84,7 @@ class SelectedAssignmentGroupForm(forms.Form):
     feedback_comment_text = forms.CharField(
         widget=AceMarkdownWidget,
         help_text='Add a general comment to the feedback',
-        initial=ugettext_lazy('Delivery has been corrected.'))
+        initial=ugettext_lazy('You have been given a new attempt.'))
 
     def __init__(self, *args, **kwargs):
         selectable_qualification_items_queryset = kwargs.pop('selectable_items_queryset')
@@ -54,8 +102,18 @@ class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
     #: A descriptive name for the items selected.
     descriptive_item_name = 'assignment group'
 
+    def get_buttons(self):
+        # button_list = super(AssignmentGroupTargetRenderer, self).get_buttons()
+        return [
+            PrimarySubmitBlock('move_deadline', self.get_move_deadline_text()),
+            DefaultSubmitBlock('new_attempt', self.get_submit_button_text())
+        ]
+
+    def get_move_deadline_text(self):
+        return 'Move deadline for selected {}(s)'.format(self.descriptive_item_name)
+
     def get_submit_button_text(self):
-        return 'Submit selected {}(s)'.format(self.descriptive_item_name)
+        return 'New attempt for selected {}(s)'.format(self.descriptive_item_name)
 
     def get_with_items_title(self):
         return 'Selected {}'.format(self.descriptive_item_name)
@@ -69,7 +127,7 @@ class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
         ]
 
 
-class AbstractAssignmentGroupMultiSelectListFilterView(multiselect2view.ListbuilderFilterView):
+class AbstractAssignmentGroupMultiSelectListFilterView(GroupQuerySetMixin, multiselect2view.ListbuilderFilterView):
     """
     Abstract class that implements ``ListbuilderFilterView``.
 
@@ -80,6 +138,10 @@ class AbstractAssignmentGroupMultiSelectListFilterView(multiselect2view.Listbuil
     model = core_models.AssignmentGroup
 
     def dispatch(self, request, *args, **kwargs):
+        num_filtered_groups = self.get_unfiltered_queryset_for_role(self.request.cradmin_role).count()
+        if num_filtered_groups < 2:
+            # Should not have access if assignment has less than two corrected groups.
+            raise http.Http404()
         self.assignment = self.request.cradmin_role
         return super(AbstractAssignmentGroupMultiSelectListFilterView, self).dispatch(request, *args, **kwargs)
 
@@ -120,35 +182,6 @@ class AbstractAssignmentGroupMultiSelectListFilterView(multiselect2view.Listbuil
             self.__add_filterlist_items_not_anonymous(filterlist=filterlist)
         filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
 
-    def get_candidate_queryset(self):
-        return core_models.Candidate.objects\
-            .select_related('relatedstudent__user')\
-            .only(
-                'candidate_id',
-                'assignment_group',
-                'relatedstudent__candidate_id',
-                'relatedstudent__automatic_anonymous_id',
-                'relatedstudent__user__shortname',
-                'relatedstudent__user__fullname',
-            )\
-            .order_by(
-                Lower(Concat('relatedstudent__user__fullname',
-                             'relatedstudent__user__shortname')))
-
-    def get_examiner_queryset(self):
-        return core_models.Examiner.objects\
-            .select_related('relatedexaminer__user')\
-            .only(
-                'relatedexaminer',
-                'assignmentgroup',
-                'relatedexaminer__automatic_anonymous_id',
-                'relatedexaminer__user__shortname',
-                'relatedexaminer__user__fullname',
-            )\
-            .order_by(
-                Lower(Concat('relatedexaminer__user__fullname',
-                             'relatedexaminer__user__shortname')))
-
     def get_annotations_for_queryset(self, queryset):
         """
         Add annotations for the the queryset.
@@ -163,9 +196,7 @@ class AbstractAssignmentGroupMultiSelectListFilterView(multiselect2view.Listbuil
         return queryset \
             .annotate_with_is_waiting_for_feedback_count() \
             .annotate_with_is_waiting_for_deliveries_count() \
-            .annotate_with_is_corrected_count() \
-            .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user) \
-            .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)
+            .annotate_with_is_corrected_count()
 
     def get_unfiltered_queryset_for_role(self, role):
         """
@@ -179,20 +210,11 @@ class AbstractAssignmentGroupMultiSelectListFilterView(multiselect2view.Listbuil
         Returns:
             (QuerySet): ``QuerySet`` of ``AssignmentGroups``.
         """
-        group_queryset = core_models.AssignmentGroup.objects \
-            .filter(parentnode=role) \
-            .prefetch_related(
-                models.Prefetch('candidates',
-                                queryset=self.get_candidate_queryset())) \
-            .prefetch_related(
-                models.Prefetch('examiners',
-                                queryset=self.get_examiner_queryset()))
-        return self.get_annotations_for_queryset(queryset=group_queryset)\
-            .distinct() \
-            .select_related('cached_data__last_published_feedbackset',
-                            'cached_data__last_feedbackset',
-                            'cached_data__first_feedbackset',
-                            'parentnode')
+        queryset = self.get_queryset_for_role_filtered(role=role)
+        queryset = self.get_annotations_for_queryset(queryset=queryset)
+        return queryset \
+            .filter(annotated_is_corrected__gt=0)\
+            .filter(cached_data__last_published_feedbackset__deadline_datetime=self.deadline)
 
     def get_value_and_frame_renderer_kwargs(self):
         return {

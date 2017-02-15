@@ -205,10 +205,6 @@ class GroupListView(listbuilderview.FilterListMixin,
         context['total_group_count'] = total_groupcount
         context['waiting_for_feedback_count'] = self.get_filtered_waiting_for_feedback_count()
         context['corrected_count'] = self.get_filtered_corrected_count()
-        # for group in self.__get_unfiltered_queryset_for_role():
-        #     print '{}: {}'.format(group, group.annotated_is_corrected)
-        # print context['total_group_count']
-        # print context['corrected_count']
         return context
 
 
@@ -239,12 +235,12 @@ class App(crapp.App):
                   name='bulk-feedback-passedfailed-filter'),
 
         # Bulk add new attempt
-        crapp.Url(r'^bulk-new-attempt$',
-                  bulk_add_new_attempt.BulkAddNewAttemptListView.as_view(),
-                  name='bulk-new-attempt'),
-        crapp.Url(r'^bulk-new-attempt/filter/(?P<filters_string>.+)?$',
-                  bulk_add_new_attempt.BulkAddNewAttemptListView.as_view(),
-                  name='bulk-new-attempt-filter'),
+        # crapp.Url(r'^bulk-new-attempt$',
+        #           bulk_add_new_attempt.BulkAddNewAttemptListView.as_view(),
+        #           name='bulk-new-attempt'),
+        # crapp.Url(r'^bulk-new-attempt/filter/(?P<filters_string>.+)?$',
+        #           bulk_add_new_attempt.BulkAddNewAttemptListView.as_view(),
+        #           name='bulk-new-attempt-filter'),
 
         # Bulk feedback simple
         crapp.Url(r'^bulk-feedback-simple$',

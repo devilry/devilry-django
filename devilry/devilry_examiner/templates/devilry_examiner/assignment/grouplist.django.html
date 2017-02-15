@@ -23,8 +23,12 @@
                 </a>
         {% endif %}
         {% if total_group_count > 1 and corrected_count > 1 %}
+{#            <a id="devilry-examiner-bulk-new-attempt-button" class="btn btn-default"#}
+{#                href="{% cradmin_appurl 'bulk-new-attempt' %}">#}
+{#                {% trans "Bulk new attempt(OLD)" %}#}
+{#            </a>#}
             <a id="devilry-examiner-bulk-new-attempt-button" class="btn btn-default"
-                href="{% cradmin_appurl 'bulk-new-attempt' %}">
+                href="{% cradmin_instance_appindex_url 'manage-deadlines' %}">
                 {% trans "Bulk new attempt" %}
             </a>
         {% endif %}

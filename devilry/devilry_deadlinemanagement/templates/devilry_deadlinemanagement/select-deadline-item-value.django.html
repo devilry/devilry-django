@@ -1,0 +1,40 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load devilry_core_tags %}
+
+{% block below-title %}
+    <p class="muted">
+        {% for group in me.assignment_groups %}
+            <div class="devilry-deadlinmanagement-item-value-groups">Group: (
+            {% devilry_multiple_candidates_short_displayname me.assignment group.candidates.all me.devilryrole %}
+            )</div>
+        {% endfor %}
+    </p>
+{% endblock below-title %}
+
+{% block below-description %}
+    <p id="devilry_admin_create_groups_choosemethod_assignment_{{ me.assignment.id }}"
+            class="devilry-admin-create-groups-choosemethod-assignment">
+{#        <a href="#"#}
+{#                id="devilry_manage_deadline_{{ me.deadline }}_all_link"#}
+{#                class="btn btn-primary">#}
+{#            {% trans "Give new attempt" %}#}
+{#        </a>#}
+        <a href="#"
+                id="devilry_manage_deadline_{{ me.deadline }}_all_link"
+                class="btn btn-primary">
+            {% trans "All groups" %}
+        </a>
+        <a href="{% cradmin_appurl "choose-manually" deadline=me.deadline %}"
+                id="devilry_manage_deadline_{{ me.deadline }}_select_manually"
+                class="btn btn-default">
+            {% trans "Select groups manually" %}
+        </a>
+{#        <a href="#"#}
+{#                id="devilry_manage_deadline_{{ me.deadline }}_move_deadline"#}
+{#                class="btn btn-default">#}
+{#            {% trans "Move deadline" %}#}
+{#        </a>#}
+    </p>
+{% endblock below-description %}

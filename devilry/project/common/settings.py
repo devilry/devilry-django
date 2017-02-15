@@ -98,6 +98,7 @@ INSTALLED_APPS = [
     'devilry.devilry_detektor',
     'devilry.devilry_admin',
     'devilry.devilry_dbcache',
+    'devilry.devilry_deadlinemanagement',
     'devilry.project.common',
 
     # 'devilry.devilry_elasticsearch_cache.apps.ElasticsearchCacheAppConfig',
