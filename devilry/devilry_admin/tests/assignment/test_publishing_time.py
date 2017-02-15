@@ -6,6 +6,7 @@ from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_admin.views.assignment import publishing_time
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
 class TestAssignmentPublishingTimeUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -19,6 +20,9 @@ class TestAssignmentPublishingTimeUpdateView(TestCase, cradmin_testhelpers.TestC
 
 class TestPublishNowRedirectView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = publishing_time.PublishNowRedirectView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_not_allowed(self):
         assignment = mommy.make('core.Assignment')
