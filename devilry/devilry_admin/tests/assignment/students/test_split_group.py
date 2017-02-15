@@ -147,7 +147,7 @@ class TestSplitGroup(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(1, testgroup.cached_data.candidate_count);
 
 
-class TestMergeGroupsAnonymization(TestCase, cradmin_testhelpers.TestCaseMixin):
+class TestSplitGroupAnonymization(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = split_group.SplitGroupView
 
     def setUp(self):

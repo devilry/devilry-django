@@ -28,6 +28,13 @@ class SomeCandidatesDoesNotQualifyToPass(PassedInPreviousPeriodError):
     """
 
 
+class NoCandidatesPassed(PassedInPreviousPeriodError):
+    """
+    Will be raised when there is no candidates in queryset
+    passed into :meth:`.PassedInPreviousPeriod.set_passed_in_current_period`
+    """
+
+
 class PassedInPreviousPeriod(object):
 
     #: Supported grading plugins is passfailed and points
@@ -84,7 +91,7 @@ class PassedInPreviousPeriod(object):
             assignment_group__in=group_queryset,
             relatedstudent__user__in=students_on_current
         ).select_related('relatedstudent__user',
-                         'assignment_group__parentnode',
+                         'assignment_group__parentnode__parentnode',
                          'assignment_group__cached_data')\
             .order_by('relatedstudent__user', '-assignment_group__parentnode__publishing_time')\
             .distinct('relatedstudent__user')
@@ -107,7 +114,7 @@ class PassedInPreviousPeriod(object):
         selected_candidate_users = candidates.values_list('relatedstudent__user', flat=True)
         if (self.get_queryset().filter(relatedstudent__user__in=selected_candidate_users).count() !=
                 len(selected_candidate_users)):
-            raise SomeCandidatesDoesNotQualifyToPass('Some of the selected candidates did not qualify to pass')
+            raise SomeCandidatesDoesNotQualifyToPass('Some of the selected students did not qualify to pass')
 
         return Candidate.objects.filter(
             assignment_group__parentnode=self.assignment,
@@ -135,10 +142,16 @@ class PassedInPreviousPeriod(object):
         new_passing_grade_min_points = self.assignment.passing_grade_min_points
         new_max_points = self.assignment.max_points
 
-        new_grading_points = math.ceil((((old_grading_points - old_passing_grade_min_points)
-                                         * (new_max_points - new_passing_grade_min_points))
-                                        / float(old_max_points - old_passing_grade_min_points))
-                                       + new_passing_grade_min_points)
+        if old_max_points == old_grading_points:
+            return new_max_points
+
+        old_range = old_max_points - old_passing_grade_min_points
+        new_range = new_max_points - new_passing_grade_min_points
+
+        new_grading_points = ((old_grading_points - old_passing_grade_min_points) * new_range)
+        new_grading_points = new_grading_points / float(old_range) if old_range > 0 else + 0
+        new_grading_points = math.ceil(new_grading_points + new_passing_grade_min_points)
+
         return new_grading_points if new_grading_points <= new_max_points else new_max_points
 
     def __create_feedbackset_passed_previous_period(self, old_candidate, new_candidate):
@@ -205,6 +218,9 @@ class PassedInPreviousPeriod(object):
                 that will pass the assignment in current period
             published_by: will be published by this user
         """
+        if candidates.count() < 1:
+            raise NoCandidatesPassed('candidate queryset is empty!')
+
         old_candidates_dict = {}
         for candidate in candidates:
             old_candidates_dict[candidate.relatedstudent.user_id] = candidate

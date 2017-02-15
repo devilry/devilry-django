@@ -1,0 +1,33 @@
+{% extends "django_cradmin/viewhelpers/listbuilderview/default.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block pageheader-outer-extraclasses %}
+   {{ block.super }}
+   devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'passed_previous_period' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to period select" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% trans "Step 2 of 3: Confirm assignments" %}
+    </h1>
+    <p>
+        {% trans 'These Assignments will be taken into account ' %}
+        {% trans 'upon approval of passing grade this semester.' %}
+    </p>
+{% endblock pageheader-inner %}
+
+
+{% block list %}
+    {{ block.super }}
+    <a href="{% cradmin_instance_url 'passed_previous_period' 'confirm' period_id=period_id %}" class="btn btn-primary">
+        {% trans "Next" %}
+    </a>
+{% endblock %}

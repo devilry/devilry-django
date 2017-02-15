@@ -374,6 +374,26 @@ class TestPassedInPreviousPeriodPointConverter(TestCase):
         grading_points = passed_in_previous.convert_points(feedbackset)
         self.assertEqual(grading_points, 20)
 
+    def test_point_converter_4(self):
+        assignment1 = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            short_name='Cool',
+            passing_grade_min_points=1,
+            max_points=1
+        )
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment1)
+        feedbackset = group_mommy.feedbackset_first_attempt_published(group=group, grading_points=1)
+
+        assignment2 = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            short_name='Cool',
+            passing_grade_min_points=2,
+            max_points=3
+        )
+        passed_in_previous = PassedInPreviousPeriod(assignment2, assignment1.parentnode)
+        grading_points = passed_in_previous.convert_points(feedbackset)
+        self.assertEqual(grading_points, 3)
+
 
 class TestPassedInPreviousPeriod(TestCase):
 

@@ -1,0 +1,32 @@
+{% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+{% load crispy_forms_tags %}
+{% load cradmin_icon_tags %}
+
+{% block pageheader-outer-extraclasses %}
+   {{ block.super }}
+   devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_url 'passed_previous_period' 'assignments' period_id=period_id %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to confirm assignments" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% trans "Step 3 of 3: Approve assignments for the following students." %}
+    </h1>
+    <p>
+        {% trans 'Here is a list of previous passed assignments delivered by students.' %}
+        {% trans 'If the old grading configuration varies from the current the points will be converted as shown.' %}
+    </p>
+{% endblock pageheader-inner %}
+{% block pre_form %}
+    <div class="container">
+        {% cradmin_render_renderable candidate_list %}
+    </div>
+{% endblock pre_form %}
