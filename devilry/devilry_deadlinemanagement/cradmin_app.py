@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django_cradmin import crapp
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_deadlinemanagement.views import multiselect_groups_view
+from devilry.devilry_deadlinemanagement.views import manage_deadline_view
 
 
 class AbstractDeadlineManagementApp(crapp.App):
@@ -13,7 +14,13 @@ class AbstractDeadlineManagementApp(crapp.App):
                   name='choose-manually'),
         crapp.Url(r'choose-manually/(?P<deadline>\w+)/(?P<filters_string>.+)?$',
                   multiselect_groups_view.BulkManageDeadlineMultiSelectView.as_view(),
-                  name='choose-manually-filter')
+                  name='choose-manually-filter'),
+        crapp.Url(r'manage-deadline/(?P<pk>\d*)$',
+                  manage_deadline_view.ManageDeadlineView.as_view(),
+                  name='manage-deadline'),
+        crapp.Url(r'manage-deadline$',
+                  manage_deadline_view.ManageDeadlineView.as_view(),
+                  name='manage-deadline-post')
     ]
 
     def __init__(self, appname, request, active_viewname):
@@ -44,9 +51,8 @@ class AdminDeadlineManagementApp(AbstractDeadlineManagementApp):
         return 'admin'
 
     def get_accessible_group_queryset(self, user=None):
-        if user:
-            return AssignmentGroup.objects.filter_user_is_admin(user=user)
-        return AssignmentGroup.objects.filter_user_is_admin(user=self.request.user)
+        user = user or self.request.user
+        return AssignmentGroup.objects.filter_user_is_admin(user=user)
 
 
 class ExaminerDeadlineManagementApp(AbstractDeadlineManagementApp):
@@ -57,6 +63,5 @@ class ExaminerDeadlineManagementApp(AbstractDeadlineManagementApp):
         return 'examiner'
 
     def get_accessible_group_queryset(self, user=None):
-        if user:
-            return AssignmentGroup.objects.filter_examiner_has_access(user=user)
-        return AssignmentGroup.objects.filter_examiner_has_access(user=self.request.user)
+        user = user or self.request.user
+        return AssignmentGroup.objects.filter_examiner_has_access(user=user)

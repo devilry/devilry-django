@@ -80,12 +80,6 @@ class SelectedAssignmentGroupForm(forms.Form):
         }
     )
 
-    #: A wysiwig editor for writing a feedback message.
-    feedback_comment_text = forms.CharField(
-        widget=AceMarkdownWidget,
-        help_text='Add a general comment to the feedback',
-        initial=ugettext_lazy('You have been given a new attempt.'))
-
     def __init__(self, *args, **kwargs):
         selectable_qualification_items_queryset = kwargs.pop('selectable_items_queryset')
         self.assignment = kwargs.pop('assignment')
@@ -102,12 +96,9 @@ class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
     #: A descriptive name for the items selected.
     descriptive_item_name = 'assignment group'
 
-    def get_buttons(self):
-        # button_list = super(AssignmentGroupTargetRenderer, self).get_buttons()
-        return [
-            PrimarySubmitBlock('move_deadline', self.get_move_deadline_text()),
-            DefaultSubmitBlock('new_attempt', self.get_submit_button_text())
-        ]
+    def __init__(self, deadline, *args, **kwargs):
+        super(AssignmentGroupTargetRenderer, self).__init__(*args, **kwargs)
+        self.deadline = deadline
 
     def get_move_deadline_text(self):
         return 'Move deadline for selected {}(s)'.format(self.descriptive_item_name)
@@ -120,11 +111,6 @@ class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
 
     def get_without_items_text(self):
         return 'No {} selected'.format(self.descriptive_item_name)
-
-    def get_field_layout(self):
-        return [
-            'feedback_comment_text'
-        ]
 
 
 class AbstractAssignmentGroupMultiSelectListFilterView(GroupQuerySetMixin, multiselect2view.ListbuilderFilterView):
@@ -143,6 +129,7 @@ class AbstractAssignmentGroupMultiSelectListFilterView(GroupQuerySetMixin, multi
             # Should not have access if assignment has less than two corrected groups.
             raise http.Http404()
         self.assignment = self.request.cradmin_role
+        self.deadline = datetimeutils.string_to_datetime(kwargs.get('deadline'))
         return super(AbstractAssignmentGroupMultiSelectListFilterView, self).dispatch(request, *args, **kwargs)
 
     def get_default_paginate_by(self, queryset):
@@ -220,6 +207,11 @@ class AbstractAssignmentGroupMultiSelectListFilterView(GroupQuerySetMixin, multi
         return {
             'assignment': self.assignment
         }
+
+    def get_target_renderer_kwargs(self):
+        kwargs = super(AbstractAssignmentGroupMultiSelectListFilterView, self).get_target_renderer_kwargs()
+        kwargs['deadline'] = self.deadline
+        return kwargs
 
     def get_form_kwargs(self):
         kwargs = super(AbstractAssignmentGroupMultiSelectListFilterView, self).get_form_kwargs()
