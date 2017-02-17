@@ -1,29 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from crispy_forms import layout
 from django import forms
-from django import http
-from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import redirect
 from django.utils import timezone
-from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy
-from django import forms
-from django_cradmin.crispylayouts import DefaultSubmitBlock
-from django_cradmin.crispylayouts import PrimarySubmitBlock
-
-from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
+from django_cradmin.crispylayouts import PrimarySubmitBlock
 from django_cradmin.viewhelpers import formbase
-from crispy_forms import layout
+from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
-from devilry.devilry_cradmin import devilry_listbuilder
-from devilry.devilry_cradmin import devilry_listfilter
-from devilry.devilry_deadlinemanagement.views import viewutils
-from devilry.devilry_group import models as group_models
-from devilry.utils import datetimeutils
 from devilry.apps.core import models as core_models
+from devilry.devilry_group import models as group_models
 
 
 class ManageDeadlinePostActionException(Exception):
@@ -65,23 +55,41 @@ class ManageDeadlineForm(SelectedItemsForm):
 class ManageDeadlineView(formbase.FormView):
     form_class = ManageDeadlineForm
 
-    #: Move deadline button name as it will appear in request.POST
+    #: Move deadline button name as it will appear in request.POST.
     move_deadline_button_name = 'move_deadline'
 
-    #: New attempt button name as it will appear in request.POST
+    #: Move first deadline button name as it will appear in request.POST.
+    move_first_deadline_button_name = 'move_first_deadline'
+
+    #: New attempt button name as it will appear in request.POST.
     new_attempt_button_name = 'new_attempt'
 
-    #: Posted data from previous view as it will appear in request.POST
+    #: Posted data from previous view as it will appear in request.POST.
     post_type_received_data = 'post_type_received_data'
 
     def dispatch(self, request, *args, **kwargs):
-        self.current_deadline = datetimeutils.string_to_datetime(kwargs.get('deadline'))
+        # self.current_deadline = datetimeutils.string_to_datetime(kwargs.get('deadline'))
+        print kwargs.get('handle_deadline')
+        print kwargs.get('deadline')
         return super(ManageDeadlineView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        return super(ManageDeadlineView, self).get(request, *args, **kwargs)
+        print 'GET'
+        selected_form = SelectedItemsForm(
+            accessible_groups_queryset=self.request.cradmin_app.get_accessible_group_queryset(),
+            data={'selected_items': [kwargs.get('group_id')]}
+        )
+        if selected_form.is_valid():
+            form_class = self.get_form_class()
+            form = form_class(
+                accessible_groups_queryset=self.request.cradmin_app.get_accessible_group_queryset(),
+                initial={'selected_items': [kwargs.get('group_id')]}
+            )
+            return self.render_to_response(self.get_context_data(form=form))
+        return redirect(self.get_previous_view_url())
 
     def post(self, request, *args, **kwargs):
+        print 'POST'
         if self.post_from_previous_view:
             if self.initial_selected_form_is_valid():
                 return self.render_to_response(self.get_context_data(form=self.get_form()))
@@ -153,8 +161,11 @@ class ManageDeadlineView(formbase.FormView):
     def get_buttons(self):
         return [
             PrimarySubmitBlock(self.move_deadline_button_name, self.get_submit_move_deadline_text()),
-            DefaultSubmitBlock(self.new_attempt_button_name, self.get_submit_new_attempt_text())
+            PrimarySubmitBlock(self.new_attempt_button_name, self.get_submit_new_attempt_text())
         ]
+
+    def get_submit_move_first_deadline_text(self):
+        return 'Move assignment first deadline'
 
     def get_submit_move_deadline_text(self):
         return 'Move current deadline'
@@ -235,18 +246,18 @@ class ManageDeadlineView(formbase.FormView):
         feedback_set_ids = self.__get_last_feedbackset_ids_from_posted_group_ids(form)
         now_without_sec_and_micro = timezone.now().replace(second=0, microsecond=0)
         with transaction.atomic():
-            devilryrole_type = self.request.devilryrole_type
-            assignment = self.request.cradmin_role
-            if self.current_deadline == assignment.first_deadline and devilryrole_type == 'admin':
-                assignment = core_models.Assignment.objects.get(id=assignment.id)
-                assignment.first_deadline = deadline
-                assignment.full_clean()
-                assignment.save()
-            else:
-                group_models.FeedbackSet.objects\
-                    .filter(id__in=feedback_set_ids)\
-                    .update(
-                        deadline_datetime=deadline)
+            # devilryrole_type = self.request.devilryrole_type
+            # assignment = self.request.cradmin_role
+            # if self.current_deadline == assignment.first_deadline and devilryrole_type == 'admin':
+            #     assignment = core_models.Assignment.objects.get(id=assignment.id)
+            #     assignment.first_deadline = deadline
+            #     assignment.full_clean()
+            #     assignment.save()
+            # else:
+            group_models.FeedbackSet.objects\
+                .filter(id__in=feedback_set_ids)\
+                .update(
+                    deadline_datetime=deadline)
             for feedback_set_id in feedback_set_ids:
                 self.__create_groupcomment(
                     feedback_set_id=feedback_set_id,
@@ -295,6 +306,16 @@ class ManageDeadlineView(formbase.FormView):
             )
         return super(ManageDeadlineView, self).form_valid(form)
 
-    def form_invalid(self, form):
-        print 'form invalid'
-        return super(ManageDeadlineView, self).form_invalid(form)
+
+class ManageDeadlineAllGroupsView(ManageDeadlineView):
+    """
+    """
+
+
+class ManageDeadlineSingleGroupView(ManageDeadlineView):
+    """
+    """
+
+class ManageDeadlineFromPreviousView(ManageDeadlineView):
+    """
+    """

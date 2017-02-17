@@ -10,7 +10,6 @@ from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
-from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_add_new_attempt
 from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_feedback
 from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_feedback_simple
 
@@ -233,14 +232,6 @@ class App(crapp.App):
         crapp.Url(r'^bulk-feedback-passedfailed/filter/(?P<filters_string>.+)?$',
                   bulk_feedback.BulkFeedbackPassedFailedView.as_view(),
                   name='bulk-feedback-passedfailed-filter'),
-
-        # Bulk add new attempt
-        # crapp.Url(r'^bulk-new-attempt$',
-        #           bulk_add_new_attempt.BulkAddNewAttemptListView.as_view(),
-        #           name='bulk-new-attempt'),
-        # crapp.Url(r'^bulk-new-attempt/filter/(?P<filters_string>.+)?$',
-        #           bulk_add_new_attempt.BulkAddNewAttemptListView.as_view(),
-        #           name='bulk-new-attempt-filter'),
 
         # Bulk feedback simple
         crapp.Url(r'^bulk-feedback-simple$',

@@ -7,6 +7,7 @@ from django_cradmin.viewhelpers import listbuilder
 
 from devilry.devilry_deadlinemanagement.views.viewutils import GroupQuerySetMixin
 from devilry.utils import datetimeutils
+import requests
 
 
 class SelectDeadlineItemValue(listbuilder.itemvalue.TitleDescription):
@@ -34,7 +35,7 @@ class DeadlineListView(GroupQuerySetMixin, TemplateView):
 
     def get_page_subheading(self):
         return pgettext_lazy('{} select_deadline'.format(self.request.cradmin_app.get_devilryrole()),
-                             'Please choose how you would like to manage groups for a deadline.')
+                             'Please choose how you would like to manage the deadline.')
 
     def annotate_queryset(self, queryset):
         """

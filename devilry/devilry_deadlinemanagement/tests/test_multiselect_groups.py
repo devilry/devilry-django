@@ -72,7 +72,7 @@ class TestExaminerBulkAddNewAttempt(test.TestCase, cradmin_testhelpers.TestCaseM
                     'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline)
                 })
 
-    def test_raises_404_with_two_group_one_corrected(self):
+    def test_raises_404_with_two_groups_one_corrected(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            long_name='Assignment 0')
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -90,45 +90,6 @@ class TestExaminerBulkAddNewAttempt(test.TestCase, cradmin_testhelpers.TestCaseM
                 viewkwargs={
                     'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline)
                 })
-
-    def test_success_message(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=examiner_user)
-        mommy.make('core.Candidate', assignment_group=testgroup1,
-                   relatedstudent__user__fullname='Candidate1',
-                   relatedstudent__user__shortname='candidate1')
-        mommy.make('core.Candidate', assignment_group=testgroup2,
-                   relatedstudent__user__fullname='Candidate2',
-                   relatedstudent__user__shortname='candidate2')
-        # create FeedbackSets for the AssignmentGroups
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup1)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup2)
-        new_deadline = timezone.now() + timezone.timedelta(days=10)
-        messagemock = mock.MagicMock()
-        self.mock_postrequest(
-            cradmin_role=testassignment,
-            requestuser=examiner_user,
-            cradmin_app=self.__get_mock_app(examiner_user),
-            viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline)
-            },
-            requestkwargs={
-                'data': {
-                    'new_deadline': new_deadline.strftime('%Y-%m-%d %H:%M'),
-                    'feedback_comment_text': 'feedback comment',
-                    'selected_items': [testgroup1.id]
-                }
-            },
-            messagesmock=messagemock
-        )
-        messagemock.add.assert_called_once_with(
-            messages.SUCCESS,
-            'Bulk added new attempt for {}'.format(testgroup1.get_anonymous_displayname(assignment=testassignment)),
-            '')
 
     def test_anonymizationmode_off_candidates(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -561,7 +522,6 @@ class TestExaminerBulkAddNewAttempt(test.TestCase, cradmin_testhelpers.TestCaseM
                    relatedexaminer__user=examiner_user)
         mommy.make('core.Examiner', assignmentgroup=testgroup2,
                    relatedexaminer__user=examiner_user)
-        new_deadline = timezone.now() + timezone.timedelta(days=10)
         with self.assertRaises(http.Http404):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
@@ -572,136 +532,9 @@ class TestExaminerBulkAddNewAttempt(test.TestCase, cradmin_testhelpers.TestCaseM
                 },
                 requestkwargs={
                     'data': {
-                        'feedback_comment_text': 'new attempt given',
-                        'new_deadline': new_deadline,
                         'selected_items': [testgroup1.id, testgroup2.id]
                     }
                 })
-
-    def test_post_new_feedbackset_deadlines(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           long_name='Assignment 0')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup1)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup2)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup3)
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1,
-                   relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup2,
-                   relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup3,
-                   relatedexaminer__user=examiner_user)
-        new_deadline = timezone.now() + timezone.timedelta(days=10)
-        self.mock_http302_postrequest(
-            cradmin_role=testassignment,
-            requestuser=examiner_user,
-            cradmin_app=self.__get_mock_app(examiner_user),
-            viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline)
-            },
-            requestkwargs={
-                'data': {
-                    'feedback_comment_text': 'new attempt given',
-                    'new_deadline': new_deadline,
-                    'selected_items': [testgroup1.id, testgroup2.id, testgroup3.id]
-                }
-            })
-        feedbacksets = group_models.FeedbackSet.objects.all()
-        self.assertEquals(6, feedbacksets.count())
-        feedbacksets = feedbacksets.filter(feedbackset_type=group_models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
-        self.assertEquals(3, feedbacksets.count())
-        self.assertIn(new_deadline, [fb.deadline_datetime for fb in feedbacksets])
-
-    def test_post_new_attempt_for_groups(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           long_name='Assignment 0')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup1)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup2)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup3)
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1,
-                   relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup2,
-                   relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup3,
-                   relatedexaminer__user=examiner_user)
-        new_deadline = timezone.now() + timezone.timedelta(days=10)
-        self.mock_http302_postrequest(
-            cradmin_role=testassignment,
-            requestuser=examiner_user,
-            cradmin_app=self.__get_mock_app(examiner_user),
-            viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline)
-            },
-            requestkwargs={
-                'data': {
-                    'feedback_comment_text': 'new attempt given',
-                    'new_deadline': new_deadline.strftime('%Y-%m-%d %H:%M'),
-                    'selected_items': [testgroup1.id, testgroup2.id, testgroup3.id]
-                }
-            })
-
-        self.assertEquals(6, group_models.FeedbackSet.objects.count())
-
-        cached_data_group1 = cache_models.AssignmentGroupCachedData.objects.get(group_id=testgroup1.id)
-        cached_data_group2 = cache_models.AssignmentGroupCachedData.objects.get(group_id=testgroup2.id)
-        cached_data_group3 = cache_models.AssignmentGroupCachedData.objects.get(group_id=testgroup3.id)
-        self.assertNotEquals(cached_data_group1.last_published_feedbackset, cached_data_group1.last_feedbackset)
-        self.assertNotEquals(cached_data_group2.last_published_feedbackset, cached_data_group2.last_feedbackset)
-        self.assertNotEquals(cached_data_group3.last_published_feedbackset, cached_data_group3.last_feedbackset)
-
-        group_comments = group_models.GroupComment.objects.all()
-        self.assertEquals(3, group_comments.count())
-        self.assertIn('new attempt given', [comment.text for comment in group_comments])
-
-    def test_post_new_attempt_added_while_lingering(self):
-        # Tests what happens when user lingers in the view and one of the groups get a
-        # new attempt in the meantime.
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           long_name='Assignment 0')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup1)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup2)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup3)
-        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.Examiner', assignmentgroup=testgroup1,
-                   relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup2,
-                   relatedexaminer__user=examiner_user)
-        mommy.make('core.Examiner', assignmentgroup=testgroup3,
-                   relatedexaminer__user=examiner_user)
-        new_deadline = timezone.now() + timezone.timedelta(days=10)
-
-        # group 3 receives a new attempt before post
-        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(group=testgroup3)
-        messagemock = mock.MagicMock()
-        mockresponse = self.mock_http200_postrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=examiner_user,
-            cradmin_app=self.__get_mock_app(examiner_user),
-            viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline)
-            },
-            requestkwargs={
-                'data': {
-                    'feedback_comment_text': 'new attempt given',
-                    'new_deadline': new_deadline.strftime('%Y-%m-%d %H:%M'),
-                    'selected_items': [testgroup1.id, testgroup2.id, testgroup3.id]
-                }
-            },
-            messagesmock=messagemock
-        )
-
-        self.assertEquals(4, group_models.FeedbackSet.objects.count())
-        self.assertEquals(0, group_models.GroupComment.objects.count())
 
     def test_get_num_queries(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -744,9 +577,8 @@ class TestExaminerBulkAddNewAttempt(test.TestCase, cradmin_testhelpers.TestCaseM
                    relatedexaminer__user=examiner_user)
         mommy.make('core.Examiner', assignmentgroup=testgroup3,
                    relatedexaminer__user=examiner_user)
-        new_deadline = timezone.now() + timezone.timedelta(days=10)
 
-        with self.assertNumQueries(15):
+        with self.assertNumQueries(4):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
                 requestuser=examiner_user,
@@ -756,8 +588,6 @@ class TestExaminerBulkAddNewAttempt(test.TestCase, cradmin_testhelpers.TestCaseM
                 },
                 requestkwargs={
                     'data': {
-                        'feedback_comment_text': 'new attempt given',
-                        'new_deadline': new_deadline.strftime('%Y-%m-%d %H:%M'),
                         'selected_items': [testgroup1.id, testgroup2.id, testgroup3.id]
                     }
                 })

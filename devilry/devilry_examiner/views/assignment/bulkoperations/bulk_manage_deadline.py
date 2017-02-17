@@ -19,9 +19,7 @@ class ExaminerManageDeadlineView(deadline_listview.DeadlineListView):
 
 
 class App(ExaminerDeadlineManagementApp):
-    appurls = [
-        crapp.Url(r'^$',
-                  ExaminerManageDeadlineView.as_view(),
-                  name=crapp.INDEXVIEW_NAME)
-    ]
+    @classmethod
+    def get_manage_deadline_view_single_group_class(cls):
+        return ExaminerManageDeadlineView
 

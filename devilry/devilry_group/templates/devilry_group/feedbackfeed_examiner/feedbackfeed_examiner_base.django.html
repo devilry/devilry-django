@@ -13,7 +13,11 @@
             </p>
             <p>
                 {# If failing grade #}
-                <a href="{% cradmin_appurl 'new-deadline' %}"
+{#                <a href="{% cradmin_appurl 'new-deadline' %}"#}
+{#                   class="btn btn-default devilry-group-feedbackfeed-examiner-after-publish-choice-alert-new-attempt-button">#}
+{#                    {% trans "Give new attempt" %}#}
+{#                </a>#}
+                <a href="{% cradmin_instance_url appname='manage-deadlines' viewname='manage-deadline' group_id=last_feedbackset.group.id %}"
                    class="btn btn-default devilry-group-feedbackfeed-examiner-after-publish-choice-alert-new-attempt-button">
                     {% trans "Give new attempt" %}
                 </a>

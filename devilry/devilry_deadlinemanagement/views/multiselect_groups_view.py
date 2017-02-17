@@ -19,7 +19,7 @@ from devilry.devilry_group import models as group_models
 from devilry.utils import datetimeutils
 
 
-class NewAttemptDeadlineForm(viewutils.SelectedAssignmentGroupForm):
+class SelectedGroupsForm(viewutils.SelectedAssignmentGroupForm):
     invalid_qualification_item_message = pgettext_lazy(
         'examiner group multiselect submit',
         'Something went wrong. This may happen if someone else performed a similar operation '
@@ -32,11 +32,12 @@ class SelectedAssignmentGroupsTargetRenderer(viewutils.AssignmentGroupTargetRend
             layout.Hidden(name='post_type_received_data', value='')
         ]
 
-    def get_form_action(self, request):
-        self.form_action = 'post'
-        print '\n\n\nTARGET DEADLINE: {}\n\n\n'.format(self.deadline)
-        # return super(SelectedAssignmentGroupsTargetRenderer, self).get_form_action(request)
-        return request.cradmin_app.reverse_appurl(viewname='manage-deadline-post')
+    # def get_form_action(self, request):
+    #     self.form_action = 'post'
+    #     return request.cradmin_app.reverse_appurl(viewname='manage-deadline-post')
+
+    def post_url_as_it_is_when_form_is_submitted(self):
+        return False
 
 
 class BulkManageDeadlineMultiSelectView(viewutils.AbstractAssignmentGroupMultiSelectListFilterView):
@@ -57,7 +58,7 @@ class BulkManageDeadlineMultiSelectView(viewutils.AbstractAssignmentGroupMultiSe
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
-            'choose-manually-filter', kwargs={
+            'select-manually-new-attempt-filter', kwargs={
                 'deadline': datetimeutils.datetime_to_string(self.deadline),
                 'filters_string': filters_string
             })
@@ -66,4 +67,28 @@ class BulkManageDeadlineMultiSelectView(viewutils.AbstractAssignmentGroupMultiSe
         return SelectedAssignmentGroupsTargetRenderer
 
     def get_form_class(self):
-        return NewAttemptDeadlineForm
+        return SelectedGroupsForm
+
+
+class MoveDeadlineManualGroupSelectView(BulkManageDeadlineMultiSelectView):
+    def get_target_renderer_kwargs(self):
+        kwargs = super(BulkManageDeadlineMultiSelectView, self).get_target_renderer_kwargs()
+        kwargs['form_action'] = self.request.cradmin_app.reverse_appurl(
+            viewname='manage-deadline-post',
+            kwargs={
+                'deadline': datetimeutils.datetime_to_string(self.deadline),
+                'handle_deadline': 'move-deadline'
+            })
+        return kwargs
+
+
+class NewAttemptManualGroupSelectView(BulkManageDeadlineMultiSelectView):
+    def get_target_renderer_kwargs(self):
+        kwargs = super(BulkManageDeadlineMultiSelectView, self).get_target_renderer_kwargs()
+        kwargs['form_action'] = self.request.cradmin_app.reverse_appurl(
+            viewname='manage-deadline-post',
+            kwargs={
+                'deadline': datetimeutils.datetime_to_string(self.deadline),
+                'handle_deadline': 'new-attempt'
+            })
+        return kwargs

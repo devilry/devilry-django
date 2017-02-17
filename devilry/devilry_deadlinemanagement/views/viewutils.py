@@ -96,9 +96,9 @@ class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
     #: A descriptive name for the items selected.
     descriptive_item_name = 'assignment group'
 
-    def __init__(self, deadline, *args, **kwargs):
-        super(AssignmentGroupTargetRenderer, self).__init__(*args, **kwargs)
-        self.deadline = deadline
+    # def __init__(self, deadline, *args, **kwargs):
+    #     super(AssignmentGroupTargetRenderer, self).__init__(*args, **kwargs)
+    #     self.deadline = deadline
 
     def get_move_deadline_text(self):
         return 'Move deadline for selected {}(s)'.format(self.descriptive_item_name)
@@ -124,10 +124,6 @@ class AbstractAssignmentGroupMultiSelectListFilterView(GroupQuerySetMixin, multi
     model = core_models.AssignmentGroup
 
     def dispatch(self, request, *args, **kwargs):
-        num_filtered_groups = self.get_unfiltered_queryset_for_role(self.request.cradmin_role).count()
-        if num_filtered_groups < 2:
-            # Should not have access if assignment has less than two corrected groups.
-            raise http.Http404()
         self.assignment = self.request.cradmin_role
         self.deadline = datetimeutils.string_to_datetime(kwargs.get('deadline'))
         return super(AbstractAssignmentGroupMultiSelectListFilterView, self).dispatch(request, *args, **kwargs)
@@ -208,10 +204,10 @@ class AbstractAssignmentGroupMultiSelectListFilterView(GroupQuerySetMixin, multi
             'assignment': self.assignment
         }
 
-    def get_target_renderer_kwargs(self):
-        kwargs = super(AbstractAssignmentGroupMultiSelectListFilterView, self).get_target_renderer_kwargs()
-        kwargs['deadline'] = self.deadline
-        return kwargs
+    # def get_target_renderer_kwargs(self):
+    #     kwargs = super(AbstractAssignmentGroupMultiSelectListFilterView, self).get_target_renderer_kwargs()
+    #     kwargs['deadline'] = self.deadline
+    #     return kwargs
 
     def get_form_kwargs(self):
         kwargs = super(AbstractAssignmentGroupMultiSelectListFilterView, self).get_form_kwargs()
@@ -221,23 +217,6 @@ class AbstractAssignmentGroupMultiSelectListFilterView(GroupQuerySetMixin, multi
 
     def get_selected_groupids(self, posted_form):
         return [item.id for item in posted_form.cleaned_data['selected_items']]
-
-    def get_feedbackset_ids_from_posted_ids(self, form):
-        """
-        Get list of ids of the last :class:`~.devilry.devilry_group.models.FeedbackSet` from each ``AssignmentGroup``
-        in ``form``s cleaned data.
-
-        Args:
-            form: cleaned form.
-
-        Returns:
-            (list): list of ``FeedbackSet`` ids.
-        """
-        group_ids = self.get_selected_groupids(posted_form=form)
-        feedback_set_ids = self.get_unfiltered_queryset_for_role(role=self.request.cradmin_role) \
-            .filter(id__in=group_ids) \
-            .values_list('cached_data__last_feedbackset_id', flat=True)
-        return list(feedback_set_ids)
 
     def get_group_anonymous_displaynames(self, form):
         """
