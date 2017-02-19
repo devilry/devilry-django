@@ -173,6 +173,7 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
   _onGradeInputChange(event) {
     const value = event.target.value;
     console.log('Change', value);
+    this._sendValueChangeSignal();
   }
 
   _onPointInputChange(event) {
@@ -189,9 +190,12 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
 
   _onSetRowsSignal(receivedSignalInfo) {
     console.log('_onSetRowsSignal', receivedSignalInfo.toString());
-    const valueList = receivedSignalInfo.data;
+    const valueList = receivedSignalInfo.data.valueList;
+    const sendValueChangeSignal = receivedSignalInfo.data.sendValueChangeSignal;
     this._buildTable(valueList);
-    this._sendValueChangeSignal();
+    if(sendValueChangeSignal) {
+      this._sendValueChangeSignal();
+    }
   }
 
   _onAddRowSignal(receivedSignalInfo) {

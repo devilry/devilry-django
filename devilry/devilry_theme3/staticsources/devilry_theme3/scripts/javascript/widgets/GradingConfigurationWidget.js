@@ -3,24 +3,12 @@ import SignalHandlerSingleton from 'ievv_jsbase/SignalHandlerSingleton';
 
 
 export default class GradingConfigurationWidget extends AbstractWidget {
-  _getCustomTableAtoFExampleConfig() {
-    return [
-      {grade: 'F', points: 0},
-      {grade: 'D', points: 25},
-      {grade: 'C', points: 50},
-      {grade: 'B', points: 75},
-      {grade: 'A', points: 90},
-    ];
-  }
 
   getDefaultConfig() {
     return {
       // grading_system_plugin_id: 'devilry_gradingsystemplugin_approved',
       // points_to_grade_mapper: 'passed-failed',
-      signalNameSpace: 'gradingConfiguration',
-      grading_system_plugin_id: 'devilry_gradingsystemplugin_points',
-      points_to_grade_mapper: 'custom-table',
-      custom_table_data: this._getCustomTableAtoFExampleConfig()
+      signalNameSpace: 'gradingConfiguration'
     };
   }
 
@@ -30,6 +18,7 @@ export default class GradingConfigurationWidget extends AbstractWidget {
       throw new Error('The signalNameSpace config is required.');
     }
     this._name = `devilry.GradingConfigurationWidget.${this.config.signalNameSpace}`;
+    this._signalHandler = new SignalHandlerSingleton();
     this.logger = new window.ievv_jsbase_core.LoggerSingleton().getLogger(
       'devilry.GradingConfigurationWidget');
     this._onPluginIdRadioChange = this._onPluginIdRadioChange.bind(this);
@@ -53,17 +42,24 @@ export default class GradingConfigurationWidget extends AbstractWidget {
     this.customTableSetuAtoFExampleButton = document.getElementById('id_custom_table_setup_atof_example_button');
     this.customTableValueListJsonElement = document.getElementById('id_custom_table_value_list_json');
 
-    // const initialPluginId = this.element.querySelector(
-    //   '#div_id_grading_system_plugin_id input[checked]').value;
     this._state = {};
-    this._setState({
-      grading_system_plugin_id: this.config.grading_system_plugin_id,
-      points_to_grade_mapper: this.config.points_to_grade_mapper,
-      custom_table_data: this.config.custom_table_data
-    }, true);
-
-    this._signalHandler = new SignalHandlerSingleton();
     this._initializeSignalHandlers();
+  }
+
+  useAfterInitializeAllWidgets() {
+    return true;
+  }
+
+  afterInitializeAllWidgets() {
+    const initialPluginId = this.element.querySelector(
+      '#div_id_grading_system_plugin_id input[checked]').value;
+    const initialPointsToGradeMapper = this.element.querySelector(
+      '#div_id_points_to_grade_mapper input[checked]').value;
+    this._setState({
+      grading_system_plugin_id: initialPluginId,
+      points_to_grade_mapper: initialPointsToGradeMapper,
+      custom_table_value_list: this._getCustomTableAtoFExampleConfig()
+    }, true);
     this._addEventListeners();
   }
 
@@ -84,6 +80,11 @@ export default class GradingConfigurationWidget extends AbstractWidget {
     if(initial) {
       this.pluginIdElements[this._state.grading_system_plugin_id].input.checked = true;
       this.pointsToGradeMapperElements[this._state.points_to_grade_mapper].input.checked = true;
+      this._signalHandler.send(
+        `${this.config.signalNameSpace}.SetCustomTableRows`, {
+          valueList: this._state.custom_table_value_list,
+          sendValueChangeSignal: false
+        });
     }
     if(this._state.grading_system_plugin_id == 'devilry_gradingsystemplugin_approved' && this._state.points_to_grade_mapper == 'custom-points') {
       this._state.points_to_grade_mapper = 'passed-failed';
@@ -94,6 +95,9 @@ export default class GradingConfigurationWidget extends AbstractWidget {
     }
     if(this._state.points_to_grade_mapper != oldState.points_to_grade_mapper) {
       this._updateUiForPointsToGradeMapper();
+    }
+    if(this._state.custom_table_value_list != oldState.custom_table_value_list) {
+      this.customTableValueListJsonElement.value = JSON.stringify(this._state.custom_table_value_list);
     }
   }
 
@@ -216,13 +220,25 @@ export default class GradingConfigurationWidget extends AbstractWidget {
     });
   }
 
+  _getCustomTableAtoFExampleConfig() {
+    return [
+      {grade: 'F', points: 0},
+      {grade: 'D', points: 25},
+      {grade: 'C', points: 50},
+      {grade: 'B', points: 75},
+      {grade: 'A', points: 90},
+    ];
+  }
+
   _onSetupCustomTableAtoFExample(event) {
     event.preventDefault();
     if (window.confirm(
         'Are you sure you want to setup the A-F example? Clears the table and inserts new rows.')) {
       this._signalHandler.send(
-        `${this.config.signalNameSpace}.SetCustomTableRows`,
-        this._getCustomTableAtoFExampleConfig());
+        `${this.config.signalNameSpace}.SetCustomTableRows`,{
+          valueList: this._getCustomTableAtoFExampleConfig(),
+          sendValueChangeSignal: true
+        });
     }
   }
 
@@ -232,6 +248,8 @@ export default class GradingConfigurationWidget extends AbstractWidget {
 
   _onCustomTableValueChangeSignal(receivedSignalInfo) {
     const valueList = receivedSignalInfo.data;
-    this.customTableValueListJsonElement.value = JSON.stringify(valueList);
+    this._setState({
+      custom_table_value_list: valueList
+    })
   }
 }
