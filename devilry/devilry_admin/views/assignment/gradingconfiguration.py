@@ -46,6 +46,11 @@ class GradingConfigurationForm(forms.Form):
         #     'The maximum number of points possible for this assignment.')
     )
 
+    custom_table_value_list_json = forms.CharField(
+        required=False,
+        widget=forms.Textarea()
+    )
+
 
 class AssignmentGradingConfigurationUpdateView(OnlySaveButtonMixin, formbase.FormView):
     form_class = GradingConfigurationForm
@@ -89,6 +94,7 @@ class AssignmentGradingConfigurationUpdateView(OnlySaveButtonMixin, formbase.For
                 'max_points',
                 'points_to_grade_mapper',
                 layout.HTML(self._render_custom_table_div()),
+                'custom_table_value_list_json',
                 css_class='cradmin-globalfields')
         ]
 

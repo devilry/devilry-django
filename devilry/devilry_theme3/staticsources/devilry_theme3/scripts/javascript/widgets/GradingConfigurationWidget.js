@@ -1,14 +1,15 @@
 import AbstractWidget from "ievv_jsbase/widget/AbstractWidget";
-import HtmlParser from "ievv_jsbase/dom/HtmlParser";
+import SignalHandlerSingleton from 'ievv_jsbase/SignalHandlerSingleton';
+
 
 export default class GradingConfigurationWidget extends AbstractWidget {
   _getCustomTableAtoFExampleConfig() {
     return [
-      ['F', 0],
-      ['D', 25],
-      ['C', 50],
-      ['B', 75],
-      ['A', 90],
+      {grade: 'F', points: 0},
+      {grade: 'D', points: 25},
+      {grade: 'C', points: 50},
+      {grade: 'B', points: 75},
+      {grade: 'A', points: 90},
     ];
   }
 
@@ -16,6 +17,7 @@ export default class GradingConfigurationWidget extends AbstractWidget {
     return {
       // grading_system_plugin_id: 'devilry_gradingsystemplugin_approved',
       // points_to_grade_mapper: 'passed-failed',
+      signalNameSpace: 'gradingConfiguration',
       grading_system_plugin_id: 'devilry_gradingsystemplugin_points',
       points_to_grade_mapper: 'custom-table',
       custom_table_data: this._getCustomTableAtoFExampleConfig()
@@ -24,16 +26,18 @@ export default class GradingConfigurationWidget extends AbstractWidget {
 
   constructor(element) {
     super(element);
+    if(this.config.signalNameSpace == null) {
+      throw new Error('The signalNameSpace config is required.');
+    }
+    this._name = `devilry.GradingConfigurationWidget.${this.config.signalNameSpace}`;
     this.logger = new window.ievv_jsbase_core.LoggerSingleton().getLogger(
       'devilry.GradingConfigurationWidget');
     this._onPluginIdRadioChange = this._onPluginIdRadioChange.bind(this);
     this._onPointsToGradeMapperRadioChange = this._onPointsToGradeMapperRadioChange.bind(this);
     this._onRemoveCustomTableRow = this._onRemoveCustomTableRow.bind(this);
     this._onAddCustomTableRow = this._onAddCustomTableRow.bind(this);
-    this._onCustomTablePointInputBlur = this._onCustomTablePointInputBlur.bind(this);
-    this._onCustomTableGradeInputChange = this._onCustomTableGradeInputChange.bind(this);
-    this._onCustomTablePointInputChange = this._onCustomTablePointInputChange.bind(this);
     this._onSetupCustomTableAtoFExample = this._onSetupCustomTableAtoFExample.bind(this);
+    this._onCustomTableValueChangeSignal = this._onCustomTableValueChangeSignal.bind(this);
 
     this.pluginIdElements = this._getPluginIdElements();
     this.passingGradeMinPointsWrapperElement = document.getElementById(
@@ -45,20 +49,29 @@ export default class GradingConfigurationWidget extends AbstractWidget {
     this.pointsToGradeMapperElements = this._getPointsToGradeMapperElements();
     this.customTableWrapperElement = document.getElementById(
       'id_custom_table_wrapper');
+    this.customTableAddRowButton = document.getElementById('id_custom_table_add_row_button');
+    this.customTableSetuAtoFExampleButton = document.getElementById('id_custom_table_setup_atof_example_button');
+    this.customTableValueListJsonElement = document.getElementById('id_custom_table_value_list_json');
 
     // const initialPluginId = this.element.querySelector(
     //   '#div_id_grading_system_plugin_id input[checked]').value;
-    this.customTableBodyElement = document.getElementById('id_custom_table_body');
-    this.customTableAddRowButton = document.getElementById('id_custom_table_add_row_button');
-    this.customTableSetuAtoFExampleButton = document.getElementById('id_custom_table_setup_atof_example_button');
-
     this._state = {};
     this._setState({
       grading_system_plugin_id: this.config.grading_system_plugin_id,
       points_to_grade_mapper: this.config.points_to_grade_mapper,
       custom_table_data: this.config.custom_table_data
     }, true);
+
+    this._signalHandler = new SignalHandlerSingleton();
+    this._initializeSignalHandlers();
     this._addEventListeners();
+  }
+
+  _initializeSignalHandlers() {
+    this._signalHandler.addReceiver(
+      `${this.config.signalNameSpace}.CustomTableValueChange`,
+      this._name,
+      this._onCustomTableValueChangeSignal);
   }
 
   _setState(statePatch, initial=false) {
@@ -181,84 +194,6 @@ export default class GradingConfigurationWidget extends AbstractWidget {
     this._updateUiLabels(pluginConfig);
   }
 
-  _getRowChildElements(rowElement) {
-    return {
-      gradeInput: rowElement.children[0],
-      minimumPointsInput: rowElement.children[1],
-      removeButton: rowElement.children[2]
-    }
-  }
-
-  _reindexCustomTable() {
-    let index = 0;
-    for(let rowElement of Array.from(this.customTableBodyElement.children)) {
-      let childElements = this._getRowChildElements(rowElement);
-      childElements.gradeInput.id = `id_custom_table_grade_${index}`;
-      childElements.gradeInput.name = `custom_table_grade_${index}`;
-      childElements.minimumPointsInput.id = `id_custom_table_minpoints_${index}`;
-      childElements.minimumPointsInput.name = `id_custom_table_minpoints_${index}`;
-      if(index == 0 && childElements.removeButton) {
-        rowElement.removeChild(childElements.removeButton);
-        childElements.minimumPointsInput.disabled = true;
-        childElements.minimumPointsInput.value = 0;
-      }
-      index ++;
-    }
-  }
-
-  _addCustomTableRow(grade, minimumPoints) {
-    let index = 9999999;
-    let parser = new HtmlParser(`
-      <div class="">
-        <input class="textinput textInput form-control form-control"
-               id="id_custom_table_grade_${index}"
-               name="custom_table_grade_${index}"
-               maxlength="12"
-               value="${grade}"
-               type="text">
-        <input class="numberinput form-control form-control"
-               id="id_custom_table_minpoints_${index}"
-               name="id_custom_table_minpoints_${index}"
-               value="${minimumPoints}"
-               type="number"
-               aria-label="TODO: Dynamically generate">
-        <button class="btn btn-danger">
-            Remove row
-        </button>
-      </div>
-    `);
-    const rowElement = parser.firstRootElement;
-    this.customTableBodyElement.appendChild(rowElement);
-    let childElements = this._getRowChildElements(rowElement);
-    childElements.removeButton.addEventListener('click', this._onRemoveCustomTableRow);
-    childElements.minimumPointsInput.addEventListener('blur', this._onCustomTablePointInputBlur);
-    childElements.minimumPointsInput.addEventListener('change', this._onCustomTablePointInputChange);
-    childElements.gradeInput.addEventListener('change', this._onCustomTableGradeInputChange);
-    this._reindexCustomTable();
-    return rowElement;
-  }
-
-  _removeCustomTableRow(rowElement) {
-    let childElements = this._getRowChildElements(rowElement);
-    if(childElements.removeButton) {
-      childElements.removeButton.removeEventListener('click', this._onRemoveCustomTableRow);
-    }
-    rowElement.parentNode.removeChild(rowElement);
-  }
-
-  _clearCustomTable() {
-    for(let rowElement of Array.from(this.customTableBodyElement.children)) {
-      this._removeCustomTableRow(rowElement);
-    }
-  }
-
-  _buildCustomTable(rows) {
-    this._clearCustomTable();
-    for(let row of rows) {
-      this._addCustomTableRow(row[0], row[1]);
-    }
-  }
-
   _onPluginIdRadioChange(event) {
     const pluginId = event.target.value;
     this._setState({
@@ -273,41 +208,30 @@ export default class GradingConfigurationWidget extends AbstractWidget {
     });
   }
 
-  _onCustomTableGradeInputChange(event) {
-    const value = event.target.value;
-    console.log('Change', value);
-  }
-
-  _onCustomTablePointInputChange(event) {
-    const value = event.target.value;
-    console.log('Change', value);
-  }
-
-  _onCustomTablePointInputBlur(event) {
-    console.log('BLUR');
-  }
-
   _onAddCustomTableRow(event) {
     event.preventDefault();
-    console.log('Add');
-    let rowElement = this._addCustomTableRow('', '');
-    this._getRowChildElements(rowElement).gradeInput.focus();
+    this._signalHandler.send(`${this.config.signalNameSpace}.AddCustomTableRow`, {
+      grade: '',
+      points: ''
+    });
   }
 
   _onSetupCustomTableAtoFExample(event) {
     event.preventDefault();
     if (window.confirm(
         'Are you sure you want to setup the A-F example? Clears the table and inserts new rows.')) {
-      this._buildCustomTable(this._getCustomTableAtoFExampleConfig());
+      this._signalHandler.send(
+        `${this.config.signalNameSpace}.SetCustomTableRows`,
+        this._getCustomTableAtoFExampleConfig());
     }
   }
 
   _onRemoveCustomTableRow(event) {
     event.preventDefault();
-    let removeButton = event.target;
-    let rowElement = removeButton.parentElement;
-    this._removeCustomTableRow(rowElement);
-    this._reindexCustomTable();
   }
 
+  _onCustomTableValueChangeSignal(receivedSignalInfo) {
+    const valueList = receivedSignalInfo.data;
+    this.customTableValueListJsonElement.value = JSON.stringify(valueList);
+  }
 }
