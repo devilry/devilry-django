@@ -56,8 +56,10 @@ export default class GradingConfigurationWidget extends AbstractWidget {
     const initialPointsToGradeMapper = this.element.querySelector(
       '#div_id_points_to_grade_mapper input[checked]').value;
     this._setState({
-      grading_system_plugin_id: initialPluginId,
-      points_to_grade_mapper: initialPointsToGradeMapper,
+      // grading_system_plugin_id: initialPluginId,
+      // points_to_grade_mapper: initialPointsToGradeMapper,
+      grading_system_plugin_id: 'devilry_gradingsystemplugin_points',
+      points_to_grade_mapper: 'custom-table',
       custom_table_value_list: this._getCustomTableAtoFExampleConfig()
     }, true);
     this._addEventListeners();

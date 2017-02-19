@@ -44,11 +44,14 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
   }
 
   _getRowChildElements(rowElement) {
-    return {
-      gradeInput: rowElement.children[0],
-      pointInput: rowElement.children[1],
-      removeButton: rowElement.children[2]
+    let childElements = {
+      gradeInput: rowElement.children[0].children[0],
+      pointInput: rowElement.children[1].children[0],
+    };
+    if(rowElement.children.length > 2) {
+      childElements['removeButton'] = rowElement.children[2].children[0];
     }
+    return childElements;
   }
 
   // _compareRowElements(rowElement1, rowElement2) {
@@ -64,70 +67,72 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
   // }
 
   _getPointsFromRowElement(rowElement) {
-    return parseInt(rowElement.children[1].value, 10)
+    const points = parseInt(rowElement.children[1].children[0].value, 10);
+    if(isNaN(points)) {
+      return null;
+    }
+    return points;
   }
 
   _getGradeFromRowElement(rowElement) {
-    return rowElement.children[0].value;
+    return rowElement.children[0].children[0].value;
   }
 
   _moveToCorrectPlace(rowElement) {
     const points = this._getPointsFromRowElement(rowElement);
     console.log('POINTS', points);
-    for(let currentRowElement of Array.from(this.element.children)) {
-      if(rowElement == currentRowElement) {
-        continue;
-      }
-      if(points < this._getPointsFromRowElement(currentRowElement)) {
-        this.element.insertBefore(rowElement, currentRowElement);
-        return;
+    if(points != null) {
+      for (let currentRowElement of Array.from(this.element.children)) {
+        if (rowElement == currentRowElement) {
+          continue;
+        }
+        let currentPoints = this._getPointsFromRowElement(currentRowElement);
+        if (currentPoints == null || points < currentPoints) {
+          this.element.insertBefore(rowElement, currentRowElement);
+          return;
+        }
       }
     }
     this.element.appendChild(rowElement);
   }
 
-  _reindex() {
-    let index = 0;
-    for(let rowElement of Array.from(this.element.children)) {
-      let childElements = this._getRowChildElements(rowElement);
-      // rowElement.setAttribute('data-index', `${index}`);
-      // childElements.gradeInput.id = `id_custom_table_grade_${index}`;
-      // childElements.gradeInput.name = `custom_table_grade_${index}`;
-      // childElements.pointInput.id = `id_custom_table_minpoints_${index}`;
-      // childElements.pointInput.name = `id_custom_table_minpoints_${index}`;
-      if(index == 0 && childElements.removeButton) {
-        rowElement.removeChild(childElements.removeButton);
-        childElements.pointInput.disabled = true;
-        childElements.pointInput.value = 0;
-      }
-      index ++;
-    }
-  }
-
   _addRow(grade, minimumPoints) {
     let parser = new HtmlParser(`
-      <div class="">
-        <input class="textinput textInput form-control form-control"
-               maxlength="12"
-               value="${grade}"
-               type="text">
-        <input class="numberinput form-control form-control"
-               value="${minimumPoints}"
-               type="number"
-               aria-label="TODO: Dynamically generate">
-        <button class="btn btn-danger">
-            Remove row
-        </button>
+      <div class="devilry-tabulardata-list__row">
+        <div class="devilry-tabulardata-list__cell">
+          <input class="textinput textInput form-control form-control"
+                 maxlength="12"
+                 value="${grade}"
+                 type="text">
+        </div>
+        <div class="devilry-tabulardata-list__cell">
+          <input class="numberinput form-control form-control"
+                 value="${minimumPoints}"
+                 type="number"
+                 min="1" step="1"
+                 aria-label="TODO: Dynamically generate">
+        </div>
+        <div class="devilry-tabulardata-list__cell">
+          <button class="btn btn-danger">
+              remove
+          </button>
+        </div>
       </div>
     `);
     const rowElement = parser.firstRootElement;
     this.element.appendChild(rowElement);
     let childElements = this._getRowChildElements(rowElement);
-    childElements.removeButton.addEventListener('click', this._onRemoveRow);
-    // childElements.pointInput.addEventListener('blur', this._onPointInputBlur);
     childElements.pointInput.addEventListener('change', this._onPointInputChange);
     childElements.gradeInput.addEventListener('change', this._onGradeInputChange);
-    this._reindex();
+    if(childElements.removeButton) {
+      childElements.removeButton.addEventListener('click', this._onRemoveRow);
+    }
+    if(this.element.children[0] == rowElement) {
+      childElements.removeButton.parentElement.removeChild(childElements.removeButton);
+      childElements.pointInput.removeAttribute('min');
+      childElements.pointInput.disabled = true;
+      childElements.pointInput.value = 0;
+    }
     return rowElement;
   }
 
@@ -136,7 +141,7 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
     if(childElements.removeButton) {
       childElements.removeButton.removeEventListener('click', this._onRemoveRow);
     }
-    rowElement.parentNode.removeChild(rowElement);
+    rowElement.parentElement.removeChild(rowElement);
     this._sendValueChangeSignal();
   }
 
@@ -178,7 +183,7 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
 
   _onPointInputChange(event) {
     let pointInputElement = event.target;
-    let rowElement = pointInputElement.parentElement;
+    let rowElement = pointInputElement.parentElement.parentElement;
     console.log('Change points', pointInputElement.value);
     this._moveToCorrectPlace(rowElement);
     this._sendValueChangeSignal();
@@ -205,9 +210,9 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
   }
 
   _onRemoveRow(event) {
+    event.preventDefault();
     let removeButton = event.target;
-    let rowElement = removeButton.parentElement;
+    let rowElement = removeButton.parentElement.parentElement;
     this._removeRow(rowElement);
-    this._reindex();
   }
 }
