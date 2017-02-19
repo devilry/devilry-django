@@ -49,6 +49,7 @@ class GradingConfigurationForm(forms.Form):
     custom_table_value_list_json = forms.CharField(
         required=False,
         widget=forms.Textarea()
+        # widget=forms.HiddenInput()
     )
 
 
