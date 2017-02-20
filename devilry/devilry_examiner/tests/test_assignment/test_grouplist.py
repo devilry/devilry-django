@@ -2197,71 +2197,6 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             'Simple bulk feedback',
             mockresponse.selector.one('#devilry-examiner-simple-bulk-feedback-button').alltext_normalized)
 
-    def test_new_attempt_button_not_rendered_one_group_not_corrected(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start'))
-        mommy.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup.parentnode,
-            requestuser=testuser
-        )
-        self.assertFalse(mockresponse.selector.exists('#devilry-examiner-bulk-new-attempt-button'))
-
-    def test_new_attempt_box_not_rendered_more_than_one_group_but_no_corrected(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup1)
-        mommy.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup2)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser
-        )
-        self.assertFalse(mockresponse.selector.exists('#devilry-examiner-bulk-new-attempt-button'))
-
-    def test_new_attempt_box_not_rendered_one_group_corrected(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testgroup = mommy.make('core.AssignmentGroup',
-                               parentnode=mommy.make_recipe(
-                                   'devilry.apps.core.assignment_activeperiod_start'))
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
-        mommy.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup.parentnode,
-            requestuser=testuser
-        )
-        self.assertFalse(mockresponse.selector.exists('#devilry-examiner-bulk-new-attempt-button'))
-
-    def test_new_attempt_box_rendered(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup1)
-        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup2)
-        mommy.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup1)
-        mommy.make('core.Examiner',
-                   relatedexaminer__user=testuser,
-                   assignmentgroup=testgroup2)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testassignment,
-            requestuser=testuser
-        )
-        self.assertTrue(mockresponse.selector.exists('#devilry-examiner-bulk-new-attempt-button'))
-
     def test_new_attempt_box_rendered_button_text(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -2280,5 +2215,5 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=testuser
         )
         self.assertEquals(
-            'Bulk new attempt',
+            'Manage deadlines',
             mockresponse.selector.one('#devilry-examiner-bulk-new-attempt-button').alltext_normalized)
