@@ -77,9 +77,9 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
             cradmin_role=assignment, viewkwargs={'pk': assignment.id})
         labels = self.__get_radio_labels(mockresponse.selector, 'div_id_points_to_grade_mapper')
         self.assertEqual(len(labels), 3)
-        self.assertEqual(labels[0], 'As passed or failed')
-        self.assertEqual(labels[1], 'As points')
-        self.assertEqual(labels[2], 'As a text looked up in a custom table')
+        self.assertEqual(labels[0], 'Passed or failed')
+        self.assertEqual(labels[1], 'Points')
+        self.assertEqual(labels[2], 'Lookup in a table defined by you (A-F, and other grading systems)')
 
     def test_get_points_to_grade_mapper_values(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')

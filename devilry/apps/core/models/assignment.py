@@ -478,17 +478,17 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         (
             POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
             pgettext_lazy('assignment points-to-grade mapper',
-                          'As passed or failed')
+                          'Passed or failed')
         ),
         (
             POINTS_TO_GRADE_MAPPER_RAW_POINTS,
             pgettext_lazy('assignment points-to-grade mapper',
-                          'As points')
+                          'Points')
         ),
         (
             POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
             pgettext_lazy('assignment points-to-grade mapper',
-                          'As a text looked up in a custom table')
+                          'Lookup in a table defined by you (A-F, and other grading systems)')
         ),
     ]
     #: Dictionary for getting the :obj:`~.Assignment.POINTS_TO_GRADE_MAPPER_CHOICES` descriptions
