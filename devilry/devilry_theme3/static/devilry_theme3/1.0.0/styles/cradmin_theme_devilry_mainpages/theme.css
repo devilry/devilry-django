@@ -7696,6 +7696,57 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 .devilry-body-student .devilry-core-groupstatus.devilry-core-groupstatus-waiting-for-deliveries {
   font-weight: bold;
 }
+.devilry-tabulardata-list--as-table {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.devilry-tabulardata-list--as-table .devilry-tabulardata-list__content {
+  min-width: 100%;
+  display: table;
+}
+.devilry-tabulardata-list .devilry-tabulardata-list__header {
+  display: table-row-group;
+  font-size: 18px;
+  font-weight: bold;
+}
+.devilry-tabulardata-list .devilry-tabulardata-list__body {
+  display: table-row-group;
+}
+.devilry-tabulardata-list .devilry-tabulardata-list__row {
+  display: table-row;
+  clear: both;
+}
+.devilry-tabulardata-list .devilry-tabulardata-list__row--result-info:hover {
+  background-color: #ebd9e8;
+}
+.devilry-tabulardata-list .devilry-tabulardata-list__cell {
+  display: table-cell;
+  padding: 20px;
+  border-bottom: 1px solid #ebd9e8;
+}
+.devilry-tabulardata-list .devilry-tabulardata-list__cell--columnheader {
+  border-bottom: 5px solid #B568A9;
+}
+.devilry-tabulardata-list .devilry-tabulardata-list__cell-examiner {
+  display: table-cell;
+  padding: 20px;
+  border-bottom: 1px solid #c0e4f2;
+}
+.devilry-tabulardata-list .devilry-tabulardata-list__cell-examiner--columnheader {
+  border-bottom: 5px solid #0093D0;
+}
+.tabular-datalist-footer {
+  margin-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.devilry-definitionlist dt {
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #777;
+  margin-top: 10px;
+}
 @media (max-width: 991px) {
   nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb .devilry-django-cradmin-menuitem-breadcrumb-icon {
     display: none;
@@ -9145,48 +9196,4 @@ table.devilry-qualifiesforexam-table tr.devilry-tablebuilder-row:hover td {
 }
 .devilry-qualifiesforexam-plugin-spacing:hover {
   cursor: pointer;
-}
-.devilry-tabulardata-list--as-table {
-  max-width: 100%;
-  overflow-x: auto;
-}
-.devilry-tabulardata-list--as-table .devilry-tabulardata-list__content {
-  min-width: 100%;
-  display: table;
-}
-.devilry-tabulardata-list .devilry-tabulardata-list__header {
-  display: table-row-group;
-  font-size: 18px;
-  font-weight: bold;
-}
-.devilry-tabulardata-list .devilry-tabulardata-list__body {
-  display: table-row-group;
-}
-.devilry-tabulardata-list .devilry-tabulardata-list__row {
-  display: table-row;
-  clear: both;
-}
-.devilry-tabulardata-list .devilry-tabulardata-list__row--result-info:hover {
-  background-color: #ebd9e8;
-}
-.devilry-tabulardata-list .devilry-tabulardata-list__cell {
-  display: table-cell;
-  padding: 20px;
-  border-bottom: 1px solid #ebd9e8;
-}
-.devilry-tabulardata-list .devilry-tabulardata-list__cell--columnheader {
-  border-bottom: 5px solid #B568A9;
-}
-.devilry-tabulardata-list .devilry-tabulardata-list__cell-examiner {
-  display: table-cell;
-  padding: 20px;
-  border-bottom: 1px solid #c0e4f2;
-}
-.devilry-tabulardata-list .devilry-tabulardata-list__cell-examiner--columnheader {
-  border-bottom: 5px solid #0093D0;
-}
-.tabular-datalist-footer {
-  margin-top: 20px;
-  padding-left: 20px;
-  padding-right: 20px;
 }
