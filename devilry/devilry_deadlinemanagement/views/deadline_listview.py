@@ -5,9 +5,8 @@ from django.utils.translation import pgettext_lazy
 from django.views.generic import TemplateView
 from django_cradmin.viewhelpers import listbuilder
 
-from devilry.devilry_deadlinemanagement.views.viewutils import GroupQuerySetMixin
+from devilry.devilry_deadlinemanagement.views import viewutils
 from devilry.utils import datetimeutils
-import requests
 
 
 class SelectDeadlineItemValue(listbuilder.itemvalue.TitleDescription):
@@ -16,13 +15,14 @@ class SelectDeadlineItemValue(listbuilder.itemvalue.TitleDescription):
 
     def __init__(self, assignment_groups, assignment, devilryrole, **kwargs):
         super(SelectDeadlineItemValue, self).__init__(**kwargs)
+        self.num_assignment_groups = len(assignment_groups)
         self.assignment_groups = assignment_groups
         self.assignment = assignment
         self.devilryrole = devilryrole
         self.deadline = datetimeutils.datetime_to_string(self.value)
 
 
-class DeadlineListView(GroupQuerySetMixin, TemplateView):
+class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
     template_name = 'devilry_deadlinemanagement/select-deadline.django.html'
 
     def get_pagetitle(self):
@@ -100,7 +100,7 @@ class DeadlineListView(GroupQuerySetMixin, TemplateView):
                     SelectDeadlineItemValue(
                         assignment_groups=group_list,
                         assignment=self.request.cradmin_role,
-                        devilryrole=self.request.cradmin_app.get_devilryrole(),
+                        devilryrole=self.request.cradmin_instance.get_devilryrole_for_requestuser(),
                         value=deadline)
                 )
             )
@@ -109,18 +109,4 @@ class DeadlineListView(GroupQuerySetMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context_data = super(DeadlineListView, self).get_context_data(**kwargs)
         context_data['listbuilder_list'] = self.__make_listbuilder_list()
-        context_data['pagetitle'] = self.get_pagetitle()
-        context_data['pageheading'] = self.get_pageheading()
-        context_data['page_subheading'] = self.get_page_subheading()
-        context_data['startapp_backlink_url'] = self.get_startapp_backlink_url()
         return context_data
-
-    def get_startapp_backlink_url(self):
-        """
-        Override this function to provide a URL back to the app accessed this view from.
-
-        Note:
-            By default this just redirects to back to itself, so you probably want
-            to override it.
-        """
-        return self.request.cradmin_app.reverse_appindexurl()

@@ -6,14 +6,16 @@ from django import forms
 from django.db import transaction
 from django.shortcuts import redirect
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 from django_cradmin.crispylayouts import PrimarySubmitBlock
 from django_cradmin.viewhelpers import formbase
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
+from devilry.utils import datetimeutils
 from devilry.apps.core import models as core_models
 from devilry.devilry_group import models as group_models
+from devilry.devilry_deadlinemanagement.views import viewutils
 
 
 class ManageDeadlinePostActionException(Exception):
@@ -52,44 +54,34 @@ class ManageDeadlineForm(SelectedItemsForm):
             raise forms.ValidationError('The deadline has to be in the future.')
 
 
-class ManageDeadlineView(formbase.FormView):
+class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
     form_class = ManageDeadlineForm
-
-    #: Move deadline button name as it will appear in request.POST.
-    move_deadline_button_name = 'move_deadline'
-
-    #: Move first deadline button name as it will appear in request.POST.
-    move_first_deadline_button_name = 'move_first_deadline'
-
-    #: New attempt button name as it will appear in request.POST.
-    new_attempt_button_name = 'new_attempt'
+    template_name = 'devilry_deadlinemanagement/manage-deadline.django.html'
 
     #: Posted data from previous view as it will appear in request.POST.
     post_type_received_data = 'post_type_received_data'
 
     def dispatch(self, request, *args, **kwargs):
-        # self.current_deadline = datetimeutils.string_to_datetime(kwargs.get('deadline'))
-        print kwargs.get('handle_deadline')
-        print kwargs.get('deadline')
+        self.current_deadline = datetimeutils.string_to_datetime(kwargs.get('deadline'))
+        self.handle_deadline = kwargs.get('handle_deadline')
         return super(ManageDeadlineView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        print 'GET'
+        initially_selected_items = self.get_initially_selected_items()
         selected_form = SelectedItemsForm(
             accessible_groups_queryset=self.request.cradmin_app.get_accessible_group_queryset(),
-            data={'selected_items': [kwargs.get('group_id')]}
+            data={'selected_items': initially_selected_items}
         )
         if selected_form.is_valid():
             form_class = self.get_form_class()
             form = form_class(
                 accessible_groups_queryset=self.request.cradmin_app.get_accessible_group_queryset(),
-                initial={'selected_items': [kwargs.get('group_id')]}
+                initial={'selected_items': initially_selected_items}
             )
             return self.render_to_response(self.get_context_data(form=form))
         return redirect(self.get_previous_view_url())
 
     def post(self, request, *args, **kwargs):
-        print 'POST'
         if self.post_from_previous_view:
             if self.initial_selected_form_is_valid():
                 return self.render_to_response(self.get_context_data(form=self.get_form()))
@@ -98,17 +90,40 @@ class ManageDeadlineView(formbase.FormView):
         else:
             return super(ManageDeadlineView, self).post(request, *args, **kwargs)
 
+    def serialize_preview(self, form):
+        pass
+
+    @classmethod
+    def deserialize_preview(cls, serialized):
+        pass
+
     @property
     def post_from_previous_view(self):
         return self.post_type_received_data in self.request.POST
 
     @property
     def post_move_deadline(self):
-        return self.move_deadline_button_name in self.request.POST
+        return self.handle_deadline == 'move-deadline'
 
     @property
     def post_new_attempt(self):
-        return self.new_attempt_button_name in self.request.POST
+        return self.handle_deadline == 'new-attempt'
+
+    @property
+    def should_move_first_deadline(self):
+        return False
+
+    def get_pagetitle(self):
+        return pgettext_lazy('{} manage_deadline'.format(self.request.cradmin_app.get_devilryrole()),
+                             'Manage deadline {}'.format(self.current_deadline))
+
+    def get_pageheading(self):
+        return pgettext_lazy('{} manage_deadline'.format(self.request.cradmin_app.get_devilryrole()),
+                             'Manage deadline {}'.format(self.current_deadline))
+
+    def get_page_subheading(self):
+        return pgettext_lazy('{} manage_deadline'.format(self.request.cradmin_app.get_devilryrole()),
+                             'Write a comment that will appear for all students affected.')
 
     def initial_selected_form_is_valid(self):
         """
@@ -121,9 +136,23 @@ class ManageDeadlineView(formbase.FormView):
             data=self.request.POST)
         return selected_form.is_valid()
 
+    def get_initially_selected_items(self):
+        """
+        Initial selected items added to the form as hidden fields.
+
+        Override this in subclass if you want to provide more or
+        less items than what is passed from post.
+
+        Defaults to ``selected_items`` in POST.
+
+        Returns:
+            (list): of selected items.
+        """
+        return self.request.POST.getlist('selected_items')
+
     def get_form(self):
         """
-        Instantiate the form with the correct inital values base on the type of input.
+        Instantiate the form with the correct initial values base on the type of input.
 
         If this view receives data in post from another view, we set the initial values for the form
         as the values that passed from the previous view.
@@ -137,7 +166,7 @@ class ManageDeadlineView(formbase.FormView):
             form_class = self.get_form_class()
             return form_class(
                 accessible_groups_queryset=self.request.cradmin_app.get_accessible_group_queryset(),
-                initial={'selected_items': self.request.POST.getlist('selected_items')}
+                initial={'selected_items': self.get_initially_selected_items()}
             )
         return super(ManageDeadlineView, self).get_form()
 
@@ -160,18 +189,13 @@ class ManageDeadlineView(formbase.FormView):
 
     def get_buttons(self):
         return [
-            PrimarySubmitBlock(self.move_deadline_button_name, self.get_submit_move_deadline_text()),
-            PrimarySubmitBlock(self.new_attempt_button_name, self.get_submit_new_attempt_text())
+            PrimarySubmitBlock('submit', self.get_submit_button_text())
         ]
 
-    def get_submit_move_first_deadline_text(self):
-        return 'Move assignment first deadline'
-
-    def get_submit_move_deadline_text(self):
-        return 'Move current deadline'
-
-    def get_submit_new_attempt_text(self):
-        return 'Give new attempt'
+    def get_submit_button_text(self):
+        if self.handle_deadline == 'move-deadline':
+            return ugettext_lazy('Move deadline')
+        return ugettext_lazy('Give new attempt')
 
     def __create_groupcomment(self, feedback_set_id, publishing_time, text):
         """
@@ -234,6 +258,12 @@ class ManageDeadlineView(formbase.FormView):
     def __get_selected_group_ids(self, form):
         return [group.id for group in form.cleaned_data['selected_items']]
 
+    def __move_assignment_first_deadline(self, deadline):
+        assignment = core_models.Assignment.objects.get(id=self.request.cradmin_role.id)
+        assignment.first_deadline = deadline
+        assignment.full_clean()
+        assignment.save()
+
     def __move_deadline(self, deadline, text, form):
         """
         Moves the deadline of the last ``FeedbackSet`` for the selected ``AssignmentGroups``.
@@ -246,18 +276,13 @@ class ManageDeadlineView(formbase.FormView):
         feedback_set_ids = self.__get_last_feedbackset_ids_from_posted_group_ids(form)
         now_without_sec_and_micro = timezone.now().replace(second=0, microsecond=0)
         with transaction.atomic():
-            # devilryrole_type = self.request.devilryrole_type
-            # assignment = self.request.cradmin_role
-            # if self.current_deadline == assignment.first_deadline and devilryrole_type == 'admin':
-            #     assignment = core_models.Assignment.objects.get(id=assignment.id)
-            #     assignment.first_deadline = deadline
-            #     assignment.full_clean()
-            #     assignment.save()
-            # else:
-            group_models.FeedbackSet.objects\
-                .filter(id__in=feedback_set_ids)\
-                .update(
-                    deadline_datetime=deadline)
+            if self.should_move_first_deadline:
+                self.__move_assignment_first_deadline(deadline=deadline)
+            else:
+                group_models.FeedbackSet.objects\
+                    .filter(id__in=feedback_set_ids)\
+                    .update(
+                        deadline_datetime=deadline)
             for feedback_set_id in feedback_set_ids:
                 self.__create_groupcomment(
                     feedback_set_id=feedback_set_id,
@@ -306,16 +331,45 @@ class ManageDeadlineView(formbase.FormView):
             )
         return super(ManageDeadlineView, self).form_valid(form)
 
+    def get_success_url(self):
+        return self.request.cradmin_app.reverse_appindexurl()
+
 
 class ManageDeadlineAllGroupsView(ManageDeadlineView):
     """
+    Handles all ``AssignmentGroup``s the user has access to. Using method GET.
     """
+    @property
+    def should_move_first_deadline(self):
+        return self.request.cradmin_instance.get_devilryrole_type() == 'admin' and \
+               self.current_deadline == self.request.cradmin_role.first_deadline
+
+    def get_initially_selected_items(self):
+        queryset = self.get_queryset_for_role_filtered(role=self.request.cradmin_role)\
+            .filter(cached_data__last_feedbackset__deadline_datetime=self.current_deadline)
+        queryset = self.get_annotations_for_queryset(queryset=queryset)\
+            .filter(annotated_is_corrected__gt=0)\
+            .filter(cached_data__last_feedbackset__deadline_datetime=self.current_deadline)
+        return [group.id for group in queryset]
 
 
 class ManageDeadlineSingleGroupView(ManageDeadlineView):
     """
+    Handles a single ``AssignmentGroup``s passed. Using GET.
     """
+    def get_initially_selected_items(self):
+        return [self.kwargs.get('group_id')]
+
 
 class ManageDeadlineFromPreviousView(ManageDeadlineView):
     """
+    Handles multiple ``AssignmentGroup``s passed. Using POST.
     """
+    def get_startapp_backlink_url(self):
+        return self.request.cradmin_app.reverse_appurl(
+            viewname='select-manually-{}'.format(self.handle_deadline),
+            kwargs={
+                'deadline': datetimeutils.datetime_to_string(self.current_deadline),
+                'handle_deadline': self.handle_deadline
+            }
+        )

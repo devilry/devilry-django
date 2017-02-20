@@ -1,5 +1,6 @@
-{% extends "django_cradmin/viewhelpers/multiselect2view/listbuilderfilterview.django.html" %}
+{% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
 
+{% load static %}
 {% load i18n %}
 {% load cradmin_tags %}
 {% load cradmin_icon_tags %}
@@ -7,12 +8,12 @@
 {% block pageheader-outer-extraclasses %}
     {{ block.super }}
     devilry-page-header-with-backlink
-{% endblock %}
+{% endblock pageheader-outer-extraclasses %}
 
 {% block pageheader-inner %}
-    <a href="{% cradmin_appindex_url %}" class="devilry-page-header-backlink">
+    <a href="{{ startapp_backlink_url }}" class="devilry-page-header-backlink">
         <span class="sr-only">
-            {% trans "Back to deadline-overview" %}
+            {% trans "Back" %}
         </span>
         <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
     </a>

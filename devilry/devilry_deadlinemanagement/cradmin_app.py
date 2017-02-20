@@ -20,6 +20,10 @@ class AbstractDeadlineManagementApp(crapp.App):
         raise NotImplementedError()
 
     @classmethod
+    def get_url_pattern(cls):
+        return '(?P<deadline>\w+)/(?P<handle_deadline>[\w-]+)'
+
+    @classmethod
     def get_index_view_class(cls):
         return deadline_listview.DeadlineListView
 
@@ -55,33 +59,33 @@ class AbstractDeadlineManagementApp(crapp.App):
 
             # Multi select groups views.
             crapp.Url(
-                r'select-manually-move-deadline/(?P<deadline>\w+)$',
+                r'select-manually-move-deadline/{}$'.format(cls.get_url_pattern()),
                 cls.get_groups_multiselect_view_move_deadline_class().as_view(),
                 name='select-manually-move-deadline'),
             crapp.Url(
-                r'select-manually-move-deadline/(?P<deadline>\w+)/(?P<filters_string>.+)?$',
+                r'select-manually-move-deadline/{}/(?P<filters_string>.+)?$'.format(cls.get_url_pattern()),
                 cls.get_groups_multiselect_view_move_deadline_class().as_view(),
                 name='select-manually-move-deadline-filter'),
             crapp.Url(
-                r'select-manually-new-attempt/(?P<deadline>\w+)$',
+                r'select-manually-new-attempt/{}$'.format(cls.get_url_pattern()),
                 cls.get_groups_multiselect_view_new_attempt_class().as_view(),
                 name='select-manually-new-attempt'),
             crapp.Url(
-                r'select-manually-new-attempt/(?P<deadline>\w+)/(?P<filters_string>.+)?$',
+                r'select-manually-new-attempt/{}/(?P<filters_string>.+)?$'.format(cls.get_url_pattern()),
                 cls.get_groups_multiselect_view_new_attempt_class().as_view(),
                 name='select-manually-new-attempt-filter'),
 
             # Manage deadline views.
             crapp.Url(
-                r'manage-deadline/(?P<handle_deadline>\w+)/(?P<group_id>\d*)$',
+                r'manage-deadline/{}/(?P<group_id>\d+)$'.format(cls.get_url_pattern()),
                 cls.get_manage_deadline_view_single_group_class().as_view(),
                 name='manage-deadline-single-group'),
             crapp.Url(
-                r'manage-deadline/(?P<handle_deadline>\w+)/(?P<all>\w+)$',
+                r'manage-deadline-all-groups/{}$'.format(cls.get_url_pattern()),
                 cls.get_manage_deadline_view_all_groups_class().as_view(),
                 name='manage-deadline-all-groups'),
             crapp.Url(
-                r'manage-deadline/(?P<deadline>\w+)/(?P<handle_deadline>[\w-]+)$',
+                r'manage-deadline-from-previous/{}$'.format(cls.get_url_pattern()),
                 cls.get_manage_deadline_from_previous_view_class().as_view(),
                 name='manage-deadline-post')
         ]
