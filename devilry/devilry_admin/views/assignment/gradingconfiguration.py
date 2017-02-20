@@ -54,16 +54,13 @@ class GradingConfigurationForm(forms.Form):
         min_value=0,
         required=True,
         label='...',
-        help_text='...',
-        # help_text=pgettext_lazy(
-        #     'assignment config',
-        #     'The maximum number of points possible for this assignment.')
+        help_text='...'
     )
 
     point_to_grade_map_json = forms.CharField(
         required=False,
-        widget=forms.TextInput()
-        # widget=forms.HiddenInput()
+        # widget=forms.TextInput()
+        widget=forms.HiddenInput()
     )
 
     def __sort_point_to_grade_map(self, point_to_grade_map):
@@ -131,11 +128,11 @@ class AssignmentGradingConfigurationUpdateView(OnlySaveButtonMixin, formbase.For
         return [
             layout.Div(
                 'grading_system_plugin_id',
-                'passing_grade_min_points',
-                'max_points',
                 'points_to_grade_mapper',
                 layout.HTML(self._render_custom_table_div()),
                 'point_to_grade_map_json',
+                'passing_grade_min_points',
+                'max_points',
                 css_class='cradmin-globalfields')
         ]
 

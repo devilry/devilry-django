@@ -23,7 +23,6 @@ export default class GradingConfigurationWidget extends AbstractWidget {
       'devilry.GradingConfigurationWidget');
     this._onPluginIdRadioChange = this._onPluginIdRadioChange.bind(this);
     this._onPointsToGradeMapperRadioChange = this._onPointsToGradeMapperRadioChange.bind(this);
-    this._onRemoveCustomTableRow = this._onRemoveCustomTableRow.bind(this);
     this._onAddCustomTableRow = this._onAddCustomTableRow.bind(this);
     this._onSetupCustomTableAtoFExample = this._onSetupCustomTableAtoFExample.bind(this);
     this._onCustomTableValueChangeSignal = this._onCustomTableValueChangeSignal.bind(this);
@@ -248,10 +247,6 @@ export default class GradingConfigurationWidget extends AbstractWidget {
           sendValueChangeSignal: true
         });
     }
-  }
-
-  _onRemoveCustomTableRow(event) {
-    event.preventDefault();
   }
 
   _onCustomTableValueChangeSignal(receivedSignalInfo) {

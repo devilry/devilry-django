@@ -101,7 +101,7 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
                  aria-label="TODO: Dynamically generate">
         </div>
         <div class="devilry-tabulardata-list__cell">
-          <button class="btn btn-danger">
+          <button class="btn btn-danger" type="button">
               remove
           </button>
         </div>
