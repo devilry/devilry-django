@@ -28,7 +28,7 @@ class ExaminerCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_cr
     apps = [
         ('feedbackfeed', feedbackfeed_examiner.App),
         ('download', batch_download_files.App),
-        ('manage-deadlines', manage_deadline.App)
+        ('manage-deadline', manage_deadline.App)
     ]
     id = 'devilry_group_examiner'
 

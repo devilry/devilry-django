@@ -8,12 +8,16 @@ from devilry.devilry_deadlinemanagement.cradmin_app import ExaminerDeadlineManag
 from devilry.devilry_deadlinemanagement.views import manage_deadline_view
 
 
-# class ManageDeadlineView(manage_deadline_view.ManageDeadlineView):
-#     def get_previous_view_url(self):
-#         return self.request.cradmin_instance.get_instance_frontpage_url()
+class ManageDeadlineView(manage_deadline_view.ManageDeadlineView):
+    """
+
+    """
 
 
 class App(ExaminerDeadlineManagementApp):
     """
     Overrided to get URLs with cradmin_app addons.
     """
+    @classmethod
+    def get_manage_deadline_view_single_group_class(cls):
+        return ManageDeadlineView
