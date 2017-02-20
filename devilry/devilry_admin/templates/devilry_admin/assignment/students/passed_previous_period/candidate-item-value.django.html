@@ -13,11 +13,8 @@
         {{ me.assignment.long_name }} - {{ me.period.long_name }}
     </p>
     <p class="django-cradmin-listbuilder-itemvalue-titledescription-description">
-        {{ me.period.start_time | date:"m.Y" }} - {{ me.period.end_time | date:"m.Y" }} {% trans '(semester start/semester end)' %}
-    </p>
-    <p class="django-cradmin-listbuilder-itemvalue-titledescription-description">
         {% devilry_grade_full me.assignment me.feedback.grading_points me.devilryrole %}
-        <span class="fa fa-angle-right"></span>
+        <span class="fa fa-arrow-right"></span>
         {% devilry_grade_full me.current_assignment me.calculated_points me.devilryrole %}
     </p>
 {% endblock description %}

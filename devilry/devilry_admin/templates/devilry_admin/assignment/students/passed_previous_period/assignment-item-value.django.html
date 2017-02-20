@@ -8,6 +8,6 @@
             {{ me.max_points }}/{{ me.passing_grade_min_points }} {% trans '(max points/passing grade)' %}
     </p>
     <p class="django-cradmin-listbuilder-itemvalue-titledescription-description">
-        {{ me.period_start | date:"m.Y" }} - {{ me.period_end | date:"m.Y" }} {% trans '(semester start/semester end)' %}
+        {{ me.period_start | date:"DATE_FORMAT" }} - {{ me.period_end | date:"DATE_FORMAT" }} {% trans '(semester start/semester end)' %}
     </p>
 {% endblock description %}

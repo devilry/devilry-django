@@ -61,14 +61,14 @@ class SelectPeriodView(formbase.FormView):
             .exclude(start_time__gte=self.assignment.parentnode.start_time)\
             .order_by('start_time')
 
-    def get_button_layout(self):
+    def get_buttons(self):
         return [
             PrimarySubmit('Next', ugettext_lazy('Next'))
         ]
 
     def get_field_layout(self):
         return [
-            layout.Div('semester', css_class='')
+            layout.Div('semester', css_class='cradmin-globalfields')
         ]
 
     def form_valid(self, form):
@@ -209,7 +209,7 @@ class ApprovePreviousAssignments(formbase.FormView):
         context['candidate_list'] = self.__get_candidate_listbuilder()
         return context
 
-    def get_button_layout(self):
+    def get_buttons(self):
         return [
             PrimarySubmit('Confirm', ugettext_lazy('Confirm'))
         ]
@@ -253,8 +253,9 @@ class ApprovePreviousAssignments(formbase.FormView):
             messages.success(
                 self.request,
                 ugettext_lazy(
-                    'Success: {} got approved for this assignment.'
-                    ''.format(self.__get_candidates_displayname(candidates)))
+                    '%(students)s was marked as approved for this assignment.') % {
+                    'students': self.__get_candidates_displayname(candidates)
+                }
             )
         return redirect(self.get_success_url())
 
