@@ -108,7 +108,7 @@ export default class GradingConfigurationWidget extends AbstractWidget {
           sendValueChangeSignal: false
         });
     }
-    if(this._state.grading_system_plugin_id == 'devilry_gradingsystemplugin_approved' && this._state.points_to_grade_mapper == 'custom-points') {
+    if(this._state.grading_system_plugin_id == 'devilry_gradingsystemplugin_approved' && this._state.points_to_grade_mapper == 'custom-table') {
       this._state.points_to_grade_mapper = 'passed-failed';
     }
 
@@ -134,6 +134,21 @@ export default class GradingConfigurationWidget extends AbstractWidget {
       throw new Error(`Unsupported grading_system_plugin: "${pluginId}"`);
     }
   }
+
+  _updateUiForApprovedPlugin() {
+    this.passingGradeMinPointsWrapperElement.style.display = 'none';
+    this._hidePointsToGradeMapperCustomTableChoice();
+    const pluginConfig = this.config['devilry_gradingsystemplugin_approved'];
+    this._updateUiLabels(pluginConfig);
+  }
+
+  _updateUiForPointsPlugin() {
+    this.passingGradeMinPointsWrapperElement.style.display = 'block';
+    this._showPointsToGradeMapperCustomTableChoice();
+    const pluginConfig = this.config['devilry_gradingsystemplugin_points'];
+    this._updateUiLabels(pluginConfig);
+  }
+
 
   _renderPassingGradeMinPointsField() {
     let parentElement = this.passingGradeMinPointsInputElement.parentElement;
@@ -249,20 +264,6 @@ export default class GradingConfigurationWidget extends AbstractWidget {
       this.maxPointsHelpTextElement.style.display = 'block';
       this.maxPointsHelpTextElement.innerHTML = pluginConfig['max_points_help_text'] || '';
     }
-  }
-
-  _updateUiForApprovedPlugin() {
-    this.passingGradeMinPointsWrapperElement.style.display = 'none';
-    this._hidePointsToGradeMapperCustomTableChoice();
-    const pluginConfig = this.config['devilry_gradingsystemplugin_approved'];
-    this._updateUiLabels(pluginConfig);
-  }
-
-  _updateUiForPointsPlugin() {
-    this.passingGradeMinPointsWrapperElement.style.display = 'block';
-    this._showPointsToGradeMapperCustomTableChoice();
-    const pluginConfig = this.config['devilry_gradingsystemplugin_points'];
-    this._updateUiLabels(pluginConfig);
   }
 
   _onPluginIdRadioChange(event) {
