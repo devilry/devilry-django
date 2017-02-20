@@ -7,8 +7,6 @@ export default class GradingConfigurationWidget extends AbstractWidget {
 
   getDefaultConfig() {
     return {
-      // grading_system_plugin_id: 'devilry_gradingsystemplugin_approved',
-      // points_to_grade_mapper: 'passed-failed',
       signalNameSpace: 'gradingConfiguration'
     };
   }
