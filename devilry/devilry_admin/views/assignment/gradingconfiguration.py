@@ -25,6 +25,9 @@ class GradingConfigurationForm(forms.Form):
         'max_points_too_small_for_point_to_grade_map': ugettext_lazy(
             'The grade to points table has points that is larger than the '
             'maximum number of points.'
+        ),
+        'max_points_larger_than_passing_grade_min_points': ugettext_lazy(
+            'Must be larger than the minimum number of points required to pass.'
         )
     }
 
@@ -72,6 +75,7 @@ class GradingConfigurationForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(GradingConfigurationForm, self).clean()
+        passing_grade_min_points = cleaned_data.get('passing_grade_min_points', None)
         max_points = cleaned_data.get('max_points', None)
         points_to_grade_mapper = cleaned_data.get('points_to_grade_mapper')
         point_to_grade_map_json = cleaned_data.get('point_to_grade_map_json', '').strip()
@@ -82,6 +86,11 @@ class GradingConfigurationForm(forms.Form):
             point_to_grade_map = self.__sort_point_to_grade_map(json.loads(point_to_grade_map_json))
             if len(point_to_grade_map) < 2:
                 raise ValidationError(self.error_messages['point_to_grade_map_json_invalid_format'])
+        if passing_grade_min_points is not None and max_points is not None:
+            if passing_grade_min_points > max_points:
+                raise ValidationError({
+                    'max_points': self.error_messages['max_points_larger_than_passing_grade_min_points']
+                })
         if max_points is not None and point_to_grade_map:
             largest_point_in_map = point_to_grade_map[-1][0]
             if largest_point_in_map > max_points:

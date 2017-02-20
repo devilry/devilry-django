@@ -118,7 +118,23 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
         data.setdefault('point_to_grade_map_json', '')
         return data
 
-    def test_post_sanity(self):
+    def test_post_max_points_smaller_than_passing_grade_min_points(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=assignment,
+            viewkwargs={'pk': assignment.id},
+            requestkwargs={'data': self.__make_postdata(
+                passing_grade_min_points=30,
+                max_points=20,
+                points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)
+            })
+        self.assertFalse(PointToGradeMap.objects.filter(assignment=assignment).exists())
+        self.assertIn(
+            str(gradingconfiguration.GradingConfigurationForm.error_messages[
+                    'max_points_larger_than_passing_grade_min_points']),
+            mockresponse.selector.one('#div_id_max_points.has-error').alltext_normalized)
+
+    def test_post_ok_sanity(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         self.mock_http302_postrequest(
             cradmin_role=assignment,
