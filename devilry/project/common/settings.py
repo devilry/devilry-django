@@ -70,8 +70,6 @@ INSTALLED_APPS = [
     'devilry.devilry_send_email_to_students',
 
     'devilry.devilry_help',
-    'devilry.devilry_theme',
-    'devilry.devilry_theme2',
     'devilry.devilry_theme3',
     'devilry.devilry_header',
     'devilry.devilry_frontpage',

@@ -478,17 +478,17 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         (
             POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
             pgettext_lazy('assignment points-to-grade mapper',
-                          'As passed or failed')
+                          'Passed or failed')
         ),
         (
             POINTS_TO_GRADE_MAPPER_RAW_POINTS,
             pgettext_lazy('assignment points-to-grade mapper',
-                          'As points')
+                          'Points')
         ),
         (
             POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
             pgettext_lazy('assignment points-to-grade mapper',
-                          'As a text looked up in a custom table')
+                          'Lookup in a table defined by you (A-F, and other grading systems)')
         ),
     ]
     #: Dictionary for getting the :obj:`~.Assignment.POINTS_TO_GRADE_MAPPER_CHOICES` descriptions
@@ -853,9 +853,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def points_is_passing_grade(self, points):
         """
         Checks if the given points represents a passing grade.
-
-        WARNING: This will only work if ``passing_grade_min_points`` is set. The best
-        way to check that is with :meth:`.has_valid_grading_setup`.
         """
         return points >= self.passing_grade_min_points
 

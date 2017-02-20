@@ -1,5 +1,5 @@
 {% load i18n %}
-<div class="form-group">
+<div class="form-group" id="id_custom_table_wrapper" style="margin-left: 20px;">
     <p>
         {% blocktrans trimmed %}
             Setup how you wish to map points to grade.
@@ -10,25 +10,33 @@
         {% endblocktrans %}
     </p>
 
-    <div class="">
-        <div class="">
-            <div>
-                Grade
+    <div class="devilry-tabulardata-list devilry-tabulardata-list--as-table">
+        <div class="devilry-tabulardata-list__content">
+            <div class="devilry-tabulardata-list__header">
+                <div class="devilry-tabulardata-list__cell">
+                    Grade
+                </div>
+                <div class="devilry-tabulardata-list__cell">
+                    Minimum points required for grade
+                </div>
+                <div class="devilry-tabulardata-list__cell"></div>
             </div>
-            <div>
-                Minimum points required for grade
-            </div>
+            <div id="id_custom_table_body"
+                 class="devilry-tabulardata-list__body"
+                 data-ievv-jsbase-widget="devilry-grading-configuration-custom-table"
+                 data-ievv-jsbase-widget-config='{}'></div>
         </div>
-        <div id="id_custom_table_body"></div>
     </div>
-    <button type="button"
-            class="btn btn-default btn-sm"
-            id="id_custom_table_add_row_button">
-        {% trans "Add row" %}
-    </button>
-    <button type="button"
-            class="btn btn-default btn-sm"
-            id="id_custom_table_setup_atof_example_button">
-        {% trans "Setup A-F example" %}
-    </button>
+    <div class="tabular-datalist-footer">
+        <button type="button"
+                class="btn btn-primary btn-sm"
+                id="id_custom_table_add_row_button">
+            {% trans "Add row" %}
+        </button>
+        <button type="button"
+                class="btn btn-default btn-sm"
+                id="id_custom_table_setup_atof_example_button">
+            {% trans "Setup A-F example" %}
+        </button>
+    </div>
 </div>

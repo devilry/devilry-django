@@ -1,9 +1,7 @@
-from collections import OrderedDict
-
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 
 from .assignment import Assignment
 
@@ -111,11 +109,14 @@ class PointToGradeMap(models.Model):
                 maximum_points = self.assignment.max_points
             else:
                 maximum_points = minimum_points_to_grade_list[index + 1][0] - 1
-            self.pointrangetograde_set.create(
+            pointrange_to_grade = PointRangeToGrade(
+                point_to_grade_map=self,
                 grade=grade,
                 minimum_points=minimum_points,
                 maximum_points=maximum_points
             )
+            pointrange_to_grade.full_clean()
+            pointrange_to_grade.save()
 
     def clear_map(self):
         self.pointrangetograde_set.all().delete()
@@ -156,7 +157,7 @@ class PointToGradeMap(models.Model):
         """
         if not hasattr(self, 'prefetched_pointrangetograde_objects'):
             raise AttributeError('The prefetched_pointrangetogrades property requires '
-                                 'PointToGradeMap.prefetch_pointrange_to_grade()')
+                                 'PointToGradeMapQuerySet.prefetch_pointrange_to_grade()')
         return self.prefetched_pointrangetograde_objects
 
     def as_flat_dict(self):
@@ -253,6 +254,10 @@ class PointRangeToGrade(models.Model):
         ordering = ['minimum_points']
 
     def clean(self):
+        if self.minimum_points > self.point_to_grade_map.assignment.max_points:
+            raise ValidationError(ugettext_lazy(
+                'Can not have values in the grade table that is larger than '
+                'maximum number of points.'))
         if self.minimum_points >= self.maximum_points:
             raise ValidationError('Minimum points can not be equal to or greater than maximum points.')
         overlapping_ranges = self.__class__.objects \
