@@ -46,7 +46,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
-            3,
+            4,
             mockresponse.selector.count(
                 '#devilry_admin_assignment_students_overview_buttonbar .btn'))
 
