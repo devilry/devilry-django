@@ -40,7 +40,7 @@ export default class GradingConfigurationWidget extends AbstractWidget {
       'id_custom_table_wrapper');
     this.customTableAddRowButton = document.getElementById('id_custom_table_add_row_button');
     this.customTableSetuAtoFExampleButton = document.getElementById('id_custom_table_setup_atof_example_button');
-    this.customTableValueListJsonElement = document.getElementById('id_custom_table_value_list_json');
+    this.pointToGradeMapJsonElement = document.getElementById('id_point_to_grade_map_json');
 
     this._state = {};
     this._initializeSignalHandlers();
@@ -55,12 +55,18 @@ export default class GradingConfigurationWidget extends AbstractWidget {
       '#div_id_grading_system_plugin_id input[checked]').value;
     const initialPointsToGradeMapper = this.element.querySelector(
       '#div_id_points_to_grade_mapper input[checked]').value;
+    const initialPointToGradeMapString = this.pointToGradeMapJsonElement.value;
+    let initialPointToGradeMap = [];
+    if(initialPointToGradeMapString != undefined && initialPointToGradeMapString != null && initialPointToGradeMapString != '') {
+      initialPointToGradeMap = JSON.parse(initialPointToGradeMapString);
+    }
     this._setState({
-      // grading_system_plugin_id: initialPluginId,
-      // points_to_grade_mapper: initialPointsToGradeMapper,
-      grading_system_plugin_id: 'devilry_gradingsystemplugin_points',
-      points_to_grade_mapper: 'custom-table',
-      custom_table_value_list: this._getCustomTableAtoFExampleConfig()
+      // grading_system_plugin_id: 'devilry_gradingsystemplugin_points',
+      // points_to_grade_mapper: 'custom-table',
+      // point_to_grade_map: this._getCustomTableAtoFExampleConfig()
+      grading_system_plugin_id: initialPluginId,
+      points_to_grade_mapper: initialPointsToGradeMapper,
+      point_to_grade_map: initialPointToGradeMap
     }, true);
     this._addEventListeners();
   }
@@ -84,7 +90,7 @@ export default class GradingConfigurationWidget extends AbstractWidget {
       this.pointsToGradeMapperElements[this._state.points_to_grade_mapper].input.checked = true;
       this._signalHandler.send(
         `${this.config.signalNameSpace}.SetCustomTableRows`, {
-          valueList: this._state.custom_table_value_list,
+          valueList: this._state.point_to_grade_map,
           sendValueChangeSignal: false
         });
     }
@@ -98,8 +104,8 @@ export default class GradingConfigurationWidget extends AbstractWidget {
     if(this._state.points_to_grade_mapper != oldState.points_to_grade_mapper) {
       this._updateUiForPointsToGradeMapper();
     }
-    if(this._state.custom_table_value_list != oldState.custom_table_value_list) {
-      this.customTableValueListJsonElement.value = JSON.stringify(this._state.custom_table_value_list);
+    if(this._state.point_to_grade_map != oldState.point_to_grade_map) {
+      this.pointToGradeMapJsonElement.value = JSON.stringify(this._state.point_to_grade_map);
     }
   }
 
@@ -224,11 +230,11 @@ export default class GradingConfigurationWidget extends AbstractWidget {
 
   _getCustomTableAtoFExampleConfig() {
     return [
-      {grade: 'F', points: 0},
-      {grade: 'D', points: 25},
-      {grade: 'C', points: 50},
-      {grade: 'B', points: 75},
-      {grade: 'A', points: 90},
+      [0, 'F'],
+      [25, 'D'],
+      [50, 'C'],
+      [75, 'B'],
+      [90, 'A']
     ];
   }
 
@@ -251,7 +257,7 @@ export default class GradingConfigurationWidget extends AbstractWidget {
   _onCustomTableValueChangeSignal(receivedSignalInfo) {
     const valueList = receivedSignalInfo.data;
     this._setState({
-      custom_table_value_list: valueList
+      point_to_grade_map: valueList
     })
   }
 }

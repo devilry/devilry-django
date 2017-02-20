@@ -54,18 +54,6 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
     return childElements;
   }
 
-  // _compareRowElements(rowElement1, rowElement2) {
-  //   let value1 = rowElement1.children[1].value;
-  //   let value2 = rowElement2.children[1].value;
-  //   if(value1 < value2) {
-  //     return -1;
-  //   }
-  //   if(value1 > value2) {
-  //     return 1;
-  //   }
-  //   return 0;
-  // }
-
   _getPointsFromRowElement(rowElement) {
     const points = parseInt(rowElement.children[1].children[0].value, 10);
     if(isNaN(points)) {
@@ -154,17 +142,19 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
   _buildTable(valueList) {
     this._clear();
     for(let valueObject of valueList) {
-      this._addRow(valueObject.grade, valueObject.points);
+      this._addRow(valueObject[1], valueObject[0]);
     }
   }
 
   _getCurrentValueList() {
     let values = [];
     for(let rowElement of Array.from(this.element.children)) {
-      values.push({
-        grade: this._getGradeFromRowElement(rowElement),
-        points: this._getPointsFromRowElement(rowElement)
-      })
+      let points = this._getPointsFromRowElement(rowElement);
+      let grade = this._getGradeFromRowElement(rowElement) || '';
+      grade = grade.trim();
+      if(points != null && grade != '') {
+        values.push([points, grade]);
+      }
     }
     return values;
   }

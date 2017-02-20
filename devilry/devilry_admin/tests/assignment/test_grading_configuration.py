@@ -1,8 +1,11 @@
+import json
+
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import PointToGradeMap
 from devilry.devilry_admin.views.assignment import gradingconfiguration
 
 
@@ -88,12 +91,31 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
         self.assertEqual(values[1], 'raw-points')
         self.assertEqual(values[2], 'custom-table')
 
+    def test_get_point_to_grade_map_json_none(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=assignment, viewkwargs={'pk': assignment.id})
+        self.assertEqual(
+            mockresponse.selector.one('input[name="point_to_grade_map_json"]').alltext_normalized,
+            '')
+
+    def test_get_point_to_grade_map_json_has_value(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       max_points=100)
+        point_to_grade_map = mommy.make('core.PointToGradeMap', assignment=assignment)
+        point_to_grade_map.create_map((0, 'F'), (80, 'A'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=assignment, viewkwargs={'pk': assignment.id})
+        self.assertEqual(
+            mockresponse.selector.one('input[name="point_to_grade_map_json"]').get('value'),
+            json.dumps([(0, 'F'), (80, 'A')]))
+
     def __make_postdata(self, **data):
         data.setdefault('grading_system_plugin_id', Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)
         data.setdefault('points_to_grade_mapper', Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)
         data.setdefault('passing_grade_min_points', 1)
         data.setdefault('max_points', 1)
-        data.setdefault('custom_table_value_list_json', '')
+        data.setdefault('point_to_grade_map_json', '')
         return data
 
     def test_post_sanity(self):
@@ -114,3 +136,81 @@ class TestAssignmentGradingConfigurationUpdateView(TestCase, cradmin_testhelpers
                          Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)
         self.assertEqual(assignment.passing_grade_min_points, 10)
         self.assertEqual(assignment.max_points, 100)
+
+    def test_post_point_to_grade_map_json_over_max_points(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=assignment,
+            viewkwargs={'pk': assignment.id},
+            requestkwargs={'data': self.__make_postdata(
+                max_points=20,
+                points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
+                point_to_grade_map_json=json.dumps([
+                    [0, 'F'],
+                    [80, 'A']
+                ]))
+            })
+        self.assertFalse(PointToGradeMap.objects.filter(assignment=assignment).exists())
+        self.assertIn(
+            str(gradingconfiguration.GradingConfigurationForm.error_messages[
+                    'max_points_too_small_for_point_to_grade_map']),
+            mockresponse.selector.one('#div_id_max_points.has-error').alltext_normalized)
+
+    def test_post_point_to_grade_map_json_empty(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=assignment,
+            viewkwargs={'pk': assignment.id},
+            requestkwargs={'data': self.__make_postdata(
+                max_points=20,
+                points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
+                point_to_grade_map_json='')
+            })
+        self.assertFalse(PointToGradeMap.objects.filter(assignment=assignment).exists())
+        self.assertIn(
+            str(gradingconfiguration.GradingConfigurationForm.error_messages[
+                    'point_to_grade_map_json_invalid_format']),
+            mockresponse.selector.one('form .alert-danger').alltext_normalized)
+
+    def test_post_point_to_grade_map_json_too_few_rows(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=assignment,
+            viewkwargs={'pk': assignment.id},
+            requestkwargs={'data': self.__make_postdata(
+                max_points=20,
+                points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
+                point_to_grade_map_json=json.dumps([
+                    [0, 'F']
+                ]))
+            })
+        self.assertFalse(PointToGradeMap.objects.filter(assignment=assignment).exists())
+        self.assertIn(
+            str(gradingconfiguration.GradingConfigurationForm.error_messages[
+                    'point_to_grade_map_json_invalid_format']),
+            mockresponse.selector.one('form .alert-danger').alltext_normalized)
+
+    def test_post_point_to_grade_map_json_sanity(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        self.mock_http302_postrequest(
+            cradmin_role=assignment,
+            viewkwargs={'pk': assignment.id},
+            requestkwargs={'data': self.__make_postdata(
+                max_points=100,
+                points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
+                point_to_grade_map_json=json.dumps([
+                    [0, 'F'],
+                    [80, 'A']
+                ]))
+            })
+        self.assertTrue(PointToGradeMap.objects.filter(assignment=assignment).exists())
+        assignment = Assignment.objects.filter(id=assignment.id)\
+            .prefetch_point_to_grade_map()\
+            .get()
+        self.assertEqual(assignment.points_to_grade_mapper,
+                         Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
+        point_to_grade_map_dict = dict(assignment.prefetched_point_to_grade_map.as_choices())
+        self.assertEqual(len(point_to_grade_map_dict), 2)
+        self.assertEqual(point_to_grade_map_dict[0], 'F')
+        self.assertEqual(point_to_grade_map_dict[80], 'A')
+        self.assertFalse(assignment.pointtogrademap.invalid)
