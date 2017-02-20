@@ -1,5 +1,6 @@
 import AbstractWidget from "ievv_jsbase/widget/AbstractWidget";
 import SignalHandlerSingleton from 'ievv_jsbase/SignalHandlerSingleton';
+import HtmlParser from "ievv_jsbase/dom/HtmlParser";
 
 
 export default class GradingConfigurationWidget extends AbstractWidget {
@@ -23,17 +24,17 @@ export default class GradingConfigurationWidget extends AbstractWidget {
       'devilry.GradingConfigurationWidget');
     this._onPluginIdRadioChange = this._onPluginIdRadioChange.bind(this);
     this._onPointsToGradeMapperRadioChange = this._onPointsToGradeMapperRadioChange.bind(this);
+    this._onPassingGradeMinPointsChange = this._onPassingGradeMinPointsChange.bind(this);
     this._onAddCustomTableRow = this._onAddCustomTableRow.bind(this);
     this._onSetupCustomTableAtoFExample = this._onSetupCustomTableAtoFExample.bind(this);
     this._onCustomTableValueChangeSignal = this._onCustomTableValueChangeSignal.bind(this);
 
     this.pluginIdElements = this._getPluginIdElements();
-    this.passingGradeMinPointsWrapperElement = document.getElementById(
-      'div_id_passing_grade_min_points');
-    this.maxPointsLabelElement = this.element.querySelector(
-      '#div_id_max_points label');
-    this.maxPointsHelpTextElement = document.getElementById(
-      'hint_id_max_points');
+    this.passingGradeMinPointsWrapperElement = document.getElementById('div_id_passing_grade_min_points');
+    this.passingGradeMinPointsInputElement = document.getElementById('id_passing_grade_min_points');
+    this.maxPointsLabelElement = this.element.querySelector('#div_id_max_points label');
+    this.maxPointsHelpTextElement = document.getElementById('hint_id_max_points');
+    this.maxPointsInputElement = document.getElementById('id_max_points');
     this.pointsToGradeMapperElements = this._getPointsToGradeMapperElements();
     this.customTableWrapperElement = document.getElementById(
       'id_custom_table_wrapper');
@@ -55,9 +56,21 @@ export default class GradingConfigurationWidget extends AbstractWidget {
     const initialPointsToGradeMapper = this.element.querySelector(
       '#div_id_points_to_grade_mapper input[checked]').value;
     const initialPointToGradeMapString = this.pointToGradeMapJsonElement.value;
+    let initialPassingGradeMinPoints = parseInt(this.passingGradeMinPointsInputElement.value);
+    if(isNaN(initialPassingGradeMinPoints)) {
+      initialPassingGradeMinPoints = null;
+    }
+    let initialMaxPoints = parseInt(this.maxPointsInputElement.value);
+    if(isNaN(initialMaxPoints)) {
+      initialMaxPoints = null;
+    }
+
     let initialPointToGradeMap = [];
     if(initialPointToGradeMapString != undefined && initialPointToGradeMapString != null && initialPointToGradeMapString != '') {
       initialPointToGradeMap = JSON.parse(initialPointToGradeMapString);
+    }
+    if(initialPointToGradeMap.length == 0 || initialPointToGradeMap[0][0] != 0) {
+      initialPointToGradeMap = [[0, '']];
     }
     this._setState({
       // grading_system_plugin_id: 'devilry_gradingsystemplugin_points',
@@ -65,7 +78,9 @@ export default class GradingConfigurationWidget extends AbstractWidget {
       // point_to_grade_map: this._getCustomTableAtoFExampleConfig()
       grading_system_plugin_id: initialPluginId,
       points_to_grade_mapper: initialPointsToGradeMapper,
-      point_to_grade_map: initialPointToGradeMap
+      point_to_grade_map: initialPointToGradeMap,
+      passing_grade_min_points: initialPassingGradeMinPoints,
+      max_points: initialMaxPoints
     }, true);
     this._addEventListeners();
   }
@@ -80,9 +95,9 @@ export default class GradingConfigurationWidget extends AbstractWidget {
   _setState(statePatch, initial=false) {
     let oldState = Object.assign({}, this._state);
     this._state = Object.assign({}, this._state, statePatch);
-    console.log('statePatch', statePatch);
-    console.log('oldState', oldState);
-    console.log('newState', this._state);
+    // console.log('statePatch', statePatch);
+    // console.log('oldState', oldState);
+    // console.log('newState', this._state);
 
     if(initial) {
       this.pluginIdElements[this._state.grading_system_plugin_id].input.checked = true;
@@ -105,6 +120,7 @@ export default class GradingConfigurationWidget extends AbstractWidget {
     }
     if(this._state.point_to_grade_map != oldState.point_to_grade_map) {
       this.pointToGradeMapJsonElement.value = JSON.stringify(this._state.point_to_grade_map);
+      this._updateUiForPointsToGradeMapper();
     }
   }
 
@@ -119,6 +135,49 @@ export default class GradingConfigurationWidget extends AbstractWidget {
     }
   }
 
+  _renderPassingGradeMinPointsField() {
+    let parentElement = this.passingGradeMinPointsInputElement.parentElement;
+    parentElement.removeChild(this.passingGradeMinPointsInputElement);
+    let fieldHtml = '';
+    if(this._state.points_to_grade_mapper == 'custom-table') {
+      fieldHtml = this._getPassingGradeMinPointsCustomTableSelectFieldHtml();
+    } else {
+      fieldHtml = this._getPassingGradeMinPointsInputFieldHtml();
+    }
+    let parser = new HtmlParser(fieldHtml);
+    const selectElement = parser.firstRootElement;
+    this.passingGradeMinPointsInputElement = selectElement;
+    parentElement.insertBefore(selectElement, parentElement.children[0]);
+    selectElement.addEventListener('change', this._onPassingGradeMinPointsChange);
+  }
+
+  _getPassingGradeMinPointsCustomTableSelectFieldHtml() {
+    let options = '<option value=""></option>';
+    let hasSelectedOption = false;
+    for(let pointToGrade of this._state.point_to_grade_map) {
+      let points = pointToGrade[0];
+      let grade = pointToGrade[1];
+      let selected = '';
+      if(points == this._state.passing_grade_min_points && !hasSelectedOption) {
+        selected = 'selected';
+        hasSelectedOption = true;
+      }
+      options += `<option value="${points}" ${selected}>${points} (${grade})</option>`;
+    }
+    return `<select name="passing_grade_min_points" class="form-control">${options}</select>`;
+  }
+
+  _getPassingGradeMinPointsInputFieldHtml() {
+    let value = this._state.passing_grade_min_points;
+    if(value == null) {
+      value = '';
+    }
+    return `<input type="number" name="passing_grade_min_points" 
+                   value="${value}"
+                   min="0" step="1"
+                   class="form-control"/>`;
+  }
+
   _updateUiForPointsToGradeMapper() {
     let mapper = this._state.points_to_grade_mapper;
     if(mapper == 'custom-table') {
@@ -126,6 +185,7 @@ export default class GradingConfigurationWidget extends AbstractWidget {
     } else {
       this.customTableWrapperElement.style.display = 'none';
     }
+    this._renderPassingGradeMinPointsField();
   }
 
   _getPluginIdElements() {
@@ -254,5 +314,15 @@ export default class GradingConfigurationWidget extends AbstractWidget {
     this._setState({
       point_to_grade_map: valueList
     })
+  }
+
+  _onPassingGradeMinPointsChange(event) {
+    let value = parseInt(event.target.value);
+    if(isNaN(value)) {
+      value = null;
+    }
+    this._setState({
+      passing_grade_min_points: value
+    });
   }
 }

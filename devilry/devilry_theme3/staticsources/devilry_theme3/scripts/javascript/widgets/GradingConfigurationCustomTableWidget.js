@@ -19,7 +19,6 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
     this.logger = new window.ievv_jsbase_core.LoggerSingleton().getLogger(
       'devilry.GradingConfigurationCustomTableWidget');
     this._onRemoveRow = this._onRemoveRow.bind(this);
-    // this._onPointInputBlur = this._onPointInputBlur.bind(this);
     this._onGradeInputChange = this._onGradeInputChange.bind(this);
     this._onPointInputChange = this._onPointInputChange.bind(this);
     this._onAddRowSignal = this._onAddRowSignal.bind(this);
@@ -68,7 +67,6 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
 
   _moveToCorrectPlace(rowElement) {
     const points = this._getPointsFromRowElement(rowElement);
-    console.log('POINTS', points);
     if(points != null) {
       for (let currentRowElement of Array.from(this.element.children)) {
         if (rowElement == currentRowElement) {
@@ -97,8 +95,7 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
           <input class="numberinput form-control form-control"
                  value="${minimumPoints}"
                  type="number"
-                 min="1" step="1"
-                 aria-label="TODO: Dynamically generate">
+                 min="1" step="1">
         </div>
         <div class="devilry-tabulardata-list__cell">
           <button class="btn btn-danger" type="button">
@@ -167,24 +164,17 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
 
   _onGradeInputChange(event) {
     const value = event.target.value;
-    console.log('Change', value);
     this._sendValueChangeSignal();
   }
 
   _onPointInputChange(event) {
     let pointInputElement = event.target;
     let rowElement = pointInputElement.parentElement.parentElement;
-    console.log('Change points', pointInputElement.value);
     this._moveToCorrectPlace(rowElement);
     this._sendValueChangeSignal();
   }
 
-  // _onPointInputBlur(event) {
-  //   console.log('BLUR');
-  // }
-
   _onSetRowsSignal(receivedSignalInfo) {
-    console.log('_onSetRowsSignal', receivedSignalInfo.toString());
     const valueList = receivedSignalInfo.data.valueList;
     const sendValueChangeSignal = receivedSignalInfo.data.sendValueChangeSignal;
     this._buildTable(valueList);
@@ -194,7 +184,6 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
   }
 
   _onAddRowSignal(receivedSignalInfo) {
-    console.log('_onAddRowSignal', receivedSignalInfo.toString());
     let rowElement = this._addRow(receivedSignalInfo.data.grade, receivedSignalInfo.data.points);
     this._getRowChildElements(rowElement).gradeInput.focus();
   }
