@@ -39,7 +39,7 @@ class SelectPeriodForm(forms.Form):
 
 class SelectPeriodView(formbase.FormView):
     form_class = SelectPeriodForm
-    template_name = 'devilry_admin/assignment/students/passed_previous_period/select-period-view.django.html'
+    template_name = 'devilry_admin/assignment/passed_previous_period/select-period-view.django.html'
 
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
@@ -91,7 +91,7 @@ class SelectPeriodView(formbase.FormView):
 
 
 class AssignmentItemValue(listbuilder.itemvalue.TitleDescription):
-    template_name = 'devilry_admin/assignment/students/passed_previous_period/assignment-item-value.django.html'
+    template_name = 'devilry_admin/assignment/passed_previous_period/assignment-item-value.django.html'
 
     def __init__(self, **kwargs):
         super(AssignmentItemValue, self).__init__(**kwargs)
@@ -106,7 +106,7 @@ class AssignmentItemValue(listbuilder.itemvalue.TitleDescription):
 
 class PassedPreviousAssignmentView(listbuilderview.View):
     model = Assignment
-    template_name = 'devilry_admin/assignment/students/passed_previous_period/assignment-overview.django.html'
+    template_name = 'devilry_admin/assignment/passed_previous_period/assignment-overview.django.html'
     value_renderer_class = AssignmentItemValue
 
     def dispatch(self, request, *args, **kwargs):
@@ -137,7 +137,7 @@ class PassedPreviousAssignmentView(listbuilderview.View):
 
 
 class CandidateItemValue(listbuilder.itemvalue.TitleDescription):
-    template_name = 'devilry_admin/assignment/students/passed_previous_period/candidate-item-value.django.html'
+    template_name = 'devilry_admin/assignment/passed_previous_period/candidate-item-value.django.html'
 
     def __init__(self, **kwargs):
         self.current_assignment = kwargs.pop('current_assignment')
@@ -179,7 +179,7 @@ class ApprovePreviousForm(forms.Form):
 
 class ApprovePreviousAssignments(formbase.FormView):
     form_class = ApprovePreviousForm
-    template_name = 'devilry_admin/assignment/students/passed_previous_period/confirm-view.django.html'
+    template_name = 'devilry_admin/assignment/passed_previous_period/confirm-view.django.html'
 
     def dispatch(self, request, *args, **kwargs):
         self.period = Period.objects.get(id=kwargs.pop('period_id'))
