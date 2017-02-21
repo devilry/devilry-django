@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.utils.translation import pgettext_lazy
+from django.utils.translation import pgettext_lazy, ugettext_lazy
 from django.views.generic import TemplateView
 from django_cradmin.viewhelpers import listbuilder
 
@@ -19,7 +19,12 @@ class SelectDeadlineItemValue(listbuilder.itemvalue.TitleDescription):
         self.assignment_groups = assignment_groups
         self.assignment = assignment
         self.devilryrole = devilryrole
-        self.deadline = datetimeutils.datetime_to_string(self.value)
+        self.deadline_as_string = datetimeutils.datetime_to_string(self.value)
+
+    def get_title(self):
+        if self.value == self.assignment.first_deadline:
+            return ugettext_lazy('{} (Assignment first deadline)'.format(self.value))
+        return super(SelectDeadlineItemValue, self).get_title()
 
 
 class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
@@ -37,22 +42,6 @@ class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
         return pgettext_lazy('{} select_deadline'.format(self.request.cradmin_app.get_devilryrole()),
                              'Please choose how you would like to manage the deadline.')
 
-    def annotate_queryset(self, queryset):
-        """
-        Annotate the queryset with data that can be used to filtered out which
-        groups that can be managed.
-
-        Args:
-            queryset (QuerySet): Of :class:`.AssignmentGroup`.
-
-        Returns:
-            ``queryset``(from parameters) with annotations.
-        """
-        return queryset\
-            .annotate_with_is_waiting_for_feedback_count()\
-            .annotate_with_is_waiting_for_deliveries_count()\
-            .annotate_with_is_corrected_count()
-
     def get_queryset_for_role(self, role):
         """
         If additional filtering is needed, override this with a call to super.
@@ -61,7 +50,7 @@ class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
             role: :class:`.Assignment`.
         """
         queryset = self.get_queryset_for_role_filtered(role=role)
-        return self.annotate_queryset(queryset=queryset)\
+        return self.get_annotations_for_queryset(queryset=queryset)\
             .distinct()\
             .filter(annotated_is_corrected__gt=0)\
             .order_by('cached_data__last_published_feedbackset__deadline_datetime')
@@ -69,15 +58,15 @@ class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
     def get_distinct_deadlines_with_groups(self):
         """
         Collect data from queryset where the everything is ordered by distinct deadlines.
-        Adds data to a OrderDict where the keys are deadlines and values are lists of ``AssignmentGroups``.
+        Adds data to a OrderDict where the keys are deadlines(``django datetime object``) and values are lists of ``AssignmentGroups``.
 
         Example::
 
             The returned value will be something like this:
                 {
-                    2017-02-16-23:59:59(``django datetime object``): [group4, group5, group6],
-                    2017-02-13-23:59:59(``django datetime object``): [group1, group2, group3],
-                    2017-02-19-23:59:59(``django datetime object``): [group7, group8]
+                    2017-02-16-23:59:59: [group4, group5, group6],
+                    2017-02-17-23:59:59: [group1, group2, group3],
+                    2017-02-18-23:59:59: [group7, group8]
                 }
 
         Returns:

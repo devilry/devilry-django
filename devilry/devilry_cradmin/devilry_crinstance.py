@@ -23,10 +23,7 @@ class BaseDevilryCrInstance(crinstance.BaseCrAdminInstance):
 
 
 class BaseCrInstanceAdmin(BaseDevilryCrInstance):
-    def add_extra_instance_variables_to_request(self, request):
-        setattr(request, 'devilryrole_type', self.devilryrole_type())
-
-    def devilryrole_type(self):
+    def get_devilryrole_type(self):
         return 'admin'
 
 

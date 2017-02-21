@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from crispy_forms import layout
 from django import forms
+from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -197,6 +198,11 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
             return ugettext_lazy('Move deadline')
         return ugettext_lazy('Give new attempt')
 
+    def get_context_data(self, **kwargs):
+        context_data = super(ManageDeadlineView, self).get_context_data(**kwargs)
+        context_data['move_first_deadline'] = self.should_move_first_deadline
+        return context_data
+
     def __create_groupcomment(self, feedback_set_id, publishing_time, text):
         """
         Creates a new :class:`~.devilry.devilry_group.models.GroupComment` entry for a given ``FeedbackSet``.
@@ -314,9 +320,16 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
                     text=text
                 )
 
+    def get_groups_anonymous_display_names(self, form):
+        groups = form.cleaned_data['selected_items']
+        anonymous_display_names = [unicode(group.get_anonymous_displayname(assignment=self.request.cradmin_role))
+                                   for group in groups]
+        return anonymous_display_names
+
     def form_valid(self, form):
         new_deadline = form.cleaned_data.get('new_deadline')
         comment_text = form.cleaned_data.get('comment_text')
+        anonymous_display_names = self.get_groups_anonymous_display_names(form=form)
         if self.post_move_deadline:
             self.__move_deadline(
                 deadline=new_deadline,
@@ -329,7 +342,13 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
                 text=comment_text,
                 assignment_group_ids=self.__get_selected_group_ids(form=form)
             )
+        self.add_success_message(anonymous_display_names)
         return super(ManageDeadlineView, self).form_valid(form)
+
+    def add_success_message(self, anonymous_display_names):
+        message = ugettext_lazy('Deadline managed for %(group_names)s') % {
+            'group_names': ', '.join(anonymous_display_names)}
+        messages.success(self.request, message=message)
 
     def get_success_url(self):
         return self.request.cradmin_app.reverse_appindexurl()
@@ -339,17 +358,38 @@ class ManageDeadlineAllGroupsView(ManageDeadlineView):
     """
     Handles all ``AssignmentGroup``s the user has access to. Using method GET.
     """
-    @property
-    def should_move_first_deadline(self):
-        return self.request.cradmin_instance.get_devilryrole_type() == 'admin' and \
-               self.current_deadline == self.request.cradmin_role.first_deadline
+    def get_queryset_for_role(self, role):
+        queryset = self.get_queryset_for_role_filtered(role=role)\
+                .filter(cached_data__last_feedbackset__deadline_datetime=self.current_deadline)
+        queryset = self.get_annotations_for_queryset(queryset=queryset)\
+            .filter(annotated_is_corrected__gt=0)
+        return queryset
+
+    # @property
+    # def should_move_first_deadline(self):
+    #     """
+    #     Only move ``Assignment.first_deadline`` if:
+    #         User is admin.
+    #         The current deadline is the same as ``Assignment.first_deadline``.
+    #         There are no ``FeedbackSet`` with ``first_attempt`` with ``deadline_datetime`` ahead of first_deadline.
+    #
+    #     Returns:
+    #         (bool): ``True`` if first deadline is to be moved, else ``False``.
+    #     """
+    #     if self.request.cradmin_instance.get_devilryrole_type() != 'admin':
+    #         return False
+    #     if self.current_deadline != self.request.cradmin_role.first_deadline:
+    #         return False
+    #     assignment = self.request.cradmin_role
+    #     feedback_set_count = group_models.FeedbackSet.objects.filter(
+    #         group__parentnode=assignment,
+    #         feedbackset_type=group_models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
+    #         deadline_datetime__gt=assignment.first_deadline)\
+    #         .count()
+    #     return feedback_set_count == 0
 
     def get_initially_selected_items(self):
-        queryset = self.get_queryset_for_role_filtered(role=self.request.cradmin_role)\
-            .filter(cached_data__last_feedbackset__deadline_datetime=self.current_deadline)
-        queryset = self.get_annotations_for_queryset(queryset=queryset)\
-            .filter(annotated_is_corrected__gt=0)\
-            .filter(cached_data__last_feedbackset__deadline_datetime=self.current_deadline)
+        queryset = self.get_queryset_for_role(role=self.request.cradmin_role)
         return [group.id for group in queryset]
 
 

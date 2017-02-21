@@ -22,6 +22,7 @@ from devilry.devilry_group import models as group_models
 from devilry.devilry_group.feedbackfeed_builder import builder_base
 from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_sidebarbuilder
 from devilry.devilry_group.feedbackfeed_builder import feedbackfeed_timelinebuilder
+from devilry.utils import datetimeutils
 
 
 class GroupCommentForm(forms.ModelForm):
@@ -163,11 +164,14 @@ class FeedbackFeedBaseView(create.CreateView):
                 self.request.user,
                 self.get_devilryrole())
         built_timeline = self.__build_timeline(builder_queryset)
+        last_feedbackset = built_timeline.get_last_feedbackset()
         context['last_deadline'] = built_timeline.get_last_deadline()
         context['timeline'] = built_timeline.timeline
         context['feedbacksets'] = built_timeline.feedbacksets
-        context['last_feedbackset'] = built_timeline.get_last_feedbackset()
+        context['last_feedbackset'] = last_feedbackset
         context['current_date'] = datetime.datetime.now()
+        context['last_deadline_as_string'] = datetimeutils\
+            .datetime_to_string(last_feedbackset.deadline_datetime)
         context['listbuilder_list'] = feedbackfeed_timeline.TimelineListBuilderList.from_built_timeline(
             built_timeline,
             group=self.request.cradmin_role,

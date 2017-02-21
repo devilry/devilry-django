@@ -126,6 +126,25 @@ class TestFeedbackfeedExaminerDiscussMixin(test_feedbackfeed_examiner.TestFeedba
             '.devilry-group-feedbackfeed-examiner-after-publish-choice-alert-new-attempt-button').alltext_normalized
         self.assertEquals('Give new attempt', button_text)
 
+    # def test_get_examiner_first_attempt_published_choice_alert_move_deadline_button(self):
+    #     # Test that new attempt button exists in the choice alert when last feedbackset is published.
+    #     testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+    #     testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    #     group_mommy.feedbackset_first_attempt_published(group=testgroup)
+    #     examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+    #     mockresponse = self.mock_http200_getrequest_htmls(
+    #         cradmin_role=testgroup,
+    #         requestuser=examiner.relatedexaminer.user
+    #     )
+    #     self.assertTrue(
+    #         mockresponse.selector.exists(
+    #             '.devilry-group-feedbackfeed-examiner-after-publish-choice-alert-new-attempt-button')
+    #     )
+    #     button_text = mockresponse.selector \
+    #         .one(
+    #         '.devilry-group-feedbackfeed-examiner-after-publish-choice-alert-move-deadline-button').alltext_normalized
+    #     self.assertEquals('Move deadline', button_text)
+
     def test_get_examiner_first_attempt_published_choice_alert_re_edit_button_text(self):
         # Test that new attempt button exists in the choice alert when last feedbackset is published.
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')

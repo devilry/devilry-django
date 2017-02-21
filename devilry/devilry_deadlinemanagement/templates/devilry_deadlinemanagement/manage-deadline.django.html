@@ -26,3 +26,12 @@
         {{ page_subheading }}
     </p>
 {% endblock pageheader-inner %}
+
+{% block form %}
+    <div class="container">
+        {% if move_first_deadline == True %}
+            <p>When you submit, the first deadline of the assignment will be moved.</p>
+        {% endif %}
+        {{ block.super }}
+    </div>
+{% endblock form %}
