@@ -7,7 +7,7 @@ from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.apps.core.models import Assignment
-from devilry.devilry_admin.views.assignment.students import passed_previous_period
+from devilry.devilry_admin.views.assignment import passed_previous_period
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 
@@ -835,9 +835,8 @@ class TestCandidateListbuilder(TestCase, cradmin_testhelpers.TestCaseMixin):
 
         valuelist = [elem.alltext_normalized for elem in mockresponse.selector.list(
             '.django-cradmin-listbuilder-itemvalue-titledescription-description')]
-        self.assertEqual(3, len(valuelist))
+        self.assertEqual(2, len(valuelist))
         self.assertIn('{} - {}'.format(testassignment1.long_name, testassignment1.parentnode.long_name), valuelist)
-        self.assertIn('01.1000 - 12.1999 (semester start/semester end)', valuelist)
         self.assertIn('passed (1/1) passed (3/3)', valuelist)
 
     def test_multiple_title(self):
@@ -972,7 +971,7 @@ class TestApprovePreviousPostView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         messagesmock.add.assert_called_once_with(
             messages.SUCCESS,
-            'Success: {} got approved for this assignment.'.format(candidate1.relatedstudent.user.get_displayname()),
+            '{} was marked as approved for this assignment.'.format(candidate1.relatedstudent.user.get_displayname()),
             ''
         )
 
@@ -1033,7 +1032,7 @@ class TestApprovePreviousPostView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         messagesmock.add.assert_called_once_with(
             messages.SUCCESS,
-            'Success: {}, {}, {} got approved for this assignment.'
+            '{}, {}, {} was marked as approved for this assignment.'
             ''.format(candidate1.relatedstudent.user.get_displayname(),
                       candidate2.relatedstudent.user.get_displayname(),
                       candidate3.relatedstudent.user.get_displayname()),

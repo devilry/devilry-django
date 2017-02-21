@@ -1,8 +1,7 @@
 from devilry.apps.core.models import Assignment
 from devilry.devilry_account.models import PeriodPermissionGroup
-from devilry.devilry_cradmin import devilry_crinstance
 from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
-from devilry.devilry_admin.views.assignment import overview
+from devilry.devilry_admin.views.assignment import overview, passed_previous_period
 from devilry.devilry_admin.views.assignment.examiners import add_groups_to_examiner
 from devilry.devilry_admin.views.assignment.examiners import bulk_organize as bulk_organize_examiners
 from devilry.devilry_admin.views.assignment.examiners import examinerdetails
@@ -15,7 +14,7 @@ from devilry.devilry_admin.views.assignment.students import merge_groups
 from devilry.devilry_admin.views.assignment.students import overview as studentoverview
 from devilry.devilry_admin.views.assignment.students import replace_groups
 from devilry.devilry_admin.views.assignment.students import split_group
-from devilry.devilry_admin.views.assignment.students import passed_previous_period
+from devilry.devilry_cradmin import devilry_crinstance
 
 
 class Menu(devilry_crmenu_admin.Menu):
