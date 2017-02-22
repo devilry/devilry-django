@@ -110,24 +110,24 @@ class GroupInvite(models.Model):
             .order_by('relatedstudent__user__fullname', 'relatedstudent__user__shortname')
 
     @staticmethod
-    def validate_user_id_send_to(group, user_id):
+    def validate_candidate_id_sent_to(group, candidate_id):
         """
-        Checks whether a user can join the ``group``
+        Checks whether a candidate join the ``group``
         Args:
             group: :class:`core.AssignmentGroup` group to join
-            user_id: id of the user.
+            candidate_id: :attr:`core.Candidate.id` id of candidate
 
         Returns:
-            :class:`devilry_account.User`
+            :class:`devilry_account.User` returns the user related to the candidate
 
         Raises:
             ValidationError - If the user is not eligible to join
         """
         try:
-            return User.objects.filter(
-                relatedstudent__candidate__in=GroupInvite.send_invite_to_choices_queryset(group),
-                id=user_id).get()
-        except User.DoesNotExist:
+            return GroupInvite.send_invite_to_choices_queryset(group)\
+                .get(id=candidate_id)\
+                .relatedstudent.user
+        except Candidate.DoesNotExist:
             raise ValidationError(ugettext_lazy('The selected student is not eligible to join the group.'))
 
     def clean(self):

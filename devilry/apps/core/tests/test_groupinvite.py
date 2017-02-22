@@ -418,9 +418,9 @@ class GroupInviteRespond(TestCase):
         testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=assignment)
         core_mommy.candidate(testgroup)
-        sent_to = core_mommy.candidate(testgroup1).relatedstudent.user
+        sent_to = core_mommy.candidate(testgroup1)
         with self.assertNumQueries(1):
-            user = GroupInvite.validate_user_id_send_to(testgroup, sent_to.id)
+            user = GroupInvite.validate_candidate_id_sent_to(testgroup, sent_to.id)
             self.assertEqual(user.id, sent_to.id)
 
     def test_validation_user_id_send_to_error_wrong_assignment(self):
@@ -428,14 +428,14 @@ class GroupInviteRespond(TestCase):
         testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
         testgroup1 = mommy.make('core.AssignmentGroup')
         core_mommy.candidate(testgroup)
-        sent_to = core_mommy.candidate(testgroup1).relatedstudent.user
+        sent_to = core_mommy.candidate(testgroup1)
         with self.assertRaisesMessage(ValidationError, 'The selected student is not eligible to join the group.'):
-            GroupInvite.validate_user_id_send_to(testgroup, sent_to.id)
+            GroupInvite.validate_candidate_id_sent_to(testgroup, sent_to.id)
 
     def test_validation_user_id_send_to_error_already_in_group(self):
         assignment = mommy.make('core.Assignment', students_can_create_groups=True)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
         core_mommy.candidate(testgroup)
-        sent_to = core_mommy.candidate(testgroup).relatedstudent.user
+        sent_to = core_mommy.candidate(testgroup)
         with self.assertRaisesMessage(ValidationError, 'The selected student is not eligible to join the group.'):
-            GroupInvite.validate_user_id_send_to(testgroup, sent_to.id)
+            GroupInvite.validate_candidate_id_sent_to(testgroup, sent_to.id)
