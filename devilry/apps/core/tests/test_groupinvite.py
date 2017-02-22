@@ -390,6 +390,29 @@ class GroupInviteRespond(TestCase):
             [candidate4, candidate5]
         )
 
+    def test_send_invite_to_choices_queryset_pending_is_excluded(self):
+        group1 = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=group1.parentnode)
+        group3 = mommy.make('core.AssignmentGroup', parentnode=group1.parentnode)
+        group4 = mommy.make('core.AssignmentGroup', parentnode=group1.parentnode)
+        candidate1 = core_mommy.candidate(group=group1, fullname="Louie", shortname="louie")
+        core_mommy.candidate(group=group2, fullname="Huey", shortname="huey")
+        core_mommy.candidate(group=group2, fullname="Donald", shortname="donald")
+        candidate4 = core_mommy.candidate(group=group3, fullname="April", shortname="april")
+        candidate5 = core_mommy.candidate(group=group4, fullname="Dewey", shortname="dewey")
+        mommy.make(
+            'core.GroupInvite',
+            group=group1,
+            sent_to=candidate4.relatedstudent.user,
+            sent_by=candidate1.relatedstudent.user
+        )
+        candidates = GroupInvite.send_invite_to_choices_queryset(group1)
+        self.assertEqual(candidates.count(), 1)
+        self.assertListEqual(
+            [candidate for candidate in candidates],
+            [candidate5]
+        )
+
     def test_validate_user_id_send_to(self):
         assignment = mommy.make('core.Assignment', students_can_create_groups=True)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)

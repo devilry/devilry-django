@@ -92,14 +92,21 @@ class GroupInvite(models.Model):
         Will be excluded:
         - Students already in the group.
         - Already in a group with more than 1 candidates
+        - Candidates with pending invitations on ``group``
         """
+        # Exclude users with pending invitations
+        excluded_users = User.objects.filter(
+            models.Q(groupinvite_sent_to_set__accepted=None) | models.Q(groupinvite_sent_to_set__accepted=True),
+            groupinvite_sent_to_set__group=group
+        )
+
         return Candidate.objects.filter(
             assignment_group__parentnode__students_can_create_groups=True,
             assignment_group__parentnode=group.parentnode,
             assignment_group__cached_data__candidate_count=1
-
-        ).exclude(assignment_group_id=group.id) \
-            .select_related('relatedstudent__user', 'assignment_group__parentnode') \
+        ).exclude(
+            models.Q(assignment_group_id=group.id) | models.Q(relatedstudent__user__in=excluded_users)
+        ).select_related('relatedstudent__user', 'assignment_group__parentnode')\
             .order_by('relatedstudent__user__fullname', 'relatedstudent__user__shortname')
 
     @staticmethod
