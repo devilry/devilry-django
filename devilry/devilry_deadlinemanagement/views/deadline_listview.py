@@ -51,9 +51,7 @@ class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
         """
         queryset = self.get_queryset_for_role_filtered(role=role)
         return self.get_annotations_for_queryset(queryset=queryset)\
-            .distinct()\
-            .filter(annotated_is_corrected__gt=0)\
-            .order_by('cached_data__last_published_feedbackset__deadline_datetime')
+            .order_by('cached_data__last_feedbackset__deadline_datetime')
 
     def get_distinct_deadlines_with_groups(self):
         """
@@ -75,7 +73,7 @@ class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
         queryset = self.get_queryset_for_role(role=self.request.cradmin_role)
         deadlines_dict = {}
         for group in queryset:
-            deadline = group.cached_data.last_published_feedbackset.deadline_datetime
+            deadline = group.cached_data.last_feedbackset.deadline_datetime
             if deadline not in deadlines_dict:
                 deadlines_dict[deadline] = []
             deadlines_dict[deadline].append(group)

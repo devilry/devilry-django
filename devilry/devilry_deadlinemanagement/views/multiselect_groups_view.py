@@ -79,18 +79,12 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
     necessary tables used for anonymzation and annotations used by viewfilters.
     """
     model = core_models.AssignmentGroup
-
     value_renderer_class = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
     template_name = 'devilry_deadlinemanagement/deadline-bulk-multiselect-filterlistview.django.html'
-
     handle_deadline_type = None
 
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
-        self.deadline = datetimeutils.string_to_datetime(kwargs.get('deadline'))
-        if kwargs.get('handle_deadline') == 'new-attempt':
-            if self.get_unfiltered_queryset_for_role(role=request.cradmin_role).count() == 0:
-                raise http.Http404()
         return super(AssignmentGroupMultiSelectListFilterView, self).dispatch(request, *args, **kwargs)
 
     def get_pagetitle(self):
@@ -140,40 +134,8 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
         filterlist.append(devilry_listfilter.assignmentgroup.IsPassingGradeFilter())
         filterlist.append(devilry_listfilter.assignmentgroup.PointsFilter())
 
-    # def get_annotations_for_queryset(self, queryset):
-    #     """
-    #     Add annotations for the the queryset.
-    #     This function is called in ``get_unfiltered_queryset_for_role()``
-    #
-    #     Args:
-    #         queryset (QuerySet): Add annotations to.
-    #
-    #     Returns:
-    #         (QuerySet): annotated queryset.
-    #     """
-    #     return queryset \
-    #         .annotate_with_is_waiting_for_feedback_count() \
-    #         .annotate_with_is_waiting_for_deliveries_count() \
-    #         .annotate_with_is_corrected_count()\
-    #         .annotate_with_is_passing_grade_count()
-
     def get_unfiltered_queryset_for_role(self, role):
-        """
-        Get unfiltered ``QuerySet`` of :obj:`~.devilry.apps.core.models.AssignmentGroup`s.
-
-        Override this with a call to super and more filters to the queryset.
-
-        Args:
-            role (:class:`~.devilry.apps.core.models.Assignment`): cradmin role.
-
-        Returns:
-            (QuerySet): ``QuerySet`` of ``AssignmentGroups``.
-        """
-        queryset = self.get_queryset_for_role_filtered(role=role)
-        queryset = self.get_annotations_for_queryset(queryset=queryset)
-        return queryset \
-            .filter(annotated_is_corrected__gt=0) \
-            .filter(cached_data__last_published_feedbackset__deadline_datetime=self.deadline)
+        return self.get_queryset_for_role_on_handle_deadline_type(role=role)
 
     def get_target_renderer_class(self):
         return AssignmentGroupTargetRenderer
@@ -233,6 +195,14 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
     def get_context_data(self, **kwargs):
         return super(AssignmentGroupMultiSelectListFilterView, self).get_context_data(**kwargs)
 
+    def get_filterlist_url(self, filters_string):
+        return self.request.cradmin_app.reverse_appurl(
+            'select-groups-manually-filter', kwargs={
+                'deadline': datetimeutils.datetime_to_string(self.deadline),
+                'handle_deadline': self.handle_deadline_type,
+                'filters_string': filters_string
+            })
+
     # def add_success_message(self, anonymous_display_names):
     #     """
     #     Add list of anonymized displaynames of the groups that received feedback.
@@ -241,27 +211,3 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
     #         anonymous_display_names (list): List of anonymized displaynames for groups.
     #     """
     # raise NotImplementedError()
-
-
-class MoveDeadlineManualGroupSelectView(AssignmentGroupMultiSelectListFilterView):
-    handle_deadline_type = 'move-deadline'
-
-    def get_filterlist_url(self, filters_string):
-        return self.request.cradmin_app.reverse_appurl(
-            'select-manually-move-deadline-filter', kwargs={
-                'deadline': datetimeutils.datetime_to_string(self.deadline),
-                'handle_deadline': self.handle_deadline_type,
-                'filters_string': filters_string
-            })
-
-
-class NewAttemptManualGroupSelectView(AssignmentGroupMultiSelectListFilterView):
-    handle_deadline_type = 'new-attempt'
-
-    def get_filterlist_url(self, filters_string):
-        return self.request.cradmin_app.reverse_appurl(
-            'select-manually-new-attempt-filter', kwargs={
-                'deadline': datetimeutils.datetime_to_string(self.deadline),
-                'handle_deadline': self.handle_deadline_type,
-                'filters_string': filters_string
-            })

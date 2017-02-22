@@ -28,6 +28,10 @@ class AbstractDeadlineManagementApp(crapp.App):
         return deadline_listview.DeadlineListView
 
     @classmethod
+    def get_groups_multiselect_view_class(cls):
+        return multiselect_groups_view.AssignmentGroupMultiSelectListFilterView
+
+    @classmethod
     def get_groups_multiselect_view_move_deadline_class(cls):
         return multiselect_groups_view.MoveDeadlineManualGroupSelectView
 
@@ -57,23 +61,17 @@ class AbstractDeadlineManagementApp(crapp.App):
                 name=crapp.INDEXVIEW_NAME
             ),
 
-            # Multi select groups views.
+            # Select groups manually.
             crapp.Url(
-                r'select-manually-move-deadline/{}$'.format(cls.get_url_pattern()),
-                cls.get_groups_multiselect_view_move_deadline_class().as_view(),
-                name='select-manually-move-deadline'),
+                r'select-manually/{}$'.format(cls.get_url_pattern()),
+                cls.get_groups_multiselect_view_class().as_view(),
+                name='select-groups-manually'
+            ),
             crapp.Url(
-                r'select-manually-move-deadline/{}/(?P<filters_string>.+)?$'.format(cls.get_url_pattern()),
-                cls.get_groups_multiselect_view_move_deadline_class().as_view(),
-                name='select-manually-move-deadline-filter'),
-            crapp.Url(
-                r'select-manually-new-attempt/{}$'.format(cls.get_url_pattern()),
-                cls.get_groups_multiselect_view_new_attempt_class().as_view(),
-                name='select-manually-new-attempt'),
-            crapp.Url(
-                r'select-manually-new-attempt/{}/(?P<filters_string>.+)?$'.format(cls.get_url_pattern()),
-                cls.get_groups_multiselect_view_new_attempt_class().as_view(),
-                name='select-manually-new-attempt-filter'),
+                r'select-manually/{}/(?P<filters_string>.+)?$'.format(cls.get_url_pattern()),
+                cls.get_groups_multiselect_view_class().as_view(),
+                name='select-groups-manually-filter'
+            ),
 
             # Manage deadline views.
             crapp.Url(
