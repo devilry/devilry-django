@@ -194,7 +194,6 @@ class GroupInviteDeleteView(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super(GroupInviteDeleteView, self).get_context_data(**kwargs)
-        context['cancel_url'] = self.request.cradmin_app.reverse_appindexurl()
         return context
 
     def get_success_url(self):
