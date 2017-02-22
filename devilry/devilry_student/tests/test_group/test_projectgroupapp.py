@@ -302,6 +302,25 @@ class TestProjectGroupOverviewViewStudentsCanCreateGroups(TestCase, cradmin_test
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group, requestuser=candidate.relatedstudent.user)
         self.assertEqual(len(mockresponse.selector.list('.btn.btn-danger.btn-xs')), 2)
 
+    def test_received_invite(self):
+        test_assignment = mommy.make('core.Assignment', students_can_create_groups=True)
+        group = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        mommy.make('core.GroupInvite', group=group,
+                   sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group1,
+                                                          requestuser=candidate1.relatedstudent.user)
+        self.assertIn(
+            'You have been invited to join a group! {} invited you to join their group.'.format(
+                candidate.relatedstudent.user.get_full_name()),
+            mockresponse.selector.one('.alert.alert-success').alltext_normalized)
+        self.assertIn(
+            'More info',
+            mockresponse.selector.one('.btn.btn-default').alltext_normalized)
+
+
 
 @unittest.skip('Need updates for new student UI')
 class TestGroupInviteRespondView(TestCase):
