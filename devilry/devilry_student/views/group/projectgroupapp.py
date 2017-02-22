@@ -138,12 +138,7 @@ class GroupInviteRespondView(DetailView):
             viewname=crapp.INDEXVIEW_NAME)
 
     def get_declined_or_error_url(self):
-        return reverse_cradmin_url(
-            instanceid='devilry_group_student',
-            appname='feedbackfeed',
-            roleid=self.request.cradmin_role,
-            viewname=crapp.INDEXVIEW_NAME
-        )
+        return self.request.cradmin_app.reverse_appindexurl()
 
     def post(self, *args, **kwargs):
         invite = self.get_object()
@@ -168,7 +163,7 @@ class GroupInviteRespondView(DetailView):
                 )
                 return redirect(self.get_success_url())
             else:
-                messages.warning(
+                messages.success(
                     self.request,
                     ugettext_lazy(
                         'Declined group invitation from %(student)s' % {
@@ -196,6 +191,12 @@ class GroupInviteDeleteView(DeleteView):
         return context
 
     def get_success_url(self):
+        messages.success(
+            self.request,
+            ugettext_lazy('Removed project group invitation %(student)s.' % {
+                'student': self.get_object().sent_to.get_displayname()
+            })
+        )
         return self.request.cradmin_app.reverse_appindexurl()
 
     def post(self, *args, **kwargs):
