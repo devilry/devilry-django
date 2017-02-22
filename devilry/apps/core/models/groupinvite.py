@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from django.utils.timezone import datetime
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -95,11 +94,34 @@ class GroupInvite(models.Model):
         - Already in a group with more than 1 candidates
         """
         return Candidate.objects.filter(
+            assignment_group__parentnode__students_can_create_groups=True,
             assignment_group__parentnode=group.parentnode,
             assignment_group__cached_data__candidate_count=1
-        ).exclude(assignment_group_id=group.id)\
-            .select_related('relatedstudent__user', 'assignment_group__parentnode')\
+
+        ).exclude(assignment_group_id=group.id) \
+            .select_related('relatedstudent__user', 'assignment_group__parentnode') \
             .order_by('relatedstudent__user__fullname', 'relatedstudent__user__shortname')
+
+    @staticmethod
+    def validate_user_id_send_to(group, user_id):
+        """
+        Checks whether a user can join the ``group``
+        Args:
+            group: :class:`core.AssignmentGroup` group to join
+            user_id: id of the user.
+
+        Returns:
+            :class:`devilry_account.User`
+
+        Raises:
+            ValidationError - If the user is not eligible to join
+        """
+        try:
+            return User.objects.filter(
+                relatedstudent__candidate__in=GroupInvite.send_invite_to_choices_queryset(group),
+                id=user_id).get()
+        except User.DoesNotExist:
+            raise ValidationError(ugettext_lazy('The selected student is not eligible to join the group.'))
 
     def clean(self):
         if self.accepted and not self.responded_datetime:
@@ -108,8 +130,8 @@ class GroupInvite(models.Model):
             raise ValidationError(ugettext_lazy('The user sending an invite must be a Candiate on the group.'))
         if self.sent_to and self.group.candidates.filter(relatedstudent__user=self.sent_to).exists():
             raise ValidationError(ugettext_lazy('The student is already a member of the group.'))
-        if GroupInvite.objects.filter_no_response()\
-                .filter(group=self.group, sent_to=self.sent_to)\
+        if GroupInvite.objects.filter_no_response() \
+                .filter(group=self.group, sent_to=self.sent_to) \
                 .exclude(id=self.id).exists():
             raise ValidationError(
                 ugettext_lazy('The student is already invited to join the group, but they have not responded yet.'))
@@ -117,7 +139,7 @@ class GroupInvite(models.Model):
         assignment = self.group.assignment
         if assignment.students_can_create_groups:
             if assignment.students_can_not_create_groups_after and \
-                    assignment.students_can_not_create_groups_after < datetime.now():
+                            assignment.students_can_not_create_groups_after < datetime.now():
                 raise ValidationError(ugettext_lazy(
                     'Creating project groups without administrator approval is not '
                     'allowed on this assignment anymore. Please contact you course '
@@ -130,8 +152,8 @@ class GroupInvite(models.Model):
             raise ValidationError(ugettext_lazy('The invited student is not registered on this assignment.'))
 
         if self.accepted:
-            sent_to_group = AssignmentGroup.objects.filter(parentnode=assignment)\
-                .filter_user_is_candidate(self.sent_to)\
+            sent_to_group = AssignmentGroup.objects.filter(parentnode=assignment) \
+                .filter_user_is_candidate(self.sent_to) \
                 .first()
             if sent_to_group.cached_data.candidate_count > 1:
                 raise ValidationError(ugettext_lazy(
@@ -162,8 +184,8 @@ class GroupInvite(models.Model):
         """
         Merging assignment groups
         """
-        source = AssignmentGroup.objects.filter_user_is_candidate(self.sent_to)\
-            .filter(parentnode=self.group.parentnode)\
+        source = AssignmentGroup.objects.filter_user_is_candidate(self.sent_to) \
+            .filter(parentnode=self.group.parentnode) \
             .get()
         with transaction.atomic():
             source.merge_into(self.group)
