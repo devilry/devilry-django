@@ -1,11 +1,24 @@
 {% extends "django_cradmin/base.django.html" %}
-{% load cradmin_tags %}
-{% load crispy_forms_tags %}
 {% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+{% load crispy_forms_tags %}
+{% load cradmin_icon_tags %}
 
 {% block title %}{% trans "Project group" %}{% endblock title %}
 
+{% block pageheader-outer-extraclasses %}
+   {{ block.super }}
+   devilry-page-header-with-backlink
+{% endblock %}
+
 {% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'feedbackfeed' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to project group" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
     <h1>
         {% trans "Project group" %}
     </h1>
@@ -68,7 +81,11 @@
                                         {{ invite.sent_to.get_full_name }}
                                     </span>
                                 </td>
-                                <td>{{ invite.sent_by.get_full_name }}</td>
+                                <td>
+                                    <span class="invited_sent_by_displayname">
+                                        {{ invite.sent_by.get_full_name }}
+                                    </span>
+                                </td>
                                 <td>{{ invite.sent_datetime|date:"DATETIME_FORMAT" }}</td>
                             </tr>
                         {% endfor %}

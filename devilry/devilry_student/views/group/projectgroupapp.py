@@ -32,7 +32,7 @@ class CreateForm(forms.ModelForm):
     def _sent_to_choices(self):
         candidates = GroupInvite.send_invite_to_choices_queryset(self.group)
         choices = [
-            (candidate.relatedstudent.user_id, candidate.relatedstudent.user.get_displayname())
+            (candidate.id, candidate.relatedstudent.user.get_displayname())
             for candidate in candidates]
         choices.insert(0, ('', ''))
         return choices
@@ -54,12 +54,12 @@ class CreateForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(CreateForm, self).clean()
-        sent_to_userid = cleaned_data.get('sent_to')
-        if sent_to_userid:
+        sent_to_candidate_id = cleaned_data.get('sent_to')
+        if sent_to_candidate_id:
             try:
-                sent_to = GroupInvite.validate_user_id_send_to(self.group, sent_to_userid)
-            except ValidationError:
-                ValidationError(ugettext_lazy('Cannot invite student'))
+                sent_to = GroupInvite.validate_candidate_id_sent_to(self.group, sent_to_candidate_id)
+            except ValidationError as e:
+                self.cleaned_invite = None
             else:
                 invite = GroupInvite(group=self.group, sent_by=self.sent_by, sent_to=sent_to)
                 invite.full_clean()
@@ -97,8 +97,15 @@ class ProjectGroupOverviewView(TemplateView):
         return self.request.path
 
     def form_valid(self, form):
-        form.cleaned_invite.save()
-        form.cleaned_invite.send_invite_notification(self.request)
+        if form.cleaned_invite:
+            form.cleaned_invite.save()
+            form.cleaned_invite.send_invite_notification(self.request)
+            messages.success(
+                self.request,
+                ugettext_lazy('Invite sent to %(student)s.' % {
+                    'student': form.cleaned_invite.sent_to.get_displayname()
+                })
+            )
         return redirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
