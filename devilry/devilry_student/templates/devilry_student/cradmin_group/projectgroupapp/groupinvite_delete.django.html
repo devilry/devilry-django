@@ -33,7 +33,7 @@
     <div class="container django-cradmin-container-focus">
         <form action="{{ request.path }}" method="post">{% csrf_token %}
             <p>{% blocktrans with user=groupinvite.sent_to.get_full_name %}Are you sure you want to delete the invite for {{ user }}?{% endblocktrans %}</p>
-            <a class="btn btn-default" href="{{ cancel_url }}">{% trans "Cancel" %}</a>
+            <a class="btn btn-default" href="{% cradmin_instance_appindex_url 'projectgroup' %}">{% trans "Cancel" %}</a>
             <button type="submit" class="btn btn-danger">{% trans 'Delete invite' %}</button>
         </form>
     </div>
