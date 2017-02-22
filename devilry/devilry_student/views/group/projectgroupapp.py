@@ -1,17 +1,16 @@
-from django.contrib.auth import get_user_model
-
-from django.contrib import messages
-from django.views.generic import TemplateView
-from django.utils.translation import ugettext_lazy
-from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit
-from django_cradmin import crapp
-from django.views.generic.detail import DetailView
-from django.shortcuts import redirect
+from django import forms
+from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django_cradmin.crinstance import reverse_cradmin_url
+from django.shortcuts import redirect
+from django.utils.translation import ugettext_lazy
+from django.views.generic import TemplateView
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView
+from django_cradmin import crapp
+from django_cradmin.crinstance import reverse_cradmin_url
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import GroupInvite
