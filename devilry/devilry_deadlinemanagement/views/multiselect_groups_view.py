@@ -1,126 +1,213 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from crispy_forms import layout
 from django import forms
 from django import http
-from django.contrib import messages
-from django.db import transaction
-from django.utils import timezone
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy
-from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
+from django_cradmin.viewhelpers import multiselect2
+from django_cradmin.viewhelpers import multiselect2view
 
+from devilry.apps.core import models as core_models
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
-from devilry.devilry_deadlinemanagement.views import viewutils
-from devilry.devilry_group import models as group_models
 from devilry.utils import datetimeutils
+from devilry.devilry_deadlinemanagement.views import viewutils
 
 
-class NewAttemptDeadlineForm(viewutils.SelectedAssignmentGroupForm):
-    new_deadline = forms.DateTimeField(widget=DateTimePickerWidget)
-    invalid_qualification_item_message = pgettext_lazy(
-        'examiner group multiselect submit',
+class SelectedAssignmentGroupForm(forms.Form):
+    qualification_modelclass = core_models.AssignmentGroup
+    invalid_qualification_item_message = ugettext_lazy(
         'Something went wrong. This may happen if someone else performed a similar operation '
         'while you where selecting. Refresh the page and try again')
 
-    def clean(self):
-        if 'new_deadline' not in self.cleaned_data:
-            raise forms.ValidationError('You must provide a deadline.')
-        deadline = self.cleaned_data['new_deadline']
-        if deadline <= timezone.now():
-            raise forms.ValidationError('The deadline has to be in the future.')
+    #: The items selected as ModelMultipleChoiceField.
+    #: If some or all items should be selected by default, override this.
+    selected_items = forms.ModelMultipleChoiceField(
 
-    def get_new_deadline(self):
-        return self.cleaned_data['new_deadline']
+        # No items are selectable by default.
+        queryset=None,
+
+        # Used if the object to select for some reason does
+        # not exist(has been deleted or altered in some way)
+        error_messages={
+            'invalid_choice': invalid_qualification_item_message,
+        }
+    )
+
+    def __init__(self, *args, **kwargs):
+        selectable_qualification_items_queryset = kwargs.pop('selectable_items_queryset')
+        self.assignment = kwargs.pop('assignment')
+        super(SelectedAssignmentGroupForm, self).__init__(*args, **kwargs)
+        self.fields['selected_items'].queryset = selectable_qualification_items_queryset
 
 
-class NewAttemptDeadlineTargetRenderer(viewutils.AssignmentGroupTargetRenderer):
-    def get_field_layout(self):
-        layout = super(NewAttemptDeadlineTargetRenderer, self).get_field_layout()
-        layout.append('new_deadline')
-        return layout
+class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
+
+    #: The selected item as it is shown when selected.
+    #: By default this is :class:`.SelectedQualificationItem`.
+    selected_target_renderer = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
+
+    #: A descriptive name for the items selected.
+    descriptive_item_name = 'assignment group'
+
+    def get_move_deadline_text(self):
+        return 'Move deadline for selected {}(s)'.format(self.descriptive_item_name)
+
+    def get_submit_button_text(self):
+        return 'New attempt for selected {}(s)'.format(self.descriptive_item_name)
+
+    def get_with_items_title(self):
+        return 'Selected {}'.format(self.descriptive_item_name)
+
+    def get_without_items_text(self):
+        return 'No {} selected'.format(self.descriptive_item_name)
+
+    def get_hidden_fields(self):
+        return [
+            layout.Hidden(name='post_type_received_data', value='')
+        ]
 
 
-class BulkManageDeadlineMultiSelectView(viewutils.AbstractAssignmentGroupMultiSelectListFilterView):
+class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin, multiselect2view.ListbuilderFilterView):
+    """
+    Abstract class that implements ``ListbuilderFilterView``.
+
+    Adds anonymization and activity filters for the ``AssignmentGroup``s.
+    Fetches the ``AssignmentGroups`` through :meth:`~.get_unfiltered_queryset_for_role` and joins
+    necessary tables used for anonymzation and annotations used by viewfilters.
+    """
+    model = core_models.AssignmentGroup
     value_renderer_class = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
     template_name = 'devilry_deadlinemanagement/deadline-bulk-multiselect-filterlistview.django.html'
+    handle_deadline_type = None
 
     def dispatch(self, request, *args, **kwargs):
-        self.deadline = datetimeutils.string_to_datetime(kwargs.get('deadline'))
-        return super(BulkManageDeadlineMultiSelectView, self).dispatch(request, *args, **kwargs)
+        self.assignment = self.request.cradmin_role
+        return super(AssignmentGroupMultiSelectListFilterView, self).dispatch(request, *args, **kwargs)
 
     def get_pagetitle(self):
-        return ugettext_lazy('Manage groups on deadline')
+        return pgettext_lazy('{} select_groups'.format(self.request.cradmin_app.get_devilryrole()),
+                             'Select groups')
+
+    def get_pageheading(self):
+        return pgettext_lazy('{} select_groups'.format(self.request.cradmin_app.get_devilryrole()),
+                             'Select groups')
+
+    def get_page_subheading(self):
+        return pgettext_lazy('{} select_groups'.format(self.request.cradmin_app.get_devilryrole()),
+                             'Select the groups you want to manage the deadline for.')
+
+    def get_default_paginate_by(self, queryset):
+        return 5
+
+    def __add_filterlist_items_anonymous_uses_custom_candidate_ids(self, filterlist):
+        filterlist.append(devilry_listfilter.assignmentgroup.SearchAnonymousUsesCustomCandidateIds())
+        filterlist.append(devilry_listfilter.assignmentgroup.OrderByAnonymousUsesCustomCandidateIds())
+
+    def __add_filterlist_items_anonymous(self, filterlist):
+        filterlist.append(devilry_listfilter.assignmentgroup.SearchAnonymous())
+        filterlist.append(devilry_listfilter.assignmentgroup.OrderByAnonymous(include_points=False))
+
+    def __add_filterlist_items_not_anonymous(self, filterlist):
+        filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())
+        filterlist.append(devilry_listfilter.assignmentgroup.OrderByNotAnonymous(include_points=False))
+
+    def __add_anonymization_filters_for_items(self, filterlist):
+        """
+        Adds filters based on the :attr:`~.devilry.apps.core.models.anonymizationmode` of the
+        ``Assignment``.
+        """
+        if self.assignment.uses_custom_candidate_ids:
+            self.__add_filterlist_items_anonymous_uses_custom_candidate_ids(filterlist=filterlist)
+        else:
+            self.__add_filterlist_items_anonymous(filterlist=filterlist)
 
     def add_filterlist_items(self, filterlist):
-        super(BulkManageDeadlineMultiSelectView, self).add_filterlist_items(filterlist)
+        super(AssignmentGroupMultiSelectListFilterView, self).add_filterlist_items(filterlist)
+        if self.assignment.is_anonymous:
+            self.__add_anonymization_filters_for_items(filterlist=filterlist)
+        else:
+            self.__add_filterlist_items_not_anonymous(filterlist=filterlist)
+        filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
         filterlist.append(devilry_listfilter.assignmentgroup.IsPassingGradeFilter())
         filterlist.append(devilry_listfilter.assignmentgroup.PointsFilter())
 
+    def get_unfiltered_queryset_for_role(self, role):
+        return self.get_queryset_for_role_on_handle_deadline_type(role=role)
+
+    def get_target_renderer_class(self):
+        return AssignmentGroupTargetRenderer
+
+    def get_form_class(self):
+        return SelectedAssignmentGroupForm
+
+    def get_value_and_frame_renderer_kwargs(self):
+        return {
+            'assignment': self.assignment
+        }
+
+    def get_form_kwargs(self):
+        kwargs = super(AssignmentGroupMultiSelectListFilterView, self).get_form_kwargs()
+        kwargs['selectable_items_queryset'] = self.get_unfiltered_queryset_for_role(self.request.cradmin_role)
+        kwargs['assignment'] = self.request.cradmin_role
+        return kwargs
+
+    def get_target_renderer_kwargs(self):
+        kwargs = super(AssignmentGroupMultiSelectListFilterView, self).get_target_renderer_kwargs()
+        kwargs['form_action'] = self.request.cradmin_app.reverse_appurl(
+            viewname='manage-deadline-post',
+            kwargs={
+                'deadline': datetimeutils.datetime_to_string(self.deadline),
+                'handle_deadline': self.handle_deadline_type
+            })
+        return kwargs
+
+    def get_selected_groupids(self, posted_form):
+        return [item.id for item in posted_form.cleaned_data['selected_items']]
+
+    def get_group_anonymous_displaynames(self, form):
+        """
+        Build a list of anonymized displaynames for the groups that where corrected.
+
+        Args:
+            form: posted form
+
+        Returns:
+            (list): list of anonymized displaynames for the groups
+        """
+        groups = form.cleaned_data['selected_items']
+        anonymous_display_names = [
+            unicode(group.get_anonymous_displayname(assignment=self.request.cradmin_role))
+            for group in groups]
+        return anonymous_display_names
+
+    def get_success_url(self):
+        """
+        Defaults to the apps indexview.
+        """
+        return self.request.cradmin_app.reverse_appindexurl()
+
+    def form_valid(self, form):
+        return super(AssignmentGroupMultiSelectListFilterView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        return super(AssignmentGroupMultiSelectListFilterView, self).get_context_data(**kwargs)
+
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
-            'choose-manually-filter', kwargs={
+            'select-groups-manually-filter', kwargs={
                 'deadline': datetimeutils.datetime_to_string(self.deadline),
+                'handle_deadline': self.handle_deadline_type,
                 'filters_string': filters_string
             })
 
-    def get_target_renderer_class(self):
-        return NewAttemptDeadlineTargetRenderer
-
-    def get_form_class(self):
-        return NewAttemptDeadlineForm
-
-    def __create_groupcomment(self, feedback_set_id, publishing_time, text):
-        group_models.GroupComment.objects.create(
-            feedback_set_id=feedback_set_id,
-            visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-            user=self.request.user,
-            user_role=group_models.GroupComment.USER_ROLE_EXAMINER,
-            text=text,
-            comment_type=group_models.GroupComment.COMMENT_TYPE_GROUPCOMMENT,
-            published_datetime=publishing_time
-        )
-
-    def __create_feedbackset(self, group_id, deadline_datetime, created_datetime):
-        feedbackset = group_models.FeedbackSet.objects.create(
-            group_id=group_id,
-            deadline_datetime=deadline_datetime,
-            created_by=self.request.user,
-            created_datetime=created_datetime
-        )
-        return feedbackset.id
-
-    def form_valid(self, form):
-
-        group_ids = self.get_selected_groupids(posted_form=form)
-        new_deadline = form.get_new_deadline()
-        comment_text = form.cleaned_data['feedback_comment_text']
-        anonymous_displaynames = self.get_group_anonymous_displaynames(form=form)
-
-        if 'move_deadline' in self.request.POST:
-            print 'MOVE DEADLINE'
-        elif 'new_attempt' in self.request.POST:
-            print 'NEW ATTEMPT'
-
-        now_without_sec_and_micro = timezone.now().replace(second=0, microsecond=0)
-        with transaction.atomic():
-            for group_id in group_ids:
-                feedbackset_id = self.__create_feedbackset(
-                    group_id=group_id,
-                    deadline_datetime=new_deadline,
-                    created_datetime=now_without_sec_and_micro)
-                self.__create_groupcomment(
-                    feedback_set_id=feedbackset_id,
-                    publishing_time=now_without_sec_and_micro + timezone.timedelta(microseconds=1),
-                    text=comment_text)
-        self.add_success_message(anonymous_displaynames)
-        return super(BulkManageDeadlineMultiSelectView, self).form_valid(form=form)
-
-    def add_success_message(self, anonymous_display_names):
-        message = ugettext_lazy('Bulk added new attempt for %(group_names)s') % {
-            'group_names': ', '.join(anonymous_display_names)}
-        messages.success(self.request, message=message)
-
-    def get_success_url(self):
-        return self.request.cradmin_app.reverse_appindexurl()
+    # def add_success_message(self, anonymous_display_names):
+    #     """
+    #     Add list of anonymized displaynames of the groups that received feedback.
+    #
+    #     Args:
+    #         anonymous_display_names (list): List of anonymized displaynames for groups.
+    #     """
+    # raise NotImplementedError()

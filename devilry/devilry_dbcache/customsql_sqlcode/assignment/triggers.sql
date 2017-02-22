@@ -15,8 +15,6 @@ BEGIN
                 feedbackset_type = 'first_attempt'
                 AND
                 deadline_datetime = OLD.first_deadline
-                AND
-                grading_published_datetime IS NULL
           );
     END IF;
     RETURN NEW;

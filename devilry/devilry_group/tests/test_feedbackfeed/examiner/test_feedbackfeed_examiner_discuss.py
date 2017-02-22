@@ -60,7 +60,7 @@ class TestFeedbackfeedExaminerDiscussMixin(test_feedbackfeed_examiner.TestFeedba
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-feedback-button'))
 
-    def test_get_examiner_first_attempt_unpublished_alert_choice_box_does_not_exist(self):
+    def test_get_examiner_first_attempt_unpublished_alert_choice_box_new_attempt_button_does_not_exist(self):
         # Tests that box providing the possibility of giving a new attempt or re-edit does NOT show when last
         # feedbackset has been NOT been published.
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -71,8 +71,11 @@ class TestFeedbackfeedExaminerDiscussMixin(test_feedbackfeed_examiner.TestFeedba
             cradmin_role=testgroup,
             requestuser=examiner.relatedexaminer.user
         )
-        self.assertFalse(
+        self.assertTrue(
             mockresponse.selector.exists('.devilry-group-feedbackfeed-examiner-after-publish-choice-alert'))
+        self.assertFalse(
+            mockresponse.selector.exists(
+                '.devilry-group-feedbackfeed-examiner-after-publish-choice-alert-new-attempt-button'))
 
     def test_get_examiner_first_attempt_published_choice_alert_box_exists(self):
         # Tests that box providing the possibility of giving a new attempt shows when last feedbackset has been
@@ -126,6 +129,25 @@ class TestFeedbackfeedExaminerDiscussMixin(test_feedbackfeed_examiner.TestFeedba
             '.devilry-group-feedbackfeed-examiner-after-publish-choice-alert-new-attempt-button').alltext_normalized
         self.assertEquals('Give new attempt', button_text)
 
+    def test_get_examiner_first_attempt_unpublished_choice_alert_move_deadline_button(self):
+        # Test that new attempt button exists in the choice alert when last feedbackset is published.
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertTrue(
+            mockresponse.selector.exists(
+                '.devilry-group-feedbackfeed-examiner-after-publish-choice-alert-move-deadline-button')
+        )
+        button_text = mockresponse.selector \
+            .one(
+            '.devilry-group-feedbackfeed-examiner-after-publish-choice-alert-move-deadline-button').alltext_normalized
+        self.assertEquals('Move deadline', button_text)
+
     def test_get_examiner_first_attempt_published_choice_alert_re_edit_button_text(self):
         # Test that new attempt button exists in the choice alert when last feedbackset is published.
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -144,7 +166,7 @@ class TestFeedbackfeedExaminerDiscussMixin(test_feedbackfeed_examiner.TestFeedba
             .one('.devilry-group-feedbackfeed-examiner-after-publish-choice-alert-reedit-button').alltext_normalized
         self.assertEquals('Edit the grade', button_text)
 
-    def test_get_examiner_new_attempt_unpublished_choice_alert_does_not_exist(self):
+    def test_get_examiner_new_attempt_unpublished_choice_alert_new_attempt_button_does_not_exist(self):
         # Test that choice alert for giving a new attempt or re editing the last does NOT show
         # when first feedbackset is published, but the new try is unpublished.
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -158,9 +180,12 @@ class TestFeedbackfeedExaminerDiscussMixin(test_feedbackfeed_examiner.TestFeedba
         )
         self.assertNotEquals(testgroup.cached_data.last_published_feedbackset, testfeedbackset_new_attempt)
         self.assertEquals(testgroup.cached_data.last_feedbackset, testfeedbackset_new_attempt)
-        self.assertFalse(
+        self.assertTrue(
             mockresponse.selector.exists('.devilry-group-feedbackfeed-examiner-after-publish-choice-alert')
         )
+        self.assertFalse(
+            mockresponse.selector.exists(
+                '.devilry-group-feedbackfeed-examiner-after-publish-choice-alert-new-attempt-button'))
 
     def test_get_examiner_new_attempt_published_choice_alert_exists(self):
         # Tests that choice alert for giving new attempt or re editing the last shows

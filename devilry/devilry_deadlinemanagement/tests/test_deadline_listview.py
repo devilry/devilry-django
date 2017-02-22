@@ -22,6 +22,11 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
+    def __get_mock_instance(self):
+        mock_instance = mock.MagicMock()
+        mock_instance.get_devilryrole_for_requestuser.return_value = 'examiner'
+        return mock_instance
+
     def __get_mock_app(self, user=None):
         mock_app = mock.MagicMock()
         mock_app.get_devilryrole.return_value = 'examiner'
@@ -32,6 +37,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
     def test_pagetitle(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app()
         )
@@ -40,6 +46,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
     def test_heading(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app()
         )
@@ -49,12 +56,33 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
     def test_subheading(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app()
         )
         self.assertEquals(
             mockresponse.selector.one('.devilry-deadlinemanagement-select-deadline-subheading').alltext_normalized,
-            'Please choose how you would like to manage groups for a deadline.')
+            'Please choose how you would like to manage the deadline.')
+
+    def test_title_with_assignment_first_deadline(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent__user__shortname='candidate',
+                   relatedstudent__user__fullname='Candidate')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(),
+            cradmin_role=testassignment,
+            cradmin_app=self.__get_mock_app(user=testuser),
+            requestuser=testuser
+        )
+        self.assertEquals(
+            '{} (Assignment first deadline)'.format(testassignment.first_deadline),
+            mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_deadline_item_value_group_single_candidate(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -67,6 +95,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
                    relatedstudent__user__shortname='candidate',
                    relatedstudent__user__fullname='Candidate')
         mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
@@ -89,6 +118,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
                    relatedstudent__user__shortname='candidate2',
                    relatedstudent__user__fullname='Candidate2')
         mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
@@ -114,6 +144,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
                    relatedstudent__user__shortname='candidate_group2',
                    relatedstudent__user__fullname='Candidate Group 2')
         mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
@@ -136,6 +167,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
                    relatedstudent__user__fullname='A un-anonymized fullname',
                    relatedstudent__automatic_anonymous_id='MyAnonymousID')
         mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
@@ -157,6 +189,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
                    relatedstudent__user__fullname='A un-anonymized fullname',
                    relatedstudent__automatic_anonymous_id='MyAnonymousID')
         mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
@@ -172,13 +205,14 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
         )
         self.assertTrue(mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue-titledescription'))
         self.assertEquals(
-            '{}'.format(testassignment.first_deadline),
+            '{} (Assignment first deadline)'.format(testassignment.first_deadline),
             mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_only_distinct_deadlines_listed(self):
@@ -194,13 +228,14 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
         )
         self.assertTrue(mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue-titledescription'))
         self.assertEquals(
-            '{}'.format(testassignment.first_deadline),
+            '{} (Assignment first deadline)'.format(testassignment.first_deadline),
             mockresponse.selector.one(
                 '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
@@ -231,6 +266,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mommy.make('core.Examiner', assignmentgroup=testgroup_new_attempt2, relatedexaminer__user=testuser)
 
         mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
@@ -239,7 +275,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
         deadline_list = [elem.alltext_normalized for elem in
                          mockresponse.selector.list('.django-cradmin-listbuilder-itemvalue-titledescription-title')]
         self.assertEquals(2, len(deadline_list))
-        self.assertIn('{}'.format(testassignment.first_deadline), deadline_list)
+        self.assertIn('{} (Assignment first deadline)'.format(testassignment.first_deadline), deadline_list)
         self.assertIn('{}'.format(new_attempt_deadline), deadline_list)
 
     def test_query_count(self):
@@ -286,6 +322,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
 
         with self.assertNumQueries(3):
             self.mock_http200_getrequest_htmls(
+                cradmin_instance=self.__get_mock_instance(),
                 cradmin_role=testassignment,
                 cradmin_app=self.__get_mock_app(user=testuser),
                 requestuser=testuser
@@ -336,6 +373,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
 
         with self.assertNumQueries(3):
             self.mock_http200_getrequest_htmls(
+                cradmin_instance=self.__get_mock_instance(),
                 cradmin_role=testassignment,
                 cradmin_app=self.__get_mock_app(user=testuser),
                 requestuser=testuser

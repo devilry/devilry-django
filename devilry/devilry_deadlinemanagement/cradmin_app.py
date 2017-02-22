@@ -4,22 +4,11 @@ from __future__ import unicode_literals
 from django_cradmin import crapp
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_deadlinemanagement.views import multiselect_groups_view
+from devilry.devilry_deadlinemanagement.views import manage_deadline_view
+from devilry.devilry_deadlinemanagement.views import deadline_listview
 
 
 class AbstractDeadlineManagementApp(crapp.App):
-    deadline_appurls = [
-        crapp.Url(r'choose-manually/(?P<deadline>\w+)$',
-                  multiselect_groups_view.BulkManageDeadlineMultiSelectView.as_view(),
-                  name='choose-manually'),
-        crapp.Url(r'choose-manually/(?P<deadline>\w+)/(?P<filters_string>.+)?$',
-                  multiselect_groups_view.BulkManageDeadlineMultiSelectView.as_view(),
-                  name='choose-manually-filter')
-    ]
-
-    def __init__(self, appname, request, active_viewname):
-        self.appurls.extend(self.deadline_appurls)
-        super(AbstractDeadlineManagementApp, self).__init__(appname, request, active_viewname)
-
     def get_accessible_group_queryset(self, user=None):
         """
         Get QuerySet of :obj:`~.devilry.apps.core.models.AssignmentGroup` where the user has
@@ -31,9 +20,73 @@ class AbstractDeadlineManagementApp(crapp.App):
         raise NotImplementedError()
 
     @classmethod
+    def get_url_pattern(cls):
+        return '(?P<deadline>\w+)/(?P<handle_deadline>[\w-]+)'
+
+    @classmethod
+    def get_index_view_class(cls):
+        return deadline_listview.DeadlineListView
+
+    @classmethod
+    def get_groups_multiselect_view_class(cls):
+        return multiselect_groups_view.AssignmentGroupMultiSelectListFilterView
+
+    @classmethod
+    def get_groups_multiselect_view_move_deadline_class(cls):
+        return multiselect_groups_view.MoveDeadlineManualGroupSelectView
+
+    @classmethod
+    def get_groups_multiselect_view_new_attempt_class(cls):
+        return multiselect_groups_view.NewAttemptManualGroupSelectView
+
+    @classmethod
+    def get_manage_deadline_view_single_group_class(cls):
+        return manage_deadline_view.ManageDeadlineSingleGroupView
+
+    @classmethod
+    def get_manage_deadline_view_all_groups_class(cls):
+        return manage_deadline_view.ManageDeadlineAllGroupsView
+
+    @classmethod
+    def get_manage_deadline_from_previous_view_class(cls):
+        return manage_deadline_view.ManageDeadlineFromPreviousView
+
+    @classmethod
     def get_appurls(cls):
-        cls.appurls.extend(cls.deadline_appurls)
-        return cls.appurls
+        return [
+            # App index view.
+            crapp.Url(
+                r'^$',
+                cls.get_index_view_class().as_view(),
+                name=crapp.INDEXVIEW_NAME
+            ),
+
+            # Select groups manually.
+            crapp.Url(
+                r'select-manually/{}$'.format(cls.get_url_pattern()),
+                cls.get_groups_multiselect_view_class().as_view(),
+                name='select-groups-manually'
+            ),
+            crapp.Url(
+                r'select-manually/{}/(?P<filters_string>.+)?$'.format(cls.get_url_pattern()),
+                cls.get_groups_multiselect_view_class().as_view(),
+                name='select-groups-manually-filter'
+            ),
+
+            # Manage deadline views.
+            crapp.Url(
+                r'manage-deadline/{}/(?P<group_id>\d+)$'.format(cls.get_url_pattern()),
+                cls.get_manage_deadline_view_single_group_class().as_view(),
+                name='manage-deadline-single-group'),
+            crapp.Url(
+                r'manage-deadline-all-groups/{}$'.format(cls.get_url_pattern()),
+                cls.get_manage_deadline_view_all_groups_class().as_view(),
+                name='manage-deadline-all-groups'),
+            crapp.Url(
+                r'manage-deadline-from-previous/{}$'.format(cls.get_url_pattern()),
+                cls.get_manage_deadline_from_previous_view_class().as_view(),
+                name='manage-deadline-post')
+        ]
 
 
 class AdminDeadlineManagementApp(AbstractDeadlineManagementApp):
@@ -44,9 +97,8 @@ class AdminDeadlineManagementApp(AbstractDeadlineManagementApp):
         return 'admin'
 
     def get_accessible_group_queryset(self, user=None):
-        if user:
-            return AssignmentGroup.objects.filter_user_is_admin(user=user)
-        return AssignmentGroup.objects.filter_user_is_admin(user=self.request.user)
+        user = user or self.request.user
+        return AssignmentGroup.objects.filter_user_is_admin(user=user)
 
 
 class ExaminerDeadlineManagementApp(AbstractDeadlineManagementApp):
@@ -57,6 +109,5 @@ class ExaminerDeadlineManagementApp(AbstractDeadlineManagementApp):
         return 'examiner'
 
     def get_accessible_group_queryset(self, user=None):
-        if user:
-            return AssignmentGroup.objects.filter_examiner_has_access(user=user)
-        return AssignmentGroup.objects.filter_examiner_has_access(user=self.request.user)
+        user = user or self.request.user
+        return AssignmentGroup.objects.filter_examiner_has_access(user=user)
