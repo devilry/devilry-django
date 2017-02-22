@@ -420,8 +420,7 @@ class GroupInviteRespond(TestCase):
         core_mommy.candidate(testgroup)
         sent_to = core_mommy.candidate(testgroup1)
         with self.assertNumQueries(1):
-            user = GroupInvite.validate_candidate_id_sent_to(testgroup, sent_to.id)
-            self.assertEqual(user.id, sent_to.id)
+            GroupInvite.validate_candidate_id_sent_to(testgroup, sent_to.id)
 
     def test_validation_user_id_send_to_error_wrong_assignment(self):
         assignment = mommy.make('core.Assignment', students_can_create_groups=True)
