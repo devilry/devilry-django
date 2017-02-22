@@ -4,7 +4,7 @@
 
 
 
-{% if sidebarbuilder_list != None %}
+{% if sidebarbuilder_list != None and devilry_ui_role == 'examiner' %}
     <div class="devilry-group-feedbackfeed-sidebar">
         <h2 class="devilry-group-feedbackfeed-sidebar__title">{% trans "Download" %}:</h2>
         {% cradmin_render_renderable sidebarbuilder_list %}
