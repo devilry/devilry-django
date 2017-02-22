@@ -1,23 +1,38 @@
-{% extends "django_cradmin/standalone-base.django.html" %}
-
-{% load crispy_forms_tags %}
+{% extends "django_cradmin/base.django.html" %}
 {% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+{% load crispy_forms_tags %}
+{% load cradmin_icon_tags %}
 
 {% block title %}{% trans "Respond to group invite" %}{% endblock title %}
 
-{% block body %}
-    <div class="page-header">
-        <div class="container-fluid">
-            <h1>
-                {% trans "Respond to group invite" %}
-            </h1>
-            <p>
-                {{ groupinvite.group.assignment.long_name }} -
-                {{ groupinvite.group.subject.long_name }} -
-                {{ groupinvite.group.period.long_name }}
-            </p>
-        </div>
+{% block pageheader-outer-extraclasses %}
+   {{ block.super }}
+   devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'projectgroup' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to project group" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <div class="container">
+        <h1>
+            {% trans "Respond to group invite" %}
+        </h1>
+        <p>
+            {{ groupinvite.group.assignment.long_name }} -
+            {{ groupinvite.group.subject.long_name }} -
+            {{ groupinvite.group.period.long_name }}
+        </p>
     </div>
+{% endblock pageheader-inner %}
+
+{% block content %}
+
     <div class="container django-cradmin-container-focus">
 
         {% if errormessage %}
@@ -39,4 +54,4 @@
             </button>
         </form>
     </div>
-{% endblock body %}
+{% endblock content %}

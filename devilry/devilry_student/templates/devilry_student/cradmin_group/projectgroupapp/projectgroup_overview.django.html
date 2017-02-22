@@ -17,7 +17,7 @@
 {% endblock pageheader-inner %}
 
 {% block content %}
-    <div class="container-fluid">
+    <div class="container">
         {% if unanswered_received_invites.exists %}
             {% with invite=unanswered_received_invites.get %}
                 <div class="alert alert-success">
@@ -26,7 +26,7 @@
                         {% blocktrans with sent_by=invite.sent_by.get_full_name %}{{ sent_by }} invited you to join their group.{% endblocktrans %}
                     </p>
                     <p>
-                        <a class="btn btn-default" href="{% url 'devilry_student_groupinvite_respond' invite.id %}">
+                        <a class="btn btn-default" href="{% cradmin_appurl 'respond' invite_id=invite.id %}">
                             <i class="fa fa-arrow-circle-o-right"></i>
                             {% trans "More info" %}
                         </a>

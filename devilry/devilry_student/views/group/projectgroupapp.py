@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 
+from django.contrib import messages
 from django.views.generic import TemplateView
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit
@@ -18,19 +19,21 @@ from devilry.apps.core.models import GroupInvite
 
 class CreateForm(forms.ModelForm):
     sent_to = forms.TypedChoiceField(
-        label=_('Send invitation to'),
+        label=ugettext_lazy('Send invitation to'),
         choices=[],
         required=True,
         coerce=int,
-        help_text=_('Select the student you want to invite to your group.'))
+        help_text=ugettext_lazy('Select the student you want to invite to your group.'))
 
     class Meta:
         model = AssignmentGroup
         fields = ['sent_to']
 
     def _sent_to_choices(self):
-        users = GroupInvite.send_invite_to_choices_queryset(self.group)
-        choices = [(user.id, user.get_full_name()) for user in users]
+        candidates = GroupInvite.send_invite_to_choices_queryset(self.group)
+        choices = [
+            (candidate.relatedstudent.user_id, candidate.relatedstudent.user.get_displayname())
+            for candidate in candidates]
         choices.insert(0, ('', ''))
         return choices
 
@@ -45,7 +48,7 @@ class CreateForm(forms.ModelForm):
         self.helper.layout = Layout(
             'sent_to',
             ButtonHolder(
-                Submit('submit', _('Send invitation'))
+                Submit('submit', ugettext_lazy('Send invitation'))
             )
         )
 
@@ -53,10 +56,14 @@ class CreateForm(forms.ModelForm):
         cleaned_data = super(CreateForm, self).clean()
         sent_to_userid = cleaned_data.get('sent_to')
         if sent_to_userid:
-            sent_to = GroupInvite.send_invite_to_choices_queryset(self.group).get(id=sent_to_userid)
-            invite = GroupInvite(group=self.group, sent_by=self.sent_by, sent_to=sent_to)
-            invite.full_clean()
-            self.cleaned_invite = invite
+            try:
+                sent_to = GroupInvite.validate_user_id_send_to(self.group, sent_to_userid)
+            except ValidationError:
+                ValidationError(ugettext_lazy('Cannot invite student'))
+            else:
+                invite = GroupInvite(group=self.group, sent_by=self.sent_by, sent_to=sent_to)
+                invite.full_clean()
+                self.cleaned_invite = invite
         return cleaned_data
 
 
@@ -125,9 +132,17 @@ class GroupInviteRespondView(DetailView):
 
     def get_success_url(self):
         return reverse_cradmin_url(
-            instanceid='devilry_student_group',
-            appname='projectgroup',
-            roleid=self.group.id
+            instanceid='devilry_group_student',
+            appname='feedbackfeed',
+            roleid=self.group.id,
+            viewname=crapp.INDEXVIEW_NAME)
+
+    def get_declined_or_error_url(self):
+        return reverse_cradmin_url(
+            instanceid='devilry_group_student',
+            appname='feedbackfeed',
+            roleid=self.request.cradmin_role,
+            viewname=crapp.INDEXVIEW_NAME
         )
 
     def post(self, *args, **kwargs):
@@ -138,14 +153,32 @@ class GroupInviteRespondView(DetailView):
         try:
             invite.respond(accepted=accepted)
         except ValidationError as e:
-            self.errormessage = ' '.join(e.messages)
-            return self.get(*args, **kwargs)
+            messages.warning(
+                self.request,
+                ugettext_lazy(str(e))
+            )
         else:
-            return redirect(self.get_success_url())
+            if accepted:
+                messages.success(
+                    self.request,
+                    ugettext_lazy(
+                        'Joined the group by invitation from %(student)s' % {
+                            'student': invite.sent_by.get_displayname()
+                        })
+                )
+                return redirect(self.get_success_url())
+            else:
+                messages.warning(
+                    self.request,
+                    ugettext_lazy(
+                        'Declined group invitation from %(student)s' % {
+                            'student': invite.sent_by.get_displayname()
+                        })
+                )
+        return redirect(self.get_declined_or_error_url())
 
     def get_context_data(self, **kwargs):
         context = super(GroupInviteRespondView, self).get_context_data(**kwargs)
-        context['errormessage'] = getattr(self, 'errormessage', None)
         return context
 
 
@@ -181,4 +214,9 @@ class App(crapp.App):
             r'^remove/(?P<invite_id>\d+)$',
             GroupInviteDeleteView.as_view(),
             name='delete'),
+        crapp.Url(
+            r'respond/(?P<invite_id>\d+)$',
+            GroupInviteRespondView.as_view(),
+            name='respond'
+        )
     ]
