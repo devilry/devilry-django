@@ -1,32 +1,19 @@
-import unittest
 import mock
-
-from django_cradmin.crinstance import reverse_cradmin_url
-
-from django.test import TestCase
 from django.contrib import messages
-from django.core.urlresolvers import reverse
-import htmls
-from django.http import Http404
+from django.test import TestCase
 from django.utils.timezone import datetime, timedelta
-
-from devilry.apps.core.models import AssignmentGroup
-from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_student.views.group.projectgroupapp import ProjectGroupOverviewView, GroupInviteRespondView, \
-    GroupInviteDeleteView
-from devilry.project.develop.testhelpers.soupselect import cssExists
-from model_mommy import mommy
-from devilry.apps.core.models import GroupInvite
-from devilry.project.develop.testhelpers.soupselect import cssFind
-from devilry.project.develop.testhelpers.soupselect import cssGet
-from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
-from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from django_cradmin import cradmin_testhelpers
+from model_mommy import mommy
+
+from devilry.apps.core import devilry_core_mommy_factories as core_mommy
+from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import GroupInvite
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from devilry.devilry_student.views.group import projectgroupapp
 
 
 class TestProjectGroupOverviewView(TestCase, cradmin_testhelpers.TestCaseMixin):
-    viewclass = ProjectGroupOverviewView
+    viewclass = projectgroupapp.ProjectGroupOverviewView
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
@@ -103,7 +90,7 @@ class TestProjectGroupOverviewView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
 
 class TestProjectGroupOverviewViewStudentsCannotCreateGroups(TestCase, cradmin_testhelpers.TestCaseMixin):
-    viewclass = ProjectGroupOverviewView
+    viewclass = projectgroupapp.ProjectGroupOverviewView
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
@@ -156,7 +143,7 @@ class TestProjectGroupOverviewViewStudentsCannotCreateGroups(TestCase, cradmin_t
 
 
 class TestProjectGroupOverviewViewStudentsCanCreateGroups(TestCase, cradmin_testhelpers.TestCaseMixin):
-    viewclass = ProjectGroupOverviewView
+    viewclass = projectgroupapp.ProjectGroupOverviewView
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
@@ -320,7 +307,7 @@ class TestProjectGroupOverviewViewStudentsCanCreateGroups(TestCase, cradmin_test
 
 
 class TestGroupInviteRespondView(TestCase, cradmin_testhelpers.TestCaseMixin):
-    viewclass = GroupInviteRespondView
+    viewclass = projectgroupapp.GroupInviteRespondView
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
@@ -517,7 +504,7 @@ class TestGroupInviteRespondView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
 
 class TestGroupInviteDeleteView(TestCase, cradmin_testhelpers.TestCaseMixin):
-    viewclass = GroupInviteDeleteView
+    viewclass = projectgroupapp.GroupInviteDeleteView
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
