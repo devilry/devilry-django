@@ -21,7 +21,7 @@
                 class="btn btn-primary">
             {% trans "All groups / move deadline" %}
         </a>
-        <a href="#"
+        <a href="{% cradmin_appurl "manage-deadline-all-groups" deadline=me.deadline_as_string handle_deadline="new-attempt" %}"
                 id="devilry_manage_deadline_{{ me.deadline }}_all_link"
                 class="btn btn-primary">
             {% trans "All groups / new attempt" %}
