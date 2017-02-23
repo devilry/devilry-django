@@ -83,10 +83,6 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
     template_name = 'devilry_deadlinemanagement/deadline-bulk-multiselect-filterlistview.django.html'
     handle_deadline_type = None
 
-    def dispatch(self, request, *args, **kwargs):
-        self.assignment = self.request.cradmin_role
-        return super(AssignmentGroupMultiSelectListFilterView, self).dispatch(request, *args, **kwargs)
-
     def get_pagetitle(self):
         return pgettext_lazy('{} select_groups'.format(self.request.cradmin_app.get_devilryrole()),
                              'Select groups')
@@ -150,8 +146,8 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
 
     def get_form_kwargs(self):
         kwargs = super(AssignmentGroupMultiSelectListFilterView, self).get_form_kwargs()
-        kwargs['selectable_items_queryset'] = self.get_unfiltered_queryset_for_role(self.request.cradmin_role)
-        kwargs['assignment'] = self.request.cradmin_role
+        kwargs['selectable_items_queryset'] = self.get_unfiltered_queryset_for_role(self.assignment)
+        kwargs['assignment'] = self.assignment
         return kwargs
 
     def get_target_renderer_kwargs(self):
@@ -179,7 +175,7 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
         """
         groups = form.cleaned_data['selected_items']
         anonymous_display_names = [
-            unicode(group.get_anonymous_displayname(assignment=self.request.cradmin_role))
+            unicode(group.get_anonymous_displayname(assignment=self.assignment))
             for group in groups]
         return anonymous_display_names
 
@@ -189,12 +185,6 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
         """
         return self.request.cradmin_app.reverse_appindexurl()
 
-    def form_valid(self, form):
-        return super(AssignmentGroupMultiSelectListFilterView, self).form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        return super(AssignmentGroupMultiSelectListFilterView, self).get_context_data(**kwargs)
-
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
             'select-groups-manually-filter', kwargs={
@@ -202,12 +192,3 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
                 'handle_deadline': self.handle_deadline_type,
                 'filters_string': filters_string
             })
-
-    # def add_success_message(self, anonymous_display_names):
-    #     """
-    #     Add list of anonymized displaynames of the groups that received feedback.
-    #
-    #     Args:
-    #         anonymous_display_names (list): List of anonymized displaynames for groups.
-    #     """
-    # raise NotImplementedError()

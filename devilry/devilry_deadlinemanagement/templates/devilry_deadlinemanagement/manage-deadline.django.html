@@ -10,8 +10,12 @@
     devilry-page-header-with-backlink
 {% endblock pageheader-outer-extraclasses %}
 
+{% block pre_form %}
+    {% include excluded_groups_info_box_template %}
+{% endblock pre_form %}
+
 {% block pageheader-inner %}
-    <a href="{{ startapp_backlink_url }}" class="devilry-page-header-backlink">
+    <a href="{{ backlink_url }}" class="devilry-page-header-backlink">
         <span class="sr-only">
             {% trans "Back" %}
         </span>

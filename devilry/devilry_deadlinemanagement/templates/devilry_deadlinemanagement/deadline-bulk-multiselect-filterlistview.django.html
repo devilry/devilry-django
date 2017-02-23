@@ -25,3 +25,8 @@
         {{ page_subheading }}
     </p>
 {% endblock pageheader-inner %}
+
+{% block content %}
+    {% include excluded_groups_info_box_template %}
+    {{ block.super }}
+{% endblock content %}

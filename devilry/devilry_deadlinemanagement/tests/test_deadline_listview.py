@@ -22,9 +22,10 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def __get_mock_instance(self):
+    def __get_mock_instance(self, assignment):
         mock_instance = mock.MagicMock()
         mock_instance.get_devilryrole_for_requestuser.return_value = 'examiner'
+        mock_instance.assignment = assignment
         return mock_instance
 
     def __get_mock_app(self, user=None):
@@ -37,7 +38,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
     def test_pagetitle(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_instance=self.__get_mock_instance(),
+            cradmin_instance=self.__get_mock_instance(testassignment),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app()
         )
@@ -46,7 +47,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
     def test_heading(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_instance=self.__get_mock_instance(),
+            cradmin_instance=self.__get_mock_instance(testassignment),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app()
         )
@@ -56,7 +57,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
     def test_subheading(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_instance=self.__get_mock_instance(),
+            cradmin_instance=self.__get_mock_instance(testassignment),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app()
         )
@@ -75,7 +76,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
                    relatedstudent__user__shortname='candidate',
                    relatedstudent__user__fullname='Candidate')
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_instance=self.__get_mock_instance(),
+            cradmin_instance=self.__get_mock_instance(testassignment),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
@@ -95,7 +96,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
                    relatedstudent__user__shortname='candidate',
                    relatedstudent__user__fullname='Candidate')
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_instance=self.__get_mock_instance(),
+            cradmin_instance=self.__get_mock_instance(testassignment),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
@@ -118,7 +119,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
                    relatedstudent__user__shortname='candidate2',
                    relatedstudent__user__fullname='Candidate2')
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_instance=self.__get_mock_instance(),
+            cradmin_instance=self.__get_mock_instance(testassignment),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
@@ -144,7 +145,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
                    relatedstudent__user__shortname='candidate_group2',
                    relatedstudent__user__fullname='Candidate Group 2')
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_instance=self.__get_mock_instance(),
+            cradmin_instance=self.__get_mock_instance(testassignment),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
@@ -167,7 +168,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
                    relatedstudent__user__fullname='A un-anonymized fullname',
                    relatedstudent__automatic_anonymous_id='MyAnonymousID')
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_instance=self.__get_mock_instance(),
+            cradmin_instance=self.__get_mock_instance(testassignment),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
@@ -189,7 +190,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
                    relatedstudent__user__fullname='A un-anonymized fullname',
                    relatedstudent__automatic_anonymous_id='MyAnonymousID')
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_instance=self.__get_mock_instance(),
+            cradmin_instance=self.__get_mock_instance(testassignment),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
@@ -205,7 +206,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_instance=self.__get_mock_instance(),
+            cradmin_instance=self.__get_mock_instance(testassignment),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
@@ -228,7 +229,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_instance=self.__get_mock_instance(),
+            cradmin_instance=self.__get_mock_instance(testassignment),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
@@ -266,7 +267,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mommy.make('core.Examiner', assignmentgroup=testgroup_new_attempt2, relatedexaminer__user=testuser)
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_instance=self.__get_mock_instance(),
+            cradmin_instance=self.__get_mock_instance(testassignment),
             cradmin_role=testassignment,
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
@@ -322,7 +323,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
 
         with self.assertNumQueries(3):
             self.mock_http200_getrequest_htmls(
-                cradmin_instance=self.__get_mock_instance(),
+                cradmin_instance=self.__get_mock_instance(testassignment),
                 cradmin_role=testassignment,
                 cradmin_app=self.__get_mock_app(user=testuser),
                 requestuser=testuser
@@ -373,7 +374,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
 
         with self.assertNumQueries(3):
             self.mock_http200_getrequest_htmls(
-                cradmin_instance=self.__get_mock_instance(),
+                cradmin_instance=self.__get_mock_instance(testassignment),
                 cradmin_role=testassignment,
                 cradmin_app=self.__get_mock_app(user=testuser),
                 requestuser=testuser
