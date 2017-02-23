@@ -44,6 +44,10 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceExaminer):
         assignment = role
         return assignment.get_path()
 
+    @property
+    def assignment(self):
+        return self.request.cradmin_role
+
     @classmethod
     def matches_urlpath(cls, urlpath):
         return re.match('^/devilry_examiner/assignment/.*$', urlpath)
