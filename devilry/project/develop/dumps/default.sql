@@ -29,9 +29,868 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 SET search_path = public, pg_catalog;
 
+--
+-- Name: devilry__assignment_first_deadline_update(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__assignment_first_deadline_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    IF TG_OP = 'UPDATE' AND NEW.first_deadline != OLD.first_deadline THEN
+      UPDATE devilry_group_feedbackset
+      SET deadline_datetime = NEW.first_deadline
+      WHERE id IN (
+              SELECT devilry_group_feedbackset.id
+              FROM devilry_group_feedbackset
+              INNER JOIN core_assignmentgroup ON
+                  core_assignmentgroup.id = devilry_group_feedbackset.group_id
+              WHERE
+                core_assignmentgroup.parentnode_id = NEW.id
+                AND
+                feedbackset_type = 'first_attempt'
+                AND
+                deadline_datetime = OLD.first_deadline
+          );
+    END IF;
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__assignment_first_deadline_update() OWNER TO dbdev;
+
+--
+-- Name: devilry__collect_groupcachedata(integer); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__collect_groupcachedata(param_group_id integer) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    var_groupcachedata RECORD;
+BEGIN
+    SELECT
+        (
+            SELECT id
+            FROM devilry_group_feedbackset AS first_feedbackset
+            WHERE group_id = param_group_id
+            ORDER BY deadline_datetime ASC NULLS FIRST
+            LIMIT 1
+        ) AS first_feedbackset_id,
+        (
+            SELECT id
+            FROM devilry_group_feedbackset AS last_feedbackset
+            WHERE group_id = param_group_id
+            ORDER BY deadline_datetime DESC NULLS LAST
+            LIMIT 1
+        ) AS last_feedbackset_id,
+        (
+            SELECT id
+            FROM devilry_group_feedbackset AS last_published_feedbackset
+            WHERE
+                group_id = param_group_id
+                AND
+                grading_published_datetime IS NOT NULL
+            ORDER BY deadline_datetime DESC NULLS LAST
+            LIMIT 1
+        ) AS last_published_feedbackset_id,
+        (
+            SELECT COUNT(id)
+            FROM devilry_group_feedbackset
+            WHERE
+                group_id = param_group_id
+                AND
+                feedbackset_type = 'new_attempt'
+        ) AS new_attempt_count,
+        (
+            SELECT COUNT(devilry_group_groupcomment.comment_ptr_id)
+            FROM devilry_group_groupcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_groupcomment.feedback_set_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_groupcomment.visibility = 'visible-to-everyone'
+        ) AS public_total_comment_count,
+        (
+            SELECT COUNT(devilry_group_groupcomment.comment_ptr_id)
+            FROM devilry_group_groupcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_groupcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_groupcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_groupcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'student'
+        ) AS public_student_comment_count,
+        (
+            SELECT COUNT(devilry_group_groupcomment.comment_ptr_id)
+            FROM devilry_group_groupcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_groupcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_groupcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_groupcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'examiner'
+        ) AS public_examiner_comment_count,
+        (
+            SELECT COUNT(devilry_group_groupcomment.comment_ptr_id)
+            FROM devilry_group_groupcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_groupcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_groupcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_groupcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'admin'
+        ) AS public_admin_comment_count,
+        (
+            SELECT COUNT(devilry_group_imageannotationcomment.comment_ptr_id)
+            FROM devilry_group_imageannotationcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_imageannotationcomment.feedback_set_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_imageannotationcomment.visibility = 'visible-to-everyone'
+        ) AS public_total_imageannotationcomment_count,
+        (
+            SELECT COUNT(devilry_group_imageannotationcomment.comment_ptr_id)
+            FROM devilry_group_imageannotationcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_imageannotationcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_imageannotationcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_imageannotationcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'student'
+        ) AS public_student_imageannotationcomment_count,
+        (
+            SELECT COUNT(devilry_group_imageannotationcomment.comment_ptr_id)
+            FROM devilry_group_imageannotationcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_imageannotationcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_imageannotationcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_imageannotationcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'examiner'
+        ) AS public_examiner_imageannotationcomment_count,
+        (
+            SELECT COUNT(devilry_group_imageannotationcomment.comment_ptr_id)
+            FROM devilry_group_imageannotationcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_imageannotationcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_imageannotationcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_imageannotationcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'admin'
+        ) AS public_admin_imageannotationcomment_count,
+        (
+            SELECT COUNT(devilry_comment_commentfile.id)
+            FROM devilry_comment_commentfile
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_comment_commentfile.comment_id
+            INNER JOIN devilry_group_groupcomment
+                ON devilry_group_groupcomment.comment_ptr_id = devilry_comment_comment.id
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_groupcomment.feedback_set_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_groupcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'student'
+        ) AS public_student_file_upload_count,
+        (
+            SELECT devilry_comment_comment.published_datetime
+            FROM devilry_group_groupcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_groupcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_groupcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_groupcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'student'
+            ORDER BY devilry_comment_comment.published_datetime DESC NULLS LAST
+            LIMIT 1
+        ) AS last_public_groupcomment_by_student_datetime,
+        (
+            SELECT devilry_comment_comment.published_datetime
+            FROM devilry_group_imageannotationcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_imageannotationcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_imageannotationcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_imageannotationcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'student'
+            ORDER BY devilry_comment_comment.published_datetime DESC NULLS LAST
+            LIMIT 1
+        ) AS last_public_imageannotationcomment_by_student_datetime,
+        (
+            SELECT devilry_comment_comment.published_datetime
+            FROM devilry_group_groupcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_groupcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_groupcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_groupcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'examiner'
+            ORDER BY devilry_comment_comment.published_datetime DESC NULLS LAST
+            LIMIT 1
+        ) AS last_public_groupcomment_by_examiner_datetime,
+        (
+            SELECT devilry_comment_comment.published_datetime
+            FROM devilry_group_imageannotationcomment
+            INNER JOIN devilry_group_feedbackset
+                ON devilry_group_feedbackset.id = devilry_group_imageannotationcomment.feedback_set_id
+            INNER JOIN devilry_comment_comment
+                ON devilry_comment_comment.id = devilry_group_imageannotationcomment.comment_ptr_id
+            WHERE
+                devilry_group_feedbackset.group_id = param_group_id
+                AND
+                devilry_group_imageannotationcomment.visibility = 'visible-to-everyone'
+                AND
+                devilry_comment_comment.user_role = 'examiner'
+            ORDER BY devilry_comment_comment.published_datetime DESC NULLS LAST
+            LIMIT 1
+        ) AS last_public_imageannotationcomment_by_examiner_datetime,
+        (
+            SELECT COUNT(id)
+            FROM core_assignmentgroup_examiners
+            WHERE
+                assignmentgroup_id = param_group_id
+        ) AS examiner_count,
+        (
+            SELECT COUNT(id)
+            FROM core_candidate
+            WHERE
+                assignment_group_id = param_group_id
+        ) AS candidate_count
+
+    FROM core_assignmentgroup AS assignmentgroup
+    WHERE id = param_group_id
+    INTO var_groupcachedata;
+
+    RETURN var_groupcachedata;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__collect_groupcachedata(param_group_id integer) OWNER TO dbdev;
+
+--
+-- Name: devilry__create_first_feedbackset_in_group(integer, integer); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__create_first_feedbackset_in_group(param_group_id integer, param_assignment_id integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    var_assignment_first_deadline TIMESTAMP WITH TIME ZONE;
+BEGIN
+    SELECT first_deadline
+    FROM core_assignment
+    WHERE id = param_assignment_id
+    INTO var_assignment_first_deadline;
+
+    INSERT INTO devilry_group_feedbackset (
+        group_id,
+        created_datetime,
+        deadline_datetime,
+        feedbackset_type,
+        gradeform_data_json,
+        ignored,
+        ignored_reason)
+    VALUES (
+        param_group_id,
+        now(),
+        var_assignment_first_deadline,
+        'first_attempt',
+        '',
+        FALSE,
+        '');
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__create_first_feedbackset_in_group(param_group_id integer, param_assignment_id integer) OWNER TO dbdev;
+
+--
+-- Name: devilry__get_group_id_from_comment_id(integer); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__get_group_id_from_comment_id(param_comment_id integer) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    var_group_id integer;
+BEGIN
+    SELECT devilry_group_feedbackset.group_id
+    FROM devilry_comment_commentfile
+    INNER JOIN devilry_comment_comment
+        ON devilry_comment_comment.id = devilry_comment_commentfile.comment_id
+    INNER JOIN devilry_group_groupcomment
+        ON devilry_group_groupcomment.comment_ptr_id = devilry_comment_comment.id
+    INNER JOIN devilry_group_feedbackset
+        ON devilry_group_feedbackset.id = devilry_group_groupcomment.feedback_set_id
+    WHERE
+        devilry_comment_comment.id = param_comment_id
+    INTO var_group_id;
+
+    RETURN var_group_id;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__get_group_id_from_comment_id(param_comment_id integer) OWNER TO dbdev;
+
+--
+-- Name: devilry__get_group_id_from_feedbackset_id(integer); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__get_group_id_from_feedbackset_id(param_feedbackset_id integer) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    var_group_id integer;
+BEGIN
+    SELECT group_id
+    FROM devilry_group_feedbackset
+    WHERE id = param_feedbackset_id
+    INTO var_group_id;
+
+    RETURN var_group_id;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__get_group_id_from_feedbackset_id(param_feedbackset_id integer) OWNER TO dbdev;
+
+--
+-- Name: devilry__largest_datetime(timestamp with time zone, timestamp with time zone); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__largest_datetime(param_datetime1 timestamp with time zone, param_datetime2 timestamp with time zone) RETURNS timestamp with time zone
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    IF param_datetime1 IS NULL THEN
+        RETURN param_datetime2;
+    END IF;
+    IF param_datetime2 IS NULL THEN
+        RETURN param_datetime1;
+    END IF;
+    IF param_datetime1 > param_datetime2 THEN
+        RETURN param_datetime1;
+    END IF;
+    return param_datetime2;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__largest_datetime(param_datetime1 timestamp with time zone, param_datetime2 timestamp with time zone) OWNER TO dbdev;
+
+--
+-- Name: devilry__on_candidate_after_delete(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__on_candidate_after_delete() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    PERFORM devilry__rebuild_assignmentgroupcacheddata(OLD.assignment_group_id);
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__on_candidate_after_delete() OWNER TO dbdev;
+
+--
+-- Name: devilry__on_candidate_after_insert_or_update(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__on_candidate_after_insert_or_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    PERFORM devilry__rebuild_assignmentgroupcacheddata(NEW.assignment_group_id);
+    IF TG_OP = 'UPDATE' AND NEW.assignment_group_id != OLD.assignment_group_id THEN
+        PERFORM devilry__rebuild_assignmentgroupcacheddata(OLD.assignment_group_id);
+    END IF;
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__on_candidate_after_insert_or_update() OWNER TO dbdev;
+
+--
+-- Name: devilry__on_commentfile_after_delete(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__on_commentfile_after_delete() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    var_group_id integer;
+BEGIN
+    var_group_id = devilry__get_group_id_from_comment_id(OLD.comment_id);
+    IF var_group_id IS NOT NULL THEN
+        PERFORM devilry__rebuild_assignmentgroupcacheddata(var_group_id);
+    END IF;
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__on_commentfile_after_delete() OWNER TO dbdev;
+
+--
+-- Name: devilry__on_commentfile_after_insert_or_update(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__on_commentfile_after_insert_or_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    var_group_id integer;
+BEGIN
+    var_group_id = devilry__get_group_id_from_comment_id(NEW.comment_id);
+    IF var_group_id IS NOT NULL THEN
+        PERFORM devilry__rebuild_assignmentgroupcacheddata(var_group_id);
+    END IF;
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__on_commentfile_after_insert_or_update() OWNER TO dbdev;
+
+--
+-- Name: devilry__on_examiner_after_delete(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__on_examiner_after_delete() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    PERFORM devilry__rebuild_assignmentgroupcacheddata(OLD.assignmentgroup_id);
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__on_examiner_after_delete() OWNER TO dbdev;
+
+--
+-- Name: devilry__on_examiner_after_insert_or_update(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__on_examiner_after_insert_or_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    PERFORM devilry__rebuild_assignmentgroupcacheddata(NEW.assignmentgroup_id);
+    IF TG_OP = 'UPDATE' AND NEW.assignmentgroup_id != OLD.assignmentgroup_id THEN
+        PERFORM devilry__rebuild_assignmentgroupcacheddata(OLD.assignmentgroup_id);
+    END IF;
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__on_examiner_after_insert_or_update() OWNER TO dbdev;
+
+--
+-- Name: devilry__on_feedbackset_after_delete(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__on_feedbackset_after_delete() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    PERFORM devilry__rebuild_assignmentgroupcacheddata(OLD.group_id);
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__on_feedbackset_after_delete() OWNER TO dbdev;
+
+--
+-- Name: devilry__on_feedbackset_after_insert_or_update(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__on_feedbackset_after_insert_or_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    PERFORM devilry__rebuild_assignmentgroupcacheddata(NEW.group_id);
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__on_feedbackset_after_insert_or_update() OWNER TO dbdev;
+
+--
+-- Name: devilry__on_feedbackset_before_insert_or_update(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__on_feedbackset_before_insert_or_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    IF pg_trigger_depth() = 1 THEN
+        -- We do not validate when this is triggered via another trigger.
+        -- We assume the other trigger creates/updates the feedbackset
+        -- correctly.
+        PERFORM devilry__validate_feedbackset_change(NEW, TG_OP);
+    END IF;
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__on_feedbackset_before_insert_or_update() OWNER TO dbdev;
+
+--
+-- Name: devilry__on_feedbackset_deadline_update(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__on_feedbackset_deadline_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    IF TG_OP = 'UPDATE' AND NEW.deadline_datetime > OLD.deadline_datetime THEN
+        INSERT INTO devilry_group_feedbacksetdeadlinehistory (
+            feedback_set_id,
+            changed_datetime,
+            deadline_old,
+            deadline_new)
+        VALUES (
+            NEW.id,
+            now(),
+            OLD.deadline_datetime,
+            NEW.deadline_datetime);
+    END IF;
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__on_feedbackset_deadline_update() OWNER TO dbdev;
+
+--
+-- Name: devilry__on_groupcomment_after_delete(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__on_groupcomment_after_delete() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    var_group_id integer;
+BEGIN
+    var_group_id = devilry__get_group_id_from_feedbackset_id(OLD.feedback_set_id);
+    PERFORM devilry__rebuild_assignmentgroupcacheddata(var_group_id);
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__on_groupcomment_after_delete() OWNER TO dbdev;
+
+--
+-- Name: devilry__on_groupcomment_after_insert_or_update(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__on_groupcomment_after_insert_or_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    var_group_id integer;
+BEGIN
+    var_group_id = devilry__get_group_id_from_feedbackset_id(NEW.feedback_set_id);
+    PERFORM devilry__rebuild_assignmentgroupcacheddata(var_group_id);
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__on_groupcomment_after_insert_or_update() OWNER TO dbdev;
+
+--
+-- Name: devilry__on_imageannotationcomment_after_delete(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__on_imageannotationcomment_after_delete() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    var_group_id integer;
+BEGIN
+    var_group_id = devilry__get_group_id_from_feedbackset_id(OLD.feedback_set_id);
+    PERFORM devilry__rebuild_assignmentgroupcacheddata(var_group_id);
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__on_imageannotationcomment_after_delete() OWNER TO dbdev;
+
+--
+-- Name: devilry__on_imageannotationcomment_after_insert_or_update(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__on_imageannotationcomment_after_insert_or_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    var_group_id integer;
+BEGIN
+    var_group_id = devilry__get_group_id_from_feedbackset_id(NEW.feedback_set_id);
+    PERFORM devilry__rebuild_assignmentgroupcacheddata(var_group_id);
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__on_imageannotationcomment_after_insert_or_update() OWNER TO dbdev;
+
+--
+-- Name: devilry__rebuild_assignmentgroupcacheddata(integer); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__rebuild_assignmentgroupcacheddata(param_group_id integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    var_groupcachedata RECORD;
+    var_last_public_comment_by_student_datetime timestamp with time zone;
+    var_last_public_comment_by_examiner_datetime timestamp with time zone;
+
+BEGIN
+    var_groupcachedata = devilry__collect_groupcachedata(param_group_id);
+    var_last_public_comment_by_student_datetime = devilry__largest_datetime(
+        var_groupcachedata.last_public_groupcomment_by_student_datetime,
+        var_groupcachedata.last_public_imageannotationcomment_by_student_datetime
+    );
+    var_last_public_comment_by_examiner_datetime = devilry__largest_datetime(
+        var_groupcachedata.last_public_groupcomment_by_examiner_datetime,
+        var_groupcachedata.last_public_imageannotationcomment_by_examiner_datetime
+    );
+
+    IF EXISTS (SELECT 1 FROM core_assignmentgroup WHERE core_assignmentgroup.id = param_group_id) THEN
+        INSERT INTO devilry_dbcache_assignmentgroupcacheddata (
+            group_id,
+            first_feedbackset_id,
+            last_feedbackset_id,
+            last_published_feedbackset_id,
+            new_attempt_count,
+            public_total_comment_count,
+            public_student_comment_count,
+            public_examiner_comment_count,
+            public_admin_comment_count,
+            public_student_file_upload_count,
+            last_public_comment_by_student_datetime,
+            last_public_comment_by_examiner_datetime,
+            examiner_count,
+            candidate_count)
+        VALUES (
+            param_group_id,
+            var_groupcachedata.first_feedbackset_id,
+            var_groupcachedata.last_feedbackset_id,
+            var_groupcachedata.last_published_feedbackset_id,
+            var_groupcachedata.new_attempt_count,
+            var_groupcachedata.public_total_comment_count + var_groupcachedata.public_total_imageannotationcomment_count,
+            var_groupcachedata.public_student_comment_count + var_groupcachedata.public_student_imageannotationcomment_count,
+            var_groupcachedata.public_examiner_comment_count + var_groupcachedata.public_examiner_imageannotationcomment_count,
+            var_groupcachedata.public_admin_comment_count + var_groupcachedata.public_admin_imageannotationcomment_count,
+            var_groupcachedata.public_student_file_upload_count,
+            var_last_public_comment_by_student_datetime,
+            var_last_public_comment_by_examiner_datetime,
+            var_groupcachedata.examiner_count,
+            var_groupcachedata.candidate_count
+        )
+        ON CONFLICT(group_id)
+        DO UPDATE SET
+            first_feedbackset_id = var_groupcachedata.first_feedbackset_id,
+            last_feedbackset_id = var_groupcachedata.last_feedbackset_id,
+            last_published_feedbackset_id = var_groupcachedata.last_published_feedbackset_id,
+            new_attempt_count = var_groupcachedata.new_attempt_count,
+            public_total_comment_count = var_groupcachedata.public_total_comment_count + var_groupcachedata.public_total_imageannotationcomment_count,
+            public_student_comment_count = var_groupcachedata.public_student_comment_count + var_groupcachedata.public_student_imageannotationcomment_count,
+            public_examiner_comment_count = var_groupcachedata.public_examiner_comment_count + var_groupcachedata.public_examiner_imageannotationcomment_count,
+            public_admin_comment_count = var_groupcachedata.public_admin_comment_count + var_groupcachedata.public_admin_imageannotationcomment_count,
+            public_student_file_upload_count = var_groupcachedata.public_student_file_upload_count,
+            last_public_comment_by_student_datetime = var_last_public_comment_by_student_datetime,
+            last_public_comment_by_examiner_datetime = var_last_public_comment_by_examiner_datetime,
+            examiner_count = var_groupcachedata.examiner_count,
+            candidate_count = var_groupcachedata.candidate_count;
+    END IF;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__rebuild_assignmentgroupcacheddata(param_group_id integer) OWNER TO dbdev;
+
+--
+-- Name: devilry__rebuild_assignmentgroupcacheddata_for_period(integer); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__rebuild_assignmentgroupcacheddata_for_period(param_period_id integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    var_group_id integer;
+BEGIN
+    RAISE NOTICE 'Rebuilding data cache all AssignmentGroups in Period#% into table AssignmentGroupCachedData.', param_period_id;
+
+    FOR var_group_id IN
+        SELECT
+            core_assignmentgroup.id
+        FROM core_assignmentgroup
+        INNER JOIN core_assignment
+            ON core_assignment.id = core_assignmentgroup.parentnode_id
+        WHERE
+            core_assignment.parentnode_id = param_period_id
+    LOOP
+        PERFORM devilry__rebuild_assignmentgroupcacheddata(var_group_id);
+    END LOOP;
+
+    RAISE NOTICE 'Rebuilding data cache for Period#% finished.', param_period_id;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__rebuild_assignmentgroupcacheddata_for_period(param_period_id integer) OWNER TO dbdev;
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
+
+--
+-- Name: devilry_group_feedbackset; Type: TABLE; Schema: public; Owner: dbdev
+--
+
+CREATE TABLE devilry_group_feedbackset (
+    id integer NOT NULL,
+    grading_points integer,
+    created_datetime timestamp with time zone NOT NULL,
+    grading_published_datetime timestamp with time zone,
+    deadline_datetime timestamp with time zone NOT NULL,
+    created_by_id integer,
+    group_id integer NOT NULL,
+    grading_published_by_id integer,
+    gradeform_data_json text NOT NULL,
+    feedbackset_type character varying(50) NOT NULL,
+    ignored boolean NOT NULL,
+    ignored_reason text NOT NULL,
+    ignored_datetime timestamp with time zone,
+    CONSTRAINT devilry_group_feedbackset_grading_points_697ae108a5fe85ff_check CHECK ((grading_points >= 0))
+);
+
+
+ALTER TABLE devilry_group_feedbackset OWNER TO dbdev;
+
+--
+-- Name: devilry__validate_feedbackset_change(devilry_group_feedbackset, text); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry__validate_feedbackset_change(param_feedbackset devilry_group_feedbackset, param_tg_op text) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+-- DECLARE
+--     var_first_feedbackset_id integer;
+--     var_draft_feedbackset_id integer;
+--     var_is_first_feedbackset boolean;
+BEGIN
+
+--     SELECT id
+--     FROM devilry_group_feedbackset
+--     WHERE group_id = param_feedbackset.group_id
+--     ORDER BY deadline_datetime ASC NULLS FIRST
+--     LIMIT 1
+--     INTO var_first_feedbackset_id;
+--
+--     var_is_first_feedbackset = false;
+--     IF var_first_feedbackset_id IS NULL THEN
+--         var_is_first_feedbackset = true;
+--     ELSE
+--         IF param_tg_op = 'UPDATE' AND param_feedbackset.id = var_first_feedbackset_id THEN
+--             var_is_first_feedbackset = true;
+--         END IF;
+--     END IF;
+--
+--     IF var_is_first_feedbackset THEN
+--         IF param_feedbackset.deadline_datetime IS NOT NULL THEN
+--             RAISE EXCEPTION integrity_constraint_violation
+--                 USING MESSAGE = 'The first FeedbackSet in an AssignmentGroup must have deadline_datetime=NULL';
+--         END IF;
+--     ELSE
+--         IF param_feedbackset.deadline_datetime IS NULL THEN
+--             RAISE EXCEPTION integrity_constraint_violation
+--                 USING MESSAGE = 'Only the first FeedbackSet in an AssignmentGroup can have deadline_datetime=NULL';
+--         END IF;
+--     END IF;
+
+-- --     RAISE LOG 'param_feedbackset: %', param_feedbackset;
+-- --     RAISE LOG 'var_is_first_feedbackset: %', var_is_first_feedbackset;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry__validate_feedbackset_change(param_feedbackset devilry_group_feedbackset, param_tg_op text) OWNER TO dbdev;
+
+--
+-- Name: devilry_dbcache_on_assignmentgroup_insert(); Type: FUNCTION; Schema: public; Owner: dbdev
+--
+
+CREATE FUNCTION devilry_dbcache_on_assignmentgroup_insert() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    PERFORM devilry__create_first_feedbackset_in_group(NEW.id, NEW.parentnode_id);
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION public.devilry_dbcache_on_assignmentgroup_insert() OWNER TO dbdev;
 
 --
 -- Name: auth_group; Type: TABLE; Schema: public; Owner: dbdev
@@ -1996,30 +2855,6 @@ ALTER SEQUENCE devilry_gradingsystem_feedbackdraftfile_id_seq OWNED BY devilry_g
 
 
 --
--- Name: devilry_group_feedbackset; Type: TABLE; Schema: public; Owner: dbdev
---
-
-CREATE TABLE devilry_group_feedbackset (
-    id integer NOT NULL,
-    grading_points integer,
-    created_datetime timestamp with time zone NOT NULL,
-    grading_published_datetime timestamp with time zone,
-    deadline_datetime timestamp with time zone NOT NULL,
-    created_by_id integer,
-    group_id integer NOT NULL,
-    grading_published_by_id integer,
-    gradeform_data_json text NOT NULL,
-    feedbackset_type character varying(50) NOT NULL,
-    ignored boolean NOT NULL,
-    ignored_reason text NOT NULL,
-    ignored_datetime timestamp with time zone,
-    CONSTRAINT devilry_group_feedbackset_grading_points_697ae108a5fe85ff_check CHECK ((grading_points >= 0))
-);
-
-
-ALTER TABLE devilry_group_feedbackset OWNER TO dbdev;
-
---
 -- Name: devilry_group_feedbackset_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
 --
 
@@ -3942,6 +4777,28 @@ SELECT pg_catalog.setval('devilry_compressionutil_compressedarchivemeta_id_seq',
 --
 
 COPY devilry_dbcache_assignmentgroupcacheddata (id, new_attempt_count, public_total_comment_count, public_student_comment_count, public_examiner_comment_count, public_admin_comment_count, public_student_file_upload_count, first_feedbackset_id, group_id, last_feedbackset_id, last_published_feedbackset_id, last_public_comment_by_examiner_datetime, last_public_comment_by_student_datetime, candidate_count, examiner_count) FROM stdin;
+1	0	0	0	0	0	0	3	3	3	\N	\N	\N	1	1
+2	0	0	0	0	0	0	4	4	4	\N	\N	\N	1	1
+3	0	0	0	0	0	0	5	5	5	\N	\N	\N	1	1
+4	0	0	0	0	0	0	6	6	6	\N	\N	\N	1	1
+5	0	0	0	0	0	0	7	7	7	\N	\N	\N	1	1
+6	0	0	0	0	0	0	8	8	8	\N	\N	\N	1	1
+7	0	2	1	1	0	0	9	9	9	9	2016-02-08 11:27:11.75299+01	2016-02-08 11:25:23.021072+01	1	1
+8	0	0	0	0	0	0	10	10	10	\N	\N	\N	1	0
+9	0	0	0	0	0	0	11	11	11	\N	\N	\N	1	0
+10	0	0	0	0	0	0	12	12	12	12	\N	\N	1	1
+11	0	0	0	0	0	0	13	14	13	\N	\N	\N	1	1
+12	0	0	0	0	0	0	14	15	14	\N	\N	\N	1	1
+13	0	0	0	0	0	0	15	16	15	\N	\N	\N	1	1
+14	0	0	0	0	0	0	16	17	16	\N	\N	\N	1	1
+15	0	0	0	0	0	0	17	18	17	\N	\N	\N	1	1
+16	0	0	0	0	0	0	18	19	18	\N	\N	\N	1	1
+17	0	0	0	0	0	0	19	20	19	\N	\N	\N	1	1
+18	0	0	0	0	0	0	20	21	20	\N	\N	\N	1	1
+19	0	0	0	0	0	0	21	22	21	\N	\N	\N	1	1
+20	0	0	0	0	0	0	22	23	22	\N	\N	\N	1	1
+21	0	0	0	0	0	0	23	24	23	\N	\N	\N	1	1
+22	0	0	0	0	0	0	24	25	24	\N	\N	\N	1	0
 \.
 
 
@@ -3949,7 +4806,7 @@ COPY devilry_dbcache_assignmentgroupcacheddata (id, new_attempt_count, public_to
 -- Name: devilry_dbcache_assignmentgroupcacheddata_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_dbcache_assignmentgroupcacheddata_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_dbcache_assignmentgroupcacheddata_id_seq', 22, true);
 
 
 --
@@ -6475,6 +7332,118 @@ CREATE INDEX ievv_batchframework_batchoperation_651b6541 ON ievv_batchframework_
 --
 
 CREATE INDEX ievv_batchframework_batchoperation_e9e6a554 ON ievv_batchframework_batchoperation USING btree (operationtype);
+
+
+--
+-- Name: devilry__assignment_first_deadline_update_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__assignment_first_deadline_update_trigger AFTER UPDATE ON core_assignment FOR EACH ROW EXECUTE PROCEDURE devilry__assignment_first_deadline_update();
+
+
+--
+-- Name: devilry__on_candidate_after_delete; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__on_candidate_after_delete AFTER DELETE ON core_candidate FOR EACH ROW EXECUTE PROCEDURE devilry__on_candidate_after_delete();
+
+
+--
+-- Name: devilry__on_candidate_after_insert_or_update; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__on_candidate_after_insert_or_update AFTER INSERT OR UPDATE ON core_candidate FOR EACH ROW EXECUTE PROCEDURE devilry__on_candidate_after_insert_or_update();
+
+
+--
+-- Name: devilry__on_commentfile_after_delete; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__on_commentfile_after_delete AFTER DELETE ON devilry_comment_commentfile FOR EACH ROW EXECUTE PROCEDURE devilry__on_commentfile_after_delete();
+
+
+--
+-- Name: devilry__on_commentfile_after_insert_or_update_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__on_commentfile_after_insert_or_update_trigger AFTER INSERT OR UPDATE ON devilry_comment_commentfile FOR EACH ROW EXECUTE PROCEDURE devilry__on_commentfile_after_insert_or_update();
+
+
+--
+-- Name: devilry__on_examiner_after_delete; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__on_examiner_after_delete AFTER DELETE ON core_assignmentgroup_examiners FOR EACH ROW EXECUTE PROCEDURE devilry__on_examiner_after_delete();
+
+
+--
+-- Name: devilry__on_examiner_after_insert_or_update; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__on_examiner_after_insert_or_update AFTER INSERT OR UPDATE ON core_assignmentgroup_examiners FOR EACH ROW EXECUTE PROCEDURE devilry__on_examiner_after_insert_or_update();
+
+
+--
+-- Name: devilry__on_feedbackset_after_delete; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__on_feedbackset_after_delete AFTER DELETE ON devilry_group_feedbackset FOR EACH ROW EXECUTE PROCEDURE devilry__on_feedbackset_after_delete();
+
+
+--
+-- Name: devilry__on_feedbackset_after_insert_or_update_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__on_feedbackset_after_insert_or_update_trigger AFTER INSERT OR UPDATE ON devilry_group_feedbackset FOR EACH ROW EXECUTE PROCEDURE devilry__on_feedbackset_after_insert_or_update();
+
+
+--
+-- Name: devilry__on_feedbackset_before_insert_or_update_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__on_feedbackset_before_insert_or_update_trigger BEFORE INSERT OR UPDATE ON devilry_group_feedbackset FOR EACH ROW EXECUTE PROCEDURE devilry__on_feedbackset_before_insert_or_update();
+
+
+--
+-- Name: devilry__on_feedbackset_deadline_update_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__on_feedbackset_deadline_update_trigger AFTER UPDATE ON devilry_group_feedbackset FOR EACH ROW EXECUTE PROCEDURE devilry__on_feedbackset_deadline_update();
+
+
+--
+-- Name: devilry__on_groupcomment_after_delete; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__on_groupcomment_after_delete AFTER DELETE ON devilry_group_groupcomment FOR EACH ROW EXECUTE PROCEDURE devilry__on_groupcomment_after_delete();
+
+
+--
+-- Name: devilry__on_groupcomment_after_insert_or_update_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__on_groupcomment_after_insert_or_update_trigger AFTER INSERT OR UPDATE ON devilry_group_groupcomment FOR EACH ROW EXECUTE PROCEDURE devilry__on_groupcomment_after_insert_or_update();
+
+
+--
+-- Name: devilry__on_imageannotationcomment_after_delete; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__on_imageannotationcomment_after_delete AFTER DELETE ON devilry_group_imageannotationcomment FOR EACH ROW EXECUTE PROCEDURE devilry__on_imageannotationcomment_after_delete();
+
+
+--
+-- Name: devilry__on_imageannotationcomment_after_insert_or_update_trigg; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry__on_imageannotationcomment_after_insert_or_update_trigg AFTER INSERT OR UPDATE ON devilry_group_imageannotationcomment FOR EACH ROW EXECUTE PROCEDURE devilry__on_imageannotationcomment_after_insert_or_update();
+
+
+--
+-- Name: devilry_dbcache_on_assignmentgroup_insert_trigger; Type: TRIGGER; Schema: public; Owner: dbdev
+--
+
+CREATE TRIGGER devilry_dbcache_on_assignmentgroup_insert_trigger AFTER INSERT ON core_assignmentgroup FOR EACH ROW EXECUTE PROCEDURE devilry_dbcache_on_assignmentgroup_insert();
 
 
 --
