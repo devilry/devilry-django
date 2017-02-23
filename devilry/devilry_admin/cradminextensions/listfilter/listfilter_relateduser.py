@@ -4,8 +4,6 @@ from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin.viewhelpers import listfilter
 from django_cradmin.viewhelpers.listfilter.basefilters.single import abstractselect
 
-from devilry.apps.core.models.relateduser import RelatedStudentSyncSystemTag
-
 
 class OrderRelatedStudentsFilter(listfilter.django.single.select.AbstractOrderBy):
     def get_ordering_options(self):
@@ -65,7 +63,7 @@ class Search(listfilter.django.single.textinput.Search):
         return [
             'user__fullname',
             'user__shortname',
-            'relatedstudentsyncsystemtag__tag',
+            'relatedstudenttag__tag',
         ]
 
     def get_label_is_screenreader_only(self):
@@ -110,5 +108,5 @@ class TagSelectFilter(abstractselect.AbstractSelectFilter):
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value() or ''
         if cleaned_value != '':
-            queryobject = queryobject.filter(relatedstudentsyncsystemtag__tag=cleaned_value)
+            queryobject = queryobject.filter(relatedstudenttag__tag=cleaned_value)
         return queryobject

@@ -234,7 +234,7 @@ class TestAssignment(TestCase):
         testperiod = mommy.make('core.Period')
 
         examiner1 = mommy.make(settings.AUTH_USER_MODEL, shortname='examiner1')
-        mommy.make('core.RelatedExaminerSyncSystemTag',
+        mommy.make('core.RelatedExaminerTag',
                    relatedexaminer__period=testperiod,
                    relatedexaminer__user=examiner1,
                    tag='group1')
@@ -243,7 +243,7 @@ class TestAssignment(TestCase):
         relatedstudent1 = mommy.make('core.RelatedStudent',
                                      user=student1,
                                      period=testperiod)
-        mommy.make('core.RelatedStudentSyncSystemTag',
+        mommy.make('core.RelatedStudentTag',
                    relatedstudent=relatedstudent1,
                    tag='group1')
 
@@ -261,7 +261,7 @@ class TestAssignment(TestCase):
 
         examiner1 = mommy.make(settings.AUTH_USER_MODEL, shortname='examiner1')
         relatedexaminer1 = mommy.make('core.RelatedExaminer', user=examiner1)
-        mommy.make('core.RelatedExaminerSyncSystemTag',
+        mommy.make('core.RelatedExaminerTag',
                    relatedexaminer__period=testperiod,
                    relatedexaminer=relatedexaminer1,
                    tag='group1')
@@ -270,7 +270,7 @@ class TestAssignment(TestCase):
         relatedstudent1 = mommy.make('core.RelatedStudent',
                                      user=student1,
                                      period=testperiod)
-        mommy.make('core.RelatedStudentSyncSystemTag',
+        mommy.make('core.RelatedStudentTag',
                    relatedstudent=relatedstudent1,
                    tag='group1')
 
@@ -292,12 +292,12 @@ class TestAssignment(TestCase):
         testperiod = mommy.make('core.Period')
 
         examiner1 = mommy.make(settings.AUTH_USER_MODEL, shortname='examiner1')
-        mommy.make('core.RelatedExaminerSyncSystemTag',
+        mommy.make('core.RelatedExaminerTag',
                    relatedexaminer__period=testperiod,
                    relatedexaminer__user=examiner1,
                    tag='group1')
         examiner2 = mommy.make(settings.AUTH_USER_MODEL, shortname='examiner2')
-        mommy.make('core.RelatedExaminerSyncSystemTag',
+        mommy.make('core.RelatedExaminerTag',
                    relatedexaminer__period=testperiod,
                    relatedexaminer__user=examiner2,
                    tag='group2')
@@ -306,17 +306,17 @@ class TestAssignment(TestCase):
         relatedstudent1 = mommy.make('core.RelatedStudent',
                                      user=student1,
                                      period=testperiod)
-        mommy.make('core.RelatedStudentSyncSystemTag',
+        mommy.make('core.RelatedStudentTag',
                    relatedstudent=relatedstudent1,
                    tag='group1')
         student2 = mommy.make(settings.AUTH_USER_MODEL)
         relatedstudent2 = mommy.make('core.RelatedStudent',
                                      user=student2,
                                      period=testperiod)
-        mommy.make('core.RelatedStudentSyncSystemTag',
+        mommy.make('core.RelatedStudentTag',
                    relatedstudent=relatedstudent2,
                    tag='group1')
-        mommy.make('core.RelatedStudentSyncSystemTag',
+        mommy.make('core.RelatedStudentTag',
                    relatedstudent=relatedstudent2,
                    tag='group2')
 
@@ -350,17 +350,17 @@ class TestAssignment(TestCase):
     def test_setup_examiners_by_relateduser_syncsystem_tags_querycount(self):
         testperiod = mommy.make('core.Period')
 
-        mommy.make('core.RelatedExaminerSyncSystemTag',
+        mommy.make('core.RelatedExaminerTag',
                    relatedexaminer__period=testperiod,
                    tag='group1', _quantity=8)
-        mommy.make('core.RelatedExaminerSyncSystemTag',
+        mommy.make('core.RelatedExaminerTag',
                    relatedexaminer__period=testperiod,
                    tag='group2', _quantity=10)
 
-        mommy.make('core.RelatedStudentSyncSystemTag',
+        mommy.make('core.RelatedStudentTag',
                    relatedstudent__period=testperiod,
                    tag='group1', _quantity=20)
-        mommy.make('core.RelatedStudentSyncSystemTag',
+        mommy.make('core.RelatedStudentTag',
                    relatedstudent__period=testperiod,
                    tag='group2', _quantity=30)
 
