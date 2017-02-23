@@ -372,8 +372,8 @@ class RelatedStudentQuerySet(models.QuerySet):
         ``tag`` in ascending order.
         """
         return self.prefetch_related(
-                models.Prefetch('relatedstudentsyncsystemtag_set',
-                                queryset=RelatedStudentSyncSystemTag.objects.order_by('tag'),
+                models.Prefetch('relatedstudenttag_set',
+                                queryset=RelatedStudentTag.objects.order_by('tag'),
                                 to_attr='syncsystemtag_objects'))
 
 
@@ -428,21 +428,31 @@ class RelatedStudent(RelatedUserBase):
         return [syncsystemtag.tag for syncsystemtag in self.syncsystemtag_objects]
 
 
-class RelatedUserSyncSystemTag(models.Model):
+class RelatedUserTag(models.Model):
     """
-    Base class for :class:`.RelatedExaminerSyncSystemTag` and
-    :class:`.RelatedExaminerSyncSystemTag`.
+    Base class for :class:`.RelatedExaminerTag` and
+    :class:`.RelatedExaminerTag`.
     """
 
     class Meta:
         abstract = True
+        unique_together = [
+            ('tag', 'prefix')
+        ]
 
     #: A tag unique for a the related student/examiner.
     #: Max 15 characters.
     tag = models.CharField(db_index=True, max_length=15)
 
+    #: A prefix to go with the tag.
+    #: The prefix is used by import scripts etc.
+    prefix = models.CharField(blank=True, default='', max_length=30)
 
-class RelatedExaminerSyncSystemTag(RelatedUserSyncSystemTag):
+    #: If the tag should be hidden.
+    is_hidden = models.BooleanField(default=False)
+
+
+class RelatedExaminerTag(RelatedUserTag):
     """
     A tag for a :class:`.RelatedExaminer`.
 
@@ -455,14 +465,14 @@ class RelatedExaminerSyncSystemTag(RelatedUserSyncSystemTag):
 
     class Meta:
         unique_together = [
-            ('relatedexaminer', 'tag')
+            ('relatedexaminer', 'prefix', 'tag')
         ]
 
     #: Foreignkey to the :class:`.RelatedExaminer` this tag is for.
     relatedexaminer = models.ForeignKey(RelatedExaminer)
 
 
-class RelatedStudentSyncSystemTagQuerySet(models.QuerySet):
+class RelatedStudentTagQuerySet(models.QuerySet):
     """
     QuerySet for :class:`.RelatedStudentSyncSystemTag`.
     """
@@ -477,7 +487,7 @@ class RelatedStudentSyncSystemTagQuerySet(models.QuerySet):
             .distinct()
 
 
-class RelatedStudentSyncSystemTag(RelatedUserSyncSystemTag):
+class RelatedStudentTag(RelatedUserTag):
     """
     A tag for a :class:`.RelatedStudent`.
 
@@ -487,11 +497,11 @@ class RelatedStudentSyncSystemTag(RelatedUserSyncSystemTag):
     to students (match :class:`.RelatedExaminerSyncSystemTag` to
     :class:`.RelatedExaminerSyncSystemTag`).
     """
-    objects = RelatedStudentSyncSystemTagQuerySet.as_manager()
+    objects = RelatedStudentTagQuerySet.as_manager()
 
     class Meta:
         unique_together = [
-            ('relatedstudent', 'tag')
+            ('relatedstudent', 'prefix', 'tag')
         ]
 
     #: Foreignkey to the :class:`.RelatedStudent` this tag is for.
