@@ -32,6 +32,10 @@ class ExaminerCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_cr
     ]
     id = 'devilry_group_examiner'
 
+    @property
+    def assignment(self):
+        return self.request.cradmin_role.parentnode
+
     @classmethod
     def matches_urlpath(cls, urlpath):
         return urlpath.startswith('/devilry_group/examiner')

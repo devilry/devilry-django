@@ -20,13 +20,13 @@
                     <a href="#" class="btn btn-default devilry-group-feedbackfeed-examiner-after-publish-choice-alert-reedit-button">
                         {% trans "Edit the grade" %}
                     </a>
-                    <a href="{% cradmin_url instanceid="devilry_examiner_assignment" appname="manage-deadlines" roleid=assignment.id viewname="manage-deadline-single-group" handle_deadline="new-attempt" deadline=last_deadline_as_string group_id=last_feedbackset.group.id %}"
+                    <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="new-attempt" deadline=last_deadline_as_string group_id=last_feedbackset.group.id %}"
                        class="btn btn-default devilry-group-feedbackfeed-examiner-after-publish-choice-alert-new-attempt-button">
                         {% trans "Give new attempt" %}
                     </a>
                 </p>
         {% else %}
-            <a href="{% cradmin_url instanceid="devilry_examiner_assignment" appname="manage-deadlines" roleid=assignment.id viewname="manage-deadline-single-group" handle_deadline="move-deadline" deadline=last_deadline_as_string group_id=last_feedbackset.group.id %}"
+            <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="move-deadline" deadline=last_deadline_as_string group_id=last_feedbackset.group.id %}"
                class="btn btn-default devilry-group-feedbackfeed-examiner-after-publish-choice-alert-move-deadline-button">
                 {% trans "Move deadline" %}
             </a>
