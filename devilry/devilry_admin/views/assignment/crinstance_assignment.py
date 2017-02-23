@@ -67,6 +67,10 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
         assignment = role
         return assignment
 
+    @property
+    def assignment(self):
+        return self.request.cradmin_role
+
     @classmethod
     def matches_urlpath(cls, urlpath):
         return urlpath.startswith('/devilry_admin/assignment')
