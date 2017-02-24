@@ -428,6 +428,44 @@ class RelatedStudent(RelatedUserBase):
         return [syncsystemtag.tag for syncsystemtag in self.syncsystemtag_objects]
 
 
+class RelatedUserTagQuerySet(models.QuerySet):
+    def get_tags_in_period_for_related_user_model(self, period):
+        """
+        Get a ValuesListQuerySet of all distinct tags within
+        the given period for a RelatedUser model.
+
+        Must be implemented in QuerySet subclass for the specific ``RelatedUser`` model.
+
+        Example::
+            Using ``RelatedStudent`` as ``RelatedUser`` subclass:
+
+                RelatedStudentTagQuerySet(RelatedUserTagQuerySet):
+                    def get_tags_in_period_for_related_user_model(self, period):
+                        return self.filter(relatedstudent__period=period)
+
+        Args:
+            period: :obj:`~.devilry.core.apps.models.Period` for ``RelatedUser``.
+
+        Returns:
+            (QuerySet): Of the ``RelatedUser`` model used filtered on period.
+        """
+        raise NotImplementedError
+
+    def get_all_distinct_tags_in_period(self, period):
+        """
+        Get a ValuesListQuerySet of all distinct tag (strings) within
+        the given period.
+        """
+        return self.get_tags_in_period_for_related_user_model(period=period)\
+            .order_by('tag')\
+            .values_list('tag', flat=True)\
+            .distinct()
+
+    def get_all_distinct_visible_tags_in_period(self, period):
+        return self.get_all_distinct_tags_in_period(period=period)\
+            .filter(is_hidden=False)
+
+
 class RelatedUserTag(models.Model):
     """
     Base class for :class:`.RelatedExaminerTag` and
@@ -451,6 +489,20 @@ class RelatedUserTag(models.Model):
     #: If the tag should be hidden.
     is_hidden = models.BooleanField(default=False)
 
+    @property
+    def displayname(self):
+        if len(self.prefix) > 0:
+            return '{}:{}'.format(self.prefix, self.tag)
+        return '{}'.format(self.tag)
+
+
+class RelatedExaminerTagQuerySet(RelatedUserTagQuerySet):
+    """
+    QuerySet for :class:`.RelatedExaminerTag`.
+    """
+    def get_tags_in_period_for_related_user_model(self, period):
+        return self.filter(relatedexaminer__period=period)
+
 
 class RelatedExaminerTag(RelatedUserTag):
     """
@@ -462,6 +514,7 @@ class RelatedExaminerTag(RelatedUserTag):
     to students (match :class:`.RelatedExaminerSyncSystemTag` to
     :class:`.RelatedExaminerSyncSystemTag`).
     """
+    objects = RelatedExaminerTagQuerySet.as_manager()
 
     class Meta:
         unique_together = [
@@ -472,19 +525,12 @@ class RelatedExaminerTag(RelatedUserTag):
     relatedexaminer = models.ForeignKey(RelatedExaminer)
 
 
-class RelatedStudentTagQuerySet(models.QuerySet):
+class RelatedStudentTagQuerySet(RelatedUserTagQuerySet):
     """
-    QuerySet for :class:`.RelatedStudentSyncSystemTag`.
+    QuerySet for :class:`.RelatedStudentTag`.
     """
-    def get_all_distinct_tags_in_period(self, period):
-        """
-        Get a ValuesListQuerySet of all distinct tag (strings) within
-        the given period.
-        """
-        return self.filter(relatedstudent__period=period)\
-            .order_by('tag')\
-            .values_list('tag', flat=True)\
-            .distinct()
+    def get_tags_in_period_for_related_user_model(self, period):
+        return self.filter(relatedstudent__period=period)
 
 
 class RelatedStudentTag(RelatedUserTag):
