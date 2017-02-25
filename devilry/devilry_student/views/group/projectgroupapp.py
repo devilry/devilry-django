@@ -13,7 +13,9 @@ from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 
 from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import GroupInvite
+from devilry.devilry_account.models import User
 
 
 class CreateForm(forms.ModelForm):
@@ -189,7 +191,8 @@ class GroupInviteDeleteView(DeleteView):
     context_object_name = 'groupinvite'
 
     def get_queryset(self):
-        return GroupInvite.objects.filter_no_response().filter(sent_by=self.request.user)
+        return GroupInvite.objects.filter_no_response()\
+            .filter(group__in=AssignmentGroup.objects.filter_student_has_access(self.request.user))
 
     def get_context_data(self, **kwargs):
         context = super(GroupInviteDeleteView, self).get_context_data(**kwargs)

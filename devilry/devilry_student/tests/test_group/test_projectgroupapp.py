@@ -1,5 +1,6 @@
 import mock
 from django.contrib import messages
+from django.http import Http404
 from django.test import TestCase
 from django.utils.timezone import datetime, timedelta
 from django_cradmin import cradmin_testhelpers
@@ -705,3 +706,111 @@ class TestGroupInviteDeleteView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(AssignmentGroup.objects.filter(id=group.id).exists())
         self.assertTrue(AssignmentGroup.objects.filter(id=group1.id).exists())
         self.assertFalse(GroupInvite.objects.filter(id=invite.id).exists())
+
+    def test_delete_invitation_by_another_user_in_group_message(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            long_name='Assignment 1',
+            parentnode__long_name='Spring 2017',
+            parentnode__parentnode__long_name='Duck1010'
+        )
+        group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate2 = core_mommy.candidate(group=group, fullname="Donald Duck", shortname="donald@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=group,
+            messagesmock=messagesmock,
+            requestuser=candidate2.relatedstudent.user,
+            viewkwargs={
+                'invite_id': invite.id
+            }
+        )
+        messagesmock.add.assert_called_once_with(
+            messages.SUCCESS,
+            'Removed project group invitation {}.'.format(candidate1.relatedstudent.user.get_displayname()),
+            ''
+        )
+
+    def test_delete_invitation_by_another_user_in_group_db(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            long_name='Assignment 1',
+            parentnode__long_name='Spring 2017',
+            parentnode__parentnode__long_name='Duck1010'
+        )
+        group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate2 = core_mommy.candidate(group=group, fullname="Donald Duck", shortname="donald@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=group,
+            messagesmock=messagesmock,
+            requestuser=candidate2.relatedstudent.user,
+            viewkwargs={
+                'invite_id': invite.id
+            }
+        )
+        self.assertTrue(AssignmentGroup.objects.filter(id=group.id).exists())
+        self.assertTrue(AssignmentGroup.objects.filter(id=group1.id).exists())
+        self.assertFalse(GroupInvite.objects.filter(id=invite.id).exists())
+
+    def test_delete_invitation_by_a_user_not_in_group_404(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            long_name='Assignment 1',
+            parentnode__long_name='Spring 2017',
+            parentnode__parentnode__long_name='Duck1010'
+        )
+        group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate2 = core_mommy.candidate(group=group2, fullname="Donald Duck", shortname="donald@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        messagesmock = mock.MagicMock()
+        with self.assertRaises(Http404):
+            self.mock_http302_postrequest(
+                cradmin_role=group,
+                messagesmock=messagesmock,
+                requestuser=candidate2.relatedstudent.user,
+                viewkwargs={
+                    'invite_id': invite.id
+                }
+            )
+
+    def test_get_invitation_by_a_user_not_in_group_404(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            long_name='Assignment 1',
+            parentnode__long_name='Spring 2017',
+            parentnode__parentnode__long_name='Duck1010'
+        )
+        group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate2 = core_mommy.candidate(group=group2, fullname="Donald Duck", shortname="donald@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        messagesmock = mock.MagicMock()
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=group,
+                messagesmock=messagesmock,
+                requestuser=candidate2.relatedstudent.user,
+                viewkwargs={
+                    'invite_id': invite.id
+                }
+            )
