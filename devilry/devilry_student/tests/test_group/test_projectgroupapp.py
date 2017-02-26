@@ -57,27 +57,27 @@ class TestProjectGroupOverviewView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('.django-cradmin-page-header-inner > p').alltext_normalized
         )
 
-    def test_group_members_table(self):
+    def test_group_members_ul_exists(self):
         group = mommy.make('core.AssignmentGroup')
         candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
         core_mommy.candidate(group=group, fullname="Dewey Duck", shortname="dewey@example.com")
         core_mommy.candidate(group=group, fullname="Huey Duck", shortname="huey@example.com")
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group, requestuser=candidate.relatedstudent.user)
-        self.assertTrue(mockresponse.selector.exists('.table.table-striped.table-bordered'))
-        self.assertTrue(mockresponse.selector.exists('#devilry_student_projectgroup_overview_already_in_group'))
+        self.assertTrue(mockresponse.selector.exists('#devilry_student_projectgroup_overview_already_in_group > ul'))
 
-    def test_group_project_members_list_fullname(self):
+    def test_group_project_members_displayname(self):
         group = mommy.make('core.AssignmentGroup')
         candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
-        core_mommy.candidate(group=group, fullname="Dewey Duck", shortname="dewey@example.com")
-        core_mommy.candidate(group=group, fullname="Huey Duck", shortname="huey@example.com")
+        candidate1 = core_mommy.candidate(group=group, fullname="Dewey Duck", shortname="dewey@example.com")
+        candidate2 = core_mommy.candidate(group=group, fullname="Huey Duck", shortname="huey@example.com")
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group, requestuser=candidate.relatedstudent.user)
-        candidate_list = [cand.alltext_normalized
-                          for cand in mockresponse.selector.list('.devilry-student-projectgroupoverview-fullname')]
+        candidate_list = [
+            cand.alltext_normalized
+            for cand in mockresponse.selector.list('#devilry_student_projectgroup_overview_already_in_group > ul > li')]
         self.assertEqual(3, len(candidate_list))
-        self.assertIn('April Duck', candidate_list)
-        self.assertIn('Dewey Duck', candidate_list)
-        self.assertIn('Huey Duck', candidate_list)
+        self.assertIn(candidate.relatedstudent.user.get_displayname(), candidate_list)
+        self.assertIn(candidate1.relatedstudent.user.get_displayname(), candidate_list)
+        self.assertIn(candidate2.relatedstudent.user.get_displayname(), candidate_list)
 
     def test_links(self):
         group = mommy.make('core.AssignmentGroup')

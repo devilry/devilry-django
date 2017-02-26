@@ -122,11 +122,10 @@ class ProjectGroupOverviewView(TemplateView):
             .filter(group__parentnode=group.parentnode)
         context['unanswered_sent_invites'] = GroupInvite.objects.filter_unanswered_sent_invites(group)
 
-        context['groupmemberusers'] = list(
-            get_user_model().objects
-            .filter(id__in=group.candidates.values_list('relatedstudent__user_id', flat=True))
-            .prefetch_related_primary_email()
-            .prefetch_related_primary_username())
+        context['groupmemberusers'] = [
+            user.get_displayname() for user in
+            get_user_model().objects.filter(id__in=group.candidates.values_list('relatedstudent__user', flat=True))
+        ]
         return context
 
 
