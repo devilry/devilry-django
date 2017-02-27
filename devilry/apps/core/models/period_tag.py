@@ -2,8 +2,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-from devilry.apps.core.models import Period
-from devilry.apps.core.models import RelatedStudent, RelatedExaminer
+from devilry.apps.core.models.relateduser import RelatedStudent, RelatedExaminer
+from devilry.apps.core.models.period import Period
 
 
 class PeriodTagQuerySet(models.QuerySet):
@@ -59,7 +59,7 @@ class PeriodTag(models.Model):
         ]
 
     #: The period(semester) for the tag.
-    period = models.ForeignKey(Period)
+    period = models.ForeignKey(Period, related_name='period_tag')
 
     #: Used by import scripts.
     #: If tags are imported from another system, the prefix should be used.
