@@ -2,7 +2,6 @@ from django.core import mail
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils.timezone import datetime, timedelta
-from django.template import loader
 from django.core.urlresolvers import reverse
 from model_mommy import mommy
 
@@ -334,11 +333,7 @@ class GroupInviteRespond(TestCase):
         sent_by = core_mommy.candidate(testgroup, shortname="april@example.com", fullname="April").relatedstudent.user
         sent_to = core_mommy.candidate(testgroup1, shortname="dewey@example.com", fullname="Dewey").relatedstudent.user
         mommy.make('devilry_account.UserEmail', user=sent_to, email="dewey@example.com")
-        invite = GroupInvite(
-            group=testgroup,
-            sent_by=sent_by,
-            sent_to=sent_to
-        )
+        invite = GroupInvite(group=testgroup, sent_by=sent_by, sent_to=sent_to)
         invite.full_clean()
         invite.save()
         request = self.__fake_request()
@@ -347,16 +342,7 @@ class GroupInviteRespond(TestCase):
         self.assertEqual(mail.outbox[0].subject, '[Devilry] Project group invite for Duck1010.s17.assignment1')
         url = request.build_absolute_uri(
             reverse('devilry_student_groupinvite_respond', kwargs={'invite_id': invite.id}))
-        mail_body = loader.render_to_string(
-            'devilry_core/groupinvite_invite.django.txt',
-            {
-                'sent_by_displayname': invite.sent_by.get_displayname(),
-                'assignment': invite.group.parentnode.long_name,
-                'subject': invite.group.parentnode.subject.long_name,
-                'url': url
-            }
-        )
-        self.assertMultiLineEqual(mail.outbox[0].body, mail_body)
+        self.assertIn(url, mail.outbox[0].body)
 
     def test_send_reject_mail(self):
         assignment = mommy.make(
