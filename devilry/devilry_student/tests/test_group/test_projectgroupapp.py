@@ -1415,6 +1415,7 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
             'You have already accepted this invite',
             mockresponse.selector.one('.alert.alert-danger').alltext_normalized
         )
+        self.assertFalse(mockresponse.selector.exists('form'))
 
     def test_invite_already_declined_this_invite(self):
         test_assignment = mommy.make('core.Assignment', students_can_create_groups=True)
@@ -1435,6 +1436,7 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
             'You have already declined this invite',
             mockresponse.selector.one('.alert.alert-danger').alltext_normalized
         )
+        self.assertFalse(mockresponse.selector.exists('form'))
 
     def test_accept_student_can_no_longer_invite(self):
         test_assignment = mommy.make(
@@ -1466,6 +1468,7 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
             mockresponse.selector.one('.alert.alert-danger').alltext_normalized
         )
         self.assertTrue(AssignmentGroup.objects.filter(id=group1.id).exists())
+        self.assertFalse(mockresponse.selector.exists('form'))
 
     def test_accept_invite_students_can_not_create_groups(self):
         test_assignment = mommy.make('core.Assignment', students_can_create_groups=True)
@@ -1493,6 +1496,7 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
             mockresponse.selector.one('.alert.alert-danger').alltext_normalized
         )
         self.assertTrue(AssignmentGroup.objects.filter(id=group1.id).exists())
+        self.assertFalse(mockresponse.selector.exists('form'))
 
     def test_get_student_can_no_longer_invite(self):
         test_assignment = mommy.make(
@@ -1523,6 +1527,7 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
             'administrator if you think this is wrong.',
             mockresponse.selector.one('.alert.alert-danger').alltext_normalized
         )
+        self.assertFalse(mockresponse.selector.exists('form'))
 
     def test_get_students_can_not_create_groups(self):
         test_assignment = mommy.make('core.Assignment', students_can_create_groups=True)
@@ -1549,3 +1554,4 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
             'This assignment does not allow students to form project groups on their own.',
             mockresponse.selector.one('.alert.alert-danger').alltext_normalized
         )
+        self.assertFalse(mockresponse.selector.exists('form'))
