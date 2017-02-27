@@ -673,7 +673,7 @@ class TestGroupInviteRespondView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 }
             )
 
-    def test_404_invitation_on_group_has_expired(self):
+    def test_404_student_can_no_longer_invite(self):
         testassignment = mommy.make('core.Assignment',
                                     students_can_create_groups=True,
                                     students_can_not_create_groups_after=datetime.now() - timedelta(days=1))
@@ -684,6 +684,26 @@ class TestGroupInviteRespondView(TestCase, cradmin_testhelpers.TestCaseMixin):
         invite = mommy.make('core.GroupInvite', group=group,
                             sent_by=candidate.relatedstudent.user,
                             sent_to=candidate1.relatedstudent.user, accepted=False)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=group1,
+                requestuser=candidate1.relatedstudent.user,
+                viewkwargs={
+                    'invite_id': invite.id
+                }
+            )
+
+    def test_404_students_cannot_create_groups(self):
+        testassignment = mommy.make('core.Assignment', students_can_create_groups=True)
+        group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user,
+                            sent_to=candidate1.relatedstudent.user, accepted=False)
+        testassignment.students_can_create_groups = False
+        testassignment.save()
         with self.assertRaises(Http404):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=group1,
@@ -1416,7 +1436,7 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
             mockresponse.selector.one('.alert.alert-danger').alltext_normalized
         )
 
-    def test_accept_invite_assignment_invite_has_expired(self):
+    def test_accept_student_can_no_longer_invite(self):
         test_assignment = mommy.make(
             'core.Assignment',
             students_can_create_groups=True,
@@ -1445,6 +1465,7 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
             'administrator if you think this is wrong.',
             mockresponse.selector.one('.alert.alert-danger').alltext_normalized
         )
+        self.assertTrue(AssignmentGroup.objects.filter(id=group1.id).exists())
 
     def test_accept_invite_students_can_not_create_groups(self):
         test_assignment = mommy.make('core.Assignment', students_can_create_groups=True)
@@ -1471,8 +1492,9 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
             'This assignment does not allow students to form project groups on their own.',
             mockresponse.selector.one('.alert.alert-danger').alltext_normalized
         )
+        self.assertTrue(AssignmentGroup.objects.filter(id=group1.id).exists())
 
-    def test_get_assignment_invite_has_expired(self):
+    def test_get_student_can_no_longer_invite(self):
         test_assignment = mommy.make(
             'core.Assignment',
             students_can_create_groups=True,
