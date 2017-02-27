@@ -10,7 +10,11 @@ class PeriodTagQuerySet(models.QuerySet):
     """
     Model manager for :class:`.PeriodTag`.
     """
-    def get_all_distinct_tags_on_period(self, period):
+    def get_all_distinct_tags(self):
+        return self.order_by('prefix', 'tag')\
+            .distinct('prefix', 'tag')
+
+    def get_all_tags_on_period(self, period):
         """
         Get a QuerySet of all distinct :obj:`~.PeriodTag`s on ``period``.
         Orders by :attr.PeriodTag.prefix` and :attr:`~.PeriodTag.tag`
@@ -35,7 +39,10 @@ class PeriodTagQuerySet(models.QuerySet):
         """
         return self.filter(prefix='')
 
-    def get_all_hidden_tags(self):
+    def get_all_visible_tags_only(self):
+        return self.filter(is_hidden=False)
+
+    def get_all_hidden_tags_only(self):
         """
         Get a QuerySet of all :obj:`.PeriodTag`s with :class:`.PeriodTag.is_hidden=True`
 
@@ -55,7 +62,7 @@ class PeriodTag(models.Model):
 
     class Meta:
         unique_together = [
-            ('prefix', 'tag')
+            ('period', 'prefix', 'tag')
         ]
 
     #: The period(semester) for the tag.
@@ -89,3 +96,9 @@ class PeriodTag(models.Model):
 
     #: ManyToMany field for :class:`~.devilry.apps.core.models.RelatedStudent`
     relatedstudents = models.ManyToManyField(RelatedStudent)
+
+    @property
+    def displayname(self):
+        if self.prefix == '':
+            return '{} on {}'.format(self.tag, self.period)
+        return '{}:{} on {}'.format(self.prefix, self.tag, self.period)
