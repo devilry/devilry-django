@@ -135,7 +135,8 @@ class GroupInviteRespondView(DetailView):
     context_object_name = 'groupinvite'
 
     def get_queryset(self):
-        return GroupInvite.objects.filter_unanswered_received_invites(self.request.user)
+        return GroupInvite.objects.filter_unanswered_received_invites(self.request.user)\
+            .select_related('group__parentnode__parentnode__parentnode', 'group__cached_data')
 
     def get_success_url(self):
         return reverse_cradmin_url(
@@ -201,6 +202,9 @@ class GroupInviteRespondViewStandalone(DetailView):
     context_object_name = 'groupinvite'
     template_name = 'devilry_student/cradmin_group/projectgroupapp/groupinvite_respond_standalone.django.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        return super(GroupInviteRespondViewStandalone, self).dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
         """
         We have to get all the invitations even if it already has been accepted or declined,
@@ -208,7 +212,8 @@ class GroupInviteRespondViewStandalone(DetailView):
         Returns:
             :class:`core.GroupInvite`
         """
-        return GroupInvite.objects.filter(sent_to=self.request.user)
+        return GroupInvite.objects.filter(sent_to=self.request.user)\
+            .select_related('group__parentnode__parentnode__parentnode', 'group__cached_data')
 
     def get_success_url(self):
         """
@@ -249,7 +254,7 @@ class GroupInviteRespondViewStandalone(DetailView):
         """
         return AssignmentGroup.objects.filter_student_has_access(self.request.user)\
             .filter(parentnode=invite.group.parentnode)\
-            .select_related('cached_data').get()
+            .select_related('cached_data', 'parentnode').get()
 
     def validate(self, invite):
         """
@@ -287,20 +292,20 @@ class GroupInviteRespondViewStandalone(DetailView):
         return context
 
     def get(self, request, *args, **kwargs):
-        invite = self.get_object()
+        self.object = self.get_object()
         try:
-            self.validate(invite)
+            self.validate(self.object)
         except ValidationError as e:
             self.errormessage = ' '.join(e.messages)
 
-        return super(GroupInviteRespondViewStandalone, self).get(request, *args, **kwargs)
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
 
     def post(self, *args, **kwargs):
         invite = self.get_object()
         self.group = invite.group
 
         accepted = 'accept_invite' in self.request.POST
-        print(self.request.POST, accepted)
         try:
             invite.respond(accepted=accepted)
         except ValidationError as e:
@@ -334,7 +339,8 @@ class GroupInviteDeleteView(DeleteView):
 
     def get_queryset(self):
         return GroupInvite.objects.filter_no_response()\
-            .filter(group__in=AssignmentGroup.objects.filter_student_has_access(self.request.user))
+            .filter(group__in=AssignmentGroup.objects.filter_student_has_access(self.request.user))\
+            .select_related('group__parentnode__parentnode__parentnode')
 
     def get_context_data(self, **kwargs):
         context = super(GroupInviteDeleteView, self).get_context_data(**kwargs)
