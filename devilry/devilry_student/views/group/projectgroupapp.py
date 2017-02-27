@@ -118,6 +118,7 @@ class ProjectGroupOverviewView(TemplateView):
             context['form'] = self.invalidform
         context['unanswered_received_invites'] = GroupInvite.objects \
             .filter_unanswered_received_invites(self.request.user) \
+            .filter_allowed_to_create_groups() \
             .filter(group__parentnode=group.parentnode)
         context['unanswered_sent_invites'] = GroupInvite.objects.filter_unanswered_sent_invites(group)
 

@@ -142,6 +142,38 @@ class TestProjectGroupOverviewViewStudentsCannotCreateGroups(TestCase, cradmin_t
         )
         self.assertFalse(GroupInvite.objects.filter(group=group, sent_to=candidate1.relatedstudent.user).exists())
 
+    def test_received_invite_cannot_create_group(self):
+        test_assignment = mommy.make('core.Assignment', students_can_create_groups=False)
+        group = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        mommy.make('core.GroupInvite', group=group,
+                   sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=group1,
+            requestuser=candidate1.relatedstudent.user)
+        self.assertFalse(mockresponse.selector.exists('.alert.alert-success'))
+        self.assertFalse(mockresponse.selector.exists('.btn.btn-default'))
+
+    def test_received_invite_cannot_create_group_expired(self):
+        test_assignment = mommy.make(
+            'core.Assignment',
+            students_can_create_groups=True,
+            students_can_not_create_groups_after=datetime.now() - timedelta(days=1)
+        )
+        group = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        mommy.make('core.GroupInvite', group=group,
+                   sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=group1,
+            requestuser=candidate1.relatedstudent.user)
+        self.assertFalse(mockresponse.selector.exists('.alert.alert-success'))
+        self.assertFalse(mockresponse.selector.exists('.btn.btn-default'))
+
 
 class TestProjectGroupOverviewViewStudentsCanCreateGroups(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = projectgroupapp.ProjectGroupOverviewView
