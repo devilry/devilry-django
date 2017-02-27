@@ -47,6 +47,21 @@ class GroupInviteQuerySet(models.QuerySet):
         """
         return self.filter_no_response().filter(group=group)
 
+    def filter_allowed_to_create_groups(self):
+        """
+        Filter all :class:`.GroupInvite` objects where the :class:`core.Assignment` allows to create group
+        """
+        return self.filter(
+            models.Q(
+                models.Q(group__parentnode__students_can_create_groups=True) &
+                models.Q(group__parentnode__students_can_not_create_groups_after__gt=datetime.now())
+            ) |
+            models.Q(
+                models.Q(group__parentnode__students_can_create_groups=True) &
+                models.Q(group__parentnode__students_can_not_create_groups_after__isnull=True)
+            )
+        )
+
 
 class GroupInviteManager(models.Manager):
     pass

@@ -233,6 +233,34 @@ class TestGroupInviteQueryset(TestCase):
             [11, 101]
         )
 
+    def test_filter_allowed_to_create_groups(self):
+        assignment_expired = mommy.make(
+            'core.Assignment',
+            students_can_create_groups=True,
+            students_can_not_create_groups_after=datetime.now() - timedelta(days=1)
+        )
+        assignment_not_expired = mommy.make(
+            'core.Assignment',
+            students_can_create_groups=True,
+            students_can_not_create_groups_after=datetime.now() + timedelta(days=1)
+        )
+        assignment_not_allowed = mommy.make('core.Assignment', students_can_create_groups=False)
+        assignment_allowed = mommy.make('core.Assignment', students_can_create_groups=True)
+
+        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment_expired)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment_not_expired)
+        group3 = mommy.make('core.AssignmentGroup', parentnode=assignment_not_allowed)
+        group4 = mommy.make('core.AssignmentGroup', parentnode=assignment_allowed)
+
+        mommy.make('core.GroupInvite', group=group1, id=10)
+        mommy.make('core.GroupInvite', group=group2, id=11)
+        mommy.make('core.GroupInvite', group=group3, id=100)
+        mommy.make('core.GroupInvite', group=group4, id=101)
+        self.assertListEqual(
+            [invite.id for invite in GroupInvite.objects.filter_allowed_to_create_groups()],
+            [11, 101]
+        )
+
 
 class FakeRequest(object):
     def build_absolute_uri(self, location):
