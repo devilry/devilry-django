@@ -221,6 +221,17 @@ class GroupInviteRespondViewStandalone(DetailView):
 
         return super(GroupInviteRespondViewStandalone, self).get(request, *args, **kwargs)
 
+    def get_decline_url(self):
+        group = AssignmentGroup.objects\
+            .filter_student_has_access(self.request.user)\
+            .filter(parentnode=self.group.parentnode)\
+            .first()
+        return reverse_cradmin_url(
+            instanceid='devilry_group_student',
+            appname='feedbackfeed',
+            roleid=group.id,
+            viewname=crapp.INDEXVIEW_NAME)
+
     def post(self, *args, **kwargs):
         invite = self.get_object()
         self.group = invite.group
@@ -250,7 +261,7 @@ class GroupInviteRespondViewStandalone(DetailView):
                             'student': invite.sent_by.get_displayname()
                         })
                 )
-        return self.get(*args, **kwargs)
+            return redirect(self.get_decline_url())
 
 
 class GroupInviteDeleteView(DeleteView):

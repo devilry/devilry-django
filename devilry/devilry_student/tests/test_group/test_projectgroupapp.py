@@ -1045,6 +1045,43 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
             mockresponse.selector.one('.alert.alert-danger').alltext_normalized
         )
 
+    def test_post_already_in_group_with_more_than_one_student(self):
+        test_assignment = mommy.make(
+            'core.Assignment',
+            students_can_create_groups=True,
+            parentnode__parentnode__long_name='Duck1010',
+            parentnode__long_name='Spring 2017',
+            long_name='Assignment 1'
+        )
+        group = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        core_mommy.candidate(group=group1, fullname="Donald Duck", shortname="donald@example.com")
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=group,
+            requestuser=candidate1.relatedstudent.user,
+            viewkwargs={
+                'invite_id': invite.id
+            },
+            requestkwargs={
+                'data': {
+                    'accept_invite': ''
+                }
+            }
+        )
+        self.assertIn(
+            'You are already part of a group with more than one student!',
+            mockresponse.selector.one('.alert.alert-danger').alltext_normalized
+        )
+        self.assertIsNone(GroupInvite.objects.get(id=invite.id).accepted)
+        self.assertTrue(AssignmentGroup.objects.filter(id=group.id).exists())
+        self.assertTrue(AssignmentGroup.objects.filter(id=group1.id).exists())
+        self.assertEqual(AssignmentGroup.objects.get(id=group1.id).cached_data.candidate_count, 2)
+        self.assertEqual(AssignmentGroup.objects.get(id=group.id).cached_data.candidate_count, 1)
+
     def test_accept_invitation_message(self):
         test_assignment = mommy.make(
             'core.Assignment',
@@ -1123,7 +1160,7 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
         invite = mommy.make('core.GroupInvite', group=group,
                             sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
         messagesmock = mock.MagicMock()
-        self.mock_http200_postrequest_htmls(
+        self.mock_http302_postrequest(
             requestuser=candidate1.relatedstudent.user,
             messagesmock=messagesmock,
             viewkwargs={
@@ -1155,7 +1192,7 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
         candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
         invite = mommy.make('core.GroupInvite', group=group,
                             sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
-        self.mock_http200_postrequest_htmls(
+        self.mock_http302_postrequest(
             requestuser=candidate1.relatedstudent.user,
             viewkwargs={
                 'invite_id': invite.id
