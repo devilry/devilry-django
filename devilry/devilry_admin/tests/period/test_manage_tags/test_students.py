@@ -13,7 +13,7 @@ from devilry.apps.core.models.relateduser import RelatedStudentTag, RelatedStude
 
 
 class TestAddTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
-    viewclass = students.RelatedStudentAddTagMultiSelectView
+    viewclass = students.AddTagMultiSelectView
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
@@ -187,7 +187,7 @@ class TestAddTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
 
 class TestRemoveTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
-    viewclass = students.RelatedStudentRemoveTagMultiselectView
+    viewclass = students.RemoveTagMultiselectView
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
@@ -391,3 +391,304 @@ class TestRemoveTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEquals(0, RelatedStudent.objects.get(id=teststudent3.id).relatedstudenttag_set.count())
         self.assertEquals(0, RelatedStudent.objects.get(id=teststudent4.id).relatedstudenttag_set.count())
         self.assertEquals(1, RelatedStudent.objects.get(id=teststudent5.id).relatedstudenttag_set.count())
+
+
+class TestReplaceTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = students.ReplaceTagMultiSelectView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_no_users_registered_with_tag(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', user__shortname='student1', period=testperiod)
+        mommy.make('core.RelatedStudent', user__shortname='student2', period=testperiod)
+        mommy.make('core.RelatedStudent', user__shortname='student3', period=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'tag': 'a'
+            }
+        )
+        self.assertNotIn('student1', mockresponse.response.content)
+        self.assertNotIn('student2', mockresponse.response.content)
+        self.assertNotIn('student3', mockresponse.response.content)
+        self.assertEquals(0, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
+
+    def test_post_wrong_tags_format_in_form_1(self):
+        testperiod = mommy.make('core.Period')
+        teststudent = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student1')
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'tag': 'tag1'
+            },
+            requestkwargs={
+                'data': {
+                    'selected_items': [teststudent.id],
+                    'tag_text': ',,tag1'
+                }
+            }
+        )
+        self.assertEquals(0, RelatedStudentTag.objects.count())
+        self.assertEquals('Tag text must be in comma separated format! Example: tag1, tag2, tag3',
+                          mockresponse.selector.one('#error_1_id_tag_text').alltext_normalized)
+
+    def test_post_wrong_tags_format_in_form_same_tag_twice(self):
+        testperiod = mommy.make('core.Period')
+        teststudent = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student1')
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'tag': 'tag1'
+            },
+            requestkwargs={
+                'data': {
+                    'selected_items': [teststudent.id],
+                    'tag_text': 'tag1, tag1'
+                }
+            }
+        )
+        self.assertEquals(0, RelatedStudentTag.objects.count())
+        self.assertEquals('"tag1" occurs more than once in the form.',
+                          mockresponse.selector.one('#error_1_id_tag_text').alltext_normalized)
+
+    def test_replace_tag_for_single_user(self):
+        testperiod = mommy.make('core.Period')
+        teststudent = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student1')
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent)
+        self.mock_http302_postrequest(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'tag': 'a'
+            },
+            requestkwargs={
+                'data': {
+                    'selected_items': [teststudent.id],
+                    'tag_text': 'b'
+                }
+            }
+        )
+        self.assertEquals(1, RelatedStudentTag.objects.count())
+        self.assertNotEquals('a', RelatedStudentTag.objects.all()[0].tag)
+        self.assertEquals('b', RelatedStudentTag.objects.all()[0].tag)
+
+    def test_replace_tag_and_add_for_single_user(self):
+        testperiod = mommy.make('core.Period')
+        teststudent = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student1')
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent)
+        self.mock_http302_postrequest(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'tag': 'a'
+            },
+            requestkwargs={
+                'data': {
+                    'selected_items': [teststudent.id],
+                    'tag_text': 'b, c, d'
+                }
+            }
+        )
+        tags = RelatedStudentTag.objects.filter(relatedstudent=teststudent)
+        all_tags_list = [tag.tag for tag in tags]
+        self.assertEquals(3, tags.count())
+        self.assertNotIn('a', all_tags_list)
+        self.assertIn('b', all_tags_list)
+        self.assertIn('c', all_tags_list)
+        self.assertIn('d', all_tags_list)
+
+    def test_replace_tag_and_add_for_single_user_already_has_tag(self):
+        testperiod = mommy.make('core.Period')
+        teststudent = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student1')
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent)
+        mommy.make('core.RelatedStudentTag', tag='c', relatedstudent=teststudent)
+        self.mock_http302_postrequest(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'tag': 'a'
+            },
+            requestkwargs={
+                'data': {
+                    'selected_items': [teststudent.id],
+                    'tag_text': 'b, c, d'
+                }
+            }
+        )
+        tags = RelatedStudentTag.objects.filter(relatedstudent=teststudent)
+        all_tags_list = [tag.tag for tag in tags]
+        self.assertEquals(3, tags.count())
+        self.assertNotIn('a', all_tags_list)
+        self.assertIn('b', all_tags_list)
+        self.assertIn('c', all_tags_list)
+        self.assertIn('d', all_tags_list)
+
+    def test_replace_tag_and_add_for_multiple_users_already_has_tag(self):
+        testperiod = mommy.make('core.Period')
+        teststudent1 = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student1')
+        teststudent2 = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student2')
+        teststudent3 = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student3')
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent1)
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent2)
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent3)
+        mommy.make('core.RelatedStudentTag', tag='c', relatedstudent=teststudent1)
+        mommy.make('core.RelatedStudentTag', tag='d', relatedstudent=teststudent2)
+        self.mock_http302_postrequest(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'tag': 'a'
+            },
+            requestkwargs={
+                'data': {
+                    'selected_items': [teststudent1.id, teststudent2.id, teststudent3.id],
+                    'tag_text': 'b, c, d'
+                }
+            }
+        )
+        tags_student1 = RelatedStudentTag.objects.filter(relatedstudent=teststudent1)
+        tags_student2 = RelatedStudentTag.objects.filter(relatedstudent=teststudent2)
+        tags_student3 = RelatedStudentTag.objects.filter(relatedstudent=teststudent3)
+        student1_tags_list = [tag.tag for tag in tags_student1]
+        student2_tags_list = [tag.tag for tag in tags_student2]
+        student3_tags_list = [tag.tag for tag in tags_student3]
+        self.assertEquals(3, tags_student1.count())
+        self.assertEquals(3, tags_student2.count())
+        self.assertEquals(3, tags_student3.count())
+        self.assertNotIn('a', student1_tags_list)
+        self.assertNotIn('a', student2_tags_list)
+        self.assertNotIn('a', student3_tags_list)
+
+        self.assertIn('b', student1_tags_list)
+        self.assertIn('c', student1_tags_list)
+        self.assertIn('d', student1_tags_list)
+
+        self.assertIn('b', student2_tags_list)
+        self.assertIn('c', student2_tags_list)
+        self.assertIn('d', student2_tags_list)
+
+        self.assertIn('b', student3_tags_list)
+        self.assertIn('c', student3_tags_list)
+        self.assertIn('d', student3_tags_list)
+
+    def test_replace_tag_and_add_user_already_has_tag_to_replace_with(self):
+        testperiod = mommy.make('core.Period')
+        teststudent1 = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student1')
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent1)
+        mommy.make('core.RelatedStudentTag', tag='b', relatedstudent=teststudent1)
+        self.mock_http302_postrequest(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'tag': 'a'
+            },
+            requestkwargs={
+                'data': {
+                    'selected_items': [teststudent1.id],
+                    'tag_text': 'b, c, d'
+                }
+            }
+        )
+        self.assertEquals(2, RelatedStudentTag.objects.count())
+
+    def test_replace_tag_and_add_user_already_has_tag_but_is_not_first(self):
+        testperiod = mommy.make('core.Period')
+        teststudent = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student')
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent)
+        mommy.make('core.RelatedStudentTag', tag='b', relatedstudent=teststudent)
+        self.mock_http302_postrequest(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'tag': 'a'
+            },
+            requestkwargs={
+                'data': {
+                    'selected_items': [teststudent.id],
+                    'tag_text': 'c, b, d'
+                }
+            }
+        )
+        tags = RelatedStudentTag.objects.filter(relatedstudent=teststudent)
+        self.assertEquals(3, tags.count())
+        tags_list = [tag.tag for tag in tags]
+        self.assertNotIn('a', tags_list)
+        self.assertIn('c', tags_list)
+        self.assertIn('b', tags_list)
+        self.assertIn('d', tags_list)
+
+    def test_replace_tag_for_multiple_users(self):
+        testperiod = mommy.make('core.Period')
+        teststudent1 = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student1')
+        teststudent2 = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student2')
+        teststudent3 = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student3')
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent1)
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent2)
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent3)
+        self.mock_http302_postrequest(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'manage-tag': 'replace',
+                'tag': 'a'
+            },
+            requestkwargs={
+                'data': {
+                    'selected_items': [teststudent1.id, teststudent2.id, teststudent3.id],
+                    'tag_text': 'b'
+                }
+            }
+        )
+        tags = RelatedStudentTag.objects.all()
+        self.assertEquals(3, tags.count())
+        self.assertNotEquals('a', tags[0].tag)
+        self.assertNotEquals('a', tags[1].tag)
+        self.assertNotEquals('a', tags[2].tag)
+        self.assertEquals('b', tags[0].tag)
+        self.assertEquals('b', tags[1].tag)
+        self.assertEquals('b', tags[2].tag)
+
+    def test_get_query_count(self):
+        testperiod = mommy.make('core.Period')
+        teststudent1 = mommy.make('core.RelatedStudent', user__shortname='student1', period=testperiod)
+        teststudent2 = mommy.make('core.RelatedStudent', user__shortname='student2', period=testperiod)
+        teststudent3 = mommy.make('core.RelatedStudent', user__shortname='student3', period=testperiod)
+        teststudent4 = mommy.make('core.RelatedStudent', user__shortname='student4', period=testperiod)
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent1)
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent2)
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent3)
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent4)
+        with self.assertNumQueries(4):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod,
+                viewkwargs={
+                    'manage_tag': 'replace',
+                    'tag': 'a'
+                },
+            )
+
+    def test_post_replace_query_count(self):
+        testperiod = mommy.make('core.Period')
+        teststudent1 = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student1')
+        teststudent2 = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student2')
+        teststudent3 = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student3')
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent1)
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent2)
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=teststudent3)
+        mommy.make('core.RelatedStudentTag', tag='c', relatedstudent=teststudent1)
+        mommy.make('core.RelatedStudentTag', tag='c', relatedstudent=teststudent2)
+        with self.assertNumQueries(7):
+            self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                viewkwargs={
+                    'manage-tag': 'replace',
+                    'tag': 'a'
+                },
+                requestkwargs={
+                    'data': {
+                        'selected_items': [teststudent1.id, teststudent2.id, teststudent3.id],
+                        'tag_text': 'b, c, d'
+                    }
+                }
+            )
+        tags_student1 = RelatedStudentTag.objects.filter(relatedstudent=teststudent1)
+        tags_student2 = RelatedStudentTag.objects.filter(relatedstudent=teststudent2)
+        tags_student3 = RelatedStudentTag.objects.filter(relatedstudent=teststudent3)
+        self.assertEquals(3, tags_student1.count())
+        self.assertEquals(3, tags_student2.count())
+        self.assertEquals(3, tags_student3.count())
