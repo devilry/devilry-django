@@ -586,6 +586,7 @@ class RelatedStudent(RelatedUserBase):
 #
 #     def __unicode__(self):
 #         return u'{}: {}'.format(self.tag, self.relatedstudent)
+#
 
 
 class RelatedStudentKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
