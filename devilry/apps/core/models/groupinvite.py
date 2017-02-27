@@ -179,6 +179,10 @@ class GroupInvite(models.Model):
         In any case, a notification email is sent to the user that sent the
         invite.
         """
+        if self.accepted:
+            raise ValidationError('This invite has already been accepted.')
+        if self.accepted is not None and not self.accepted:
+            raise ValidationError('This invite has already been declined.')
         self.accepted = accepted
         self.responded_datetime = datetime.now()
         self.full_clean()

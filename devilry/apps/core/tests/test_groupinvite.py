@@ -438,3 +438,21 @@ class GroupInviteRespond(TestCase):
         sent_to = core_mommy.candidate(testgroup)
         with self.assertRaisesMessage(ValidationError, 'The selected student is not eligible to join the group.'):
             GroupInvite.validate_candidate_id_sent_to(testgroup, sent_to.id)
+
+    def test_invite_has_already_been_accepted(self):
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
+        sent_by = core_mommy.candidate(testgroup).relatedstudent.user
+        sent_to = core_mommy.candidate(testgroup1).relatedstudent.user
+        invite = mommy.make('core.GroupInvite', group=testgroup, sent_by=sent_by, sent_to=sent_to, accepted=True)
+        with self.assertRaisesMessage(ValidationError, 'This invite has already been accepted.'):
+            invite.respond(True)
+
+    def test_invite_has_already_been_declined(self):
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
+        sent_by = core_mommy.candidate(testgroup).relatedstudent.user
+        sent_to = core_mommy.candidate(testgroup1).relatedstudent.user
+        invite = mommy.make('core.GroupInvite', group=testgroup, sent_by=sent_by, sent_to=sent_to, accepted=False)
+        with self.assertRaisesMessage(ValidationError, 'This invite has already been declined.'):
+            invite.respond(False)
