@@ -1,10 +1,16 @@
 from django.conf.urls import include, url
+from simple_rest.auth.decorators import login_required
 
 from devilry.devilry_student.views import show_delivery
 from devilry.devilry_student.views.dashboard import crinstance_dashboard
+from devilry.devilry_student.views.group.projectgroupapp import GroupInviteRespondViewStandalone
 from devilry.devilry_student.views.period import crinstance_period
 
 urlpatterns = [
+    url(r'^groupinvite/respond/(?P<invite_id>\d+)$',
+        GroupInviteRespondViewStandalone.as_view(),
+        name='devilry_student_groupinvite_respond'),
+
     url(r'^show_delivery/(?P<delivery_id>\d+)$', show_delivery.show_delivery,
         name='devilry_student_show_delivery'),
 

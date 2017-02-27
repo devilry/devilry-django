@@ -1,0 +1,45 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %}{% trans "Respond to group invite" %}{% endblock title %}
+
+{% block body %}
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                {% trans "Respond to group invite" %}
+            </h1>
+            <p>
+                {{ groupinvite.group.assignment.long_name }} -
+                {{ groupinvite.group.subject.long_name }} -
+                {{ groupinvite.group.period.long_name }}
+            </p>
+        </div>
+    </div>
+    <div class="container django-cradmin-container-focus">
+
+        {% if errormessage %}
+            <div class="alert alert-danger">
+                {{ errormessage }}
+            </div>
+
+        {% else %}
+            <form action="{{ request.path }}" method="post">{% csrf_token %}
+                {% with sent_by=groupinvite.sent_by.get_displayname assignment=groupinvite.group.assignment.long_name subject=groupinvite.group.subject.long_name %}
+                    <p>{% blocktrans %}You have been invited by {{ sent_by }} to join their project group for {{ subject }} {{ assignment }}.{% endblocktrans %}</p>
+                {% endwith %}
+
+                <button type="submit" class="btn btn-danger" name="decline_invite">
+                    {% trans 'Decline invitation' %}
+                </button>
+                <button type="submit" class="btn btn-success" name="accept_invite">
+                    {% trans 'Accept invitation' %}
+                </button>
+            </form>
+        {% endif %}
+
+
+    </div>
+{% endblock body %}

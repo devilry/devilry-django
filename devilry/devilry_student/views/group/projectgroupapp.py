@@ -95,7 +95,7 @@ class ProjectGroupOverviewView(TemplateView):
             return self.get(*args, **kwargs)
 
     def get_success_url(self):
-        return self.request.path
+        return self.request.cradmin_app.reverse_appindexurl()
 
     def form_valid(self, form):
         if form.cleaned_invite:
@@ -157,14 +157,14 @@ class GroupInviteRespondView(DetailView):
         except ValidationError as e:
             messages.warning(
                 self.request,
-                ugettext_lazy(str(e))
+                ugettext_lazy(e.messages)
             )
         else:
             if accepted:
                 messages.success(
                     self.request,
                     ugettext_lazy(
-                        'Joined the group by invitation from %(student)s' % {
+                        'Joined the group by invitation from %(student)s.' % {
                             'student': invite.sent_by.get_displayname()
                         })
                 )
@@ -173,15 +173,84 @@ class GroupInviteRespondView(DetailView):
                 messages.success(
                     self.request,
                     ugettext_lazy(
-                        'Declined group invitation from %(student)s' % {
+                        'Declined group invitation from %(student)s.' % {
                             'student': invite.sent_by.get_displayname()
                         })
                 )
         return redirect(self.get_declined_or_error_url())
 
+
+class GroupInviteRespondViewStandalone(DetailView):
+    pk_url_kwarg = 'invite_id'
+    context_object_name = 'groupinvite'
+    template_name = 'devilry_student/cradmin_group/projectgroupapp/groupinvite_respond_standalone.django.html'
+
+    def get_queryset(self):
+        return GroupInvite.objects.filter(sent_to=self.request.user)
+
+    def get_success_url(self):
+        return reverse_cradmin_url(
+            instanceid='devilry_group_student',
+            appname='feedbackfeed',
+            roleid=self.group.id,
+            viewname=crapp.INDEXVIEW_NAME)
+
     def get_context_data(self, **kwargs):
-        context = super(GroupInviteRespondView, self).get_context_data(**kwargs)
+        context = super(GroupInviteRespondViewStandalone, self).get_context_data(**kwargs)
+        context['errormessage'] = getattr(self, 'errormessage', None)
+        context['exists'] = getattr(self, 'exists', True)
         return context
+
+    def validate(self, invite):
+        group = AssignmentGroup.objects.filter_student_has_access(self.request.user)\
+            .filter(parentnode=invite.group.parentnode)\
+            .select_related('cached_data').get()
+        if group.cached_data.candidate_count > 1:
+            raise ValidationError(ugettext_lazy('You are already part of a group with more than one student!'))
+        if invite.accepted:
+            raise ValidationError(ugettext_lazy('You have already accepted this invite'))
+        if invite.accepted is not None and not invite.accepted:
+            raise ValidationError(ugettext_lazy('You have already declined this invite'))
+
+    def get(self, request, *args, **kwargs):
+        invite = self.get_object()
+        try:
+            self.validate(invite)
+        except ValidationError as e:
+            self.errormessage = ' '.join(e.messages)
+
+        return super(GroupInviteRespondViewStandalone, self).get(request, *args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        invite = self.get_object()
+        self.group = invite.group
+
+        accepted = 'accept_invite' in self.request.POST
+        print(self.request.POST, accepted)
+        try:
+            invite.respond(accepted=accepted)
+        except ValidationError as e:
+            self.errormessage = ' '.join(e.messages)
+            return self.get(*args, **kwargs)
+        else:
+            if accepted:
+                messages.success(
+                    self.request,
+                    ugettext_lazy(
+                        'Joined the group by invitation from %(student)s.' % {
+                            'student': invite.sent_by.get_displayname()
+                        })
+                )
+                return redirect(self.get_success_url())
+            else:
+                messages.success(
+                    self.request,
+                    ugettext_lazy(
+                        'Declined group invitation from %(student)s.' % {
+                            'student': invite.sent_by.get_displayname()
+                        })
+                )
+        return self.get(*args, **kwargs)
 
 
 class GroupInviteDeleteView(DeleteView):

@@ -32,11 +32,11 @@
 {% block content %}
     <div class="container">
         {% if unanswered_received_invites.exists %}
-            {% with invite=unanswered_received_invites.get %}
                 <div class="alert alert-success">
+                    {% for invite in unanswered_received_invites %}
                     <p>
                         <strong>{% trans "You have been invited to join a group!" %}</strong>
-                        {% blocktrans with sent_by=invite.sent_by.get_full_name %}{{ sent_by }} invited you to join their group.{% endblocktrans %}
+                        {% blocktrans with sent_by=invite.sent_by.get_displayname %}{{ sent_by }} invited you to join their group.{% endblocktrans %}
                     </p>
                     <p>
                         <a class="btn btn-default" href="{% cradmin_appurl 'respond' invite_id=invite.id %}">
@@ -44,8 +44,8 @@
                             {% trans "More info" %}
                         </a>
                     </p>
+                    {% endfor %}
                 </div>
-            {% endwith %}
         {% endif %}
 
 
