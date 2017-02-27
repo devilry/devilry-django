@@ -2,6 +2,8 @@ from django.core import mail
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils.timezone import datetime, timedelta
+from django.template import loader
+from django.core.urlresolvers import reverse
 from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
@@ -311,9 +313,22 @@ class GroupInviteRespond(TestCase):
         )
         invite.full_clean()
         invite.save()
-        invite.send_invite_notification(self.__fake_request())
+        request = self.__fake_request()
+        invite.send_invite_notification(request)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, '[Devilry] Project group invite for Duck1010.s17.assignment1')
+        url = request.build_absolute_uri(
+            reverse('devilry_student_groupinvite_respond', kwargs={'invite_id': invite.id}))
+        mail_body = loader.render_to_string(
+            'devilry_core/groupinvite_invite.django.txt',
+            {
+                'sent_by_displayname': invite.sent_by.get_displayname(),
+                'assignment': invite.group.parentnode.long_name,
+                'subject': invite.group.parentnode.subject.long_name,
+                'url': url
+            }
+        )
+        self.assertMultiLineEqual(mail.outbox[0].body, mail_body)
 
     def test_send_reject_mail(self):
         assignment = mommy.make(
@@ -369,9 +384,9 @@ class GroupInviteRespond(TestCase):
         invite.full_clean()
         invite.save()
         invite.send_invite_notification(self.__fake_request())
-        invite.respond(False)
+        invite.respond(True)
         self.assertEqual(len(mail.outbox), 2)
-        self.assertEqual(mail.outbox[1].subject, '[Devilry] Dewey rejected your project group invite')
+        self.assertEqual(mail.outbox[1].subject, '[Devilry] Dewey accepted your project group invite')
 
     def test_send_invite_to_choices_queryset(self):
         group1 = mommy.make('core.AssignmentGroup', parentnode__students_can_create_groups=True)

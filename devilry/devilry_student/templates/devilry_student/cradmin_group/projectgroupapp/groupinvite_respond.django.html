@@ -39,19 +39,20 @@
             <div class="alert alert-danger">
                 {{ errormessage }}
             </div>
+        {% else %}
+            <form action="{{ request.path }}" method="post">{% csrf_token %}
+                {% with sent_by=groupinvite.sent_by.get_full_name assignment=groupinvite.group.assignment.long_name subject=groupinvite.group.subject.long_name %}
+                    <p>{% blocktrans %}You have been invited by {{ sent_by }} to join their project group for {{ subject }} {{ assignment }}.{% endblocktrans %}</p>
+                {% endwith %}
+
+                <button type="submit" class="btn btn-danger" name="decline_invite">
+                    {% trans 'Decline invitation' %}
+                </button>
+                <button type="submit" class="btn btn-success" name="accept_invite">
+                    {% trans 'Accept invitation' %}
+                </button>
+            </form>
         {% endif %}
 
-        <form action="{{ request.path }}" method="post">{% csrf_token %}
-            {% with sent_by=groupinvite.sent_by.get_full_name assignment=groupinvite.group.assignment.long_name subject=groupinvite.group.subject.long_name %}
-                <p>{% blocktrans %}You have been invited by {{ sent_by }} to join their project group for {{ subject }} {{ assignment }}.{% endblocktrans %}</p>
-            {% endwith %}
-
-            <button type="submit" class="btn btn-danger" name="decline_invite">
-                {% trans 'Decline invitation' %}
-            </button>
-            <button type="submit" class="btn btn-success" name="accept_invite">
-                {% trans 'Accept invitation' %}
-            </button>
-        </form>
     </div>
 {% endblock content %}

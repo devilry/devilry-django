@@ -180,9 +180,9 @@ class GroupInvite(models.Model):
         invite.
         """
         if self.accepted:
-            raise ValidationError('This invite has already been accepted.')
+            raise ValidationError(ugettext_lazy('This invite has already been accepted.'))
         if self.accepted is not None and not self.accepted:
-            raise ValidationError('This invite has already been declined.')
+            raise ValidationError(ugettext_lazy('This invite has already been declined.'))
         self.accepted = accepted
         self.responded_datetime = datetime.now()
         self.full_clean()
@@ -233,10 +233,10 @@ class GroupInvite(models.Model):
 
         """
         if self.accepted is not None:
-            raise ValueError('Can not send notification for an accepted GroupInvite.')
+            raise ValueError(ugettext_lazy('Can not send notification for an accepted GroupInvite.'))
         elif self.id is None:
-            raise ValueError('Can not send notification for an unsaved GroupInvite.')
-        sent_by_displayname = self.sent_by.get_full_name()
+            raise ValueError(ugettext_lazy('Can not send notification for an unsaved GroupInvite.'))
+        sent_by_displayname = self.sent_by.get_displayname()
         assignment = self.group.assignment
         subject = ugettext_lazy('Project group invite for {assignment}').format(assignment=assignment.get_path())
         template_name = 'devilry_core/groupinvite_invite.django.txt'

@@ -479,14 +479,30 @@ class TestGroupInviteRespondView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
         )
 
-    def test_decline_invitation_message(self):
-        testassignment = mommy.make(
-            'core.Assignment',
-            long_name='Assignment 1',
-            parentnode__long_name='Spring 2017',
-            parentnode__parentnode__long_name='Duck1010',
-            students_can_create_groups=True
+    def test_already_part_of_group_with_more_than_one_student(self):
+        testassignment = mommy.make('core.Assignment', students_can_create_groups=True)
+        group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user,
+                            sent_to=candidate1.relatedstudent.user)
+        core_mommy.candidate(group=group1)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=group1,
+            requestuser=candidate1.relatedstudent.user,
+            viewkwargs={
+                'invite_id': invite.id
+            }
         )
+        self.assertIn(
+            'You are already part of a group with more than one student!',
+            mockresponse.selector.one('.alert.alert-danger').alltext_normalized
+        )
+
+    def test_decline_invitation_message(self):
+        testassignment = mommy.make('core.Assignment', students_can_create_groups=True)
         group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
@@ -514,13 +530,7 @@ class TestGroupInviteRespondView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_decline_invitation_db(self):
-        testassignment = mommy.make(
-            'core.Assignment',
-            long_name='Assignment 1',
-            parentnode__long_name='Spring 2017',
-            parentnode__parentnode__long_name='Duck1010',
-            students_can_create_groups=True
-        )
+        testassignment = mommy.make('core.Assignment', students_can_create_groups=True)
         group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
@@ -546,13 +556,7 @@ class TestGroupInviteRespondView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(AssignmentGroup.objects.get(id=group1.id).cached_data.candidate_count, 1)
 
     def test_decline_accept_message(self):
-        testassignment = mommy.make(
-            'core.Assignment',
-            long_name='Assignment 1',
-            parentnode__long_name='Spring 2017',
-            parentnode__parentnode__long_name='Duck1010',
-            students_can_create_groups=True
-        )
+        testassignment = mommy.make('core.Assignment', students_can_create_groups=True)
         group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
@@ -580,13 +584,7 @@ class TestGroupInviteRespondView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_accept_invitation_db(self):
-        testassignment = mommy.make(
-            'core.Assignment',
-            long_name='Assignment 1',
-            parentnode__long_name='Spring 2017',
-            parentnode__parentnode__long_name='Duck1010',
-            students_can_create_groups=True
-        )
+        testassignment = mommy.make('core.Assignment', students_can_create_groups=True)
         group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
@@ -609,6 +607,91 @@ class TestGroupInviteRespondView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(AssignmentGroup.objects.filter(id=group.id).exists())
         self.assertFalse(AssignmentGroup.objects.filter(id=group1.id).exists())
         self.assertEqual(AssignmentGroup.objects.get(id=group.id).cached_data.candidate_count, 2)
+
+    def test_accept_allready_part_of_a_group_with_more_than_one_student(self):
+        testassignment = mommy.make('core.Assignment', students_can_create_groups=True)
+        group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        core_mommy.candidate(group=group1)
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=group1,
+            requestuser=candidate1.relatedstudent.user,
+            messagesmock=messagesmock,
+            viewkwargs={
+                'invite_id': invite.id
+            },
+            requestkwargs={
+                'data': {
+                    'accept_invite': ''
+                }
+            }
+        )
+        messagesmock.add.assert_called_once_with(
+            messages.WARNING,
+            'The invited student is already in a project group with more than 1 students.',
+            ''
+        )
+
+    def test_get_404_invite_has_already_been_accepted(self):
+        testassignment = mommy.make('core.Assignment', students_can_create_groups=True)
+        group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user,
+                            sent_to=candidate1.relatedstudent.user, accepted=True)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=group1,
+                requestuser=candidate1.relatedstudent.user,
+                viewkwargs={
+                    'invite_id': invite.id
+                }
+            )
+
+    def test_get_404_invite_has_already_been_declined(self):
+        testassignment = mommy.make('core.Assignment', students_can_create_groups=True)
+        group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user,
+                            sent_to=candidate1.relatedstudent.user, accepted=False)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=group1,
+                requestuser=candidate1.relatedstudent.user,
+                viewkwargs={
+                    'invite_id': invite.id
+                }
+            )
+
+    def test_404_invitation_on_group_has_expired(self):
+        testassignment = mommy.make('core.Assignment',
+                                    students_can_create_groups=True,
+                                    students_can_not_create_groups_after=datetime.now() - timedelta(days=1))
+        group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user,
+                            sent_to=candidate1.relatedstudent.user, accepted=False)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=group1,
+                requestuser=candidate1.relatedstudent.user,
+                viewkwargs={
+                    'invite_id': invite.id
+                }
+            )
 
 
 class TestGroupInviteDeleteView(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -1015,12 +1098,7 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
             mockresponse.selector.one('form').alltext_normalized)
 
     def test_decline_button(self):
-        testassignment = mommy.make(
-            'core.Assignment',
-            long_name='Assignment 1',
-            parentnode__long_name='Spring 2017',
-            parentnode__parentnode__long_name='Duck1010',
-        )
+        testassignment = mommy.make('core.Assignment', students_can_create_groups=True)
         group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
@@ -1039,12 +1117,7 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
         )
 
     def test_accept_button(self):
-        testassignment = mommy.make(
-            'core.Assignment',
-            long_name='Assignment 1',
-            parentnode__long_name='Spring 2017',
-            parentnode__parentnode__long_name='Duck1010',
-        )
+        testassignment = mommy.make('core.Assignment', students_can_create_groups=True)
         group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
@@ -1324,13 +1397,7 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
         )
 
     def test_invite_already_declined_this_invite(self):
-        test_assignment = mommy.make(
-            'core.Assignment',
-            students_can_create_groups=True,
-            parentnode__parentnode__long_name='Duck1010',
-            parentnode__long_name='Spring 2017',
-            long_name='Assignment 1'
-        )
+        test_assignment = mommy.make('core.Assignment', students_can_create_groups=True)
         group = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
         group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
         candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
@@ -1346,5 +1413,117 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
         )
         self.assertIn(
             'You have already declined this invite',
+            mockresponse.selector.one('.alert.alert-danger').alltext_normalized
+        )
+
+    def test_accept_invite_assignment_invite_has_expired(self):
+        test_assignment = mommy.make(
+            'core.Assignment',
+            students_can_create_groups=True,
+            students_can_not_create_groups_after=datetime.now() - timedelta(days=1)
+        )
+        group = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        mockresponse = self.mock_http200_postrequest_htmls(
+            requestuser=candidate1.relatedstudent.user,
+            viewkwargs={
+                'invite_id': invite.id
+            },
+            requestkwargs={
+                'data': {
+                    'accept_invite': ''
+                }
+            }
+        )
+        self.assertIn(
+            'Creating project groups without administrator approval is not '
+            'allowed on this assignment anymore. Please contact you course '
+            'administrator if you think this is wrong.',
+            mockresponse.selector.one('.alert.alert-danger').alltext_normalized
+        )
+
+    def test_accept_invite_students_can_not_create_groups(self):
+        test_assignment = mommy.make('core.Assignment', students_can_create_groups=True)
+        group = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        test_assignment.students_can_create_groups = False
+        test_assignment.save()
+        mockresponse = self.mock_http200_postrequest_htmls(
+            requestuser=candidate1.relatedstudent.user,
+            viewkwargs={
+                'invite_id': invite.id
+            },
+            requestkwargs={
+                'data': {
+                    'accept_invite': ''
+                }
+            }
+        )
+        self.assertIn(
+            'This assignment does not allow students to form project groups on their own.',
+            mockresponse.selector.one('.alert.alert-danger').alltext_normalized
+        )
+
+    def test_get_assignment_invite_has_expired(self):
+        test_assignment = mommy.make(
+            'core.Assignment',
+            students_can_create_groups=True,
+            students_can_not_create_groups_after=datetime.now() - timedelta(days=1)
+        )
+        group = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            requestuser=candidate1.relatedstudent.user,
+            viewkwargs={
+                'invite_id': invite.id
+            },
+            requestkwargs={
+                'data': {
+                    'accept_invite': ''
+                }
+            }
+        )
+        self.assertIn(
+            'Creating project groups without administrator approval is not '
+            'allowed on this assignment anymore. Please contact you course '
+            'administrator if you think this is wrong.',
+            mockresponse.selector.one('.alert.alert-danger').alltext_normalized
+        )
+
+    def test_get_students_can_not_create_groups(self):
+        test_assignment = mommy.make('core.Assignment', students_can_create_groups=True)
+        group = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        test_assignment.students_can_create_groups = False
+        test_assignment.save()
+        mockresponse = self.mock_http200_getrequest_htmls(
+            requestuser=candidate1.relatedstudent.user,
+            viewkwargs={
+                'invite_id': invite.id
+            },
+            requestkwargs={
+                'data': {
+                    'accept_invite': ''
+                }
+            }
+        )
+        self.assertIn(
+            'This assignment does not allow students to form project groups on their own.',
             mockresponse.selector.one('.alert.alert-danger').alltext_normalized
         )

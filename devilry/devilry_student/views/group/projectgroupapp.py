@@ -1,5 +1,6 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit
+from django.utils.timezone import datetime
 from django import forms
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -145,6 +146,17 @@ class GroupInviteRespondView(DetailView):
     def get_declined_or_error_url(self):
         return self.request.cradmin_app.reverse_appindexurl()
 
+    def get_context_data(self, **kwargs):
+        context = super(GroupInviteRespondView, self).get_context_data(**kwargs)
+        context['errormessage'] = getattr(self, 'errormessage', None)
+        return context
+
+    def get(self, request, *args, **kwargs):
+        group = self.request.cradmin_role
+        if group.cached_data.candidate_count > 1:
+            self.errormessage = 'You are already part of a group with more than one student!'
+        return super(GroupInviteRespondView, self).get(request, *args, **kwargs)
+
     def post(self, *args, **kwargs):
         invite = self.get_object()
         self.group = invite.group
@@ -155,7 +167,7 @@ class GroupInviteRespondView(DetailView):
         except ValidationError as e:
             messages.warning(
                 self.request,
-                ugettext_lazy(e.messages)
+                e.messages[0]
             )
         else:
             if accepted:
@@ -179,47 +191,42 @@ class GroupInviteRespondView(DetailView):
 
 
 class GroupInviteRespondViewStandalone(DetailView):
+    """
+    This view is standalone and used for accepting invites through email.
+    If a user has already accepted or declined an error message will be shown.
+    Also if the user is already part of a group with more than 1 students an error message will be shown.
+    """
     pk_url_kwarg = 'invite_id'
     context_object_name = 'groupinvite'
     template_name = 'devilry_student/cradmin_group/projectgroupapp/groupinvite_respond_standalone.django.html'
 
     def get_queryset(self):
+        """
+        We have to get all the invitations even if it already has been accepted or declined,
+        since we don't want to raise 404
+        Returns:
+            :class:`core.GroupInvite`
+        """
         return GroupInvite.objects.filter(sent_to=self.request.user)
 
     def get_success_url(self):
+        """
+        When a user accepts the invitation the user will be routed to the "new" feedbackfeed
+        Returns:
+            Url to the new group
+        """
         return reverse_cradmin_url(
             instanceid='devilry_group_student',
             appname='feedbackfeed',
             roleid=self.group.id,
             viewname=crapp.INDEXVIEW_NAME)
 
-    def get_context_data(self, **kwargs):
-        context = super(GroupInviteRespondViewStandalone, self).get_context_data(**kwargs)
-        context['errormessage'] = getattr(self, 'errormessage', None)
-        context['exists'] = getattr(self, 'exists', True)
-        return context
-
-    def validate(self, invite):
-        group = AssignmentGroup.objects.filter_student_has_access(self.request.user)\
-            .filter(parentnode=invite.group.parentnode)\
-            .select_related('cached_data').get()
-        if group.cached_data.candidate_count > 1:
-            raise ValidationError(ugettext_lazy('You are already part of a group with more than one student!'))
-        if invite.accepted:
-            raise ValidationError(ugettext_lazy('You have already accepted this invite'))
-        if invite.accepted is not None and not invite.accepted:
-            raise ValidationError(ugettext_lazy('You have already declined this invite'))
-
-    def get(self, request, *args, **kwargs):
-        invite = self.get_object()
-        try:
-            self.validate(invite)
-        except ValidationError as e:
-            self.errormessage = ' '.join(e.messages)
-
-        return super(GroupInviteRespondViewStandalone, self).get(request, *args, **kwargs)
-
-    def get_decline_url(self):
+    def decline_url(self):
+        """
+        When a user declines the invitation the user will be routed to the "old" feedbackfeed
+        Returns:
+            Url to the same old group
+        """
         group = AssignmentGroup.objects\
             .filter_student_has_access(self.request.user)\
             .filter(parentnode=self.group.parentnode)\
@@ -229,6 +236,63 @@ class GroupInviteRespondViewStandalone(DetailView):
             appname='feedbackfeed',
             roleid=group.id,
             viewname=crapp.INDEXVIEW_NAME)
+
+    def get_current_group(self, invite):
+        """
+        Returns the current assignment group for the Request user
+        Args:
+            invite:
+                :class:`core.GroupInvite`
+        Returns:
+            :class:`core.AssignmentGroup` The current assignment group for the Request user
+        """
+        return AssignmentGroup.objects.filter_student_has_access(self.request.user)\
+            .filter(parentnode=invite.group.parentnode)\
+            .select_related('cached_data').get()
+
+    def validate(self, invite):
+        """
+        checks if the user is already part of a group with more than 1 student,
+        if the invite already has beed accepted or declined,
+        if the students can create groups on the assignment or it has expired.
+        Args:
+            invite:
+                :class:`core.GroupInvite`
+        Raises:
+            ValidationError
+        """
+        group = self.get_current_group(invite)
+        if group.cached_data.candidate_count > 1:
+            raise ValidationError(ugettext_lazy('You are already part of a group with more than one student!'))
+        if invite.accepted:
+            raise ValidationError(ugettext_lazy('You have already accepted this invite'))
+        if invite.accepted is not None and not invite.accepted:
+            raise ValidationError(ugettext_lazy('You have already declined this invite'))
+        if invite.group.assignment.students_can_create_groups:
+            if invite.group.assignment.students_can_not_create_groups_after and \
+                            invite.group.assignment.students_can_not_create_groups_after < datetime.now():
+                raise ValidationError(ugettext_lazy(
+                    'Creating project groups without administrator approval is not '
+                    'allowed on this assignment anymore. Please contact you course '
+                    'administrator if you think this is wrong.'))
+        else:
+            raise ValidationError(
+                ugettext_lazy('This assignment does not allow students to form project groups on their own.'))
+
+    def get_context_data(self, **kwargs):
+        context = super(GroupInviteRespondViewStandalone, self).get_context_data(**kwargs)
+        context['errormessage'] = getattr(self, 'errormessage', None)
+        context['exists'] = getattr(self, 'exists', True)
+        return context
+
+    def get(self, request, *args, **kwargs):
+        invite = self.get_object()
+        try:
+            self.validate(invite)
+        except ValidationError as e:
+            self.errormessage = ' '.join(e.messages)
+
+        return super(GroupInviteRespondViewStandalone, self).get(request, *args, **kwargs)
 
     def post(self, *args, **kwargs):
         invite = self.get_object()
@@ -259,7 +323,7 @@ class GroupInviteRespondViewStandalone(DetailView):
                             'student': invite.sent_by.get_displayname()
                         })
                 )
-            return redirect(self.get_decline_url())
+            return redirect(self.decline_url())
 
 
 class GroupInviteDeleteView(DeleteView):
