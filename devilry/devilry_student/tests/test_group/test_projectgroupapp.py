@@ -938,7 +938,6 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
         invite = mommy.make('core.GroupInvite', group=group,
                             sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=group,
             requestuser=candidate1.relatedstudent.user,
             viewkwargs={
                 'invite_id': invite.id
@@ -957,7 +956,6 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
         invite = mommy.make('core.GroupInvite', group=group,
                             sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=group,
             requestuser=candidate1.relatedstudent.user,
             viewkwargs={
                 'invite_id': invite.id
@@ -976,7 +974,6 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
         invite = mommy.make('core.GroupInvite', group=group,
                             sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=group,
             requestuser=candidate1.relatedstudent.user,
             viewkwargs={
                 'invite_id': invite.id
@@ -1005,7 +1002,6 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
         invite = mommy.make('core.GroupInvite', group=group,
                             sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=group,
             requestuser=candidate1.relatedstudent.user,
             viewkwargs={
                 'invite_id': invite.id
@@ -1017,6 +1013,97 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
                 test_assignment.subject.long_name,
                 test_assignment.long_name),
             mockresponse.selector.one('form').alltext_normalized)
+
+    def test_decline_button(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            long_name='Assignment 1',
+            parentnode__long_name='Spring 2017',
+            parentnode__parentnode__long_name='Duck1010',
+        )
+        group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            requestuser=candidate1.relatedstudent.user,
+            viewkwargs={
+                'invite_id': invite.id
+            }
+        )
+        self.assertIn(
+            'Decline invitation',
+            mockresponse.selector.one('.btn.btn-danger').alltext_normalized
+        )
+
+    def test_accept_button(self):
+        testassignment = mommy.make(
+            'core.Assignment',
+            long_name='Assignment 1',
+            parentnode__long_name='Spring 2017',
+            parentnode__parentnode__long_name='Duck1010',
+        )
+        group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            requestuser=candidate1.relatedstudent.user,
+            viewkwargs={
+                'invite_id': invite.id
+            }
+        )
+        self.assertIn(
+            'Accept invitation',
+            mockresponse.selector.one('.btn.btn-success').alltext_normalized
+        )
+
+    def test_user_is_not_logged_in(self):
+        test_assignment = mommy.make(
+            'core.Assignment',
+            students_can_create_groups=True,
+            parentnode__parentnode__long_name='Duck1010',
+            parentnode__long_name='Spring 2017',
+            long_name='Assignment 1'
+        )
+        group = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                viewkwargs={
+                    'invite_id': invite.id
+                }
+            )
+
+    def test_404_can_not_view_another_users_invite(self):
+        test_assignment = mommy.make(
+            'core.Assignment',
+            students_can_create_groups=True,
+            parentnode__parentnode__long_name='Duck1010',
+            parentnode__long_name='Spring 2017',
+            long_name='Assignment 1'
+        )
+        group = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
+        candidate1 = core_mommy.candidate(group=group1, fullname="Dewey Duck", shortname="dewey@example.com")
+        invite = mommy.make('core.GroupInvite', group=group,
+                            sent_by=candidate.relatedstudent.user, sent_to=candidate1.relatedstudent.user)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                requestuser=candidate.relatedstudent.user,
+                viewkwargs={
+                    'invite_id': invite.id
+                }
+            )
 
     def test_already_in_group_with_more_than_one_student(self):
         test_assignment = mommy.make(

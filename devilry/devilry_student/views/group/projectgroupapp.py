@@ -13,9 +13,7 @@ from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 
 from devilry.apps.core.models import AssignmentGroup
-from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import GroupInvite
-from devilry.devilry_account.models import User
 
 
 class CreateForm(forms.ModelForm):
