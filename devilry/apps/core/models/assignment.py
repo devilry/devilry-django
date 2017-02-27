@@ -14,7 +14,7 @@ from abstract_is_candidate import AbstractIsCandidate
 from abstract_is_examiner import AbstractIsExaminer
 from basenode import BaseNode
 from custom_db_fields import ShortNameField, LongNameField
-from devilry.apps.core.models.relateduser import RelatedStudentSyncSystemTag, RelatedExaminerSyncSystemTag
+from devilry.apps.core.models.relateduser import RelatedStudentTag, RelatedExaminerTag
 from devilry.devilry_account.models import User, PeriodPermissionGroup
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
 from .node import Node
@@ -1085,13 +1085,13 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         # them at the end
         examinerobjects = []
 
-        for relatedexaminer_syncsystem_tag in RelatedExaminerSyncSystemTag.objects\
+        for relatedexaminer_syncsystem_tag in RelatedExaminerTag.objects\
                 .filter(relatedexaminer__period=period)\
                 .select_related('relatedexaminer__user'):
 
             # Step1: Collect all relatedstudents with same tag as examiner
             relatedstudentids = []
-            for relatedstudent_syncsystem_tag in RelatedStudentSyncSystemTag.objects\
+            for relatedstudent_syncsystem_tag in RelatedStudentTag.objects\
                     .filter(relatedstudent__period=period,
                             tag=relatedexaminer_syncsystem_tag.tag):
                 relatedstudentids.append(relatedstudent_syncsystem_tag.relatedstudent_id)

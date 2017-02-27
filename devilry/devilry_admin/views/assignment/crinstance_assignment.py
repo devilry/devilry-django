@@ -16,7 +16,7 @@ from devilry.devilry_admin.views.assignment.students import merge_groups
 from devilry.devilry_admin.views.assignment.students import overview as studentoverview
 from devilry.devilry_admin.views.assignment.students import replace_groups
 from devilry.devilry_admin.views.assignment.students import split_group
-from devilry.devilry_deadlinemanagement import cradmin_app as deadline_app
+from devilry.devilry_admin.views.assignment.students import manage_deadlines
 
 
 class Menu(devilry_crmenu_admin.Menu):
@@ -48,7 +48,7 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
         ('remove_groups_from_examiner', remove_groups_from_examiner.App),
         ('bulk_organize_examiners', bulk_organize_examiners.App),
         ('passed_previous_period', passed_previous_period.App),
-        ('deadline_management', deadline_app.AdminDeadlineManagementApp)
+        ('deadline_management', manage_deadlines.App)
     ]
     id = 'devilry_admin_assignmentadmin'
     rolefrontpage_appname = 'overview'
@@ -66,6 +66,10 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
         """
         assignment = role
         return assignment
+
+    @property
+    def assignment(self):
+        return self.request.cradmin_role
 
     @classmethod
     def matches_urlpath(cls, urlpath):

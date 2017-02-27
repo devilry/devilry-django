@@ -347,22 +347,22 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_post_first_assignment_adds_examiners_from_syncsystem_tags(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
 
-        mommy.make('core.RelatedStudentSyncSystemTag',
+        mommy.make('core.RelatedStudentTag',
                    relatedstudent__period=period,
                    tag='group1')
-        mommy.make('core.RelatedExaminerSyncSystemTag',
+        mommy.make('core.RelatedExaminerTag',
                    relatedexaminer__period=period,
                    tag='group1',
                    relatedexaminer__user__shortname='examiner1')
-        mommy.make('core.RelatedExaminerSyncSystemTag',
+        mommy.make('core.RelatedExaminerTag',
                    relatedexaminer__period=period,
                    tag='group1',
                    relatedexaminer__user__shortname='examiner2')
-        mommy.make('core.RelatedExaminerSyncSystemTag',
+        mommy.make('core.RelatedExaminerTag',
                    relatedexaminer__period=period,
                    tag='group2',
                    relatedexaminer__user__shortname='examiner3')
-        mommy.make('core.RelatedExaminerSyncSystemTag',
+        mommy.make('core.RelatedExaminerTag',
                    tag='group1',
                    relatedexaminer__user__shortname='otherperiodexaminer')
 

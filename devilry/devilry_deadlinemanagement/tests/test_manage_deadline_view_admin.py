@@ -26,9 +26,10 @@ class AdminTestCaseMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def _get_mock_instance(self):
+    def _get_mock_instance(self, assignment):
         mock_instance = mock.MagicMock()
         mock_instance.get_devilryrole_type.return_value = 'admin'
+        mock_instance.assignment = assignment
         return mock_instance
 
     def _get_mock_app(self, user=None):
@@ -96,7 +97,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
         testuser = self._get_admin_user(testassignment.parentnode)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -124,7 +125,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -147,7 +148,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -182,7 +183,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
         with self.assertRaises(http.Http404):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
-                cradmin_instance=self._get_mock_instance(),
+                cradmin_instance=self._get_mock_instance(testassignment),
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
@@ -231,7 +232,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -259,7 +260,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -282,7 +283,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -318,7 +319,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
         with self.assertRaises(http.Http404):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
-                cradmin_instance=self._get_mock_instance(),
+                cradmin_instance=self._get_mock_instance(testassignment),
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
@@ -366,7 +367,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -397,7 +398,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         self.mock_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -435,7 +436,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
         with self.assertRaises(http.Http404):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
-                cradmin_instance=self._get_mock_instance(),
+                cradmin_instance=self._get_mock_instance(testassignment),
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
@@ -480,7 +481,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -511,7 +512,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         self.mock_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -549,7 +550,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
         with self.assertRaises(http.Http404):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
-                cradmin_instance=self._get_mock_instance(),
+                cradmin_instance=self._get_mock_instance(testassignment),
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={

@@ -25,9 +25,10 @@ class ExaminerTestCaseMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def _get_mock_instance(self):
+    def _get_mock_instance(self, assignment):
         mock_instance = mock.MagicMock()
         mock_instance.get_devilryrole_type.return_value = 'examiner'
+        mock_instance.assignment = assignment
         return mock_instance
 
     def _get_mock_app(self, user=None):
@@ -41,6 +42,95 @@ class ExaminerTestCaseMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
     viewclass = manage_deadline_view.ManageDeadlineAllGroupsView
     handle_deadline = 'new-attempt'
+
+    def test_info_box_not_showing_when_zero_groups_were_excluded(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup2)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            requestuser=examiner_user,
+            cradmin_app=self._get_mock_app(examiner_user),
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'handle_deadline': self.handle_deadline
+            }
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-deadline-management-info-box'))
+
+    def test_info_box_showing_when_one_group_was_excluded(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            requestuser=examiner_user,
+            cradmin_app=self._get_mock_app(examiner_user),
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'handle_deadline': self.handle_deadline
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-deadline-management-info-box'))
+        self.assertIn(
+            '1 group(s) excluded',
+            mockresponse.selector.one('.devilry-deadline-management-info-box').alltext_normalized)
+
+    def test_info_box_showing_when_multiple_groups_were_excluded(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup3)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup2)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup3)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            requestuser=examiner_user,
+            cradmin_app=self._get_mock_app(examiner_user),
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'handle_deadline': self.handle_deadline
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-deadline-management-info-box'))
+        self.assertIn(
+            '2 group(s) excluded',
+            mockresponse.selector.one('.devilry-deadline-management-info-box').alltext_normalized)
 
     def test_all_groups_added_to_form_hidden(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -59,7 +149,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -87,7 +177,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -110,7 +200,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -145,7 +235,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
         with self.assertRaises(http.Http404):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
-                cradmin_instance=self._get_mock_instance(),
+                cradmin_instance=self._get_mock_instance(testassignment),
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
@@ -167,6 +257,95 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
     viewclass = manage_deadline_view.ManageDeadlineAllGroupsView
     handle_deadline = 'move-deadline'
 
+    def test_info_box_not_showing_when_zero_groups_were_excluded(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            requestuser=examiner_user,
+            cradmin_app=self._get_mock_app(examiner_user),
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'handle_deadline': self.handle_deadline
+            }
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-deadline-management-info-box'))
+
+    def test_info_box_showing_when_one_group_was_excluded(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup2)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            requestuser=examiner_user,
+            cradmin_app=self._get_mock_app(examiner_user),
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'handle_deadline': self.handle_deadline
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-deadline-management-info-box'))
+        self.assertIn(
+            '1 group(s) excluded',
+            mockresponse.selector.one('.devilry-deadline-management-info-box').alltext_normalized)
+
+    def test_info_box_showing_when_multiple_groups_were_excluded(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup2)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup3)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup2)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup3)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            requestuser=examiner_user,
+            cradmin_app=self._get_mock_app(examiner_user),
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'handle_deadline': self.handle_deadline
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-deadline-management-info-box'))
+        self.assertIn(
+            '2 group(s) excluded',
+            mockresponse.selector.one('.devilry-deadline-management-info-box').alltext_normalized)
+
     def test_all_groups_added_to_form_hidden(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -184,7 +363,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup4, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -212,7 +391,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -235,7 +414,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -271,7 +450,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         with self.assertRaises(http.Http404):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
-                cradmin_instance=self._get_mock_instance(),
+                cradmin_instance=self._get_mock_instance(testassignment),
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
@@ -303,7 +482,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -340,7 +519,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -370,6 +549,95 @@ class TestManageDeadlineNewAttemptFromPreviousView(ExaminerTestCaseMixin):
     viewclass = manage_deadline_view.ManageDeadlineFromPreviousView
     handle_deadline = 'new-attempt'
 
+    def test_info_box_not_showing_when_zero_group_were_excluded(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup2)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            requestuser=examiner_user,
+            cradmin_app=self._get_mock_app(examiner_user),
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'handle_deadline': self.handle_deadline
+            }
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-deadline-management-info-box'))
+
+    def test_info_box_showing_when_one_group_was_excluded(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            requestuser=examiner_user,
+            cradmin_app=self._get_mock_app(examiner_user),
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'handle_deadline': self.handle_deadline
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-deadline-management-info-box'))
+        self.assertIn(
+            '1 group(s) excluded',
+            mockresponse.selector.one('.devilry-deadline-management-info-box').alltext_normalized)
+
+    def test_info_box_showing_when_multiple_groups_were_excluded(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup3)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup2)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup3)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            requestuser=examiner_user,
+            cradmin_app=self._get_mock_app(examiner_user),
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'handle_deadline': self.handle_deadline
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-deadline-management-info-box'))
+        self.assertIn(
+            '2 group(s) excluded',
+            mockresponse.selector.one('.devilry-deadline-management-info-box').alltext_normalized)
+
     def test_post_from_previous_view_selected_groups_are_hidden(self):
         # By adding the post_type_received_data to the key, we are simulating that the
         # post comes from a different view.
@@ -383,7 +651,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(ExaminerTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -414,7 +682,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(ExaminerTestCaseMixin):
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         self.mock_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -452,7 +720,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(ExaminerTestCaseMixin):
         with self.assertRaises(http.Http404):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
-                cradmin_instance=self._get_mock_instance(),
+                cradmin_instance=self._get_mock_instance(testassignment),
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
@@ -474,6 +742,95 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(ExaminerTestCaseMixin):
     viewclass = manage_deadline_view.ManageDeadlineFromPreviousView
     handle_deadline = 'move-deadline'
 
+    def test_info_box_not_showing_when_zero_group_were_excluded(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            requestuser=examiner_user,
+            cradmin_app=self._get_mock_app(examiner_user),
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'handle_deadline': self.handle_deadline
+            }
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-deadline-management-info-box'))
+
+    def test_info_box_showing_when_one_group_was_excluded(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup2)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            requestuser=examiner_user,
+            cradmin_app=self._get_mock_app(examiner_user),
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'handle_deadline': self.handle_deadline
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-deadline-management-info-box'))
+        self.assertIn(
+            '1 group(s) excluded',
+            mockresponse.selector.one('.devilry-deadline-management-info-box').alltext_normalized)
+
+    def test_info_box_showing_when_multiple_groups_were_excluded(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup2)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup3)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup2)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup3)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            requestuser=examiner_user,
+            cradmin_app=self._get_mock_app(examiner_user),
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'handle_deadline': self.handle_deadline
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-deadline-management-info-box'))
+        self.assertIn(
+            '2 group(s) excluded',
+            mockresponse.selector.one('.devilry-deadline-management-info-box').alltext_normalized)
+
     def test_post_from_previous_view_selected_groups_are_hidden(self):
         # By adding the post_type_received_data to the key, we are simulating that the
         # post comes from a different view.
@@ -487,7 +844,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(ExaminerTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -518,7 +875,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(ExaminerTestCaseMixin):
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         self.mock_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -556,7 +913,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(ExaminerTestCaseMixin):
         with self.assertRaises(http.Http404):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
-                cradmin_instance=self._get_mock_instance(),
+                cradmin_instance=self._get_mock_instance(testassignment),
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
@@ -578,6 +935,33 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
     viewclass = manage_deadline_view.ManageDeadlineSingleGroupView
     handle_deadline = 'new-attempt'
 
+    def test_info_box_not_showing_when_groups_should_be_excluded(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            requestuser=examiner_user,
+            cradmin_app=self._get_mock_app(examiner_user),
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'handle_deadline': self.handle_deadline,
+                'group_id': testgroup1
+            }
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-deadline-management-info-box'))
+
     def test_all_groups_added_to_form_hidden(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -586,7 +970,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -607,7 +991,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -641,7 +1025,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         with self.assertRaises(http.Http404):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
-                cradmin_instance=self._get_mock_instance(),
+                cradmin_instance=self._get_mock_instance(testassignment),
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
@@ -668,6 +1052,33 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
     viewclass = manage_deadline_view.ManageDeadlineSingleGroupView
     handle_deadline = 'move-deadline'
 
+    def test_info_box_not_showing_when_groups_should_be_excluded(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_OFF)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup2)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=examiner_user,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            requestuser=examiner_user,
+            cradmin_app=self._get_mock_app(examiner_user),
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'handle_deadline': self.handle_deadline,
+                'group_id': testgroup1
+            }
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-deadline-management-info-box'))
+
     def test_all_groups_added_to_form_hidden(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -676,7 +1087,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -697,7 +1108,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         new_deadline = timezone.now() + timezone.timedelta(days=3)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
-            cradmin_instance=self._get_mock_instance(),
+            cradmin_instance=self._get_mock_instance(testassignment),
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
@@ -731,7 +1142,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         with self.assertRaises(http.Http404):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
-                cradmin_instance=self._get_mock_instance(),
+                cradmin_instance=self._get_mock_instance(testassignment),
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={

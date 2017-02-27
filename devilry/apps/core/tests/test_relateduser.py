@@ -4,7 +4,8 @@ from django.test import TestCase
 from model_mommy import mommy
 
 from devilry.apps.core.models import RelatedExaminer, RelatedStudent
-from devilry.apps.core.models.relateduser import RelatedStudentSyncSystemTag
+from devilry.apps.core.models.relateduser import RelatedStudentTag
+from devilry.apps.core.models.relateduser import RelatedExaminerTag
 from devilry.devilry_account.exceptions import IllegalOperationError
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder2
 
@@ -403,9 +404,9 @@ class TestRelatedStudentQuerySetPrefetchSyncsystemtags(TestCase):
 
     def test_ordering(self):
         relatedstudent = mommy.make('core.RelatedStudent')
-        tagb = mommy.make('core.RelatedStudentSyncSystemTag', tag='b', relatedstudent=relatedstudent)
-        taga = mommy.make('core.RelatedStudentSyncSystemTag', tag='a', relatedstudent=relatedstudent)
-        tagc = mommy.make('core.RelatedStudentSyncSystemTag', tag='c', relatedstudent=relatedstudent)
+        tagb = mommy.make('core.RelatedStudentTag', tag='b', relatedstudent=relatedstudent)
+        taga = mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=relatedstudent)
+        tagc = mommy.make('core.RelatedStudentTag', tag='c', relatedstudent=relatedstudent)
         prefetched_relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects()\
             .get(id=relatedstudent.id)
         self.assertEqual([taga, tagb, tagc], prefetched_relatedstudent.syncsystemtag_objects)
@@ -419,41 +420,91 @@ class TestRelatedStudentQuerySetPrefetchSyncsystemtags(TestCase):
 
     def test_syncsystemtag_stringlist(self):
         relatedstudent = mommy.make('core.RelatedStudent')
-        mommy.make('core.RelatedStudentSyncSystemTag', tag='a', relatedstudent=relatedstudent)
-        mommy.make('core.RelatedStudentSyncSystemTag', tag='b', relatedstudent=relatedstudent)
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=relatedstudent)
+        mommy.make('core.RelatedStudentTag', tag='b', relatedstudent=relatedstudent)
         prefetched_relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects()\
             .get(id=relatedstudent.id)
         self.assertEqual(['a', 'b'], prefetched_relatedstudent.syncsystemtag_stringlist)
 
 
 class TestRelatedStudentSyncSystemTag(TestCase):
+    def test_get_tag_displayname_no_prefix(self):
+        testperiod = mommy.make('core.Period')
+        testtag = mommy.make('core.RelatedStudentTag', tag='tag', relatedstudent__period=testperiod)
+        self.assertEquals('tag', testtag.displayname)
+
+    def test_get_tag_displayname_with_prefix(self):
+        testperiod = mommy.make('core.Period')
+        testtag = mommy.make('core.RelatedStudentTag', prefix='prefix', tag='tag', relatedstudent__period=testperiod)
+        self.assertEquals('prefix:tag', testtag.displayname)
+
     def test_tag_unique_for_relatedstudent(self):
         testrelatedstudent = mommy.make('core.RelatedStudent')
-        mommy.make('core.RelatedStudentSyncSystemTag', tag='testtag',
+        mommy.make('core.RelatedStudentTag', tag='testtag',
                    relatedstudent=testrelatedstudent)
         with self.assertRaises(IntegrityError):
-            mommy.make('core.RelatedStudentSyncSystemTag', tag='testtag',
+            mommy.make('core.RelatedStudentTag', tag='testtag',
                        relatedstudent=testrelatedstudent)
 
     def test_get_all_distinct_tags_in_period(self):
         testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudentSyncSystemTag', tag='c', relatedstudent__period=testperiod)
-        mommy.make('core.RelatedStudentSyncSystemTag', tag='a', relatedstudent__period=testperiod)
-        mommy.make('core.RelatedStudentSyncSystemTag', tag='a', relatedstudent__period=testperiod)
-        mommy.make('core.RelatedStudentSyncSystemTag', tag='b', relatedstudent__period=testperiod)
+        mommy.make('core.RelatedStudentTag', tag='c', relatedstudent__period=testperiod)
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent__period=testperiod)
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent__period=testperiod)
+        mommy.make('core.RelatedStudentTag', tag='b', relatedstudent__period=testperiod)
         self.assertEqual(
             ['a', 'b', 'c'],
-            list(RelatedStudentSyncSystemTag.objects.get_all_distinct_tags_in_period(testperiod)))
+            list(RelatedStudentTag.objects.get_all_distinct_tags_in_period(testperiod)))
+
+    def test_all_visible_distinct_tags_in_period(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent__period=testperiod)
+        mommy.make('core.RelatedStudentTag', tag='b', relatedstudent__period=testperiod, is_hidden=True)
+        mommy.make('core.RelatedStudentTag', tag='c', relatedstudent__period=testperiod)
+        mommy.make('core.RelatedStudentTag', tag='d', relatedstudent__period=testperiod)
+        self.assertEqual(
+            ['a', 'c', 'd'],
+            list(RelatedStudentTag.objects.get_all_distinct_visible_tags_in_period(testperiod)))
 
 
 class TestRelatedExaminerSyncSystemTag(TestCase):
+    def test_get_tag_displayname_no_prefix(self):
+        testperiod = mommy.make('core.Period')
+        testtag = mommy.make('core.RelatedExaminerTag', tag='tag', relatedexaminer__period=testperiod)
+        self.assertEquals('tag', testtag.displayname)
+
+    def test_get_tag_displayname_with_prefix(self):
+        testperiod = mommy.make('core.Period')
+        testtag = mommy.make('core.RelatedExaminerTag', prefix='prefix', tag='tag', relatedexaminer__period=testperiod)
+        self.assertEquals('prefix:tag', testtag.displayname)
+
     def test_tag_unique_for_relatedexaminer(self):
         testrelatedexaminer = mommy.make('core.RelatedExaminer')
-        mommy.make('core.RelatedExaminerSyncSystemTag', tag='testtag',
+        mommy.make('core.RelatedExaminerTag', tag='testtag',
                    relatedexaminer=testrelatedexaminer)
         with self.assertRaises(IntegrityError):
-            mommy.make('core.RelatedExaminerSyncSystemTag', tag='testtag',
+            mommy.make('core.RelatedExaminerTag', tag='testtag',
                        relatedexaminer=testrelatedexaminer)
+
+    def test_get_all_distinct_tags_in_period(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedExaminerTag', tag='c', relatedexaminer__period=testperiod)
+        mommy.make('core.RelatedExaminerTag', tag='a', relatedexaminer__period=testperiod)
+        mommy.make('core.RelatedExaminerTag', tag='a', relatedexaminer__period=testperiod)
+        mommy.make('core.RelatedExaminerTag', tag='b', relatedexaminer__period=testperiod)
+        self.assertEqual(
+            ['a', 'b', 'c'],
+            list(RelatedExaminerTag.objects.get_all_distinct_tags_in_period(testperiod)))
+
+    def test_get_all_visible_distinct_tags_in_period(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedExaminerTag', tag='a', relatedexaminer__period=testperiod)
+        mommy.make('core.RelatedExaminerTag', tag='b', relatedexaminer__period=testperiod, is_hidden=True)
+        mommy.make('core.RelatedExaminerTag', tag='c', relatedexaminer__period=testperiod)
+        mommy.make('core.RelatedExaminerTag', tag='d', relatedexaminer__period=testperiod)
+        self.assertEqual(
+            ['a', 'c', 'd'],
+            list(RelatedExaminerTag.objects.get_all_distinct_visible_tags_in_period(testperiod)))
 
 
 class RelatedExaminerQuerySetAnnotateWithNumberOfGroupsOnAssignment(TestCase):

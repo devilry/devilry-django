@@ -32,14 +32,6 @@ class AbstractDeadlineManagementApp(crapp.App):
         return multiselect_groups_view.AssignmentGroupMultiSelectListFilterView
 
     @classmethod
-    def get_groups_multiselect_view_move_deadline_class(cls):
-        return multiselect_groups_view.MoveDeadlineManualGroupSelectView
-
-    @classmethod
-    def get_groups_multiselect_view_new_attempt_class(cls):
-        return multiselect_groups_view.NewAttemptManualGroupSelectView
-
-    @classmethod
     def get_manage_deadline_view_single_group_class(cls):
         return manage_deadline_view.ManageDeadlineSingleGroupView
 

@@ -38,8 +38,8 @@ class TestSelectedItem(test.TestCase):
 
     def test_description_with_tags(self):
         relatedstudent = mommy.make('core.RelatedStudent')
-        mommy.make('core.RelatedStudentSyncSystemTag', tag='a', relatedstudent=relatedstudent)
-        mommy.make('core.RelatedStudentSyncSystemTag', tag='b', relatedstudent=relatedstudent)
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=relatedstudent)
+        mommy.make('core.RelatedStudentTag', tag='b', relatedstudent=relatedstudent)
         relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(multiselect2_relatedstudent.SelectedItem(value=relatedstudent).render())
         self.assertEqual(
@@ -77,8 +77,8 @@ class TestItemValue(test.TestCase):
 
     def test_description_with_tags(self):
         relatedstudent = mommy.make('core.RelatedStudent')
-        mommy.make('core.RelatedStudentSyncSystemTag', tag='a', relatedstudent=relatedstudent)
-        mommy.make('core.RelatedStudentSyncSystemTag', tag='b', relatedstudent=relatedstudent)
+        mommy.make('core.RelatedStudentTag', tag='a', relatedstudent=relatedstudent)
+        mommy.make('core.RelatedStudentTag', tag='b', relatedstudent=relatedstudent)
         relatedstudent = RelatedStudent.objects.prefetch_syncsystemtag_objects().get(id=relatedstudent.id)
         selector = htmls.S(multiselect2_relatedstudent.ItemValue(value=relatedstudent).render())
         self.assertEqual(

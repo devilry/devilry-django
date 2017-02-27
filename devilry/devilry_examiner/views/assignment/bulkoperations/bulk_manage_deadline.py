@@ -10,7 +10,7 @@ from devilry.devilry_deadlinemanagement.views import manage_deadline_view
 
 
 class ExaminerDeadlineListView(deadline_listview.DeadlineListView):
-    def get_startapp_backlink_url(self):
+    def get_backlink_url(self):
         return reverse_cradmin_url(
             instanceid='devilry_examiner_assignment',
             appname='grouplist',
@@ -29,20 +29,6 @@ class ExaminerManageDeadlineFromPreviousView(manage_deadline_view.ManageDeadline
         )
 
 
-class ExaminerManageDeadlineSingleGroup(manage_deadline_view.ManageDeadlineSingleGroupView):
-    """
-    Used by devilry_group.
-    """
-    def get_success_url(self):
-        print self.kwargs.get('group_id')
-        return reverse_cradmin_url(
-            instanceid='devilry_group_examiner',
-            appname='feedbackfeed',
-            roleid=self.kwargs.get('group_id'),
-            viewname=crapp.INDEXVIEW_NAME
-        )
-
-
 class App(ExaminerDeadlineManagementApp):
     @classmethod
     def get_index_view_class(cls):
@@ -51,7 +37,3 @@ class App(ExaminerDeadlineManagementApp):
     @classmethod
     def get_manage_deadline_from_previous_view_class(cls):
         return ExaminerManageDeadlineFromPreviousView
-
-    @classmethod
-    def get_manage_deadline_view_single_group_class(cls):
-        return ExaminerManageDeadlineSingleGroup

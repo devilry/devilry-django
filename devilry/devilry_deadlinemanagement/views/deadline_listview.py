@@ -70,7 +70,7 @@ class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
         Returns:
             (OrderedDict): Ordered dictionary of deadlines(keys) and list of groups(values).
         """
-        queryset = self.get_queryset_for_role(role=self.request.cradmin_role)
+        queryset = self.get_queryset_for_role(role=self.assignment)
         deadlines_dict = {}
         for group in queryset:
             deadline = group.cached_data.last_feedbackset.deadline_datetime
@@ -86,7 +86,7 @@ class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
                 listbuilder.itemframe.DefaultSpacingItemFrame(
                     SelectDeadlineItemValue(
                         assignment_groups=group_list,
-                        assignment=self.request.cradmin_role,
+                        assignment=self.assignment,
                         devilryrole=self.request.cradmin_instance.get_devilryrole_for_requestuser(),
                         value=deadline)
                 )

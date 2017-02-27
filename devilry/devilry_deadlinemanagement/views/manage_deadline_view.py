@@ -69,19 +69,12 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
     post_type_received_data = 'post_type_received_data'
 
     def get(self, request, *args, **kwargs):
-        initially_selected_items = self.get_initially_selected_items()
-        selected_form = SelectedItemsForm(
+        form_class = self.get_form_class()
+        form = form_class(
             accessible_groups_queryset=self.request.cradmin_app.get_accessible_group_queryset(),
-            data={'selected_items': initially_selected_items}
+            initial={'selected_items': self.get_initially_selected_items()}
         )
-        if selected_form.is_valid():
-            form_class = self.get_form_class()
-            form = form_class(
-                accessible_groups_queryset=self.request.cradmin_app.get_accessible_group_queryset(),
-                initial={'selected_items': initially_selected_items}
-            )
-            return self.render_to_response(self.get_context_data(form=form))
-        return redirect(self.get_previous_view_url())
+        return self.render_to_response(self.get_context_data(form=form))
 
     def post(self, request, *args, **kwargs):
         if self.post_from_previous_view:
@@ -304,12 +297,12 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
 
     def get_groups_anonymous_display_names(self, form):
         groups = form.cleaned_data['selected_items']
-        anonymous_display_names = [unicode(group.get_anonymous_displayname(assignment=self.request.cradmin_role))
+        anonymous_display_names = [unicode(group.get_anonymous_displayname(assignment=self.assignment))
                                    for group in groups]
         return anonymous_display_names
 
     def form_valid(self, form):
-        self.selected_items_in_form_matches_handle_deadline_rules(form=form)
+        self.form_valid_extra_check(form=form)
         new_deadline = form.cleaned_data.get('new_deadline')
         comment_text = form.cleaned_data.get('comment_text')
         anonymous_display_names = self.get_groups_anonymous_display_names(form=form)
@@ -341,19 +334,29 @@ class ManageDeadlineAllGroupsView(ManageDeadlineView):
     """
     Handles all ``AssignmentGroup``s the user has access to. Using method GET.
     """
+
+    def form_valid_extra_check(self, form):
+        assignment = self.assignment
+        queryset = self.get_queryset_for_role_on_handle_deadline_type(role=assignment)
+        if queryset.count() != form.cleaned_data['selected_items'].count():
+            raise http.Http404()
+
     def get_queryset_for_role(self, role):
         return self.get_queryset_for_role_on_handle_deadline_type(role=role)
 
     def get_initially_selected_items(self):
-        queryset = self.get_queryset_for_role(role=self.request.cradmin_role)
+        queryset = self.get_queryset_for_role(role=self.assignment)
         return [group.id for group in queryset]
 
 
 class ManageDeadlineSingleGroupView(ManageDeadlineView):
     """
-    Handles a single ``AssignmentGroup``s passed. Using GET.
+    Handles a single ``AssignmentGroup``s passed. Using method GET.
     """
-    def selected_items_in_form_matches_handle_deadline_rules(self, form):
+    def get_excluded_groups_count(self):
+        return 0
+
+    def form_valid_extra_check(self, form):
         if len(form.cleaned_data['selected_items']) != 1:
             raise http.Http404()
 
@@ -363,9 +366,18 @@ class ManageDeadlineSingleGroupView(ManageDeadlineView):
 
 class ManageDeadlineFromPreviousView(ManageDeadlineView):
     """
-    Handles multiple ``AssignmentGroup``s passed. Using POST.
+    Handles multiple ``AssignmentGroup``s passed. Using method POST.
     """
-    def get_startapp_backlink_url(self):
+    def form_valid_extra_check(self, form):
+        assignment = self.assignment
+        queryset_id_list = self.get_queryset_for_role_on_handle_deadline_type(role=assignment)\
+            .values_list('id', flat=True)
+        selected_items_id_list = form.cleaned_data['selected_items'].values_list('id', flat=True)
+        for selected_item_id in selected_items_id_list:
+            if selected_item_id not in queryset_id_list:
+                raise http.Http404()
+
+    def get_backlink_url(self):
         return self.request.cradmin_app.reverse_appurl(
             viewname='select-groups-manually',
             kwargs={
