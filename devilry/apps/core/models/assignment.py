@@ -14,7 +14,7 @@ from abstract_is_candidate import AbstractIsCandidate
 from abstract_is_examiner import AbstractIsExaminer
 from basenode import BaseNode
 from custom_db_fields import ShortNameField, LongNameField
-from devilry.apps.core.models.relateduser import RelatedStudentTag, RelatedExaminerTag
+# from devilry.apps.core.models.relateduser import RelatedStudentTag, RelatedExaminerTag
 from devilry.devilry_account.models import User, PeriodPermissionGroup
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
 from .node import Node

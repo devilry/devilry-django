@@ -37,8 +37,8 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
         ('edit', edit.App),
         ('overview_all_results', overview_all_results.App),
         ('qualifiesforexam', qualifiesforexam.App),
-        ('manage_tags_students', manage_student_tags.App),
-        ('manage_tags_examiners', manage_examiner_tags.App),
+        # ('manage_tags_students', manage_student_tags.App),
+        # ('manage_tags_examiners', manage_examiner_tags.App),
     ]
     id = 'devilry_admin_periodadmin'
     rolefrontpage_appname = 'overview'

@@ -131,16 +131,6 @@ class SelectItemTagInputTargetRenderer(BaseSelectedItemTargetRenderer):
         return layout
 
 
-class ExaminerTagMixin(object):
-    user_model = relateduser.RelatedExaminer
-    tag_model = relateduser.RelatedExaminerTag
-
-
-class StudentTagMixin(object):
-    user_model = relateduser.RelatedStudent
-    tag_model = relateduser.RelatedStudentTag
-
-
 class BaseMultiSelectView(multiselect2view.ListbuilderView):
     """
     This is the base multi-select view for selecting users you want to manage tags for.
