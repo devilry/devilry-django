@@ -2,7 +2,10 @@ from __future__ import unicode_literals
 
 import re
 from django.core.exceptions import ValidationError
+from django.db import IntegrityError
+from django.db import transaction
 from django.db.models import QuerySet
+from django.http import HttpResponseRedirect
 from django.utils.translation import pgettext_lazy, ugettext_lazy
 from django.views.generic import TemplateView
 from django import forms
@@ -13,6 +16,7 @@ from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import multiselect2view
 from django_cradmin.viewhelpers import multiselect2
 
+from devilry.apps.core.models import relateduser
 from devilry.devilry_cradmin import devilry_listbuilder
 
 
@@ -41,16 +45,20 @@ class BaseTagListbuilderView(listbuilderview.View):
         raise NotImplementedError()
 
 
-class TagMixin(object):
-    def get_tag_class(self):
-        return None
-
-
 class BaseSelectedItem(multiselect2.selected_item_renderer.SelectedItem):
+    """
+    The selectable item as selected.
+    """
     valuealias = 'relateduser'
 
+    def get_title(self):
+        return self.relateduser.user.shortname
 
-class BaseSelectedItemValue(multiselect2.listbuilder_itemvalues.ItemValue):
+
+class BaseSelectItemValue(multiselect2.listbuilder_itemvalues.ItemValue):
+    """
+    The item to select.
+    """
     valuealias = 'relateduser'
     selected_item_renderer_class = BaseSelectedItem
 
@@ -123,13 +131,39 @@ class SelectItemTagInputTargetRenderer(BaseSelectedItemTargetRenderer):
         return layout
 
 
+class ExaminerTagMixin(object):
+    user_model = relateduser.RelatedExaminer
+    tag_model = relateduser.RelatedExaminerTag
+
+
+class StudentTagMixin(object):
+    user_model = relateduser.RelatedStudent
+    tag_model = relateduser.RelatedStudentTag
+
+
 class BaseMultiSelectView(multiselect2view.ListbuilderView):
-    value_renderer_class = BaseSelectedItemValue
+    """
+    This is the base multi-select view for selecting users you want to manage tags for.
+
+    Subclass this for each specific management operation you want to perform on the tags and e.g override
+    the :func:`.BaseMultiSelectView.get_queryset_for_role` if you need additional filtering for users that
+    can be selected.
+    """
+    value_renderer_class = BaseSelectItemValue
+    model = None
+    tag_model = None
 
     def dispatch(self, request, *args, **kwargs):
         if 'tag' in kwargs:
             self.tag = kwargs.get('tag')
         return super(BaseMultiSelectView, self).dispatch(request, *args, **kwargs)
+
+    def get_queryset_for_role(self, role):
+        return self.model.objects\
+            .filter(period=role)
+
+    def get_tag_class(self):
+        return self.tag_model
 
     def get_target_renderer_class(self):
         return BaseSelectedItemTargetRenderer
@@ -142,6 +176,12 @@ class BaseMultiSelectView(multiselect2view.ListbuilderView):
         kwargs['relatedusers_queryset'] = self.get_queryset_for_role(
             role=self.request.cradmin_role)
         return kwargs
+
+    def get_related_user_tag_tags_as_list(self, related_user):
+        return [related_user_tag.tag for related_user_tag in related_user.relatedusertag_set.all()]
+
+    def get_relateduser_ids_list(self, form):
+        return [relateduser.id for relateduser in form.cleaned_data['selected_items']]
 
     def get_selected_relatedusers(self, posted_form):
         return [related_user for related_user in posted_form.cleaned_data['selected_items']]
@@ -166,11 +206,17 @@ class BaseMultiSelectView(multiselect2view.ListbuilderView):
     def get_tags_as_string(self, tags_list):
         tag_string = ''
         for tag in tags_list:
-            tag_string = tag_string + ' ' + tag
+            tag_string = tag_string + str('') + tag
         return tag_string
 
 
-class AddTagMultiSelectView(TagMixin, BaseMultiSelectView):
+class AddTagMultiSelectView(BaseMultiSelectView):
+
+    def get_form_class(self):
+        return SelectRelatedUsersTagInputForm
+
+    def get_target_renderer_class(self):
+        return SelectItemTagInputTargetRenderer
 
     def get_added_tags(self, tags_string):
         return [tag.strip() for tag in tags_string.split(',') if len(tag) > 0]
@@ -180,12 +226,6 @@ class AddTagMultiSelectView(TagMixin, BaseMultiSelectView):
         Returns instance of tag class.
 
         Override in subclass and instantiate the tag class with values.
-        """
-        raise NotImplementedError()
-
-    def get_related_user_tag_tags_as_list(self, related_user):
-        """
-        Get all the tags as a list for the ``related_user``.
         """
         raise NotImplementedError()
 
@@ -235,11 +275,7 @@ class AddTagMultiSelectView(TagMixin, BaseMultiSelectView):
         return super(AddTagMultiSelectView, self).form_valid(form)
 
 
-class RemoveTagMultiSelectView(TagMixin, BaseMultiSelectView):
-
-    def get_relateduser_ids_list(self, form):
-        return [relateduser.id for relateduser in form.cleaned_data['selected_items']]
-
+class RemoveTagMultiSelectView(BaseMultiSelectView):
     def get_tag_queryset_to_delete(self, form):
         """
         Override this and return the appropriate tag queryset filtered on selected items in the form.
@@ -253,3 +289,86 @@ class RemoveTagMultiSelectView(TagMixin, BaseMultiSelectView):
     def form_valid(self, form):
         self.delete_tags(form)
         return super(RemoveTagMultiSelectView, self).form_valid(form)
+
+
+class ReplaceTagMultiSelectView(AddTagMultiSelectView):
+    def get_related_user_ids_from_tags(self):
+        raise NotImplementedError()
+
+    def get_transaction_error_redirect_url(self):
+        raise NotImplementedError()
+
+    def get_tags_for_users_to_replace(self, related_users_ids):
+        raise NotImplementedError
+
+    def form_valid(self, form):
+        added_tags_list = self.get_added_tags(tags_string=form.cleaned_data['tag_text'])
+        relatedusers = form.cleaned_data['selected_items']
+        first_tag_in_list = added_tags_list.pop(0)
+        related_users_ids = self.get_relateduser_ids_list(form=form)
+        related_users_tags = self.get_tags_for_users_to_replace(related_users_ids)
+
+        # Detecting if the tag to replace with already exists.
+        # If it exists, an IntegrityError will be raised, and we redirect back to this
+        # view with a warning message.
+        try:
+            with transaction.atomic():
+                related_users_tags.update(tag=first_tag_in_list)
+        except IntegrityError:
+            self.add_warning_message('One or more of the selected users already have the tag to replace with.')
+            return HttpResponseRedirect(
+                self.get_transaction_error_redirect_url()
+            )
+        if len(added_tags_list) > 0:
+            self.add_tags_to_relatedusers(relatedusers, added_tags_list)
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class App(crapp.App):
+
+    @classmethod
+    def get_index_view_class(cls):
+        pass
+
+    @classmethod
+    def get_add_tag_view_class(cls):
+        pass
+
+    @classmethod
+    def get_choose_remove_tag_list_view_class(cls):
+        pass
+
+    @classmethod
+    def get_choose_replace_tag_list_view_class(cls):
+        pass
+
+    @classmethod
+    def get_remove_tag_select_view_class(cls):
+        pass
+
+    @classmethod
+    def get_replace_tag_select_view_class(cls):
+        pass
+
+    @classmethod
+    def get_appurls(cls):
+        return [
+            crapp.Url(r'^$',
+                      cls.get_index_view_class().as_view(),
+                      name=crapp.INDEXVIEW_NAME),
+            crapp.Url(r'^add-tag$',
+                      cls.get_add_tag_view_class().as_view(),
+                      name='add-tag'),
+            crapp.Url(r'^choose-tag-replace$',
+                      cls.get_choose_replace_tag_list_view_class().as_view(),
+                      name='choose-tag-replace'),
+            crapp.Url(r'^choose-tag-remove$',
+                      cls.get_choose_remove_tag_list_view_class().as_view(),
+                      name='choose-tag-remove'),
+            crapp.Url(r'^remove-tag/(?P<tag>[\w-]+)$',
+                      cls.get_remove_tag_select_view_class().as_view(),
+                      name='remove-tag'),
+            crapp.Url(r'^replace-tag/(?P<tag>[\w-]+)$',
+                      cls.get_replace_tag_select_view_class().as_view(),
+                      name='replace-tag')
+        ]

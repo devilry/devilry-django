@@ -350,6 +350,10 @@ class RelatedExaminer(RelatedUserBase):
         else:
             return ugettext_lazy('Anonymous ID missing')
 
+    @property
+    def relatedusertag_set(self):
+        return self.relatedexaminertag_set
+
 
 class RelatedStudentQuerySet(models.QuerySet):
     """
@@ -414,6 +418,10 @@ class RelatedStudent(RelatedUserBase):
             return self.automatic_anonymous_id
         else:
             return ugettext_lazy('Anonymous ID missing')
+
+    @property
+    def relatedusertag_set(self):
+        return self.relatedstudenttag_set
 
     @property
     def syncsystemtag_stringlist(self):
@@ -490,6 +498,18 @@ class RelatedUserTag(models.Model):
     is_hidden = models.BooleanField(default=False)
 
     @property
+    def relateduser(self):
+        """
+        Override this function in subclass and return the RelatedUser-subclass used as
+        foreign key.
+
+        The purpose of this function is to have a common interface for the model when trying to access the foreign key
+        of the RelatedUser-subclass of the tag. This way we don't need to duplicate code for every subclass of this
+        class using a different RelatedUser-subclass with different fieldnames.
+        """
+        raise NotImplementedError()
+
+    @property
     def displayname(self):
         if len(self.prefix) > 0:
             return '{}:{}'.format(self.prefix, self.tag)
@@ -524,6 +544,13 @@ class RelatedExaminerTag(RelatedUserTag):
     #: Foreignkey to the :class:`.RelatedExaminer` this tag is for.
     relatedexaminer = models.ForeignKey(RelatedExaminer)
 
+    @property
+    def relateduser(self):
+        return self.relatedexaminer
+
+    def __unicode__(self):
+        return u'{}: {}'.format(self.tag, self.relatedexaminer)
+
 
 class RelatedStudentTagQuerySet(RelatedUserTagQuerySet):
     """
@@ -552,6 +579,10 @@ class RelatedStudentTag(RelatedUserTag):
 
     #: Foreignkey to the :class:`.RelatedStudent` this tag is for.
     relatedstudent = models.ForeignKey(RelatedStudent)
+
+    @property
+    def relateduser(self):
+        return self.relatedstudent
 
     def __unicode__(self):
         return u'{}: {}'.format(self.tag, self.relatedstudent)
