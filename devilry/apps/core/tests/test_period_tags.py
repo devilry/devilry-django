@@ -1,7 +1,9 @@
 from __future__ import unicode_literals
 
 from django import test
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError
+from django.conf import settings
 
 from model_mommy import mommy
 
@@ -12,6 +14,10 @@ from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 class TestPeriodTag(test.TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_full_clean_tag_cannot_be_blank(self):
+        with self.assertRaises(ValidationError):
+            mommy.make('core.PeriodTag', tag='').full_clean()
 
     def test_displayname_without_prefix(self):
         testperiodtag = mommy.make('core.PeriodTag', tag='a')
@@ -95,4 +101,76 @@ class TestPeriodTag(test.TestCase):
         mommy.make('core.PeriodTag', period=testperiod1, tag='b')
         mommy.make('core.PeriodTag', period=testperiod2, tag='a')
         mommy.make('core.PeriodTag', period=testperiod2, tag='b')
-        self.assertEquals(2, PeriodTag.objects.get_all_distinct_tags().count())
+        distinct_tags = PeriodTag.objects.get_all_distinct_tags()
+        self.assertEquals(2, distinct_tags.count())
+        self.assertEquals('a', distinct_tags[0].tag)
+        self.assertEquals('b', distinct_tags[1].tag)
+
+    def get_tags_for_related_student_user(self):
+        testperiod1 = mommy.make('core.Period')
+        testperiod2 = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.PeriodTag', period=testperiod1, tag='period1_tag1')\
+            .relatedstudents.add(mommy.make('core.RelatedStudent', user=testuser))
+        mommy.make('core.PeriodTag', period=testperiod2, tag='period2_tag1')\
+            .relatedstudents.add(mommy.make('core.RelatedStudent', user=testuser))
+        mommy.make('core.PeriodTag', period=testperiod2, tag='period2_tag2')
+
+        student_tags = PeriodTag.objects.filter_tags_for_related_student_user(user=testuser)
+        self.assertEquals(2, student_tags.count())
+        student_tags_string_list = student_tags.values_list('tag', flat=True)
+        self.assertIn('period1_tag1', student_tags_string_list)
+        self.assertIn('period2_tag1', student_tags_string_list)
+        self.assertNotIn('period2_tag2', student_tags_string_list)
+
+    def get_tags_for_related_student_user_on_period(self):
+        testperiod1 = mommy.make('core.Period')
+        testperiod2 = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.PeriodTag', period=testperiod1, tag='period1_tag')\
+            .relatedstudents.add(mommy.make('core.RelatedStudent', user=testuser))
+        mommy.make('core.PeriodTag', period=testperiod2, tag='period2_tag') \
+            .relatedstudents.add(mommy.make('core.RelatedStudent', user=testuser))
+        period_tags = PeriodTag.objects\
+            .filter_tags_for_related_student_user_on_period(user=testuser, period=testperiod1)
+        self.assertEquals(1, period_tags.count())
+        self.assertEquals('period1_tag', period_tags[0].tag)
+
+    def get_tags_for_related_examiner_user(self):
+        testperiod1 = mommy.make('core.Period')
+        testperiod2 = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.PeriodTag', period=testperiod1, tag='period1_tag1')\
+            .relatedexaminer.add(mommy.make('core.RelatedExaminer', user=testuser))
+        mommy.make('core.PeriodTag', period=testperiod2, tag='period2_tag1')\
+            .relatedexaminers(mommy.make('core.RelatedExaminer', user=testuser))
+        mommy.make('core.PeriodTag', period=testperiod2, tag='period2_tag2')
+
+        examiner_tags = PeriodTag.objects.filter_tags_for_related_examiner_user(user=testuser)
+        self.assertEquals(2, examiner_tags.count())
+        examiner_tags_string_list = examiner_tags.values_list('tag', flat=True)
+        self.assertIn('period1_tag1', examiner_tags_string_list)
+        self.assertIn('period2_tag1', examiner_tags_string_list)
+        self.assertNotIn('period2_tag2', examiner_tags_string_list)
+
+    def get_tags_for_related_examiner_user_on_period(self):
+        testperiod1 = mommy.make('core.Period')
+        testperiod2 = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.PeriodTag', period=testperiod1, tag='period1_tag')\
+            .relatedexaminers.add(mommy.make('core.RelatedExaminer', user=testuser))
+        mommy.make('core.PeriodTag', period=testperiod2, tag='period2_tag') \
+            .relatedexaminers.add(mommy.make('core.RelatedExaminer', user=testuser))
+        period_tags = PeriodTag.objects\
+            .filter_tags_for_related_examiner_user_on_period(user=testuser, period=testperiod1)
+        self.assertEquals(1, period_tags.count())
+        self.assertEquals('period1_tag', period_tags[0].tag)
+
+    def get_all_tags_for_active_periods(self):
+        testperiod1 = mommy.make_recipe('devilry.apps.core.period_active')
+        testperiod2 = mommy.make_recipe('devilry.apps.core.period_old')
+        mommy.make('core.PeriodTag', period=testperiod1, tag='tag_active')
+        mommy.make('core.PeriodTag', period=testperiod2, tag='tag_old')
+        active_periodtags = PeriodTag.objects.get_all_tags_for_active_periods()
+        self.assertEquals(1, active_periodtags.count())
+        self.assertEquals('tag_active', active_periodtags[0].tag)
