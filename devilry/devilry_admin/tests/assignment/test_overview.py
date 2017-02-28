@@ -444,7 +444,7 @@ class TestOverviewInfoBox(TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedStudent', period=assignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertIn(
-            'There are still students who are on the semster, but not on the assignment',
+            'There are still students who are on the semester, but not on the assignment',
             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
         )
         self.assertIn(
@@ -466,7 +466,7 @@ class TestOverviewInfoBox(TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedExaminer', period=assignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertIn(
-            'There are still examiners who are on the semster, but not on the assignment',
+            'There are still examiners who are on the semester, but not on the assignment',
             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
         )
         self.assertIn(

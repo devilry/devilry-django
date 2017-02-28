@@ -57,7 +57,7 @@
                 </p>
             {% elif relatedstudents_count > candidates_count %}
                 <p>
-                <strong>{% trans 'There are still students who are on the semster, but not on the assignment' %}</strong>
+                <strong>{% trans 'There are still students who are on the semester, but not on the assignment' %}</strong>
                 </p>
                 <p>
                     <a href="{% cradmin_instance_url 'create_groups' 'manual-select' %}" class="btn btn-default">
@@ -66,7 +66,7 @@
                 </p>
             {% elif relatedexaminers_count > examiners_count %}
                 <p>
-                <strong>{% trans 'There are still examiners who are on the semster, but not on the assignment' %}</strong>
+                <strong>{% trans 'There are still examiners who are on the semester, but not on the assignment' %}</strong>
                 </p>
                 <p>
                     <a href="{% cradmin_instance_url 'examineroverview' 'INDEX' %}" class="btn btn-default">
