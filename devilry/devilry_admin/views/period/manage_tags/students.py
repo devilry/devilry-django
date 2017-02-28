@@ -1,13 +1,14 @@
-# from __future__ import unicode_literals
-#
-# from django.db import models
-#
-# from django_cradmin import crapp
-# from django_cradmin.crinstance import reverse_cradmin_url
-#
-# from devilry.devilry_admin.views.period.manage_tags import bulk_manage_tags
-# from devilry.apps.core.models import relateduser
-#
+from __future__ import unicode_literals
+
+from django.db import models
+
+from django_cradmin import crapp
+from django_cradmin.crinstance import reverse_cradmin_url
+
+from devilry.devilry_admin.views.period.manage_tags import bulk_manage_tags
+from devilry.apps.core.models import relateduser
+from devilry.apps.core.models import PeriodTag
+
 #
 # class GetQuerySetForRoleMixin(object):
 #     model = relateduser.RelatedStudent
@@ -37,15 +38,15 @@
 #             .get_all_distinct_tags_in_period(period=period)
 #
 #
-# class SelectMethod(bulk_manage_tags.SelectMethodView):
-#     """
-#     Select how to manage tags.
-#     """
-#     def get_context_data(self, **kwargs):
-#         context_data = super(SelectMethod, self).get_context_data(**kwargs)
-#         context_data['relateduser_type'] = 'student'
-#         return context_data
-#
+class SelectMethod(bulk_manage_tags.SelectMethodView):
+    """
+    Select how to manage tags.
+    """
+    def get_context_data(self, **kwargs):
+        context_data = super(SelectMethod, self).get_context_data(**kwargs)
+        context_data['relateduser_type'] = 'student'
+        return context_data
+
 #
 # class TagListItemFrame(bulk_manage_tags.TagItemFrame):
 #     def get_url(self):

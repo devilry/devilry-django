@@ -21,7 +21,7 @@ from devilry.devilry_cradmin import devilry_listbuilder
 
 
 class SelectMethodView(TemplateView):
-    template_name = "devilry_admin/period/manage_tags/select-method.django.html"
+    template_name = "devilry_admin/period/manage_tags/relatedusers/select-method.django.html"
 
 
 class TagItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):

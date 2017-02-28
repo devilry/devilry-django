@@ -20,8 +20,7 @@ class PeriodTagQuerySet(models.QuerySet):
         Returns:
             (QuerySet): QuerySet of :class:`.PeriodTag`.
         """
-        return self.order_by('prefix', 'tag')\
-            .distinct('prefix', 'tag')
+        return self.distinct('prefix', 'tag')
 
     def get_all_tags_for_active_periods(self):
         """
@@ -32,8 +31,7 @@ class PeriodTagQuerySet(models.QuerySet):
         """
         now = timezone.now()
         return self.filter(period__start_time__lt=now,
-                           period__end_time__gt=now)\
-            .order_by('prefix', 'tag')
+                           period__end_time__gt=now)
 
     def get_all_tags_on_period(self, period):
         """
@@ -46,8 +44,7 @@ class PeriodTagQuerySet(models.QuerySet):
         Returns:
             (QuerySet): QuerySet of :class:`.PeriodTag`.
         """
-        return self.filter(period=period).\
-            order_by('prefix', 'tag')\
+        return self.filter(period=period)\
             .distinct()
 
     def get_all_editable_tags(self):
@@ -59,6 +56,19 @@ class PeriodTagQuerySet(models.QuerySet):
             (QuerySet): QuerySet of :class:`.PeriodTag`.
         """
         return self.filter(prefix='')
+
+    def filter_all_editable_tags_on_period(self, period):
+        """
+        Get a QuerySet of all :obj:`~.PeriodTag`s on ``period`` that are editable.
+        I.e, :attr:`.PeriodTag.prefix` is blank.
+
+        Args:
+            period: Get tags for.
+
+        Returns:
+            (QuerySet): QuerySet of :class:`.PeriodTag`.
+        """
+        return self.filter(period=period, prefix='')
 
     def get_all_visible_tags(self):
         """
@@ -89,8 +99,7 @@ class PeriodTagQuerySet(models.QuerySet):
         Returns:
             (QuerySet): QuerySet of :class:`.PeriodTag`.
         """
-        return self.filter(relatedstudents__user=user)\
-            .order_by('prefix', 'tag')
+        return self.filter(relatedstudents__user=user)
 
     def filter_tags_for_related_student_user_on_period(self, user, period):
         """
@@ -117,8 +126,7 @@ class PeriodTagQuerySet(models.QuerySet):
         Returns:
             (QuerySet): QuerySet of :class:`.PeriodTag`.
         """
-        return self.filter(relatedexaminers__user=user)\
-            .order_by('prefix', 'tag')
+        return self.filter(relatedexaminers__user=user)
 
     def filter_tags_for_related_examiner_user_on_period(self, user, period):
         """
@@ -144,6 +152,7 @@ class PeriodTag(models.Model):
     objects = PeriodTagQuerySet.as_manager()
 
     class Meta:
+        ordering = ['prefix', 'tag']
         unique_together = [
             ('period', 'prefix', 'tag')
         ]

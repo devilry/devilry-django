@@ -174,3 +174,11 @@ class TestPeriodTag(test.TestCase):
         active_periodtags = PeriodTag.objects.get_all_tags_for_active_periods()
         self.assertEquals(1, active_periodtags.count())
         self.assertEquals('tag_active', active_periodtags[0].tag)
+
+    def test_relatedexaminers_on_tag(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', period=testperiod)
+        mommy.make('core.RelatedStudent', period=testperiod)
+        mommy.make('core.RelatedStudent', period=testperiod)
+        testtag = mommy.make('core.PeriodTag', period=testperiod)
+        print testtag.relatedstudents.all()

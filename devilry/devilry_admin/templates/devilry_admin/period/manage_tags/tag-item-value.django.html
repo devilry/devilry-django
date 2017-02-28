@@ -1,0 +1,31 @@
+{% extends 'django_cradmin/viewhelpers/listbuilder/itemvalue/edit-delete.django.html' %}
+
+{% load i18n %}
+
+{% block description %}
+{% endblock %}
+
+{% block buttons %}
+
+    <div class="devilry-dashboard-container-withtopmargin">
+        <p>
+            <a href="#" class="btn btn-default">
+                {% trans 'Add students' %}
+            </a>
+            <a href="#" class="btn btn-default">
+                {% trans 'Add examiners' %}
+            </a>
+        </p>
+    </div>
+    <div class="devilry-dashboard-container-withtopmargin">
+        <p>
+            <a href="#" class="btn btn-default">
+                {% trans 'Remove students' %}
+            </a>
+            <a href="#" class="btn btn-default">
+                {% trans 'Remove examiners' %}
+            </a>
+        </p>
+    </div>
+    {{ block.super }}
+{% endblock buttons %}

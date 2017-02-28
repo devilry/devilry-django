@@ -347,3 +347,11 @@ def devilry_comment_summary(group):
     return {
         'group': group
     }
+
+
+@register.inclusion_tag('devilry_core/templatetags/period-tags-on-period.django.html')
+def devilry_period_tags_on_period(period, period_tags):
+    return {
+        'period': period,
+        'period_tags': period_tags
+    }
