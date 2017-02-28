@@ -1,7 +1,9 @@
 from __future__ import unicode_literals
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy
 
 from devilry.apps.core.models.relateduser import RelatedStudent, RelatedExaminer
 from devilry.apps.core.models.period import Period
@@ -183,3 +185,9 @@ class PeriodTag(models.Model):
         if self.prefix == '':
             return '{} on {}'.format(self.tag, self.period)
         return '{}:{} on {}'.format(self.prefix, self.tag, self.period)
+
+    def clean(self):
+        if len(self.tag) == 0:
+            raise ValidationError({
+                'tag': ugettext_lazy('Field cannot be blank.')
+            })
