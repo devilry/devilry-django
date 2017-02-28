@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.utils import timezone
 
 from devilry.apps.core.models.relateduser import RelatedStudent, RelatedExaminer
 from devilry.apps.core.models.period import Period
@@ -11,8 +12,26 @@ class PeriodTagQuerySet(models.QuerySet):
     Model manager for :class:`.PeriodTag`.
     """
     def get_all_distinct_tags(self):
+        """
+        Get all distinct tags across periods.
+
+        Returns:
+            (QuerySet): QuerySet of :class:`.PeriodTag`.
+        """
         return self.order_by('prefix', 'tag')\
             .distinct('prefix', 'tag')
+
+    def get_all_tags_for_active_periods(self):
+        """
+        Get all tags for periods that are currently active.
+
+        Returns:
+            (QuerySet): QuerySet of :class:`.PeriodTag`.
+        """
+        now = timezone.now()
+        return self.filter(period__start_time__lt=now,
+                           period__end_time__gt=now)\
+            .order_by('prefix', 'tag')
 
     def get_all_tags_on_period(self, period):
         """
@@ -23,7 +42,7 @@ class PeriodTagQuerySet(models.QuerySet):
             period: Get distinct tags for.
 
         Returns:
-            (QuerySet): :class:`.PeriodTag`.
+            (QuerySet): QuerySet of :class:`.PeriodTag`.
         """
         return self.filter(period=period).\
             order_by('prefix', 'tag')\
@@ -35,28 +54,90 @@ class PeriodTagQuerySet(models.QuerySet):
         I.e, :attr:`.PeriodTag.prefix` is blank.
 
         Returns:
-            (QuerySet): :class:`.PeriodTag`.
+            (QuerySet): QuerySet of :class:`.PeriodTag`.
         """
         return self.filter(prefix='')
 
-    def get_all_visible_tags_only(self):
+    def get_all_visible_tags(self):
+        """
+        Get a QuerySet of all :obj:`.PeriodTag`s with :class:`.PeriodTag.is_hidden=False`
+
+        Returns:
+            (QuerySet): QuerySet of :class:`.PeriodTag`.
+        """
         return self.filter(is_hidden=False)
 
-    def get_all_hidden_tags_only(self):
+    def get_all_hidden_tags(self):
         """
         Get a QuerySet of all :obj:`.PeriodTag`s with :class:`.PeriodTag.is_hidden=True`
 
         Returns:
-            (QuerySet): :class:`.PeriodTag`.
+            (QuerySet): QuerySet of :class:`.PeriodTag`.
         """
         return self.filter(is_hidden=True)
+
+    def filter_tags_for_related_student_user(self, user):
+        """
+        Get all tags where the user is registered as
+        :class:`~.devilry.apps.core.models.relateduser.RelatedStudent`.
+
+        Args:
+            user: :class:`~.devilry.account.models.User` instance.
+
+        Returns:
+            (QuerySet): QuerySet of :class:`.PeriodTag`.
+        """
+        return self.filter(relatedstudents__user=user)\
+            .order_by('prefix', 'tag')
+
+    def filter_tags_for_related_student_user_on_period(self, user, period):
+        """
+        Same as :func:`.filter_tags_for_related_student` but also filters on period.
+
+        Args:
+            user: :class:`~.devilry.account.models.User` instance.
+            period: :class:`~.devilry.apps.core.models.period.Period` instance.
+
+        Returns:
+            (QuerySet): QuerySet of :class:`.PeriodTag`.
+        """
+        return self.filter_tags_for_related_student_user(user=user)\
+            .filter(period=period)
+
+    def filter_tags_for_related_examiner_user(self, user):
+        """
+        Get all tags where the user is registered as
+        :class:`~.devilry.apps.core.models.relateduser.RelatedExaminer`.
+
+        Args:
+            user: :class:`~.devilry.account.models.User` instance.
+
+        Returns:
+            (QuerySet): QuerySet of :class:`.PeriodTag`.
+        """
+        return self.filter(relatedexaminers__user=user)\
+            .order_by('prefix', 'tag')
+
+    def filter_tags_for_related_examiner_user_on_period(self, user, period):
+        """
+        Same as :func:`.filter_tags_for_related_examiner` but also filters on period.
+
+        Args:
+            user: :class:`~.devilry.account.models.User` instance.
+            period: :class:`~.devilry.apps.core.models.period.Period` instance.
+
+        Returns:
+            (QuerySet): QuerySet of :class:`.PeriodTag`.
+        """
+        return self.filter_tags_for_related_examiner_user(user=user)\
+            .filter(period=period)
 
 
 class PeriodTag(models.Model):
     """
     A :class:`.PeriodTag` represents a form of grouping on a period for
     :class:`~.devilry.app.core.models.relateduser.RelatedStudent`s and
-    :class:`~.devilry.app.core.models.relateduser.RelatedExaminer`s
+    :class:`~.devilry.app.core.models.relateduser.RelatedExaminer`s.
     """
     objects = PeriodTagQuerySet.as_manager()
 
