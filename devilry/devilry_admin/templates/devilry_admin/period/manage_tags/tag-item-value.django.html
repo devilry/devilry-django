@@ -1,6 +1,7 @@
 {% extends 'django_cradmin/viewhelpers/listbuilder/itemvalue/edit-delete.django.html' %}
 
 {% load i18n %}
+{% load cradmin_tags %}
 
 {% block description %}
 {% endblock %}
@@ -9,20 +10,28 @@
 
     <div class="devilry-dashboard-container-withtopmargin">
         <p>
-            <a href="#" class="btn btn-default">
+            <a href="{% cradmin_instance_url appname='manage_tags' viewname='add_students' tag=me.value.tag %}"
+                    id="devilry_admin_period_manage_tags_add_students_{{ me.value.tag }}"
+                    class="btn btn-default">
                 {% trans 'Add students' %}
             </a>
-            <a href="#" class="btn btn-default">
-                {% trans 'Add examiners' %}
+            <a href="{% cradmin_instance_url appname='manage_tags' viewname='remove_students' tag=me.value.tag %}"
+                    id="devilry_admin_period_manage_tags_remove_students_{{ me.value.tag }}"
+                    class="btn btn-default">
+                {% trans 'Remove students' %}
             </a>
         </p>
     </div>
     <div class="devilry-dashboard-container-withtopmargin">
         <p>
-            <a href="#" class="btn btn-default">
-                {% trans 'Remove students' %}
+            <a href="{% cradmin_instance_url appname='manage_tags' viewname='add_examiners' tag=me.value.tag %}"
+                    id="devilry_admin_period_manage_tags_add_examiners_{{ me.value.tag }}"
+                    class="btn btn-default">
+                {% trans 'Add examiners' %}
             </a>
-            <a href="#" class="btn btn-default">
+            <a href="{% cradmin_instance_url appname='manage_tags' viewname='remove_examiners' tag=me.value.tag %}"
+                    id="devilry_admin_period_manage_tags_remove_examiners_{{ me.value.tag }}"
+                    class="btn btn-default">
                 {% trans 'Remove examiners' %}
             </a>
         </p>

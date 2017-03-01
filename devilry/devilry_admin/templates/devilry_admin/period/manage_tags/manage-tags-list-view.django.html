@@ -21,20 +21,16 @@
         </span>
         <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
     </a>
-    <h1>
-        {% blocktrans %}
-            Tags on semester
-        {% endblocktrans %}
-    </h1>
+    {{ block.super }}
 {% endblock pageheader-inner %}
 
 {% block content %}
     <div class="container">
-        <p id="devilry_admin_period_examiners_overview_buttonbar"
+        <p id="devilry_admin_period_manage_tags_overview_buttonbar"
                 class="devilry-buttonbar">
-            <a id="devilry_admin_period_manage_tags_overview_button_add_tag"
-                    class="btn btn-default"
-                    href="{% cradmin_appurl viewname='add_tag' %}">
+            <a href="{% cradmin_instance_url appname='manage_tags' viewname='add_tag' %}"
+                    id="devilry_admin_period_manage_tags_overview_button_add_tag"
+                    class="btn btn-primary">
                 {% trans "Add tag" %}
             </a>
         </p>

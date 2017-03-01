@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.http import HttpResponseRedirect
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django.views.generic import TemplateView
 from django.views.generic import View
 from django_cradmin import crapp
@@ -17,8 +17,11 @@ from django_cradmin.viewhelpers import formbase
 from django_cradmin.viewhelpers import update, delete
 from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers.listbuilder import itemvalue
+from django_cradmin.viewhelpers import multiselect2view
+from django_cradmin.viewhelpers import multiselect2
 
 from devilry.apps.core.models import PeriodTag
+from devilry.apps.core.models import RelatedStudent, RelatedExaminer
 
 
 class PeriodTagForm(forms.Form):
@@ -76,6 +79,10 @@ class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.Vi
     template_name = 'devilry_admin/period/manage_tags/manage-tags-list-view.django.html'
     model = PeriodTag
     value_renderer_class = TagItemValue
+    paginate_by = 10
+
+    def get_pagetitle(self):
+        return ugettext_lazy('Tags on {}'.format(self.request.cradmin_role.parentnode))
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
@@ -137,6 +144,7 @@ class AddTagsView(formbase.FormView):
         tags_string_list = form.get_added_tags_list()
         excluded_tags = PeriodTag.objects\
             .filter_all_editable_tags_on_period(period=self.request.cradmin_role)\
+            .filter(tag__in=tags_string_list)\
             .values_list('tag', flat=True)
 
         # Check if all tags to be added exists.
@@ -218,21 +226,210 @@ class DeleteTagView(EditDeleteViewMixin, delete.DeleteView):
         return periodtag.tag
 
 
+class SelectedRelatedUsersForm(forms.Form):
+    invalid_item_selected_message = 'Invalid relateduser was selected'
+    selected_items = forms.ModelMultipleChoiceField(
+        queryset=None,
+        error_messages={
+            'invalid_choice': invalid_item_selected_message
+        }
+    )
+
+    def __init__(self, *args, **kwargs):
+        relatedusers_queryset = kwargs.pop('relatedusers_queryset')
+        super(SelectedRelatedUsersForm, self).__init__(*args, **kwargs)
+        self.fields['selected_items'].queryset = relatedusers_queryset
+
+
+class SelectableItemValue(multiselect2.listbuilder_itemvalues.ItemValue):
+    """
+    Selectable item.
+    """
+    valuealias = 'relateduser'
+
+    def get_title(self):
+        return self.relateduser.user.shortname
+
+
+class SelectedItemTargetRenderer(multiselect2.target_renderer.Target):
+    def get_with_items_title(self):
+        return pgettext_lazy('admin multiselect2_relateduser',
+                             'Selected users')
+
+    def get_without_items_text(self):
+        return pgettext_lazy('admin multiselect2_relateduser',
+                             'No related users selected')
+
+
+class BaseRelatedUserMultiSelectView(multiselect2view.ListbuilderView):
+    """
+    Base multiselect view for :class:`~.devilry.apps.core.models.relateduser.RelatedExaminer`s and
+    :class:`~.devilry.apps.core.models.relateduser.RelatedStudents`s.
+
+    Attributes:
+        tag_name(str): the specific tag of a :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
+    """
+    template_name = 'devilry_admin/period/manage_tags/base-multiselect-view.html'
+    value_renderer_class = SelectableItemValue
+    form_class = SelectedRelatedUsersForm
+    tag_name = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.tag_name = kwargs.get('tag')
+        return super(BaseRelatedUserMultiSelectView, self).dispatch(request, *args, **kwargs)
+
+    def get_target_renderer_class(self):
+        return SelectedItemTargetRenderer
+
+    def get_period_tag(self):
+        period = self.request.cradmin_role
+        return PeriodTag.objects.get(period=period, tag=self.tag_name)
+
+    def get_queryset_for_role(self, role):
+        """
+        Get all relatedstudents for the period that are not already registered on the
+        tag provided with the url.
+        """
+        return self.model.objects.filter(period=role)
+
+    def get_form_kwargs(self):
+        period = self.request.cradmin_role
+        kwargs = super(BaseRelatedUserMultiSelectView, self).get_form_kwargs()
+        kwargs['relatedusers_queryset'] = self.get_queryset_for_role(role=period)
+        return kwargs
+
+    def get_success_url(self):
+        return self.request.cradmin_app.reverse_appindexurl()
+
+
+class AddRelatedUserToTagMultiSelectView(BaseRelatedUserMultiSelectView):
+    """
+    Add related users to a :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
+    """
+    def get_queryset_for_role(self, role):
+        return super(AddRelatedUserToTagMultiSelectView, self)\
+            .get_queryset_for_role(role=role)\
+            .exclude(periodtag__tag=self.tag_name)
+
+    def add_related_users(self, period_tag, related_users):
+        with transaction.atomic():
+            for related_user in related_users:
+                related_user.periodtag_set.add(period_tag)
+
+    def form_valid(self, form):
+        period_tag = self.get_period_tag()
+        related_users = form.cleaned_data['selected_items']
+        self.add_related_users(period_tag=period_tag, related_users=related_users)
+        return super(AddRelatedUserToTagMultiSelectView, self).form_valid(form=form)
+    
+
+class RemoveRelatedUserFromTagMultiSelectView(BaseRelatedUserMultiSelectView):
+    """
+    Remove related users from a :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
+    """
+    def get_queryset_for_role(self, role):
+        return super(RemoveRelatedUserFromTagMultiSelectView, self)\
+            .get_queryset_for_role(role=role)\
+            .filter(periodtag__tag=self.tag_name)
+
+    def remove_related_users(self, period_tag, related_users):
+        with transaction.atomic():
+            for related_user in related_users:
+                related_user.periodtag_set.remove(period_tag)
+
+    def form_valid(self, form):
+        period_tag = self.get_period_tag()
+        related_users = form.cleaned_data['selected_items']
+        self.remove_related_users(period_tag=period_tag, related_users=related_users)
+        return super(RemoveRelatedUserFromTagMultiSelectView, self).form_valid(form=form)
+
+
+class RelatedExaminerAddView(AddRelatedUserToTagMultiSelectView):
+    """
+    Multi-select add view for :class:`~.devilry.apps.core.models.relateduser.RelatedExaminer`.
+    """
+    model = RelatedExaminer
+
+    def get_pagetitle(self):
+        return ugettext_lazy('Add examiners to tag {}'.format(self.tag_name))
+
+
+class RelatedExaminerRemoveView(RemoveRelatedUserFromTagMultiSelectView):
+    """
+    Multi-select remove view for :class:`~.devilry.apps.core.models.relateduser.RelatedExaminer`.
+    """
+    model = RelatedExaminer
+
+    def get_pagetitle(self):
+        return ugettext_lazy('Remove examiners from tag {}'.format(self.tag_name))
+
+
+class RelatedStudentAddView(AddRelatedUserToTagMultiSelectView):
+    """
+    Multi-select add view for :class:`~.devilry.apps.core.models.relateduser.RelatedStudent`.
+    """
+    model = RelatedStudent
+
+    def get_pagetitle(self):
+        return ugettext_lazy('Add students to tag {}'.format(self.tag_name))
+
+
+class RelatedStudentRemoveView(RemoveRelatedUserFromTagMultiSelectView):
+    """
+    Multi-select remove view for :class:`~.devilry.apps.core.models.relateduser.RelatedStudent`.
+    """
+    model = RelatedStudent
+
+    def get_pagetitle(self):
+        return ugettext_lazy('Remove students from tag {}'.format(self.tag_name))
+
+
 class App(crapp.App):
-    appurls = [
-        crapp.Url(r'^$',
-                  TagListBuilderListView.as_view(),
-                  name=crapp.INDEXVIEW_NAME),
-        crapp.Url(r'^filter/(?P<filters_string>.+)?$',
-                  TagListBuilderListView.as_view(),
-                  name='filter'),
-        crapp.Url(r'^add$',
-                  AddTagsView.as_view(),
-                  name='add_tag'),
-        crapp.Url(r'^edit/(?P<pk>\d+)$',
-                  EditTagView.as_view(),
-                  name='edit'),
-        crapp.Url(r'^delete/(?P<pk>\d+)$',
-                  DeleteTagView.as_view(),
-                  name='delete')
-    ]
+
+    @classmethod
+    def get_related_examiner_add_view(cls):
+        return RelatedExaminerAddView
+
+    @classmethod
+    def get_related_examiner_remove_view(cls):
+        return RelatedExaminerRemoveView
+
+    @classmethod
+    def get_related_student_add_view(cls):
+        return RelatedStudentAddView
+
+    @classmethod
+    def get_related_student_remove_view(cls):
+        return RelatedStudentRemoveView
+
+    @classmethod
+    def get_appurls(cls):
+        return [
+            crapp.Url(r'^$',
+                      TagListBuilderListView.as_view(),
+                      name=crapp.INDEXVIEW_NAME),
+            crapp.Url(r'^filter/(?P<filters_string>.+)?$',
+                      TagListBuilderListView.as_view(),
+                      name='filter'),
+            crapp.Url(r'^add$',
+                      AddTagsView.as_view(),
+                      name='add_tag'),
+            crapp.Url(r'^edit/(?P<pk>\d+)$',
+                      EditTagView.as_view(),
+                      name='edit'),
+            crapp.Url(r'^delete/(?P<pk>\d+)$',
+                      DeleteTagView.as_view(),
+                      name='delete'),
+            crapp.Url('^add-examiners/(?P<tag>[\w-]+)$',
+                      cls.get_related_examiner_add_view().as_view(),
+                      name='add_examiners'),
+            crapp.Url('^remove-examiners/(?P<tag>[\w-]+)$',
+                      cls.get_related_examiner_remove_view().as_view(),
+                      name='remove_examiners'),
+            crapp.Url('^add-students/(?P<tag>[\w-]+)$',
+                      cls.get_related_student_add_view().as_view(),
+                      name='add_students'),
+            crapp.Url('^remove-students/(?P<tag>[\w-]+)$',
+                      cls.get_related_student_remove_view().as_view(),
+                      name='remove_students')
+        ]

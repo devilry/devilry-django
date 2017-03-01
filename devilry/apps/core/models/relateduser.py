@@ -1,4 +1,5 @@
 import re
+import warnings
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -11,6 +12,7 @@ from abstract_is_admin import AbstractIsAdmin
 from devilry.devilry_account.models import User
 from node import Node
 from period import Period
+import period_tag
 
 
 class BulkCreateFromEmailsResult(object):
@@ -366,19 +368,24 @@ class RelatedStudentQuerySet(models.QuerySet):
         queryset = self.exclude(models.Q(candidate_id='') | models.Q(candidate_id=None))
         return dict(queryset.values_list('user_id', 'candidate_id'))
 
-    # def prefetch_syncsystemtag_objects(self):
-    #     """
-    #     Prefetch :class:`.RelatedStudentSyncSystemTag` objects in the
-    #     ``syncsystemtag_objects`` attribute.
-    #
-    #     The ``syncsystemtag_objects`` attribute is a ``list`` of
-    #     :class:`.RelatedStudentSyncSystemTag` objects ordered by
-    #     ``tag`` in ascending order.
-    #     """
-    #     return self.prefetch_related(
-    #             models.Prefetch('relatedstudenttag_set',
-    #                             queryset=RelatedStudentTag.objects.order_by('tag'),
-    #                             to_attr='syncsystemtag_objects'))
+    def prefetch_syncsystemtag_objects(self):
+        """
+        Prefetch :class:`.RelatedStudentSyncSystemTag` objects in the
+        ``syncsystemtag_objects`` attribute.
+
+        The ``syncsystemtag_objects`` attribute is a ``list`` of
+        :class:`.RelatedStudentSyncSystemTag` objects ordered by
+        ``tag`` in ascending order.
+        """
+        warnings.warn('deprecated, function up to date but will be refactored', DeprecationWarning)
+        # return self.prefetch_related(
+        #     models.Prefetch('relatedstudenttag_set',
+        #                     queryset=RelatedStudentTag.objects.order_by('tag'),
+        #                     to_attr='syncsystemtag_objects'))
+        return self.prefetch_related(
+            models.Prefetch('periodtag_set',
+                            queryset=period_tag.PeriodTag.objects.order_by('tag'),
+                            to_attr='syncsystemtag_objects'))
 
 
 class RelatedStudentManager(AbstractRelatedUserManager):

@@ -12,8 +12,6 @@ from devilry.devilry_admin.views.period import students
 from devilry.devilry_admin.views.period import edit
 from devilry.devilry_admin.views.period import overview_all_results
 from devilry.devilry_qualifiesforexam import cradmin_app as qualifiesforexam
-from devilry.devilry_admin.views.period.manage_tags import students as manage_student_tags
-from devilry.devilry_admin.views.period.manage_tags import examiners as manage_examiner_tags
 from devilry.devilry_admin.views.period.manage_tags import manage_tags
 
 
@@ -39,8 +37,6 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
         ('overview_all_results', overview_all_results.App),
         ('qualifiesforexam', qualifiesforexam.App),
         ('manage_tags', manage_tags.App),
-        # ('manage_tags_students', manage_student_tags.App),
-        # ('manage_tags_examiners', manage_examiner_tags.App),
     ]
     id = 'devilry_admin_periodadmin'
     rolefrontpage_appname = 'overview'
