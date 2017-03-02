@@ -8,7 +8,6 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy, pgettext_lazy
-from django.views.generic import TemplateView
 from django.views.generic import View
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url

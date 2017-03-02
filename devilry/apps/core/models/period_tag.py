@@ -13,7 +13,7 @@ class PeriodTagQuerySet(models.QuerySet):
     """
     Model manager for :class:`.PeriodTag`.
     """
-    def get_all_distinct_tags(self):
+    def filter_distinct_tags(self):
         """
         Get all distinct tags across periods.
 
@@ -22,7 +22,7 @@ class PeriodTagQuerySet(models.QuerySet):
         """
         return self.distinct('prefix', 'tag')
 
-    def get_all_tags_for_active_periods(self):
+    def filter_tags_for_active_periods(self):
         """
         Get all tags for periods that are currently active.
 
@@ -33,7 +33,7 @@ class PeriodTagQuerySet(models.QuerySet):
         return self.filter(period__start_time__lt=now,
                            period__end_time__gt=now)
 
-    def get_all_tags_on_period(self, period):
+    def filter_tags_on_period(self, period):
         """
         Get a QuerySet of all distinct :obj:`~.PeriodTag`s on ``period``.
         Orders by :attr.PeriodTag.prefix` and :attr:`~.PeriodTag.tag`
@@ -47,7 +47,7 @@ class PeriodTagQuerySet(models.QuerySet):
         return self.filter(period=period)\
             .distinct()
 
-    def get_all_editable_tags(self):
+    def filter_editable_tags(self):
         """
         Get a QuerySet of all :obj:`~.PeriodTag`s that are editable.
         I.e, :attr:`.PeriodTag.prefix` is blank.
@@ -57,7 +57,7 @@ class PeriodTagQuerySet(models.QuerySet):
         """
         return self.filter(prefix='')
 
-    def filter_all_editable_tags_on_period(self, period):
+    def filter_editable_tags_on_period(self, period):
         """
         Get a QuerySet of all :obj:`~.PeriodTag`s on ``period`` that are editable.
         I.e, :attr:`.PeriodTag.prefix` is blank.
@@ -70,7 +70,7 @@ class PeriodTagQuerySet(models.QuerySet):
         """
         return self.filter(period=period, prefix='')
 
-    def get_all_visible_tags(self):
+    def filter_visible_tags(self):
         """
         Get a QuerySet of all :obj:`.PeriodTag`s with :class:`.PeriodTag.is_hidden=False`
 
@@ -79,7 +79,7 @@ class PeriodTagQuerySet(models.QuerySet):
         """
         return self.filter(is_hidden=False)
 
-    def get_all_hidden_tags(self):
+    def filter_hidden_tags(self):
         """
         Get a QuerySet of all :obj:`.PeriodTag`s with :class:`.PeriodTag.is_hidden=True`
 
@@ -141,6 +141,19 @@ class PeriodTagQuerySet(models.QuerySet):
         """
         return self.filter_tags_for_related_examiner_user(user=user)\
             .filter(period=period)
+
+    def tags_string_list_on_period(self, period):
+        """
+        Get a list of all tags as strings for the period.
+
+        Args:
+            period: :class:`~.devilry.apps.core.models.period.Period` instance.
+
+        Returns:
+            (list): List of tag-strings.
+        """
+        tags = self.filter(period=period)
+        return [tag.displayname for tag in tags]
 
 
 class PeriodTag(models.Model):

@@ -101,6 +101,18 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
             'Remove examiners'
         )
 
+    def test_query_count(self):
+        testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.PeriodTag', period=testperiod)
+        mommy.make('core.PeriodTag', period=testperiod)
+        mommy.make('core.PeriodTag', period=testperiod)
+        with self.assertNumQueries(2):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod,
+                requestuser=testuser
+            )
+
 
 class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = manage_tags.AddTagsView

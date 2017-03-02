@@ -39,12 +39,28 @@ class TestPeriodTag(test.TestCase):
         with self.assertRaises(IntegrityError):
             mommy.make('core.PeriodTag', period=testperiod, prefix='a', tag='b')
 
-    def test_get_all_editable_tags(self):
+    def test_filter_editable_tags(self):
         mommy.make('core.PeriodTag')
         mommy.make('core.PeriodTag')
         mommy.make('core.PeriodTag', prefix='a')
         mommy.make('core.PeriodTag', prefix='b')
-        self.assertEquals(2, PeriodTag.objects.get_all_editable_tags().count())
+        self.assertEquals(2, PeriodTag.objects.filter_editable_tags().count())
+
+    def test_filter_editable_tags_on_period(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.PeriodTag', period=testperiod)
+        mommy.make('core.PeriodTag', period=testperiod)
+        mommy.make('core.PeriodTag', period=testperiod, prefix='a')
+        mommy.make('core.PeriodTag', period=testperiod, prefix='b')
+        self.assertEquals(2, PeriodTag.objects.filter_editable_tags_on_period(period=testperiod).count())
+
+    def test_filter_tags_string_list_on_period(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.PeriodTag', period=testperiod, prefix='prefix', tag='a')
+        mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        mommy.make('core.PeriodTag', period=testperiod, tag='b')
+        self.assertListEqual(['a', 'b', 'prefix:a'],
+                             PeriodTag.objects.tags_string_list_on_period(period=testperiod))
 
     def test_auto_created_datetime(self):
         testperiodtag = mommy.make('core.PeriodTag')
@@ -87,21 +103,21 @@ class TestPeriodTag(test.TestCase):
         self.assertEquals(3, PeriodTag.objects.get(id=testperiodtag.id).relatedstudents.count())
         self.assertEquals(3, PeriodTag.objects.get(id=testperiodtag.id).relatedexaminers.count())
 
-    def test_get_all_tags_on_period(self):
+    def test_filter_tags_on_period(self):
         testperiod = mommy.make('core.Period')
         mommy.make('core.PeriodTag', period=testperiod, tag='a')
         mommy.make('core.PeriodTag', period=testperiod, tag='b')
         mommy.make('core.PeriodTag', period=testperiod, tag='c')
-        self.assertEquals(3, PeriodTag.objects.get_all_tags_on_period(period=testperiod).count())
+        self.assertEquals(3, PeriodTag.objects.filter_tags_on_period(period=testperiod).count())
 
-    def test_get_all_distinct_tags(self):
+    def test_filter_distinct_tags(self):
         testperiod1 = mommy.make('core.Period')
         testperiod2 = mommy.make('core.Period')
         mommy.make('core.PeriodTag', period=testperiod1, tag='a')
         mommy.make('core.PeriodTag', period=testperiod1, tag='b')
         mommy.make('core.PeriodTag', period=testperiod2, tag='a')
         mommy.make('core.PeriodTag', period=testperiod2, tag='b')
-        distinct_tags = PeriodTag.objects.get_all_distinct_tags()
+        distinct_tags = PeriodTag.objects.filter_distinct_tags()
         self.assertEquals(2, distinct_tags.count())
         self.assertEquals('a', distinct_tags[0].tag)
         self.assertEquals('b', distinct_tags[1].tag)
