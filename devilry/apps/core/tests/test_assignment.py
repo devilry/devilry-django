@@ -230,22 +230,43 @@ class TestAssignment(TestCase):
         testassignment = mommy.make('core.Assignment')
         testassignment.setup_examiners_by_relateduser_syncsystem_tags()
 
+    # def test_setup_examiners_by_relateduser_syncsystem_tags_simple(self):
+    #     testperiod = mommy.make('core.Period')
+    #
+    #     examiner1 = mommy.make(settings.AUTH_USER_MODEL, shortname='examiner1')
+    #     mommy.make('core.RelatedExaminerTag',
+    #                relatedexaminer__period=testperiod,
+    #                relatedexaminer__user=examiner1,
+    #                tag='group1')
+    #
+    #     student1 = mommy.make(settings.AUTH_USER_MODEL)
+    #     relatedstudent1 = mommy.make('core.RelatedStudent',
+    #                                  user=student1,
+    #                                  period=testperiod)
+    #     mommy.make('core.RelatedStudentTag',
+    #                relatedstudent=relatedstudent1,
+    #                tag='group1')
+    #
+    #     testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+    #     group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    #     mommy.make('core.Candidate', assignment_group=group1,
+    #                relatedstudent=relatedstudent1)
+    #
+    #     testassignment.setup_examiners_by_relateduser_syncsystem_tags()
+    #     self.assertEqual(group1.examiners.count(), 1)
+    #     self.assertTrue(group1.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
+
     def test_setup_examiners_by_relateduser_syncsystem_tags_simple(self):
         testperiod = mommy.make('core.Period')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod)
 
         examiner1 = mommy.make(settings.AUTH_USER_MODEL, shortname='examiner1')
-        mommy.make('core.RelatedExaminerTag',
-                   relatedexaminer__period=testperiod,
-                   relatedexaminer__user=examiner1,
-                   tag='group1')
+        testperiodtag.relatedexaminers.add(
+            mommy.make('core.RelatedExaminer', period=testperiod, user=examiner1))
 
         student1 = mommy.make(settings.AUTH_USER_MODEL)
-        relatedstudent1 = mommy.make('core.RelatedStudent',
-                                     user=student1,
-                                     period=testperiod)
-        mommy.make('core.RelatedStudentTag',
-                   relatedstudent=relatedstudent1,
-                   tag='group1')
+        relatedstudent1 = mommy.make('core.RelatedStudent', period=testperiod, user=student1)
+        testperiodtag.relatedstudents.add(relatedstudent1)
 
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -256,23 +277,49 @@ class TestAssignment(TestCase):
         self.assertEqual(group1.examiners.count(), 1)
         self.assertTrue(group1.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
 
+    # def test_setup_examiners_by_relateduser_syncsystem_tags_exclude_existing_examinerobjects(self):
+    #     testperiod = mommy.make('core.Period')
+    #
+    #     examiner1 = mommy.make(settings.AUTH_USER_MODEL, shortname='examiner1')
+    #     relatedexaminer1 = mommy.make('core.RelatedExaminer', user=examiner1)
+    #     mommy.make('core.RelatedExaminerTag',
+    #                relatedexaminer__period=testperiod,
+    #                relatedexaminer=relatedexaminer1,
+    #                tag='group1')
+    #
+    #     student1 = mommy.make(settings.AUTH_USER_MODEL)
+    #     relatedstudent1 = mommy.make('core.RelatedStudent',
+    #                                  user=student1,
+    #                                  period=testperiod)
+    #     mommy.make('core.RelatedStudentTag',
+    #                relatedstudent=relatedstudent1,
+    #                tag='group1')
+    #
+    #     testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+    #     group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    #     mommy.make('core.Candidate', assignment_group=group1,
+    #                relatedstudent=relatedstudent1)
+    #     mommy.make('core.Examiner', assignmentgroup=group1,
+    #                relatedexaminer=relatedexaminer1)
+    #
+    #     # NOTE: The real test here is that we do not get an IntegrityError
+    #     self.assertEqual(group1.examiners.count(), 1)
+    #     testassignment.setup_examiners_by_relateduser_syncsystem_tags()
+    #     group1 = AssignmentGroup.objects.get(id=group1.id)
+    #     self.assertEqual(group1.examiners.count(), 1)
+    #     self.assertTrue(group1.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
+
     def test_setup_examiners_by_relateduser_syncsystem_tags_exclude_existing_examinerobjects(self):
         testperiod = mommy.make('core.Period')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod)
 
         examiner1 = mommy.make(settings.AUTH_USER_MODEL, shortname='examiner1')
-        relatedexaminer1 = mommy.make('core.RelatedExaminer', user=examiner1)
-        mommy.make('core.RelatedExaminerTag',
-                   relatedexaminer__period=testperiod,
-                   relatedexaminer=relatedexaminer1,
-                   tag='group1')
+        relatedexaminer1 = mommy.make('core.RelatedExaminer', period=testperiod, user=examiner1)
+        testperiodtag.relatedexaminers.add(relatedexaminer1)
 
         student1 = mommy.make(settings.AUTH_USER_MODEL)
-        relatedstudent1 = mommy.make('core.RelatedStudent',
-                                     user=student1,
-                                     period=testperiod)
-        mommy.make('core.RelatedStudentTag',
-                   relatedstudent=relatedstudent1,
-                   tag='group1')
+        relatedstudent1 = mommy.make('core.RelatedStudent', period=testperiod, user=student1)
+        testperiodtag.relatedstudents.add(relatedstudent1)
 
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -288,37 +335,74 @@ class TestAssignment(TestCase):
         self.assertEqual(group1.examiners.count(), 1)
         self.assertTrue(group1.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
 
+    # def test_setup_examiners_by_relateduser_syncsystem_tags_multiple_tags_and_examiners(self):
+    #     testperiod = mommy.make('core.Period')
+    #
+    #     examiner1 = mommy.make(settings.AUTH_USER_MODEL, shortname='examiner1')
+    #     mommy.make('core.RelatedExaminerTag',
+    #                relatedexaminer__period=testperiod,
+    #                relatedexaminer__user=examiner1,
+    #                tag='group1')
+    #     examiner2 = mommy.make(settings.AUTH_USER_MODEL, shortname='examiner2')
+    #     mommy.make('core.RelatedExaminerTag',
+    #                relatedexaminer__period=testperiod,
+    #                relatedexaminer__user=examiner2,
+    #                tag='group2')
+    #
+    #     student1 = mommy.make(settings.AUTH_USER_MODEL)
+    #     relatedstudent1 = mommy.make('core.RelatedStudent',
+    #                                  user=student1,
+    #                                  period=testperiod)
+    #     mommy.make('core.RelatedStudentTag',
+    #                relatedstudent=relatedstudent1,
+    #                tag='group1')
+    #     student2 = mommy.make(settings.AUTH_USER_MODEL)
+    #     relatedstudent2 = mommy.make('core.RelatedStudent',
+    #                                  user=student2,
+    #                                  period=testperiod)
+    #     mommy.make('core.RelatedStudentTag',
+    #                relatedstudent=relatedstudent2,
+    #                tag='group1')
+    #     mommy.make('core.RelatedStudentTag',
+    #                relatedstudent=relatedstudent2,
+    #                tag='group2')
+    #
+    #     testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+    #     group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    #     mommy.make('core.Candidate', assignment_group=group1,
+    #                relatedstudent=relatedstudent1)
+    #     group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    #     mommy.make('core.Candidate', assignment_group=group2,
+    #                relatedstudent=relatedstudent2)
+    #
+    #     testassignment.setup_examiners_by_relateduser_syncsystem_tags()
+    #     self.assertEqual(Examiner.objects.count(), 3)
+    #     self.assertEqual(group1.examiners.count(), 1)
+    #     self.assertTrue(group1.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
+    #     self.assertFalse(group1.examiners.filter(relatedexaminer__user__shortname='examiner2').exists())
+    #     self.assertEqual(group2.examiners.count(), 2)
+    #     self.assertTrue(group2.examiners.filter(relatedexaminer__user__shortname='examiner1').exists())
+    #     self.assertTrue(group2.examiners.filter(relatedexaminer__user__shortname='examiner2').exists())
+
     def test_setup_examiners_by_relateduser_syncsystem_tags_multiple_tags_and_examiners(self):
         testperiod = mommy.make('core.Period')
+        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod, tag='group1')
+        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod, tag='group2')
 
         examiner1 = mommy.make(settings.AUTH_USER_MODEL, shortname='examiner1')
-        mommy.make('core.RelatedExaminerTag',
-                   relatedexaminer__period=testperiod,
-                   relatedexaminer__user=examiner1,
-                   tag='group1')
+        relatedexaminer1 = mommy.make('core.RelatedExaminer', period=testperiod, user=examiner1)
+        testperiodtag1.relatedexaminers.add(relatedexaminer1)
         examiner2 = mommy.make(settings.AUTH_USER_MODEL, shortname='examiner2')
-        mommy.make('core.RelatedExaminerTag',
-                   relatedexaminer__period=testperiod,
-                   relatedexaminer__user=examiner2,
-                   tag='group2')
+        relatedexaminer2 = mommy.make('core.RelatedExaminer', period=testperiod, user=examiner2)
+        testperiodtag2.relatedexaminers.add(relatedexaminer2)
 
         student1 = mommy.make(settings.AUTH_USER_MODEL)
-        relatedstudent1 = mommy.make('core.RelatedStudent',
-                                     user=student1,
-                                     period=testperiod)
-        mommy.make('core.RelatedStudentTag',
-                   relatedstudent=relatedstudent1,
-                   tag='group1')
+        relatedstudent1 = mommy.make('core.RelatedStudent', period=testperiod, user=student1)
+        testperiodtag1.relatedstudents.add(relatedstudent1)
         student2 = mommy.make(settings.AUTH_USER_MODEL)
-        relatedstudent2 = mommy.make('core.RelatedStudent',
-                                     user=student2,
-                                     period=testperiod)
-        mommy.make('core.RelatedStudentTag',
-                   relatedstudent=relatedstudent2,
-                   tag='group1')
-        mommy.make('core.RelatedStudentTag',
-                   relatedstudent=relatedstudent2,
-                   tag='group2')
+        relatedstudent2 = mommy.make('core.RelatedStudent', period=testperiod, user=student2)
+        testperiodtag1.relatedstudents.add(relatedstudent2)
+        testperiodtag2.relatedstudents.add(relatedstudent2)
 
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -341,28 +425,32 @@ class TestAssignment(TestCase):
         testperiod = mommy.make('core.Period')
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
 
-        # Should require 2 queries if we have no RelatedExaminerSyncSystemTags
-        # 1. Map groupids to examiner user ID.
-        # 2. Query for RelatedExaminerSyncSystemTag
+        # Should require 2 queries if we have no PeriodTags
+        # 1 query to map groupids to examiner user ID.
+        # 1 query for all PeriodTags on period.
         with self.assertNumQueries(2):
             testassignment.setup_examiners_by_relateduser_syncsystem_tags()
 
     def test_setup_examiners_by_relateduser_syncsystem_tags_querycount(self):
         testperiod = mommy.make('core.Period')
+        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod, tag='group1')
+        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod, tag='group2')
 
-        mommy.make('core.RelatedExaminerTag',
-                   relatedexaminer__period=testperiod,
-                   tag='group1', _quantity=8)
-        mommy.make('core.RelatedExaminerTag',
-                   relatedexaminer__period=testperiod,
-                   tag='group2', _quantity=10)
+        # Add RelatedExaminers to group1 and group2 tag.
+        testperiodtag1.relatedexaminers.add(
+            *mommy.make('core.RelatedExaminer', period=testperiod, _quantity=8)
+        )
+        testperiodtag2.relatedexaminers.add(
+            *mommy.make('core.RelatedExaminer', period=testperiod, _quantity=10)
+        )
 
-        mommy.make('core.RelatedStudentTag',
-                   relatedstudent__period=testperiod,
-                   tag='group1', _quantity=20)
-        mommy.make('core.RelatedStudentTag',
-                   relatedstudent__period=testperiod,
-                   tag='group2', _quantity=30)
+        # Add RelatedStudents to group1 and group2 tag.
+        testperiodtag1.relatedstudents.add(
+            *mommy.make('core.RelatedStudent', period=testperiod, _quantity=20)
+        )
+        testperiodtag2.relatedstudents.add(
+            *mommy.make('core.RelatedStudent', period=testperiod, _quantity=30)
+        )
 
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         for relatedstudent in testperiod.relatedstudent_set.all():
@@ -372,12 +460,12 @@ class TestAssignment(TestCase):
 
         # Should require 39 queries:
         # - 1 query to map groupids to examiner user ID.
-        # - 1 query for RelatedExaminerSyncSystemTag
-        # - 18 queries to get the RelatedStudentSyncSystemTag objects matching
-        #       each of the 18 RelatedExaminerSyncSystemTag objects.
-        # - 18 queries to get candidates for the relatedstudents.
-        # - 1 query to bulk create the examiners
-        with self.assertNumQueries(39):
+        # - 1 PeriodTag.
+        # - 2 to get relatedstudentids as list for each PeriodTag.
+        # - 2 to get Candidates from the relatedstudentids for each PeriodTag.
+        # - 2 to get relatedexaminers for each PeriodTag.
+        # - 1 query to bulk create the Examiners.
+        with self.assertNumQueries(9):
             testassignment.setup_examiners_by_relateduser_syncsystem_tags()
         self.assertEqual(460, Examiner.objects.count())
 

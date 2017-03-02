@@ -50,7 +50,7 @@ class Overview(listbuilder_relatedstudent.VerticalFilterListView):
         return self.model.objects \
             .filter(period=period)\
             .prefetch_syncsystemtag_objects()\
-            .select_related('user')
+            .select_related('user').order_by('user__shortname')
 
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)

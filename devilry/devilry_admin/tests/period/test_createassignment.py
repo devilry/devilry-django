@@ -346,25 +346,18 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_post_first_assignment_adds_examiners_from_syncsystem_tags(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
-
-        mommy.make('core.RelatedStudentTag',
-                   relatedstudent__period=period,
-                   tag='group1')
-        mommy.make('core.RelatedExaminerTag',
-                   relatedexaminer__period=period,
-                   tag='group1',
-                   relatedexaminer__user__shortname='examiner1')
-        mommy.make('core.RelatedExaminerTag',
-                   relatedexaminer__period=period,
-                   tag='group1',
-                   relatedexaminer__user__shortname='examiner2')
-        mommy.make('core.RelatedExaminerTag',
-                   relatedexaminer__period=period,
-                   tag='group2',
-                   relatedexaminer__user__shortname='examiner3')
-        mommy.make('core.RelatedExaminerTag',
-                   tag='group1',
-                   relatedexaminer__user__shortname='otherperiodexaminer')
+        testperiodtag1 = mommy.make('core.PeriodTag', period=period, tag='group1')
+        testperiodtag2 = mommy.make('core.PeriodTag', period=period, tag='group2')
+        testperiodtag1.relatedstudents.add(
+            mommy.make('core.RelatedStudent', period=period))
+        testperiodtag1.relatedexaminers.add(
+            mommy.make('core.RelatedExaminer', period=period, user__shortname='examiner1'),
+            mommy.make('core.RelatedExaminer', period=period, user__shortname='examiner2'))
+        testperiodtag2.relatedexaminers.add(
+            mommy.make('core.RelatedExaminer', period=period, user__shortname='examiner3'))
+        testperiodtag_other = mommy.make('core.PeriodTag', tag='group2')
+        testperiodtag_other.relatedexaminers.add(
+            mommy.make('core.RelatedExaminer', user__shortname='otherperiodexaminer'))
 
         created_assignment, mockresponse = self.__valid_post_request(period=period)
         self.assertEqual(1, created_assignment.assignmentgroups.count())

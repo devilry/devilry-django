@@ -63,7 +63,7 @@ class Search(listfilter.django.single.textinput.Search):
         return [
             'user__fullname',
             'user__shortname',
-            'relatedstudenttag__tag',
+            'periodtag__tag',
         ]
 
     def get_label_is_screenreader_only(self):
@@ -106,7 +106,8 @@ class TagSelectFilter(abstractselect.AbstractSelectFilter):
         return self._choices
 
     def filter(self, queryobject):
+        # print 'QUERYOBJECT TYPE: ', type(queryobject)
         cleaned_value = self.get_cleaned_value() or ''
         if cleaned_value != '':
-            queryobject = queryobject.filter(relatedstudenttag__tag=cleaned_value)
+            queryobject = queryobject.filter(periodtag__tag=cleaned_value)
         return queryobject

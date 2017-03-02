@@ -192,8 +192,8 @@ class PeriodTag(models.Model):
     @property
     def displayname(self):
         if self.prefix == '':
-            return '{} on {}'.format(self.tag, self.period)
-        return '{}:{} on {}'.format(self.prefix, self.tag, self.period)
+            return '{}'.format(self.tag)
+        return '{}:{}'.format(self.prefix, self.tag)
 
     def clean(self):
         if len(self.tag) == 0:

@@ -21,11 +21,11 @@ class TestPeriodTag(test.TestCase):
 
     def test_displayname_without_prefix(self):
         testperiodtag = mommy.make('core.PeriodTag', tag='a')
-        self.assertEquals('a on {}'.format(testperiodtag.period), testperiodtag.displayname)
+        self.assertEquals('a', testperiodtag.displayname)
 
     def test_displayname_with_prefix(self):
         testperiodtag = mommy.make('core.PeriodTag', prefix='a', tag='b')
-        self.assertEquals('a:b on {}'.format(testperiodtag.period), testperiodtag.displayname)
+        self.assertEquals('a:b', testperiodtag.displayname)
 
     def test_unique_together_without_prefix(self):
         testperiod = mommy.make('core.Period')
@@ -175,10 +175,9 @@ class TestPeriodTag(test.TestCase):
         self.assertEquals(1, active_periodtags.count())
         self.assertEquals('tag_active', active_periodtags[0].tag)
 
-    def test_relatedexaminers_on_tag(self):
-        testperiod = mommy.make('core.Period')
-        mommy.make('core.RelatedStudent', period=testperiod)
-        mommy.make('core.RelatedStudent', period=testperiod)
-        mommy.make('core.RelatedStudent', period=testperiod)
-        testtag = mommy.make('core.PeriodTag', period=testperiod)
-        print testtag.relatedstudents.all()
+    # def test_relatedexaminers_on_tag(self):
+    #     testperiod = mommy.make('core.Period')
+    #     mommy.make('core.RelatedStudent', period=testperiod)
+    #     mommy.make('core.RelatedStudent', period=testperiod)
+    #     mommy.make('core.RelatedStudent', period=testperiod)
+    #     testtag = mommy.make('core.PeriodTag', period=testperiod)

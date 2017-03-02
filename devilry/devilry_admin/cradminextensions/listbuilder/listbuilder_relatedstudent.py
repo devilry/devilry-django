@@ -5,19 +5,22 @@ from django_cradmin.viewhelpers import listbuilderview
 from devilry.apps.core.models import RelatedStudent
 # from devilry.apps.core.models.relateduser import RelatedStudentTag
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser
+import devilry.apps.core.models.period_tag as period_tag
 
 
 class AddFilterListItemsMixin(object):
     def get_period(self):
         raise NotImplementedError()
 
-    # def add_filterlist_items(self, filterlist):
-    #     filterlist.append(listfilter_relateduser.Search())
-    #     filterlist.append(listfilter_relateduser.OrderRelatedStudentsFilter())
-    #     tags = list(RelatedStudentTag.objects
-    #                 .get_all_distinct_tags_in_period(period=self.get_period()))
-    #     if tags:
-    #         filterlist.append(listfilter_relateduser.TagSelectFilter(tags=tags))
+    def add_filterlist_items(self, filterlist):
+        filterlist.append(listfilter_relateduser.Search())
+        filterlist.append(listfilter_relateduser.OrderRelatedStudentsFilter())
+        # tags = list(RelatedStudentTag.objects
+        #             .get_all_distinct_tags_in_period(period=self.get_period()))
+        tags = list(period_tag.PeriodTag
+                    .objects.get_all_tags_on_period(period=self.get_period()))
+        if tags:
+            filterlist.append(listfilter_relateduser.TagSelectFilter(tags=tags))
 
 
 class ListViewBase(AddFilterListItemsMixin, listbuilderview.FilterListMixin, listbuilderview.View):
