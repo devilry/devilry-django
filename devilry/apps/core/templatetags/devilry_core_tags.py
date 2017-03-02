@@ -355,3 +355,11 @@ def devilry_period_tags_on_period(period, period_tags):
         'period': period,
         'period_tags': period_tags
     }
+
+
+@register.inclusion_tag('devilry_core/templatetags/relatedusers-on-period-tag.django.html')
+def devilry_relatedusers_on_period_tag(period_tag):
+    return {
+        'relatedexaminers': period_tag.relatedexaminers,
+        'relatedstudents': period_tag.relatedstudents
+    }

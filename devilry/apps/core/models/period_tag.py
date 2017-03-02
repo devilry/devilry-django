@@ -194,6 +194,9 @@ class PeriodTag(models.Model):
             return '{}'.format(self.tag)
         return '{}:{}'.format(self.prefix, self.tag)
 
+    def __str__(self):
+        return self.tag
+
     def clean(self):
         if len(self.tag) == 0:
             raise ValidationError({

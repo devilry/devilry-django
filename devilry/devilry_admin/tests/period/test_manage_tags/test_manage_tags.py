@@ -107,7 +107,7 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         mommy.make('core.PeriodTag', period=testperiod)
         mommy.make('core.PeriodTag', period=testperiod)
         mommy.make('core.PeriodTag', period=testperiod)
-        with self.assertNumQueries(2):
+        with self.assertNumQueries(4):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,
                 requestuser=testuser

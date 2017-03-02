@@ -106,7 +106,6 @@ class TagSelectFilter(abstractselect.AbstractSelectFilter):
         return self._choices
 
     def filter(self, queryobject):
-        # print 'QUERYOBJECT TYPE: ', type(queryobject)
         cleaned_value = self.get_cleaned_value() or ''
         if cleaned_value != '':
             queryobject = queryobject.filter(periodtag__tag=cleaned_value)

@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import re
 
 from django import forms
+from django.db import models
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db import transaction
@@ -21,6 +22,7 @@ from django_cradmin.viewhelpers import multiselect2
 
 from devilry.apps.core.models import PeriodTag
 from devilry.apps.core.models import RelatedStudent, RelatedExaminer
+from devilry.devilry_admin.cradminextensions.listfilter import listfilter_tags
 
 
 class PeriodTagForm(forms.Form):
@@ -83,6 +85,9 @@ class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.Vi
     def get_pagetitle(self):
         return ugettext_lazy('Tags on {}'.format(self.request.cradmin_role.parentnode))
 
+    def add_filterlist_items(self, filterlist):
+        filterlist.append(listfilter_tags.Search())
+
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
             'filter',
@@ -90,7 +95,13 @@ class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.Vi
         )
 
     def get_unfiltered_queryset_for_role(self, role):
-        return self.model.objects.filter(period=role)
+        return self.model.objects.filter(period=role)\
+            .prefetch_related(
+                models.Prefetch('relatedstudents',
+                                queryset=RelatedStudent.objects.filter(period=role)))\
+            .prefetch_related(
+                models.Prefetch('relatedexaminers',
+                            queryset=RelatedExaminer.objects.filter(period=role)))
 
 
 class AddTagsView(formbase.FormView):
@@ -272,6 +283,7 @@ class BaseRelatedUserMultiSelectView(multiselect2view.ListbuilderView):
     value_renderer_class = SelectableItemValue
     form_class = SelectedRelatedUsersForm
     tag_name = None
+    relateduser_string = ''
 
     def dispatch(self, request, *args, **kwargs):
         self.tag_name = kwargs.get('tag')
@@ -297,6 +309,12 @@ class BaseRelatedUserMultiSelectView(multiselect2view.ListbuilderView):
         kwargs['relatedusers_queryset'] = self.get_queryset_for_role(role=period)
         return kwargs
 
+    def add_success_message(self, message):
+        messages.success(self.request, message=message)
+
+    def add_error_message(self, message):
+        messages.error(self.request, message=message)
+
     def get_success_url(self):
         return self.request.cradmin_app.reverse_appindexurl()
 
@@ -319,6 +337,7 @@ class AddRelatedUserToTagMultiSelectView(BaseRelatedUserMultiSelectView):
         period_tag = self.get_period_tag()
         related_users = form.cleaned_data['selected_items']
         self.add_related_users(period_tag=period_tag, related_users=related_users)
+        self.add_success_message(message='{} {} successfully added'.format(len(related_users), self.relateduser_string))
         return super(AddRelatedUserToTagMultiSelectView, self).form_valid(form=form)
     
 
@@ -340,6 +359,8 @@ class RemoveRelatedUserFromTagMultiSelectView(BaseRelatedUserMultiSelectView):
         period_tag = self.get_period_tag()
         related_users = form.cleaned_data['selected_items']
         self.remove_related_users(period_tag=period_tag, related_users=related_users)
+        self.add_success_message(
+            message='{} {} successfully removed'.format(len(related_users), self.relateduser_string))
         return super(RemoveRelatedUserFromTagMultiSelectView, self).form_valid(form=form)
 
 
@@ -348,6 +369,7 @@ class RelatedExaminerAddView(AddRelatedUserToTagMultiSelectView):
     Multi-select add view for :class:`~.devilry.apps.core.models.relateduser.RelatedExaminer`.
     """
     model = RelatedExaminer
+    relateduser_string = 'examiner(s)'
 
     def get_pagetitle(self):
         return ugettext_lazy('Add examiners to tag {}'.format(self.tag_name))
@@ -358,6 +380,7 @@ class RelatedExaminerRemoveView(RemoveRelatedUserFromTagMultiSelectView):
     Multi-select remove view for :class:`~.devilry.apps.core.models.relateduser.RelatedExaminer`.
     """
     model = RelatedExaminer
+    relateduser_string = 'examiner(s)'
 
     def get_pagetitle(self):
         return ugettext_lazy('Remove examiners from tag {}'.format(self.tag_name))
@@ -368,6 +391,7 @@ class RelatedStudentAddView(AddRelatedUserToTagMultiSelectView):
     Multi-select add view for :class:`~.devilry.apps.core.models.relateduser.RelatedStudent`.
     """
     model = RelatedStudent
+    relateduser_string = 'student(s)'
 
     def get_pagetitle(self):
         return ugettext_lazy('Add students to tag {}'.format(self.tag_name))
@@ -378,6 +402,7 @@ class RelatedStudentRemoveView(RemoveRelatedUserFromTagMultiSelectView):
     Multi-select remove view for :class:`~.devilry.apps.core.models.relateduser.RelatedStudent`.
     """
     model = RelatedStudent
+    relateduser_string = 'student(s)'
 
     def get_pagetitle(self):
         return ugettext_lazy('Remove students from tag {}'.format(self.tag_name))

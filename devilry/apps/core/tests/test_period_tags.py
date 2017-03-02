@@ -108,7 +108,7 @@ class TestPeriodTag(test.TestCase):
         mommy.make('core.PeriodTag', period=testperiod, tag='a')
         mommy.make('core.PeriodTag', period=testperiod, tag='b')
         mommy.make('core.PeriodTag', period=testperiod, tag='c')
-        self.assertEquals(3, PeriodTag.objects.filter_tags_on_period(period=testperiod).count())
+        self.assertEquals(3, PeriodTag.objects.filter(period=testperiod).count())
 
     def test_filter_distinct_tags(self):
         testperiod1 = mommy.make('core.Period')

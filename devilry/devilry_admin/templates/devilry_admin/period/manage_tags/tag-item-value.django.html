@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load cradmin_tags %}
+{% load devilry_core_tags %}
 
 {% block description %}
 {% endblock %}
@@ -9,6 +10,7 @@
 {% block buttons %}
 
     <div class="devilry-dashboard-container-withtopmargin">
+        {% devilry_relatedusers_on_period_tag me.value %}
         <p>
             <a href="{% cradmin_instance_url appname='manage_tags' viewname='add_students' tag=me.value.tag %}"
                     id="devilry_admin_period_manage_tags_add_students_{{ me.value.tag }}"
