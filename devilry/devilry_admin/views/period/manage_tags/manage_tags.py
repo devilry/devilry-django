@@ -142,7 +142,7 @@ class AddTagsView(formbase.FormView):
     def form_valid(self, form):
         tags_string_list = form.get_added_tags_list()
         excluded_tags = PeriodTag.objects\
-            .filter_all_editable_tags_on_period(period=self.request.cradmin_role)\
+            .filter_editable_tags_on_period(period=self.request.cradmin_role)\
             .filter(tag__in=tags_string_list)\
             .values_list('tag', flat=True)
 
@@ -169,7 +169,7 @@ class AddTagsView(formbase.FormView):
         context_data = super(AddTagsView, self).get_context_data(**kwargs)
         period = self.request.cradmin_role
         context_data['period'] = period
-        context_data['period_tags'] = PeriodTag.objects.get_all_tags_on_period(period=period)
+        context_data['period_tags'] = PeriodTag.objects.filter(period=period)
         return context_data
 
 

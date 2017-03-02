@@ -302,6 +302,13 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEquals(7, PeriodTag.objects.count())
 
 
+class TestEditTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = manage_tags.EditTagView
+
+    def test_title(self):
+        pass
+
+
 class MockAddRelatedExaminerToTagView(manage_tags.RelatedExaminerAddView):
     model = RelatedExaminer
 

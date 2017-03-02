@@ -33,20 +33,6 @@ class PeriodTagQuerySet(models.QuerySet):
         return self.filter(period__start_time__lt=now,
                            period__end_time__gt=now)
 
-    def filter_tags_on_period(self, period):
-        """
-        Get a QuerySet of all distinct :obj:`~.PeriodTag`s on ``period``.
-        Orders by :attr.PeriodTag.prefix` and :attr:`~.PeriodTag.tag`
-
-        Args:
-            period: Get distinct tags for.
-
-        Returns:
-            (QuerySet): QuerySet of :class:`.PeriodTag`.
-        """
-        return self.filter(period=period)\
-            .distinct()
-
     def filter_editable_tags(self):
         """
         Get a QuerySet of all :obj:`~.PeriodTag`s that are editable.

@@ -18,7 +18,7 @@ class AddFilterListItemsMixin(object):
         # tags = list(RelatedStudentTag.objects
         #             .get_all_distinct_tags_in_period(period=self.get_period()))
         tags = list(period_tag.PeriodTag
-                    .objects.get_all_tags_on_period(period=self.get_period()))
+                    .objects.filter(period=self.get_period()))
         if tags:
             filterlist.append(listfilter_relateduser.TagSelectFilter(tags=tags))
 
