@@ -194,6 +194,154 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue-editdelete-deletebutton'))
         self.assertNotIn('Delete', mockresponse.response.content)
 
+    def test_filter_search_on_tag(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.PeriodTag', period=testperiod, prefix='tag1')
+        mommy.make('core.PeriodTag', period=testperiod, prefix='tag2')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'filters_string': 'search-tag1'
+            }
+        )
+        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertIn('tag1', mockresponse.response.content)
+        self.assertNotIn('tag2', mockresponse.response.content)
+
+    def test_filter_search_on_tag_no_results(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.PeriodTag', period=testperiod, prefix='tag1')
+        mommy.make('core.PeriodTag', period=testperiod, prefix='tag2')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'filters_string': 'search-tag3'
+            }
+        )
+        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 0)
+        self.assertNotIn('tag1', mockresponse.response.content)
+        self.assertNotIn('tag2', mockresponse.response.content)
+
+    def test_filter_search_on_student_user_shortname(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag1')
+        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag2')
+        testperiodtag1.relatedstudents.add(
+            mommy.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent1'))
+        testperiodtag2.relatedstudents.add(
+            mommy.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent2'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'filters_string': 'search-relatedstudent1'
+            }
+        )
+        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertIn('tag1', mockresponse.response.content)
+        self.assertIn('relatedstudent1', mockresponse.response.content)
+        self.assertNotIn('tag2', mockresponse.response.content)
+        self.assertNotIn('relatedstudent2', mockresponse.response.content)
+
+    def test_filter_search_on_student_user_shortname_matches_both(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag1')
+        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag2')
+        testperiodtag1.relatedstudents.add(
+            mommy.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent_a'))
+        testperiodtag2.relatedstudents.add(
+            mommy.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent_b'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'filters_string': 'search-relatedstudent'
+            }
+        )
+        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 2)
+        self.assertIn('tag1', mockresponse.response.content)
+        self.assertIn('relatedstudent_a', mockresponse.response.content)
+        self.assertIn('tag2', mockresponse.response.content)
+        self.assertIn('relatedstudent_b', mockresponse.response.content)
+
+    def test_filter_search_on_student_user_shortname_no_result(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag1')
+        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag2')
+        testperiodtag1.relatedstudents.add(
+            mommy.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent_a'))
+        testperiodtag2.relatedstudents.add(
+            mommy.make('core.RelatedStudent', period=testperiod, user__shortname='relatedstudent_b'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'filters_string': 'search-relatedstudent_c'
+            }
+        )
+        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 0)
+        self.assertNotIn('tag1', mockresponse.response.content)
+        self.assertNotIn('relatedstudent_a', mockresponse.response.content)
+        self.assertNotIn('tag2', mockresponse.response.content)
+        self.assertNotIn('relatedstudent_b', mockresponse.response.content)
+
+    def test_filter_search_on_examiner_user_shortname(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag1')
+        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag2')
+        testperiodtag1.relatedexaminers.add(
+            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer1'))
+        testperiodtag2.relatedexaminers.add(
+            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer2'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'filters_string': 'search-relatedexaminer1'
+            }
+        )
+        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 1)
+        self.assertIn('tag1', mockresponse.response.content)
+        self.assertIn('relatedexaminer1', mockresponse.response.content)
+        self.assertNotIn('tag2', mockresponse.response.content)
+        self.assertNotIn('relatedexaminer2', mockresponse.response.content)
+
+    def test_filter_search_on_examiner_user_shortname_matches_both(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag1')
+        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag2')
+        testperiodtag1.relatedexaminers.add(
+            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer_a'))
+        testperiodtag2.relatedexaminers.add(
+            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer_b'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'filters_string': 'search-relatedexaminer'
+            }
+        )
+        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 2)
+        self.assertIn('tag1', mockresponse.response.content)
+        self.assertIn('relatedexaminer_a', mockresponse.response.content)
+        self.assertIn('tag2', mockresponse.response.content)
+        self.assertIn('relatedexaminer_b', mockresponse.response.content)
+
+    def test_filter_search_on_examiner_user_shortname_no_result(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag1')
+        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod, prefix='tag2')
+        testperiodtag1.relatedexaminers.add(
+            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer_a'))
+        testperiodtag2.relatedexaminers.add(
+            mommy.make('core.RelatedExaminer', period=testperiod, user__shortname='relatedexaminer_b'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'filters_string': 'search-relatedexaminer_c'
+            }
+        )
+        self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 0)
+        self.assertNotIn('tag1', mockresponse.response.content)
+        self.assertNotIn('relatedexaminer_a', mockresponse.response.content)
+        self.assertNotIn('tag2', mockresponse.response.content)
+        self.assertNotIn('relatedexaminer_b', mockresponse.response.content)
+
     def test_query_count(self):
         testperiod = mommy.make('core.Period')
         testuser = mommy.make(settings.AUTH_USER_MODEL)

@@ -8,7 +8,7 @@
     <h2>
         <span>
             {% if me.value.prefix == '' %}
-                {{ me.get_title }}
+                <div class="devilry-admin-period-tags-listbuilder-itemvalue-title">{{ me.get_title }}</div>
                 <span style="display: block; float: right;">
                     {% block editbutton %} {{ block.super }} {% endblock %}
                     {% block deletebutton %} {{ block.super }} {% endblock %}
