@@ -101,6 +101,62 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
             'Remove examiners'
         )
 
+    def test_related_students_rendered(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod)
+        relatedstudent1 = mommy.make('core.RelatedStudent',
+                                    period=testperiod,
+                                    user__shortname='relatedstudent1')
+        relatedstudent2 = mommy.make('core.RelatedStudent',
+                                    period=testperiod,
+                                    user__shortname='relatedstudent2')
+        testperiodtag.relatedstudents.add(relatedstudent1, relatedstudent2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-core-periodtag-relatedstudents'))
+        self.assertEquals(mockresponse.selector.count('.devilry-core-periodtag-relatedstudent'), 2)
+        self.assertEquals(mockresponse.selector.one('.devilry-core-periodtag-relatedstudents').alltext_normalized,
+                          'Students: relatedstudent1 , relatedstudent2')
+
+    def test_no_related_students_rendered(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.PeriodTag', period=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-core-periodtag-relatedstudents'))
+        self.assertEquals(mockresponse.selector.one('.devilry-core-periodtag-no-relatedstudents').alltext_normalized,
+                          'NO STUDENTS')
+
+    def test_related_examiners_rendered(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod)
+        relatedexaminer1 = mommy.make('core.RelatedExaminer',
+                                    period=testperiod,
+                                    user__shortname='relatedexaminer1')
+        relatedexaminer2 = mommy.make('core.RelatedExaminer',
+                                    period=testperiod,
+                                    user__shortname='relatedexaminer2')
+        testperiodtag.relatedexaminers.add(relatedexaminer1, relatedexaminer2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-core-periodtag-relatedexaminers'))
+        self.assertEquals(mockresponse.selector.count('.devilry-core-periodtag-relatedexaminer'), 2)
+        self.assertIn('Examiners: ',
+                      mockresponse.selector.one('.devilry-core-periodtag-relatedexaminers').alltext_normalized)
+
+    def test_no_related_examiners_rendered(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.PeriodTag', period=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-core-periodtag-relatedexaminers'))
+        self.assertEquals(mockresponse.selector.one('.devilry-core-periodtag-no-relatedexaminers').alltext_normalized,
+                          'NO EXAMINERS')
+
     def test_query_count(self):
         testperiod = mommy.make('core.Period')
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -302,11 +358,91 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEquals(7, PeriodTag.objects.count())
 
 
-class TestEditTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+class TestEditTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = manage_tags.EditTagView
 
     def test_title(self):
-        pass
+        testperiod = mommy.make('core.Period')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'pk': testperiodtag.id
+            }
+        )
+        self.assertEquals(mockresponse.selector.one('.django-cradmin-page-header-inner > h1').alltext_normalized,
+                          'Edit {}'.format(testperiodtag.displayname))
+
+    def test_rename_tag(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
+        self.mock_http302_postrequest(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'pk': testperiodtag.id
+            },
+            requestkwargs={
+                'data': {
+                    'tag': 'tag2'
+                }
+            }
+        )
+        with self.assertRaises(PeriodTag.DoesNotExist):
+            PeriodTag.objects.get(tag='tag1')
+        self.assertEquals(PeriodTag.objects.count(), 1)
+        self.assertIsNotNone(PeriodTag.objects.get(tag='tag2'))
+
+    def test_rename_tag_to_existing_tag(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
+        mommy.make('core.PeriodTag', period=testperiod, tag='tag2')
+        messagesmock = mock.MagicMock()
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'pk': testperiodtag.id
+            },
+            requestkwargs={
+                'data': {
+                    'tag': 'tag2'
+                }
+            },
+            messagesmock=messagesmock
+        )
+        self.assertIn('tag2 already exists', mockresponse.response.content)
+        self.assertEquals(PeriodTag.objects.count(), 2)
+        self.assertIsNotNone(PeriodTag.objects.get(tag='tag1'))
+        self.assertIsNotNone(PeriodTag.objects.get(tag='tag2'))
+
+
+class TestDeleteTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = manage_tags.DeleteTagView
+
+    def test_title(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'pk': testperiodtag.id
+            }
+        )
+        self.assertEquals(mockresponse.selector.one('.django-cradmin-page-header-inner > h1').alltext_normalized,
+                          'Delete {}'.format(testperiodtag.displayname))
+
+    def test_delete_tag(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod)
+        mommy.make('core.PeriodTag', period=testperiod)
+        self.mock_http302_postrequest(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'pk': testperiodtag.id
+            }
+        )
+        with self.assertRaises(PeriodTag.DoesNotExist):
+            PeriodTag.objects.get(period=testperiod, tag=testperiodtag.tag)
+        self.assertEquals(PeriodTag.objects.count(), 1)
 
 
 class MockAddRelatedExaminerToTagView(manage_tags.RelatedExaminerAddView):

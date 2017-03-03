@@ -8,13 +8,17 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.http import HttpResponseRedirect
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django.views.generic import View
+
+from crispy_forms import layout
+
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 from django_cradmin.crispylayouts import PrimarySubmit
 from django_cradmin.viewhelpers import formbase
-from django_cradmin.viewhelpers import update, delete
+from django_cradmin.viewhelpers import update, delete, crudbase
 from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers.listbuilder import itemvalue
 from django_cradmin.viewhelpers import multiselect2view
@@ -188,8 +192,22 @@ class EditPeriodTagForm(forms.ModelForm):
     """
     """
     class Meta:
-        fields = ['tag', 'is_hidden']
         model = PeriodTag
+        fields = [
+            'tag',
+            'is_hidden'
+        ]
+
+    def __init__(self, *args, **kwargs):
+        self.period = kwargs.pop('period')
+        super(EditPeriodTagForm, self).__init__(*args, **kwargs)
+    
+    def clean(self):
+        cleaned_data = super(EditPeriodTagForm, self).clean()
+        tag = cleaned_data['tag']
+        if PeriodTag.objects.filter(period=self.period, tag=tag).count() != 0:
+            raise ValidationError(ugettext_lazy('{} already exists'.format(tag)))
+        return cleaned_data
 
 
 class EditDeleteViewMixin(View):
@@ -208,29 +226,56 @@ class EditDeleteViewMixin(View):
         return self.request.cradmin_app.reverse_appindexurl()
 
 
-class EditTagView(EditDeleteViewMixin, update.UpdateView):
+class EditTagView(crudbase.OnlySaveButtonMixin, EditDeleteViewMixin, update.UpdateView):
+    template_name = 'devilry_admin/period/manage_tags/crud.django.html'
     form_class = EditPeriodTagForm
-    
+
+    def get_pagetitle(self):
+        return 'Edit {}'.format(PeriodTag.objects.get(id=self.tag_id).displayname)
+
     def get_form(self, form_class=None):
         form = super(EditTagView, self).get_form(form_class=form_class)
         form.fields['tag'] = forms.CharField(
-            label='Tags',
-            widget=forms.Textarea,
-            help_text='Add tags here in a comma-separated format, e.g: tag1, tag2, tag3')
+            label='Tag',
+            help_text='Here you can rename the tag.')
         form.fields['is_hidden'] = forms.BooleanField(
             label='Hidden',
             initial=False,
             required=False,
-            help_text='If you check this, the tag(s) will be marked as hidden.'
+            help_text='If you check this, the tag will be marked as hidden.'
         )
         return form
-    
+
+    def get_field_layout(self):
+        return [
+            layout.Div(
+                layout.Field('tag', focusonme='focusonme'),
+                layout.Field('is_hidden'),
+                css_class='cradmin-globalfields'
+            )
+        ]
+
     def save_object(self, form, commit=True):
+        period_tag = super(EditTagView, self).save_object(form=form, commit=False)
+        period_tag.modified_datetime = timezone.now()
         self.add_success_messages('Tag successfully edited.')
         return super(EditTagView, self).save_object(form=form, commit=True)
 
+    def get_form_kwargs(self):
+        kwargs = super(EditTagView, self).get_form_kwargs()
+        kwargs['period'] = self.request.cradmin_role
+        return kwargs
+
+    def get_error_redirect_url(self):
+        return self.request.cradmin_app.reverse_appurl(viewname='edit', kwargs={'pk': self.tag_id})
+
+    def add_error_message(self, message):
+        messages.error(request=self.request, message=message)
+
 
 class DeleteTagView(EditDeleteViewMixin, delete.DeleteView):
+    template_name = 'devilry_admin/period/manage_tags/delete.django.html'
+
     def get_object_preview(self):
         periodtag = self.model.objects.get(id=self.tag_id)
         return periodtag.tag
@@ -279,7 +324,7 @@ class BaseRelatedUserMultiSelectView(multiselect2view.ListbuilderView):
     Attributes:
         tag_name(str): the specific tag of a :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
     """
-    template_name = 'devilry_admin/period/manage_tags/base-multiselect-view.html'
+    template_name = 'devilry_admin/period/manage_tags/base-multiselect-view.django.html'
     value_renderer_class = SelectableItemValue
     form_class = SelectedRelatedUsersForm
     tag_name = None
