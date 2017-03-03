@@ -378,10 +378,6 @@ class RelatedStudentQuerySet(models.QuerySet):
         ``tag`` in ascending order.
         """
         warnings.warn('deprecated, function up to date but will be refactored', DeprecationWarning)
-        # return self.prefetch_related(
-        #     models.Prefetch('relatedstudenttag_set',
-        #                     queryset=RelatedStudentTag.objects.order_by('tag'),
-        #                     to_attr='syncsystemtag_objects'))
         return self.prefetch_related(
             models.Prefetch('periodtag_set',
                             queryset=period_tag.PeriodTag.objects.order_by('tag'),
