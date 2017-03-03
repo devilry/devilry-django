@@ -7,6 +7,7 @@
         <option name="settingsModule" value="devilry/project/settingsproxy.py" />
         <option name="manageScript" value="manage.py" />
         <option name="environment" value="&lt;map/&gt;" />
+        <option name="commandsToSkip" value="" />
       </configuration>
     </facet>
   </component>
@@ -16,7 +17,7 @@
       <excludeFolder url="file://$MODULE_DIR$/not_for_deploy/docs/_build" />
       <excludeFolder url="file://$MODULE_DIR$/static" />
     </content>
-    <orderEntry type="jdk" jdkName="devilry-django" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="v2-0-devilry" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TemplatesService">

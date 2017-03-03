@@ -1,3 +1,3 @@
 source ~/.bashrc
 
-workon devilry-django
+workon v2-0-devilry-django
