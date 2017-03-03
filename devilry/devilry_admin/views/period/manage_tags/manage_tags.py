@@ -452,51 +452,32 @@ class RelatedStudentRemoveView(RemoveRelatedUserFromTagMultiSelectView):
 
 
 class App(crapp.App):
-
-    @classmethod
-    def get_related_examiner_add_view(cls):
-        return RelatedExaminerAddView
-
-    @classmethod
-    def get_related_examiner_remove_view(cls):
-        return RelatedExaminerRemoveView
-
-    @classmethod
-    def get_related_student_add_view(cls):
-        return RelatedStudentAddView
-
-    @classmethod
-    def get_related_student_remove_view(cls):
-        return RelatedStudentRemoveView
-
-    @classmethod
-    def get_appurls(cls):
-        return [
-            crapp.Url(r'^$',
-                      TagListBuilderListView.as_view(),
-                      name=crapp.INDEXVIEW_NAME),
-            crapp.Url(r'^filter/(?P<filters_string>.+)?$',
-                      TagListBuilderListView.as_view(),
-                      name='filter'),
-            crapp.Url(r'^add$',
-                      AddTagsView.as_view(),
-                      name='add_tag'),
-            crapp.Url(r'^edit/(?P<pk>\d+)$',
-                      EditTagView.as_view(),
-                      name='edit'),
-            crapp.Url(r'^delete/(?P<pk>\d+)$',
-                      DeleteTagView.as_view(),
-                      name='delete'),
-            crapp.Url('^add-examiners/(?P<tag>[\w-]+)$',
-                      cls.get_related_examiner_add_view().as_view(),
-                      name='add_examiners'),
-            crapp.Url('^remove-examiners/(?P<tag>[\w-]+)$',
-                      cls.get_related_examiner_remove_view().as_view(),
-                      name='remove_examiners'),
-            crapp.Url('^add-students/(?P<tag>[\w-]+)$',
-                      cls.get_related_student_add_view().as_view(),
-                      name='add_students'),
-            crapp.Url('^remove-students/(?P<tag>[\w-]+)$',
-                      cls.get_related_student_remove_view().as_view(),
-                      name='remove_students')
-        ]
+    appurls = [
+        crapp.Url(r'^$',
+                  TagListBuilderListView.as_view(),
+                  name=crapp.INDEXVIEW_NAME),
+        crapp.Url(r'^filter/(?P<filters_string>.+)?$',
+                  TagListBuilderListView.as_view(),
+                  name='filter'),
+        crapp.Url(r'^add$',
+                  AddTagsView.as_view(),
+                  name='add_tag'),
+        crapp.Url(r'^edit/(?P<pk>\d+)$',
+                  EditTagView.as_view(),
+                  name='edit'),
+        crapp.Url(r'^delete/(?P<pk>\d+)$',
+                  DeleteTagView.as_view(),
+                  name='delete'),
+        crapp.Url('^add-examiners/(?P<tag>[\w-]+)$',
+                  RelatedExaminerAddView.as_view(),
+                  name='add_examiners'),
+        crapp.Url('^remove-examiners/(?P<tag>[\w-]+)$',
+                  RelatedExaminerRemoveView.as_view(),
+                  name='remove_examiners'),
+        crapp.Url('^add-students/(?P<tag>[\w-]+)$',
+                  RelatedStudentAddView.as_view(),
+                  name='add_students'),
+        crapp.Url('^remove-students/(?P<tag>[\w-]+)$',
+                  RelatedStudentRemoveView.as_view(),
+                  name='remove_students')
+    ]
