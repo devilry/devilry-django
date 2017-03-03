@@ -1,31 +1,6 @@
 {% load devilry_core_tags %}
 {% load i18n %}
 
-<br>
-<span>
-    {% if relatedexaminers.count == 0 %}
-        <strong>NO EXAMINERS</strong>
-    {% else %}
-        <strong>Examiners</strong>:
-        {% for relatedexaminer in relatedexaminers.all %}
-            {{ relatedexaminer.user.shortname }}
-            {% if not forloop.last %}, {% endif %}
-        {% endfor %}
-    {% endif %}
-</span>
-
-<br>
-<br>
-
-<span>
-    {% if relatedstudents.count == 0 %}
-        <strong>NO STUDENTS</strong>
-    {% else %}
-        <strong>Students</strong>:
-        {% for relatedstudent in relatedstudents.all %}
-            {{ relatedstudent.user.shortname }}
-            {% if not forloop.last %}, {% endif %}
-        {% endfor %}
-    {% endif %}
-</span>
+{% devilry_relatedexaminers_on_period_tag period_tag %}
+{% devilry_relatedstudents_on_period_tag period_tag %}
 <br><br>
