@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django import test
 from django.contrib import messages
 from django.conf import settings
+from django.http import Http404
 
 from django_cradmin import cradmin_testhelpers
 
@@ -373,6 +374,16 @@ class TestEditTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEquals(mockresponse.selector.one('.django-cradmin-page-header-inner > h1').alltext_normalized,
                           'Edit {}'.format(testperiodtag.displayname))
 
+    def test_tag_with_prefix_raises_404(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, prefix='a', tag='ab')
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod,
+                viewkwargs={
+                    'pk': testperiodtag.id
+                })
+
     def test_rename_tag(self):
         testperiod = mommy.make('core.Period')
         testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
@@ -429,6 +440,16 @@ class TestDeleteTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         self.assertEquals(mockresponse.selector.one('.django-cradmin-page-header-inner > h1').alltext_normalized,
                           'Delete {}'.format(testperiodtag.displayname))
+
+    def test_tag_with_prefix_raises_404(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, prefix='a', tag='ab')
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testperiod,
+                viewkwargs={
+                    'pk': testperiodtag.id
+                })
 
     def test_delete_tag(self):
         testperiod = mommy.make('core.Period')

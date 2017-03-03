@@ -265,18 +265,18 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         assignment = mommy.make('core.Assignment',
                                 points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
         point_to_grade_map = mommy.make('core.PointToGradeMap', assignment=assignment)
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=5, maximum_points=9,
-                   grade='F')
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=10, maximum_points=14,
-                   grade='E')
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=15, maximum_points=19,
-                   grade='D')
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=20, maximum_points=24,
-                   grade='C')
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=25, maximum_points=29,
-                   grade='B')
-        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=30, maximum_points=35,
-                   grade='A')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=5,
+                   maximum_points=9, grade='F')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=10,
+                   maximum_points=14,grade='E')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=15,
+                   maximum_points=19, grade='D')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=20,
+                   maximum_points=24, grade='C')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=25,
+                   maximum_points=29, grade='B')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=30,
+                   maximum_points=35, grade='A')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(

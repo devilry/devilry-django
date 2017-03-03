@@ -4,13 +4,28 @@
 {% load cradmin_tags %}
 {% load devilry_core_tags %}
 
+{% block title %}
+    <h2>
+        <span>
+            {% if me.value.prefix == '' %}
+                {{ me.get_title }}
+                <span style="display: block; float: right;">
+                    {% block editbutton %} {{ block.super }} {% endblock %}
+                    {% block deletebutton %} {{ block.super }} {% endblock %}
+                </span>
+            {% else %}
+                {{ me.get_title }} (imported)
+            {% endif %}
+        </span>
+    </h2>
+{% endblock title %}
+
 {% block description %}
+    {% devilry_relatedusers_on_period_tag me.value %}
 {% endblock %}
 
-{% block buttons %}
-
+{% block end-of-content %}
     <div class="devilry-dashboard-container-withtopmargin">
-        {% devilry_relatedstudents_on_period_tag me.value %}
         <p>
             <a href="{% cradmin_instance_url appname='manage_tags' viewname='add_students' tag=me.value.tag %}"
                     id="devilry_admin_period_manage_tags_add_students_{{ me.value.tag }}"
@@ -22,11 +37,6 @@
                     class="btn btn-default">
                 {% trans 'Remove students' %}
             </a>
-        </p>
-    </div>
-    <div class="devilry-dashboard-container-withtopmargin">
-        {% devilry_relatedexaminers_on_period_tag me.value %}
-        <p>
             <a href="{% cradmin_instance_url appname='manage_tags' viewname='add_examiners' tag=me.value.tag %}"
                     id="devilry_admin_period_manage_tags_add_examiners_{{ me.value.tag }}"
                     class="btn btn-default">
@@ -39,6 +49,4 @@
             </a>
         </p>
     </div>
-    <br><br>
-    {{ block.super }}
-{% endblock buttons %}
+{% endblock end-of-content %}

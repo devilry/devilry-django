@@ -7,6 +7,7 @@ from django.db import models
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db import transaction
+from django.http import Http404
 from django.http import HttpResponseRedirect
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy, pgettext_lazy
@@ -27,6 +28,43 @@ from django_cradmin.viewhelpers import multiselect2
 from devilry.apps.core.models import PeriodTag
 from devilry.apps.core.models import RelatedStudent, RelatedExaminer
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_tags
+
+
+class TagItemValue(itemvalue.EditDelete):
+    template_name = 'devilry_admin/period/manage_tags/tag-item-value.django.html'
+
+    def get_title(self):
+        return self.value.displayname
+
+
+class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.View):
+    """
+    """
+    template_name = 'devilry_admin/period/manage_tags/manage-tags-list-view.django.html'
+    model = PeriodTag
+    value_renderer_class = TagItemValue
+    paginate_by = 10
+
+    def get_pagetitle(self):
+        return ugettext_lazy('Tags on {}'.format(self.request.cradmin_role.parentnode))
+
+    def add_filterlist_items(self, filterlist):
+        filterlist.append(listfilter_tags.Search())
+
+    def get_filterlist_url(self, filters_string):
+        return self.request.cradmin_app.reverse_appurl(
+            'filter',
+            kwargs={'filters_string': filters_string}
+        )
+
+    def get_unfiltered_queryset_for_role(self, role):
+        return self.model.objects.filter(period=role)\
+            .prefetch_related(
+                models.Prefetch('relatedstudents',
+                                queryset=RelatedStudent.objects.filter(period=role)))\
+            .prefetch_related(
+                models.Prefetch('relatedexaminers',
+                            queryset=RelatedExaminer.objects.filter(period=role)))
 
 
 class PeriodTagForm(forms.Form):
@@ -69,43 +107,6 @@ class PeriodTagForm(forms.Form):
                 raise ValidationError(
                     {'tag_text': ugettext_lazy('"{}" occurs more than once in the form.'.format(tag))}
                 )
-
-
-class TagItemValue(itemvalue.EditDelete):
-    template_name = 'devilry_admin/period/manage_tags/tag-item-value.django.html'
-
-    def get_title(self):
-        return self.value.displayname
-
-
-class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.View):
-    """
-    """
-    template_name = 'devilry_admin/period/manage_tags/manage-tags-list-view.django.html'
-    model = PeriodTag
-    value_renderer_class = TagItemValue
-    paginate_by = 10
-
-    def get_pagetitle(self):
-        return ugettext_lazy('Tags on {}'.format(self.request.cradmin_role.parentnode))
-
-    def add_filterlist_items(self, filterlist):
-        filterlist.append(listfilter_tags.Search())
-
-    def get_filterlist_url(self, filters_string):
-        return self.request.cradmin_app.reverse_appurl(
-            'filter',
-            kwargs={'filters_string': filters_string}
-        )
-
-    def get_unfiltered_queryset_for_role(self, role):
-        return self.model.objects.filter(period=role)\
-            .prefetch_related(
-                models.Prefetch('relatedstudents',
-                                queryset=RelatedStudent.objects.filter(period=role)))\
-            .prefetch_related(
-                models.Prefetch('relatedexaminers',
-                            queryset=RelatedExaminer.objects.filter(period=role)))
 
 
 class AddTagsView(formbase.FormView):
@@ -217,6 +218,9 @@ class EditDeleteViewMixin(View):
 
     def dispatch(self, request, *args, **kwargs):
         self.tag_id = kwargs.get('pk')
+        self.tag = PeriodTag.objects.get(period=self.request.cradmin_role, id=self.tag_id)
+        if self.tag.prefix != '':
+            raise Http404()
         return super(EditDeleteViewMixin, self).dispatch(request, *args, **kwargs)
 
     def get_queryset_for_role(self, role):
@@ -265,12 +269,6 @@ class EditTagView(crudbase.OnlySaveButtonMixin, EditDeleteViewMixin, update.Upda
         kwargs = super(EditTagView, self).get_form_kwargs()
         kwargs['period'] = self.request.cradmin_role
         return kwargs
-
-    def get_error_redirect_url(self):
-        return self.request.cradmin_app.reverse_appurl(viewname='edit', kwargs={'pk': self.tag_id})
-
-    def add_error_message(self, message):
-        messages.error(request=self.request, message=message)
 
 
 class DeleteTagView(EditDeleteViewMixin, delete.DeleteView):
