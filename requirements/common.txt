@@ -31,5 +31,7 @@
 
 #-e git://github.com/appressoas/django_cradmin.git#egg=django_cradmin
 
+#-e git://github.com/appressoas/django_cradmin.git@5b6ece00f4de561e569a5b2ce08cd87bb3f90158#egg=django_cradmin
+
 # Local modules
 -e .

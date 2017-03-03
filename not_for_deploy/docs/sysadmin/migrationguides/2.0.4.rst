@@ -1,0 +1,16 @@
+=============================
+Migrating from 2.0.3 to 2.0.4
+=============================
+
+
+Backup database and files
+#########################
+BACKUP. YOUR. DATABASE. AND. FILES.
+
+
+Update devilry
+##############
+Follow the :doc:`Update <../update>` guide, and set the version in requirements.txt to::
+
+    devilry==2.0.4
+
