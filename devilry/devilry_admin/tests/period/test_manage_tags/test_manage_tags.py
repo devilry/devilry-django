@@ -158,6 +158,42 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertEquals(mockresponse.selector.one('.devilry-core-periodtag-no-relatedexaminers').alltext_normalized,
                           'NO EXAMINERS')
 
+    def test_edit_button_rendered_when_prefix_is_blank(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.PeriodTag', period=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod
+        )
+        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue-editdelete-editbutton'))
+        self.assertIn('Edit', mockresponse.response.content)
+
+    def test_edit_button_not_rendered_when_prefix_is_not_blank(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.PeriodTag', period=testperiod, prefix='a')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue-editdelete-editbutton'))
+        self.assertNotIn('Edit', mockresponse.response.content)
+
+    def test_delete_button_rendered_when_prefix_is_blank(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.PeriodTag', period=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod
+        )
+        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue-editdelete-deletebutton'))
+        self.assertIn('Delete', mockresponse.response.content)
+
+    def test_delete_button_not_rendered_when_prefix_is_not_blank(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.PeriodTag', period=testperiod, prefix='a')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue-editdelete-deletebutton'))
+        self.assertNotIn('Delete', mockresponse.response.content)
+
     def test_query_count(self):
         testperiod = mommy.make('core.Period')
         testuser = mommy.make(settings.AUTH_USER_MODEL)
