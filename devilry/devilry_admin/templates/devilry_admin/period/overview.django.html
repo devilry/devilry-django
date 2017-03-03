@@ -61,6 +61,20 @@
                 </a>
             </p>
         </div>
+        <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
+            <h2>
+                {% trans "Semester tags" %}
+            </h2>
+            <p class="text-muted">
+                {% trans "Create, edit and remove tags within this semester." %}
+            </p>
+            <p>
+                <a href="{% cradmin_instance_url appname='manage_tags' viewname='INDEX' %}"
+                        class="btn btn-default btn-sm">
+                    {% trans "Add/edit tags" %}
+                </a>
+            </p>
+        </div>
         <div class="devilry-dashboard-container">
             <h2>{% trans "Semester administrators" %}</h2>
             <p class="text-muted">

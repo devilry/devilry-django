@@ -1,4 +1,5 @@
 import re
+import warnings
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -11,6 +12,7 @@ from abstract_is_admin import AbstractIsAdmin
 from devilry.devilry_account.models import User
 from node import Node
 from period import Period
+import period_tag
 
 
 class BulkCreateFromEmailsResult(object):
@@ -375,10 +377,15 @@ class RelatedStudentQuerySet(models.QuerySet):
         :class:`.RelatedStudentSyncSystemTag` objects ordered by
         ``tag`` in ascending order.
         """
+        warnings.warn('deprecated, function up to date but will be refactored', DeprecationWarning)
+        # return self.prefetch_related(
+        #     models.Prefetch('relatedstudenttag_set',
+        #                     queryset=RelatedStudentTag.objects.order_by('tag'),
+        #                     to_attr='syncsystemtag_objects'))
         return self.prefetch_related(
-                models.Prefetch('relatedstudenttag_set',
-                                queryset=RelatedStudentTag.objects.order_by('tag'),
-                                to_attr='syncsystemtag_objects'))
+            models.Prefetch('periodtag_set',
+                            queryset=period_tag.PeriodTag.objects.order_by('tag'),
+                            to_attr='syncsystemtag_objects'))
 
 
 class RelatedStudentManager(AbstractRelatedUserManager):
@@ -434,158 +441,6 @@ class RelatedStudent(RelatedUserBase):
             raise AttributeError('The syncsystemtag_stringlist property requires '
                                  'RelatedStudentQuerySet.prefetch_syncsystemtag_objects().')
         return [syncsystemtag.tag for syncsystemtag in self.syncsystemtag_objects]
-
-
-class RelatedUserTagQuerySet(models.QuerySet):
-    def get_tags_in_period_for_related_user_model(self, period):
-        """
-        Get a ValuesListQuerySet of all distinct tags within
-        the given period for a RelatedUser model.
-
-        Must be implemented in QuerySet subclass for the specific ``RelatedUser`` model.
-
-        Example::
-            Using ``RelatedStudent`` as ``RelatedUser`` subclass:
-
-                RelatedStudentTagQuerySet(RelatedUserTagQuerySet):
-                    def get_tags_in_period_for_related_user_model(self, period):
-                        return self.filter(relatedstudent__period=period)
-
-        Args:
-            period: :obj:`~.devilry.core.apps.models.Period` for ``RelatedUser``.
-
-        Returns:
-            (QuerySet): Of the ``RelatedUser`` model used filtered on period.
-        """
-        raise NotImplementedError
-
-    def get_all_distinct_tags_in_period(self, period):
-        """
-        Get a ValuesListQuerySet of all distinct tag (strings) within
-        the given period.
-        """
-        return self.get_tags_in_period_for_related_user_model(period=period)\
-            .order_by('tag')\
-            .values_list('tag', flat=True)\
-            .distinct()
-
-    def get_all_distinct_visible_tags_in_period(self, period):
-        return self.get_all_distinct_tags_in_period(period=period)\
-            .filter(is_hidden=False)
-
-
-class RelatedUserTag(models.Model):
-    """
-    Base class for :class:`.RelatedExaminerTag` and
-    :class:`.RelatedExaminerTag`.
-    """
-
-    class Meta:
-        abstract = True
-        unique_together = [
-            ('tag', 'prefix')
-        ]
-
-    #: A tag unique for a the related student/examiner.
-    #: Max 15 characters.
-    tag = models.CharField(db_index=True, max_length=15)
-
-    #: A prefix to go with the tag.
-    #: The prefix is used by import scripts etc.
-    prefix = models.CharField(blank=True, default='', max_length=30)
-
-    #: If the tag should be hidden.
-    is_hidden = models.BooleanField(default=False)
-
-    @property
-    def relateduser(self):
-        """
-        Override this function in subclass and return the RelatedUser-subclass used as
-        foreign key.
-
-        The purpose of this function is to have a common interface for the model when trying to access the foreign key
-        of the RelatedUser-subclass of the tag. This way we don't need to duplicate code for every subclass of this
-        class using a different RelatedUser-subclass with different fieldnames.
-        """
-        raise NotImplementedError()
-
-    @property
-    def displayname(self):
-        if len(self.prefix) > 0:
-            return '{}:{}'.format(self.prefix, self.tag)
-        return '{}'.format(self.tag)
-
-
-class RelatedExaminerTagQuerySet(RelatedUserTagQuerySet):
-    """
-    QuerySet for :class:`.RelatedExaminerTag`.
-    """
-    def get_tags_in_period_for_related_user_model(self, period):
-        return self.filter(relatedexaminer__period=period)
-
-
-class RelatedExaminerTag(RelatedUserTag):
-    """
-    A tag for a :class:`.RelatedExaminer`.
-
-    Used by a third-party sync system to organize students.
-
-    We use this as one of the ways admins can auto-assign examiners
-    to students (match :class:`.RelatedExaminerSyncSystemTag` to
-    :class:`.RelatedExaminerSyncSystemTag`).
-    """
-    objects = RelatedExaminerTagQuerySet.as_manager()
-
-    class Meta:
-        unique_together = [
-            ('relatedexaminer', 'prefix', 'tag')
-        ]
-
-    #: Foreignkey to the :class:`.RelatedExaminer` this tag is for.
-    relatedexaminer = models.ForeignKey(RelatedExaminer)
-
-    @property
-    def relateduser(self):
-        return self.relatedexaminer
-
-    def __unicode__(self):
-        return u'{}: {}'.format(self.tag, self.relatedexaminer)
-
-
-class RelatedStudentTagQuerySet(RelatedUserTagQuerySet):
-    """
-    QuerySet for :class:`.RelatedStudentTag`.
-    """
-    def get_tags_in_period_for_related_user_model(self, period):
-        return self.filter(relatedstudent__period=period)
-
-
-class RelatedStudentTag(RelatedUserTag):
-    """
-    A tag for a :class:`.RelatedStudent`.
-
-    Used by a third-party sync system to organize tag students.
-
-    We use this as one of the ways admins can auto-assign examiners
-    to students (match :class:`.RelatedExaminerSyncSystemTag` to
-    :class:`.RelatedExaminerSyncSystemTag`).
-    """
-    objects = RelatedStudentTagQuerySet.as_manager()
-
-    class Meta:
-        unique_together = [
-            ('relatedstudent', 'prefix', 'tag')
-        ]
-
-    #: Foreignkey to the :class:`.RelatedStudent` this tag is for.
-    relatedstudent = models.ForeignKey(RelatedStudent)
-
-    @property
-    def relateduser(self):
-        return self.relatedstudent
-
-    def __unicode__(self):
-        return u'{}: {}'.format(self.tag, self.relatedstudent)
 
 
 class RelatedStudentKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):

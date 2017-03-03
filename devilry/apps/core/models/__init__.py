@@ -5,6 +5,7 @@ from .basenode import BaseNode
 from .node import Node
 from .subject import Subject
 from .period import Period, PeriodApplicationKeyValue
+from .period_tag import PeriodTag
 from .relateduser import RelatedExaminer, RelatedStudent, RelatedStudentKeyValue
 from .assignment import Assignment
 from .pointrange_to_grade import PointRangeToGrade
@@ -21,7 +22,7 @@ from .examiner import Examiner
 from .groupinvite import GroupInvite
 
 __all__ = ("AbstractIsAdmin", "AbstractIsExaminer", "AbstractIsCandidate",
-           "BaseNode", "Node", "Subject", "Period", 'RelatedExaminer', 'RelatedStudent',
+           "BaseNode", "Node", "Subject", "Period", "PeriodTag", 'RelatedExaminer', 'RelatedStudent',
            "RelatedStudentKeyValue", "Assignment", "AssignmentGroup",
            "AssignmentGroupTag", "Delivery", "Deadline", "Candidate", "StaticFeedback",
            "FileMeta", "DevilryUserProfile", 'PeriodApplicationKeyValue', 'Examiner',

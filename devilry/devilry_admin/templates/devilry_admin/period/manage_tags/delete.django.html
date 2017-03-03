@@ -1,0 +1,21 @@
+{% extends "django_cradmin/viewhelpers/delete.django.html" %}
+
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+{% load i18n %}
+
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'manage_tags' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to period tags overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    {{ block.super }}
+{% endblock pageheader-inner %}

@@ -14,7 +14,8 @@ from abstract_is_candidate import AbstractIsCandidate
 from abstract_is_examiner import AbstractIsExaminer
 from basenode import BaseNode
 from custom_db_fields import ShortNameField, LongNameField
-from devilry.apps.core.models.relateduser import RelatedStudentTag, RelatedExaminerTag
+# from devilry.apps.core.models.relateduser import RelatedStudentTag, RelatedExaminerTag
+from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import User, PeriodPermissionGroup
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
 from .node import Node
@@ -1070,9 +1071,18 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             candidates.append(candidate)
         Candidate.objects.bulk_create(candidates)
 
+    def __prefetch_relatedstudents_with_candidates(self):
+        from devilry.apps.core.models import Candidate
+        return RelatedStudent.objects\
+            .select_related('user')\
+            .prefetch_related(
+                models.Prefetch('candidate_set',
+                                queryset=Candidate.objects.select_related('assignment_group')))
+
     def setup_examiners_by_relateduser_syncsystem_tags(self):
         from devilry.apps.core.models import Candidate
         from devilry.apps.core.models import Examiner
+        import period_tag
         period = self.period
 
         # We use this to avoid adding examiners to groups they are already on
@@ -1081,38 +1091,23 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         groupid_to_examineruserid_map = dict(Examiner.objects.filter(
             assignmentgroup__parentnode=self).values_list('assignmentgroup_id', 'relatedexaminer__user_id'))
 
-        # We collect all the examiners to be created in this list, and bulk create
-        # them at the end
         examinerobjects = []
+        for periodtag in period_tag.PeriodTag.objects.filter(period=period):
+            relatedstudentids = [relatedstudent.id for relatedstudent in periodtag.relatedstudents.all()]
 
-        for relatedexaminer_syncsystem_tag in RelatedExaminerTag.objects\
-                .filter(relatedexaminer__period=period)\
-                .select_related('relatedexaminer__user'):
-
-            # Step1: Collect all relatedstudents with same tag as examiner
-            relatedstudentids = []
-            for relatedstudent_syncsystem_tag in RelatedStudentTag.objects\
-                    .filter(relatedstudent__period=period,
-                            tag=relatedexaminer_syncsystem_tag.tag):
-                relatedstudentids.append(relatedstudent_syncsystem_tag.relatedstudent_id)
-
-            # Step2: Find the group of all the students matching the tag
-            #        and bulk create Examiner objects for the groups
-            #        if the user is not already examiner.
             if relatedstudentids:
-                relatedexaminer = relatedexaminer_syncsystem_tag.relatedexaminer
-                examineruser = relatedexaminer_syncsystem_tag.relatedexaminer.user
-                groupids = set()
-                for candidate in Candidate.objects\
-                        .filter(assignment_group__parentnode=self,
-                                relatedstudent_id__in=relatedstudentids)\
-                        .distinct():
-                    if groupid_to_examineruserid_map.get(candidate.assignment_group_id, None) != examineruser.id:
-                        groupids.add(candidate.assignment_group_id)
-
-                examinerobjects.extend([Examiner(
-                    assignmentgroup_id=groupid,
-                    relatedexaminer=relatedexaminer
-                ) for groupid in groupids])
+                candidate_queryset = Candidate.objects \
+                    .filter(assignment_group__parentnode=self, relatedstudent_id__in=relatedstudentids) \
+                    .select_related('assignment_group', 'relatedstudent', 'relatedstudent__user') \
+                    .distinct()
+                for relatedexaminer in periodtag.relatedexaminers.all().select_related('user'):
+                    examineruser = relatedexaminer.user
+                    groupids = set()
+                    for candidate in candidate_queryset:
+                        if groupid_to_examineruserid_map.get(candidate.assignment_group_id, None) != examineruser.id:
+                            groupids.add(candidate.assignment_group_id)
+                    examinerobjects.extend([Examiner(
+                        assignmentgroup_id=groupid,
+                        relatedexaminer=relatedexaminer) for groupid in groupids])
         if examinerobjects:
             Examiner.objects.bulk_create(examinerobjects)
