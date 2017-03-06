@@ -11,7 +11,7 @@
 
 {% block listbuilderview_buttons %}
     {{ block.super }}
-    <p id="devilry_examiner_bulk_operations_overview_buttonbar" class="devilry-buttonbar devilry-buttonbar-fullwidth">
+    <p id="devilry_examiner_bulk_operations_overview_buttonbar" class="devilry-buttonbar">
         {% if waiting_for_feedback_count > 0 %}
                 <a id="devilry-examiner-bulk-feedback-button" class="btn btn-default"
                     href="{% cradmin_appurl 'bulk-feedback' %}">
