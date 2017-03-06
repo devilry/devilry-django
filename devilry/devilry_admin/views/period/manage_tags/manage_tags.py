@@ -27,7 +27,7 @@ from django_cradmin.viewhelpers import multiselect2
 
 from devilry.apps.core.models import PeriodTag
 from devilry.apps.core.models import RelatedStudent, RelatedExaminer
-from devilry.devilry_admin.cradminextensions.listfilter import listfilter_tags
+from devilry.devilry_admin.cradminextensions.listfilter import listfilter_tags, listfilter_relateduser
 
 
 class TagItemValue(itemvalue.EditDelete):
@@ -95,7 +95,7 @@ class PeriodTagForm(forms.Form):
         if 'tag_text' not in self.cleaned_data or len(self.cleaned_data['tag_text']) == 0:
             raise ValidationError(ugettext_lazy('Tag field is empty.'))
         tag_text = self.cleaned_data['tag_text']
-        pattern = '^([^,](,)?)+'
+        pattern = '^([^,]\w+(,\s*\w+)*?)+$'
         if not re.match(pattern, tag_text):
             raise ValidationError(
                 {'tag_text': ugettext_lazy('Tag text must be in comma separated format! '
@@ -142,9 +142,6 @@ class AddTagsView(formbase.FormView):
             viewname=crapp.INDEXVIEW_NAME
         )
 
-    def get_error_redirect_url(self):
-        return self.request.cradmin_app.reverse_appurl(viewname='add_tag')
-
     def __create_tags(self, tags_string_list, excluded_tags):
         tags = []
         period = self.request.cradmin_role
@@ -165,7 +162,7 @@ class AddTagsView(formbase.FormView):
         # Check if all tags to be added exists.
         if len(tags_string_list) == excluded_tags.count():
             self.add_error_message('The tag(s) you wanted to add already exists.')
-            return HttpResponseRedirect(self.get_error_redirect_url())
+            return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(viewname='add_tag'))
 
         # Add success message.
         num_tags_created = self.__create_tags(tags_string_list, excluded_tags)
@@ -191,6 +188,7 @@ class AddTagsView(formbase.FormView):
 
 class EditPeriodTagForm(forms.ModelForm):
     """
+    Form for editing :class:`~.devilry.apps.core.models.period_tag.PeriodTag`s.
     """
     class Meta:
         model = PeriodTag
@@ -213,6 +211,11 @@ class EditPeriodTagForm(forms.ModelForm):
 
 class EditDeleteViewMixin(View):
     """
+    Edit/delete mixin for :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
+
+    Raises:
+        Http404: if prefix :attr:`~.devilry.apps.core.models.period_tag.PeriodTag.prefix`
+            is not blank.
     """
     model = PeriodTag
 
@@ -231,6 +234,9 @@ class EditDeleteViewMixin(View):
 
 
 class EditTagView(crudbase.OnlySaveButtonMixin, EditDeleteViewMixin, update.UpdateView):
+    """
+    Edit a :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
+    """
     template_name = 'devilry_admin/period/manage_tags/crud.django.html'
     form_class = EditPeriodTagForm
 
@@ -272,6 +278,9 @@ class EditTagView(crudbase.OnlySaveButtonMixin, EditDeleteViewMixin, update.Upda
 
 
 class DeleteTagView(EditDeleteViewMixin, delete.DeleteView):
+    """
+    Delete a :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
+    """
     template_name = 'devilry_admin/period/manage_tags/delete.django.html'
 
     def get_object_preview(self):
@@ -280,7 +289,9 @@ class DeleteTagView(EditDeleteViewMixin, delete.DeleteView):
 
 
 class SelectedRelatedUsersForm(forms.Form):
-    invalid_item_selected_message = 'Invalid relateduser was selected'
+    invalid_item_selected_message = 'Invalid user was selected. This may happen if someone else added or ' \
+                                    'removed one or more of the available users while you were selecting. ' \
+                                    'Please try again.'
     selected_items = forms.ModelMultipleChoiceField(
         queryset=None,
         error_messages={
@@ -294,38 +305,50 @@ class SelectedRelatedUsersForm(forms.Form):
         self.fields['selected_items'].queryset = relatedusers_queryset
 
 
-class SelectableItemValue(multiselect2.listbuilder_itemvalues.ItemValue):
-    """
-    Selectable item.
-    """
+class SelectedItemsTarget(multiselect2.target_renderer.Target):
+    def __init__(self, *args, **kwargs):
+        self.relateduser_type = kwargs.pop('relateduser_type')
+        super(SelectedItemsTarget, self).__init__(*args, **kwargs)
+
+    def get_with_items_title(self):
+        return pgettext_lazy('admin multiselect2_relateduser',
+                             'Selected {}s'.format(self.relateduser_type))
+
+    def get_without_items_text(self):
+        return pgettext_lazy('admin multiselect2_relateduser',
+                             'No {}s selected'.format(self.relateduser_type))
+
+
+class SelectedRelatedUserItem(multiselect2.selected_item_renderer.SelectedItem):
     valuealias = 'relateduser'
 
     def get_title(self):
         return self.relateduser.user.shortname
 
 
-class SelectedItemTargetRenderer(multiselect2.target_renderer.Target):
-    def get_with_items_title(self):
-        return pgettext_lazy('admin multiselect2_relateduser',
-                             'Selected users')
+class SelectableRelatedUserItem(multiselect2.listbuilder_itemvalues.ItemValue):
+    valuealias = 'relateduser'
+    selected_item_renderer_class = SelectedRelatedUserItem
 
-    def get_without_items_text(self):
-        return pgettext_lazy('admin multiselect2_relateduser',
-                             'No related users selected')
+    def get_title(self):
+        return self.relateduser.user.shortname
 
 
-class BaseRelatedUserMultiSelectView(multiselect2view.ListbuilderView):
+class BaseRelatedUserMultiSelectView(multiselect2view.ListbuilderFilterView):
     """
     Base multiselect view for :class:`~.devilry.apps.core.models.relateduser.RelatedExaminer`s and
     :class:`~.devilry.apps.core.models.relateduser.RelatedStudents`s.
-
-    Attributes:
-        tag_name(str): the specific tag of a :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
     """
     template_name = 'devilry_admin/period/manage_tags/base-multiselect-view.django.html'
-    value_renderer_class = SelectableItemValue
+    value_renderer_class = SelectableRelatedUserItem
     form_class = SelectedRelatedUsersForm
+    paginate_by = 20
+
+    #: the specific tag :attr:`~.devilry.apps.core.models.period_tag.PeriodTag.tag`.
     tag_name = None
+
+    #: Type of related user as shown in ui.
+    #: e.g 'student' or 'examiner'
     relateduser_string = ''
 
     def dispatch(self, request, *args, **kwargs):
@@ -333,13 +356,22 @@ class BaseRelatedUserMultiSelectView(multiselect2view.ListbuilderView):
         return super(BaseRelatedUserMultiSelectView, self).dispatch(request, *args, **kwargs)
 
     def get_target_renderer_class(self):
-        return SelectedItemTargetRenderer
+        return SelectedItemsTarget
 
     def get_period_tag(self):
         period = self.request.cradmin_role
         return PeriodTag.objects.get(period=period, tag=self.tag_name)
 
-    def get_queryset_for_role(self, role):
+    def get_tags_for_period(self):
+        return PeriodTag.objects.filter(period=self.request.cradmin_role)
+
+    def add_filterlist_items(self, filterlist):
+        filterlist.append(listfilter_relateduser.Search())
+        filterlist.append(listfilter_relateduser.OrderRelatedStudentsFilter())
+        filterlist.append(listfilter_relateduser.TagSelectFilter(tags=PeriodTag.objects
+                                                                 .tags_string_list_on_period(period=self.request.cradmin_role)))
+
+    def get_unfiltered_queryset_for_role(self, role):
         """
         Get all relatedstudents for the period that are not already registered on the
         tag provided with the url.
@@ -351,7 +383,12 @@ class BaseRelatedUserMultiSelectView(multiselect2view.ListbuilderView):
         kwargs = super(BaseRelatedUserMultiSelectView, self).get_form_kwargs()
         kwargs['relatedusers_queryset'] = self.get_queryset_for_role(role=period)
         return kwargs
-
+    
+    def get_target_renderer_kwargs(self):
+        kwargs = super(BaseRelatedUserMultiSelectView, self).get_target_renderer_kwargs()
+        kwargs['relateduser_type'] = self.relateduser_string
+        return kwargs
+    
     def add_success_message(self, message):
         messages.success(self.request, message=message)
 
@@ -366,6 +403,9 @@ class AddRelatedUserToTagMultiSelectView(BaseRelatedUserMultiSelectView):
     """
     Add related users to a :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
     """
+    def get_pagetitle(self):
+        return ugettext_lazy('Add {}s to {}'.format(self.relateduser_string, self.tag_name))
+
     def get_queryset_for_role(self, role):
         return super(AddRelatedUserToTagMultiSelectView, self)\
             .get_queryset_for_role(role=role)\
@@ -380,14 +420,18 @@ class AddRelatedUserToTagMultiSelectView(BaseRelatedUserMultiSelectView):
         period_tag = self.get_period_tag()
         related_users = form.cleaned_data['selected_items']
         self.add_related_users(period_tag=period_tag, related_users=related_users)
-        self.add_success_message(message='{} {} successfully added'.format(len(related_users), self.relateduser_string))
+        self.add_success_message(message='{} {}(s) added successfully.'.format(len(related_users),
+                                                                              self.relateduser_string))
         return super(AddRelatedUserToTagMultiSelectView, self).form_valid(form=form)
-    
+
 
 class RemoveRelatedUserFromTagMultiSelectView(BaseRelatedUserMultiSelectView):
     """
     Remove related users from a :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
     """
+    def get_pagetitle(self):
+        return ugettext_lazy('Remove {}s from {}'.format(self.relateduser_string, self.tag_name))
+
     def get_queryset_for_role(self, role):
         return super(RemoveRelatedUserFromTagMultiSelectView, self)\
             .get_queryset_for_role(role=role)\
@@ -403,52 +447,76 @@ class RemoveRelatedUserFromTagMultiSelectView(BaseRelatedUserMultiSelectView):
         related_users = form.cleaned_data['selected_items']
         self.remove_related_users(period_tag=period_tag, related_users=related_users)
         self.add_success_message(
-            message='{} {} successfully removed'.format(len(related_users), self.relateduser_string))
+            message='{} {}(s) removed successfully.'.format(len(related_users), self.relateduser_string))
         return super(RemoveRelatedUserFromTagMultiSelectView, self).form_valid(form=form)
 
 
-class RelatedExaminerAddView(AddRelatedUserToTagMultiSelectView):
+class SelectedRelatedExaminerForm(SelectedRelatedUsersForm):
+    invalid_item_selected_message = 'Invalid examiner was selected.'
+
+
+class SelectedRelatedStudentForm(SelectedRelatedUsersForm):
+    invalid_item_selected_message = 'Invalid student was selected.'
+
+
+class ExaminerMultiSelectViewMixin(object):
+    model = RelatedExaminer
+    relateduser_string = 'examiner'
+    form_class = SelectedRelatedExaminerForm
+
+
+class StudentMultiSelectViewMixin(object):
+    model = RelatedStudent
+    relateduser_string = 'student'
+    form_class = SelectedRelatedStudentForm
+
+
+class RelatedExaminerAddView(ExaminerMultiSelectViewMixin, AddRelatedUserToTagMultiSelectView):
     """
     Multi-select add view for :class:`~.devilry.apps.core.models.relateduser.RelatedExaminer`.
     """
-    model = RelatedExaminer
-    relateduser_string = 'examiner(s)'
+    def get_filterlist_url(self, filters_string):
+        return self.request.cradmin_app.reverse_appurl(
+            'add_examiners_filter', kwargs={
+                'tag': self.tag_name,
+                'filters_string': filters_string
+            })
 
-    def get_pagetitle(self):
-        return ugettext_lazy('Add examiners to tag {}'.format(self.tag_name))
 
-
-class RelatedExaminerRemoveView(RemoveRelatedUserFromTagMultiSelectView):
+class RelatedExaminerRemoveView(ExaminerMultiSelectViewMixin, RemoveRelatedUserFromTagMultiSelectView):
     """
     Multi-select remove view for :class:`~.devilry.apps.core.models.relateduser.RelatedExaminer`.
     """
-    model = RelatedExaminer
-    relateduser_string = 'examiner(s)'
+    def get_filterlist_url(self, filters_string):
+        return self.request.cradmin_app.reverse_appurl(
+            'remove_examiners_filter', kwargs={
+                'tag': self.tag_name,
+                'filters_string': filters_string
+            })
 
-    def get_pagetitle(self):
-        return ugettext_lazy('Remove examiners from tag {}'.format(self.tag_name))
 
-
-class RelatedStudentAddView(AddRelatedUserToTagMultiSelectView):
+class RelatedStudentAddView(StudentMultiSelectViewMixin, AddRelatedUserToTagMultiSelectView):
     """
     Multi-select add view for :class:`~.devilry.apps.core.models.relateduser.RelatedStudent`.
     """
-    model = RelatedStudent
-    relateduser_string = 'student(s)'
+    def get_filterlist_url(self, filters_string):
+        return self.request.cradmin_app.reverse_appurl(
+            'add_students_filter', kwargs={
+                'tag': self.tag_name,
+                'filters_string': filters_string
+            })
 
-    def get_pagetitle(self):
-        return ugettext_lazy('Add students to tag {}'.format(self.tag_name))
 
-
-class RelatedStudentRemoveView(RemoveRelatedUserFromTagMultiSelectView):
+class RelatedStudentRemoveView(StudentMultiSelectViewMixin, RemoveRelatedUserFromTagMultiSelectView):
     """
     Multi-select remove view for :class:`~.devilry.apps.core.models.relateduser.RelatedStudent`.
     """
-    model = RelatedStudent
-    relateduser_string = 'student(s)'
-
-    def get_pagetitle(self):
-        return ugettext_lazy('Remove students from tag {}'.format(self.tag_name))
+    def get_filterlist_url(self, filters_string):
+        return self.request.cradmin_app.reverse_appurl(
+            'remove_students_filter', kwargs={
+                'tag': self.tag_name,
+                'filters_string': filters_string
+            })
 
 
 class App(crapp.App):
@@ -468,16 +536,30 @@ class App(crapp.App):
         crapp.Url(r'^delete/(?P<pk>\d+)$',
                   DeleteTagView.as_view(),
                   name='delete'),
+
         crapp.Url('^add-examiners/(?P<tag>[\w-]+)$',
                   RelatedExaminerAddView.as_view(),
                   name='add_examiners'),
+        crapp.Url('^add-examiners/(?P<tag>[\w-]+)/(?P<filters_string>.+)?$',
+                  RelatedExaminerAddView.as_view(),
+                  name='add_examiners_filter'),
         crapp.Url('^remove-examiners/(?P<tag>[\w-]+)$',
                   RelatedExaminerRemoveView.as_view(),
                   name='remove_examiners'),
+        crapp.Url('^remove-examiners/(?P<tag>[\w-]+)/(?P<filters_string>.+)?$',
+                  RelatedExaminerRemoveView.as_view(),
+                  name='remove_examiners_filter'),
+
         crapp.Url('^add-students/(?P<tag>[\w-]+)$',
                   RelatedStudentAddView.as_view(),
                   name='add_students'),
+        crapp.Url('^add-students/(?P<tag>[\w-]+)/(?P<filters_string>.+)?$',
+                  RelatedStudentAddView.as_view(),
+                  name='add_students_filter'),
         crapp.Url('^remove-students/(?P<tag>[\w-]+)$',
                   RelatedStudentRemoveView.as_view(),
-                  name='remove_students')
+                  name='remove_students'),
+        crapp.Url('^remove-students/(?P<tag>[\w-]+)/(?P<filters_string>.+)?$',
+                  RelatedStudentAddView.as_view(),
+                  name='remove_students_filter'),
     ]
