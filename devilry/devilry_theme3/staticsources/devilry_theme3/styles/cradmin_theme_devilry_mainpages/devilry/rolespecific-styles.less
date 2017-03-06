@@ -25,16 +25,16 @@
       }
     }
 
-    &.btn-default {
-      background: @color-whiten;
-      border-color: @color-whiten;
-      color: @text-color;
-      &:hover, &:focus {
-        background: @color-bright;
-        border-color: @color-bright;
-        color: @text-color;
-      }
-    }
+    //&.btn-default {
+    //  background: @color-whiten;
+    //  border-color: @color-whiten;
+    //  color: @text-color;
+    //  &:hover, &:focus {
+    //    background: @color-bright;
+    //    border-color: @color-bright;
+    //    color: @text-color;
+    //  }
+    //}
 
     &.btn-danger {
       background: @btn-danger-bg;
@@ -99,16 +99,16 @@
 
   .devilry-tabs {
     &__tab-list {
-      border-bottom-color: @color-whiten;
+      //border-bottom-color: @devilry-brand-color-default-light3;
     }
 
     &__tab {
-      background: #fff;
+      background: @devilry-brand-color-default-light3;
       color: @text-color;
       text-decoration: none;
       &:hover, &:focus {
         text-decoration: none;
-        background: @color-bright;
+        background: #fff;
         color: @text-color;
       }
 
@@ -116,7 +116,8 @@
         &,
         &:hover,
         &:focus {
-          background: @color-whiten;
+          text-decoration: none;
+          background: #fff;
           color: @text-color;
         }
       }
