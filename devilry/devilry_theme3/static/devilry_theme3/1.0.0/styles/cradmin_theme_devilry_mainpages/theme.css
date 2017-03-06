@@ -7858,11 +7858,11 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 }
 .comment-form-container {
   background-color: #fff;
-  padding: 10px 10px 10px 10px;
+  padding: 12px;
 }
 .devilry-group-feedbackfeed-comment {
   display: block;
-  margin-bottom: 15px;
+  margin-bottom: 21px;
   background-color: #fff;
   min-height: 5.0em;
   border: 0 solid #666666;
@@ -7918,7 +7918,7 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   }
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content {
-  padding: 10px 15px;
+  padding: 12px;
   /**/
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-meta {
@@ -7927,6 +7927,7 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   color: #333333;
   font-size: 14px;
   line-height: 20px;
+  margin-bottom: 21px;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-created-by {
   font-weight: bold;
@@ -7945,23 +7946,30 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text {
   font-size: 20px;
-  margin-bottom: 15px;
+  margin-bottom: 21px;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text:last-child {
+  margin-bottom: 0;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h1,
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h2,
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h3 {
   font-weight: normal;
+  margin-top: 21px;
+  margin-bottom: 7px;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h4,
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h5,
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h6 {
   font-weight: bold;
   font-size: 20px;
+  margin-top: 7px;
+  margin-bottom: 7px;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h1 {
   font-size: 40px;
   border-bottom: 3px solid #f5f5f5;
-  padding-bottom: 8px;
+  padding-bottom: 7px;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h2 {
   font-size: 32px;
@@ -7974,6 +7982,18 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text a {
   text-decoration: underline;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h1:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h2:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h3:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h4:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h5:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h6:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text ul:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text ol:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text pre:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text p:last-child {
+  margin-bottom: 0;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content.after {
   content: "";
@@ -8018,7 +8038,7 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   margin: 0;
   left: 0;
   right: 0;
-  padding: 10px;
+  padding: 12px;
   position: absolute;
   text-transform: uppercase;
   top: 50%;
@@ -9084,7 +9104,7 @@ fieldset[disabled] .button_student {
 .devilry-group-feedbackfeed-sidebar {
   background: #fff;
   padding: 5px 15px 0 15px;
-  margin-bottom: 15px;
+  margin-bottom: 21px;
 }
 .devilry-group-feedbackfeed-sidebar__title {
   margin-top: 0;
@@ -9104,38 +9124,38 @@ fieldset[disabled] .button_student {
   padding: 0;
 }
 .devilry-group-feedbackfeed-feed {
+  border-left: 3px solid #dadada;
+  margin-left: 30px;
   /*
-   Event messages such as passed, failed and general messages between comments.
-   */
+  Event messages such as passed, failed and general messages between comments.
+  */
+}
+.devilry-group-feedbackfeed-feed > li {
+  margin-left: -30px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message {
-  margin-left: 25px;
-  margin-top: 25px;
-  margin-bottom: 25px;
+  margin-left: 54px;
+  margin-bottom: 21px;
   font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-deadline-created {
-  margin-left: 25px;
-  margin-top: 25px;
-  margin-bottom: 25px;
+  margin-left: 54px;
+  margin-bottom: 21px;
   font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-deadline-expired {
-  margin-left: 25px;
-  margin-top: 25px;
-  margin-bottom: 25px;
+  margin-left: 54px;
+  margin-bottom: 21px;
   font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-passed {
-  margin-left: 25px;
-  margin-top: 25px;
-  margin-bottom: 25px;
+  margin-left: 54px;
+  margin-bottom: 21px;
   font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-grade {
-  margin-left: 25px;
-  margin-top: 25px;
-  margin-bottom: 25px;
+  margin-left: 54px;
+  margin-bottom: 21px;
   font-size: 16px;
   font-weight: bold;
 }
@@ -9152,9 +9172,8 @@ fieldset[disabled] .button_student {
   padding: 2px 5px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-failed {
-  margin-left: 25px;
-  margin-top: 25px;
-  margin-bottom: 25px;
+  margin-left: 54px;
+  margin-bottom: 21px;
   font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-feed-uploaded-file-tag {
