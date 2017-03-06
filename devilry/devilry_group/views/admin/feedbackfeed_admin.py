@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django_cradmin import crapp
-from django_cradmin.crispylayouts import DefaultSubmit
+from django_cradmin.crispylayouts import PrimarySubmit
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_group import models as group_models
@@ -50,10 +50,10 @@ class AdminPublicDiscussView(AdminBaseFeedbackFeedView):
     def get_buttons(self):
         buttons = super(AdminPublicDiscussView, self).get_buttons()
         buttons.extend([
-            DefaultSubmit(
+            PrimarySubmit(
                 'admin_add_public_comment',
                 _('Add comment'),
-                css_class='btn btn-default')
+                css_class='btn btn-primary')
         ])
         return buttons
 
@@ -82,10 +82,10 @@ class AdminWithExaminersDiscussView(AdminBaseFeedbackFeedView):
     def get_buttons(self):
         buttons = super(AdminWithExaminersDiscussView, self).get_buttons()
         buttons.extend([
-            DefaultSubmit(
+            PrimarySubmit(
                 'admin_add_comment_for_examiners_and_admins',
                 _('Add comment'),
-                css_class='btn btn-default')
+                css_class='btn btn-primary')
         ])
         return buttons
 

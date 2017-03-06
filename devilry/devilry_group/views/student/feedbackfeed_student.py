@@ -12,7 +12,7 @@ from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from django_cradmin import crapp
 
 # 3rd party imports
-from django_cradmin.crispylayouts import DefaultSubmit
+from django_cradmin.crispylayouts import PrimarySubmit
 
 
 class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
@@ -36,7 +36,7 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     def get_buttons(self):
         buttons = super(StudentFeedbackFeedView, self).get_buttons()
         buttons.extend([
-            DefaultSubmit(
+            PrimarySubmit(
                 'student_add_comment',
                 _('Add delivery or question'),
                 css_class='btn btn-success'
