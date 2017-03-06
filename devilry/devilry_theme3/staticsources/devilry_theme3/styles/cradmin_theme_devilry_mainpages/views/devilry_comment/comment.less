@@ -3,6 +3,19 @@
     padding: 10px 10px 10px 10px;
 }
 
+
+.devilry-group-feedbackfeed-comment-rolemixin(@brand-color, @brand-color-dark) {
+    border-left-color: @brand-color;
+    a {
+        color: @brand-color-dark;
+        text-decoration: underline;
+        &:hover {
+            //color: @link-hover-color;
+            color: @brand-color;
+        }
+    }
+}
+
 .devilry-group-feedbackfeed-comment {
     display: block;
     margin-bottom: 15px;
@@ -14,13 +27,13 @@
 
 
     &.devilry-group-feedbackfeed-comment-student {
-        border-left-color: @devilry-student-bgcolor;
+        .devilry-group-feedbackfeed-comment-rolemixin(@devilry-brand-color-student, @devilry-brand-color-student-dark);
     }
     &.devilry-group-feedbackfeed-comment-examiner {
-        border-left-color: @devilry-examiner-bgcolor;
+        .devilry-group-feedbackfeed-comment-rolemixin(@devilry-brand-color-examiner, @devilry-brand-color-examiner-dark);
     }
     &.devilry-group-feedbackfeed-comment-admin {
-        border-left-color: @devilry-anyadmin-bgcolor;
+        .devilry-group-feedbackfeed-comment-rolemixin(@devilry-brand-color-admin, @devilry-brand-color-admin-dark);
     }
 
     &--with-badge {
@@ -75,8 +88,29 @@
         .devilry-group-comment-text{
             font-size: ceil(@font-size-base + 4px);
             margin-bottom: 15px;
-            font-family: @font-family-serif;
             //padding-top: 15px;
+
+            h1, h2, h3 {
+                font-weight: normal;
+            }
+
+            h4, h5, h6 {
+                font-weight: bold;
+                font-size: ceil(@font-size-base + 4px);
+            }
+
+            h1 {
+                font-size: ceil(@font-size-base * 2.5);
+                border-bottom: @devilry-brand-border-width solid @devilry-brand-color-default-light4;
+                padding-bottom: 8px;
+            }
+            h2 {
+                font-size: ceil(@font-size-base * 2.0);
+            }
+            h3 {
+                font-size: ceil(@font-size-base * 1.5);
+            }
+
             pre {
                 margin-bottom: 15px;
             }
