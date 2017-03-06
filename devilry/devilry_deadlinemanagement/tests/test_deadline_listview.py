@@ -101,7 +101,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
         )
-        self.assertEquals('Group: ( candidate )',
+        self.assertEquals('candidate',
                           mockresponse.selector.one('.devilry-deadlinmanagement-item-value-groups').alltext_normalized)
 
     def test_deadline_item_value_group_multiple_candidates(self):
@@ -124,7 +124,7 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
             cradmin_app=self.__get_mock_app(user=testuser),
             requestuser=testuser
         )
-        self.assertEquals('Group: ( candidate1 , candidate2 )',
+        self.assertEquals('(candidate1 , candidate2)',
                           mockresponse.selector.one('.devilry-deadlinmanagement-item-value-groups').alltext_normalized)
 
     def test_deadline_item_value_multiple_groups(self):
@@ -152,8 +152,8 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
         )
         group_value_list = [elem.alltext_normalized for elem in
                             mockresponse.selector.list('.devilry-deadlinmanagement-item-value-groups')]
-        self.assertIn('Group: ( candidate_group1 )', group_value_list)
-        self.assertIn('Group: ( candidate_group2 )', group_value_list)
+        self.assertIn('candidate_group1,', group_value_list)
+        self.assertIn('candidate_group2', group_value_list)
 
     def test_deadline_item_value_candidate_semi_anonymous(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
