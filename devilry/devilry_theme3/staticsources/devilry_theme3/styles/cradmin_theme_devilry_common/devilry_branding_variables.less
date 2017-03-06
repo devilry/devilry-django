@@ -2,31 +2,22 @@
 //@devilry-brand-primary-bg: #333;
 @devilry-brand-primary-bg: @link-color;
 @devilry-brand-primary-color: #fff;
-@devilry-brand-success-bg: darken(#5cb85c, 8%);
-@devilry-brand-success-color: #fff;
-@devilry-brand-info-bg: darken(#428bca, 6.5%);
-@devilry-brand-info-color: #fff;
-@devilry-brand-danger-bg: darken(#d9534f, 8%);
-@devilry-brand-danger-color: #fff;
-@devilry-brand-muted-color: #777;
-
 @devilry-brand-border-width: 3px;
 
 
-
-@devilry-brand-color-success: #26AD61;
-@devilry-brand-color-success-dark: #217846;
-@devilry-brand-color-success-light1: #60c18b;
-@devilry-brand-color-success-light2: #94d5b1;
-@devilry-brand-color-success-light3: #cae9d7;
-@devilry-brand-color-success-light4: #f4fbf7;
+@devilry-brand-color-success: #61AE24;
+@devilry-brand-color-success-dark: shade(@devilry-brand-color-success, 7%);
+@devilry-brand-color-success-light1: tint(@devilry-brand-color-success, 7%);
+@devilry-brand-color-success-light2: tint(@devilry-brand-color-success, 15%);
+@devilry-brand-color-success-light3: tint(@devilry-brand-color-success, 60%);
+@devilry-brand-color-success-light4: #fff;
 
 @devilry-brand-color-danger: #E84D3D;
 @devilry-brand-color-danger-dark: #a0372f;
 @devilry-brand-color-danger-light1: #ec7a71;
 @devilry-brand-color-danger-light2: #f1a69f;
 @devilry-brand-color-danger-light3: #f8d2ce;
-@devilry-brand-color-danger-light3: #fef6f5;
+@devilry-brand-color-danger-light4: #fef6f5;
 
 @devilry-brand-color-default: #262626;
 @devilry-brand-color-default-dark: #000000;
@@ -35,26 +26,37 @@
 @devilry-brand-color-default-light3: #d1d1d1;
 @devilry-brand-color-default-light4: #f5f5f5;
 
-@devilry-brand-color-admin: #B568A9;
-@devilry-brand-color-admin-dark: #7e4a75;
-@devilry-brand-color-admin-light1: #c78fbe;
-@devilry-brand-color-admin-light2: #d9b4d3;
-@devilry-brand-color-admin-light3: #ebd9e8;
-@devilry-brand-color-admin-light4: #fbf7fa;
 
-@devilry-brand-color-examiner: #0093D0;
-@devilry-brand-color-examiner-dark: #0d6890;
-@devilry-brand-color-examiner-light1: #46aeda;
-@devilry-brand-color-examiner-light2: #82c9e5;
-@devilry-brand-color-examiner-light3: #c0e4f2;
-@devilry-brand-color-examiner-light4: #f2f9fc;
+@devilry-brand-success-bg: @devilry-brand-color-success-dark;
+@devilry-brand-success-color: @devilry-brand-color-success-light4;
+@devilry-brand-info-bg: #129dc1;
+@devilry-brand-info-color: #fff;
+@devilry-brand-danger-bg: @devilry-brand-color-danger-dark;
+@devilry-brand-danger-color: @devilry-brand-color-danger-light4;
+@devilry-brand-muted-color: @devilry-brand-color-default-light1;
 
-@devilry-brand-color-student: #F7D71E;
-@devilry-brand-color-student-dark: #ac9527;
-@devilry-brand-color-student-light1: #f8df61;
-@devilry-brand-color-student-light2: #fae993;
-@devilry-brand-color-student-light3: #fdf4c9;
-@devilry-brand-color-student-light4: #fefdf3;
+
+@devilry-brand-color-admin: shade(#F18D05, 5%);
+@devilry-brand-color-admin-dark: shade(@devilry-brand-color-admin, 7%);
+@devilry-brand-color-admin-light1: tint(@devilry-brand-color-admin, 7%);
+@devilry-brand-color-admin-light2: tint(@devilry-brand-color-admin, 15%);
+@devilry-brand-color-admin-light3: tint(@devilry-brand-color-admin, 30%);
+@devilry-brand-color-admin-light4: #fff;
+
+
+@devilry-brand-color-examiner: #129dc1;
+@devilry-brand-color-examiner-dark: shade(@devilry-brand-color-examiner, 7%);
+@devilry-brand-color-examiner-light1: tint(@devilry-brand-color-examiner, 7%);
+@devilry-brand-color-examiner-light2: tint(@devilry-brand-color-examiner, 15%);
+@devilry-brand-color-examiner-light3: tint(@devilry-brand-color-examiner, 60%);
+@devilry-brand-color-examiner-light4: #fff;
+
+@devilry-brand-color-student: #61AE24;
+@devilry-brand-color-student-dark: shade(@devilry-brand-color-student, 7%);
+@devilry-brand-color-student-light1: tint(@devilry-brand-color-student, 7%);
+@devilry-brand-color-student-light2: tint(@devilry-brand-color-student, 15%);
+@devilry-brand-color-student-light3: tint(@devilry-brand-color-student, 30%);
+@devilry-brand-color-student-light4: #fff;
 
 
 @devilry-brand-focusbox-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
