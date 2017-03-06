@@ -1,0 +1,46 @@
+.devilry-filedownload {
+  background-color: @devilry-brand-color-default-light4;
+  display: block;
+  text-decoration: none !important;
+  padding: 8px 15px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+  max-width: 100%;
+
+  @media (min-width: @screen-sm-min) {
+    display: inline-block;
+    margin: 0 8px 8px 0;
+    max-width: 50%;
+  }
+
+  &__content {
+    display: flex;
+
+  }
+
+  &__label {
+    //background-color: blue;
+    flex: 1 1 auto;
+    //height: 100px;
+    align-self: center;
+    color: @text-color;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__icon {
+    width: 40px;
+    flex: 0 0 40px;
+    text-align: right;
+    //background-color: red;
+    align-self: center;
+  }
+
+  &:hover {
+    background-color: @devilry-brand-color-default-light3;
+  }
+
+  //&--light {
+  //  background-color: #fff;
+  //}
+}
