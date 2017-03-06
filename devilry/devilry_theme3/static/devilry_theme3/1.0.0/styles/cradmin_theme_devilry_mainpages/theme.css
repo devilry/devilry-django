@@ -7396,11 +7396,11 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   text-align: left;
 }
 .devilry-body-admin a {
-  color: #d57d04;
+  color: #bc6e04;
   text-decoration: none;
 }
 .devilry-body-admin a:hover {
-  color: #d57d04;
+  color: #bc6e04;
   text-decoration: underline;
 }
 .devilry-body-admin a.btn {
@@ -7409,15 +7409,15 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 .devilry-body-admin .btn.btn-primary,
 .devilry-body-admin .btn.btn-success {
   background: #fff;
-  border-color: #d57d04;
-  color: #d57d04;
+  border-color: #bc6e04;
+  color: #bc6e04;
 }
 .devilry-body-admin .btn.btn-primary:hover,
 .devilry-body-admin .btn.btn-success:hover,
 .devilry-body-admin .btn.btn-primary:focus,
 .devilry-body-admin .btn.btn-success:focus {
-  background: #d57d04;
-  border-color: #d57d04;
+  background: #bc6e04;
+  border-color: #bc6e04;
   color: #fff;
 }
 .devilry-body-admin a.django-cradmin-listbuilder-itemframe-link {
@@ -7427,16 +7427,16 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   color: #000000;
 }
 .devilry-body-admin a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
-  color: #d57d04;
+  color: #bc6e04;
 }
 .devilry-body-admin a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
-  border-color: #d57d04;
+  border-color: #bc6e04;
 }
 .devilry-body-admin a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
   color: #dadada;
 }
 .devilry-body-admin a.django-cradmin-listbuilder-itemframe-link:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
-  color: #d57d04;
+  color: #bc6e04;
 }
 .devilry-body-admin nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
   border-bottom: 6px solid #e58605;
@@ -7468,11 +7468,11 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   font-weight: bold;
 }
 .devilry-body-examiner a {
-  color: #1192b3;
+  color: #0f819e;
   text-decoration: none;
 }
 .devilry-body-examiner a:hover {
-  color: #1192b3;
+  color: #0f819e;
   text-decoration: underline;
 }
 .devilry-body-examiner a.btn {
@@ -7481,15 +7481,15 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 .devilry-body-examiner .btn.btn-primary,
 .devilry-body-examiner .btn.btn-success {
   background: #fff;
-  border-color: #1192b3;
-  color: #1192b3;
+  border-color: #0f819e;
+  color: #0f819e;
 }
 .devilry-body-examiner .btn.btn-primary:hover,
 .devilry-body-examiner .btn.btn-success:hover,
 .devilry-body-examiner .btn.btn-primary:focus,
 .devilry-body-examiner .btn.btn-success:focus {
-  background: #1192b3;
-  border-color: #1192b3;
+  background: #0f819e;
+  border-color: #0f819e;
   color: #fff;
 }
 .devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link {
@@ -7499,16 +7499,16 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   color: #000000;
 }
 .devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
-  color: #1192b3;
+  color: #0f819e;
 }
 .devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
-  border-color: #1192b3;
+  border-color: #0f819e;
 }
 .devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
   color: #dadada;
 }
 .devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
-  color: #1192b3;
+  color: #0f819e;
 }
 .devilry-body-examiner nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
   border-bottom: 6px solid #129dc1;
@@ -7540,11 +7540,11 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   font-weight: bold;
 }
 .devilry-body-student a {
-  color: #5aa221;
+  color: #508f1e;
   text-decoration: none;
 }
 .devilry-body-student a:hover {
-  color: #5aa221;
+  color: #508f1e;
   text-decoration: underline;
 }
 .devilry-body-student a.btn {
@@ -7553,15 +7553,15 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 .devilry-body-student .btn.btn-primary,
 .devilry-body-student .btn.btn-success {
   background: #fff;
-  border-color: #5aa221;
-  color: #5aa221;
+  border-color: #508f1e;
+  color: #508f1e;
 }
 .devilry-body-student .btn.btn-primary:hover,
 .devilry-body-student .btn.btn-success:hover,
 .devilry-body-student .btn.btn-primary:focus,
 .devilry-body-student .btn.btn-success:focus {
-  background: #5aa221;
-  border-color: #5aa221;
+  background: #508f1e;
+  border-color: #508f1e;
   color: #fff;
 }
 .devilry-body-student a.django-cradmin-listbuilder-itemframe-link {
@@ -7571,16 +7571,16 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   color: #000000;
 }
 .devilry-body-student a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
-  color: #5aa221;
+  color: #508f1e;
 }
 .devilry-body-student a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
-  border-color: #5aa221;
+  border-color: #508f1e;
 }
 .devilry-body-student a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
   color: #dadada;
 }
 .devilry-body-student a.django-cradmin-listbuilder-itemframe-link:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
-  color: #5aa221;
+  color: #508f1e;
 }
 .devilry-body-student nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
   border-bottom: 6px solid #61AE24;
@@ -7707,12 +7707,12 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   }
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student .devilry-frontpage-listbuilder-roleselect-itemvalue {
-  color: #000000;
+  color: #fff;
   border: none;
-  background: #6cb433;
+  background: #508f1e;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
-  color: #000000;
+  color: #fff;
   opacity: 0.3;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-student:hover .devilry-frontpage-listbuilder-roleselect-itemvalue {
@@ -7722,12 +7722,12 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   opacity: 1;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner .devilry-frontpage-listbuilder-roleselect-itemvalue {
-  color: #000000;
+  color: #fff;
   border: none;
-  background: #23a4c5;
+  background: #0f819e;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
-  color: #000000;
+  color: #fff;
   opacity: 0.3;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-examiner:hover .devilry-frontpage-listbuilder-roleselect-itemvalue {
@@ -7737,12 +7737,12 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   opacity: 1;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin .devilry-frontpage-listbuilder-roleselect-itemvalue {
-  color: #000000;
+  color: #fff;
   border: none;
-  background: #e78e16;
+  background: #bc6e04;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
-  color: #000000;
+  color: #fff;
   opacity: 0.3;
 }
 .django-cradmin-listbuilder-list.devilry-frontpage-roleselectlist a.django-cradmin-listbuilder-itemframe-link.devilry-frontpage-listbuilder-roleselect-itemframe.devilry-frontpage-listbuilder-roleselect-itemframe-anyadmin:hover .devilry-frontpage-listbuilder-roleselect-itemvalue {
@@ -9078,11 +9078,11 @@ table.devilry-qualifiesforexam-table tr.devilry-tablebuilder-row:hover td {
   margin: 3px 3px 3px 3px;
 }
 .devilry-qualifiesforexam-plugin-spacing a {
-  color: #d57d04;
+  color: #bc6e04;
   text-decoration: none;
 }
 .devilry-qualifiesforexam-plugin-spacing a:hover {
-  color: #d57d04;
+  color: #bc6e04;
   text-decoration: underline;
 }
 .devilry-qualifiesforexam-plugin-spacing a.btn {
@@ -9091,15 +9091,15 @@ table.devilry-qualifiesforexam-table tr.devilry-tablebuilder-row:hover td {
 .devilry-qualifiesforexam-plugin-spacing .btn.btn-primary,
 .devilry-qualifiesforexam-plugin-spacing .btn.btn-success {
   background: #fff;
-  border-color: #d57d04;
-  color: #d57d04;
+  border-color: #bc6e04;
+  color: #bc6e04;
 }
 .devilry-qualifiesforexam-plugin-spacing .btn.btn-primary:hover,
 .devilry-qualifiesforexam-plugin-spacing .btn.btn-success:hover,
 .devilry-qualifiesforexam-plugin-spacing .btn.btn-primary:focus,
 .devilry-qualifiesforexam-plugin-spacing .btn.btn-success:focus {
-  background: #d57d04;
-  border-color: #d57d04;
+  background: #bc6e04;
+  border-color: #bc6e04;
   color: #fff;
 }
 .devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link {
@@ -9109,16 +9109,16 @@ table.devilry-qualifiesforexam-table tr.devilry-tablebuilder-row:hover td {
   color: #000000;
 }
 .devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox.django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
-  color: #d57d04;
+  color: #bc6e04;
 }
 .devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
-  border-color: #d57d04;
+  border-color: #bc6e04;
 }
 .devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link.devilry-django-cradmin-listbuilder-itemframe-goforward .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
   color: #dadada;
 }
 .devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link:hover .devilry-django-cradmin-listbuilder-itemframe-goforward-icon {
-  color: #d57d04;
+  color: #bc6e04;
 }
 .devilry-qualifiesforexam-plugin-spacing nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu {
   border-bottom: 6px solid #e58605;
