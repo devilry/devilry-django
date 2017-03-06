@@ -185,11 +185,11 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_gradingconfiguration_examiner_chooses(self):
         assignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertEqual(
-                mockresponse.selector.one(
-                        '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(1) td:nth-child(1)').alltext_normalized,
-                "Examiner chooses")
+        self.assertEquals(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_gradingconfiguration_information '
+                'dl:nth-child(1) dt:nth-child(1)').alltext_normalized,
+            'Examiner chooses')
 
     def test_gradingconfiguration_examiner_chooses_passed_failed(self):
         assignment = mommy.make('core.Assignment')
@@ -197,7 +197,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(1) td:nth-child(2)').alltext_normalized,
+                        'dl:nth-child(1) dd:nth-child(2)').alltext_normalized,
                 str(Assignment.GRADING_SYSTEM_PLUGIN_ID_CHOICES_DICT.get(
                         Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)))
 
@@ -207,7 +207,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(1) td:nth-child(2)').alltext_normalized,
+                        'dl:nth-child(1) dd:nth-child(2)').alltext_normalized,
                 str(Assignment.GRADING_SYSTEM_PLUGIN_ID_CHOICES_DICT.get(
                         Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)))
 
@@ -227,7 +227,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(2) td:nth-child(1)').alltext_normalized,
+                        'dl:nth-child(1) dt:nth-child(3)').alltext_normalized,
                 "Students see")
 
     def test_gradingconfiguration_students_see_passed_failed(self):
@@ -236,7 +236,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(2) td:nth-child(2)').alltext_normalized,
+                        'dl:nth-child(1) dd:nth-child(4)').alltext_normalized,
                 str(Assignment.POINTS_TO_GRADE_MAPPER_CHOICES_DICT.get(
                         Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)))
 
@@ -246,55 +246,80 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(2) td:nth-child(2)').alltext_normalized,
+                        'dl:nth-child(1) dd:nth-child(4)').alltext_normalized,
                 str(Assignment.POINTS_TO_GRADE_MAPPER_CHOICES_DICT.get(
                         Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)))
+
+    # def test_gradingconfiguration_students_see_schema(self):
+    #     assignment = mommy.make('core.Assignment',
+    #                             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
+    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+    #     self.assertEqual(
+    #             mockresponse.selector.one(
+    #                     '#devilry_admin_assignment_overview_gradingconfiguration_information '
+    #                     'dl:nth-child(1) dd:nth-child(4)').alltext_normalized,
+    #             str(Assignment.POINTS_TO_GRADE_MAPPER_CHOICES_DICT.get(
+    #                     Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)))
 
     def test_gradingconfiguration_students_see_schema(self):
         assignment = mommy.make('core.Assignment',
                                 points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
+        point_to_grade_map = mommy.make('core.PointToGradeMap', assignment=assignment)
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=5,
+                   maximum_points=9, grade='F')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=10,
+                   maximum_points=14,grade='E')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=15,
+                   maximum_points=19, grade='D')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=20,
+                   maximum_points=24, grade='C')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=25,
+                   maximum_points=29, grade='B')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=30,
+                   maximum_points=35, grade='A')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(2) td:nth-child(2)').alltext_normalized,
-                str(Assignment.POINTS_TO_GRADE_MAPPER_CHOICES_DICT.get(
-                        Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)))
+                        'dl:nth-child(1) dd:nth-child(4)').alltext_normalized,
+                'F, E, D, C, B or A')
 
     def test_gradingconfiguration_max_points(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = mommy.make('core.Assignment', grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(3) td:nth-child(1)').alltext_normalized,
+                        'dl:nth-child(1) dt:nth-child(5)').alltext_normalized,
                 "Maximum number of points achievable")
 
     def test_gradingconfiguration_max_points_100(self):
-        assignment = mommy.make('core.Assignment', max_points=100)
+        assignment = mommy.make('core.Assignment', max_points=100,
+                                grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(3) td:nth-child(2)').alltext_normalized,
+                        'dl:nth-child(1) dd:nth-child(6)').alltext_normalized,
                 "100")
 
     def test_gradingconfiguration_min_points(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = mommy.make('core.Assignment', grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(4) td:nth-child(1)').alltext_normalized,
+                        'dl:nth-child(1) dt:nth-child(7)').alltext_normalized,
                 "Minimum number of points required to pass")
 
     def test_gradingconfiguration_min_points_0(self):
-        assignment = mommy.make('core.Assignment', passing_grade_min_points=0)
+        assignment = mommy.make('core.Assignment', passing_grade_min_points=0,
+                                grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(4) td:nth-child(2)').alltext_normalized,
+                        'dl:nth-child(1) dd:nth-child(8)').alltext_normalized,
                 "0")
 
     def test_utilities_row_passed_previous(self):

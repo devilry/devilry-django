@@ -1,5 +1,5 @@
 from django.contrib import admin
-from devilry.apps.core.models import AssignmentGroup, Node, Subject, Period, Assignment
+from devilry.apps.core.models import AssignmentGroup, Node, Subject, Period, Assignment, PeriodTag
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -171,3 +171,19 @@ class AssignmentGroupAdmin(admin.ModelAdmin):
 
 
 admin.site.register(AssignmentGroup, AssignmentGroupAdmin)
+
+
+class PeriodTagAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'prefix',
+        'tag',
+        'is_hidden',
+    ]
+
+    filter_horizontal = [
+        'relatedstudents',
+        'relatedexaminers',
+    ]
+
+admin.site.register(PeriodTag, PeriodTagAdmin)
