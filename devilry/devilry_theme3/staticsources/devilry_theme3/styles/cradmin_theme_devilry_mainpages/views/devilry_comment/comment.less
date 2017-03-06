@@ -1,6 +1,6 @@
 .comment-form-container{
     background-color: @comment-background-color;
-    padding: 10px 10px 10px 10px;
+    padding: @devilry-spacing--small;
 }
 
 
@@ -18,7 +18,7 @@
 
 .devilry-group-feedbackfeed-comment {
     display: block;
-    margin-bottom: 15px;
+    margin-bottom: @devilry-vertical-rythm--medium;
     background-color: @comment-background-color;
     min-height: 5.0em;
     border: 0 solid @default-left-border-color;
@@ -54,7 +54,7 @@
     }
 
     .devilry-group-feedbackfeed-comment-content {
-        padding: 10px 15px;
+        padding: @devilry-spacing--small;
 
         .devilry-group-comment-meta {
             //word-break: break-all;
@@ -64,6 +64,7 @@
             color: @comment-text-color;
             font-size: @font-size-small;
             line-height: (@font-size-base + 4px);
+            margin-bottom: @devilry-vertical-rythm--medium;
         }
 
         .devilry-group-comment-created-by {
@@ -87,22 +88,29 @@
         /**/
         .devilry-group-comment-text{
             font-size: ceil(@font-size-base + 4px);
-            margin-bottom: 15px;
-            //padding-top: 15px;
+            margin-bottom: @devilry-vertical-rythm--medium;
+            &:last-child {
+                margin-bottom: 0;
+            }
+
 
             h1, h2, h3 {
                 font-weight: normal;
+                margin-top: @devilry-vertical-rythm--medium;
+                margin-bottom: @devilry-vertical-rythm;
             }
 
             h4, h5, h6 {
                 font-weight: bold;
                 font-size: ceil(@font-size-base + 4px);
+                margin-top: @devilry-vertical-rythm;
+                margin-bottom: @devilry-vertical-rythm;
             }
 
             h1 {
                 font-size: ceil(@font-size-base * 2.5);
                 border-bottom: @devilry-brand-border-width solid @devilry-brand-color-default-light4;
-                padding-bottom: 8px;
+                padding-bottom: @devilry-vertical-rythm;
             }
             h2 {
                 font-size: ceil(@font-size-base * 2.0);
@@ -117,6 +125,12 @@
 
             a {
                 text-decoration: underline;
+            }
+
+            h1, h2, h3, h4, h5, h6, ul, ol, pre, p {
+                &:last-child {
+                    margin-bottom: 0;
+                }
             }
         }
 
@@ -167,9 +181,9 @@
     font-weight: @badge-text-weight;
     color: @badge-text-color;
     margin: 0;
-    left:0;
-    right:0;
-    padding:10px;
+    left: 0;
+    right: 0;
+    padding: @devilry-spacing--small;
     position: absolute;
     text-transform: uppercase;
     top: 50%;
