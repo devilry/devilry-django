@@ -247,7 +247,7 @@ class ExaminerPublicDiscussView(ExaminerBaseFeedbackFeedView):
     def get_buttons(self):
         buttons = super(ExaminerPublicDiscussView, self).get_buttons()
         buttons.extend([
-            DefaultSubmit(
+            PrimarySubmit(
                 'examiner_add_public_comment',
                 _('Add comment'),
                 css_class='btn btn-default')
@@ -279,10 +279,9 @@ class ExaminerWithAdminsDiscussView(ExaminerBaseFeedbackFeedView):
     def get_buttons(self):
         buttons = super(ExaminerWithAdminsDiscussView, self).get_buttons()
         buttons.extend([
-            DefaultSubmit(
+            PrimarySubmit(
                 'examiner_add_comment_for_examiners_and_admins',
-                _('Add comment'),
-                css_class='btn btn-default')
+                _('Add note'))
         ])
         return buttons
 
