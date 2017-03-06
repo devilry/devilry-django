@@ -6997,6 +6997,17 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
   border-color: #afafaf;
   color: #000000;
 }
+.btn.btn-danger {
+  background: #a0372f;
+  border-color: #a0372f;
+  color: #fef6f5;
+}
+.btn.btn-danger:hover,
+.btn.btn-danger:focus {
+  background: #E84D3D;
+  border-color: #E84D3D;
+  color: #fef6f5;
+}
 a.btn {
   text-decoration: none;
 }
@@ -7409,25 +7420,6 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   border-color: #d57d04;
   color: #fff;
 }
-.devilry-body-admin .btn.btn-danger {
-  background: #fff;
-  border-color: #E84D3D;
-  color: #E84D3D;
-}
-.devilry-body-admin .btn.btn-danger:hover,
-.devilry-body-admin .btn.btn-danger:focus {
-  background: #fff;
-  border-color: #E84D3D;
-  color: #E84D3D;
-}
-@media (min-width: 768px) {
-  .devilry-body-admin .btn.btn-danger:hover,
-  .devilry-body-admin .btn.btn-danger:focus {
-    background: #E84D3D;
-    border-color: #E84D3D;
-    color: #fff;
-  }
-}
 .devilry-body-admin a.django-cradmin-listbuilder-itemframe-link {
   text-decoration: none;
 }
@@ -7500,25 +7492,6 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   border-color: #1192b3;
   color: #fff;
 }
-.devilry-body-examiner .btn.btn-danger {
-  background: #fff;
-  border-color: #E84D3D;
-  color: #E84D3D;
-}
-.devilry-body-examiner .btn.btn-danger:hover,
-.devilry-body-examiner .btn.btn-danger:focus {
-  background: #fff;
-  border-color: #E84D3D;
-  color: #E84D3D;
-}
-@media (min-width: 768px) {
-  .devilry-body-examiner .btn.btn-danger:hover,
-  .devilry-body-examiner .btn.btn-danger:focus {
-    background: #E84D3D;
-    border-color: #E84D3D;
-    color: #fff;
-  }
-}
 .devilry-body-examiner a.django-cradmin-listbuilder-itemframe-link {
   text-decoration: none;
 }
@@ -7590,25 +7563,6 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   background: #5aa221;
   border-color: #5aa221;
   color: #fff;
-}
-.devilry-body-student .btn.btn-danger {
-  background: #fff;
-  border-color: #E84D3D;
-  color: #E84D3D;
-}
-.devilry-body-student .btn.btn-danger:hover,
-.devilry-body-student .btn.btn-danger:focus {
-  background: #fff;
-  border-color: #E84D3D;
-  color: #E84D3D;
-}
-@media (min-width: 768px) {
-  .devilry-body-student .btn.btn-danger:hover,
-  .devilry-body-student .btn.btn-danger:focus {
-    background: #E84D3D;
-    border-color: #E84D3D;
-    color: #fff;
-  }
 }
 .devilry-body-student a.django-cradmin-listbuilder-itemframe-link {
   text-decoration: none;
@@ -8079,6 +8033,17 @@ fieldset[disabled] .button {
   border-color: #afafaf;
   color: #000000;
 }
+.button.btn-danger {
+  background: #a0372f;
+  border-color: #a0372f;
+  color: #fef6f5;
+}
+.button.btn-danger:hover,
+.button.btn-danger:focus {
+  background: #E84D3D;
+  border-color: #E84D3D;
+  color: #fef6f5;
+}
 .button.devilry-btn-titledescription strong {
   display: block;
 }
@@ -8230,6 +8195,17 @@ fieldset[disabled] .button_default {
   background: #afafaf;
   border-color: #afafaf;
   color: #000000;
+}
+.button_default.btn-danger {
+  background: #a0372f;
+  border-color: #a0372f;
+  color: #fef6f5;
+}
+.button_default.btn-danger:hover,
+.button_default.btn-danger:focus {
+  background: #E84D3D;
+  border-color: #E84D3D;
+  color: #fef6f5;
 }
 .button_default.devilry-btn-titledescription strong {
   display: block;
@@ -8387,6 +8363,17 @@ fieldset[disabled] .button_admin {
   border-color: #afafaf;
   color: #000000;
 }
+.button_admin.btn-danger {
+  background: #a0372f;
+  border-color: #a0372f;
+  color: #fef6f5;
+}
+.button_admin.btn-danger:hover,
+.button_admin.btn-danger:focus {
+  background: #E84D3D;
+  border-color: #E84D3D;
+  color: #fef6f5;
+}
 .button_admin.devilry-btn-titledescription strong {
   display: block;
 }
@@ -8542,6 +8529,17 @@ fieldset[disabled] .button_examiner {
   background: #afafaf;
   border-color: #afafaf;
   color: #000000;
+}
+.button_examiner.btn-danger {
+  background: #a0372f;
+  border-color: #a0372f;
+  color: #fef6f5;
+}
+.button_examiner.btn-danger:hover,
+.button_examiner.btn-danger:focus {
+  background: #E84D3D;
+  border-color: #E84D3D;
+  color: #fef6f5;
 }
 .button_examiner.devilry-btn-titledescription strong {
   display: block;
@@ -8699,6 +8697,17 @@ fieldset[disabled] .button_examiner_grayed {
   border-color: #afafaf;
   color: #000000;
 }
+.button_examiner_grayed.btn-danger {
+  background: #a0372f;
+  border-color: #a0372f;
+  color: #fef6f5;
+}
+.button_examiner_grayed.btn-danger:hover,
+.button_examiner_grayed.btn-danger:focus {
+  background: #E84D3D;
+  border-color: #E84D3D;
+  color: #fef6f5;
+}
 .button_examiner_grayed.devilry-btn-titledescription strong {
   display: block;
 }
@@ -8854,6 +8863,17 @@ fieldset[disabled] .button_student {
   background: #afafaf;
   border-color: #afafaf;
   color: #000000;
+}
+.button_student.btn-danger {
+  background: #a0372f;
+  border-color: #a0372f;
+  color: #fef6f5;
+}
+.button_student.btn-danger:hover,
+.button_student.btn-danger:focus {
+  background: #E84D3D;
+  border-color: #E84D3D;
+  color: #fef6f5;
 }
 .button_student.devilry-btn-titledescription strong {
   display: block;
@@ -9081,25 +9101,6 @@ table.devilry-qualifiesforexam-table tr.devilry-tablebuilder-row:hover td {
   background: #d57d04;
   border-color: #d57d04;
   color: #fff;
-}
-.devilry-qualifiesforexam-plugin-spacing .btn.btn-danger {
-  background: #fff;
-  border-color: #E84D3D;
-  color: #E84D3D;
-}
-.devilry-qualifiesforexam-plugin-spacing .btn.btn-danger:hover,
-.devilry-qualifiesforexam-plugin-spacing .btn.btn-danger:focus {
-  background: #fff;
-  border-color: #E84D3D;
-  color: #E84D3D;
-}
-@media (min-width: 768px) {
-  .devilry-qualifiesforexam-plugin-spacing .btn.btn-danger:hover,
-  .devilry-qualifiesforexam-plugin-spacing .btn.btn-danger:focus {
-    background: #E84D3D;
-    border-color: #E84D3D;
-    color: #fff;
-  }
 }
 .devilry-qualifiesforexam-plugin-spacing a.django-cradmin-listbuilder-itemframe-link {
   text-decoration: none;

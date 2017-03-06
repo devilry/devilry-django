@@ -7089,6 +7089,17 @@ body {
   border-color: #afafaf;
   color: #000000;
 }
+.btn.btn-danger {
+  background: #a0372f;
+  border-color: #a0372f;
+  color: #fef6f5;
+}
+.btn.btn-danger:hover,
+.btn.btn-danger:focus {
+  background: #E84D3D;
+  border-color: #E84D3D;
+  color: #fef6f5;
+}
 a.btn {
   text-decoration: none;
 }
