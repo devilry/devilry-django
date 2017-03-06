@@ -1,4 +1,5 @@
 /*! normalize.css v3.0.0 | MIT License | git.io/normalize */
+@import url('https://fonts.googleapis.com/css?family=Quicksand:400,700');
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
@@ -265,7 +266,7 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Quicksand', sans-serif;
   font-size: 16px;
   line-height: 1.42857143;
   color: #000000;
@@ -7458,6 +7459,41 @@ h3 {
     height: 450px;
   }
 }
+.devilry-filedownload {
+  background-color: #f5f5f5;
+  display: block;
+  text-decoration: none !important;
+  padding: 8px 15px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+  max-width: 100%;
+}
+@media (min-width: 768px) {
+  .devilry-filedownload {
+    display: inline-block;
+    margin: 0 8px 8px 0;
+    max-width: 50%;
+  }
+}
+.devilry-filedownload__content {
+  display: flex;
+}
+.devilry-filedownload__label {
+  flex: 1 1 auto;
+  align-self: center;
+  color: #000000;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.devilry-filedownload__icon {
+  width: 40px;
+  flex: 0 0 40px;
+  text-align: right;
+  align-self: center;
+}
+.devilry-filedownload:hover {
+  background-color: #dadada;
+}
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;
 }
@@ -7835,11 +7871,32 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 .devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-student {
   border-left-color: #61AE24;
 }
+.devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-student a {
+  color: #508f1e;
+  text-decoration: underline;
+}
+.devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-student a:hover {
+  color: #61AE24;
+}
 .devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-examiner {
   border-left-color: #129dc1;
 }
+.devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-examiner a {
+  color: #0f819e;
+  text-decoration: underline;
+}
+.devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-examiner a:hover {
+  color: #129dc1;
+}
 .devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-admin {
   border-left-color: #e58605;
+}
+.devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-admin a {
+  color: #bc6e04;
+  text-decoration: underline;
+}
+.devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-admin a:hover {
+  color: #e58605;
 }
 .devilry-group-feedbackfeed-comment--with-badge {
   display: flex;
@@ -7889,7 +7946,28 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text {
   font-size: 20px;
   margin-bottom: 15px;
-  font-family: Georgia, "Times New Roman", Times, serif;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h1,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h2,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h3 {
+  font-weight: normal;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h4,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h5,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h6 {
+  font-weight: bold;
+  font-size: 20px;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h1 {
+  font-size: 40px;
+  border-bottom: 3px solid #f5f5f5;
+  padding-bottom: 8px;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h2 {
+  font-size: 32px;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h3 {
+  font-size: 24px;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text pre {
   margin-bottom: 15px;
