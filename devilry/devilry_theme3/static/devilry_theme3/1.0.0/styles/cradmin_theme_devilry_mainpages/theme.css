@@ -7484,6 +7484,7 @@ h3 {
   color: #000000;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .devilry-filedownload__icon {
   width: 40px;
