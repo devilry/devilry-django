@@ -361,6 +361,124 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
+    def test_add_wrong_format_no_comma_before_first_tag(self):
+        testperiod = mommy.make('core.Period')
+        messagesmock = mock.MagicMock()
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=testperiod,
+            requestkwargs={
+                'data': {
+                    'tag_text': ',tag1',
+                    'is_hidden': False
+                }
+            },
+            messagesmock=messagesmock
+        )
+        self.assertEquals(mockresponse.selector.one('#error_1_id_tag_text').alltext_normalized,
+                          'Tag text must be in comma separated format! Example: tag1, tag2, tag3')
+        self.assertEquals(PeriodTag.objects.count(), 0)
+
+    def test_add_wrong_format_comma_after_last_tag(self):
+        testperiod = mommy.make('core.Period')
+        messagesmock = mock.MagicMock()
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=testperiod,
+            requestkwargs={
+                'data': {
+                    'tag_text': 'tag1,',
+                    'is_hidden': False
+                }
+            },
+            messagesmock=messagesmock
+        )
+        self.assertEquals(mockresponse.selector.one('#error_1_id_tag_text').alltext_normalized,
+                          'Tag text must be in comma separated format! Example: tag1, tag2, tag3')
+        self.assertEquals(PeriodTag.objects.count(), 0)
+
+    def test_add_wrong_format_does_not_capture_empty_space(self):
+        testperiod = mommy.make('core.Period')
+        messagesmock = mock.MagicMock()
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=testperiod,
+            requestkwargs={
+                'data': {
+                    'tag_text': 'tag1, , tag2',
+                    'is_hidden': False
+                }
+            },
+            messagesmock=messagesmock
+        )
+        self.assertEquals(mockresponse.selector.one('#error_1_id_tag_text').alltext_normalized,
+                          'Tag text must be in comma separated format! Example: tag1, tag2, tag3')
+        self.assertEquals(PeriodTag.objects.count(), 0)
+
+    def test_add_wrong_format_no_tag_only_commas(self):
+        testperiod = mommy.make('core.Period')
+        messagesmock = mock.MagicMock()
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=testperiod,
+            requestkwargs={
+                'data': {
+                    'tag_text': ',,,',
+                    'is_hidden': False
+                }
+            },
+            messagesmock=messagesmock
+        )
+        self.assertEquals(mockresponse.selector.one('#error_1_id_tag_text').alltext_normalized,
+                          'Tag text must be in comma separated format! Example: tag1, tag2, tag3')
+        self.assertEquals(PeriodTag.objects.count(), 0)
+
+    def test_add_wrong_format_empty_text_input(self):
+        testperiod = mommy.make('core.Period')
+        messagesmock = mock.MagicMock()
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=testperiod,
+            requestkwargs={
+                'data': {
+                    'tag_text': '',
+                    'is_hidden': False
+                }
+            },
+            messagesmock=messagesmock
+        )
+        self.assertEquals(mockresponse.selector.one('#error_1_id_tag_text').alltext_normalized,
+                          'This field is required.')
+        self.assertEquals(PeriodTag.objects.count(), 0)
+
+    def test_add_correct_format_with_whitespace(self):
+        testperiod = mommy.make('core.Period')
+        self.mock_http302_postrequest(
+            cradmin_role=testperiod,
+            requestkwargs={
+                'data': {
+                    'tag_text': '        tag1,       tag2',
+                    'is_hidden': False
+                }
+            }
+        )
+        self.assertEquals(PeriodTag.objects.count(), 2)
+
+    def test_add_correct_format_with_newline_and_whitespace(self):
+        testperiod = mommy.make('core.Period')
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testperiod,
+            requestkwargs={
+                'data': {
+                    'tag_text': 'tag1,\ntag2,      tag3,tag4    ',
+                    'is_hidden': False
+                }
+            },
+            messagesmock=messagesmock
+        )
+        self.assertEquals(PeriodTag.objects.count(), 4)
+        tagslist = [periodtag.tag for periodtag in PeriodTag.objects.all()]
+        self.assertIn('tag1', tagslist)
+        self.assertIn('tag2', tagslist)
+        self.assertIn('tag3', tagslist)
+        self.assertIn('tag4', tagslist)
+
     def test_add_single_tag(self):
         testperiod = mommy.make('core.Period')
         self.mock_http302_postrequest(
@@ -681,7 +799,7 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
                 'tag': testperiodtag.tag
             }
         )
-        self.assertEquals('Add examiners to tag a',
+        self.assertEquals('Add examiners to a',
                           mockresponse.selector.one('title').alltext_normalized)
 
     def test_get_relatedusers(self):
@@ -759,7 +877,7 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
                 'tag': testperiodtag.tag
             }
         )
-        self.assertEquals('Remove examiners from tag a',
+        self.assertEquals('Remove examiners from a',
                           mockresponse.selector.one('title').alltext_normalized)
 
     def test_get_relatedusers(self):
