@@ -21,6 +21,8 @@ from django_cradmin.viewhelpers import update, delete
 from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
+
+from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.apps.core import models as core_models
 from devilry.devilry_group import models as group_models
@@ -121,6 +123,9 @@ class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseVie
             str: ``examiner`` as devilryrole.
         """
         return 'examiner'
+
+    def get_acemarkdown_widget_class(self):
+        return devilry_acemarkdown.Large
 
     def set_automatic_attributes(self, obj):
         super(ExaminerBaseFeedbackFeedView, self).set_automatic_attributes(obj)

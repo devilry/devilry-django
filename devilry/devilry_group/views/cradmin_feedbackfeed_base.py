@@ -11,11 +11,11 @@ from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy
-from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.viewhelpers import create
 
 from devilry.devilry_comment import models as comment_models
+from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_timeline
 from devilry.devilry_group import models as group_models
@@ -301,9 +301,12 @@ class FeedbackFeedBaseView(create.CreateView):
             )
         ]
 
+    def get_acemarkdown_widget_class(self):
+        return devilry_acemarkdown.Default
+
     def get_form(self, form_class=None):
         form = super(FeedbackFeedBaseView, self).get_form(form_class=form_class)
-        form.fields['text'].widget = AceMarkdownWidget()
+        form.fields['text'].widget = self.get_acemarkdown_widget_class()()
         form.fields['text'].label = False
         form.fields['temporary_file_collection_id'] = forms.IntegerField(required=False)
         return form

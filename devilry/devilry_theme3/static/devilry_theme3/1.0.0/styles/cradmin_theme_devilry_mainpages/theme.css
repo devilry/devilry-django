@@ -4849,7 +4849,7 @@ form .alert-block.alert-danger ul li {
   border-radius: 4px;
   outline: none;
   box-shadow: none;
-  background: #f5f5f5;
+  background: #fff;
 }
 .form-control:focus,
 .cradmin-div-styled-as-textarea:focus {
@@ -5467,10 +5467,10 @@ table.table.django-cradmin-table tbody td:last-child {
 .cradmin-acemarkdown .ace_editor {
   font-size: 16px;
   height: 400px;
-  background: #f5f5f5;
+  background: #fff;
 }
 .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea {
-  background: #f5f5f5;
+  background: #fff;
 }
 .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
   height: 100px;
@@ -7388,6 +7388,75 @@ h3 {
 }
 .devilry-tabs__panel--active {
   display: block;
+}
+.devilry-ace-editor textarea.cradmin-acemarkdowntextarea {
+  display: none;
+}
+.devilry-ace-editor.cradmin-acemarkdown-textareavisible textarea.cradmin-acemarkdowntextarea {
+  display: block;
+}
+.devilry-ace-editor .btn-toolbar {
+  margin-bottom: 0;
+  opacity: .5;
+}
+@media (min-width: 600px) {
+  .devilry-ace-editor .btn-toolbar .btn {
+    margin-bottom: 0;
+  }
+}
+.devilry-ace-editor .ace_editor {
+  font-size: 16px;
+  background: #fff;
+  height: 100px;
+}
+@media (min-height: 400px) {
+  .devilry-ace-editor .ace_editor {
+    height: 170px;
+  }
+}
+.devilry-ace-editor .devilry-ace-editor-acewrapper {
+  background: #fff;
+  border: 3px solid #D9D9D9;
+  padding: 10px;
+}
+.devilry-ace-editor.cradmin-focus .btn-toolbar {
+  opacity: 1;
+}
+.devilry-ace-editor.cradmin-focus .devilry-ace-editor-acewrapper,
+.devilry-ace-editor.cradmin-focus .ace_editor {
+  background: #fff;
+  border-color: #262626;
+}
+.devilry-ace-editor--small .ace_editor {
+  height: 70px;
+}
+@media (min-height: 400px) {
+  .devilry-ace-editor--small .ace_editor {
+    height: 100px;
+  }
+}
+.devilry-ace-editor--large .ace_editor {
+  height: 100px;
+}
+@media (min-height: 400px) {
+  .devilry-ace-editor--large .ace_editor {
+    height: 150px;
+  }
+}
+@media (min-height: 500px) {
+  .devilry-ace-editor--large .ace_editor {
+    height: 230px;
+  }
+}
+@media (min-height: 600px) {
+  .devilry-ace-editor--large .ace_editor {
+    height: 310px;
+  }
+}
+@media (min-height: 800px) {
+  .devilry-ace-editor--large .ace_editor {
+    height: 450px;
+  }
 }
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;

@@ -1,0 +1,111 @@
+.devilry-ace-editor {
+
+  textarea.cradmin-acemarkdowntextarea {
+    display: none;
+  }
+
+  &.cradmin-acemarkdown-textareavisible {
+    textarea.cradmin-acemarkdowntextarea {
+      display: block;
+    }
+  }
+
+  .btn-toolbar {
+    margin-bottom: 0;
+    opacity: .5;
+
+    .btn {
+      @media (min-width: 600px) {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .ace_editor {
+    font-size: @font-size-base;
+    background: @cradmin-form-field-inactive-bg;
+    height: 100px;
+    @media (min-height: 400px) {
+      height: 170px;
+    }
+  }
+
+  .devilry-ace-editor-acewrapper {
+    background: @cradmin-form-field-inactive-bg;
+    border: @devilry-brand-border-width solid @cradmin-form-field-inactive-border-color;
+    padding: 10px;
+  }
+
+  &.cradmin-focus {
+    .btn-toolbar {
+      opacity: 1;
+    }
+    .devilry-ace-editor-acewrapper,
+    .ace_editor {
+      background: @cradmin-form-field-focus-bg;
+      border-color: @cradmin-form-field-focus-border-color;
+    }
+  }
+
+  &--small {
+    .ace_editor {
+      height: 70px;
+
+      @media (min-height: 400px) {
+        height: 100px;
+      }
+    }
+  }
+
+  &--large {
+    .ace_editor {
+      height: 100px;
+
+      @media (min-height: 400px) {
+        height: 150px;
+      }
+      @media (min-height: 500px) {
+        height: 230px;
+      }
+      @media (min-height: 600px) {
+        height: 310px;
+      }
+      @media (min-height: 800px) {
+        height: 450px;
+      }
+    }
+  }
+}
+
+//.django-cradmin-form {
+//  .cradmin-focusfield .form-group .controls {
+//    .cradmin-acemarkdown.cradmin-div-styled-as-textarea {
+//      background: @cradmin-form-field-inactive-bg;
+//
+//      .ace_editor {
+//        height: 100px;
+//
+//        @media (min-height: 400px) {
+//          height: 200px;
+//        }
+//        @media (min-height: 500px) {
+//          height: 300px;
+//        }
+//        @media (min-height: 600px) {
+//          height: 400px;
+//        }
+//        @media (min-height: 800px) {
+//          height: 600px;
+//        }
+//      }
+//
+//      &.cradmin-focus {
+//        background: @cradmin-form-field-focus-bg;
+//        .ace_editor {
+//          background: @cradmin-form-field-focus-bg;
+//        }
+//      }
+//
+//    }
+//  }
+//}
