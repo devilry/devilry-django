@@ -2,20 +2,43 @@
   font-weight: bold;
   border-width: @devilry-brand-border-width;
   letter-spacing: 1px;
-  padding: 6px 15px 3px 15px;
+  //padding: 6px 15px 3px 15px;
   margin-bottom: 5px;
   white-space: normal;
 
   &.btn-xs {
-    padding: 3.5px 5px 0 5px;
+    //padding: 3.5px 5px 0 5px;
   }
 
   &.btn-sm {
-    padding: 4px 8px 1px 8px;
+    //padding: 4px 8px 1px 8px;
   }
 
   &.btn-lg {
-    padding: 9px 19px 4.5px 19px;
+    //padding: 9px 19px 4.5px 19px;
+  }
+
+  &.btn-default {
+    background: @devilry-brand-color-default-light3;
+    border-color: @devilry-brand-color-default-light3;
+    color: @text-color;
+    &:hover, &:focus {
+      background: @devilry-brand-color-default-light2;
+      border-color: @devilry-brand-color-default-light2;
+      color: @text-color;
+    }
+  }
+
+  &.btn-danger {
+    background: @devilry-brand-color-danger-dark;
+    border-color: @devilry-brand-color-danger-dark;
+    color: @devilry-brand-color-danger-light4;
+    &:hover, &:focus {
+      background: @devilry-brand-color-danger;
+      border-color: @devilry-brand-color-danger;
+      color: @devilry-brand-color-danger-light4;
+    }
+
   }
 }
 
