@@ -1,10 +1,10 @@
 import mock
-from devilry.apps.core.models import Subject
-from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START
-from devilry.devilry_admin.views.subject import edit
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
+
+from devilry.apps.core.models import Subject
+from devilry.devilry_admin.views.subject import edit
 
 
 class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
