@@ -26,13 +26,11 @@
 
 {% block pre_form %}
     <div id="devilry_admin_period_admins_help_container" class="container">
-        <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
-            <h2>
-                {% trans 'Existing tags for semester' %}
-            </h2>
-            <p>
-                {% devilry_period_tags_on_period period=period period_tags=period_tags %}
-            </p>
-        </div>
+        <p class="alert alert-info">
+            <strong>
+                {% trans 'Existing tags' %}:
+            </strong>
+            {% devilry_period_tags_on_period period=period period_tags=period_tags %}
+        </p>
     </div>
 {% endblock pre_form %}

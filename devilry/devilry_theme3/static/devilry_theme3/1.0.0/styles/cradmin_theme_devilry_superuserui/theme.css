@@ -7101,6 +7101,30 @@ body {
   border-color: #E84D3D;
   color: #fef6f5;
 }
+.btn.btn--danger-muted {
+  background: #f8d2ce;
+  border-color: #f8d2ce;
+  color: #000000;
+}
+.btn.btn--danger-muted:hover,
+.btn.btn--danger-muted:focus {
+  background: #E84D3D;
+  border-color: #E84D3D;
+  color: #fef6f5;
+}
+@media (min-width: 768px) {
+  .btn.btn--fixedwidth {
+    width: 150px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+@media (min-width: 768px) {
+  .btn.btn--fixedwidth.btn--fixedwidth-wide {
+    width: 200px;
+  }
+}
 a.btn {
   text-decoration: none;
 }
@@ -7586,6 +7610,32 @@ h3 {
 }
 .devilry-filedownload:hover {
   background-color: #dadada;
+}
+@media (min-width: 768px) {
+  .devilry-heading-with-buttons {
+    display: flex;
+  }
+}
+@media (min-width: 768px) {
+  .devilry-heading-with-buttons__heading {
+    flex: 5 5 auto;
+  }
+}
+@media (min-width: 768px) {
+  .devilry-heading-with-buttons__buttons {
+    flex: 1 1 auto;
+    max-width: 200px;
+    text-align: right;
+  }
+}
+.paragraph {
+  margin-bottom: 21px;
+}
+.paragraph--tight {
+  margin-bottom: 7px;
+}
+.paragraph--nomargin {
+  margin-bottom: 0;
 }
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;

@@ -7,8 +7,12 @@ from django_cradmin import crapp
 from django_cradmin.viewhelpers import crudbase
 from django_cradmin.viewhelpers import update
 
+from devilry.devilry_admin.views.dashboard import createsubject
 
-class UpdateView(crudbase.OnlySaveButtonMixin, update.UpdateRoleView):
+
+class UpdateView(crudbase.OnlySaveButtonMixin,
+                 createsubject.CreateUpdateMixin,
+                 update.UpdateRoleView):
     template_name = 'devilry_admin/subject/edit/updateview.django.html'
 
     model = Subject
@@ -17,19 +21,6 @@ class UpdateView(crudbase.OnlySaveButtonMixin, update.UpdateRoleView):
         'long_name',
         'short_name'
     ]
-
-    def get_field_layout(self):
-        return [
-            layout.Div(
-                layout.Field('long_name', placeholder=ugettext_lazy('Example: DUCK1010 Object Oriented Programming'),
-                             focusonme='focusonme'),
-                layout.Field('short_name', placeholder=ugettext_lazy('Example: duck1010')),
-                css_class='cradmin-globalfields'
-            )
-        ]
-
-    def dispatch(self, *args, **kwargs):
-        return super(UpdateView, self).dispatch(*args, **kwargs)
 
     def get_pagetitle(self):
         subject = self.request.cradmin_role
