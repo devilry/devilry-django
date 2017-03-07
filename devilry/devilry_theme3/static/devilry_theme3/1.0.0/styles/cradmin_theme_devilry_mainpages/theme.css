@@ -1,4 +1,5 @@
 /*! normalize.css v3.0.0 | MIT License | git.io/normalize */
+@import url('https://fonts.googleapis.com/css?family=Quicksand:400,700');
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
@@ -265,7 +266,7 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Quicksand', sans-serif;
   font-size: 16px;
   line-height: 1.42857143;
   color: #000000;
@@ -4849,7 +4850,7 @@ form .alert-block.alert-danger ul li {
   border-radius: 4px;
   outline: none;
   box-shadow: none;
-  background: #f5f5f5;
+  background: #fff;
 }
 .form-control:focus,
 .cradmin-div-styled-as-textarea:focus {
@@ -5467,10 +5468,10 @@ table.table.django-cradmin-table tbody td:last-child {
 .cradmin-acemarkdown .ace_editor {
   font-size: 16px;
   height: 400px;
-  background: #f5f5f5;
+  background: #fff;
 }
 .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea {
-  background: #f5f5f5;
+  background: #fff;
 }
 .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
   height: 100px;
@@ -7389,6 +7390,111 @@ h3 {
 .devilry-tabs__panel--active {
   display: block;
 }
+.devilry-ace-editor textarea.cradmin-acemarkdowntextarea {
+  display: none;
+}
+.devilry-ace-editor.cradmin-acemarkdown-textareavisible textarea.cradmin-acemarkdowntextarea {
+  display: block;
+}
+.devilry-ace-editor .btn-toolbar {
+  margin-bottom: 0;
+  opacity: .5;
+}
+@media (min-width: 600px) {
+  .devilry-ace-editor .btn-toolbar .btn {
+    margin-bottom: 0;
+  }
+}
+.devilry-ace-editor .ace_editor {
+  font-size: 16px;
+  background: #fff;
+  height: 100px;
+}
+@media (min-height: 400px) {
+  .devilry-ace-editor .ace_editor {
+    height: 170px;
+  }
+}
+.devilry-ace-editor .devilry-ace-editor-acewrapper {
+  background: #fff;
+  border: 3px solid #D9D9D9;
+  padding: 10px;
+}
+.devilry-ace-editor.cradmin-focus .btn-toolbar {
+  opacity: 1;
+}
+.devilry-ace-editor.cradmin-focus .devilry-ace-editor-acewrapper,
+.devilry-ace-editor.cradmin-focus .ace_editor {
+  background: #fff;
+  border-color: #262626;
+}
+.devilry-ace-editor--small .ace_editor {
+  height: 70px;
+}
+@media (min-height: 400px) {
+  .devilry-ace-editor--small .ace_editor {
+    height: 100px;
+  }
+}
+.devilry-ace-editor--large .ace_editor {
+  height: 100px;
+}
+@media (min-height: 400px) {
+  .devilry-ace-editor--large .ace_editor {
+    height: 150px;
+  }
+}
+@media (min-height: 500px) {
+  .devilry-ace-editor--large .ace_editor {
+    height: 230px;
+  }
+}
+@media (min-height: 600px) {
+  .devilry-ace-editor--large .ace_editor {
+    height: 310px;
+  }
+}
+@media (min-height: 800px) {
+  .devilry-ace-editor--large .ace_editor {
+    height: 450px;
+  }
+}
+.devilry-filedownload {
+  background-color: #f5f5f5;
+  display: block;
+  text-decoration: none !important;
+  padding: 8px 15px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+  max-width: 100%;
+}
+@media (min-width: 768px) {
+  .devilry-filedownload {
+    display: inline-block;
+    margin: 0 8px 8px 0;
+    max-width: 50%;
+  }
+}
+.devilry-filedownload__content {
+  display: flex;
+}
+.devilry-filedownload__label {
+  flex: 1 1 auto;
+  align-self: center;
+  color: #000000;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.devilry-filedownload__icon {
+  width: 40px;
+  flex: 0 0 40px;
+  text-align: right;
+  align-self: center;
+}
+.devilry-filedownload:hover {
+  background-color: #dadada;
+}
 #django_cradmin_bodycontentwrapper {
   padding-bottom: 15px;
 }
@@ -7753,11 +7859,11 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 }
 .comment-form-container {
   background-color: #fff;
-  padding: 10px 10px 10px 10px;
+  padding: 12px;
 }
 .devilry-group-feedbackfeed-comment {
   display: block;
-  margin-bottom: 15px;
+  margin-bottom: 21px;
   background-color: #fff;
   min-height: 5.0em;
   border: 0 solid #666666;
@@ -7766,11 +7872,32 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 .devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-student {
   border-left-color: #61AE24;
 }
+.devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-student a {
+  color: #508f1e;
+  text-decoration: underline;
+}
+.devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-student a:hover {
+  color: #61AE24;
+}
 .devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-examiner {
   border-left-color: #129dc1;
 }
+.devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-examiner a {
+  color: #0f819e;
+  text-decoration: underline;
+}
+.devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-examiner a:hover {
+  color: #129dc1;
+}
 .devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-admin {
   border-left-color: #e58605;
+}
+.devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-admin a {
+  color: #bc6e04;
+  text-decoration: underline;
+}
+.devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-admin a:hover {
+  color: #e58605;
 }
 .devilry-group-feedbackfeed-comment--with-badge {
   display: flex;
@@ -7792,7 +7919,7 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   }
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content {
-  padding: 10px 15px;
+  padding: 12px;
   /**/
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-meta {
@@ -7801,6 +7928,7 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   color: #333333;
   font-size: 14px;
   line-height: 20px;
+  margin-bottom: 21px;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-created-by {
   font-weight: bold;
@@ -7819,14 +7947,54 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text {
   font-size: 20px;
-  margin-bottom: 15px;
-  font-family: Georgia, "Times New Roman", Times, serif;
+  margin-bottom: 21px;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text:last-child {
+  margin-bottom: 0;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h1,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h2,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h3 {
+  font-weight: normal;
+  margin-top: 21px;
+  margin-bottom: 7px;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h4,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h5,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h6 {
+  font-weight: bold;
+  font-size: 20px;
+  margin-top: 7px;
+  margin-bottom: 7px;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h1 {
+  font-size: 40px;
+  border-bottom: 3px solid #f5f5f5;
+  padding-bottom: 7px;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h2 {
+  font-size: 32px;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h3 {
+  font-size: 24px;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text pre {
   margin-bottom: 15px;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text a {
   text-decoration: underline;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h1:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h2:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h3:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h4:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h5:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text h6:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text ul:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text ol:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text pre:last-child,
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text p:last-child {
+  margin-bottom: 0;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content.after {
   content: "";
@@ -7871,7 +8039,7 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   margin: 0;
   left: 0;
   right: 0;
-  padding: 10px;
+  padding: 12px;
   position: absolute;
   text-transform: uppercase;
   top: 50%;
@@ -8937,7 +9105,7 @@ fieldset[disabled] .button_student {
 .devilry-group-feedbackfeed-sidebar {
   background: #fff;
   padding: 5px 15px 0 15px;
-  margin-bottom: 15px;
+  margin-bottom: 21px;
 }
 .devilry-group-feedbackfeed-sidebar__title {
   margin-top: 0;
@@ -8957,38 +9125,38 @@ fieldset[disabled] .button_student {
   padding: 0;
 }
 .devilry-group-feedbackfeed-feed {
+  border-left: 3px solid #dadada;
+  margin-left: 30px;
   /*
-   Event messages such as passed, failed and general messages between comments.
-   */
+  Event messages such as passed, failed and general messages between comments.
+  */
+}
+.devilry-group-feedbackfeed-feed > li {
+  margin-left: -30px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message {
-  margin-left: 25px;
-  margin-top: 25px;
-  margin-bottom: 25px;
+  margin-left: 54px;
+  margin-bottom: 21px;
   font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-deadline-created {
-  margin-left: 25px;
-  margin-top: 25px;
-  margin-bottom: 25px;
+  margin-left: 54px;
+  margin-bottom: 21px;
   font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-deadline-expired {
-  margin-left: 25px;
-  margin-top: 25px;
-  margin-bottom: 25px;
+  margin-left: 54px;
+  margin-bottom: 21px;
   font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-passed {
-  margin-left: 25px;
-  margin-top: 25px;
-  margin-bottom: 25px;
+  margin-left: 54px;
+  margin-bottom: 21px;
   font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-grade {
-  margin-left: 25px;
-  margin-top: 25px;
-  margin-bottom: 25px;
+  margin-left: 54px;
+  margin-bottom: 21px;
   font-size: 16px;
   font-weight: bold;
 }
@@ -9005,9 +9173,8 @@ fieldset[disabled] .button_student {
   padding: 2px 5px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-failed {
-  margin-left: 25px;
-  margin-top: 25px;
-  margin-bottom: 25px;
+  margin-left: 54px;
+  margin-bottom: 21px;
   font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-feed-uploaded-file-tag {

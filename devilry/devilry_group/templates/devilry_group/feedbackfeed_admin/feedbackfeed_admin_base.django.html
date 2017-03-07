@@ -9,11 +9,8 @@
                 devilry-tabs__tab
                 {% block discuss_navigation_active_class %}{% endblock %}">
             <span class="devilry-tabs__title">
-                {% trans 'Discuss with students and examiners' context 'devilry_group feedbackfeed admin' %}
+                {% trans 'Discuss' %}
                 {% block discuss_navigation_title_suffix %}{% endblock %}
-            </span>
-            <span class="devilry-tabs__meta">
-                {% trans 'Communicate with everyone on the group' context 'devilry_group feedbackfeed admin' %}
             </span>
         </a>
         <a href="{% cradmin_appurl 'admin-examiner-discuss' %}"
@@ -21,11 +18,8 @@
                 devilry-tabs__tab
                 {% block admin_examiner_discuss_navigation_active_class %}{% endblock %}">
             <span class="devilry-tabs__title">
-                {% trans 'Discuss with examiners' context 'devilry_group feedbackfeed admin' %}
+                {% trans 'Internal notes' %}
                 {% block admin_examiner_discuss_navigation_title_suffix %}{% endblock %}
-            </span>
-            <span class="devilry-tabs__meta">
-                {% trans 'Only communicate with examiners and admins' context 'devilry_group feedbackfeed admin' %}
             </span>
         </a>
     </nav>

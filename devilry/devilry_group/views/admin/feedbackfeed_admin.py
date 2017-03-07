@@ -53,7 +53,7 @@ class AdminPublicDiscussView(AdminBaseFeedbackFeedView):
             PrimarySubmit(
                 'admin_add_public_comment',
                 _('Add comment'),
-                css_class='btn btn-primary')
+                css_class='btn btn-default')
         ])
         return buttons
 
@@ -84,8 +84,7 @@ class AdminWithExaminersDiscussView(AdminBaseFeedbackFeedView):
         buttons.extend([
             PrimarySubmit(
                 'admin_add_comment_for_examiners_and_admins',
-                _('Add comment'),
-                css_class='btn btn-primary')
+                _('Add note'))
         ])
         return buttons
 
