@@ -68,17 +68,22 @@ class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.Vi
 
 
 class PeriodTagForm(forms.Form):
-    tag_text = forms.CharField(
-        label='Tags',
-        widget=forms.Textarea,
-        help_text='Add tags here in a comma-separated format, e.g: tag1, tag2, tag3')
+    tag_text = forms.CharField()
+    is_hidden = forms.BooleanField()
 
-    is_hidden = forms.BooleanField(
-        label='Hidden',
-        initial=False,
-        required=False,
-        help_text='If you check this, the tag(s) will be marked as hidden.'
-    )
+    def __init__(self, *args, **kwargs):
+        super(PeriodTagForm, self).__init__(*args, **kwargs)
+        self.fields['tag_text'].label = 'Tags'
+        self.fields['tag_text'].help_text = 'Enter tags here. Tags must be in a comma separated format, ' \
+                                            'e.g: tag1, tag2, tag3. ' \
+                                            'Each tag may be up to 30 letters of lowercase(a-z) and/or ' \
+                                            'uppercase(A-Z) english letters, numbers, underscore ("_") ' \
+                                            'and hyphen ("-").'
+        self.fields['tag_text'].widget = forms.Textarea()
+        self.fields['is_hidden'].label = 'Hidden'
+        self.fields['is_hidden'].initial = False
+        self.fields['is_hidden'].required = False
+        self.fields['is_hidden'].help_text = 'If you check this, the tag will be marked as hidden.'
 
     def get_added_tags_list(self):
         """
@@ -95,7 +100,7 @@ class PeriodTagForm(forms.Form):
         if 'tag_text' not in self.cleaned_data or len(self.cleaned_data['tag_text']) == 0:
             raise ValidationError(ugettext_lazy('Tag field is empty.'))
         tag_text = self.cleaned_data['tag_text']
-        pattern = '^([^,]\w+(,\s*\w+)*?)+$'
+        pattern = '^([^,][a-z0-9_-]+(,\s*[a-z0-9_-]+)*?)+$'
         if not re.match(pattern, tag_text):
             raise ValidationError(
                 {'tag_text': ugettext_lazy('Tag text must be in comma separated format! '
@@ -125,8 +130,11 @@ class AddTagsView(formbase.FormView):
 
     def get_field_layout(self):
         return [
-            'tag_text',
-            'is_hidden'
+            layout.Div(
+                layout.Field('tag_text', focusonme='focusonme'),
+                layout.Field('is_hidden'),
+                css_class='cradmin-globalfields'
+            )
         ]
 
     def get_buttons(self):
@@ -200,12 +208,25 @@ class EditPeriodTagForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.period = kwargs.pop('period')
         super(EditPeriodTagForm, self).__init__(*args, **kwargs)
+        self.fields['tag'].label = 'Tag name'
+        self.fields['tag'].help_text = 'Up to 30 letters of lowercase(a-z) and/or uppercase(A-Z) english letters, ' \
+                                       'numbers, underscore ("_") and hyphen ("-").'
+        self.fields['is_hidden'].label = 'Hidden'
+        self.fields['is_hidden'].initial = False
+        self.fields['is_hidden'].required = False
+        self.fields['is_hidden'].help_text = 'If you check this, the tag will be marked as hidden.'
     
     def clean(self):
         cleaned_data = super(EditPeriodTagForm, self).clean()
         tag = cleaned_data['tag']
         if PeriodTag.objects.filter(period=self.period, tag=tag).count() != 0:
             raise ValidationError(ugettext_lazy('{} already exists'.format(tag)))
+        pattern = r'^[a-z0-9_-]+$'
+        if not re.match(pattern, tag):
+            raise ValidationError(
+                {'tag_text': ugettext_lazy('Up to 30 letters of lowercase(a-z) and/or uppercase(A-Z) english letters '
+                                           '(a-z), numbers, underscore ("_") and hyphen ("-").')}
+            )
         return cleaned_data
 
 
@@ -242,19 +263,6 @@ class EditTagView(crudbase.OnlySaveButtonMixin, EditDeleteViewMixin, update.Upda
 
     def get_pagetitle(self):
         return 'Edit {}'.format(PeriodTag.objects.get(id=self.tag_id).displayname)
-
-    def get_form(self, form_class=None):
-        form = super(EditTagView, self).get_form(form_class=form_class)
-        form.fields['tag'] = forms.CharField(
-            label='Tag',
-            help_text='Here you can rename the tag.')
-        form.fields['is_hidden'] = forms.BooleanField(
-            label='Hidden',
-            initial=False,
-            required=False,
-            help_text='If you check this, the tag will be marked as hidden.'
-        )
-        return form
 
     def get_field_layout(self):
         return [
