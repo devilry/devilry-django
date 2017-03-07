@@ -260,8 +260,8 @@ class TestFeedbackfeedExaminerPublicDiscuss(TestCase, TestFeedbackfeedExaminerDi
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-form-heading'))
         self.assertEquals(
-            'Here you can discuss with students and examiners on the group, as well as admins. '
-            'You can also upload files. The uploaded files will be visible to everyone with access to this group.',
+            'Discuss with the student(s). Anything you write or upload here is visible to the student(s), '
+            'co-examiners (if any), and admins, but it is not considered part of your feedback/grading.',
             mockresponse.selector.one('.devilry-group-feedbackfeed-form-heading').alltext_normalized
         )
 
@@ -363,7 +363,7 @@ class TestFeedbackfeedExaminerWithAdminDiscuss(TestCase, TestFeedbackfeedExamine
         )
         self.assertTrue(mockresponse.selector.exists('#submit-id-examiner_add_comment_for_examiners_and_admins'))
         self.assertEquals(
-            'Add comment',
+            'Add note',
             mockresponse.selector.one('#submit-id-examiner_add_comment_for_examiners_and_admins').alltext_normalized
         )
 
@@ -376,8 +376,8 @@ class TestFeedbackfeedExaminerWithAdminDiscuss(TestCase, TestFeedbackfeedExamine
         )
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-form-heading'))
         self.assertEquals(
-            'Here you can discuss with other examiners on the group and admins - no students. '
-            'The files you upload here will will only be visible to examiners and admins with access to this group.',
+            'Internal notes for this student or project group. Visible only to you, your co-examiners (if any) '
+            'and admins. Students can not see these notes.',
             mockresponse.selector.one('.devilry-group-feedbackfeed-form-heading').alltext_normalized
         )
 

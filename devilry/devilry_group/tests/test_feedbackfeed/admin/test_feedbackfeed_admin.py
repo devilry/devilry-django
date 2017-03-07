@@ -26,8 +26,8 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-form-heading'))
         self.assertEquals(
-            'Here you can discuss with students and examiners on the group, as well as admins. '
-            'You can also upload files. The uploaded files will be visible to everyone with access to this group.',
+            'Discuss with the student(s). Anything you write or upload here is visible to the student(s), '
+            'examiners, and admins.',
             mockresponse.selector.one('.devilry-group-feedbackfeed-form-heading').alltext_normalized
         )
 
@@ -222,8 +222,8 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-form-heading'))
         self.assertEquals(
-            'Here you can discuss with other examiners on the group and admins - no students. '
-            'The files you upload here will will only be visible to examiners and admins with access to this group.',
+            'Internal notes for this student or project group. Visible only to examiners and admins. '
+            'Notes are not visible to students.',
             mockresponse.selector.one('.devilry-group-feedbackfeed-form-heading').alltext_normalized
         )
 
