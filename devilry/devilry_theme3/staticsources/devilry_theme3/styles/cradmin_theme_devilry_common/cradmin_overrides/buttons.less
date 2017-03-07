@@ -40,6 +40,32 @@
     }
 
   }
+
+  &.btn--danger-muted {
+    background: @devilry-brand-color-danger-light3;
+    border-color: @devilry-brand-color-danger-light3;
+    color: @text-color;
+    &:hover, &:focus {
+      background: @devilry-brand-color-danger;
+      border-color: @devilry-brand-color-danger;
+      color: @devilry-brand-color-danger-light4;
+    }
+  }
+
+  &.btn--fixedwidth {
+    @media (min-width: @screen-sm-min) {
+      width: 150px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    &.btn--fixedwidth-wide {
+      @media (min-width: @screen-sm-min) {
+        width: 200px;
+      }
+    }
+  }
 }
 
 a.btn {
