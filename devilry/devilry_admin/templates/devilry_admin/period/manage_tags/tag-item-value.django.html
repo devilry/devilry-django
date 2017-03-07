@@ -8,7 +8,9 @@
     <h2>
         <span>
             {% if me.value.prefix == '' %}
-                <div class="devilry-admin-period-tags-listbuilder-itemvalue-title">{{ me.get_title }}</div>
+                <div class="devilry-admin-period-tags-listbuilder-itemvalue-title" style="float: left;">
+                    {{ me.get_title }}
+                </div>
                 <span style="display: block; float: right;">
                     {% block editbutton %} {{ block.super }} {% endblock %}
                     {% block deletebutton %} {{ block.super }} {% endblock %}
@@ -21,7 +23,9 @@
 {% endblock title %}
 
 {% block description %}
-    {% devilry_relatedusers_on_period_tag me.value %}
+    <p class="text-muted">
+        {% devilry_relatedusers_on_period_tag me.value %}
+    </p>
 {% endblock %}
 
 {% block end-of-content %}
@@ -29,22 +33,22 @@
         <p>
             <a href="{% cradmin_instance_url appname='manage_tags' viewname='add_students' tag=me.value.tag %}"
                     id="devilry_admin_period_manage_tags_add_students_{{ me.value.tag }}"
-                    class="btn btn-default">
+                    class="btn btn-default btn-sm">
                 {% trans 'Add students' %}
             </a>
             <a href="{% cradmin_instance_url appname='manage_tags' viewname='remove_students' tag=me.value.tag %}"
                     id="devilry_admin_period_manage_tags_remove_students_{{ me.value.tag }}"
-                    class="btn btn-default">
+                    class="btn btn-default btn-sm">
                 {% trans 'Remove students' %}
             </a>
             <a href="{% cradmin_instance_url appname='manage_tags' viewname='add_examiners' tag=me.value.tag %}"
                     id="devilry_admin_period_manage_tags_add_examiners_{{ me.value.tag }}"
-                    class="btn btn-default">
+                    class="btn btn-default btn-sm">
                 {% trans 'Add examiners' %}
             </a>
             <a href="{% cradmin_instance_url appname='manage_tags' viewname='remove_examiners' tag=me.value.tag %}"
                     id="devilry_admin_period_manage_tags_remove_examiners_{{ me.value.tag }}"
-                    class="btn btn-default">
+                    class="btn btn-default btn-sm">
                 {% trans 'Remove examiners' %}
             </a>
         </p>
