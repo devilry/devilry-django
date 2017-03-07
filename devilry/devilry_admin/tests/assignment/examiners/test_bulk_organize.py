@@ -788,3 +788,7 @@ class TestManualReplaceView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             messages.ERROR,
             bulk_organize.ManualAddOrReplaceExaminersForm.invalid_students_selected_message,
             '')
+
+
+class TestRandomOrganizeByPeriodTagView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = bulk_organize.OrganizeByPeriodTagView

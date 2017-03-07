@@ -1,0 +1,27 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_appindex_url %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to bulk-organize examiners overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% trans "Organize examiners with students based on semester tags" %}
+    </h1>
+    <p>
+        {% trans 'When organizing the examiners will be grouped with students that are registered on the same tag.' %}
+    </p>
+    <form action="" method="post">
+        <button class="btn btn-primary">Organize students and examiners</button>
+    </form>
+{% endblock pageheader-inner %}

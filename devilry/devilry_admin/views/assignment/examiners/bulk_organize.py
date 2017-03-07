@@ -5,18 +5,37 @@ import random
 
 from django import forms
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy
 from django.views.generic import TemplateView
 from django_cradmin import crapp
+from django_cradmin.viewhelpers.mixins import QuerysetForRoleMixin
 
+from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Examiner, RelatedExaminer
 from devilry.devilry_admin.views.assignment.students import groupview_base
 from devilry.devilry_cradmin import devilry_listbuilder
+from devilry.apps.core.models import period_tag
 
 
 class SelectMethodView(TemplateView):
     template_name = 'devilry_admin/assignment/examiners/bulk_organize/select_method.django.html'
+
+    def get_context_data(self, **kwargs):
+        assignment = self.request.cradmin_role
+        context_data = super(SelectMethodView, self).get_context_data(**kwargs)
+        context_data['assignment'] = assignment
+        period_tags_queryset = period_tag.PeriodTag.objects.filter(period=assignment.parentnode, prefix='')
+        context_data['period_tags_count'] = period_tags_queryset.count()
+        return context_data
+
+
+class OrganizeByPeriodTagView(QuerysetForRoleMixin, TemplateView):
+    template_name = 'devilry_admin/assignment/examiners/bulk_organize/random-tags.django.html'
+
+
+
 
 
 class RandomOrganizeForm(groupview_base.SelectedGroupsForm):
@@ -289,6 +308,9 @@ class App(crapp.App):
         crapp.Url(r'^$',
                   SelectMethodView.as_view(),
                   name=crapp.INDEXVIEW_NAME),
+        # crapp.Url(r'^random-tags$',
+        #           RandomOrganizeByPeriodTagView.as_view(),
+        #           name='random-tags'),
         crapp.Url(r'^random/(?P<filters_string>.+)?$',
                   RandomView.as_view(),
                   name='random'),

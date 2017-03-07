@@ -27,8 +27,22 @@
 {% block content %}
         <div class="container">
             <div class="row">
-                <div class="col-md-8" id="devilry_admin_assignment_examiners_bulk_organize_buttons">
-                    <p>
+{#                <div class="col-md-8" id="devilry_admin_assignment_examiners_bulk_organize_buttons">#}
+{#                    {% if period_tags_count > 0 %}#}
+{#                        <p>#}
+{#                            <a id="devilry_admin_assignment_examiners_bulk_organize_button_random"#}
+{#                                    class="btn btn-default btn-block devilry-btn-titledescription"#}
+{#                                    href="{% cradmin_appurl 'random-tags' %}">#}
+{#                                <strong>{% trans "Organize examiners randomly based on tags" %}</strong>#}
+{#                                <small>#}
+{#                                    <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
+{#                                        {% trans "Randomly assign examiners to students that are registered with the same semester tag" %}#}
+{#                                    <span class="sr-only">)</span>#}
+{#                                </small>#}
+{#                            </a>#}
+{#                        </p>#}
+{#                    {% endif %}#}
+{#                    <p>#}
                         <a id="devilry_admin_assignment_examiners_bulk_organize_button_random"
                                 class="btn btn-default btn-block devilry-btn-titledescription"
                                 href="{% cradmin_appurl 'random' %}">
@@ -64,6 +78,19 @@
                             </small>
                         </a>
                     </p>
+                    {% if period_tags_count == 0 %}
+                        <div class="row">
+                            <div class="col-sm-8 col-lg-9">
+                                <p class="devilry-listbuilderlist-footer">
+                                    {% blocktrans trimmed with period=assignment.parentnode.get_path %}
+                                        No tags has been added for this semester. If you add tags, you can organize examiners and students based on the tags.
+                                    {% endblocktrans %}
+                                    <a href="{% cradmin_url instanceid='devilry_admin_periodadmin' appname='manage_tags' roleid=assignment.parentnode.id viewname='INDEX' %}">
+                                        {% trans "Add period tags" %}</a>.
+                                </p>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
 
                 <div class="col-md-4">
