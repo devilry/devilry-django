@@ -66,7 +66,11 @@
                 {% trans "Semester tags" %}
             </h2>
             <p class="text-muted">
-                {% trans "Create, edit and delete tags within this semester. Add and remove students/examiners from tags." %}
+                {% blocktrans trimmed %}
+                    Create, edit and delete tags within this semester. Add and
+                    remove students/examiners from tags. Tags can be used to
+                    accociate examiners with students.
+                {% endblocktrans %}
             </p>
             <p>
                 <a href="{% cradmin_instance_url appname='manage_tags' viewname='INDEX' %}"
