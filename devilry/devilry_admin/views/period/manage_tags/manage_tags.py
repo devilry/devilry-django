@@ -67,12 +67,12 @@ class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.Vi
                             queryset=RelatedExaminer.objects.filter(period=role)))
 
 
-class PeriodTagForm(forms.Form):
+class CreatePeriodTagForm(forms.Form):
     tag_text = forms.CharField()
     is_hidden = forms.BooleanField()
 
     def __init__(self, *args, **kwargs):
-        super(PeriodTagForm, self).__init__(*args, **kwargs)
+        super(CreatePeriodTagForm, self).__init__(*args, **kwargs)
         self.fields['tag_text'].label = 'Tags'
         self.fields['tag_text'].help_text = 'Enter tags here. Tags must be in a comma separated format, ' \
                                             'e.g: tag1, tag2, tag3. ' \
@@ -96,7 +96,7 @@ class PeriodTagForm(forms.Form):
                 if len(tag) > 0]
 
     def clean(self):
-        super(PeriodTagForm, self).clean()
+        super(CreatePeriodTagForm, self).clean()
         if 'tag_text' not in self.cleaned_data or len(self.cleaned_data['tag_text']) == 0:
             raise ValidationError(ugettext_lazy('Tag field is empty.'))
         tag_text = self.cleaned_data['tag_text']
@@ -119,7 +119,7 @@ class AddTagsView(formbase.FormView):
     View for adding a new tag to the semester.
     """
     template_name = 'devilry_admin/period/manage_tags/add-tag.django.html'
-    form_class = PeriodTagForm
+    form_class = CreatePeriodTagForm
 
     @classmethod
     def deserialize_preview(cls, serialized):
