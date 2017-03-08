@@ -13,10 +13,12 @@
                 {{ me.get_title }} (imported)
             {% endif %}
         </h2>
-        <div class="devilry-heading-with-buttons__buttons">
-            {% block editbutton %} {{ block.super }} {% endblock %}
-            {% block deletebutton %} {{ block.super }} {% endblock %}
-        </div>
+        {% if me.value.prefix == '' %}
+            <div class="devilry-heading-with-buttons__buttons">
+                {% block editbutton %} {{ block.super }} {% endblock %}
+                {% block deletebutton %} {{ block.super }} {% endblock %}
+            </div>
+        {% endif %}
     </div>
 {% endblock title %}
 
@@ -41,16 +43,20 @@
             </a>
         </p>
         <p class="paragraph paragraph--nomargin">
-            <a href="{% cradmin_instance_url appname='manage_tags' viewname='remove_students' tag=me.value.tag %}"
-                    id="devilry_admin_period_manage_tags_remove_students_{{ me.value.tag }}"
-                    class="btn btn--fixedwidth btn--fixedwidth-wide btn--danger-muted btn-sm">
-                {% trans 'Remove students' %}
-            </a>
-            <a href="{% cradmin_instance_url appname='manage_tags' viewname='remove_examiners' tag=me.value.tag %}"
-                    id="devilry_admin_period_manage_tags_remove_examiners_{{ me.value.tag }}"
-                    class="btn btn--fixedwidth btn--fixedwidth-wide btn--danger-muted btn-sm">
-                {% trans 'Remove examiners' %}
-            </a>
+            {% if me.value.relatedstudents.count > 0 %}
+                <a href="{% cradmin_instance_url appname='manage_tags' viewname='remove_students' tag=me.value.tag %}"
+                        id="devilry_admin_period_manage_tags_remove_students_{{ me.value.tag }}"
+                        class="btn btn--fixedwidth btn--fixedwidth-wide btn--danger-muted btn-sm">
+                    {% trans 'Remove students' %}
+                </a>
+            {% endif %}
+            {% if me.value.relatedexaminers.count > 0 %}
+                <a href="{% cradmin_instance_url appname='manage_tags' viewname='remove_examiners' tag=me.value.tag %}"
+                        id="devilry_admin_period_manage_tags_remove_examiners_{{ me.value.tag }}"
+                        class="btn btn--fixedwidth btn--fixedwidth-wide btn--danger-muted btn-sm">
+                    {% trans 'Remove examiners' %}
+                </a>
+            {% endif %}
         </p>
     </div>
 {% endblock end-of-content %}

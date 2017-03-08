@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 import re
@@ -69,21 +70,14 @@ class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.Vi
 
 class CreatePeriodTagForm(forms.Form):
     tag_text = forms.CharField()
-    is_hidden = forms.BooleanField()
 
     def __init__(self, *args, **kwargs):
         super(CreatePeriodTagForm, self).__init__(*args, **kwargs)
         self.fields['tag_text'].label = 'Tags'
         self.fields['tag_text'].help_text = 'Enter tags here. Tags must be in a comma separated format, ' \
                                             'e.g: tag1, tag2, tag3. ' \
-                                            'Each tag may be up to 30 letters of lowercase(a-z) and/or ' \
-                                            'uppercase(A-Z) english letters, numbers, underscore ("_") ' \
-                                            'and hyphen ("-").'
+                                            'Each tag may be up to 15 characters long.'
         self.fields['tag_text'].widget = forms.Textarea()
-        self.fields['is_hidden'].label = 'Hidden'
-        self.fields['is_hidden'].initial = False
-        self.fields['is_hidden'].required = False
-        self.fields['is_hidden'].help_text = 'If you check this, the tag will be marked as hidden.'
 
     def get_added_tags_list(self):
         """
@@ -93,21 +87,23 @@ class CreatePeriodTagForm(forms.Form):
             (list): List of tags as strings.
         """
         return [tag.strip() for tag in self.cleaned_data['tag_text'].split(',')
-                if len(tag) > 0]
+                if len(tag.strip()) > 0]
 
     def clean(self):
         super(CreatePeriodTagForm, self).clean()
         if 'tag_text' not in self.cleaned_data or len(self.cleaned_data['tag_text']) == 0:
             raise ValidationError(ugettext_lazy('Tag field is empty.'))
-        tag_text = self.cleaned_data['tag_text']
-        pattern = '^([^,][a-z0-9_-]+(,\s*[a-z0-9_-]+)*?)+$'
-        if not re.match(pattern, tag_text):
-            raise ValidationError(
-                {'tag_text': ugettext_lazy('Tag text must be in comma separated format! '
-                                           'Example: tag1, tag2, tag3')}
-            )
-        tags_list = [tag_string.strip() for tag_string in tag_text.split(',') if len(tag_string) > 0]
+        tags_list = self.get_added_tags_list()
+        if len(tags_list) == 0:
+            if len(tags_list) > 15:
+                raise ValidationError(
+                    {'tag_text': ugettext_lazy('Wrong format. Example: tag1, tag2, tag3')}
+                )
         for tag in tags_list:
+            if len(tag) > 15:
+                raise ValidationError(
+                    {'tag_text': ugettext_lazy('One or more tags exceed the limit of 15 characters.')}
+                )
             if tags_list.count(tag) > 1:
                 raise ValidationError(
                     {'tag_text': ugettext_lazy('"{}" occurs more than once in the form.'.format(tag))}
@@ -132,7 +128,6 @@ class AddTagsView(formbase.FormView):
         return [
             layout.Div(
                 layout.Field('tag_text', focusonme='focusonme'),
-                layout.Field('is_hidden'),
                 css_class='cradmin-globalfields'
             )
         ]
@@ -202,30 +197,27 @@ class EditPeriodTagForm(forms.ModelForm):
         model = PeriodTag
         fields = [
             'tag',
-            'is_hidden'
         ]
 
     def __init__(self, *args, **kwargs):
         self.period = kwargs.pop('period')
         super(EditPeriodTagForm, self).__init__(*args, **kwargs)
         self.fields['tag'].label = 'Tag name'
-        self.fields['tag'].help_text = 'Up to 30 letters of lowercase(a-z) and/or uppercase(A-Z) english letters, ' \
-                                       'numbers, underscore ("_") and hyphen ("-").'
-        self.fields['is_hidden'].label = 'Hidden'
-        self.fields['is_hidden'].initial = False
-        self.fields['is_hidden'].required = False
-        self.fields['is_hidden'].help_text = 'If you check this, the tag will be marked as hidden.'
+        self.fields['tag'].help_text = 'Rename the tag here. Up to 15 characters. ' \
+                                       'Can contain any character except comma(,)'
     
     def clean(self):
         cleaned_data = super(EditPeriodTagForm, self).clean()
+        if 'tag' not in self.cleaned_data or len(self.cleaned_data['tag']) == 0:
+            raise ValidationError(
+                {'tag': ugettext_lazy('Tag cannot be empty.')}
+            )
         tag = cleaned_data['tag']
         if PeriodTag.objects.filter(period=self.period, tag=tag).count() != 0:
             raise ValidationError(ugettext_lazy('{} already exists'.format(tag)))
-        pattern = r'^[a-z0-9_-]+$'
-        if not re.match(pattern, tag):
+        if ',' in tag:
             raise ValidationError(
-                {'tag_text': ugettext_lazy('Up to 30 letters of lowercase(a-z) and/or uppercase(A-Z) english letters '
-                                           '(a-z), numbers, underscore ("_") and hyphen ("-").')}
+                {'tag': ugettext_lazy('Tag contains a comma(,).')}
             )
         return cleaned_data
 
@@ -268,7 +260,6 @@ class EditTagView(crudbase.OnlySaveButtonMixin, EditDeleteViewMixin, update.Upda
         return [
             layout.Div(
                 layout.Field('tag', focusonme='focusonme'),
-                layout.Field('is_hidden'),
                 css_class='cradmin-globalfields'
             )
         ]
@@ -283,6 +274,14 @@ class EditTagView(crudbase.OnlySaveButtonMixin, EditDeleteViewMixin, update.Upda
         kwargs = super(EditTagView, self).get_form_kwargs()
         kwargs['period'] = self.request.cradmin_role
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        period = self.request.cradmin_role
+        context_data = super(EditTagView, self).get_context_data(**kwargs)
+        context_data['period'] = period
+        context_data['period_tags'] = PeriodTag.objects\
+            .filter_editable_tags_on_period(period=period)
+        return context_data
 
 
 class DeleteTagView(EditDeleteViewMixin, delete.DeleteView):
@@ -545,29 +544,29 @@ class App(crapp.App):
                   DeleteTagView.as_view(),
                   name='delete'),
 
-        crapp.Url('^add-examiners/(?P<tag>[\w-]+)$',
+        crapp.Url('^add-examiners/(?P<tag>.[^,]+)$',
                   RelatedExaminerAddView.as_view(),
                   name='add_examiners'),
-        crapp.Url('^add-examiners/(?P<tag>[\w-]+)/(?P<filters_string>.+)?$',
+        crapp.Url('^add-examiners/(?P<tag>.[^,]+)/(?P<filters_string>.+)?$',
                   RelatedExaminerAddView.as_view(),
                   name='add_examiners_filter'),
-        crapp.Url('^remove-examiners/(?P<tag>[\w-]+)$',
+        crapp.Url('^remove-examiners/(?P<tag>.[^,]+)$',
                   RelatedExaminerRemoveView.as_view(),
                   name='remove_examiners'),
-        crapp.Url('^remove-examiners/(?P<tag>[\w-]+)/(?P<filters_string>.+)?$',
+        crapp.Url('^remove-examiners/(?P<tag>.[^,]+)/(?P<filters_string>.+)?$',
                   RelatedExaminerRemoveView.as_view(),
                   name='remove_examiners_filter'),
 
-        crapp.Url('^add-students/(?P<tag>[\w-]+)$',
+        crapp.Url('^add-students/(?P<tag>.[^,]+)$',
                   RelatedStudentAddView.as_view(),
                   name='add_students'),
-        crapp.Url('^add-students/(?P<tag>[\w-]+)/(?P<filters_string>.+)?$',
+        crapp.Url('^add-students/(?P<tag>.[^,]+)/(?P<filters_string>.+)?$',
                   RelatedStudentAddView.as_view(),
                   name='add_students_filter'),
-        crapp.Url('^remove-students/(?P<tag>[\w-]+)$',
+        crapp.Url('^remove-students/(?P<tag>.[^,]+)$',
                   RelatedStudentRemoveView.as_view(),
                   name='remove_students'),
-        crapp.Url('^remove-students/(?P<tag>[\w-]+)/(?P<filters_string>.+)?$',
+        crapp.Url('^remove-students/(?P<tag>.[^,]+)/(?P<filters_string>.+)?$',
                   RelatedStudentAddView.as_view(),
                   name='remove_students_filter'),
     ]

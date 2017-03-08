@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load cradmin_tags %}
 {% load cradmin_icon_tags %}
+{% load devilry_core_tags %}
 
 {% block pageheader-outer-extraclasses %}
     {{ block.super }}
@@ -17,3 +18,14 @@
     </a>
     {{ block.super }}
 {% endblock pageheader-inner %}
+
+{% block pre_form %}
+    <div id="devilry_admin_period_admins_help_container" class="container">
+        <p class="alert alert-info">
+            <strong>
+                {% trans 'Existing tags' %}:
+            </strong>
+            {% devilry_period_tags_on_period period=period period_tags=period_tags %}
+        </p>
+    </div>
+{% endblock pre_form %}

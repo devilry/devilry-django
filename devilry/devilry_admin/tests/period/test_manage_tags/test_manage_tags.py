@@ -43,7 +43,9 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
 
     def test_link_urls_with_period_tags_rendered(self):
         testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        testperiodtag.relatedexaminers.add(mommy.make('core.RelatedExaminer', period=testperiod))
+        testperiodtag.relatedstudents.add(mommy.make('core.RelatedStudent', period=testperiod))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEquals(6, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEquals(
@@ -55,15 +57,23 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[1]
         )
         self.assertEquals(
+            mock.call('edit', args=(testperiodtag.id,), kwargs={}),
+            mockresponse.request.cradmin_app.reverse_appurl.call_args_list[2]
+        )
+        self.assertEquals(
+            mock.call('delete', args=(testperiodtag.id,), kwargs={}),
+            mockresponse.request.cradmin_app.reverse_appurl.call_args_list[3]
+        )
+        self.assertEquals(
             mock.call(appname='manage_tags', args=(), viewname='add_students', kwargs={'tag': 'a'}),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[2]
         )
         self.assertEquals(
-            mock.call(appname='manage_tags', args=(), viewname='remove_students', kwargs={'tag': 'a'}),
+            mock.call(appname='manage_tags', args=(), viewname='add_examiners', kwargs={'tag': 'a'}),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[3]
         )
         self.assertEquals(
-            mock.call(appname='manage_tags', args=(), viewname='add_examiners', kwargs={'tag': 'a'}),
+            mock.call(appname='manage_tags', args=(), viewname='remove_students', kwargs={'tag': 'a'}),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[4]
         )
         self.assertEquals(
@@ -81,9 +91,11 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         )
         self.assertEquals(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 3)
 
-    def test_item_value_buttons_text(self):
+    def test_item_value_all_buttons_text(self):
         testperiod = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        testperiodtag.relatedexaminers.add(mommy.make('core.RelatedExaminer', period=testperiod))
+        testperiodtag.relatedstudents.add(mommy.make('core.RelatedStudent', period=testperiod))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
         self.assertEquals(
             mockresponse.selector.one('#devilry_admin_period_manage_tags_add_students_a').alltext_normalized,
@@ -193,6 +205,50 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
         )
         self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue-editdelete-deletebutton'))
         self.assertNotIn('Delete', mockresponse.response.content)
+
+    def test_remove_examiners_not_rendered(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod
+        )
+        self.assertFalse(mockresponse.selector.exists('#devilry_admin_period_manage_tags_remove_examiners_a'))
+        self.assertNotIn('Remove examiners', mockresponse.response.content)
+
+    def test_remove_examiners_rendered(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        testperiodtag.relatedexaminers.add(
+            mommy.make('core.RelatedExaminer', period=testperiod)
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod
+        )
+        self.assertEquals(
+            mockresponse.selector.one('#devilry_admin_period_manage_tags_remove_examiners_a').alltext_normalized,
+            'Remove examiners')
+
+    def test_remove_students_not_rendered(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod
+        )
+        self.assertFalse(mockresponse.selector.exists('#devilry_admin_period_manage_tags_remove_students_a'))
+        self.assertNotIn('Remove students', mockresponse.response.content)
+
+    def test_remove_students_rendered(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='a')
+        testperiodtag.relatedstudents.add(
+            mommy.make('core.RelatedStudent', period=testperiod)
+        )
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod
+        )
+        self.assertEquals(
+            mockresponse.selector.one('#devilry_admin_period_manage_tags_remove_students_a').alltext_normalized,
+            'Remove students')
 
     def test_filter_search_on_tag(self):
         testperiod = mommy.make('core.Period')
@@ -361,90 +417,52 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def test_add_wrong_format_no_comma_before_first_tag(self):
+    def test_empty_tag_raises_validation_error(self):
         testperiod = mommy.make('core.Period')
-        messagesmock = mock.MagicMock()
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testperiod,
             requestkwargs={
                 'data': {
-                    'tag_text': ',tag1',
-                    'is_hidden': False
+                    'tag_text': ''
                 }
-            },
-            messagesmock=messagesmock
+            }
         )
-        self.assertEquals(mockresponse.selector.one('#error_1_id_tag_text').alltext_normalized,
-                          'Tag text must be in comma separated format! Example: tag1, tag2, tag3')
+        self.assertEquals(
+            mockresponse.selector.one('#error_1_id_tag_text').alltext_normalized,
+            'This field is required.'
+        )
         self.assertEquals(PeriodTag.objects.count(), 0)
 
-    def test_add_wrong_format_comma_after_last_tag(self):
+    def test_only_spaces_raises_validation_error(self):
         testperiod = mommy.make('core.Period')
-        messagesmock = mock.MagicMock()
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testperiod,
             requestkwargs={
                 'data': {
-                    'tag_text': 'tag1,',
-                    'is_hidden': False
+                    'tag_text': '      '
                 }
-            },
-            messagesmock=messagesmock
+            }
         )
-        self.assertEquals(mockresponse.selector.one('#error_1_id_tag_text').alltext_normalized,
-                          'Tag text must be in comma separated format! Example: tag1, tag2, tag3')
+        self.assertEquals(
+            mockresponse.selector.one('#error_1_id_tag_text').alltext_normalized,
+            'This field is required.'
+        )
         self.assertEquals(PeriodTag.objects.count(), 0)
 
-    def test_add_wrong_format_does_not_capture_empty_space(self):
+    def test_empty_tags_ignored(self):
         testperiod = mommy.make('core.Period')
-        messagesmock = mock.MagicMock()
-        mockresponse = self.mock_http200_postrequest_htmls(
+        self.mock_http302_postrequest(
             cradmin_role=testperiod,
             requestkwargs={
                 'data': {
-                    'tag_text': 'tag1, , tag2',
-                    'is_hidden': False
+                    'tag_text': ' tag1, , ,tag4 '
                 }
-            },
-            messagesmock=messagesmock
+            }
         )
-        self.assertEquals(mockresponse.selector.one('#error_1_id_tag_text').alltext_normalized,
-                          'Tag text must be in comma separated format! Example: tag1, tag2, tag3')
-        self.assertEquals(PeriodTag.objects.count(), 0)
-
-    def test_add_wrong_format_no_tag_only_commas(self):
-        testperiod = mommy.make('core.Period')
-        messagesmock = mock.MagicMock()
-        mockresponse = self.mock_http200_postrequest_htmls(
-            cradmin_role=testperiod,
-            requestkwargs={
-                'data': {
-                    'tag_text': ',,,',
-                    'is_hidden': False
-                }
-            },
-            messagesmock=messagesmock
-        )
-        self.assertEquals(mockresponse.selector.one('#error_1_id_tag_text').alltext_normalized,
-                          'Tag text must be in comma separated format! Example: tag1, tag2, tag3')
-        self.assertEquals(PeriodTag.objects.count(), 0)
-
-    def test_add_wrong_format_empty_text_input(self):
-        testperiod = mommy.make('core.Period')
-        messagesmock = mock.MagicMock()
-        mockresponse = self.mock_http200_postrequest_htmls(
-            cradmin_role=testperiod,
-            requestkwargs={
-                'data': {
-                    'tag_text': '',
-                    'is_hidden': False
-                }
-            },
-            messagesmock=messagesmock
-        )
-        self.assertEquals(mockresponse.selector.one('#error_1_id_tag_text').alltext_normalized,
-                          'This field is required.')
-        self.assertEquals(PeriodTag.objects.count(), 0)
+        self.assertEquals(PeriodTag.objects.count(), 2)
+        period_tags = [periodtag.tag for periodtag in PeriodTag.objects.all()]
+        self.assertIn('tag1', period_tags)
+        self.assertIn('tag4', period_tags)
 
     def test_add_correct_format_with_whitespace(self):
         testperiod = mommy.make('core.Period')
@@ -453,11 +471,13 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestkwargs={
                 'data': {
                     'tag_text': '        tag1,       tag2',
-                    'is_hidden': False
                 }
             }
         )
         self.assertEquals(PeriodTag.objects.count(), 2)
+        period_tags = [periodtag.tag for periodtag in PeriodTag.objects.all()]
+        self.assertIn('tag1', period_tags)
+        self.assertIn('tag2', period_tags)
 
     def test_add_correct_format_with_newline_and_whitespace(self):
         testperiod = mommy.make('core.Period')
@@ -467,7 +487,6 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestkwargs={
                 'data': {
                     'tag_text': 'tag1,\ntag2,      tag3,tag4    ',
-                    'is_hidden': False
                 }
             },
             messagesmock=messagesmock
@@ -486,7 +505,6 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestkwargs={
                 'data': {
                     'tag_text': 'tag1',
-                    'is_hidden': False
                 }
             }
         )
@@ -500,7 +518,6 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestkwargs={
                 'data': {
                     'tag_text': 'tag2',
-                    'is_hidden': False
                 }
             }
         )
@@ -514,7 +531,6 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestkwargs={
                 'data': {
                     'tag_text': 'tag1',
-                    'is_hidden': False
                 }
             },
             messagesmock=messagesmock
@@ -531,7 +547,6 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestkwargs={
                 'data': {
                     'tag_text': 'tag1, tag2',
-                    'is_hidden': False
                 }
             },
             messagesmock=messagesmock
@@ -550,7 +565,6 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestkwargs={
                 'data': {
                     'tag_text': 'tag4, tag5, tag6',
-                    'is_hidden': False
                 }
             },
         )
@@ -565,7 +579,6 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestkwargs={
                 'data': {
                     'tag_text': 'tag1, tag2',
-                    'is_hidden': False
                 }
             },
             messagesmock=messagesmock
@@ -581,7 +594,6 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestkwargs={
                 'data': {
                     'tag_text': 'tag1, tag2, tag3',
-                    'is_hidden': False
                 }
             }
         )
@@ -596,7 +608,6 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestkwargs={
                 'data': {
                     'tag_text': 'tag1',
-                    'is_hidden': False
                 }
             },
             messagesmock=messagesmock
@@ -616,7 +627,6 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestkwargs={
                 'data': {
                     'tag_text': 'tag1, tag2, tag3',
-                    'is_hidden': False
                 }
             },
             messagesmock=messagesmock
@@ -639,7 +649,6 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestkwargs={
                     'data': {
                         'tag_text': 'tag1, tag2, tag3, tag4, tag5, tag6, tag7',
-                        'is_hidden': False
                     }
                 }
             )
@@ -654,7 +663,6 @@ class TestAddTags(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 requestkwargs={
                     'data': {
                         'tag_text': 'tag1, tag2, tag3, tag4, tag5, tag6, tag7',
-                        'is_hidden': False
                     }
                 }
             )
@@ -726,6 +734,46 @@ class TestEditTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEquals(PeriodTag.objects.count(), 2)
         self.assertIsNotNone(PeriodTag.objects.get(tag='tag1'))
         self.assertIsNotNone(PeriodTag.objects.get(tag='tag2'))
+
+    def test_error_tag_contains_comma(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
+        messagesmock = mock.MagicMock()
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'pk': testperiodtag.id
+            },
+            requestkwargs={
+                'data': {
+                    'tag': 'tag1,asd'
+                }
+            },
+            messagesmock=messagesmock
+        )
+        self.assertIn('Tag contains a comma(,).', mockresponse.response.content)
+        self.assertEquals(PeriodTag.objects.count(), 1)
+        self.assertEquals(PeriodTag.objects.all()[0].tag, 'tag1')
+
+    def test_error_empty_tag(self):
+        testperiod = mommy.make('core.Period')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, tag='tag1')
+        messagesmock = mock.MagicMock()
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=testperiod,
+            viewkwargs={
+                'pk': testperiodtag.id
+            },
+            requestkwargs={
+                'data': {
+                    'tag': '  '
+                }
+            },
+            messagesmock=messagesmock
+        )
+        self.assertIn('Tag cannot be empty.', mockresponse.response.content)
+        self.assertEquals(PeriodTag.objects.count(), 1)
+        self.assertEquals(PeriodTag.objects.all()[0].tag, 'tag1')
 
 
 class TestDeleteTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
