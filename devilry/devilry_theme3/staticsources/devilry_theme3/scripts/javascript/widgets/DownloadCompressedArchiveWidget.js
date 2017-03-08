@@ -1,6 +1,8 @@
-import AbstractWidget from "ievv_jsbase/widget/AbstractWidget";
-import HttpDjangoJsonRequest from "ievv_jsbase/http/HttpDjangoJsonRequest";
-import HttpJsonRequest from "ievv_jsbase/http/HttpJsonRequest";
+import AbstractWidget from "ievv_jsbase/lib/widget/AbstractWidget";
+import HttpDjangoJsonRequest from "ievv_jsbase/lib/http/HttpDjangoJsonRequest";
+import HttpJsonRequest from "ievv_jsbase/lib/http/HttpJsonRequest";
+import SignalHandlerSingleton from "ievv_jsbase/lib/SignalHandlerSingleton";
+import LoggerSingleton from "ievv_jsbase/lib/log/LoggerSingleton";
 
 export default class DownloadCompressedArchiveWidget extends AbstractWidget {
   constructor(element) {
@@ -15,9 +17,9 @@ export default class DownloadCompressedArchiveWidget extends AbstractWidget {
       'running',
       'finished'];
     this._onStartSignal = this._onStartSignal.bind(this);
-    this.logger = new window.ievv_jsbase_core.LoggerSingleton().getLogger(
+    this.logger = new LoggerSingleton().getLogger(
       'devilry.DownloadCompressedArchiveWidget');
-    this.signalHandler = new window.ievv_jsbase_core.SignalHandlerSingleton();
+    this.signalHandler = new SignalHandlerSingleton();
     this.processingStartedTime = null;
     this.signalHandler.addReceiver(
       `${this.config.signalNameSpace}.Start`,

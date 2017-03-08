@@ -3,32 +3,35 @@ import DownloadCompressedArchiveStartButtonWidget from "./widgets/DownloadCompre
 import DownloadCompressedArchiveDownloadLinkWidget from "./widgets/DownloadCompressedArchiveDownloadLinkWidget";
 import GradingConfigurationWidget from "./widgets/GradingConfigurationWidget";
 import GradingConfigurationCustomTableWidget from "./widgets/GradingConfigurationCustomTableWidget";
+import LoggerSingleton from "ievv_jsbase/lib/log/LoggerSingleton";
+import LOGLEVEL from "ievv_jsbase/lib/log/loglevel";
+import WidgetRegistrySingleton from "ievv_jsbase/lib/widget/WidgetRegistrySingleton";
 
 
-export default class DevilryTheme3All {
-  constructor() {
-    new window.ievv_jsbase_core.LoggerSingleton().setDefaultLogLevel(
-      window.ievv_jsbase_core.LOGLEVEL.DEBUG);
-    const widgetRegistry = new window.ievv_jsbase_core.WidgetRegistrySingleton();
-    widgetRegistry.registerWidgetClass('devilry-download-compressed-archive',
-      DownloadCompressedArchiveWidget);
-    widgetRegistry.registerWidgetClass('devilry-download-compressed-archive-startbutton',
-      DownloadCompressedArchiveStartButtonWidget);
-    widgetRegistry.registerWidgetClass('devilry-download-compressed-archive-downloadlink',
-      DownloadCompressedArchiveDownloadLinkWidget);
-    widgetRegistry.registerWidgetClass('devilry-grading-configuration',
-      GradingConfigurationWidget);
-    widgetRegistry.registerWidgetClass('devilry-grading-configuration-custom-table',
-      GradingConfigurationCustomTableWidget);
+const logger = new LoggerSingleton();
+logger.setDefaultLogLevel(LOGLEVEL.INFO);
 
-    if (document.readyState != 'loading'){
-      widgetRegistry.initializeAllWidgetsWithinElement(document.body);
-    } else {
-      document.addEventListener('DOMContentLoaded', () => {
-        widgetRegistry.initializeAllWidgetsWithinElement(document.body);
-      });
-    }
-  }
+const widgetRegistry = new WidgetRegistrySingleton();
+widgetRegistry.registerWidgetClass('devilry-download-compressed-archive',
+  DownloadCompressedArchiveWidget);
+widgetRegistry.registerWidgetClass('devilry-download-compressed-archive-startbutton',
+  DownloadCompressedArchiveStartButtonWidget);
+widgetRegistry.registerWidgetClass('devilry-download-compressed-archive-downloadlink',
+  DownloadCompressedArchiveDownloadLinkWidget);
+widgetRegistry.registerWidgetClass('devilry-grading-configuration',
+  GradingConfigurationWidget);
+widgetRegistry.registerWidgetClass('devilry-grading-configuration-custom-table',
+  GradingConfigurationCustomTableWidget);
+
+function _onDomReady() {
+  // Initialize all widgets in document.body
+  widgetRegistry.initializeAllWidgetsWithinElement(document.body);
 }
 
-new DevilryTheme3All();
+if (document.readyState != 'loading'){
+  _onDomReady();
+} else {
+  document.addEventListener('DOMContentLoaded', () => {
+    _onDomReady();
+  });
+}

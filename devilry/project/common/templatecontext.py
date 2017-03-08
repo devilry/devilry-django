@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.templatetags.static import static
-from ievv_opensource import ievv_jsbase
 
 import devilry
 
@@ -16,10 +15,6 @@ def template_variables(request):
         'DEVILRY_THEME3_JAVASCRIPT_URL': '{static_url}/devilry_theme3/{theme3_version}/scripts/devilry_all.js'.format(
             static_url=settings.DEVILRY_STATIC_URL,
             theme3_version=settings.DEVILRY_THEME3_VERSION
-        ),
-        'DEVILRY_IEVV_JSBASE_URL': '{static_url}/ievv_jsbase/{version}/scripts/ievv_jsbase_core.js'.format(
-            static_url=settings.DEVILRY_STATIC_URL,
-            version=ievv_jsbase.__version__
         ),
         'session': request.session,
         'DEVILRY_MATHJAX_URL': settings.DEVILRY_MATHJAX_URL,
