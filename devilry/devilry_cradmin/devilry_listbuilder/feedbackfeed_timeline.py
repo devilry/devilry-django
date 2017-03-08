@@ -99,6 +99,10 @@ class TimelineListBuilderList(listbuilder.base.List):
 class BaseItemValue(listbuilder.base.ItemValueRenderer):
     """Base class for all items in the list.
     """
+    def __init__(self, *args, **kwargs):
+        self.devilryrole = kwargs.get('devilry_viewrole')
+        super(BaseItemValue, self).__init__(*args, **kwargs)
+
     @property
     def devilry_viewrole(self):
         """
@@ -107,7 +111,7 @@ class BaseItemValue(listbuilder.base.ItemValueRenderer):
         Returns:
              str: 'student', 'examiner' or a admin role.
         """
-        return self.kwargs['devilry_viewrole']
+        return self.devilryrole
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(BaseItemValue, self).get_extra_css_classes_list()
