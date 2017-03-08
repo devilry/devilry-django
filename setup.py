@@ -41,8 +41,6 @@ setup(
         'python-dateutil==1.5',
         'pytz==2012j',
         'django-celery-transactions==0.2.0',
-        # 'django-haystack==2.3.1',
-        'django-haystack==2.5.0',
         'httplib2==0.7.7',
         'detektor==1.1.0-beta.012',
         'dj-static>=0.0.6',
