@@ -54,6 +54,11 @@ CELERY_EAGER_TRANSACTION = True
 #EMAIL_HOST = 'localhost'
 #EMAIL_PORT = 1025
 
+# Use the devilry_developemail package to send mails.
+# mails are stored in the database and available through /djangoadmin/
+# EMAIL_BACKEND = 'devilry.devilry_developemail.email_backend.DevelopEmailBackend'
+# INSTALLED_APPS += ['devilry.devilry_developemail']
+
 
 # For testing django-celery-email
 # INSTALLED_APPS += ['djcelery_email']
