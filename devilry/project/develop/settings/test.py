@@ -63,8 +63,3 @@ class DisableMigrations(object):
         return self.apps_with_test_migrations.get(key, 'notmigrations')
 
 MIGRATION_MODULES = DisableMigrations()
-
-
-DEVILRY_ELASTICSEARCH_HOSTS = [
-    {"host": "localhost", "port": 9492}
-]

@@ -67,11 +67,6 @@ CELERY_EAGER_TRANSACTION = True
 # DEVILRY_PROFILEPAGE_HEADER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
 # DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
 
-DEVILRY_ELASTICSEARCH_HOSTS = [
-    {"host": "localhost", "port": 9491}
-]
-
-
 # Disable migrations when running tests
 # class DisableMigrations(object):
 #
