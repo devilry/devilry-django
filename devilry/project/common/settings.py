@@ -43,12 +43,9 @@ INSTALLED_APPS = [
     'errortemplates',
     'crispy_forms',
     'gunicorn',
-    'extjs4',
-    # 'haystack',
     'ievv_opensource.ievvtasks_common',
     'ievv_opensource.ievv_batchframework',
     'ievv_opensource.ievv_customsql',
-    'ievv_opensource.ievv_jsbase.apps.IevvJsBaseBasicAppConfig',
 
     'devilry.devilry_bulkcreate_users',
     'devilry.devilry_cradmin',
@@ -127,20 +124,6 @@ MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
 AUTHENTICATION_BACKENDS = (
     'devilry.devilry_account.authbackend.default.EmailAuthBackend',
 )
-
-
-##################################################################################
-#
-# Haystack (search)
-#
-##################################################################################
-
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
-    },
-}
-HAYSTACK_SIGNAL_PROCESSOR = 'devilry.devilry_search.haystack_signal_processor.DevilryCelerySignalProcessor'
 
 
 ########################################################################

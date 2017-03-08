@@ -54,11 +54,6 @@ DEVILRY_DEFAULT_EMAIL_SUFFIX = None
 #     'devilry_qualifiesforexam_select',
 # ]
 
-DEVILRY_ELASTICSEARCH_HOSTS = [
-    {"host": "localhost", "port": 9200}
-]
-
-
 #: Deadline handling method:
 #:
 #:    0: Soft deadlines

@@ -30,13 +30,6 @@ DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(testfilesdir, 'devilry_comp
 if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' in MIDDLEWARE_CLASSES:
     MIDDLEWARE_CLASSES.remove('devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware')
 
-# Use database for search in tests
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
-    },
-}
-
 INSTALLED_APPS += [
     'devilry.devilry_dbcache.devilry_dbcache_testapp',
 ]
@@ -70,8 +63,3 @@ class DisableMigrations(object):
         return self.apps_with_test_migrations.get(key, 'notmigrations')
 
 MIGRATION_MODULES = DisableMigrations()
-
-
-DEVILRY_ELASTICSEARCH_HOSTS = [
-    {"host": "localhost", "port": 9492}
-]

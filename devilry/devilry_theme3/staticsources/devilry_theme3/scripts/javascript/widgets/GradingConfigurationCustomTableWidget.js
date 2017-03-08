@@ -1,6 +1,7 @@
-import AbstractWidget from "ievv_jsbase/widget/AbstractWidget";
-import HtmlParser from "ievv_jsbase/dom/HtmlParser";
-import SignalHandlerSingleton from 'ievv_jsbase/SignalHandlerSingleton';
+import AbstractWidget from "ievv_jsbase/lib/widget/AbstractWidget";
+import HtmlParser from "ievv_jsbase/lib/dom/HtmlParser";
+import SignalHandlerSingleton from 'ievv_jsbase/lib/SignalHandlerSingleton';
+import LoggerSingleton from "ievv_jsbase/lib/log/LoggerSingleton";
 
 
 export default class GradingConfigurationCustomTableWidget extends AbstractWidget {
@@ -16,7 +17,7 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
       throw new Error('The signalNameSpace config is required.');
     }
     this._name = `devilry.GradingConfigurationCustomTableWidget.${this.config.signalNameSpace}`;
-    this.logger = new window.ievv_jsbase_core.LoggerSingleton().getLogger(
+    this.logger = new LoggerSingleton().getLogger(
       'devilry.GradingConfigurationCustomTableWidget');
     this._onRemoveRow = this._onRemoveRow.bind(this);
     this._onGradeInputChange = this._onGradeInputChange.bind(this);

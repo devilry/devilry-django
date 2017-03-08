@@ -1,6 +1,7 @@
-import AbstractWidget from "ievv_jsbase/widget/AbstractWidget";
-import SignalHandlerSingleton from 'ievv_jsbase/SignalHandlerSingleton';
-import HtmlParser from "ievv_jsbase/dom/HtmlParser";
+import AbstractWidget from "ievv_jsbase/lib/widget/AbstractWidget";
+import HtmlParser from "ievv_jsbase/lib/dom/HtmlParser";
+import SignalHandlerSingleton from 'ievv_jsbase/lib/SignalHandlerSingleton';
+import LoggerSingleton from "ievv_jsbase/lib/log/LoggerSingleton";
 
 
 export default class GradingConfigurationWidget extends AbstractWidget {
@@ -18,7 +19,7 @@ export default class GradingConfigurationWidget extends AbstractWidget {
     }
     this._name = `devilry.GradingConfigurationWidget.${this.config.signalNameSpace}`;
     this._signalHandler = new SignalHandlerSingleton();
-    this.logger = new window.ievv_jsbase_core.LoggerSingleton().getLogger(
+    this.logger = new LoggerSingleton().getLogger(
       'devilry.GradingConfigurationWidget');
     this._onPluginIdRadioChange = this._onPluginIdRadioChange.bind(this);
     this._onPointsToGradeMapperRadioChange = this._onPointsToGradeMapperRadioChange.bind(this);

@@ -1,10 +1,11 @@
-import AbstractWidget from "ievv_jsbase/widget/AbstractWidget";
+import AbstractWidget from "ievv_jsbase/lib/widget/AbstractWidget";
+import SignalHandlerSingleton from "ievv_jsbase/lib/SignalHandlerSingleton";
 
 export default class DownloadCompressedArchiveStartButtonWidget extends AbstractWidget {
   constructor(element) {
     super(element);
     this._onClick = this._onClick.bind(this);
-    this.signalHandler = new window.ievv_jsbase_core.SignalHandlerSingleton();
+    this.signalHandler = new SignalHandlerSingleton();
     this.element.addEventListener('click', this._onClick);
   }
 

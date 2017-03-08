@@ -16,5 +16,8 @@
     "jsbuild": "webpack --config webpack.config.js --display-errora-details",
     "jsbuild-production": "webpack --config webpack.config.js -p",
     "jsbuild-watch": "webpack --config webpack.config.js --watch"
+  },
+  "dependencies": {
+    "ievv_jsbase": "^1.0.4"
   }
 }
