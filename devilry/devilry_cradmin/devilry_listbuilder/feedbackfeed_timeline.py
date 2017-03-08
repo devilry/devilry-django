@@ -2,6 +2,7 @@
 from django_cradmin.viewhelpers import listbuilder
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_group.models import GroupComment
+from devilry.utils import datetimeutils
 
 
 class TimelineListBuilderList(listbuilder.base.List):
@@ -239,6 +240,10 @@ class GradeItemValue(BaseEventItemValue):
     @property
     def group(self):
         return self.kwargs['group']
+
+    @property
+    def deadline_as_string(self):
+        return datetimeutils.datetime_to_string(self.feedbackset.deadline_datetime)
 
     def get_timeline_datetime(self):
         return self.value.grading_published_datetime

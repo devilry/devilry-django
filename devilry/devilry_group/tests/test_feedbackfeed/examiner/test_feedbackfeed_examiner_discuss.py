@@ -238,6 +238,69 @@ class TestFeedbackfeedExaminerPublicDiscuss(TestCase, TestFeedbackfeedExaminerDi
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
+    def test_event_grade_last(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertTrue(mockresponse.selector.one('.devilry-group-event__grade-last'))
+
+    def test_event_grade_before_last(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        group_mommy.feedbackset_new_attempt_published(
+            group=testgroup, deadline_datetime=timezone.now() + timedelta(days=1))
+        group_mommy.feedbackset_new_attempt_published(
+            group=testgroup, deadline_datetime=timezone.now() + timedelta(days=2))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertTrue(mockresponse.selector.count('.devilry-group-event__grade-before-last'), 2)
+        self.assertTrue(mockresponse.selector.one('.devilry-group-event__grade-last'))
+
+    def test_event_grade_last_edit_button(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        selector_element = mockresponse.selector.one('.devilry-group-event__grade-last-edit-button')
+        self.assertIsNotNone(selector_element)
+        self.assertIn('Edit grade', selector_element.alltext_normalized)
+
+    def test_event_grade_last_new_attempt_button(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        selector_element = mockresponse.selector.one('.devilry-group-event__grade-last-new-attempt-button')
+        self.assertIsNotNone(selector_element)
+        self.assertIn('Give new attempt', selector_element.alltext_normalized)
+
+    def test_event_grade_before_last_no_buttons(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        group_mommy.feedbackset_new_attempt_published(
+            group=testgroup, deadline_datetime=timezone.now() + timedelta(days=1))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        selector_element = mockresponse.selector.one('.devilry-group-event__grade-before-last')
+        self.assertNotIn('Edit grade', selector_element.alltext_normalized)
+        self.assertNotIn('Give new attempt', selector_element.alltext_normalized)
+
     def test_get_examiner_add_comment_button(self):
         testgroup = mommy.make('core.AssignmentGroup')
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)

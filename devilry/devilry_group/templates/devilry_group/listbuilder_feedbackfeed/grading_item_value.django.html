@@ -1,9 +1,22 @@
 {% extends 'devilry_group/listbuilder_feedbackfeed/base_event_item_value.django.html' %}
 
+{% load cradmin_tags %}
 {% load devilry_core_tags %}
 {% load i18n %}
 
 {% block details %}
-    {% trans "This delivery was corrected, and given" context 'devilry_group feedbackfeed' %}:
-    {% devilry_grade_full assignment=me.group.assignment points=me.feedbackset.grading_points devilryrole=me.devilryrole %}
+    {% if me.group.cached_data.last_published_feedbackset == me.feedbackset %}
+        <span class="devilry-group-event__grade-last">
+            {% trans "This delivery was corrected, and given" context 'devilry_group feedbackfeed' %}:
+            {% devilry_grade_full assignment=me.group.assignment points=me.feedbackset.grading_points devilryrole=me.devilryrole %}
+            <a href="#" class="btn btn-default devilry-group-event__grade-last-edit-button">Edit grade</a>
+            <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="new-attempt" deadline=me.deadline_as_string group_id=me.group.id %}"
+               class="btn btn-default devilry-group-event__grade-last-new-attempt-button">Give new attempt</a>
+        </span>
+    {% else %}
+        <span class="devilry-group-event__grade-before-last">
+            {% trans "This delivery was corrected, and given" context 'devilry_group feedbackfeed' %}:
+            {% devilry_grade_full assignment=me.group.assignment points=me.feedbackset.grading_points devilryrole=me.devilryrole %}
+        </span>
+    {% endif %}
 {% endblock details %}
