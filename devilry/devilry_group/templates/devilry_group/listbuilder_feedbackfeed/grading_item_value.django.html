@@ -10,7 +10,7 @@
             <span class="devilry-group-event__grade-last">
                 {% trans "This delivery was corrected, and given" context 'devilry_group feedbackfeed' %}:
                 {% devilry_grade_full assignment=me.group.assignment points=me.feedbackset.grading_points devilryrole=me.devilryrole %}
-                <a href="#" class="btn btn-default devilry-group-event__grade-last-edit-button">Edit grade</a>
+                <a href="{% cradmin_appurl 'edit' pk=me.feedbackset.id %}" class="btn btn-default devilry-group-event__grade-last-edit-button">Edit grade</a>
                 <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="new-attempt" deadline=me.deadline_as_string group_id=me.group.id %}"
                    class="btn btn-default devilry-group-event__grade-last-new-attempt-button">Give new attempt</a>
             </span>

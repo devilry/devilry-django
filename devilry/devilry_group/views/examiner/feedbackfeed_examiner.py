@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from datetime import datetime
 
 # Django imports
+from crispy_forms import layout
 from django import forms
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
@@ -26,7 +27,6 @@ from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.apps.core import models as core_models
 from devilry.devilry_group import models as group_models
-from devilry.utils import datetimeutils
 
 
 class AbstractFeedbackForm(cradmin_feedbackfeed_base.GroupCommentForm):
@@ -300,109 +300,93 @@ class ExaminerWithAdminsDiscussView(ExaminerBaseFeedbackFeedView):
         return self.request.cradmin_app.reverse_appurl(viewname='examiner-admin-discuss')
 
 
-class ExaminerFeedbackCreateFeedbackSetView(ExaminerBaseFeedbackFeedView):
-    """
-    View to create a new FeedbackSet if the current last feedbackset is published.
+class EditGradeForm(forms.ModelForm):
+    class Meta:
+        model = group_models.FeedbackSet
+        fields = [
+            'grading_points',
+        ]
 
-    When a new unpublished FeedbackSet is created, this view redirects to :class:`.ExaminerFeedbackView`.
-    See :func:`dispatch`.
+    def __init__(self, *args, **kwargs):
+        feedbackset = kwargs.pop('feedbackset')
+        self.feedbackset = feedbackset
+        self.group = feedbackset.group
+        super(EditGradeForm, self).__init__(*args, **kwargs)
+
+
+class EditGradePointsForm(EditGradeForm):
+    class Meta:
+        model = group_models.FeedbackSet
+        fields = [
+            'grading_points',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(EditGradePointsForm, self).__init__(*args, **kwargs)
+        self.fields['grading_points'] = forms.IntegerField(
+            min_value=0,
+            max_value=self.group.parentnode.max_points,
+            initial=self.feedbackset.grading_points)
+        self.fields['grading_points'].label = 'Grading'
+        self.fields['grading_points'].help_text = 'Fill in points'
+
+
+class EditGradePassedFailedForm(EditGradeForm):
+    def __init__(self, *args, **kwargs):
+        super(EditGradePassedFailedForm, self).__init__(*args, **kwargs)
+        self.fields['grading_points'] = forms.BooleanField(
+            initial=self.get_points_to_boolean_value(),
+            required=False
+        )
+        self.fields['grading_points'].label = 'Grading'
+        self.fields['grading_points'].help_text = 'Check the box.'
+
+    def get_points_to_boolean_value(self):
+        assignment = self.group.parentnode
+        current_grading_points = self.feedbackset.grading_points
+        if current_grading_points >= assignment.passing_grade_min_points:
+            return True
+        return False
+
+
+class ExaminerEditGradeView(update.UpdateView):
     """
-    template_name = 'devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_feedback.django.html'
+    """
+    model = group_models.FeedbackSet
 
     def dispatch(self, request, *args, **kwargs):
-        """
-        Checks if the last FeedbackSet in the group is published. If it's published, a redirect response to
-        :class:`~.ExaminerFeedbackView` is returned.
-
-        Args:
-            request (HttpRequest): request object.
-
-        Returns:
-            HttpResponse: The HTTP response.
-        """
         group = self.request.cradmin_role
-        if not group.last_feedbackset_is_published:
-            return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
-        return super(ExaminerFeedbackCreateFeedbackSetView, self).dispatch(request, *args, **kwargs)
+        feedbackset = group_models.FeedbackSet.objects.get(group=group, id=kwargs.get('pk'))
+        if group.cached_data.last_feedbackset != feedbackset:
+            raise Http404()
+        return super(ExaminerEditGradeView, self).dispatch(request, *args, **kwargs)
+
+    def get_pagetitle(self):
+        return ugettext_lazy('Edit grade')
+
+    def get_queryset_for_role(self, role):
+        return group_models.FeedbackSet.objects.filter(group=role)
 
     def get_form_class(self):
-        return CreateFeedbackSetForm
+        group = self.request.cradmin_role
+        if group.parentnode.grading_system_plugin_id == core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS:
+            return EditGradePointsForm
+        if group.parentnode.grading_system_plugin_id == core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED:
+            return EditGradePassedFailedForm
 
-    def get_buttons(self):
-        buttons = super(ExaminerFeedbackCreateFeedbackSetView, self).get_buttons()
-        buttons.extend([
-            DefaultSubmit('examiner_create_new_feedbackset',
-                          _('Give new attempt'),
-                          css_class='btn btn-primary'),
-        ])
-        return buttons
+    def get_field_layout(self):
+        return [
+            layout.Div(
+                layout.Field('grading_points', focusonme='focusonme'),
+                css_class='cradmin-globalfields'
+            )
+        ]
 
-    @staticmethod
-    def __update_current_feedbackset(comment):
-        """
-        Get the current :obj:`~devilry.devilry_group.models.FeedbackSet` from ``comment``, update it's fields and
-        save it the changes.
-
-        Args:
-            comment (GroupComment): Get :obj:`~devilry.devilry_group.models.FeedbackSet` from.
-        """
-        current_feedbackset = group_models.FeedbackSet.objects.get(id=comment.feedback_set_id)
-        current_feedbackset.is_last_in_group = None
-        current_feedbackset.grading_published_by = comment.user
-        current_feedbackset.full_clean()
-        current_feedbackset.save()
-
-    def __create_new_feedbackset(self, comment, new_deadline):
-        """
-        Creates a new :class:`devilry.devilry_group.models.FeedbackSet` as long as the ``new_deadline`` is
-        in the future.
-
-        :Note: Extra constraints to the new deadline and creation of a FeedbackSet may be added.
-
-        Args:
-            comment (GroupComment): Comment to be posted with the new FeedbackSet
-            new_deadline (DateTime): The deadline.
-
-        Returns:
-            FeedbackSet: returns the newly created :class:`devilry.devilry_group.models.FeedbackSet` instance.
-
-        """
-        # Make sure the deadline is in the future.
-        if new_deadline <= datetimeutils.get_current_datetime():
-            messages.error(self.request, ugettext_lazy('Deadline must be ahead of current date and time'))
-            return None
-
-        # Update current last feedbackset in group before
-        # creating the new feedbackset.
-        self.__update_current_feedbackset(comment)
-
-        # Create a new :class:`~devilry.devilry_group.models.FeedbackSet` and save it.
-        feedbackset = group_models.FeedbackSet(
-            group=self.request.cradmin_role,
-            feedbackset_type=group_models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
-            created_by=comment.user,
-            deadline_datetime=new_deadline
-        )
-        feedbackset.full_clean()
-        feedbackset.save()
-        return feedbackset
-
-    def save_object(self, form, commit=False):
-        comment = super(ExaminerFeedbackCreateFeedbackSetView, self).save_object(form=form)
-        if 'deadline_datetime' in form.cleaned_data:
-            new_deadline = datetime.strptime(self.request.POST['deadline_datetime'], '%Y-%m-%d %H:%M')
-            # Create a new :obj:`~devilry.devilry_group.models.FeedbackSet`.
-            new_feedbackset = self.__create_new_feedbackset(comment=comment, new_deadline=new_deadline)
-            if new_feedbackset is None:
-                return comment
-            if form.cleaned_data['temporary_file_collection_id'] or len(comment.text) > 0:
-                # Also save comment and set the comments feedback_set to the newly
-                # created new_feedbackset.
-                comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
-                comment.feedback_set = new_feedbackset
-                comment.published_datetime = new_feedbackset.created_datetime + timezone.timedelta(seconds=1)
-                commit = True
-        return super(ExaminerFeedbackCreateFeedbackSetView, self).save_object(form=form, commit=commit)
+    def get_form_kwargs(self):
+        group = self.request.cradmin_role
+        kwargs = super(ExaminerEditGradeView, self).get_form_kwargs()
+        kwargs['feedbackset'] = group_models.FeedbackSet.objects.get(group=group, id=self.kwargs.get('pk'))
+        return kwargs
 
 
 class GroupCommentEditDeleteMixin(object):
@@ -589,9 +573,10 @@ class App(crapp.App):
             name='examiner-admin-discuss'
         ),
         crapp.Url(
-            r'^new-deadline$',
-            ExaminerFeedbackCreateFeedbackSetView.as_view(),
-            name='new-deadline'),
+            r'^edit/(?P<pk>\d+)$',
+            ExaminerEditGradeView.as_view(),
+            name='edit'
+        ),
         crapp.Url(
             r'^groupcomment-delete/(?P<pk>\d+)$',
             GroupCommentDeleteView.as_view(),
