@@ -83,11 +83,12 @@ class TimelineListBuilderList(listbuilder.base.List):
                                                   devilry_viewrole=self.devilryrole,
                                                   assignment=self.assignment)
         elif event_dict['type'] == 'deadline_created':
-            return DeadlineCreatedItemValue(value=event_dict['feedbackset'], devilryrole=self.devilryrole)
+            return DeadlineCreatedItemValue(value=event_dict['feedbackset'], devilry_viewrole=self.devilryrole)
         elif event_dict['type'] == 'deadline_expired':
-            return DeadlineExpiredItemValue(value=event_dict['deadline_datetime'], devilryrole=self.devilryrole)
+            return DeadlineExpiredItemValue(value=event_dict['deadline_datetime'], devilry_viewrole=self.devilryrole,
+                                            feedbackset=event_dict['feedbackset'], group=self.group)
         elif event_dict['type'] == 'grade':
-            return GradeItemValue(value=event_dict['feedbackset'], devilryrole=self.devilryrole, group=self.group)
+            return GradeItemValue(value=event_dict['feedbackset'], devilry_viewrole=self.devilryrole, group=self.group)
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(TimelineListBuilderList, self).get_extra_css_classes_list()
@@ -221,6 +222,18 @@ class DeadlineExpiredItemValue(BaseEventItemValue):
     """
     valuealias = 'deadline_datetime'
     template_name = 'devilry_group/listbuilder_feedbackfeed/deadline_expired_item_value.django.html'
+
+    def __init__(self, *args, **kwargs):
+        self.feedbackset = kwargs.pop('feedbackset')
+        super(DeadlineExpiredItemValue, self).__init__(*args, **kwargs)
+
+    @property
+    def group(self):
+        return self.kwargs['group']
+
+    @property
+    def deadline_as_string(self):
+        return datetimeutils.datetime_to_string(self.feedbackset.deadline_datetime)
 
     def get_timeline_datetime(self):
         return self.value

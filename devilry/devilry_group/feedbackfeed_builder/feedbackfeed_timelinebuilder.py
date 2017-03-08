@@ -128,7 +128,8 @@ class FeedbackFeedTimelineBuilder(builder_base.FeedbackFeedBuilderBase):
                     datetime=current_deadline,
                     event_dict={
                         "type": "deadline_expired",
-                        "deadline_datetime": current_deadline
+                        "deadline_datetime": current_deadline,
+                        "feedbackset": feedbackset
                     })
 
     def __add_grade_to_timeline_if_published(self, feedbackset):

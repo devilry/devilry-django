@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import mock
 from django.conf import settings
 from django.core.files.base import ContentFile
@@ -449,6 +451,89 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             mockresponse.selector.one('#error_1_id_text').alltext_normalized)
         self.assertEquals(0, group_models.GroupComment.objects.count())
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
+
+    #####
+    # Tests making sure that event buttons are not rendered for
+    # students(edit grade, new attempt, move deadlin etc.)
+    ######
+
+    def test_event_deadline_expired_last_css_class_not_rendered(self):
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__first_deadline=timezone.now() - timedelta(days=10))
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+        )
+        self.assertNotIn('devilry-group-event__deadline-expired-last', mockresponse.response.content)
+
+    def test_event_deadline_expired_last_only_one_not_rendered(self):
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__first_deadline=timezone.now() - timedelta(days=10))
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        group_mommy.feedbackset_new_attempt_published(
+            group=testgroup,
+            deadline_datetime=timezone.now() - timedelta(days=5))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertNotIn('devilry-group-event__deadline-expired-before-last', mockresponse.response.content)
+        self.assertNotIn('devilry-group-event__deadline-expired-last', mockresponse.response.content)
+
+    def test_event_deadline_expired_move_deadline_button_not_rendered(self):
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__first_deadline=timezone.now() - timedelta(days=10))
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertNotIn('devilry-group-event__deadline-expired-last-move-deadline-button',
+                         mockresponse.response.content)
+
+    def test_event_grade_last_not_rendered(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertNotIn('devilry-group-event__grade-last', mockresponse.response.content)
+
+    def test_event_grade_before_last_not_rendered(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        group_mommy.feedbackset_new_attempt_published(
+            group=testgroup, deadline_datetime=timezone.now() + timedelta(days=1))
+        group_mommy.feedbackset_new_attempt_published(
+            group=testgroup, deadline_datetime=timezone.now() + timedelta(days=2))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertNotIn('devilry-group-event__grade-before-last', mockresponse.response.content)
+        self.assertNotIn('devilry-group-event__grade-last', mockresponse.response.content)
+
+    def test_event_grade_last_edit_button_not_rendered(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertNotIn('devilry-group-event__grade-last-edit-button', mockresponse.response.content)
+
+    def test_event_grade_last_new_attempt_button(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertNotIn('devilry-group-event__grade-last-new-attempt-button', mockresponse.response.content)
 
 
 class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMixin):

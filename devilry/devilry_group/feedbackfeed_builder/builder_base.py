@@ -55,6 +55,7 @@ def get_feedbackfeed_builder_queryset(group, requestuser, devilryrole):
         .exclude_private_comments_from_other_users(user=requestuser)\
         .select_related(
             'user',
+            'feedback_set',
             'feedback_set__created_by',
             'feedback_set__grading_published_by')\
         .prefetch_related(models.Prefetch('commentfile_set', queryset=commentfile_queryset))
