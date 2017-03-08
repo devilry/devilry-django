@@ -31,13 +31,6 @@ class SelectMethodView(TemplateView):
         return context_data
 
 
-class OrganizeByPeriodTagView(QuerysetForRoleMixin, TemplateView):
-    template_name = 'devilry_admin/assignment/examiners/bulk_organize/random-tags.django.html'
-
-
-
-
-
 class RandomOrganizeForm(groupview_base.SelectedGroupsForm):
     selected_relatedexaminers_invalid_choice_message = ugettext_lazy(
             'You must select at least two examiners.')
@@ -308,9 +301,6 @@ class App(crapp.App):
         crapp.Url(r'^$',
                   SelectMethodView.as_view(),
                   name=crapp.INDEXVIEW_NAME),
-        # crapp.Url(r'^random-tags$',
-        #           RandomOrganizeByPeriodTagView.as_view(),
-        #           name='random-tags'),
         crapp.Url(r'^random/(?P<filters_string>.+)?$',
                   RandomView.as_view(),
                   name='random'),
