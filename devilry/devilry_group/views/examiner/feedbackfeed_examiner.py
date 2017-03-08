@@ -558,8 +558,14 @@ class GroupCommentEditView(GroupCommentEditDeleteMixin, update.UpdateView):
 
 class ExaminerFeedbackfeedRedirectView(View):
     def dispatch(self, request, *args, **kwargs):
-        viewname = 'public-discuss'
-        return redirect(self.request.cradmin_app.reverse_appurl(viewname=viewname))
+        group = self.request.cradmin_role
+
+        # if the last feedbackset of the group is not graded and the deadline has passed,
+        # redirect to feedback view.
+        if not group.cached_data.last_feedbackset.grading_published_datetime \
+                and group.cached_data.last_feedbackset.deadline_datetime < timezone.now():
+            return redirect(self.request.cradmin_app.reverse_appurl(viewname='feedback'))
+        return redirect(self.request.cradmin_app.reverse_appurl(viewname='public-discuss'))
 
 
 class App(crapp.App):
