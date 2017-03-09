@@ -1,0 +1,36 @@
+{% extends 'django_cradmin/viewhelpers/update.django.html' %}
+
+{% load devilry_core_tags %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+{% load i18n %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_appindex_url %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to feed" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% blocktrans %}
+            Edit grade
+        {% endblocktrans %}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block pre_form %}
+    <div id="devilry_admin_period_admins_help_container" class="container">
+        <p class="alert alert-info">
+            <strong>
+                {% trans 'Current result' %}:
+            </strong>
+            {% devilry_grade_full assignment=feedbackset.group.assignment points=feedbackset.grading_points devilryrole=devilryrole %}
+        </p>
+    </div>
+{% endblock pre_form %}

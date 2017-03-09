@@ -1,5 +1,3 @@
-import unittest
-
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import Http404
 from django.test import TestCase

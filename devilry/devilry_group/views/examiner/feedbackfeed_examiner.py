@@ -308,56 +308,56 @@ class EditGradeForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
-        feedbackset = kwargs.pop('feedbackset')
-        self.feedbackset = feedbackset
-        self.group = feedbackset.group
+        self.feedbackset = kwargs.get('instance')
         super(EditGradeForm, self).__init__(*args, **kwargs)
 
 
 class EditGradePointsForm(EditGradeForm):
-    class Meta:
-        model = group_models.FeedbackSet
-        fields = [
-            'grading_points',
-        ]
-
     def __init__(self, *args, **kwargs):
         super(EditGradePointsForm, self).__init__(*args, **kwargs)
         self.fields['grading_points'] = forms.IntegerField(
             min_value=0,
-            max_value=self.group.parentnode.max_points,
+            max_value=self.feedbackset.group.parentnode.max_points,
             initial=self.feedbackset.grading_points)
-        self.fields['grading_points'].label = 'Grading'
-        self.fields['grading_points'].help_text = 'Fill in points'
+        self.fields['grading_points'].label = ugettext_lazy('Grading')
+        self.fields['grading_points'].help_text = \
+            ugettext_lazy(
+                'Give a score from {} to {} where {} is the minimum amount of points needed to pass.'.format(
+                    0,
+                    self.feedbackset.group.parentnode.max_points,
+                    self.feedbackset.group.parentnode.passing_grade_min_points))
 
 
 class EditGradePassedFailedForm(EditGradeForm):
     def __init__(self, *args, **kwargs):
+        feedbackset = kwargs.get('instance')
+        kwargs.update(initial={
+            'grading_points': self.get_points_to_boolean_value(feedbackset)
+        })
         super(EditGradePassedFailedForm, self).__init__(*args, **kwargs)
         self.fields['grading_points'] = forms.BooleanField(
-            initial=self.get_points_to_boolean_value(),
             required=False
         )
-        self.fields['grading_points'].label = 'Grading'
-        self.fields['grading_points'].help_text = 'Check the box.'
+        self.fields['grading_points'].label = ugettext_lazy('Grading')
+        self.fields['grading_points'].help_text = ugettext_lazy('Check the box to give a passing grade')
 
-    def get_points_to_boolean_value(self):
-        assignment = self.group.parentnode
-        current_grading_points = self.feedbackset.grading_points
+    def get_points_to_boolean_value(self, feedbackset):
+        assignment = feedbackset.group.parentnode
+        current_grading_points = feedbackset.grading_points
         if current_grading_points >= assignment.passing_grade_min_points:
             return True
         return False
 
 
 class ExaminerEditGradeView(update.UpdateView):
-    """
-    """
+    template_name = 'devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_edit_grade.django.html'
     model = group_models.FeedbackSet
 
     def dispatch(self, request, *args, **kwargs):
         group = self.request.cradmin_role
-        feedbackset = group_models.FeedbackSet.objects.get(group=group, id=kwargs.get('pk'))
-        if group.cached_data.last_feedbackset != feedbackset:
+        self.feedbackset = group_models.FeedbackSet.objects.get(group=group, id=kwargs.get('pk'))
+        if group.cached_data.last_feedbackset != self.feedbackset or \
+                not group.cached_data.last_published_feedbackset_is_last_feedbackset:
             raise Http404()
         return super(ExaminerEditGradeView, self).dispatch(request, *args, **kwargs)
 
@@ -382,11 +382,11 @@ class ExaminerEditGradeView(update.UpdateView):
             )
         ]
 
-    def get_form_kwargs(self):
-        group = self.request.cradmin_role
-        kwargs = super(ExaminerEditGradeView, self).get_form_kwargs()
-        kwargs['feedbackset'] = group_models.FeedbackSet.objects.get(group=group, id=self.kwargs.get('pk'))
-        return kwargs
+    def get_context_data(self, **kwargs):
+        context_data = super(ExaminerEditGradeView, self).get_context_data(**kwargs)
+        context_data['feedbackset'] = self.feedbackset
+        context_data['devilryrole'] = 'examiner'
+        return context_data
 
 
 class GroupCommentEditDeleteMixin(object):
