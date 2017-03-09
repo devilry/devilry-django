@@ -3,21 +3,21 @@ from __future__ import unicode_literals
 
 from crispy_forms import layout
 from django import forms
+from django import http
 from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import redirect
-from django import http
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy, pgettext_lazy
-from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 from django_cradmin.crispylayouts import PrimarySubmitBlock
 from django_cradmin.viewhelpers import formbase
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
-from devilry.utils import datetimeutils
 from devilry.apps.core import models as core_models
-from devilry.devilry_group import models as group_models
+from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_deadlinemanagement.views import viewutils
+from devilry.devilry_group import models as group_models
+from devilry.utils import datetimeutils
 
 
 class SelectedItemsForm(forms.Form):
@@ -34,7 +34,7 @@ class ManageDeadlineForm(SelectedItemsForm):
     initial_comment_text = 'Deadline changed'
 
     comment_text = forms.CharField(
-        widget=AceMarkdownWidget,
+        widget=devilry_acemarkdown.Large,
         help_text='Add a suitable comment or leave the default',
         initial=ugettext_lazy(initial_comment_text)
     )

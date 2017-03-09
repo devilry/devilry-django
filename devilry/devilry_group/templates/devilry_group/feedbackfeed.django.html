@@ -9,12 +9,6 @@
     {{ assignment.get_path }}
 {% endblock title %}
 
-{% block jsimports %}
-    {{ block.super }}
-    {% load static %}
-    <script src="{% static "devilry_group/src/js/devilry-group.js"%}" type="application/javascript"></script>
-{% endblock jsimports %}
-
 {% block pageheader %}
     <div class="container">
         <div class="row">
@@ -79,12 +73,6 @@
         {% endblock feed %}
     </div>
 {% endblock content %}
-
-{% block initialize_angular %}
-    <script>
-        angular.module('djangoCradminUi', ['djangoCradmin', 'devilryGroup.sidebar'])
-    </script>
-{% endblock %}
 
 {% block end-of-body %}
     {{ block.super }}

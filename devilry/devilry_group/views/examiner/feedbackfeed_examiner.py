@@ -1,32 +1,26 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from datetime import datetime
-
-# Django imports
 from crispy_forms import layout
 from django import forms
+from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils import timezone
-from django.contrib import messages
-from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy, pgettext_lazy
-
-# Devilry/cradmin imports
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import View
 from django_cradmin import crapp
-from django_cradmin.viewhelpers import update, delete
 from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
-from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
+from django_cradmin.viewhelpers import update, delete
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
-from devilry.devilry_cradmin import devilry_acemarkdown
-from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.apps.core import models as core_models
+from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_group import models as group_models
+from devilry.devilry_group.views import cradmin_feedbackfeed_base
 
 
 class AbstractFeedbackForm(cradmin_feedbackfeed_base.GroupCommentForm):
@@ -492,7 +486,7 @@ class GroupCommentEditView(GroupCommentEditDeleteMixin, update.UpdateView):
             EditGroupCommentForm: Form with field-representations set.
         """
         form = super(GroupCommentEditView, self).get_form(form_class=form_class)
-        form.fields['text'].widget = AceMarkdownWidget()
+        form.fields['text'].widget = devilry_acemarkdown.Small()
         form.fields['text'].label = False
         return form
 

@@ -5,11 +5,11 @@ from django import forms
 from django.db import models
 from django.db.models.functions import Lower, Concat
 from django.utils.translation import ugettext_lazy
-from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 from django_cradmin.viewhelpers import multiselect2
 from django_cradmin.viewhelpers import multiselect2view
 
 from devilry.apps.core import models as core_models
+from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
 
@@ -34,7 +34,7 @@ class SelectedAssignmentGroupForm(forms.Form):
 
     #: A wysiwig editor for writing a feedback message.
     feedback_comment_text = forms.CharField(
-        widget=AceMarkdownWidget,
+        widget=devilry_acemarkdown.Small,
         help_text='Add a general comment to the feedback',
         initial=ugettext_lazy('Delivery has been corrected.'))
 
