@@ -397,7 +397,7 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
             viewkwargs={'pk': group.id},
             requestkwargs={
                 'data': {
+                    'passed': 'Passed',
                     'text': 'asd',
                 }
             })
-        self.assertEquals(mockresponse.response.status_code, 302)

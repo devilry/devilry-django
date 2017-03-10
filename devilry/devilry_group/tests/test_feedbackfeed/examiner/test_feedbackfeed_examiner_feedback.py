@@ -187,6 +187,7 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
             viewkwargs={'pk': feedbackset.group.id},
             requestkwargs={
                 'data': {
+                    'passed': 'Passed',
                     'text': 'This is a comment',
                     'examiner_add_comment_to_feedback_draft': 'unused value'
                 }
@@ -246,6 +247,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             viewkwargs={'pk': testgroup.id},
             requestkwargs={
                 'data': {
+                    'passed': 'Failed',
                     'text': '',
                     'examiner_publish_feedback': 'unused value',
                 }
@@ -282,6 +284,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             viewkwargs={'pk': testgroup.id},
             requestkwargs={
                 'data': {
+                    'passed': 'Passed',
                     'text': 'Corrected',
                     'examiner_publish_feedback': 'unused value',
                 }
@@ -320,6 +323,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             viewkwargs={'pk': testgroup.id},
             requestkwargs={
                 'data': {
+                    'passed': 'Passed',
                     'text': 'Corrected',
                     'examiner_publish_feedback': 'unused value',
                 }
@@ -345,6 +349,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             viewkwargs={'pk': feedbackset.group.id},
             requestkwargs={
                 'data': {
+                    'passed': 'Passed',
                     'text': 'This is a feedback',
                     'examiner_publish_feedback': 'unused value',
                 }
@@ -394,7 +399,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             viewkwargs={'pk': feedbackset.group.id},
             requestkwargs={
                 'data': {
-                    'passed': True,
+                    'passed': 'Passed',
                     'text': 'This is a feedback',
                     'examiner_publish_feedback': 'unused value',
                 }
@@ -438,7 +443,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             viewkwargs={'pk': testgroup.id},
             requestkwargs={
                 'data': {
-                    'passed': True,
+                    'passed': 'Passed',
                     'text': 'post comment',
                     'examiner_publish_feedback': 'unused value',
                 }
@@ -491,7 +496,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             viewkwargs={'pk': feedbackset.group.id},
             requestkwargs={
                 'data': {
-                    'passed': True,
+                    'passed': 'Passed',
                     'text': 'This is a feedback',
                     'examiner_publish_feedback': 'unused value',
                 }
@@ -518,7 +523,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             viewkwargs={'pk': feedbackset.group.id},
             requestkwargs={
                 'data': {
-                    'passed': True,
+                    'passed': 'Passed',
                     'text': '',
                     'examiner_publish_feedback': 'unused value',
                 }
@@ -544,7 +549,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             viewkwargs={'pk': feedbackset.group.id},
             requestkwargs={
                 'data': {
-                    'passed': True,
+                    'passed': 'Passed',
                     'text': 'test',
                     'examiner_publish_feedback': 'unused value',
                 }
@@ -582,7 +587,7 @@ class TestFeedbackfeedFeedbackFileUploadExaminer(TestCase, cradmin_testhelpers.T
             viewkwargs={'pk': testfeedbackset.group.id},
             requestkwargs={
                 'data': {
-                    'passed': True,
+                    'passed': 'Passed',
                     'text': '',
                     'examiner_publish_feedback': 'unused value',
                     'temporary_file_collection_id': temporary_filecollection.id
@@ -612,7 +617,7 @@ class TestFeedbackfeedFeedbackFileUploadExaminer(TestCase, cradmin_testhelpers.T
             viewkwargs={'pk': testfeedbackset.group.id},
             requestkwargs={
                 'data': {
-                    'passed': True,
+                    'passed': 'Passed',
                     'text': '',
                     'examiner_add_comment_to_feedback_draft': 'unused value',
                     'temporary_file_collection_id': temporary_filecollection.id

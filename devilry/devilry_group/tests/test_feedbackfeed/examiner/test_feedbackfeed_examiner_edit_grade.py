@@ -67,7 +67,7 @@ class TestEditGradeView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'pk': testfeedbackset.id
             })
         self.assertEquals(mockresponse.selector.one('#hint_id_grading_points').alltext_normalized,
-                          'Give a score from 0 to 100 where 40 is the minimum amount of points needed to pass.')
+                          'Give a score between 0 to 100 where 40 is the minimum amount of points needed to pass.')
 
     def test_points_plugin_initial_is_current_grade(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -97,7 +97,7 @@ class TestEditGradeView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEquals(mockresponse.selector.one('#hint_id_grading_points').alltext_normalized,
                           'Check the box to give a passing grade')
 
-    def test_passed_failed_plugin_initial_not_checked_if_failed(self):
+    def test_passed_failed_choices(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            passing_grade_min_points=1)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -107,10 +107,25 @@ class TestEditGradeView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             viewkwargs={
                 'pk': testfeedbackset.id
             })
-        input_element = mockresponse.selector.one('#id_grading_points')
-        self.assertIsNone(input_element.get('checked'))
+        input_element = mockresponse.selector.list('option')
+        self.assertEquals(input_element[0].get('value'), 'Passed')
+        self.assertEquals(input_element[1].get('value'), 'Failed')
 
-    def test_passed_failed_plugin_initial_checked_if_passed(self):
+    def test_passed_failed_plugin_initial_failed_if_failed(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           passing_grade_min_points=1)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=0)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            viewkwargs={
+                'pk': testfeedbackset.id
+            })
+        input_element = mockresponse.selector.list('option')
+        self.assertIsNone(input_element[0].get('selected'))
+        self.assertEquals(input_element[1].get('selected'), 'selected')
+
+    def test_passed_failed_plugin_initial_passed_if_passed(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            passing_grade_min_points=1)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -120,5 +135,6 @@ class TestEditGradeView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             viewkwargs={
                 'pk': testfeedbackset.id
             })
-        input_element = mockresponse.selector.one('#id_grading_points')
-        self.assertEquals(input_element.get('checked'), 'checked')
+        input_element = mockresponse.selector.list('option')
+        self.assertEquals(input_element[0].get('selected'), 'selected')
+        self.assertIsNone(input_element[1].get('selected'))

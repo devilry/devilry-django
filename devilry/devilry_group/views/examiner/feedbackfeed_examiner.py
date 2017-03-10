@@ -37,18 +37,20 @@ class PassedFailedFeedbackForm(AbstractFeedbackForm):
     """
 
     #: Set delivery as passed or failed.
-    passed = forms.BooleanField(
-            label=pgettext_lazy('grading', 'Passed?'),
-            help_text=pgettext_lazy('grading', 'Check to provide a passing grade.'),
-            initial=True,
-            required=False)
+    passed = forms.ChoiceField(
+        choices=(('Passed', 'Passed'), ('Failed', 'Failed')),
+        label=pgettext_lazy('grading', 'Passed?'),
+        help_text=pgettext_lazy('grading', 'Check to provide a passing grade.'),
+        required=True,
+        initial=''
+    )
 
     @classmethod
     def get_field_layout(cls):
         return ['passed']
 
     def get_grading_points(self):
-        if self.cleaned_data['passed']:
+        if self.cleaned_data['passed'] == 'Passed':
             return self.group.assignment.max_points
         else:
             return 0
@@ -316,7 +318,7 @@ class EditGradePointsForm(EditGradeForm):
         self.fields['grading_points'].label = ugettext_lazy('Grading')
         self.fields['grading_points'].help_text = \
             ugettext_lazy(
-                'Give a score from {} to {} where {} is the minimum amount of points needed to pass.'.format(
+                'Give a score between {} to {} where {} is the minimum amount of points needed to pass.'.format(
                     0,
                     self.feedbackset.group.parentnode.max_points,
                     self.feedbackset.group.parentnode.passing_grade_min_points))
@@ -326,21 +328,33 @@ class EditGradePassedFailedForm(EditGradeForm):
     def __init__(self, *args, **kwargs):
         feedbackset = kwargs.get('instance')
         kwargs.update(initial={
-            'grading_points': self.get_points_to_boolean_value(feedbackset)
+            'grading_points': self.get_points_to_select_value(feedbackset)
         })
         super(EditGradePassedFailedForm, self).__init__(*args, **kwargs)
-        self.fields['grading_points'] = forms.BooleanField(
-            required=False
+        self.fields['grading_points'] = forms.ChoiceField(
+            choices=(('Passed', 'Passed'), ('Failed', 'Failed')),
+            label=pgettext_lazy('grading', 'Passed?'),
+            help_text=pgettext_lazy('grading', 'Check to provide a passing grade.'),
+            required=True,
+            initial=''
         )
         self.fields['grading_points'].label = ugettext_lazy('Grading')
         self.fields['grading_points'].help_text = ugettext_lazy('Check the box to give a passing grade')
 
-    def get_points_to_boolean_value(self, feedbackset):
+    def get_points_to_select_value(self, feedbackset):
         assignment = feedbackset.group.parentnode
         current_grading_points = feedbackset.grading_points
         if current_grading_points >= assignment.passing_grade_min_points:
-            return True
-        return False
+            return 'Passed'
+        return 'Failed'
+
+    def clean(self):
+        super(EditGradePassedFailedForm, self).clean()
+        grading_points = self.cleaned_data['grading_points']
+        if grading_points == 'Passed':
+            self.cleaned_data['grading_points'] = self.feedbackset.group.parentnode.max_points
+        else:
+            self.cleaned_data['grading_points'] = 0
 
 
 class ExaminerEditGradeView(update.UpdateView):
@@ -371,7 +385,7 @@ class ExaminerEditGradeView(update.UpdateView):
     def get_field_layout(self):
         return [
             layout.Div(
-                layout.Field('grading_points', focusonme='focusonme'),
+                layout.Field('grading_points', focusonme='focusonme', css_class='form-control'),
                 css_class='cradmin-globalfields'
             )
         ]
@@ -490,17 +504,25 @@ class GroupCommentEditView(GroupCommentEditDeleteMixin, update.UpdateView):
         form.fields['text'].label = False
         return form
 
-    def get_field_layout(self):
-        """
-        Override get field layout as we're using ``AceMarkdownWidget`` to define
-        the form field in our form class :class:`~.EditGroupCommentForm`.
+    # def get_field_layout(self):
+    #     """
+    #     Override get field layout as we're using ``AceMarkdownWidget`` to define
+    #     the form field in our form class :class:`~.EditGroupCommentForm`.
+    #
+    #     Returns:
+    #         list: List extended with the field layout of :class:`~.EditGroupCommentForm`.
+    #     """
+    #     field_layout = []
+    #     field_layout.extend(self.get_form_class().get_field_layout())
+    #     return field_layout
 
-        Returns:
-            list: List extended with the field layout of :class:`~.EditGroupCommentForm`.
-        """
-        field_layout = []
-        field_layout.extend(self.get_form_class().get_field_layout())
-        return field_layout
+    def get_field_layout(self):
+        return [
+            layout.Div(
+                layout.Field('text', focusonme='focusonme', css_class='form-control'),
+                css_class='cradmin-globalfields'
+            )
+        ]
 
     def save_object(self, form, commit=True):
         """

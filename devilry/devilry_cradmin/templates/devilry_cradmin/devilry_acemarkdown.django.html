@@ -4,27 +4,13 @@
 <div django-cradmin-acemarkdown="{{ directiveconfig }}" class="devilry-ace-editor {{ extra_css_classes }}">
     <div class="btn-toolbar" role="toolbar">
         {% block toolbar %}
-            {% block headerbuttons %}
+            {% block buttonbars %}
                 <div class="btn-group">
-                    <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
-                            pre: '\n\n# ', post: '\n'}">
-                        <span class="{% cradmin_icon 'h1' %}"></span>
-                        <span class="sr-only">{% trans "Heading 1" %}</span>
-                    </a>
                     <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
                             pre: '\n\n## ', post: '\n'}">
                         <span class="{% cradmin_icon 'h2' %}"></span>
-                        <span class="sr-only">{% trans "Heading 2" %}</span>
+                        <span class="sr-only">{% trans "Heading" %}</span>
                     </a>
-                    <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
-                            pre: '\n\n### ', post: '\n'}">
-                        <span class="{% cradmin_icon 'h3' %}"></span>
-                        <span class="sr-only">{% trans "Heading 3" %}</span>
-                    </a>
-                </div>
-            {% endblock headerbuttons %}
-            {% block inlinestylesbuttons %}
-                <div class="btn-group">
                     <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
                             pre: '**', post: '**', emptyText: '{% trans "Text here" %}'}">
                         <span class="{% cradmin_icon 'bold' %}"></span>
@@ -43,7 +29,7 @@
                         <span class="sr-only">{% trans "Link" %}</span>
                     </a>
                 </div>
-            {% endblock inlinestylesbuttons %}
+            {% endblock buttonbars %}
             {% block listbuttons %}
                 <div class="btn-group">
                     <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
