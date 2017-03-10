@@ -9333,43 +9333,40 @@ fieldset[disabled] .button_student {
   margin-bottom: 21px;
   font-size: 16px;
 }
-.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-deadline-created {
-  margin-left: 54px;
-  margin-bottom: 21px;
-  font-size: 16px;
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message__grade {
+  font-weight: bold;
 }
-.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-deadline-expired {
-  margin-left: 54px;
-  margin-bottom: 21px;
-  font-size: 16px;
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message__grade .devilry-core-grade-passed {
+  color: #fff;
+  background: #5aa221;
+  display: inline-block;
+  padding: 2px 5px;
+}
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message__grade .devilry-core-grade-failed {
+  color: #fef6f5;
+  background: #a0372f;
+  display: inline-block;
+  padding: 2px 5px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-passed {
   margin-left: 54px;
   margin-bottom: 21px;
   font-size: 16px;
 }
-.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-grade {
-  margin-left: 54px;
-  margin-bottom: 21px;
-  font-size: 16px;
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-passed__grade {
   font-weight: bold;
 }
-.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-grade .devilry-core-grade-passed {
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-passed__grade .devilry-core-grade-passed {
   color: #fff;
   background: #5aa221;
   display: inline-block;
   padding: 2px 5px;
 }
-.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-grade .devilry-core-grade-failed {
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-passed__grade .devilry-core-grade-failed {
   color: #fef6f5;
   background: #a0372f;
   display: inline-block;
   padding: 2px 5px;
-}
-.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-failed {
-  margin-left: 54px;
-  margin-bottom: 21px;
-  font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-feed-uploaded-file-tag {
   display: inline-block;

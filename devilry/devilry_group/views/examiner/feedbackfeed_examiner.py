@@ -504,18 +504,6 @@ class GroupCommentEditView(GroupCommentEditDeleteMixin, update.UpdateView):
         form.fields['text'].label = False
         return form
 
-    # def get_field_layout(self):
-    #     """
-    #     Override get field layout as we're using ``AceMarkdownWidget`` to define
-    #     the form field in our form class :class:`~.EditGroupCommentForm`.
-    #
-    #     Returns:
-    #         list: List extended with the field layout of :class:`~.EditGroupCommentForm`.
-    #     """
-    #     field_layout = []
-    #     field_layout.extend(self.get_form_class().get_field_layout())
-    #     return field_layout
-
     def get_field_layout(self):
         return [
             layout.Div(

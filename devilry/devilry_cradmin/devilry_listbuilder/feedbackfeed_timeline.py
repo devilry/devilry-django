@@ -138,6 +138,9 @@ class BaseEventItemValue(BaseItemValue):
         """
         raise NotImplementedError('Must be implemented by subclass')
 
+    def get_base_css_classes_list(self):
+        return ['devilry-group-feedbackfeed-event-message']
+
 
 class BaseGroupCommentItemValue(BaseItemValue):
     """Base class for a GroupComment item.
@@ -244,7 +247,7 @@ class DeadlineExpiredItemValue(BaseEventItemValue):
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(DeadlineExpiredItemValue, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-group-feedbackfeed-event-message-deadline-expired')
+        css_classes_list.append('devilry-group-feedbackfeed-event-message__deadline-expired')
         return css_classes_list
 
 
@@ -267,5 +270,5 @@ class GradeItemValue(BaseEventItemValue):
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(GradeItemValue, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-group-feedbackfeed-event-message-grade')
+        css_classes_list.append('devilry-group-feedbackfeed-event-message__grade')
         return css_classes_list

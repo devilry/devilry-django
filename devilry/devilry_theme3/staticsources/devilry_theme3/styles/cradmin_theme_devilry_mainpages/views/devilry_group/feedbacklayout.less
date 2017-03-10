@@ -100,43 +100,38 @@
     margin-left: (@devilry-feedbackfeed-leftmargin + @devilry-spacing);
     margin-bottom: @devilry-vertical-rythm--medium;
     font-size: @font-size-base;
+
+    &__deadline-created{}
+
+    &__deadline-expired{}
+
+    &__passed {}
+
+    &__failed {}
+
+    &__grade {
+      font-weight: bold;
+
+      .devilry-core-grade-passed {
+        color: @devilry-brand-success-color;
+        background: @devilry-brand-success-bg;
+        display: inline-block;
+        padding: 2px 5px;
+      }
+
+      .devilry-core-grade-failed {
+        color: @devilry-brand-danger-color;
+        background: @devilry-brand-danger-bg;
+        display: inline-block;
+        padding: 2px 5px;
+      }
+    }
   }
 
   .event-spacing{
   }
 
-  .devilry-group-feedbackfeed-event-message-deadline-created{
-    .devilry-group-feedbackfeed-event-message;
-  }
-
-  .devilry-group-feedbackfeed-event-message-deadline-expired{
-    .devilry-group-feedbackfeed-event-message;
-  }
-
   .devilry-group-feedbackfeed-event-message-passed{
-    .devilry-group-feedbackfeed-event-message;
-  }
-
-  .devilry-group-feedbackfeed-event-message-grade{
-    .devilry-group-feedbackfeed-event-message;
-    font-weight: bold;
-
-    .devilry-core-grade-passed {
-      color: @devilry-brand-success-color;
-      background: @devilry-brand-success-bg;
-      display: inline-block;
-      padding: 2px 5px;
-    }
-
-    .devilry-core-grade-failed {
-      color: @devilry-brand-danger-color;
-      background: @devilry-brand-danger-bg;
-      display: inline-block;
-      padding: 2px 5px;
-    }
-  }
-
-  .devilry-group-feedbackfeed-event-message-failed{
     .devilry-group-feedbackfeed-event-message;
   }
 
