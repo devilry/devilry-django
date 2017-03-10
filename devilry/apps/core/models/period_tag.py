@@ -141,6 +141,32 @@ class PeriodTagQuerySet(models.QuerySet):
         tags = self.filter(period=period)
         return [tag.displayname for tag in tags]
 
+    def annotate_with_relatedexaminers_count(self):
+        """
+        Annotate with the number of :class:`~.devilry.apps.core.models.relateduser.RelatedExaminer`s
+        registered on :class:`.PeriodTag`.
+        """
+        return self.annotate(
+            annotated_relatedexaminers_count=models.Count(
+                models.Case(
+                    models.When(relatedexaminers__user__isnull=False, then=1)
+                )
+            )
+        )
+
+    def annotate_with_relatedstudents_count(self):
+        """
+        Annotate with the number of :class:`~.devilry.apps.core.models.relateduser.RelatedStudent`s
+        registered on :class:`.PeriodTag`.
+        """
+        return self.annotate(
+            annotated_relatedstudents_count=models.Count(
+                models.Case(
+                    models.When(relatedstudents__user__isnull=False, then=1)
+                )
+            )
+        )
+
 
 class PeriodTag(models.Model):
     """

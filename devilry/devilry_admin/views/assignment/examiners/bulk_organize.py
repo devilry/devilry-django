@@ -5,18 +5,24 @@ import random
 
 from django import forms
 from django.contrib import messages
+from django.db import models
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy
 from django.views.generic import TemplateView
 from django_cradmin import crapp
 from django_cradmin.viewhelpers.mixins import QuerysetForRoleMixin
+from django_cradmin.viewhelpers import listbuilder
 
 from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Examiner, RelatedExaminer
+from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_admin.views.assignment.students import groupview_base
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.apps.core.models import period_tag
+from devilry.apps.core.models import AssignmentGroup
+from django_cradmin.viewhelpers.listbuilder import itemvalue
+from django_cradmin.viewhelpers import listbuilderview
 
 
 class SelectMethodView(TemplateView):
@@ -26,9 +32,138 @@ class SelectMethodView(TemplateView):
         assignment = self.request.cradmin_role
         context_data = super(SelectMethodView, self).get_context_data(**kwargs)
         context_data['assignment'] = assignment
-        period_tags_queryset = period_tag.PeriodTag.objects.filter(period=assignment.parentnode, prefix='')
-        context_data['period_tags_count'] = period_tags_queryset.count()
         return context_data
+
+
+class TagItemValue(itemvalue.TitleDescription):
+    template_name = 'devilry_admin/assignment/examiners/bulk_organize/organize-by-tag-item-value.django.html'
+
+    def __init__(self, assignment_groups, **kwargs):
+        super(TagItemValue, self).__init__(**kwargs)
+        self.assignment_groups = assignment_groups
+
+    def get_title(self):
+        return self.value.displayname
+
+
+class OrganizeByTagListbuilderView(listbuilderview.View):
+    template_name = 'devilry_admin/assignment/examiners/bulk_organize/organize-by-tag.django.html'
+    model = period_tag.PeriodTag
+    value_renderer_class = TagItemValue
+    paginate_by = 10
+
+    def post(self, request, *args, **kwargs):
+        self.__organize_examiners()
+        return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+
+    def get_pagetitle(self):
+        return ugettext_lazy('Organize examiners on tags')
+
+    def __relatedstudent_queryset(self):
+        return RelatedStudent.objects\
+            .select_related('user', 'period', 'period__parentnode')\
+            .order_by('user__shortname')
+
+    def __relatedexaminer_queryset(self):
+        return RelatedExaminer.objects\
+            .select_related('user', 'period', 'period__parentnode')\
+            .order_by('user__shortname')
+
+    def __get_groups_from_candidates(self, candidates, periodtag):
+        candidates = candidates.filter(relatedstudent__in=periodtag.relatedstudents.all())\
+            .prefetch_related('assignment_group__candidates__relatedstudent__user')
+        return [candidate.assignment_group for candidate in candidates]
+
+    def get_listbuilder_list(self, context):
+        assignment = self.request.cradmin_role
+        listbuilder_list = listbuilder.lists.RowList()
+        periodtag_queryset = self.get_queryset_for_role(role=assignment)
+        candidate_queryset = Candidate.objects.filter(assignment_group__parentnode=assignment)\
+            .select_related(
+                'assignment_group',
+                'assignment_group__parentnode',
+                'assignment_group__parentnode__parentnode',
+                'assignment_group__parentnode__parentnode__parentnode',
+                'relatedstudent',
+                'relatedstudent__user')
+        for periodtag in periodtag_queryset:
+            listbuilder_list.append(
+                listbuilder.itemframe.DefaultSpacingItemFrame(
+                    TagItemValue(
+                        assignment_groups=self.__get_groups_from_candidates(candidates=candidate_queryset, periodtag=periodtag),
+                        value=periodtag,
+                    )
+                )
+            )
+        return listbuilder_list
+
+    def get_queryset_for_role(self, role):
+        period = role.parentnode
+        candidate_queryset = Candidate.objects\
+            .filter(assignment_group__parentnode=role)\
+            .select_related('assignment_group')\
+            .values_list('relatedstudent', flat=True)
+
+        period_tag_queryset = period_tag.PeriodTag.objects\
+            .filter_editable_tags_on_period(period=period)\
+            .select_related('period', 'period__parentnode')\
+            .prefetch_related(
+                models.Prefetch(
+                    'relatedexaminers',
+                    queryset=self.__relatedexaminer_queryset()))\
+            .prefetch_related(
+                models.Prefetch(
+                    'relatedstudents',
+                    queryset=self.__relatedstudent_queryset()))\
+            .annotate_with_relatedexaminers_count()\
+            .annotate_with_relatedstudents_count()\
+            .filter(
+                models.Q(annotated_relatedexaminers_count__gt=0) &
+                models.Q(annotated_relatedstudents_count__gt=0))\
+            .filter(relatedstudents__in=candidate_queryset)
+        return period_tag_queryset
+
+    def get_context_data(self, **kwargs):
+        context_data = super(OrganizeByTagListbuilderView, self).get_context_data(**kwargs)
+        assignment = self.request.cradmin_role
+        context_data['period_tags_count'] = period_tag.PeriodTag.objects\
+            .filter_editable_tags_on_period(period=assignment.parentnode).count()
+        context_data['available_period_tags_count'] = self.get_queryset_for_role(role=assignment).count()
+        context_data['assignment'] = assignment
+        return context_data
+
+    def __clear_examiners(self, group_list):
+        Examiner.objects.filter(assignmentgroup__in=group_list).delete()
+
+    def __organize_examiners(self):
+        assignment = self.request.cradmin_role
+        period_tag_queryset = self.get_queryset_for_role(role=assignment)
+        candidates = Candidate.objects \
+            .filter(assignment_group__parentnode=assignment)\
+            .select_related('assignment_group', 'relatedstudent')
+        relatedstudent_to_group_map = {}
+        groups = [candidate.assignment_group for candidate in candidates]
+        self.__clear_examiners(groups)
+
+        for candidate in candidates:
+            if candidate.relatedstudent_id not in relatedstudent_to_group_map:
+                relatedstudent_to_group_map[candidate.relatedstudent_id] = [candidate.assignment_group]
+            else:
+                relatedstudent_to_group_map[candidate.relatedstudent_id].append(candidate.assignment_group)
+
+        examiners_to_create = []
+        for periodtag in period_tag_queryset:
+            group_list = []
+            for relatedstudent in periodtag.relatedstudents.all():
+                relatedstudent_id = relatedstudent.id
+                if relatedstudent_id in relatedstudent_to_group_map:
+                    group_list.extend(relatedstudent_to_group_map[relatedstudent_id])
+                    del relatedstudent_to_group_map[relatedstudent_id]
+
+            for relatedexaminer in periodtag.relatedexaminers.all():
+                for group in group_list:
+                    examiners_to_create.append(Examiner(assignmentgroup=group, relatedexaminer=relatedexaminer))
+        Examiner.objects.bulk_create(examiners_to_create)
 
 
 class RandomOrganizeForm(groupview_base.SelectedGroupsForm):
@@ -310,4 +445,7 @@ class App(crapp.App):
         crapp.Url(r'^manual-replace/(?P<filters_string>.+)?$',
                   ManualReplaceView.as_view(),
                   name='manual-replace'),
+        crapp.Url('^tag$',
+                  OrganizeByTagListbuilderView.as_view(),
+                  name='organize-by-tag'),
     ]

@@ -59,13 +59,16 @@ class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.Vi
         )
 
     def get_unfiltered_queryset_for_role(self, role):
-        return self.model.objects.filter(period=role)\
+        queryset = self.model.objects.filter(period=role)\
             .prefetch_related(
                 models.Prefetch('relatedstudents',
-                                queryset=RelatedStudent.objects.filter(period=role)))\
+                                queryset=RelatedStudent.objects.all().select_related('user')
+                                .order_by('user__shortname')))\
             .prefetch_related(
                 models.Prefetch('relatedexaminers',
-                            queryset=RelatedExaminer.objects.filter(period=role)))
+                                queryset=RelatedExaminer.objects.all().select_related('user')
+                                .order_by('user__shortname')))
+        return queryset
 
 
 class CreatePeriodTagForm(forms.Form):

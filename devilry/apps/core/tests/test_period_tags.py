@@ -191,9 +191,34 @@ class TestPeriodTag(test.TestCase):
         self.assertEquals(1, active_periodtags.count())
         self.assertEquals('tag_active', active_periodtags[0].tag)
 
-    # def test_relatedexaminers_on_tag(self):
-    #     testperiod = mommy.make('core.Period')
-    #     mommy.make('core.RelatedStudent', period=testperiod)
-    #     mommy.make('core.RelatedStudent', period=testperiod)
-    #     mommy.make('core.RelatedStudent', period=testperiod)
-    #     testtag = mommy.make('core.PeriodTag', period=testperiod)
+    def test_annotate_with_relatedexaminers_count(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.PeriodTag', period=testperiod)
+        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod)
+        testperiodtag2.relatedexaminers.add(
+            mommy.make('core.RelatedExaminer', period=testperiod)
+        )
+        testperiodtag2.relatedexaminers.add(
+            mommy.make('core.RelatedExaminer', period=testperiod)
+        )
+        queryset = PeriodTag.objects.annotate_with_relatedexaminers_count()
+        queryset_without_relatedexaminers = queryset.filter(annotated_relatedexaminers_count__lt=2)
+        queryset_with_relatedexaminers = queryset.filter(annotated_relatedexaminers_count__gte=2)
+        self.assertEquals(queryset_without_relatedexaminers[0].annotated_relatedexaminers_count, 0)
+        self.assertEquals(queryset_with_relatedexaminers[0].annotated_relatedexaminers_count, 2)
+
+    def test_annotate_with_relatedstudents_count(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.PeriodTag', period=testperiod)
+        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod)
+        testperiodtag2.relatedstudents.add(
+            mommy.make('core.RelatedStudent', period=testperiod)
+        )
+        testperiodtag2.relatedstudents.add(
+            mommy.make('core.RelatedStudent', period=testperiod)
+        )
+        queryset = PeriodTag.objects.annotate_with_relatedstudents_count()
+        queryset_without_relatedstudents = queryset.filter(annotated_relatedstudents_count__lt=2)
+        queryset_with_relatedstudents = queryset.filter(annotated_relatedstudents_count__gte=2)
+        self.assertEquals(queryset_without_relatedstudents[0].annotated_relatedstudents_count, 0)
+        self.assertEquals(queryset_with_relatedstudents[0].annotated_relatedstudents_count, 2)

@@ -1,0 +1,61 @@
+{% extends "django_cradmin/viewhelpers/listbuilderview/default.django.html" %}
+
+{% load static %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block title %}
+    {{ pagetitle }}
+{% endblock title %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock pageheader-outer-extraclasses %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_appindex_url %}"
+       class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    {{ block.super }}
+{% endblock pageheader-inner %}
+
+
+{% block list %}
+    {{ block.super }}
+    {% if period_tags_count == 0 %}
+        <div class="row">
+            <div class="col-sm-8 col-lg-9">
+                <p class="devilry-listbuilderlist-footer">
+                    {% blocktrans trimmed with period=assignment.parentnode.get_path %}
+                        No tags registered on the semester. If you add tags,
+                        you can organize examiners and students based on the tags.
+                    {% endblocktrans %}
+                    <a href="{% cradmin_url instanceid='devilry_admin_periodadmin' appname='manage_tags' roleid=assignment.parentnode.id viewname='INDEX' %}">
+                        {% trans "Add semester tags" %}</a>.
+                </p>
+            </div>
+        </div>
+    {% elif available_period_tags_count == 0 %}
+        <div class="row">
+            <div class="col-sm-8 col-lg-9">
+                <p class="devilry-listbuilderlist-footer">
+                    {% blocktrans trimmed with period=assignment.parentnode.get_path %}
+                        Tags exist for the semester, but is missing either examiners, students or both.
+                    {% endblocktrans %}
+                    <a href="{% cradmin_url instanceid='devilry_admin_periodadmin' appname='manage_tags' roleid=assignment.parentnode.id viewname='INDEX' %}">
+                        {% trans "Manage tags" %}</a>.
+                </p>
+            </div>
+        </div>
+    {% else %}
+        <form action="" method="post">
+            <input type="submit" value="{% trans 'Organize' %}" class="btn btn-primary">
+        </form>
+    {% endif %}
+{% endblock list %}

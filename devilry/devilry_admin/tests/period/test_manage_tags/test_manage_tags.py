@@ -401,9 +401,15 @@ class TestPeriodTagListbuilderView(test.TestCase, cradmin_testhelpers.TestCaseMi
     def test_query_count(self):
         testperiod = mommy.make('core.Period')
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make('core.PeriodTag', period=testperiod)
-        mommy.make('core.PeriodTag', period=testperiod)
-        mommy.make('core.PeriodTag', period=testperiod)
+        testperiodtag1 = mommy.make('core.PeriodTag', period=testperiod)
+        testperiodtag2 = mommy.make('core.PeriodTag', period=testperiod)
+        testperiodtag3 = mommy.make('core.PeriodTag', period=testperiod)
+        testperiodtag1.relatedstudents.add(mommy.make('core.RelatedStudent', period=testperiod))
+        testperiodtag2.relatedstudents.add(mommy.make('core.RelatedStudent', period=testperiod))
+        testperiodtag3.relatedstudents.add(mommy.make('core.RelatedStudent', period=testperiod))
+        testperiodtag1.relatedexaminers.add(mommy.make('core.RelatedExaminer', period=testperiod))
+        testperiodtag2.relatedexaminers.add(mommy.make('core.RelatedExaminer', period=testperiod))
+        testperiodtag3.relatedexaminers.add(mommy.make('core.RelatedExaminer', period=testperiod))
         with self.assertNumQueries(4):
             self.mock_http200_getrequest_htmls(
                 cradmin_role=testperiod,

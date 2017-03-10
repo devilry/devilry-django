@@ -367,7 +367,7 @@ def devilry_relatedexaminers_on_period_tag(period_tag):
         period_tag: a :class:`~.devilry.apps.core.models.period_tag.PeriodTag` instance.
     """
     return {
-        'relatedexaminers': period_tag.relatedexaminers.all().order_by('user__shortname'),
+        'relatedexaminers': period_tag.relatedexaminers.all(),
         'num_relatedexaminers': period_tag.relatedexaminers.count()
     }
 
@@ -382,7 +382,7 @@ def devilry_relatedstudents_on_period_tag(period_tag):
         period_tag: a :class:`~.devilry.apps.core.models.period_tag.PeriodTag` instance.
     """
     return {
-        'relatedstudents': period_tag.relatedstudents.all().order_by('user__shortname'),
+        'relatedstudents': period_tag.relatedstudents.all(),
         'num_relatedstudents': period_tag.relatedstudents.count()
     }
 
