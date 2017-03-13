@@ -64,7 +64,7 @@ class AdminPublicDiscussView(AdminBaseFeedbackFeedView):
         return super(AdminPublicDiscussView, self).save_object(form=form, commit=True)
 
     def get_success_url(self):
-        return self.request.cradmin_app.reverse_appurl(viewname='public-discuss')
+        return self.request.cradmin_app.reverse_appindexurl()
 
 
 class AdminWithExaminersDiscussView(AdminBaseFeedbackFeedView):
