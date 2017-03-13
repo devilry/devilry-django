@@ -214,6 +214,8 @@ class AdminGroupCommentItemValue(BaseGroupCommentItemValue):
 
 
 class AbstractDeadlineEventItemValue(BaseEventItemValue):
+    """Abstract class for deadline events.
+    """
     valuealias = 'deadline_datetime'
 
     def __init__(self, *args, **kwargs):
@@ -233,6 +235,8 @@ class AbstractDeadlineEventItemValue(BaseEventItemValue):
 
 
 class DeadlineMovedItemValue(AbstractDeadlineEventItemValue):
+    """Deadline moved event.
+    """
     valuealias = 'feedbackset_history_obj'
     template_name = 'devilry_group/listbuilder_feedbackfeed/deadline_moved_item_value.django.html'
 
@@ -261,25 +265,10 @@ class DeadlineCreatedItemValue(AbstractDeadlineEventItemValue):
 
 
 class DeadlineExpiredItemValue(AbstractDeadlineEventItemValue):
-    """Deadline expired event
+    """Deadline expired event.
     """
     valuealias = 'deadline_datetime'
     template_name = 'devilry_group/listbuilder_feedbackfeed/deadline_expired_item_value.django.html'
-
-    # def __init__(self, *args, **kwargs):
-    #     self.feedbackset = kwargs.pop('feedbackset')
-    #     super(DeadlineExpiredItemValue, self).__init__(*args, **kwargs)
-
-    # @property
-    # def group(self):
-    #     return self.kwargs['group']
-    #
-    # @property
-    # def deadline_as_string(self):
-    #     return datetimeutils.datetime_to_string(self.feedbackset.deadline_datetime)
-    #
-    # def get_timeline_datetime(self):
-    #     return self.value
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(DeadlineExpiredItemValue, self).get_extra_css_classes_list()

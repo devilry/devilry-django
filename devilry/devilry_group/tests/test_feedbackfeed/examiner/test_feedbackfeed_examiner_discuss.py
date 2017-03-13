@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from datetime import timedelta
+from datetime import timedelta, datetime
+from devilry.project.common.formats.nb import formats
+from django.utils.dateparse import parse_date
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.utils import timezone
@@ -185,6 +187,56 @@ class TestFeedbackfeedExaminerDiscussMixin(test_feedbackfeed_examiner.TestFeedba
         selector_element = mockresponse.selector.one('.devilry-group-event__grade-before-last')
         self.assertNotIn('Edit grade', selector_element.alltext_normalized)
         self.assertNotIn('Give new attempt', selector_element.alltext_normalized)
+
+    def test_event_deadline_moved_feedbackset_unpublished(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        now1 = timezone.now()
+        new_deadline1 = now1 + timedelta(days=2)
+        mommy.make('devilry_group.FeedbackSetDeadlineHistory',
+                   feedback_set=testfeedbackset,
+                   changed_datetime=now1,
+                   deadline_old=testfeedbackset.deadline_datetime,
+                   deadline_new=new_deadline1)
+        now2 = timezone.now() + timedelta(days=2)
+        new_deadline2 = now2 + timedelta(days=4)
+        mommy.make('devilry_group.FeedbackSetDeadlineHistory',
+                   feedback_set=testfeedbackset,
+                   changed_datetime=now2,
+                   deadline_old=testfeedbackset.deadline_datetime,
+                   deadline_new=new_deadline2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertEquals(mockresponse.selector.count('.devilry-group-feedbackfeed-event-message__deadline-moved'), 2)
+        self.assertEquals(mockresponse.selector.count('.deadline-move-info'), 2)
+
+    def test_event_deadline_moved_feedbackset_published(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        now1 = timezone.now()
+        new_deadline1 = now1 + timedelta(days=2)
+        mommy.make('devilry_group.FeedbackSetDeadlineHistory',
+                   feedback_set=testfeedbackset,
+                   changed_datetime=now1,
+                   deadline_old=testfeedbackset.deadline_datetime,
+                   deadline_new=new_deadline1)
+        now2 = timezone.now() + timedelta(days=2)
+        new_deadline2 = now2 + timedelta(days=4)
+        mommy.make('devilry_group.FeedbackSetDeadlineHistory',
+                   feedback_set=testfeedbackset,
+                   changed_datetime=now2,
+                   deadline_old=testfeedbackset.deadline_datetime,
+                   deadline_new=new_deadline2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user
+        )
+        self.assertEquals(mockresponse.selector.count('.devilry-group-feedbackfeed-event-message__deadline-moved'), 2)
+        self.assertEquals(mockresponse.selector.count('.deadline-move-info'), 2)
 
 
 class TestFeedbackfeedExaminerPublicDiscuss(TestCase, TestFeedbackfeedExaminerDiscussMixin):
