@@ -9330,8 +9330,17 @@ fieldset[disabled] .button_student {
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message {
   margin-left: 54px;
-  margin-bottom: 21px;
+  margin-bottom: 33px;
+  margin-top: 33px;
   font-size: 16px;
+}
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message__deadline-moved .deadline-move-info {
+  margin-left: 30px;
+  color: #747474;
+}
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message .btn {
+  display: inline-block;
+  padding: 1px 1px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message__grade {
   font-weight: bold;
@@ -9343,26 +9352,6 @@ fieldset[disabled] .button_student {
   padding: 2px 5px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message__grade .devilry-core-grade-failed {
-  color: #fef6f5;
-  background: #a0372f;
-  display: inline-block;
-  padding: 2px 5px;
-}
-.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-passed {
-  margin-left: 54px;
-  margin-bottom: 21px;
-  font-size: 16px;
-}
-.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-passed__grade {
-  font-weight: bold;
-}
-.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-passed__grade .devilry-core-grade-passed {
-  color: #fff;
-  background: #5aa221;
-  display: inline-block;
-  padding: 2px 5px;
-}
-.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-passed__grade .devilry-core-grade-failed {
   color: #fef6f5;
   background: #a0372f;
   display: inline-block;

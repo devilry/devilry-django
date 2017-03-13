@@ -98,7 +98,8 @@
   */
   .devilry-group-feedbackfeed-event-message{
     margin-left: (@devilry-feedbackfeed-leftmargin + @devilry-spacing);
-    margin-bottom: (@devilry-vertical-rythm--medium + 20);
+    margin-bottom: (@devilry-vertical-rythm--medium + @devilry-spacing--small);
+    margin-top: (@devilry-vertical-rythm--medium + @devilry-spacing--small);
     font-size: @font-size-base;
 
     &__deadline-created{}
@@ -108,6 +109,13 @@
     &__passed {}
 
     &__failed {}
+
+    &__deadline-moved {
+      .deadline-move-info {
+        margin-left: (@devilry-feedbackfeed-leftmargin);
+        color: @devilry-brand-muted-color;
+      }
+    }
 
     .btn {
       display: inline-block;

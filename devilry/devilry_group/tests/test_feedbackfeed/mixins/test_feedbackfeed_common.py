@@ -319,7 +319,7 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message__deadline-expired'))
 
     def test_get_event_with_feedbackset_deadline_datetime_expired(self):
         # tests that an 'deadline expired'-event occurs when FeedbackSet.deadline_datetime expires.
@@ -327,14 +327,14 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
         feedbackset = mommy.make('devilry_group.FeedbackSet',
                                  deadline_datetime=timezone.now()-timezone.timedelta(days=1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message__deadline-expired'))
 
     def test_get_event_without_feedbackset_deadline_datetime_expired(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         group_mommy.feedbackset_first_attempt_unpublished(group=group)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message__deadline-expired'))
 
     def test_get_event_two_feedbacksets_deadlines_created(self):
         # test that two deadlines created events are rendered to view
@@ -350,7 +350,7 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
                    feedbackset_type=models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
                    deadline_datetime=timezone.now() + timezone.timedelta(days=6))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
-        self.assertEqual(2, mockresponse.selector.count('.devilry-group-feedbackfeed-event-message-deadline-created'))
+        self.assertEqual(2, mockresponse.selector.count('.devilry-group-feedbackfeed-event-message__deadline-created'))
 
     # def test_get_event_two_feedbacksets_deadlines_expired(self):
     #     # test that two deadlines expired events are rendered to view
@@ -374,7 +374,7 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
                    feedbackset_type=models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT,
                    deadline_datetime=timezone.now() + timezone.timedelta(days=6))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
-        created = mockresponse.selector.list('.devilry-group-feedbackfeed-event-message-deadline-created')
+        created = mockresponse.selector.list('.devilry-group-feedbackfeed-event-message__deadline-created')
         self.assertEqual(1, len(created))
 
     def test_get_event_two_feedbacksets_deadlines_expired_assignment_firstdeadline(self):
@@ -386,7 +386,7 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
                 group=testgroup,
                 deadline_datetime=timezone.now() - timezone.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
-        expired = mockresponse.selector.list('.devilry-group-feedbackfeed-event-message-deadline-expired')
+        expired = mockresponse.selector.list('.devilry-group-feedbackfeed-event-message__deadline-expired')
         self.assertEqual(2, len(expired))
         self.assertEquals(2, group_models.FeedbackSet.objects.count())
 

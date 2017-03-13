@@ -14,4 +14,7 @@
                 </a>
         {% endif %}
     {% endif %}
+    <p class="muted deadline-move-info">
+        Deadline was moved from {{ me.value.deadline_old }} to {{ me.value.deadline_new }}
+    </p>
 {% endblock details %}

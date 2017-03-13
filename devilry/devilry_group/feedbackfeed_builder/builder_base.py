@@ -59,6 +59,7 @@ def get_feedbackfeed_builder_queryset(group, requestuser, devilryrole):
             'feedback_set__created_by',
             'feedback_set__grading_published_by')\
         .prefetch_related(models.Prefetch('commentfile_set', queryset=commentfile_queryset))
+    feedbackset_deadline_history_queryset = group_models.FeedbackSetDeadlineHistory.objects.all()
     if devilryrole == 'student':
         groupcomment_queryset = groupcomment_queryset\
             .filter(visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)\
@@ -68,7 +69,14 @@ def get_feedbackfeed_builder_queryset(group, requestuser, devilryrole):
         .select_related('group', 'group__parentnode', 'group__parentnode__parentnode')\
         .filter(group=group)\
         .prefetch_related(
-            models.Prefetch('groupcomment_set', queryset=groupcomment_queryset))\
+            models.Prefetch(
+                'groupcomment_set',
+                queryset=groupcomment_queryset))\
+        .prefetch_related(
+            models.Prefetch(
+                'feedbacksetdeadlinehistory_set',
+                queryset=feedbackset_deadline_history_queryset)
+        )\
         .order_by('created_datetime')
 
 

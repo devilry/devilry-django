@@ -578,6 +578,9 @@ class FeedbackSetDeadlineHistory(models.Model):
     #: The new :attr:`~.FeedbackDet.deadline_datetime`.
     deadline_new = models.DateTimeField(null=False, blank=False)
 
+    def __unicode__(self):
+        return u'Changed {}: from {} to {}'.format(self.changed_datetime, self.deadline_old, self.deadline_new)
+
 
 class GroupCommentQuerySet(AbstractGroupCommentQuerySet):
     """

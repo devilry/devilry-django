@@ -429,6 +429,33 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
         self.assertEquals(builder_list[8]['type'], 'grade')
         self.assertEquals(2, group_models.FeedbackSet.objects.count())
 
+    def test_event_feedbackset_deadline_moved(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset1 = group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        testfeedbackset2 = group_mommy.feedbackset_new_attempt_unpublished(
+            group=testgroup,
+            deadline_datetime=timezone.now() + timezone.timedelta(days=2))
+        mommy.make('devilry_group.FeedbackSetDeadlineHistory',
+                   changed_datetime=timezone.now(),
+                   feedback_set=testfeedbackset1,
+                   deadline_old=testfeedbackset1.deadline_datetime,
+                   deadline_new=timezone.now())
+        feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(
+            group=testgroup,
+            requestuser=testuser,
+            devilryrole='unused')
+        timelinebuilder = FeedbackFeedTimelineBuilder(
+            feedbacksets=feedbackset_queryset,
+            group=testgroup)
+        timelinebuilder.build()
+        builder_list = timelinebuilder.get_as_list()
+        self.assertEquals(builder_list[0]['type'], 'deadline_expired')
+        self.assertEquals(builder_list[1]['type'], 'grade')
+        self.assertEquals(builder_list[2]['type'], 'deadline_created')
+        self.assertEquals(builder_list[3]['type'], 'deadline_moved')
+
     def test_num_queries(self):
         testassignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
@@ -436,8 +463,9 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
         mommy.make('core.Candidate', assignment_group=testgroup1, _quantity=100)
         mommy.make('core.Examiner', assignmentgroup=testgroup1, _quantity=100)
         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+        mommy.make('devilry_group.FeedbackSetDeadlineHistory', feedback_set=testfeedbackset, _quantity=100)
         mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset, _quantity=100)
-        with self.assertNumQueries(8):
+        with self.assertNumQueries(9):
             feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(
                 group=testgroup1,
                 requestuser=candidate.relatedstudent.user,

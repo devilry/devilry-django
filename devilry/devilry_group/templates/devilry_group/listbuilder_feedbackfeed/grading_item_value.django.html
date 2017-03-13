@@ -6,7 +6,7 @@
 
 {% block details %}
     {% if me.devilry_viewrole == 'examiner' %}
-        {% if me.group.cached_data.last_published_feedbackset == me.feedbackset %}
+        {% if me.group.cached_data.last_published_feedbackset_is_last_feedbackset and me.group.cached_data.last_published_feedbackset == me.feedbackset %}
             <span class="devilry-group-event__grade-last">
                 {% trans "This delivery was corrected, and given" context 'devilry_group feedbackfeed' %}:
                 {% devilry_grade_full assignment=me.group.assignment points=me.feedbackset.grading_points devilryrole=me.devilryrole %}

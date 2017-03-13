@@ -108,6 +108,7 @@ class FeedbackFeedTimelineBuilder(builder_base.FeedbackFeedBuilderBase):
                 datetime=feedbackset.created_datetime,
                 event_dict={
                     "type": "deadline_created",
+                    "deadline_datetime": feedbackset.deadline_datetime,
                     "feedbackset": feedbackset
                 })
 
@@ -180,6 +181,19 @@ class FeedbackFeedTimelineBuilder(builder_base.FeedbackFeedBuilderBase):
         for group_comment in feedbackset.groupcomment_set.all():
             self.__add_comment_to_timeline(group_comment=group_comment, feedbackset=feedbackset)
 
+    def __add_deadline_moved_event(self, feedbackset):
+        deadline_history_queryset = feedbackset.feedbacksetdeadlinehistory_set \
+            .order_by('-changed_datetime')
+        for deadline_history in deadline_history_queryset:
+            self.__add_event_item_to_timeline(
+                datetime=deadline_history.changed_datetime,
+                event_dict={
+                    'type': 'deadline_moved',
+                    'obj': deadline_history,
+                    'feedbackset': feedbackset
+                }
+            )
+
     def __add_feedbackset_to_timeline(self, feedbackset):
         """
         Adds events to the timeline by calling the functions for adding specific events.
@@ -193,6 +207,7 @@ class FeedbackFeedTimelineBuilder(builder_base.FeedbackFeedBuilderBase):
         Args:
             feedbackset: Current feedbackset to add events for.
         """
+        self.__add_deadline_moved_event(feedbackset=feedbackset)
         self.__add_deadline_created_to_timeline(feedbackset=feedbackset)
         self.__add_deadline_expired_if_needed(feedbackset=feedbackset)
         self.__add_grade_to_timeline_if_published(feedbackset=feedbackset)

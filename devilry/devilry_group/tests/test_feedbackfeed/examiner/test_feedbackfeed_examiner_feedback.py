@@ -49,7 +49,7 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testfeedbackset.group)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message__deadline-created'))
 
     def test_get_feedbackset_second_created_deadline_event(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -57,7 +57,7 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         group_mommy.feedbackset_new_attempt_unpublished(group=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message__deadline-created'))
 
     def test_get_feedbackfeed_examiner_can_see_feedback_and_discuss_in_header(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -128,7 +128,7 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
                    user_role='student',
                    feedback_set=testfeedbackset,
                    _quantity=20)
-        with self.assertNumQueries(11):
+        with self.assertNumQueries(13):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=examiner.relatedexaminer.user)
 
@@ -171,7 +171,7 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
                    filename='test2.py',
                    comment=comment2,
                    _quantity=20)
-        with self.assertNumQueries(15):
+        with self.assertNumQueries(17):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=examiner.relatedexaminer.user)
 
@@ -260,7 +260,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                       mockresponse.selector.list('.devilry-group-feedbackfeed-itemvalue')]
         # Test that grade comments are rendered before grade
         self.assertIn('devilry-group-feedbackfeed-comment-examiner', class_list[0])
-        self.assertIn('devilry-group-feedbackfeed-event-message-grade', class_list[1])
+        self.assertIn('devilry-group-feedbackfeed-event-message__grade', class_list[1])
 
     def test_post_first_attempt_two_drafts_appear_before_grading_event(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
@@ -299,7 +299,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
         # Test that grade comments are rendered before grade
         self.assertIn('devilry-group-feedbackfeed-comment-examiner', class_list[0])
         self.assertIn('devilry-group-feedbackfeed-comment-examiner', class_list[1])
-        self.assertIn('devilry-group-feedbackfeed-event-message-grade', class_list[2])
+        self.assertIn('devilry-group-feedbackfeed-event-message__grade', class_list[2])
 
     def test_post_first_attempt_draft_occurs_before_comment_published(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
