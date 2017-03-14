@@ -7,6 +7,7 @@ import datetime
 from django.db import models
 from django.db.models.functions import Lower, Concat
 
+from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Examiner
@@ -87,9 +88,15 @@ class FeedbackFeedBuilderBase(object):
     def __init__(self, group, feedbacksets):
         super(FeedbackFeedBuilderBase, self).__init__()
         self.group = group
+        # self.assigment = self._get_assignment()
         self.feedbacksets = list(feedbacksets)
         self._candidate_map = self._make_candidate_map()
         self._examiner_map = self._make_examiner_map()
+
+    # def _get_assignment(self):
+    #     return Assignment.objects\
+    #         .prefetch_point_to_grade_map()\
+    #         .get(id=self.group.parentnode.id)
 
     def _make_candidate_map(self):
         """

@@ -15,9 +15,7 @@
         {% endif %}
     {% endif %}
     <p class="muted deadline-move-info">
-        {% trans 'Deadline was moved from' %}
+        {% trans 'Previous deadline' %}:
         {{ me.value.deadline_old }}
-        {% trans 'to' %}
-        {{ me.value.deadline_new }}
     </p>
 {% endblock details %}

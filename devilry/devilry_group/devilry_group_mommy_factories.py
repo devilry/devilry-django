@@ -18,7 +18,6 @@ def feedbackset_save(feedbackset, **kwargs):
     """
     for key, value in kwargs.iteritems():
         setattr(feedbackset, key, value)
-    feedbackset.full_clean()
     feedbackset.save()
 
 

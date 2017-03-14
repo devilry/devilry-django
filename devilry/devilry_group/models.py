@@ -358,8 +358,9 @@ class FeedbackSet(models.Model):
                 self.current_deadline(),
                 self.grading_points)
 
-    def __clean_deadline(self):
-        self.deadline_datetime = self.deadline_datetime.replace(microsecond=0, tzinfo=None)
+    @classmethod
+    def clean_deadline(cls, deadline_datetime):
+        return deadline_datetime.replace(microsecond=0, tzinfo=None)
 
     def clean(self):
         """
@@ -402,7 +403,7 @@ class FeedbackSet(models.Model):
                     'grading_published_datetime': ugettext_lazy('An assignment can not be published '
                                                                 'without providing "points".'),
                 })
-        self.__clean_deadline()
+        self.deadline_datetime = FeedbackSet.clean_deadline(self.deadline_datetime)
 
     def current_deadline(self, assignment=None):
         warnings.warn("deprecated, use FeedbackSet.deadline_datetime instead", DeprecationWarning)

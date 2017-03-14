@@ -828,7 +828,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     def get_point_to_grade_map(self):
         """
-        Get the :class:`~devilry.apps.core.models.PointToGradeMap` for this assinment,
+        Get the :class:`~devilry.apps.core.models.PointToGradeMap` for this assignment,
         or ``None`` if there is no PointToGradeMap for this assignment.
         """
         if not hasattr(self, 'prefetched_point_to_grade_map'):

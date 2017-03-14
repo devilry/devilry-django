@@ -285,7 +285,11 @@ class GradeItemValue(BaseEventItemValue):
     @property
     def group(self):
         return self.kwargs['group']
-
+    
+    # @property
+    # def assignment(self):
+    #     return self.kwargs['assignment']
+    
     @property
     def deadline_as_string(self):
         return datetimeutils.datetime_to_string(self.feedbackset.deadline_datetime)
