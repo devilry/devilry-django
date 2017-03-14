@@ -158,7 +158,7 @@ class DeadlineManagementMixin(View):
     def __get_queryset_for_role_filtered_new_attempt(self, role):
         """
         Get the queryset of ``AssignmentGroups`` that should receive a new attempt.
-        This excludes all groups where the last ``FeedbackSet`` is not corrected..
+        This excludes all groups where the last ``FeedbackSet`` is not corrected.
 
         Args:
             role: CrAdmin role.

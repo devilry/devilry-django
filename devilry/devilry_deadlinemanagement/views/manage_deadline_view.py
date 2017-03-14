@@ -39,10 +39,35 @@ class ManageDeadlineForm(SelectedItemsForm):
         initial=ugettext_lazy(initial_comment_text)
     )
 
-    new_deadline = forms.DateTimeField(
-        widget=DateTimePickerWidget,
-        help_text='Select a deadline'
-    )
+    new_deadline = forms.DateTimeField()
+
+    def __init__(self, *args, **kwargs):
+        self.previous_deadline = kwargs.pop('previous_deadline')
+        self.current_deadline = kwargs.pop('current_deadline')
+        super(ManageDeadlineForm, self).__init__(*args, **kwargs)
+        suggested_deadline = self.get_minimum_deadline()
+        self.fields['new_deadline'].widget = DateTimePickerWidget(
+            minimum_datetime=suggested_deadline,
+        )
+        self.fields['new_deadline'].initial = suggested_deadline
+        self.fields['new_deadline'].help_text = ugettext_lazy('Keep the suggested deadline, or select a different one.')
+
+    def __replace_with_current_deadline_time(self, datetime):
+        return datetime.replace(
+            hour=self.current_deadline.hour,
+            minute=self.current_deadline.minute,
+            second=self.current_deadline.second,
+            microsecond=self.current_deadline.microsecond
+        )
+
+    def get_minimum_deadline(self):
+        now = timezone.now()
+        if self.previous_deadline < now:
+            start = now
+        else:
+            start = self.previous_deadline
+        minimum_deadline = start + timezone.timedelta(days=3)
+        return self.__replace_with_current_deadline_time(minimum_deadline)
 
     def clean(self):
         super(ManageDeadlineForm, self).clean()
@@ -69,11 +94,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
     post_type_received_data = 'post_type_received_data'
 
     def get(self, request, *args, **kwargs):
-        form_class = self.get_form_class()
-        form = form_class(
-            accessible_groups_queryset=self.request.cradmin_app.get_accessible_group_queryset(),
-            initial={'selected_items': self.get_initially_selected_items()}
-        )
+        form = self.get_instantiated_form()
         return self.render_to_response(self.get_context_data(form=form))
 
     def post(self, request, *args, **kwargs):
@@ -140,29 +161,61 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
         """
         return self.request.POST.getlist('selected_items')
 
-    def get_form(self):
+    def get_latest_previous_deadline(self):
         """
-        Instantiate the form with the correct initial values base on the type of input.
+        Get the deadline of the second to last :class:`~.devilry.devilry_group.models.FeedbackSet` of all the
+        groups ids passed with the most recent deadline.
+
+        Returns:
+            A datetime object or none.
+        """
+        group_id_list = [int(group_id) for group_id in self.get_initially_selected_items()]
+        feedbackset = None
+        if self.post_move_deadline:
+            feedbackset = group_models.FeedbackSet.objects\
+                .filter(group_id__in=group_id_list,
+                        deadline_datetime__lt=self.deadline)\
+                .order_by('-deadline_datetime')\
+                .first()
+        if self.post_new_attempt:
+            feedbackset = group_models.FeedbackSet.objects \
+                .filter(group_id__in=group_id_list) \
+                .order_by('-deadline_datetime') \
+                .first()
+        if not feedbackset:
+            return timezone.now()
+        return feedbackset.deadline_datetime
+
+    def get_instantiated_form(self):
+        form_class = self.get_form_class()
+        return form_class(
+            accessible_groups_queryset=self.request.cradmin_app.get_accessible_group_queryset(),
+            initial={'selected_items': self.get_initially_selected_items()},
+            current_deadline=self.deadline,
+            previous_deadline=self.get_latest_previous_deadline()
+        )
+
+    def get_form(self, form_class=None):
+        """
+        Instantiate the form with the correct initial values based on the type of input.
 
         If this view receives data in post from another view, we set the initial values for the form
         as the values that passed from the previous view.
 
-        If not, the form is handles normally by Django.
+        If not, the form is handled normally by Django.
 
         Returns:
             (:obj:`.ManageDeadlineForm`): instance.
         """
         if self.post_from_previous_view:
-            form_class = self.get_form_class()
-            return form_class(
-                accessible_groups_queryset=self.request.cradmin_app.get_accessible_group_queryset(),
-                initial={'selected_items': self.get_initially_selected_items()}
-            )
-        return super(ManageDeadlineView, self).get_form()
+            return self.get_instantiated_form()
+        return super(ManageDeadlineView, self).get_form(form_class=form_class)
 
     def get_form_kwargs(self):
         kwargs = super(ManageDeadlineView, self).get_form_kwargs()
         kwargs['accessible_groups_queryset'] = self.request.cradmin_app.get_accessible_group_queryset()
+        kwargs['current_deadline'] = self.deadline
+        kwargs['previous_deadline'] = self.get_latest_previous_deadline()
         return kwargs
 
     def get_previous_view_url(self):

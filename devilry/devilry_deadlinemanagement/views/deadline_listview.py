@@ -17,9 +17,17 @@ class SelectDeadlineItemValue(listbuilder.itemvalue.TitleDescription):
         super(SelectDeadlineItemValue, self).__init__(**kwargs)
         self.num_assignment_groups = len(assignment_groups)
         self.assignment_groups = assignment_groups
+        self.num_corrected_assignment_groups = self.__get_num_corrected_groups()
         self.assignment = assignment
         self.devilryrole = devilryrole
         self.deadline_as_string = datetimeutils.datetime_to_string(self.value)
+
+    def __get_num_corrected_groups(self):
+        count = 0
+        for group in self.assignment_groups:
+            if group.cached_data.last_published_feedbackset_is_last_feedbackset:
+                count += 1
+        return count
 
     def get_title(self):
         if self.value == self.assignment.first_deadline:

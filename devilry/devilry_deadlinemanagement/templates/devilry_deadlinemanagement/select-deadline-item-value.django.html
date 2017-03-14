@@ -23,34 +23,36 @@
 {% endblock below-title %}
 
 {% block below-description %}
-    <span id="devilry_admin_create_groups_choosemethod_assignment_{{ me.assignment.id }}"
-            class="devilry-admin-create-groups-choosemethod-assignment">
+    <span class="devilry-deadlinemanagement-all-groups-buttons">
         <a href="{% cradmin_appurl "manage-deadline-all-groups" deadline=me.deadline_as_string handle_deadline="move-deadline" %}"
-                id="devilry_manage_deadline_{{ me.deadline }}_all_link"
+                id="devilry_manage_deadline_{{ me.deadline_as_string  }}_move_all_link"
                 class="btn btn-primary">
             {% trans "Move deadline" %}
         </a>
-        <a href="{% cradmin_appurl "manage-deadline-all-groups" deadline=me.deadline_as_string handle_deadline="new-attempt" %}"
-                id="devilry_manage_deadline_{{ me.deadline }}_all_link"
-                class="btn btn-primary">
-            {% trans "New attempt" %}
-        </a>
+        {% if me.num_corrected_assignment_groups > 0 %}
+            <a href="{% cradmin_appurl "manage-deadline-all-groups" deadline=me.deadline_as_string handle_deadline="new-attempt" %}"
+                    id="devilry_manage_deadline_{{ me.deadline_as_string }}_new_attempt_all_link"
+                    class="btn btn-primary">
+                {% trans "New attempt" %}
+            </a>
+        {% endif %}
         <strong>{% trans "for all groups" %}</strong>
     </span>
     <br>
     {% if me.num_assignment_groups > 1 %}
-        <span id="devilry_admin_create_groups_choosemethod_assignment_{{ me.assignment.id }}"
-                class="devilry-admin-create-groups-choosemethod-assignment">
+        <span class="devilry-deadlinemanagement-select-groups-buttons">
             <a href="{% cradmin_appurl "select-groups-manually" deadline=me.deadline_as_string handle_deadline="move-deadline" %}"
-                    id="devilry_manage_deadline_{{ me.deadline }}_select_manually_move_deadline"
+                    id="devilry_manage_deadline_{{ me.deadline_as_string  }}_move_select_link"
                     class="btn btn-default">
                 {% trans "Move deadline" %}
             </a>
-           <a href="{% cradmin_appurl "select-groups-manually" deadline=me.deadline_as_string handle_deadline="new-attempt" %}"
-                    id="devilry_manage_deadline_{{ me.deadline }}_select_manually_new_attempt"
-                    class="btn btn-default">
-                {% trans "New attempt" %}
-            </a>
+            {% if me.num_corrected_assignment_groups > 0 %}
+                <a href="{% cradmin_appurl "select-groups-manually" deadline=me.deadline_as_string handle_deadline="new-attempt" %}"
+                        id="devilry_manage_deadline_{{ me.deadline_as_string  }}_new_attempt_select_link"
+                        class="btn btn-default">
+                    {% trans "New attempt" %}
+                </a>
+            {% endif %}
             <strong>{% trans "for some groups" %}</strong>
         </span>
     {% endif %}

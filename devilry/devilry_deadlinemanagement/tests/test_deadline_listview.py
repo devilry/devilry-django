@@ -14,6 +14,7 @@ from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_deadlinemanagement.views import deadline_listview
 from devilry.apps.core import models as core_models
+from devilry.utils import datetimeutils
 
 
 class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -278,6 +279,85 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.assertEquals(2, len(deadline_list))
         self.assertIn('{} (Assignment first deadline)'.format(testassignment.first_deadline), deadline_list)
         self.assertIn('{}'.format(new_attempt_deadline), deadline_list)
+
+    def test_select_manually_buttons_render_if_more_than_one_group(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup2)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(testassignment),
+            cradmin_role=testassignment,
+            cradmin_app=self.__get_mock_app(user=testuser),
+            requestuser=testuser
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-deadlinemanagement-select-groups-buttons'))
+
+    def test_select_manually_buttons_does_not_render_if_less_than_two_groups(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(testassignment),
+            cradmin_role=testassignment,
+            cradmin_app=self.__get_mock_app(user=testuser),
+            requestuser=testuser
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-deadlinemanagement-select-groups-buttons'))
+
+    def test_new_attempt_button_rendered_if_more_than_one_group_have_been_corrected(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup2)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(testassignment),
+            cradmin_role=testassignment,
+            cradmin_app=self.__get_mock_app(user=testuser),
+            requestuser=testuser
+        )
+        self.assertTrue(
+            mockresponse.selector.exists('#devilry_manage_deadline_{}_new_attempt_all_link'
+                                         .format(datetimeutils.datetime_to_string(testassignment.first_deadline)))
+        )
+        self.assertTrue(
+            mockresponse.selector.exists('#devilry_manage_deadline_{}_new_attempt_select_link'
+                                         .format(datetimeutils.datetime_to_string(testassignment.first_deadline)))
+        )
+
+    def test_new_attempt_button_not_rendered_if_no_groups_have_been_corrected(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(testassignment),
+            cradmin_role=testassignment,
+            cradmin_app=self.__get_mock_app(user=testuser),
+            requestuser=testuser
+        )
+        self.assertFalse(
+            mockresponse.selector.exists('#devilry_manage_deadline_{}_new_attempt_all_link'
+                                         .format(datetimeutils.datetime_to_string(testassignment.first_deadline)))
+        )
+        self.assertFalse(
+            mockresponse.selector.exists('#devilry_manage_deadline_{}_new_attempt_select_link'
+                                         .format(datetimeutils.datetime_to_string(testassignment.first_deadline)))
+        )
 
     def test_query_count(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
