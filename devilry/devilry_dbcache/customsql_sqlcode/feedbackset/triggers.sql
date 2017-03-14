@@ -50,7 +50,7 @@ CREATE TRIGGER devilry__on_feedbackset_after_delete
 
 CREATE OR REPLACE FUNCTION devilry__on_feedbackset_deadline_update() RETURNS TRIGGER AS $$
 BEGIN
-    IF TG_OP = 'UPDATE' AND NEW.deadline_datetime > OLD.deadline_datetime THEN
+    IF TG_OP = 'UPDATE' AND NEW.deadline_datetime <> OLD.deadline_datetime THEN
         INSERT INTO devilry_group_feedbacksetdeadlinehistory (
             feedback_set_id,
             changed_datetime,
