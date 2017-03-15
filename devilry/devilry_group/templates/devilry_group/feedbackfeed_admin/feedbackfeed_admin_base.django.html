@@ -4,7 +4,7 @@
 
 {% block navigation %}
     <nav class="devilry-tabs__tab-list" id="/tabs">
-        <a href="{% cradmin_appindex_url %}"
+        <a href="{% cradmin_appindex_url %}#/tabs"
            class="devilry-group-feedbackfeed-discuss-button
                 devilry-tabs__tab
                 {% block discuss_navigation_active_class %}{% endblock %}">
@@ -13,7 +13,7 @@
                 {% block discuss_navigation_title_suffix %}{% endblock %}
             </span>
         </a>
-        <a href="{% cradmin_appurl 'admin-examiner-discuss' %}"
+        <a href="{% cradmin_appurl 'admin-examiner-discuss' %}#/tabs"
            class="devilry-group-feedbackfeed-discuss-button
                 devilry-tabs__tab
                 {% block admin_examiner_discuss_navigation_active_class %}{% endblock %}">
