@@ -7,7 +7,6 @@ from xml.sax.saxutils import quoteattr
 
 from crispy_forms import layout
 from django import forms
-from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string

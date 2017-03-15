@@ -488,7 +488,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
         mommy.make('devilry_group.FeedbackSetDeadlineHistory', feedback_set=testfeedbackset, _quantity=100)
         mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset, _quantity=100)
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(8):
             feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(
                 group=testgroup1,
                 requestuser=candidate.relatedstudent.user,

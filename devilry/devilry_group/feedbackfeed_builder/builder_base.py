@@ -5,34 +5,12 @@ import collections
 import datetime
 
 from django.db import models
-from django.db.models.functions import Lower, Concat
 
-from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Examiner
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_group import models as group_models
-
-
-def _get_candidatequeryset():
-    """Get candidates.
-
-    Returns:
-        QuerySet: A queryset of :class:`~devilry.apps.core.models.Candidate`s.
-    """
-    return Candidate.objects \
-        .select_related('relatedstudent', 'relatedstudent__period', 'relatedstudent__user')
-
-
-def _get_examinerqueryset():
-    """Get examiners.
-
-    Returns:
-        QuerySet: A queryset of :class:`~devilry.apps.core.models.Examiner`s.
-    """
-    return Examiner.objects \
-        .select_related('relatedexaminer', 'relatedexaminer__period', 'relatedexaminer__user')
 
 
 def get_feedbackfeed_builder_queryset(group, requestuser, devilryrole):
@@ -67,7 +45,11 @@ def get_feedbackfeed_builder_queryset(group, requestuser, devilryrole):
             .exclude_is_part_of_grading_feedbackset_unpublished()
 
     return group_models.FeedbackSet.objects\
-        .select_related('group', 'group__parentnode', 'group__parentnode__parentnode')\
+        .select_related(
+            'group',
+            'group__parentnode',
+            'group__parentnode__parentnode',
+            'group__parentnode__parentnode__parentnode')\
         .filter(group=group)\
         .prefetch_related(
             models.Prefetch(
@@ -83,15 +65,40 @@ def get_feedbackfeed_builder_queryset(group, requestuser, devilryrole):
 
 class FeedbackFeedBuilderBase(object):
     """
-
     """
     def __init__(self, assignment, group, feedbacksets):
         super(FeedbackFeedBuilderBase, self).__init__()
         self.assignment = assignment
-        self.group = group
+        self.group = self._prefetch_candidates_and_examiners_for_group(group)
         self.feedbacksets = list(feedbacksets)
         self._candidate_map = self._make_candidate_map()
         self._examiner_map = self._make_examiner_map()
+
+    def _prefetch_candidates_and_examiners_for_group(self, group):
+        return AssignmentGroup.objects\
+            .prefetch_related(
+                models.Prefetch('candidates', queryset=self._get_candidatequeryset()))\
+            .prefetch_related(
+                models.Prefetch('examiners', queryset=self._get_examinerqueryset()))\
+            .get(id=group.id)
+
+    def _get_candidatequeryset(self):
+        """Get candidates.
+
+        Returns:
+            QuerySet: A queryset of :class:`~devilry.apps.core.models.Candidate`s.
+        """
+        return Candidate.objects \
+            .select_related('relatedstudent', 'relatedstudent__period', 'relatedstudent__user')
+
+    def _get_examinerqueryset(self):
+        """Get examiners.
+
+        Returns:
+            QuerySet: A queryset of :class:`~devilry.apps.core.models.Examiner`s.
+        """
+        return Examiner.objects \
+            .select_related('relatedexaminer', 'relatedexaminer__period', 'relatedexaminer__user')
 
     def _make_candidate_map(self):
         """
@@ -101,10 +108,7 @@ class FeedbackFeedBuilderBase(object):
             dict: Map of candidates.
         """
         candidatemap = {}
-        group = AssignmentGroup.objects.prefetch_related(
-            models.Prefetch('candidates', queryset=_get_candidatequeryset())
-        ).get(id=self.group.id)
-        for candidate in group.candidates.all():
+        for candidate in self.group.candidates.all():
             candidatemap[candidate.relatedstudent.user_id] = candidate
         return candidatemap
 
@@ -116,10 +120,7 @@ class FeedbackFeedBuilderBase(object):
              dict: Map of examiners.
         """
         examinermap = {}
-        group = AssignmentGroup.objects.prefetch_related(
-            models.Prefetch('examiners', queryset=_get_examinerqueryset())
-        ).get(id=self.group.id)
-        for examiner in group.examiners.all():
+        for examiner in self.group.examiners.all():
             examinermap[examiner.relatedexaminer.user_id] = examiner
         return examinermap
 

@@ -1,16 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-# Django imports
 from django.db import models
 from django.db.models.functions import Lower, Concat
 
-# Devilry/cradmin imports
-from django_cradmin import crinstance
-
-from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Examiner, Candidate, AssignmentGroup
-
 
 
 class DevilryGroupCrInstanceMixin(object):

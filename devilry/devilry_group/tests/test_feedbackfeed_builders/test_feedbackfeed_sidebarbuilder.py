@@ -34,7 +34,7 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
                    comment=testcomment,
                    _quantity=100)
 
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(8):
             feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(testgroup, testuser, 'unused')
             sidebarbuilder = FeedbackFeedSidebarBuilder(
                 assignment=testassignment,
