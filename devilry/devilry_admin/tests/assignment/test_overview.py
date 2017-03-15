@@ -250,17 +250,6 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                 str(Assignment.POINTS_TO_GRADE_MAPPER_CHOICES_DICT.get(
                         Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)))
 
-    # def test_gradingconfiguration_students_see_schema(self):
-    #     assignment = mommy.make('core.Assignment',
-    #                             points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-    #     self.assertEqual(
-    #             mockresponse.selector.one(
-    #                     '#devilry_admin_assignment_overview_gradingconfiguration_information '
-    #                     'dl:nth-child(1) dd:nth-child(4)').alltext_normalized,
-    #             str(Assignment.POINTS_TO_GRADE_MAPPER_CHOICES_DICT.get(
-    #                     Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)))
-
     def test_gradingconfiguration_students_see_schema(self):
         assignment = mommy.make('core.Assignment',
                                 points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
