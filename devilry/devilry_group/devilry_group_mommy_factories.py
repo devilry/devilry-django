@@ -37,13 +37,6 @@ def _make_assignment_group_for_feedbackset(group, **kwargs):
     return group
 
 
-# def _validate_feedbackset_first_attempt_kwargs(kwargs):
-#     if kwargs.get('deadline_datetime') is None:
-#         raise ValueError('deadline_datetime can not be specified for '
-#                          'the first FeedbackSet in a group. The deadline should '
-#                          'be specifed using Assignment.first_deadline!')
-
-
 def make_first_feedbackset_in_group(group=None, **feedbackset_attributes):
     """
     Get the first feedbackset in a group, and optionally update some attributes.
@@ -122,7 +115,6 @@ def feedbackset_first_attempt_published(group=None, grading_published_datetime=N
     Returns:
         FeedbackSet: Instance of the first FeedbackSet.
     """
-    # _validate_feedbackset_first_attempt_kwargs(kwargs)
     group = _make_assignment_group_for_feedbackset(group=group, **kwargs)
     group_cache = cache_models.AssignmentGroupCachedData.objects.get(group=group)
     first_feedbackset = group_cache.first_feedbackset
@@ -151,7 +143,6 @@ def feedbackset_first_attempt_unpublished(group=None, **kwargs):
     Returns:
         FeedbackSet: Instance of the first FeedbackSet.
     """
-    # _validate_feedbackset_first_attempt_kwargs(kwargs)
     group = _make_assignment_group_for_feedbackset(group=group, **kwargs)
     group_cache = cache_models.AssignmentGroupCachedData.objects.get(group=group)
     first_feedbackset = group_cache.first_feedbackset
