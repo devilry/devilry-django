@@ -43,13 +43,6 @@ class TestFeedbackFeedHeaderMixin(cradmin_testhelpers.TestCaseMixin):
         period_name = mockresponse.selector.one('.devilry-group-feedbackfeed-header-period').text_normalized
         self.assertEqual(period_name, group.assignment.period.long_name)
 
-    @unittest.skip("Depends on FeedbackSets deadline_datetime being None. Will be removed")
-    def test_get_header_without_deadline(self):
-        # tests that current deadline does not exist in header when Assignment and FeedbackSet has no deadline set.
-        testgroup = mommy.make('core.AssignmentGroup')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
-
     def test_get_header_with_assignment_first_deadline_only(self):
         # tests that current deadline exists in header when Assignment.first_deadline is set.
         # Only Assignment.first_deadline is set (not FeedbackSet.deadline_datetime)
