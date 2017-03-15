@@ -43,6 +43,14 @@
                                 </span>
                             {% endif %}
                             <span class="devilry-group-feedbackfeed-current-deadline-datetime">
+                                {% if devilry_ui_role == 'examiner' %}
+{#                                    {% if me.group.cached_data.last_feedbackset == me.feedbackset %}#}
+                                    <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="move-deadline" deadline=last_deadline_as_string group_id=group.id %}"
+                                       class="btn btn-default devilry-group-event__deadline-expired-last-move-deadline-button">
+                                        {% trans "Move current deadline" %}
+                                    </a>
+{#                                    {% endif %}#}
+                                {% endif %}
                                 {{ last_deadline|date:"SHORT_DATETIME_FORMAT" }}
                             </span>
                         </p>

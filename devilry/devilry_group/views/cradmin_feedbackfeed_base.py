@@ -166,6 +166,7 @@ class FeedbackFeedBaseView(create.CreateView):
         context = super(FeedbackFeedBaseView, self).get_context_data(**kwargs)
         assignment = self.__get_assignment()
         context['devilry_ui_role'] = self.get_devilryrole()
+        context['group'] = self.request.cradmin_role
         context['subject'] = assignment.period.subject
         context['period'] = assignment.period
         context['assignment'] = assignment
