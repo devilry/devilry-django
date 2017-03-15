@@ -1066,16 +1066,17 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
                 'group_id': testgroup.id
             }
         )
-        earliest_date = mockresponse.selector.one('#id_new_deadline').get('value')
-        converted_datetime = datetime.strptime(earliest_date, '%Y-%m-%d %H:%M:%S')
+        earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0] \
+            .get('django-cradmin-setfieldvalue')
+        converted_datetime = datetime.strptime(earliest_date, '%Y-%m-%d %H:%M')
         self.assertTrue(converted_datetime > timezone.now())
-        self.assertTrue(converted_datetime < timezone.now() + timezone.timedelta(days=4))
+        self.assertTrue(converted_datetime < timezone.now() + timezone.timedelta(days=8))
 
     def test_get_earliest_possible_deadline_last_deadline_in_future(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         last_feedbackset_last_deadline = group_models.FeedbackSet.clean_deadline(
-            timezone.now() + timezone.timedelta(days=30))
+            timezone.now() + timezone.timedelta(days=30)).replace(second=0)
         testfeedbackset = group_mommy.feedbackset_first_attempt_published(
             group=testgroup,
             deadline_datetime=last_feedbackset_last_deadline)
@@ -1092,16 +1093,22 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
                 'group_id': testgroup.id
             }
         )
-        earliest_date = mockresponse.selector.one('#id_new_deadline').get('value')
-        converted_datetime = datetime.strptime(earliest_date, '%Y-%m-%d %H:%M:%S')
-        self.assertEquals(testfeedbackset.deadline_datetime + timezone.timedelta(days=3), converted_datetime)
+        earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0] \
+            .get('django-cradmin-setfieldvalue')
+        converted_datetime = datetime.strptime(earliest_date, '%Y-%m-%d %H:%M')
+        self.assertEquals(testfeedbackset.deadline_datetime + timezone.timedelta(days=7), converted_datetime)
+
+        # earliest_date = mockresponse.selector.one('#id_new_deadline').get('value')
+        # converted_datetime = datetime.strptime(earliest_date, '%Y-%m-%d %H:%M:%S')
+        # self.assertEquals(testfeedbackset.deadline_datetime + timezone.timedelta(days=3), converted_datetime)
 
     def test_get_earliest_possible_deadline_uses_multiple_feedbacksets(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         now = timezone.now()
         group_mommy.feedbackset_first_attempt_published(group=testgroup)
-        last_feedbackset_last_deadline = group_models.FeedbackSet.clean_deadline(now + timezone.timedelta(days=30))
+        last_feedbackset_last_deadline = group_models.FeedbackSet.clean_deadline(now + timezone.timedelta(days=30))\
+            .replace(second=0)
         testfeedbackset_last = group_mommy.feedbackset_new_attempt_published(
             group=testgroup,
             deadline_datetime=last_feedbackset_last_deadline)
@@ -1118,9 +1125,10 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
                 'group_id': testgroup.id
             }
         )
-        earliest_date = mockresponse.selector.one('#id_new_deadline').get('value')
-        converted_datetime = datetime.strptime(earliest_date, '%Y-%m-%d %H:%M:%S')
-        self.assertEquals(testfeedbackset_last.deadline_datetime + timezone.timedelta(days=3), converted_datetime)
+        earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0] \
+            .get('django-cradmin-setfieldvalue')
+        converted_datetime = datetime.strptime(earliest_date, '%Y-%m-%d %H:%M')
+        self.assertEquals(testfeedbackset_last.deadline_datetime + timezone.timedelta(days=7), converted_datetime)
 
 
 class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
@@ -1245,14 +1253,14 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
 
         # The final deadline for the first feedbackset
         first_feedbackset_last_deadline = group_models.FeedbackSet.clean_deadline(
-            timezone.now() + timezone.timedelta(days=10))
+            timezone.now() + timezone.timedelta(days=10)).replace(second=0)
         testfeedbackset1 = group_mommy.feedbackset_first_attempt_published(
             group=testgroup,
             deadline_datetime=first_feedbackset_last_deadline)
 
         # The current final deadline for the last feedbackset
         last_feedbackset_last_deadline = group_models.FeedbackSet.clean_deadline(
-            timezone.now() + timezone.timedelta(days=30))
+            timezone.now() + timezone.timedelta(days=30)).replace(second=0)
         testfeedbackset2 = group_mommy.feedbackset_new_attempt_published(
             group=testgroup,
             deadline_datetime=last_feedbackset_last_deadline)
@@ -1270,6 +1278,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
                 'group_id': testgroup.id
             }
         )
-        earliest_date = mockresponse.selector.one('#id_new_deadline').get('value')
-        converted_datetime = datetime.strptime(earliest_date, '%Y-%m-%d %H:%M:%S')
-        self.assertEquals(testfeedbackset1.deadline_datetime + timezone.timedelta(days=3), converted_datetime)
+        earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0]\
+            .get('django-cradmin-setfieldvalue')
+        converted_datetime = datetime.strptime(earliest_date, '%Y-%m-%d %H:%M')
+        self.assertEquals(testfeedbackset1.deadline_datetime + timezone.timedelta(days=7), converted_datetime)

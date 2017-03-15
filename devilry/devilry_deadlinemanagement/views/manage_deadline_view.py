@@ -7,9 +7,10 @@ from django import http
 from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import redirect
+from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy, pgettext_lazy
-from django_cradmin.crispylayouts import PrimarySubmitBlock
+from django_cradmin.crispylayouts import PrimarySubmitBlock, PrimarySubmit
 from django_cradmin.viewhelpers import formbase
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
@@ -31,43 +32,20 @@ class SelectedItemsForm(forms.Form):
 
 
 class ManageDeadlineForm(SelectedItemsForm):
-    initial_comment_text = 'Deadline changed'
-
     comment_text = forms.CharField(
-        widget=devilry_acemarkdown.Large,
-        help_text='Add a suitable comment or leave the default',
-        initial=ugettext_lazy(initial_comment_text)
+        widget=devilry_acemarkdown.Small,
+        help_text=ugettext_lazy('Add a suitable comment describing why the the deadline was changed.')
     )
 
     new_deadline = forms.DateTimeField()
 
     def __init__(self, *args, **kwargs):
-        self.previous_deadline = kwargs.pop('previous_deadline')
-        self.current_deadline = kwargs.pop('current_deadline')
         super(ManageDeadlineForm, self).__init__(*args, **kwargs)
-        suggested_deadline = self.get_minimum_deadline()
         self.fields['new_deadline'].widget = DateTimePickerWidget(
-            minimum_datetime=suggested_deadline,
+            minimum_datetime=timezone.now().replace(second=0, microsecond=0),
         )
-        self.fields['new_deadline'].initial = suggested_deadline
-        self.fields['new_deadline'].help_text = ugettext_lazy('Keep the suggested deadline, or select a different one.')
-
-    def __replace_with_current_deadline_time(self, datetime):
-        return datetime.replace(
-            hour=self.current_deadline.hour,
-            minute=self.current_deadline.minute,
-            second=self.current_deadline.second,
-            microsecond=self.current_deadline.microsecond
-        )
-
-    def get_minimum_deadline(self):
-        now = timezone.now()
-        if self.previous_deadline < now:
-            start = now
-        else:
-            start = self.previous_deadline
-        minimum_deadline = start + timezone.timedelta(days=3)
-        return self.__replace_with_current_deadline_time(minimum_deadline)
+        self.fields['new_deadline'].help_text = ugettext_lazy('The new deadline to set. Pick a date and time from the '
+                                                              'calendar, or select one of the suggested deadlines.')
 
     def clean(self):
         super(ManageDeadlineForm, self).clean()
@@ -89,6 +67,7 @@ class ManageDeadlineNewAttemptForm(ManageDeadlineForm):
 class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
     form_class = ManageDeadlineForm
     template_name = 'devilry_deadlinemanagement/manage-deadline.django.html'
+    suggested_deadlines_template = 'devilry_deadlinemanagement/suggested-deadlines.django.html'
 
     #: Posted data from previous view as it will appear in request.POST.
     post_type_received_data = 'post_type_received_data'
@@ -124,10 +103,6 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
     def get_pageheading(self):
         return pgettext_lazy('{} manage_deadline'.format(self.request.cradmin_app.get_devilryrole()),
                              'Manage deadline {}'.format(self.deadline))
-
-    def get_page_subheading(self):
-        return pgettext_lazy('{} manage_deadline'.format(self.request.cradmin_app.get_devilryrole()),
-                             'Write a comment that will appear for all students affected.')
 
     def get_form_class(self):
         if self.post_new_attempt:
@@ -182,17 +157,13 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
                 .filter(group_id__in=group_id_list) \
                 .order_by('-deadline_datetime') \
                 .first()
-        if not feedbackset:
-            return timezone.now()
-        return feedbackset.deadline_datetime
+        return feedbackset
 
     def get_instantiated_form(self):
         form_class = self.get_form_class()
         return form_class(
             accessible_groups_queryset=self.request.cradmin_app.get_accessible_group_queryset(),
-            initial={'selected_items': self.get_initially_selected_items()},
-            current_deadline=self.deadline,
-            previous_deadline=self.get_latest_previous_deadline()
+            initial={'selected_items': self.get_initially_selected_items()}
         )
 
     def get_form(self, form_class=None):
@@ -214,25 +185,51 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
     def get_form_kwargs(self):
         kwargs = super(ManageDeadlineView, self).get_form_kwargs()
         kwargs['accessible_groups_queryset'] = self.request.cradmin_app.get_accessible_group_queryset()
-        kwargs['current_deadline'] = self.deadline
-        kwargs['previous_deadline'] = self.get_latest_previous_deadline()
         return kwargs
 
     def get_previous_view_url(self):
         return self.request.POST.get('previous_view_url', '/')
 
+    def __get_suggested_deadlines(self):
+        suggested_deadlines = []
+        previous_feedbackset = self.get_latest_previous_deadline()
+        if previous_feedbackset:
+            previous_deadline = previous_feedbackset.deadline_datetime
+            if previous_deadline > timezone.now():
+                first_suggested_deadline = previous_deadline + timezone.timedelta(days=7)
+            else:
+                first_suggested_deadline = datetimeutils.datetime_with_same_day_of_week_and_time(
+                    weekdayandtimesource_datetime=previous_deadline,
+                    target_datetime=timezone.now())
+            suggested_deadlines.append(first_suggested_deadline)
+            for days_forward in range(7, (7 * 4), 7):
+                suggested_deadline = first_suggested_deadline + timezone.timedelta(days=days_forward)
+                suggested_deadlines.append(suggested_deadline)
+        return suggested_deadlines
+
+    def __render_suggested_deadlines(self):
+        return render_to_string(self.suggested_deadlines_template,
+                                {'suggested_deadlines': self.__get_suggested_deadlines()})
+
     def get_field_layout(self):
         return [
             layout.Div(
-                'comment_text',
-                'new_deadline',
-                'selected_items',
-                css_class='cradmin-globalfields')
+                layout.Field('comment_text', placeholder=ugettext_lazy('test placeholder')),
+                layout.Div(
+                    layout.Div(
+                        'new_deadline',
+                        'selected_items',
+                        css_class='col-sm-6'),
+                    layout.HTML(self.__render_suggested_deadlines()),
+                    css_class='row'
+                ),
+                css_class='cradmin-globalfields'
+            )
         ]
 
     def get_buttons(self):
         return [
-            PrimarySubmitBlock('submit', self.get_submit_button_text())
+            PrimarySubmit('submit', self.get_submit_button_text())
         ]
 
     def get_submit_button_text(self):
