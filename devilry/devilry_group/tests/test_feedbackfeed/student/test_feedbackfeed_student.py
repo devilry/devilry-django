@@ -384,17 +384,6 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
-    # def test_get_form_heading_text(self):
-    #     assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-    #     testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
-    #     candidate = mommy.make('core.Candidate',
-    #                            assignment_group=testgroup,
-    #                            relatedstudent=mommy.make('core.RelatedStudent'))
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=candidate.assignment_group,
-    #                                                       requestuser=candidate.relatedstudent.user)
-    #     self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
-    #     self.assertEquals(1, group_models.FeedbackSet.objects.count())
-
     def test_post_feedbackset_comment_with_text(self):
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group,

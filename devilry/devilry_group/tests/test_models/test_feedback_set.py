@@ -1,20 +1,14 @@
-import json
 import unittest
-from datetime import datetime
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.db.models.functions import Lower, Concat
 from django.test import TestCase
 from django.utils import timezone
 from model_mommy import mommy
-from django.db import models
 
-from devilry.apps.core.models import AssignmentGroup
-from devilry.apps.core.models import Examiner
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
-from devilry.devilry_group.models import FeedbackSet
 
 
 class TestFeedbackSetModel(TestCase):
@@ -41,11 +35,6 @@ class TestFeedbackSetModel(TestCase):
     def test_feedbackset_created_datetime(self):
         feedbackset = group_mommy.make_first_feedbackset_in_group()
         self.assertIsNotNone(feedbackset.created_datetime)
-
-    @unittest.skip('Will be removed after deadline_datetime migration.')
-    def test_feedbackset_deadline_datetime_default_none(self):
-        feedbackset = group_mommy.make_first_feedbackset_in_group()
-        self.assertIsNone(feedbackset.deadline_datetime)
 
     def test_feedbackset_grading_published_datetime_default_none(self):
         feedbackset = group_mommy.make_first_feedbackset_in_group()
@@ -82,13 +71,6 @@ class TestFeedbackSetModel(TestCase):
                                       feedbackset_type=group_models.FeedbackSet.FEEDBACKSET_TYPE_NEW_ATTEMPT)
         self.assertEquals(test_feedbackset.current_deadline(), test_feedbackset.deadline_datetime)
         self.assertNotEquals(test_feedbackset.current_deadline(), test_assignment.first_deadline)
-
-    @unittest.skip("Depends on FeedbackSets deadline_datetime being None. Will be removed")
-    def test_feedbackset_current_deadline_is_none(self):
-        test_assignment = mommy.make('core.Assignment')
-        test_feedbackset = group_mommy.make_first_feedbackset_in_group(
-            group__parentnode=test_assignment)
-        self.assertIsNone(test_feedbackset.current_deadline())
 
     def test_feedback_set_publish(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -133,15 +115,6 @@ class TestFeedbackSetModel(TestCase):
         self.assertEquals(groupcomments[0].text, 'comment1')
         self.assertEquals(groupcomments[1].text, 'comment2')
         self.assertEquals(groupcomments[2].text, 'comment3')
-
-    @unittest.skip("Depends on FeedbackSets deadline_datetime being None. Will be removed")
-    def test_feedbackset_publish_current_deadline_is_none(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL)
-        grading_points = 10
-        test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
-        result, msg = test_feedbackset.publish(published_by=testuser, grading_points=grading_points)
-        self.assertFalse(result)
-        self.assertEquals(msg, 'Cannot publish feedback without a deadline.')
 
     def test_feedbackset_ignored_without_reason(self):
         test_feedbackset = group_mommy.make_first_feedbackset_in_group(ignored=True)
@@ -201,13 +174,6 @@ class TestFeedbackSetModel(TestCase):
         with self.assertRaisesMessage(ValidationError,
                                       'An assignment can not be published without providing "points".'):
             test_feedbackset.publish(published_by=testuser, grading_points=None)
-
-    # def test_feedbackset_clean_is_last_in_group_false(self):
-    #     feedbackset = mommy.prepare('devilry_group.FeedbackSet',
-    #                                 is_last_in_group=False)
-    #     with self.assertRaisesMessage(ValidationError,
-    #                                   'is_last_in_group can not be false.'):
-    #         feedbackset.clean()
 
     def test_clean_published_by_is_none(self):
         testfeedbackset = mommy.prepare('devilry_group.FeedbackSet',
