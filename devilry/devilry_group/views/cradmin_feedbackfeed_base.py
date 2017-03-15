@@ -7,6 +7,7 @@ from xml.sax.saxutils import quoteattr
 
 from crispy_forms import layout
 from django import forms
+from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
@@ -14,6 +15,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.viewhelpers import create
 
+from devilry.apps.core.models import Assignment
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
@@ -113,7 +115,7 @@ class FeedbackFeedBaseView(create.CreateView):
         kwargs['group'] = group
         return kwargs
 
-    def __build_timeline(self, feedbackset_queryset):
+    def __build_timeline(self, assignment, feedbackset_queryset):
         """
         Building the timeline which includes all the events that occur in the feedbackfeed in
         the order that they occur.
@@ -123,12 +125,13 @@ class FeedbackFeedBaseView(create.CreateView):
              :obj:`devilry.devilry_group.feedbackfeed_builder.FeedbackFeedTimelineBuilder`: Built timeline.
         """
         timeline_builder = feedbackfeed_timelinebuilder.FeedbackFeedTimelineBuilder(
+                assignment=assignment,
                 feedbacksets=feedbackset_queryset,
                 group=self.request.cradmin_role)
         timeline_builder.build()
         return timeline_builder
 
-    def __build_sidebar(self, feedbackset_queryset):
+    def __build_sidebar(self, assignment, feedbackset_queryset):
         """
         Building the sidebar that includes the files for each comment, and comments for each
         FeedbackSet.
@@ -137,10 +140,19 @@ class FeedbackFeedBaseView(create.CreateView):
             :obj:`devilry.devilry_group.feedbackfeed_builder.FeedbackFeedSidebarBuilder`
         """
         sidebar_builder = feedbackfeed_sidebarbuilder.FeedbackFeedSidebarBuilder(
+            assignment=assignment,
             feedbacksets=feedbackset_queryset,
             group=self.request.cradmin_role)
         sidebar_builder.build()
         return sidebar_builder
+
+    def __get_assignment(self):
+        return Assignment.objects\
+            .prefetch_related(
+                'assignmentgroups'
+            )\
+            .filter(id=self.request.cradmin_role.assignment.id)\
+            .prefetch_point_to_grade_map().first()
 
     def get_context_data(self, **kwargs):
         """
@@ -153,17 +165,18 @@ class FeedbackFeedBaseView(create.CreateView):
              dict: The context data dictionary.
         """
         context = super(FeedbackFeedBaseView, self).get_context_data(**kwargs)
+        assignment = self.__get_assignment()
         context['devilry_ui_role'] = self.get_devilryrole()
-        context['subject'] = self.request.cradmin_role.assignment.period.subject
-        context['assignment'] = self.request.cradmin_role.assignment
-        context['period'] = self.request.cradmin_role.assignment.period
+        context['subject'] = assignment.period.subject
+        context['period'] = assignment.period
+        context['assignment'] = assignment
 
         # Build the timeline for the feedbackfeed
         builder_queryset = builder_base.get_feedbackfeed_builder_queryset(
                 self.request.cradmin_role,
                 self.request.user,
                 self.get_devilryrole())
-        built_timeline = self.__build_timeline(builder_queryset)
+        built_timeline = self.__build_timeline(assignment, builder_queryset)
         last_feedbackset = built_timeline.get_last_feedbackset()
         context['last_deadline'] = built_timeline.get_last_deadline()
         context['timeline'] = built_timeline.timeline
@@ -176,12 +189,12 @@ class FeedbackFeedBaseView(create.CreateView):
             built_timeline,
             group=self.request.cradmin_role,
             devilryrole=self.get_devilryrole(),
-            assignment=context['assignment']
+            assignment=assignment
         )
 
         # Build the sidebar using the fetched data from timelinebuilder
         if self.get_available_commentfile_count_for_user() > 0:
-            built_sidebar = self.__build_sidebar(builder_queryset)
+            built_sidebar = self.__build_sidebar(assignment, builder_queryset)
             context['sidebarbuilder_list'] = feedbackfeed_sidebar.SidebarListBuilderList.from_built_sidebar(
                 built_sidebar,
                 group=self.request.cradmin_role,

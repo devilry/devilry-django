@@ -29,6 +29,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
                 requestuser=testuser,
                 devilryrole='unused')
         timelinebuilder = FeedbackFeedTimelineBuilder(
+                assignment=testassignment,
                 feedbacksets=feedbackset_queryset,
                 group=testgroup)
         timelinebuilder.build()
@@ -47,7 +48,10 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
                 group=testgroup,
                 requestuser=testuser,
                 devilryrole='unused')
-        timelinebuilder = FeedbackFeedTimelineBuilder(feedbacksets=feedbackset_queryset, group=testgroup)
+        timelinebuilder = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
+            feedbacksets=feedbackset_queryset,
+            group=testgroup)
         timelinebuilder.build()
         self.assertEquals(2, len(timelinebuilder.feedbacksets))
         self.assertEquals(testfeedbackset_last.deadline_datetime, timelinebuilder.get_last_deadline())
@@ -80,8 +84,10 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
                 group=testgroup,
                 requestuser=testuser,
                 devilryrole='unused')
-        timelinebuilder = FeedbackFeedTimelineBuilder(feedbacksets=feedbackset_queryset,
-                                                      group=testgroup)
+        timelinebuilder = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
+            feedbacksets=feedbackset_queryset,
+            group=testgroup)
         timelinebuilder.build()
         self.assertEquals(11, len(timelinebuilder.timeline))
         self.assertEquals(4, group_models.FeedbackSet.objects.count())
@@ -102,8 +108,10 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
                 group=testgroup,
                 requestuser=testuser,
                 devilryrole='unused')
-        timelinebuilder = FeedbackFeedTimelineBuilder(feedbacksets=feedbackset_queryset,
-                                                      group=testgroup)
+        timelinebuilder = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
+            feedbacksets=feedbackset_queryset,
+            group=testgroup)
         timelinebuilder.build()
         self.assertEquals(testfeedbackset_last, timelinebuilder.get_last_feedbackset())
         self.assertEquals(2, group_models.FeedbackSet.objects.count())
@@ -124,8 +132,10 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
                 group=testgroup,
                 requestuser=testuser,
                 devilryrole='unused')
-        timelinebuilder = FeedbackFeedTimelineBuilder(feedbacksets=testfeedbackset_queryset,
-                                                      group=testgroup)
+        timelinebuilder = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
+            feedbacksets=testfeedbackset_queryset,
+            group=testgroup)
         timelinebuilder.build()
         self.assertEquals(testfeedbackset_last.deadline_datetime, timelinebuilder.get_last_deadline())
         self.assertEquals(2, group_models.FeedbackSet.objects.count())
@@ -146,6 +156,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
                 requestuser=testcandidate.relatedstudent.user,
                 devilryrole='student')
         timelinebuilder = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
             feedbacksets=test_queryset,
             group=testgroup)
         timelinebuilder.build()
@@ -169,6 +180,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
                 requestuser=testcandidate.relatedstudent.user,
                 devilryrole='student')
         timelinebuilder = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
             feedbacksets=test_queryset,
             group=testgroup)
         timelinebuilder.build()
@@ -192,6 +204,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
                 requestuser=testcandidate.relatedstudent.user,
                 devilryrole='student')
         timelinebuilder = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
             feedbacksets=test_queryset,
             group=testgroup)
         timelinebuilder.build()
@@ -215,6 +228,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
                 requestuser=testexaminer.relatedexaminer.user,
                 devilryrole='examiner')
         timelinebuilder = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
             feedbacksets=test_queryset,
             group=testgroup)
         timelinebuilder.build()
@@ -238,6 +252,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
                 requestuser=testexaminer.relatedexaminer.user,
                 devilryrole='examiner')
         timelinebuilder = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
             feedbacksets=test_queryset,
             group=testgroup)
         timelinebuilder.build()
@@ -294,8 +309,10 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
                 group=testgroup,
                 requestuser=testexaminer.relatedexaminer.user,
                 devilryrole='unused')
-        timelinebuilder_examiner = FeedbackFeedTimelineBuilder(feedbacksets=testexaminer_queryset,
-                                                               group=testgroup)
+        timelinebuilder_examiner = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
+            feedbacksets=testexaminer_queryset,
+            group=testgroup)
         timelinebuilder_examiner.build()
         self.assertEquals(6, len(timelinebuilder_examiner.feedbacksets[0].groupcomment_set.all()))
         self.assertEquals(7, len(timelinebuilder_examiner.timeline))
@@ -305,8 +322,10 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
                 group=testgroup,
                 requestuser=testexaminer2.relatedexaminer.user,
                 devilryrole='examiner')
-        timelinebuilder_examiner2 = FeedbackFeedTimelineBuilder(feedbacksets=testexaminer2_queryset,
-                                                                group=testgroup)
+        timelinebuilder_examiner2 = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
+            feedbacksets=testexaminer2_queryset,
+            group=testgroup)
         timelinebuilder_examiner2.build()
         self.assertEquals(5, len(timelinebuilder_examiner2.feedbacksets[0].groupcomment_set.all()))
         self.assertEquals(6, len(timelinebuilder_examiner2.timeline))
@@ -317,6 +336,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
                 requestuser=testcandidate.relatedstudent.user,
                 devilryrole='student')
         timelinebuilder_student = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
             feedbacksets=testcandidate_queryset,
             group=testgroup)
         timelinebuilder_student.build()
@@ -343,6 +363,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
                 requestuser=relatedstudent.user,
                 devilryrole='student')
         timelinebuilder = FeedbackFeedTimelineBuilder(
+            assignment=testassignment1,
             feedbacksets=feedbackset_queryset,
             group=testgroup1)
         self.assertEquals(1, len(timelinebuilder.feedbacksets))
@@ -412,6 +433,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
                 requestuser=testuser,
                 devilryrole='student')
         built_timeline = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
             feedbacksets=feedbackset_queryset,
             group=testgroup)
 
@@ -447,6 +469,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
             requestuser=testuser,
             devilryrole='unused')
         timelinebuilder = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
             feedbacksets=feedbackset_queryset,
             group=testgroup)
         timelinebuilder.build()
@@ -471,6 +494,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase):
                 requestuser=candidate.relatedstudent.user,
                 devilryrole='student')
             timelinebuilder = FeedbackFeedTimelineBuilder(
+                assignment=testassignment1,
                 feedbacksets=feedbackset_queryset,
                 group=testgroup1)
             timelinebuilder.get_as_list()

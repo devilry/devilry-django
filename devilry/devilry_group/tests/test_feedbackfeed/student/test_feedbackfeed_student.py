@@ -536,6 +536,177 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertNotIn('devilry-group-event__grade-last-new-attempt-button', mockresponse.response.content)
 
 
+class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = feedbackfeed_student.StudentFeedbackFeedView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_get_event_grading_passed_failed_result_passed(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        grade_result = mockresponse.selector.one('.devilry-core-grade').alltext_normalized
+        self.assertEquals(grade_result, 'passed')
+
+    def test_get_event_grading_passed_failed_result_failed(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=0)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        grade_result = mockresponse.selector.one('.devilry-core-grade').alltext_normalized
+        self.assertEquals(grade_result, 'failed')
+
+    def test_get_event_grading_points_result_passed(self):
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            students_can_see_points=True,
+            points_to_grade_mapper=core_models.Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
+            grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
+            passing_grade_min_points=50,
+            max_points=100)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=75)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        grade_result = mockresponse.selector.one('.devilry-core-grade').alltext_normalized
+        self.assertEquals(grade_result, '75/100 (passed)')
+
+    def test_get_event_grading_points_result_failed(self):
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            students_can_see_points=True,
+            points_to_grade_mapper=core_models.Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
+            grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
+            passing_grade_min_points=50,
+            max_points=100)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=25)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        grade_result = mockresponse.selector.one('.devilry-core-grade').alltext_normalized
+        self.assertEquals(grade_result, '25/100 (failed)')
+
+    def test_get_event_grading_grade_mapper_failed(self):
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            points_to_grade_mapper=core_models.Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
+            passing_grade_min_points=10,
+            max_points=35)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=5)
+        point_to_grade_map = mommy.make('core.PointToGradeMap', assignment=testassignment)
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=5,
+                   maximum_points=9, grade='F')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=10,
+                   maximum_points=14, grade='E')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=15,
+                   maximum_points=19, grade='D')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=20,
+                   maximum_points=24, grade='C')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=25,
+                   maximum_points=29, grade='B')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=30,
+                   maximum_points=35, grade='A')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        grade_result = mockresponse.selector.one('.devilry-core-grade').alltext_normalized
+        self.assertEquals(grade_result, 'F (failed)')
+
+    def test_get_event_grading_grade_mapper_passed(self):
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            points_to_grade_mapper=core_models.Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
+            passing_grade_min_points=10,
+            max_points=35)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=10)
+        point_to_grade_map = mommy.make('core.PointToGradeMap', assignment=testassignment)
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=5,
+                   maximum_points=9, grade='F')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=10,
+                   maximum_points=14, grade='E')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=15,
+                   maximum_points=19, grade='D')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=20,
+                   maximum_points=24, grade='C')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=25,
+                   maximum_points=29, grade='B')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=30,
+                   maximum_points=35, grade='A')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        grade_result = mockresponse.selector.one('.devilry-core-grade').alltext_normalized
+        self.assertEquals(grade_result, 'E (passed)')
+
+    def test_get_event_grading_grade_mapper_failed_can_see_points(self):
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            points_to_grade_mapper=core_models.Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
+            students_can_see_points=True,
+            passing_grade_min_points=10,
+            max_points=35)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=5)
+        point_to_grade_map = mommy.make('core.PointToGradeMap', assignment=testassignment)
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=5,
+                   maximum_points=9, grade='F')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=10,
+                   maximum_points=14, grade='E')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=15,
+                   maximum_points=19, grade='D')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=20,
+                   maximum_points=24, grade='C')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=25,
+                   maximum_points=29, grade='B')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=30,
+                   maximum_points=35, grade='A')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        grade_result = mockresponse.selector.one('.devilry-core-grade').alltext_normalized
+        self.assertEquals(grade_result, 'F (failed - 5/35)')
+
+    def test_get_event_grading_grade_mapper_passed_can_see_points(self):
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            points_to_grade_mapper=core_models.Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
+            students_can_see_points=True,
+            passing_grade_min_points=10,
+            max_points=35)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=10)
+        point_to_grade_map = mommy.make('core.PointToGradeMap', assignment=testassignment)
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=5,
+                   maximum_points=9, grade='F')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=10,
+                   maximum_points=14, grade='E')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=15,
+                   maximum_points=19, grade='D')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=20,
+                   maximum_points=24, grade='C')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=25,
+                   maximum_points=29, grade='B')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=30,
+                   maximum_points=35, grade='A')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        grade_result = mockresponse.selector.one('.devilry-core-grade').alltext_normalized
+        self.assertEquals(grade_result, 'E (passed - 10/35)')
+
+
+
+
 class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = feedbackfeed_student.StudentFeedbackFeedView
 
@@ -915,7 +1086,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
                    _quantity=20)
         mock_cradmininstance = mock.MagicMock()
         mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'student'
-        with self.assertNumQueries(11):
+        with self.assertNumQueries(16):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=candidate.relatedstudent.user,
                                                cradmin_instance=mock_cradmininstance)
@@ -950,7 +1121,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
                    filename='test2.py',
                    comment=comment2,
                    _quantity=20)
-        with self.assertNumQueries(15):
+        with self.assertNumQueries(20):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=candidate.relatedstudent.user)
         self.assertEquals(1, group_models.FeedbackSet.objects.count())

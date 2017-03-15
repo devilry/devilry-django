@@ -352,18 +352,6 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
         self.assertEqual(2, mockresponse.selector.count('.devilry-group-feedbackfeed-event-message__deadline-created'))
 
-    # def test_get_event_two_feedbacksets_deadlines_expired(self):
-    #     # test that two deadlines expired events are rendered to view
-    #     testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-    #     group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-    #     group_mommy.feedbackset_first_attempt_published(group=group)
-    #     group_mommy.feedbackset_new_attempt_published(
-    #         group=group,
-    #         deadline_datetime=timezone.now() - timezone.timedelta(days=1))
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
-    #     expired = mockresponse.selector.list('.devilry-group-feedbackfeed-event-message-deadline-expired')
-    #     self.assertEqual(2, len(expired))
-
     def test_get_event_two_feedbacksets_deadlines_created_assignment_firstdeadline(self):
         # test that two deadline created events are rendered to view
         # using assignment first_deadline
@@ -389,15 +377,3 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
         expired = mockresponse.selector.list('.devilry-group-feedbackfeed-event-message__deadline-expired')
         self.assertEqual(2, len(expired))
         self.assertEquals(2, group_models.FeedbackSet.objects.count())
-
-    def test_post_302(self):
-        group = mommy.make('core.AssignmentGroup')
-        mockresponse = self.mock_http302_postrequest(
-            cradmin_role=group,
-            viewkwargs={'pk': group.id},
-            requestkwargs={
-                'data': {
-                    'passed': 'Passed',
-                    'text': 'asd',
-                }
-            })

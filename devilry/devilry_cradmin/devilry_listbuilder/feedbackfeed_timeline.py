@@ -29,10 +29,10 @@ class TimelineListBuilderList(listbuilder.base.List):
             listbuilder_list.append_eventdict(event_dict)
         return listbuilder_list
 
-    def __init__(self, devilryrole, group, assignment):
+    def __init__(self, assignment, devilryrole, group):
+        self.assignment = assignment
         self.devilryrole = devilryrole
         self.group = group
-        self.assignment = assignment
         super(TimelineListBuilderList, self).__init__()
 
     def append_eventdict(self, event_dict):
@@ -89,7 +89,7 @@ class TimelineListBuilderList(listbuilder.base.List):
             return DeadlineExpiredItemValue(value=event_dict['deadline_datetime'], devilry_viewrole=self.devilryrole,
                                             feedbackset=event_dict['feedbackset'], group=self.group)
         elif event_dict['type'] == 'grade':
-            return GradeItemValue(value=event_dict['feedbackset'], devilry_viewrole=self.devilryrole, group=self.group)
+            return GradeItemValue(value=event_dict['feedbackset'], assignment=self.assignment, devilry_viewrole=self.devilryrole, group=self.group)
         elif event_dict['type'] == 'deadline_moved':
             return DeadlineMovedItemValue(value=event_dict['obj'], devilry_viewrole=self.devilryrole,
                                           feedbackset=event_dict['feedbackset'], group=self.group)
@@ -281,6 +281,10 @@ class GradeItemValue(BaseEventItemValue):
     """
     valuealias = 'feedbackset'
     template_name = 'devilry_group/listbuilder_feedbackfeed/grading_item_value.django.html'
+
+    def __init__(self, *args, **kwargs):
+        self.assignment = kwargs['assignment']
+        super(GradeItemValue, self).__init__(*args, **kwargs)
 
     @property
     def group(self):

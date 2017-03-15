@@ -85,18 +85,13 @@ class FeedbackFeedBuilderBase(object):
     """
 
     """
-    def __init__(self, group, feedbacksets):
+    def __init__(self, assignment, group, feedbacksets):
         super(FeedbackFeedBuilderBase, self).__init__()
+        self.assignment = assignment
         self.group = group
-        # self.assigment = self._get_assignment()
         self.feedbacksets = list(feedbacksets)
         self._candidate_map = self._make_candidate_map()
         self._examiner_map = self._make_examiner_map()
-
-    # def _get_assignment(self):
-    #     return Assignment.objects\
-    #         .prefetch_point_to_grade_map()\
-    #         .get(id=self.group.parentnode.id)
 
     def _make_candidate_map(self):
         """

@@ -22,6 +22,7 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
         # Test that the number of queries performed is manageable
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testgroup = mommy.make('core.AssignmentGroup')
+        testassignment = testgroup.assignment
         testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
         candidate = mommy.make('core.Candidate', assignment_group=testgroup)
         mommy.make('core.Candidate', assignment_group=testgroup, _quantity=100)
@@ -35,7 +36,10 @@ class TestFeedbackfeedSidebarBuilder(TestCase):
 
         with self.assertNumQueries(9):
             feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(testgroup, testuser, 'unused')
-            sidebarbuilder = FeedbackFeedSidebarBuilder(group=testgroup, feedbacksets=feedbackset_queryset)
+            sidebarbuilder = FeedbackFeedSidebarBuilder(
+                assignment=testassignment,
+                group=testgroup,
+                feedbacksets=feedbackset_queryset)
             sidebarbuilder.build()
             sidebarbuilder.get_as_list()
         self.assertEquals(1, group_models.FeedbackSet.objects.count())

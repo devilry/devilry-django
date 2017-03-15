@@ -145,7 +145,8 @@ class FeedbackFeedTimelineBuilder(builder_base.FeedbackFeedBuilderBase):
             datetime=feedbackset.grading_published_datetime,
             event_dict={
                 "type": "grade",
-                "feedbackset": feedbackset
+                "feedbackset": feedbackset,
+                'assignment': self.assignment
             }
         )
 

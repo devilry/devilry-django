@@ -84,6 +84,7 @@ class TestFeedbackfeedTimelineListBuilderList(test.TestCase):
             devilryrole='student'
         )
         built_timeline = feedbackfeed_timelinebuilder.FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
             feedbacksets=feedbackset_queryset,
             group=testgroup
         )
