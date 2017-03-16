@@ -596,7 +596,7 @@ CREATE FUNCTION devilry__on_feedbackset_deadline_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
-    IF TG_OP = 'UPDATE' AND NEW.deadline_datetime > OLD.deadline_datetime THEN
+    IF TG_OP = 'UPDATE' AND NEW.deadline_datetime <> OLD.deadline_datetime THEN
         INSERT INTO devilry_group_feedbacksetdeadlinehistory (
             feedback_set_id,
             changed_datetime,
@@ -1634,6 +1634,112 @@ ALTER SEQUENCE core_periodapplicationkeyvalue_id_seq OWNED BY core_periodapplica
 
 
 --
+-- Name: core_periodtag; Type: TABLE; Schema: public; Owner: dbdev
+--
+
+CREATE TABLE core_periodtag (
+    id integer NOT NULL,
+    prefix character varying(30) NOT NULL,
+    tag character varying(30) NOT NULL,
+    is_hidden boolean NOT NULL,
+    created_datetime timestamp with time zone NOT NULL,
+    modified_datetime timestamp with time zone,
+    period_id integer NOT NULL
+);
+
+
+ALTER TABLE core_periodtag OWNER TO dbdev;
+
+--
+-- Name: core_periodtag_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
+--
+
+CREATE SEQUENCE core_periodtag_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE core_periodtag_id_seq OWNER TO dbdev;
+
+--
+-- Name: core_periodtag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
+--
+
+ALTER SEQUENCE core_periodtag_id_seq OWNED BY core_periodtag.id;
+
+
+--
+-- Name: core_periodtag_relatedexaminers; Type: TABLE; Schema: public; Owner: dbdev
+--
+
+CREATE TABLE core_periodtag_relatedexaminers (
+    id integer NOT NULL,
+    periodtag_id integer NOT NULL,
+    relatedexaminer_id integer NOT NULL
+);
+
+
+ALTER TABLE core_periodtag_relatedexaminers OWNER TO dbdev;
+
+--
+-- Name: core_periodtag_relatedexaminers_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
+--
+
+CREATE SEQUENCE core_periodtag_relatedexaminers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE core_periodtag_relatedexaminers_id_seq OWNER TO dbdev;
+
+--
+-- Name: core_periodtag_relatedexaminers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
+--
+
+ALTER SEQUENCE core_periodtag_relatedexaminers_id_seq OWNED BY core_periodtag_relatedexaminers.id;
+
+
+--
+-- Name: core_periodtag_relatedstudents; Type: TABLE; Schema: public; Owner: dbdev
+--
+
+CREATE TABLE core_periodtag_relatedstudents (
+    id integer NOT NULL,
+    periodtag_id integer NOT NULL,
+    relatedstudent_id integer NOT NULL
+);
+
+
+ALTER TABLE core_periodtag_relatedstudents OWNER TO dbdev;
+
+--
+-- Name: core_periodtag_relatedstudents_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
+--
+
+CREATE SEQUENCE core_periodtag_relatedstudents_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE core_periodtag_relatedstudents_id_seq OWNER TO dbdev;
+
+--
+-- Name: core_periodtag_relatedstudents_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
+--
+
+ALTER SEQUENCE core_periodtag_relatedstudents_id_seq OWNED BY core_periodtag_relatedstudents.id;
+
+
+--
 -- Name: core_pointrangetograde; Type: TABLE; Schema: public; Owner: dbdev
 --
 
@@ -1743,40 +1849,6 @@ ALTER SEQUENCE core_relatedexaminer_id_seq OWNED BY core_relatedexaminer.id;
 
 
 --
--- Name: core_relatedexaminersyncsystemtag; Type: TABLE; Schema: public; Owner: dbdev
---
-
-CREATE TABLE core_relatedexaminersyncsystemtag (
-    id integer NOT NULL,
-    tag character varying(15) NOT NULL,
-    relatedexaminer_id integer NOT NULL
-);
-
-
-ALTER TABLE core_relatedexaminersyncsystemtag OWNER TO dbdev;
-
---
--- Name: core_relatedexaminersyncsystemtag_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
---
-
-CREATE SEQUENCE core_relatedexaminersyncsystemtag_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE core_relatedexaminersyncsystemtag_id_seq OWNER TO dbdev;
-
---
--- Name: core_relatedexaminersyncsystemtag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
---
-
-ALTER SEQUENCE core_relatedexaminersyncsystemtag_id_seq OWNED BY core_relatedexaminersyncsystemtag.id;
-
-
---
 -- Name: core_relatedstudent; Type: TABLE; Schema: public; Owner: dbdev
 --
 
@@ -1849,40 +1921,6 @@ ALTER TABLE core_relatedstudentkeyvalue_id_seq OWNER TO dbdev;
 --
 
 ALTER SEQUENCE core_relatedstudentkeyvalue_id_seq OWNED BY core_relatedstudentkeyvalue.id;
-
-
---
--- Name: core_relatedstudentsyncsystemtag; Type: TABLE; Schema: public; Owner: dbdev
---
-
-CREATE TABLE core_relatedstudentsyncsystemtag (
-    id integer NOT NULL,
-    tag character varying(15) NOT NULL,
-    relatedstudent_id integer NOT NULL
-);
-
-
-ALTER TABLE core_relatedstudentsyncsystemtag OWNER TO dbdev;
-
---
--- Name: core_relatedstudentsyncsystemtag_id_seq; Type: SEQUENCE; Schema: public; Owner: dbdev
---
-
-CREATE SEQUENCE core_relatedstudentsyncsystemtag_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE core_relatedstudentsyncsystemtag_id_seq OWNER TO dbdev;
-
---
--- Name: core_relatedstudentsyncsystemtag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dbdev
---
-
-ALTER SEQUENCE core_relatedstudentsyncsystemtag_id_seq OWNED BY core_relatedstudentsyncsystemtag.id;
 
 
 --
@@ -3459,6 +3497,27 @@ ALTER TABLE ONLY core_periodapplicationkeyvalue ALTER COLUMN id SET DEFAULT next
 -- Name: id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
+ALTER TABLE ONLY core_periodtag ALTER COLUMN id SET DEFAULT nextval('core_periodtag_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY core_periodtag_relatedexaminers ALTER COLUMN id SET DEFAULT nextval('core_periodtag_relatedexaminers_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY core_periodtag_relatedstudents ALTER COLUMN id SET DEFAULT nextval('core_periodtag_relatedstudents_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: dbdev
+--
+
 ALTER TABLE ONLY core_pointrangetograde ALTER COLUMN id SET DEFAULT nextval('core_pointrangetograde_id_seq'::regclass);
 
 
@@ -3480,13 +3539,6 @@ ALTER TABLE ONLY core_relatedexaminer ALTER COLUMN id SET DEFAULT nextval('core_
 -- Name: id; Type: DEFAULT; Schema: public; Owner: dbdev
 --
 
-ALTER TABLE ONLY core_relatedexaminersyncsystemtag ALTER COLUMN id SET DEFAULT nextval('core_relatedexaminersyncsystemtag_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: dbdev
---
-
 ALTER TABLE ONLY core_relatedstudent ALTER COLUMN id SET DEFAULT nextval('core_relatedstudent_id_seq'::regclass);
 
 
@@ -3495,13 +3547,6 @@ ALTER TABLE ONLY core_relatedstudent ALTER COLUMN id SET DEFAULT nextval('core_r
 --
 
 ALTER TABLE ONLY core_relatedstudentkeyvalue ALTER COLUMN id SET DEFAULT nextval('core_relatedstudentkeyvalue_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: dbdev
---
-
-ALTER TABLE ONLY core_relatedstudentsyncsystemtag ALTER COLUMN id SET DEFAULT nextval('core_relatedstudentsyncsystemtag_id_seq'::regclass);
 
 
 --
@@ -3833,12 +3878,6 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 40	Can add related student	14	add_relatedstudent
 41	Can change related student	14	change_relatedstudent
 42	Can delete related student	14	delete_relatedstudent
-43	Can add related examiner sync system tag	15	add_relatedexaminersyncsystemtag
-44	Can change related examiner sync system tag	15	change_relatedexaminersyncsystemtag
-45	Can delete related examiner sync system tag	15	delete_relatedexaminersyncsystemtag
-46	Can add related student sync system tag	16	add_relatedstudentsyncsystemtag
-47	Can change related student sync system tag	16	change_relatedstudentsyncsystemtag
-48	Can delete related student sync system tag	16	delete_relatedstudentsyncsystemtag
 49	Can add related student key value	17	add_relatedstudentkeyvalue
 50	Can change related student key value	17	change_relatedstudentkeyvalue
 51	Can delete related student key value	17	delete_relatedstudentkeyvalue
@@ -3974,6 +4013,9 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 181	Can add feedback set deadline history	61	add_feedbacksetdeadlinehistory
 182	Can change feedback set deadline history	61	change_feedbacksetdeadlinehistory
 183	Can delete feedback set deadline history	61	delete_feedbacksetdeadlinehistory
+184	Can add period tag	62	add_periodtag
+185	Can change period tag	62	change_periodtag
+186	Can delete period tag	62	delete_periodtag
 \.
 
 
@@ -3981,7 +4023,7 @@ COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
 -- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('auth_permission_id_seq', 183, true);
+SELECT pg_catalog.setval('auth_permission_id_seq', 186, true);
 
 
 --
@@ -4313,6 +4355,51 @@ SELECT pg_catalog.setval('core_periodapplicationkeyvalue_id_seq', 1, false);
 
 
 --
+-- Data for Name: core_periodtag; Type: TABLE DATA; Schema: public; Owner: dbdev
+--
+
+COPY core_periodtag (id, prefix, tag, is_hidden, created_datetime, modified_datetime, period_id) FROM stdin;
+\.
+
+
+--
+-- Name: core_periodtag_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
+--
+
+SELECT pg_catalog.setval('core_periodtag_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_periodtag_relatedexaminers; Type: TABLE DATA; Schema: public; Owner: dbdev
+--
+
+COPY core_periodtag_relatedexaminers (id, periodtag_id, relatedexaminer_id) FROM stdin;
+\.
+
+
+--
+-- Name: core_periodtag_relatedexaminers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
+--
+
+SELECT pg_catalog.setval('core_periodtag_relatedexaminers_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_periodtag_relatedstudents; Type: TABLE DATA; Schema: public; Owner: dbdev
+--
+
+COPY core_periodtag_relatedstudents (id, periodtag_id, relatedstudent_id) FROM stdin;
+\.
+
+
+--
+-- Name: core_periodtag_relatedstudents_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
+--
+
+SELECT pg_catalog.setval('core_periodtag_relatedstudents_id_seq', 1, false);
+
+
+--
 -- Data for Name: core_pointrangetograde; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
@@ -4368,21 +4455,6 @@ SELECT pg_catalog.setval('core_relatedexaminer_id_seq', 3, true);
 
 
 --
--- Data for Name: core_relatedexaminersyncsystemtag; Type: TABLE DATA; Schema: public; Owner: dbdev
---
-
-COPY core_relatedexaminersyncsystemtag (id, tag, relatedexaminer_id) FROM stdin;
-\.
-
-
---
--- Name: core_relatedexaminersyncsystemtag_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
---
-
-SELECT pg_catalog.setval('core_relatedexaminersyncsystemtag_id_seq', 1, false);
-
-
---
 -- Data for Name: core_relatedstudent; Type: TABLE DATA; Schema: public; Owner: dbdev
 --
 
@@ -4424,29 +4496,6 @@ COPY core_relatedstudentkeyvalue (id, application, key, value, student_can_read,
 --
 
 SELECT pg_catalog.setval('core_relatedstudentkeyvalue_id_seq', 1, false);
-
-
---
--- Data for Name: core_relatedstudentsyncsystemtag; Type: TABLE DATA; Schema: public; Owner: dbdev
---
-
-COPY core_relatedstudentsyncsystemtag (id, tag, relatedstudent_id) FROM stdin;
-1	group1	1
-2	duck	1
-3	group2	2
-4	duck	2
-5	god	6
-6	group1	6
-7	group2	3
-8	duck	3
-\.
-
-
---
--- Name: core_relatedstudentsyncsystemtag_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
---
-
-SELECT pg_catalog.setval('core_relatedstudentsyncsystemtag_id_seq', 8, true);
 
 
 --
@@ -4777,28 +4826,28 @@ SELECT pg_catalog.setval('devilry_compressionutil_compressedarchivemeta_id_seq',
 --
 
 COPY devilry_dbcache_assignmentgroupcacheddata (id, new_attempt_count, public_total_comment_count, public_student_comment_count, public_examiner_comment_count, public_admin_comment_count, public_student_file_upload_count, first_feedbackset_id, group_id, last_feedbackset_id, last_published_feedbackset_id, last_public_comment_by_examiner_datetime, last_public_comment_by_student_datetime, candidate_count, examiner_count) FROM stdin;
-1	0	0	0	0	0	0	3	3	3	\N	\N	\N	1	1
-2	0	0	0	0	0	0	4	4	4	\N	\N	\N	1	1
-3	0	0	0	0	0	0	5	5	5	\N	\N	\N	1	1
-4	0	0	0	0	0	0	6	6	6	\N	\N	\N	1	1
-5	0	0	0	0	0	0	7	7	7	\N	\N	\N	1	1
-6	0	0	0	0	0	0	8	8	8	\N	\N	\N	1	1
-7	0	2	1	1	0	0	9	9	9	9	2016-02-08 11:27:11.75299+01	2016-02-08 11:25:23.021072+01	1	1
-8	0	0	0	0	0	0	10	10	10	\N	\N	\N	1	0
-9	0	0	0	0	0	0	11	11	11	\N	\N	\N	1	0
-10	0	0	0	0	0	0	12	12	12	12	\N	\N	1	1
-11	0	0	0	0	0	0	13	14	13	\N	\N	\N	1	1
-12	0	0	0	0	0	0	14	15	14	\N	\N	\N	1	1
-13	0	0	0	0	0	0	15	16	15	\N	\N	\N	1	1
-14	0	0	0	0	0	0	16	17	16	\N	\N	\N	1	1
-15	0	0	0	0	0	0	17	18	17	\N	\N	\N	1	1
-16	0	0	0	0	0	0	18	19	18	\N	\N	\N	1	1
-17	0	0	0	0	0	0	19	20	19	\N	\N	\N	1	1
-18	0	0	0	0	0	0	20	21	20	\N	\N	\N	1	1
-19	0	0	0	0	0	0	21	22	21	\N	\N	\N	1	1
-20	0	0	0	0	0	0	22	23	22	\N	\N	\N	1	1
-21	0	0	0	0	0	0	23	24	23	\N	\N	\N	1	1
-22	0	0	0	0	0	0	24	25	24	\N	\N	\N	1	0
+23	0	0	0	0	0	0	3	3	3	\N	\N	\N	1	1
+24	0	0	0	0	0	0	4	4	4	\N	\N	\N	1	1
+25	0	0	0	0	0	0	5	5	5	\N	\N	\N	1	1
+26	0	0	0	0	0	0	6	6	6	\N	\N	\N	1	1
+27	0	0	0	0	0	0	7	7	7	\N	\N	\N	1	1
+28	0	0	0	0	0	0	8	8	8	\N	\N	\N	1	1
+29	0	2	1	1	0	0	9	9	9	9	2016-02-08 11:27:11.75299+01	2016-02-08 11:25:23.021072+01	1	1
+30	0	0	0	0	0	0	10	10	10	\N	\N	\N	1	0
+31	0	0	0	0	0	0	11	11	11	\N	\N	\N	1	0
+32	0	0	0	0	0	0	12	12	12	12	\N	\N	1	1
+33	0	0	0	0	0	0	13	14	13	\N	\N	\N	1	1
+34	0	0	0	0	0	0	14	15	14	\N	\N	\N	1	1
+35	0	0	0	0	0	0	15	16	15	\N	\N	\N	1	1
+36	0	0	0	0	0	0	16	17	16	\N	\N	\N	1	1
+37	0	0	0	0	0	0	17	18	17	\N	\N	\N	1	1
+38	0	0	0	0	0	0	18	19	18	\N	\N	\N	1	1
+39	0	0	0	0	0	0	19	20	19	\N	\N	\N	1	1
+40	0	0	0	0	0	0	20	21	20	\N	\N	\N	1	1
+41	0	0	0	0	0	0	21	22	21	\N	\N	\N	1	1
+42	0	0	0	0	0	0	22	23	22	\N	\N	\N	1	1
+43	0	0	0	0	0	0	23	24	23	\N	\N	\N	1	1
+44	0	0	0	0	0	0	24	25	24	\N	\N	\N	1	0
 \.
 
 
@@ -4806,7 +4855,7 @@ COPY devilry_dbcache_assignmentgroupcacheddata (id, new_attempt_count, public_to
 -- Name: devilry_dbcache_assignmentgroupcacheddata_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_dbcache_assignmentgroupcacheddata_id_seq', 22, true);
+SELECT pg_catalog.setval('devilry_dbcache_assignmentgroupcacheddata_id_seq', 44, true);
 
 
 --
@@ -5087,8 +5136,6 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 12	core	periodapplicationkeyvalue
 13	core	relatedexaminer
 14	core	relatedstudent
-15	core	relatedexaminersyncsystemtag
-16	core	relatedstudentsyncsystemtag
 17	core	relatedstudentkeyvalue
 18	core	assignment
 19	core	pointtogrademap
@@ -5134,6 +5181,7 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 59	devilry_compressionutil	compressedarchivemeta
 60	devilry_group	feedbacksetpassedpreviousperiod
 61	devilry_group	feedbacksetdeadlinehistory
+62	core	periodtag
 \.
 
 
@@ -5141,7 +5189,7 @@ COPY django_content_type (id, app_label, model) FROM stdin;
 -- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('django_content_type_id_seq', 61, true);
+SELECT pg_catalog.setval('django_content_type_id_seq', 62, true);
 
 
 --
@@ -5259,6 +5307,7 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 108	devilry_group	0027_auto_20170206_1146	2017-02-23 11:12:58.485549+01
 109	devilry_group	0029_merge	2017-02-23 11:12:58.48727+01
 110	devilry_qualifiesforexam	0002_auto_20170223_1112	2017-02-23 11:12:58.960632+01
+111	core	0034_auto_20170303_1308	2017-03-16 17:21:16.651963+01
 \.
 
 
@@ -5266,7 +5315,7 @@ COPY django_migrations (id, app, name, applied) FROM stdin;
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('django_migrations_id_seq', 110, true);
+SELECT pg_catalog.setval('django_migrations_id_seq', 111, true);
 
 
 --
@@ -5616,6 +5665,54 @@ ALTER TABLE ONLY core_periodapplicationkeyvalue
 
 
 --
+-- Name: core_periodtag_period_id_85a8db44_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY core_periodtag
+    ADD CONSTRAINT core_periodtag_period_id_85a8db44_uniq UNIQUE (period_id, prefix, tag);
+
+
+--
+-- Name: core_periodtag_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY core_periodtag
+    ADD CONSTRAINT core_periodtag_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_periodtag_relatedexaminers_periodtag_id_a5a9b5ab_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY core_periodtag_relatedexaminers
+    ADD CONSTRAINT core_periodtag_relatedexaminers_periodtag_id_a5a9b5ab_uniq UNIQUE (periodtag_id, relatedexaminer_id);
+
+
+--
+-- Name: core_periodtag_relatedexaminers_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY core_periodtag_relatedexaminers
+    ADD CONSTRAINT core_periodtag_relatedexaminers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_periodtag_relatedstudents_periodtag_id_91082554_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY core_periodtag_relatedstudents
+    ADD CONSTRAINT core_periodtag_relatedstudents_periodtag_id_91082554_uniq UNIQUE (periodtag_id, relatedstudent_id);
+
+
+--
+-- Name: core_periodtag_relatedstudents_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY core_periodtag_relatedstudents
+    ADD CONSTRAINT core_periodtag_relatedstudents_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: core_pointrangetogr_point_to_grade_map_id_11d9dec2e994579b_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
@@ -5664,22 +5761,6 @@ ALTER TABLE ONLY core_relatedexaminer
 
 
 --
--- Name: core_relatedexaminersy_relatedexaminer_id_12e1d6f77219149e_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
---
-
-ALTER TABLE ONLY core_relatedexaminersyncsystemtag
-    ADD CONSTRAINT core_relatedexaminersy_relatedexaminer_id_12e1d6f77219149e_uniq UNIQUE (relatedexaminer_id, tag);
-
-
---
--- Name: core_relatedexaminersyncsystemtag_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
---
-
-ALTER TABLE ONLY core_relatedexaminersyncsystemtag
-    ADD CONSTRAINT core_relatedexaminersyncsystemtag_pkey PRIMARY KEY (id);
-
-
---
 -- Name: core_relatedstudent_period_id_7bcf68a574802ebf_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
 --
 
@@ -5709,22 +5790,6 @@ ALTER TABLE ONLY core_relatedstudentkeyvalue
 
 ALTER TABLE ONLY core_relatedstudentkeyvalue
     ADD CONSTRAINT core_relatedstudentkeyvalue_pkey PRIMARY KEY (id);
-
-
---
--- Name: core_relatedstudentsync_relatedstudent_id_3bbd088d0b004096_uniq; Type: CONSTRAINT; Schema: public; Owner: dbdev
---
-
-ALTER TABLE ONLY core_relatedstudentsyncsystemtag
-    ADD CONSTRAINT core_relatedstudentsync_relatedstudent_id_3bbd088d0b004096_uniq UNIQUE (relatedstudent_id, tag);
-
-
---
--- Name: core_relatedstudentsyncsystemtag_pkey; Type: CONSTRAINT; Schema: public; Owner: dbdev
---
-
-ALTER TABLE ONLY core_relatedstudentsyncsystemtag
-    ADD CONSTRAINT core_relatedstudentsyncsystemtag_pkey PRIMARY KEY (id);
 
 
 --
@@ -6593,6 +6658,55 @@ CREATE INDEX core_periodapplicationkeyvalue_value_3c6e96e7ba7f6690_like ON core_
 
 
 --
+-- Name: core_periodtag_b1efa79f; Type: INDEX; Schema: public; Owner: dbdev
+--
+
+CREATE INDEX core_periodtag_b1efa79f ON core_periodtag USING btree (period_id);
+
+
+--
+-- Name: core_periodtag_e4d23e84; Type: INDEX; Schema: public; Owner: dbdev
+--
+
+CREATE INDEX core_periodtag_e4d23e84 ON core_periodtag USING btree (tag);
+
+
+--
+-- Name: core_periodtag_relatedexaminers_769693bb; Type: INDEX; Schema: public; Owner: dbdev
+--
+
+CREATE INDEX core_periodtag_relatedexaminers_769693bb ON core_periodtag_relatedexaminers USING btree (relatedexaminer_id);
+
+
+--
+-- Name: core_periodtag_relatedexaminers_97a799e1; Type: INDEX; Schema: public; Owner: dbdev
+--
+
+CREATE INDEX core_periodtag_relatedexaminers_97a799e1 ON core_periodtag_relatedexaminers USING btree (periodtag_id);
+
+
+--
+-- Name: core_periodtag_relatedstudents_39cb6676; Type: INDEX; Schema: public; Owner: dbdev
+--
+
+CREATE INDEX core_periodtag_relatedstudents_39cb6676 ON core_periodtag_relatedstudents USING btree (relatedstudent_id);
+
+
+--
+-- Name: core_periodtag_relatedstudents_97a799e1; Type: INDEX; Schema: public; Owner: dbdev
+--
+
+CREATE INDEX core_periodtag_relatedstudents_97a799e1 ON core_periodtag_relatedstudents USING btree (periodtag_id);
+
+
+--
+-- Name: core_periodtag_tag_b42bbccb_like; Type: INDEX; Schema: public; Owner: dbdev
+--
+
+CREATE INDEX core_periodtag_tag_b42bbccb_like ON core_periodtag USING btree (tag varchar_pattern_ops);
+
+
+--
 -- Name: core_pointrangetograde_326d17f1; Type: INDEX; Schema: public; Owner: dbdev
 --
 
@@ -6611,27 +6725,6 @@ CREATE INDEX core_relatedexaminer_b1efa79f ON core_relatedexaminer USING btree (
 --
 
 CREATE INDEX core_relatedexaminer_e8701ad4 ON core_relatedexaminer USING btree (user_id);
-
-
---
--- Name: core_relatedexaminersyncsystemtag_769693bb; Type: INDEX; Schema: public; Owner: dbdev
---
-
-CREATE INDEX core_relatedexaminersyncsystemtag_769693bb ON core_relatedexaminersyncsystemtag USING btree (relatedexaminer_id);
-
-
---
--- Name: core_relatedexaminersyncsystemtag_e4d23e84; Type: INDEX; Schema: public; Owner: dbdev
---
-
-CREATE INDEX core_relatedexaminersyncsystemtag_e4d23e84 ON core_relatedexaminersyncsystemtag USING btree (tag);
-
-
---
--- Name: core_relatedexaminersyncsystemtag_tag_277a7dc13c66ef1d_like; Type: INDEX; Schema: public; Owner: dbdev
---
-
-CREATE INDEX core_relatedexaminersyncsystemtag_tag_277a7dc13c66ef1d_like ON core_relatedexaminersyncsystemtag USING btree (tag varchar_pattern_ops);
 
 
 --
@@ -6695,27 +6788,6 @@ CREATE INDEX core_relatedstudentkeyvalue_key_4d695a35117794a4_like ON core_relat
 --
 
 CREATE INDEX core_relatedstudentkeyvalue_value_2e6d2220af915c34_like ON core_relatedstudentkeyvalue USING btree (value text_pattern_ops);
-
-
---
--- Name: core_relatedstudentsyncsystemtag_39cb6676; Type: INDEX; Schema: public; Owner: dbdev
---
-
-CREATE INDEX core_relatedstudentsyncsystemtag_39cb6676 ON core_relatedstudentsyncsystemtag USING btree (relatedstudent_id);
-
-
---
--- Name: core_relatedstudentsyncsystemtag_e4d23e84; Type: INDEX; Schema: public; Owner: dbdev
---
-
-CREATE INDEX core_relatedstudentsyncsystemtag_e4d23e84 ON core_relatedstudentsyncsystemtag USING btree (tag);
-
-
---
--- Name: core_relatedstudentsyncsystemtag_tag_4ac0f372e29bc146_like; Type: INDEX; Schema: public; Owner: dbdev
---
-
-CREATE INDEX core_relatedstudentsyncsystemtag_tag_4ac0f372e29bc146_like ON core_relatedstudentsyncsystemtag USING btree (tag varchar_pattern_ops);
 
 
 --
@@ -7655,14 +7727,6 @@ ALTER TABLE ONLY devilry_comment_commentfileimage
 
 
 --
--- Name: co_relatedstudent_id_10993e5068bc33c2_fk_core_relatedstudent_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
---
-
-ALTER TABLE ONLY core_relatedstudentsyncsystemtag
-    ADD CONSTRAINT co_relatedstudent_id_10993e5068bc33c2_fk_core_relatedstudent_id FOREIGN KEY (relatedstudent_id) REFERENCES core_relatedstudent(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
 -- Name: co_relatedstudent_id_3e3e80d75676e0c9_fk_core_relatedstudent_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
@@ -7863,6 +7927,22 @@ ALTER TABLE ONLY core_node
 
 
 --
+-- Name: core_per_relatedexaminer_id_faa47fdc_fk_core_relatedexaminer_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY core_periodtag_relatedexaminers
+    ADD CONSTRAINT core_per_relatedexaminer_id_faa47fdc_fk_core_relatedexaminer_id FOREIGN KEY (relatedexaminer_id) REFERENCES core_relatedexaminer(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: core_perio_relatedstudent_id_fceab87a_fk_core_relatedstudent_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY core_periodtag_relatedstudents
+    ADD CONSTRAINT core_perio_relatedstudent_id_fceab87a_fk_core_relatedstudent_id FOREIGN KEY (relatedstudent_id) REFERENCES core_relatedstudent(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: core_period__user_id_eb067c4bde098ff_fk_devilry_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
 --
 
@@ -7892,6 +7972,30 @@ ALTER TABLE ONLY core_period
 
 ALTER TABLE ONLY core_periodapplicationkeyvalue
     ADD CONSTRAINT core_periodapplica_period_id_71495bf20087514e_fk_core_period_id FOREIGN KEY (period_id) REFERENCES core_period(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: core_periodtag_period_id_d7a1e8c9_fk_core_period_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY core_periodtag
+    ADD CONSTRAINT core_periodtag_period_id_d7a1e8c9_fk_core_period_id FOREIGN KEY (period_id) REFERENCES core_period(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: core_periodtag_relat_periodtag_id_0aacb973_fk_core_periodtag_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY core_periodtag_relatedstudents
+    ADD CONSTRAINT core_periodtag_relat_periodtag_id_0aacb973_fk_core_periodtag_id FOREIGN KEY (periodtag_id) REFERENCES core_periodtag(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: core_periodtag_relat_periodtag_id_d532c009_fk_core_periodtag_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
+--
+
+ALTER TABLE ONLY core_periodtag_relatedexaminers
+    ADD CONSTRAINT core_periodtag_relat_periodtag_id_d532c009_fk_core_periodtag_id FOREIGN KEY (periodtag_id) REFERENCES core_periodtag(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -8316,14 +8420,6 @@ ALTER TABLE ONLY ievv_batchframework_batchoperation
 
 ALTER TABLE ONLY core_assignmentgroup_examiners
     ADD CONSTRAINT relatedexaminer_id_46b4afef8d47d182_fk_core_relatedexaminer_id FOREIGN KEY (relatedexaminer_id) REFERENCES core_relatedexaminer(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: relatedexaminer_id_5ba8809c8b73032e_fk_core_relatedexaminer_id; Type: FK CONSTRAINT; Schema: public; Owner: dbdev
---
-
-ALTER TABLE ONLY core_relatedexaminersyncsystemtag
-    ADD CONSTRAINT relatedexaminer_id_5ba8809c8b73032e_fk_core_relatedexaminer_id FOREIGN KEY (relatedexaminer_id) REFERENCES core_relatedexaminer(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
