@@ -48,10 +48,12 @@
                                 {{ last_deadline|date:"SHORT_DATETIME_FORMAT" }}
                             </span>
                         </p>
-                        <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="move-deadline" deadline=last_deadline_as_string group_id=group.id %}"
-                           class="btn btn-default btn-sm">
-                            {% trans "Move current deadline" %}
-                        </a>
+                        {% if devilry_ui_role == 'examiner' %}
+                            <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="move-deadline" deadline=last_deadline_as_string group_id=group.id %}"
+                               class="btn btn-default btn-sm">
+                                {% trans "Move current deadline" %}
+                            </a>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
