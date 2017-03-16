@@ -33,7 +33,7 @@ class StudentRoleItemValue(AbstractRoleItemValue):
 
     def get_description(self):
         return pgettext_lazy('roleselect',
-                             'Students can upload deliveres and browse their own delivery and feedback history.')
+                             'Upload deliveries or see your delivery and feedback history.')
 
 
 class ExaminerRoleItemValue(AbstractRoleItemValue):
@@ -48,7 +48,7 @@ class ExaminerRoleItemValue(AbstractRoleItemValue):
 
     def get_description(self):
         return pgettext_lazy('roleselect',
-                             'Examiners give students feedback on their deliveries.')
+                             'Give students feedback on their deliveries as examiner.')
 
 
 class AnyAdminRoleItemValue(AbstractRoleItemValue):

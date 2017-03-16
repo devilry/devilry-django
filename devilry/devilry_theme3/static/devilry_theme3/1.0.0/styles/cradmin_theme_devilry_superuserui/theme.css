@@ -4575,6 +4575,7 @@ button.close {
 body {
   background: #f5f5f5;
   color: #000000;
+  letter-spacing: 1px;
 }
 body.django-cradmin-noscroll {
   overflow: hidden;
