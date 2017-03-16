@@ -12,6 +12,7 @@ from django.http import Http404
 from django.http import HttpResponseRedirect
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy, pgettext_lazy
+from django.views.generic import TemplateView
 from django.views.generic import View
 
 from crispy_forms import layout
@@ -38,6 +39,34 @@ class TagItemValue(itemvalue.EditDelete):
         return self.value.displayname
 
 
+class HideShowPeriodTag(TemplateView):
+    def dispatch(self, request, *args, **kwargs):
+        prefix, tag = self.__get_prefix_and_tag(request)
+        period_tag = self.__get_period_tag(period=self.request.cradmin_role, prefix=prefix, tag=tag)
+        hide = False
+        if not period_tag.is_hidden:
+            hide = True
+        period_tag.is_hidden = hide
+        period_tag.full_clean()
+        period_tag.save()
+        return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+
+    def __get_prefix_and_tag(self, request):
+        prefix = request.GET.get('prefix', '')
+        tag = request.GET.get('tag', '')
+        if prefix == '' or tag == '':
+            raise Http404('Empty prefix or tag.')
+        return prefix, tag
+
+    def __get_period_tag(self, period, prefix, tag):
+        period_tag = PeriodTag.objects\
+            .filter(period=period, prefix=prefix, tag=tag)\
+            .first()
+        if not period_tag:
+            raise Http404('Tag error.')
+        return period_tag
+
+
 class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.View):
     """
     """
@@ -51,6 +80,8 @@ class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.Vi
 
     def add_filterlist_items(self, filterlist):
         filterlist.append(listfilter_tags.Search())
+        # filterlist.append(listfilter_tags.IsHiddenFilter())
+        filterlist.append(listfilter_tags.IsHiddenRadioFilter())
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
@@ -546,6 +577,9 @@ class App(crapp.App):
         crapp.Url(r'^delete/(?P<pk>\d+)$',
                   DeleteTagView.as_view(),
                   name='delete'),
+        crapp.Url(r'^toggle-visibility$',
+                  HideShowPeriodTag.as_view(),
+                  name='toggle_visibility'),
 
         crapp.Url('^add-examiners/(?P<tag>.[^,]+)$',
                   RelatedExaminerAddView.as_view(),
