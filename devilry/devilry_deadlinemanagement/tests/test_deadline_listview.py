@@ -328,11 +328,11 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
         )
         self.assertTrue(
             mockresponse.selector.exists('#devilry_manage_deadline_{}_new_attempt_all_link'
-                                         .format(datetimeutils.datetime_to_string(testassignment.first_deadline)))
+                                         .format(datetimeutils.datetime_to_url_string(testassignment.first_deadline)))
         )
         self.assertTrue(
             mockresponse.selector.exists('#devilry_manage_deadline_{}_new_attempt_select_link'
-                                         .format(datetimeutils.datetime_to_string(testassignment.first_deadline)))
+                                         .format(datetimeutils.datetime_to_url_string(testassignment.first_deadline)))
         )
 
     def test_new_attempt_button_not_rendered_if_no_groups_have_been_corrected(self):
@@ -352,11 +352,11 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
         )
         self.assertFalse(
             mockresponse.selector.exists('#devilry_manage_deadline_{}_new_attempt_all_link'
-                                         .format(datetimeutils.datetime_to_string(testassignment.first_deadline)))
+                                         .format(datetimeutils.datetime_to_url_string(testassignment.first_deadline)))
         )
         self.assertFalse(
             mockresponse.selector.exists('#devilry_manage_deadline_{}_new_attempt_select_link'
-                                         .format(datetimeutils.datetime_to_string(testassignment.first_deadline)))
+                                         .format(datetimeutils.datetime_to_url_string(testassignment.first_deadline)))
         )
 
     def test_query_count(self):

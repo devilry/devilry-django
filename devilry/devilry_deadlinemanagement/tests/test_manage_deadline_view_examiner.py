@@ -8,7 +8,7 @@ from django.conf import settings
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
@@ -64,7 +64,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -90,7 +90,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -124,7 +124,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -154,7 +154,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -182,7 +182,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -205,7 +205,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             },
             requestkwargs={
@@ -240,7 +240,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline
                 },
                 requestkwargs={
@@ -278,7 +278,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -304,7 +304,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -338,7 +338,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -368,7 +368,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -396,7 +396,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -419,7 +419,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             },
             requestkwargs={
@@ -455,7 +455,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline
                 },
                 requestkwargs={
@@ -487,7 +487,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(last_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(last_deadline),
                 'handle_deadline': self.handle_deadline
             },
             requestkwargs={
@@ -524,7 +524,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(last_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(last_deadline),
                 'handle_deadline': self.handle_deadline
             },
             requestkwargs={
@@ -570,7 +570,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(ExaminerTestCaseMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -596,7 +596,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(ExaminerTestCaseMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -630,7 +630,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(ExaminerTestCaseMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -656,7 +656,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             },
             requestkwargs={
@@ -687,7 +687,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': 'new-attempt'
             },
             requestkwargs={
@@ -725,7 +725,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(ExaminerTestCaseMixin):
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline
                 },
                 requestkwargs={
@@ -763,7 +763,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(ExaminerTestCaseMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -789,7 +789,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(ExaminerTestCaseMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -823,7 +823,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(ExaminerTestCaseMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -849,7 +849,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             },
             requestkwargs={
@@ -880,7 +880,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': 'new-attempt'
             },
             requestkwargs={
@@ -918,7 +918,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(ExaminerTestCaseMixin):
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline
                 },
                 requestkwargs={
@@ -956,7 +956,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline,
                 'group_id': testgroup1.id
             }
@@ -975,7 +975,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline,
                 'group_id': testgroup1.id
             }
@@ -996,7 +996,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline,
                 'group_id': testgroup.id
             },
@@ -1030,7 +1030,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'group_id': testgroup1.id
                 },
@@ -1061,7 +1061,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(last_feedbackset_last_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(last_feedbackset_last_deadline),
                 'handle_deadline': self.handle_deadline,
                 'group_id': testgroup.id
             }
@@ -1071,6 +1071,31 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         converted_datetime = datetime.strptime(earliest_date, '%Y-%m-%d %H:%M')
         self.assertTrue(converted_datetime > timezone.now())
         self.assertTrue(converted_datetime < timezone.now() + timezone.timedelta(days=8))
+
+    def test_get_all_suggested_deadlines_deadline_in_future(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        last_deadline = group_models.FeedbackSet.clean_deadline(timezone.now() + timedelta(days=1)).replace(second=0)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup,
+                                                                          deadline_datetime=last_deadline)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            cradmin_app=self._get_mock_app(testuser),
+            requestuser=testuser,
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_url_string(testfeedbackset.deadline_datetime),
+                'handle_deadline': self.handle_deadline,
+                'group_id': testgroup.id
+            }
+        )
+        added_days = 7
+        for element in mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline'):
+            suggested_date = datetime.strptime(element.get('django-cradmin-setfieldvalue'), '%Y-%m-%d %H:%M')
+            self.assertEquals(suggested_date, testfeedbackset.deadline_datetime + timedelta(days=added_days))
+            added_days += 7
 
     def test_get_earliest_possible_deadline_last_deadline_in_future(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -1088,7 +1113,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(last_feedbackset_last_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(last_feedbackset_last_deadline),
                 'handle_deadline': self.handle_deadline,
                 'group_id': testgroup.id
             }
@@ -1097,10 +1122,6 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
             .get('django-cradmin-setfieldvalue')
         converted_datetime = datetime.strptime(earliest_date, '%Y-%m-%d %H:%M')
         self.assertEquals(testfeedbackset.deadline_datetime + timezone.timedelta(days=7), converted_datetime)
-
-        # earliest_date = mockresponse.selector.one('#id_new_deadline').get('value')
-        # converted_datetime = datetime.strptime(earliest_date, '%Y-%m-%d %H:%M:%S')
-        # self.assertEquals(testfeedbackset.deadline_datetime + timezone.timedelta(days=3), converted_datetime)
 
     def test_get_earliest_possible_deadline_uses_multiple_feedbacksets(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -1120,7 +1141,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(last_feedbackset_last_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(last_feedbackset_last_deadline),
                 'handle_deadline': self.handle_deadline,
                 'group_id': testgroup.id
             }
@@ -1155,7 +1176,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline,
                 'group_id': testgroup1.id
             }
@@ -1174,7 +1195,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline,
                 'group_id': testgroup1.id
             }
@@ -1195,7 +1216,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline,
                 'group_id': testgroup.id
             },
@@ -1229,7 +1250,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'group_id': testgroup1.id
                 },
@@ -1246,6 +1267,76 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         cached_data_group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id).cached_data
         self.assertNotEquals(cached_data_group1.last_feedbackset.deadline_datetime, new_deadline)
         self.assertNotEquals(cached_data_group2.last_feedbackset.deadline_datetime, new_deadline)
+
+    def test_get_earliest_suggested_deadline_count(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+
+        # The final deadline for the first feedbackset
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            cradmin_app=self._get_mock_app(testuser),
+            requestuser=testuser,
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_url_string(testfeedbackset.deadline_datetime),
+                'handle_deadline': self.handle_deadline,
+                'group_id': testgroup.id
+            }
+        )
+        self.assertEquals(mockresponse.selector.count('.devilry-deadlinemanagement-suggested-deadline'), 4)
+
+    def test_get_earliest_suggested_deadline_last_deadline_in_past(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            cradmin_app=self._get_mock_app(testuser),
+            requestuser=testuser,
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_url_string(testfeedbackset.deadline_datetime),
+                'handle_deadline': self.handle_deadline,
+                'group_id': testgroup.id
+            }
+        )
+        earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0]\
+            .get('django-cradmin-setfieldvalue')
+        converted_datetime = datetime.strptime(earliest_date, '%Y-%m-%d %H:%M')
+        now_with_same_time_as_deadline = datetimeutils.datetime_with_same_time(
+            testfeedbackset.deadline_datetime, timezone.now())
+        self.assertEquals(now_with_same_time_as_deadline + timedelta(days=7), converted_datetime)
+
+    def test_get_all_suggested_deadlines_deadline_in_future(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        last_deadline = group_models.FeedbackSet.clean_deadline(timezone.now() + timedelta(days=1)).replace(second=0)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup,
+                                                                            deadline_datetime=last_deadline)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self._get_mock_instance(testassignment),
+            cradmin_app=self._get_mock_app(testuser),
+            requestuser=testuser,
+            viewkwargs={
+                'deadline': datetimeutils.datetime_to_url_string(testfeedbackset.deadline_datetime),
+                'handle_deadline': self.handle_deadline,
+                'group_id': testgroup.id
+            }
+        )
+        added_days = 7
+        for element in mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline'):
+            suggested_date = datetime.strptime(element.get('django-cradmin-setfieldvalue'), '%Y-%m-%d %H:%M')
+            self.assertEquals(suggested_date, testfeedbackset.deadline_datetime + timedelta(days=added_days))
+            added_days += 7
 
     def test_get_earliest_possible_deadline_last_deadline_in_future(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -1273,7 +1364,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(last_feedbackset_last_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(last_feedbackset_last_deadline),
                 'handle_deadline': self.handle_deadline,
                 'group_id': testgroup.id
             }

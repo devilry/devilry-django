@@ -37,7 +37,7 @@ class DeadlineManagementMixin(View):
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_instance.assignment
         if 'deadline' in kwargs:
-            self.deadline = datetimeutils.string_to_datetime(kwargs.get('deadline'))
+            self.deadline = datetimeutils.datetime_url_string_to_datetime(kwargs.get('deadline'))
         if 'handle_deadline' in kwargs:
             self.handle_deadline_type = kwargs.get('handle_deadline')
         return super(DeadlineManagementMixin, self).dispatch(request, *args, **kwargs)

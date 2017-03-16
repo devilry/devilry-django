@@ -155,7 +155,7 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
         kwargs['form_action'] = self.request.cradmin_app.reverse_appurl(
             viewname='manage-deadline-post',
             kwargs={
-                'deadline': datetimeutils.datetime_to_string(self.deadline),
+                'deadline': datetimeutils.datetime_to_url_string(self.deadline),
                 'handle_deadline': self.handle_deadline_type
             })
         return kwargs
@@ -188,7 +188,7 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
             'select-groups-manually-filter', kwargs={
-                'deadline': datetimeutils.datetime_to_string(self.deadline),
+                'deadline': datetimeutils.datetime_to_url_string(self.deadline),
                 'handle_deadline': self.handle_deadline_type,
                 'filters_string': filters_string
             })

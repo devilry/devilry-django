@@ -53,7 +53,7 @@ class TestCaseExaminerMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             })
         self.assertIn(
@@ -85,7 +85,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -111,7 +111,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -145,7 +145,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -179,7 +179,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -212,7 +212,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -245,7 +245,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -276,7 +276,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-TestUser'
                 })
@@ -307,7 +307,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-testuser'
                 })
@@ -338,7 +338,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-MyCandidateID'
                 })
@@ -370,7 +370,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-MyCandidateID'
                 })
@@ -402,7 +402,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-MyAnonymousID'
                 })
@@ -434,7 +434,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-TestUser'
                 })
@@ -466,7 +466,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-testuser'
                 })
@@ -499,7 +499,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-MyCandidateID'
                 })
@@ -532,7 +532,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-MyAnonymousID'
                 })
@@ -564,7 +564,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-MyCandidateID'
                 })
@@ -594,7 +594,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             })
         self.assertEquals(
@@ -623,7 +623,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             })
         self.assertEquals(
@@ -653,7 +653,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline
                 })
 
@@ -681,7 +681,7 @@ class TestExaminerNewAttemptMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline
                 },
                 requestkwargs={
@@ -715,7 +715,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -741,7 +741,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -775,7 +775,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -809,7 +809,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -842,7 +842,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -875,7 +875,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -906,7 +906,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-TestUser'
                 })
@@ -937,7 +937,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-testuser'
                 })
@@ -968,7 +968,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-MyCandidateID'
                 })
@@ -1000,7 +1000,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-MyCandidateID'
                 })
@@ -1032,7 +1032,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-MyAnonymousID'
                 })
@@ -1064,7 +1064,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-TestUser'
                 })
@@ -1096,7 +1096,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-testuser'
                 })
@@ -1129,7 +1129,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-MyCandidateID'
                 })
@@ -1162,7 +1162,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-MyAnonymousID'
                 })
@@ -1194,7 +1194,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline,
                     'filters_string': 'search-MyCandidateID'
                 })
@@ -1224,7 +1224,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             })
         self.assertEquals(
@@ -1253,7 +1253,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
             requestuser=examiner_user,
             cradmin_app=self._get_mock_app(examiner_user),
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             })
         self.assertEquals(
@@ -1283,7 +1283,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': 'new-attempt'
                 })
 
@@ -1311,7 +1311,7 @@ class TestExaminerMoveDeadlineMultiSelectView(TestCaseExaminerMixin):
                 requestuser=examiner_user,
                 cradmin_app=self._get_mock_app(examiner_user),
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': 'new-attempt'
                 },
                 requestkwargs={

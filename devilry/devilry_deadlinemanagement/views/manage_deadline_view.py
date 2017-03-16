@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from datetime import timedelta
+
 from crispy_forms import layout
 from django import forms
 from django import http
@@ -44,7 +46,7 @@ class ManageDeadlineForm(SelectedItemsForm):
         self.fields['new_deadline'].widget = DateTimePickerWidget(
             minimum_datetime=timezone.now().replace(second=0, microsecond=0),
         )
-        self.fields['new_deadline'].help_text = ugettext_lazy('The new deadline to set. Pick a date and time from the '
+        self.fields['new_deadline'].help_text = ugettext_lazy('Pick a date and time from the '
                                                               'calendar, or select one of the suggested deadlines.')
 
     def clean(self):
@@ -136,29 +138,6 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
         """
         return self.request.POST.getlist('selected_items')
 
-    def get_latest_previous_deadline(self):
-        """
-        Get the deadline of the second to last :class:`~.devilry.devilry_group.models.FeedbackSet` of all the
-        groups ids passed with the most recent deadline.
-
-        Returns:
-            A datetime object or none.
-        """
-        group_id_list = [int(group_id) for group_id in self.get_initially_selected_items()]
-        feedbackset = None
-        if self.post_move_deadline:
-            feedbackset = group_models.FeedbackSet.objects\
-                .filter(group_id__in=group_id_list,
-                        deadline_datetime__lt=self.deadline)\
-                .order_by('-deadline_datetime')\
-                .first()
-        if self.post_new_attempt:
-            feedbackset = group_models.FeedbackSet.objects \
-                .filter(group_id__in=group_id_list) \
-                .order_by('-deadline_datetime') \
-                .first()
-        return feedbackset
-
     def get_instantiated_form(self):
         form_class = self.get_form_class()
         return form_class(
@@ -190,17 +169,39 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
     def get_previous_view_url(self):
         return self.request.POST.get('previous_view_url', '/')
 
+    def get_latest_previous_deadline(self):
+        """
+        Get the deadline of the second to last :class:`~.devilry.devilry_group.models.FeedbackSet` of all the
+        groups ids passed with the most recent deadline.
+
+        Returns:
+            A datetime object or none.
+        """
+        group_id_list = [int(group_id) for group_id in self.get_initially_selected_items()]
+        feedback_set_queryset = group_models.FeedbackSet.objects\
+            .filter(group_id__in=group_id_list)\
+            .order_by('-deadline_datetime')
+        if self.post_move_deadline:
+            feedback_set = feedback_set_queryset\
+                .filter(deadline_datetime__lt=self.deadline)\
+                .first()
+            if feedback_set:
+                return feedback_set.deadline_datetime
+        if feedback_set_queryset.count() == 0:
+            return timezone.now()
+        return feedback_set_queryset.first().deadline_datetime
+
     def __get_suggested_deadlines(self):
         suggested_deadlines = []
         previous_feedbackset = self.get_latest_previous_deadline()
         if previous_feedbackset:
-            previous_deadline = previous_feedbackset.deadline_datetime
+            previous_deadline = previous_feedbackset
             if previous_deadline > timezone.now():
                 first_suggested_deadline = previous_deadline + timezone.timedelta(days=7)
             else:
-                first_suggested_deadline = datetimeutils.datetime_with_same_day_of_week_and_time(
-                    weekdayandtimesource_datetime=previous_deadline,
-                    target_datetime=timezone.now())
+                first_suggested_deadline = datetimeutils.datetime_with_same_time(
+                    timesource_datetime=previous_deadline,
+                    target_datetime=timezone.now() + timedelta(days=7))
             suggested_deadlines.append(first_suggested_deadline)
             for days_forward in range(7, (7 * 4), 7):
                 suggested_deadline = first_suggested_deadline + timezone.timedelta(days=days_forward)
@@ -431,7 +432,7 @@ class ManageDeadlineFromPreviousView(ManageDeadlineView):
         return self.request.cradmin_app.reverse_appurl(
             viewname='select-groups-manually',
             kwargs={
-                'deadline': datetimeutils.datetime_to_string(self.deadline),
+                'deadline': datetimeutils.datetime_to_url_string(self.deadline),
                 'handle_deadline': self.handle_deadline_type
             }
         )

@@ -20,7 +20,7 @@ class SelectDeadlineItemValue(listbuilder.itemvalue.TitleDescription):
         self.num_corrected_assignment_groups = self.__get_num_corrected_groups()
         self.assignment = assignment
         self.devilryrole = devilryrole
-        self.deadline_as_string = datetimeutils.datetime_to_string(self.value)
+        self.deadline_as_string = datetimeutils.datetime_to_url_string(self.value)
 
     def __get_num_corrected_groups(self):
         count = 0

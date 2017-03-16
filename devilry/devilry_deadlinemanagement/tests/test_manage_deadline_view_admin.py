@@ -101,7 +101,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -129,7 +129,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -152,7 +152,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             },
             requestkwargs={
@@ -187,7 +187,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline
                 },
                 requestkwargs={
@@ -236,7 +236,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -264,7 +264,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             }
         )
@@ -287,7 +287,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             },
             requestkwargs={
@@ -323,7 +323,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline
                 },
                 requestkwargs={
@@ -371,7 +371,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             },
             requestkwargs={
@@ -402,7 +402,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': 'new-attempt'
             },
             requestkwargs={
@@ -440,7 +440,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline
                 },
                 requestkwargs={
@@ -485,7 +485,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': self.handle_deadline
             },
             requestkwargs={
@@ -516,7 +516,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
             cradmin_app=self._get_mock_app(user=testuser),
             requestuser=testuser,
             viewkwargs={
-                'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                 'handle_deadline': 'new-attempt'
             },
             requestkwargs={
@@ -554,7 +554,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
                 cradmin_app=self._get_mock_app(user=testuser),
                 requestuser=testuser,
                 viewkwargs={
-                    'deadline': datetimeutils.datetime_to_string(testassignment.first_deadline),
+                    'deadline': datetimeutils.datetime_to_url_string(testassignment.first_deadline),
                     'handle_deadline': self.handle_deadline
                 },
                 requestkwargs={
