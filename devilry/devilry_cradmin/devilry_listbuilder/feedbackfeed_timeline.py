@@ -89,10 +89,12 @@ class TimelineListBuilderList(listbuilder.base.List):
             return DeadlineExpiredItemValue(value=event_dict['deadline_datetime'], devilry_viewrole=self.devilryrole,
                                             feedbackset=event_dict['feedbackset'], group=self.group)
         elif event_dict['type'] == 'grade':
-            return GradeItemValue(value=event_dict['feedbackset'], assignment=self.assignment, devilry_viewrole=self.devilryrole, group=self.group)
+            return GradeItemValue(value=event_dict['feedbackset'], assignment=self.assignment,
+                                  devilry_viewrole=self.devilryrole, group=self.group)
         elif event_dict['type'] == 'deadline_moved':
-            return DeadlineMovedItemValue(value=event_dict['obj'], devilry_viewrole=self.devilryrole,
-                                          feedbackset=event_dict['feedbackset'], group=self.group)
+            return DeadlineMovedItemValue(value=event_dict['obj'], is_last=event_dict['is_last'],
+                                          devilry_viewrole=self.devilryrole, feedbackset=event_dict['feedbackset'],
+                                          group=self.group)
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(TimelineListBuilderList, self).get_extra_css_classes_list()
@@ -228,7 +230,7 @@ class AbstractDeadlineEventItemValue(BaseEventItemValue):
 
     @property
     def deadline_as_string(self):
-        return datetimeutils.datetime_to_string(self.feedbackset.deadline_datetime)
+        return datetimeutils.datetime_to_url_string(self.feedbackset.deadline_datetime)
 
     def get_timeline_datetime(self):
         return self.value
@@ -239,6 +241,10 @@ class DeadlineMovedItemValue(AbstractDeadlineEventItemValue):
     """
     valuealias = 'feedbackset_history_obj'
     template_name = 'devilry_group/listbuilder_feedbackfeed/deadline_moved_item_value.django.html'
+
+    def __init__(self, is_last=False, *args, **kwargs):
+        self.is_last = is_last
+        super(DeadlineMovedItemValue, self).__init__(*args, **kwargs)
 
     def get_timeline_datetime(self):
         return self.value.changed_datetime
@@ -290,13 +296,9 @@ class GradeItemValue(BaseEventItemValue):
     def group(self):
         return self.kwargs['group']
     
-    # @property
-    # def assignment(self):
-    #     return self.kwargs['assignment']
-    
     @property
     def deadline_as_string(self):
-        return datetimeutils.datetime_to_string(self.feedbackset.deadline_datetime)
+        return datetimeutils.datetime_to_url_string(self.feedbackset.deadline_datetime)
 
     def get_timeline_datetime(self):
         return self.value.grading_published_datetime

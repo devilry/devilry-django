@@ -185,11 +185,18 @@ class FeedbackFeedTimelineBuilder(builder_base.FeedbackFeedBuilderBase):
     def __add_deadline_moved_event(self, feedbackset):
         deadline_history_queryset = feedbackset.feedbacksetdeadlinehistory_set \
             .order_by('-changed_datetime')
+        last_deadline_history = None
+        if deadline_history_queryset.count() > 0:
+            last_deadline_history = deadline_history_queryset[0]
         for deadline_history in deadline_history_queryset:
+            is_last = False
+            if deadline_history.changed_datetime == last_deadline_history.changed_datetime:
+                is_last = True
             self.__add_event_item_to_timeline(
                 datetime=deadline_history.changed_datetime,
                 event_dict={
                     'type': 'deadline_moved',
+                    'is_last': is_last,
                     'obj': deadline_history,
                     'feedbackset': feedbackset
                 }

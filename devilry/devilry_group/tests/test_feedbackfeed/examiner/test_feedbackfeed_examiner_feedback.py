@@ -128,7 +128,7 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
                    user_role='student',
                    feedback_set=testfeedbackset,
                    _quantity=20)
-        with self.assertNumQueries(18):
+        with self.assertNumQueries(19):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=examiner.relatedexaminer.user)
 
@@ -171,7 +171,7 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
                    filename='test2.py',
                    comment=comment2,
                    _quantity=20)
-        with self.assertNumQueries(21):
+        with self.assertNumQueries(22):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=examiner.relatedexaminer.user)
 

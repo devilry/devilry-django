@@ -184,7 +184,7 @@ class FeedbackFeedBaseView(create.CreateView):
         context['last_feedbackset'] = last_feedbackset
         context['current_date'] = datetime.datetime.now()
         context['last_deadline_as_string'] = datetimeutils\
-            .datetime_to_string(last_feedbackset.deadline_datetime)
+            .datetime_to_url_string(last_feedbackset.deadline_datetime)
         context['listbuilder_list'] = feedbackfeed_timeline.TimelineListBuilderList.from_built_timeline(
             built_timeline,
             group=self.request.cradmin_role,

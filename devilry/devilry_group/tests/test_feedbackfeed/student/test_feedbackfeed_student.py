@@ -1075,7 +1075,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
                    _quantity=20)
         mock_cradmininstance = mock.MagicMock()
         mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'student'
-        with self.assertNumQueries(16):
+        with self.assertNumQueries(17):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=candidate.relatedstudent.user,
                                                cradmin_instance=mock_cradmininstance)
@@ -1110,7 +1110,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
                    filename='test2.py',
                    comment=comment2,
                    _quantity=20)
-        with self.assertNumQueries(19):
+        with self.assertNumQueries(20):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=candidate.relatedstudent.user)
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
