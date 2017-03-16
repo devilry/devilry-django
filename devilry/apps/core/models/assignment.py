@@ -284,7 +284,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         If this is ``True`` students should be allowed to join/leave groups.
         If :attr:`.students_can_not_create_groups_after` is specified, this
         students can not create groups after ``students_can_not_create_groups_after``
-        even if this is ``True``.
+        even if this is ``True``.ar 16 2017, 17:45 : This delivery was corrected, and given:
 
         This does not in any way affect an admins ability to organize students
         in groups manually.
@@ -864,7 +864,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         WARNING: This will not work if :meth:`.has_valid_grading_setup` is not ``True``.
         """
         if self.points_to_grade_mapper == self.POINTS_TO_GRADE_MAPPER_PASSED_FAILED:
-            if points == 0:
+            if points >= self.passing_grade_min_points:
                 return pgettext_lazy(
                     'assignment grade passed-or-failed',
                     'failed')
