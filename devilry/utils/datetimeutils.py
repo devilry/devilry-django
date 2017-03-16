@@ -74,10 +74,21 @@ def datetime_with_same_day_of_week_and_time(weekdayandtimesource_datetime, targe
     return new_datetimeobject
 
 
+def datetime_with_same_time(timesource_datetime, target_datetime):
+    """
+    Returns a new datetime object with the same day as the given ``target_datetime``,
+    with the time replaced with the time from ``timesource_datetime``.
+    """
+    return target_datetime.replace(hour=timesource_datetime.hour,
+                                   minute=timesource_datetime.minute,
+                                   second=timesource_datetime.second,
+                                   microsecond=timesource_datetime.microsecond)
+
+
 URL_DATETIME_FORMAT = '%m_%d_%Y_%H_%M_%S'
 
 
-def datetime_to_string(datetime_obj):
+def datetime_to_url_string(datetime_obj):
     """
     Converts datetime object to URL-friendly string.
 
@@ -90,7 +101,7 @@ def datetime_to_string(datetime_obj):
     return datetime_obj.strftime(URL_DATETIME_FORMAT)
 
 
-def string_to_datetime(datetime_string):
+def datetime_url_string_to_datetime(datetime_string):
     """
     Convert URL-friendly string to ``django.utils.timezone`` datetime object.
     Args:
