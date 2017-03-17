@@ -864,7 +864,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         WARNING: This will not work if :meth:`.has_valid_grading_setup` is not ``True``.
         """
         if self.points_to_grade_mapper == self.POINTS_TO_GRADE_MAPPER_PASSED_FAILED:
-            if points >= self.passing_grade_min_points:
+            if points == 0:
                 return pgettext_lazy(
                     'assignment grade passed-or-failed',
                     'failed')
