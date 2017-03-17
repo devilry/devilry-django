@@ -50,7 +50,7 @@ class TestPublishNowRedirectView(TestCase, cradmin_testhelpers.TestCaseMixin):
         assignment1_publishing_time_ignore_ms = assignment1.publishing_time.replace(microsecond=0)
         assignment2_publishing_time_ignore_ms = assignment2.publishing_time.replace(microsecond=0)
         assignment3_publishing_time_ignore_ms = assignment3.publishing_time.replace(microsecond=0)
-        now_ignore_ms = datetime.now().replace(microsecond=0)
+        now_ignore_ms = datetime.now().replace(second=assignment3.publishing_time.second, microsecond=0)
         self.assertEquals(assignment1_publishing_time_ignore_ms, datetime(2000, 1, 1))
         self.assertEquals(assignment2_publishing_time_ignore_ms, datetime(2000, 1, 1))
         self.assertEquals(assignment3_publishing_time_ignore_ms, now_ignore_ms)
