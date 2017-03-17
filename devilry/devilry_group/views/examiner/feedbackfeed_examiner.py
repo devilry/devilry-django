@@ -39,8 +39,8 @@ class PassedFailedFeedbackForm(AbstractFeedbackForm):
     #: Set delivery as passed or failed.
     passed = forms.ChoiceField(
         choices=(('Passed', 'Passed'), ('Failed', 'Failed')),
-        label=pgettext_lazy('grading', 'Passed?'),
-        help_text=pgettext_lazy('grading', 'Check to provide a passing grade.'),
+        label=pgettext_lazy('grading', 'Grade'),
+        help_text=pgettext_lazy('grading', 'Choose grade'),
         required=True,
         initial=''
     )
