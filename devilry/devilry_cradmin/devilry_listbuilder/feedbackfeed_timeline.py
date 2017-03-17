@@ -1,50 +1,70 @@
 # Devilry/cradmin imports
 from django_cradmin.viewhelpers import listbuilder
 from devilry.devilry_comment import models as comment_models
-from devilry.devilry_group.models import GroupComment
+from devilry.devilry_group.models import GroupComment, FeedbackSet
 from devilry.utils import datetimeutils
 
 
-class TimelineListBuilderList(listbuilder.base.List):
-    """A list of all events for a feedbackfeed.
-
-    The list is built from a pre-built timeline, and all events
-    are added as renderables in the list.
-    """
+class TimeLineListBuilderList(listbuilder.base.List):
 
     @classmethod
     def from_built_timeline(cls, built_timeline, **kwargs):
+        listbuilder_list = cls()
+        for feedback_set_num, feedbackset_event in enumerate(built_timeline.get_as_list()):
+            listbuilder_list.append(
+                FeedbackSetTimelineListBuilderList.from_built_timeline(
+                    built_timeline=feedbackset_event['feedbackset_events'],
+                    feedbackset=feedbackset_event['feedbackset'],
+                    attempt_num=feedback_set_num+1,
+                    **kwargs)
+            )
+        return listbuilder_list
+
+    def get_extra_css_classes_list(self):
+        css_classes_list = super(TimeLineListBuilderList, self).get_extra_css_classes_list()
+        css_classes_list.append('devilry-group-feedbackfeed-feed')
+        return css_classes_list
+
+
+class FeedbackSetTimelineListBuilderList(listbuilder.base.List):
+    """A list of all events for a specific :obj:`~devilry.devilry_group.models.FeedbackSet`.
+    """
+
+    @classmethod
+    def from_built_timeline(cls, built_timeline, feedbackset, attempt_num, **kwargs):
         """Creates a instance of TimelineListBuilderList.
 
         Appends events from `built_timeline`.
 
         Args:
             built_timeline: The built and sorted feedbackfeed timeline
+            feedbackset: The :class:`~.devilry.devilry_group.models.FeedbackSet` the events belong to.
+            attempt_num: The chronological number of the feedbackset.
 
         Returns:
             TimelineListBuilderList: listbuilder instance.
         """
-        listbuilder_list = cls(**kwargs)
-        for event_dict in built_timeline.get_as_list():
-            listbuilder_list.append_eventdict(event_dict)
+        listbuilder_list = cls(feedbackset, **kwargs)
+        listbuilder_list.append(renderable=FeedbackSetCreatedItemValue(value=feedbackset,
+                                                                       attempt_num=attempt_num,
+                                                                       assignment=kwargs.get('assignment'),
+                                                                       devilry_viewrole=kwargs.get('devilryrole')))
+        item_values_list = []
+        for event_dict in built_timeline:
+            item_values_list.append(listbuilder_list.get_item_value(event_dict=event_dict))
+        listbuilder_list.renderable_list.append(
+            FeedbackSetContentList(renderables_list=item_values_list)
+        )
         return listbuilder_list
 
-    def __init__(self, assignment, devilryrole, group):
+    def __init__(self, feedbackset, group, assignment, devilryrole):
+        self.feedbackset = feedbackset
         self.assignment = assignment
         self.devilryrole = devilryrole
         self.group = group
-        super(TimelineListBuilderList, self).__init__()
+        super(FeedbackSetTimelineListBuilderList, self).__init__()
 
-    def append_eventdict(self, event_dict):
-        """Appends a ValueRenderer instance to the list.
-
-        Args:
-            event_dict: Event metadata dictionary.
-        """
-        valuerenderer = self.__get_item_value(event_dict=event_dict)
-        self.append(renderable=valuerenderer)
-
-    def __get_item_value(self, event_dict):
+    def get_item_value(self, event_dict):
         """Creates a ItemValueRenderer based on the event type.
 
         If the event type is `comment`:
@@ -82,9 +102,6 @@ class TimelineListBuilderList(listbuilder.base.List):
                 return AdminGroupCommentItemValue(value=group_comment,
                                                   devilry_viewrole=self.devilryrole,
                                                   assignment=self.assignment)
-        elif event_dict['type'] == 'deadline_created':
-            return DeadlineCreatedItemValue(value=event_dict['deadline_datetime'], devilry_viewrole=self.devilryrole,
-                                            feedbackset=event_dict['feedbackset'], group=self.group)
         elif event_dict['type'] == 'deadline_expired':
             return DeadlineExpiredItemValue(value=event_dict['deadline_datetime'], devilry_viewrole=self.devilryrole,
                                             feedbackset=event_dict['feedbackset'], group=self.group)
@@ -97,8 +114,23 @@ class TimelineListBuilderList(listbuilder.base.List):
                                           group=self.group)
 
     def get_extra_css_classes_list(self):
-        css_classes_list = super(TimelineListBuilderList, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-group-feedbackfeed-feed')
+        css_classes_list = super(FeedbackSetTimelineListBuilderList, self).get_extra_css_classes_list()
+        css_classes_list.append('devilry-group-feedbackfeed-feed__feedbackset-wrapper')
+        return css_classes_list
+
+
+class FeedbackSetContentList(listbuilder.base.List):
+    """
+    Simply adds a css wrapper-class for all events that belong to a feedbackset.
+    """
+    def __init__(self, renderables_list):
+        super(FeedbackSetContentList, self).__init__()
+        for renderable in renderables_list:
+            self.renderable_list.append(renderable)
+
+    def get_extra_css_classes_list(self):
+        css_classes_list = super(FeedbackSetContentList, self).get_extra_css_classes_list()
+        css_classes_list.append('devilry-group-feedbackfeed-feed__feedbackset-wrapper--content')
         return css_classes_list
 
 
@@ -146,6 +178,34 @@ class BaseEventItemValue(BaseItemValue):
 
     def get_base_css_classes_list(self):
         return ['devilry-group-feedbackfeed-event-message']
+
+
+class FeedbackSetCreatedItemValue(BaseItemValue):
+    template_name = 'devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html'
+    valuealias = 'feedbackset'
+
+    def __init__(self, attempt_num, assignment, *args, **kwargs):
+        self.attempt_num = attempt_num
+        self.assignment = assignment
+        super(FeedbackSetCreatedItemValue, self).__init__(*args, **kwargs)
+
+    @property
+    def deadline_as_string(self):
+        return datetimeutils.datetime_to_url_string(self.value.deadline_datetime)
+
+    def get_timeline_datetime(self):
+        return self.value.created_datetime
+
+    def is_graded(self):
+        return self.value.grading_published_datetime is not None
+
+    def get_extra_css_classes_list(self):
+        css_classes_list = super(FeedbackSetCreatedItemValue, self).get_extra_css_classes_list()
+        if self.value.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
+            css_classes_list.append('devilry-group-feedbackfeed-feed__feedbackset-wrapper--header-first-attempt')
+        else:
+            css_classes_list.append('devilry-group-feedbackfeed-feed__feedbackset-wrapper--header')
+        return css_classes_list
 
 
 class BaseGroupCommentItemValue(BaseItemValue):
@@ -252,21 +312,6 @@ class DeadlineMovedItemValue(AbstractDeadlineEventItemValue):
     def get_extra_css_classes_list(self):
         css_classes_list = super(DeadlineMovedItemValue, self).get_extra_css_classes_list()
         css_classes_list.append('devilry-group-feedbackfeed-event-message__deadline-moved')
-        return css_classes_list
-
-
-class DeadlineCreatedItemValue(AbstractDeadlineEventItemValue):
-    """Deadline created event.
-    """
-    valuealias = 'deadline_datetime'
-    template_name = 'devilry_group/listbuilder_feedbackfeed/deadline_created_item_value.django.html'
-
-    def get_timeline_datetime(self):
-        return self.feedbackset.created_datetime
-
-    def get_extra_css_classes_list(self):
-        css_classes_list = super(DeadlineCreatedItemValue, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-group-feedbackfeed-event-message__deadline-created')
         return css_classes_list
 
 
