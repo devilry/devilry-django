@@ -9329,6 +9329,118 @@ fieldset[disabled] .button_student {
 .devilry-group-feedbackfeed-feed > li {
   margin-left: -30px;
 }
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper .header {
+  display: block;
+  text-align: center;
+  margin-bottom: 21px;
+  background-color: #fff;
+  min-height: 5.0em;
+  padding: 12px;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper .header .devilry-core-grade-passed {
+  color: #61AE24;
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bold;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper .header .devilry-core-grade-failed {
+  color: #a0372f;
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bold;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper .header .header-title {
+  font-size: 32px;
+  font-weight: bold;
+  padding-top: 5px;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper .header .header-attempt-number {
+  font-size: 20px;
+  padding-top: 5px;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper .header .header-grading-info {
+  font-size: 20px;
+  color: #747474;
+  padding-top: 5px;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper .header .header-buttons {
+  padding-top: 5px;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper--header-first-attempt {
+  display: block;
+  text-align: center;
+  margin-bottom: 21px;
+  background-color: #fff;
+  min-height: 5.0em;
+  padding: 12px;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper--header-first-attempt .devilry-core-grade-passed {
+  color: #61AE24;
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bold;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper--header-first-attempt .devilry-core-grade-failed {
+  color: #a0372f;
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bold;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper--header-first-attempt .header-title {
+  font-size: 32px;
+  font-weight: bold;
+  padding-top: 5px;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper--header-first-attempt .header-attempt-number {
+  font-size: 20px;
+  padding-top: 5px;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper--header-first-attempt .header-grading-info {
+  font-size: 20px;
+  color: #747474;
+  padding-top: 5px;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper--header-first-attempt .header-buttons {
+  padding-top: 5px;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper--header {
+  display: block;
+  text-align: center;
+  margin-bottom: 21px;
+  background-color: #fff;
+  min-height: 5.0em;
+  padding: 12px;
+  margin-top: 120px;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper--header .devilry-core-grade-passed {
+  color: #61AE24;
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bold;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper--header .devilry-core-grade-failed {
+  color: #a0372f;
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bold;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper--header .header-title {
+  font-size: 32px;
+  font-weight: bold;
+  padding-top: 5px;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper--header .header-attempt-number {
+  font-size: 20px;
+  padding-top: 5px;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper--header .header-grading-info {
+  font-size: 20px;
+  color: #747474;
+  padding-top: 5px;
+}
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper--header .header-buttons {
+  padding-top: 5px;
+}
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message {
   margin-left: 54px;
   margin-bottom: 33px;
@@ -9336,15 +9448,11 @@ fieldset[disabled] .button_student {
   font-size: 16px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message__deadline-moved .deadline-move-info {
-  margin-left: 30px;
   color: #747474;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message .btn {
   display: inline-block;
   padding: 1px 1px;
-}
-.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message__grade {
-  font-weight: bold;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message__grade .devilry-core-grade-passed {
   color: #fff;

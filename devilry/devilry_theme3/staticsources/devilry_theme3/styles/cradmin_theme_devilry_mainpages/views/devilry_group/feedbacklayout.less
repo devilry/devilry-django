@@ -93,6 +93,66 @@
     margin-left: -(@devilry-feedbackfeed-leftmargin);
   }
 
+  &__feedbackset-wrapper {
+
+    // feedbackset wrapper header style.
+    .header{
+      display: block;
+      text-align: center;
+      margin-bottom: @devilry-vertical-rythm--medium;
+      background-color: @comment-background-color;
+      min-height: 5.0em;
+      padding: @devilry-spacing--small;
+
+      .devilry-core-grade-passed {
+        color: @devilry-brand-color-success;
+        display: inline-block;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      .devilry-core-grade-failed {
+        color: @devilry-brand-color-danger-dark;
+        display: inline-block;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      .header-title{
+        font-size: 32px;
+        font-weight: bold;
+        padding-top: 5px;
+      }
+
+      .header-attempt-number{
+        font-size: 20px;
+        padding-top: 5px;
+      }
+
+      .header-grading-info{
+        font-size: 20px;
+        color: @devilry-brand-muted-color;
+        padding-top: 5px;
+      }
+
+      .header-buttons{
+        padding-top: 5px;
+      }
+    }
+
+    // Used if the feedbackset is the first in the feed, we don't additional spacing
+    // between the feed header and the feedbackset wrapper header.
+    &--header-first-attempt {
+      .header;
+    }
+
+    // Used if feedbackset is not the first in the feed.
+    &--header {
+      .header;
+      margin-top: (@devilry-unit * 20);
+    }
+  }
+
   /*
   Event messages such as passed, failed and general messages between comments.
   */
@@ -102,8 +162,6 @@
     margin-top: (@devilry-vertical-rythm--medium + @devilry-spacing--small);
     font-size: @font-size-base;
 
-    &__deadline-created{}
-
     &__deadline-expired{}
 
     &__passed {}
@@ -112,7 +170,7 @@
 
     &__deadline-moved {
       .deadline-move-info {
-        margin-left: (@devilry-feedbackfeed-leftmargin);
+        //margin-left: (@devilry-feedbackfeed-leftmargin);
         color: @devilry-brand-muted-color;
       }
     }
@@ -123,7 +181,7 @@
     }
 
     &__grade {
-      font-weight: bold;
+      //font-weight: bold;
 
       .devilry-core-grade-passed {
         color: @devilry-brand-success-color;
