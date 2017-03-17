@@ -3,19 +3,11 @@
 {% load cradmin_tags %}
 {% load i18n %}
 
-{% block details %}
-    {% trans "New deadline" context 'devilry_group feedbackfeed' %}:
-    <strong>{{ me.value.deadline_new|date:'DATETIME_FORMAT' }}</strong>
-    {% if me.devilry_viewrole == 'examiner' %}
-        {% if me.group.cached_data.last_feedbackset == me.feedbackset and me.is_last == True %}
-            <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="move-deadline" deadline=me.deadline_as_string group_id=me.group.id %}"
-                   class="btn btn-default devilry-group-event__deadline-expired-last-move-deadline-button">
-                    {% trans "Move current deadline" %}
-                </a>
-        {% endif %}
-    {% endif %}
+{% block content %}
     <p class="muted deadline-move-info">
-        {% trans 'Previous deadline' %}:
-        {{ me.value.deadline_old }}
+        {% trans 'Deadline moved from ' %}
+        <strong>{{ me.value.deadline_old }}</strong>
+        {% trans ' to ' %}
+        <strong>{{ me.value.deadline_new }}</strong>
     </p>
-{% endblock details %}
+{% endblock content %}

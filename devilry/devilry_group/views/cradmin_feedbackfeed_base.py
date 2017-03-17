@@ -165,33 +165,31 @@ class FeedbackFeedBaseView(create.CreateView):
         """
         context = super(FeedbackFeedBaseView, self).get_context_data(**kwargs)
         assignment = self.__get_assignment()
+        group = self.request.cradmin_role
+        # Build the timeline for the feedbackfeed
+        builder_queryset = builder_base.get_feedbackfeed_builder_queryset(
+                group,
+                self.request.user,
+                self.get_devilryrole())
+
+        built_timeline = self.__build_timeline(assignment, builder_queryset)
+        last_feedbackset = group.cached_data.last_feedbackset
         context['devilry_ui_role'] = self.get_devilryrole()
-        context['group'] = self.request.cradmin_role
+        context['group'] = group
         context['subject'] = assignment.period.subject
         context['period'] = assignment.period
         context['assignment'] = assignment
-
-        # Build the timeline for the feedbackfeed
-        builder_queryset = builder_base.get_feedbackfeed_builder_queryset(
-                self.request.cradmin_role,
-                self.request.user,
-                self.get_devilryrole())
-        built_timeline = self.__build_timeline(assignment, builder_queryset)
-        last_feedbackset = built_timeline.get_last_feedbackset()
-        context['last_deadline'] = built_timeline.get_last_deadline()
-        context['timeline'] = built_timeline.timeline
-        context['feedbacksets'] = built_timeline.feedbacksets
+        context['last_deadline'] = last_feedbackset.deadline_datetime
         context['last_feedbackset'] = last_feedbackset
         context['current_date'] = datetime.datetime.now()
         context['last_deadline_as_string'] = datetimeutils\
             .datetime_to_url_string(last_feedbackset.deadline_datetime)
-        context['listbuilder_list'] = feedbackfeed_timeline.TimelineListBuilderList.from_built_timeline(
+        context['listbuilder_list'] = feedbackfeed_timeline.TimeLineListBuilderList.from_built_timeline(
             built_timeline,
             group=self.request.cradmin_role,
             devilryrole=self.get_devilryrole(),
             assignment=assignment
         )
-
         # Build the sidebar using the fetched data from timelinebuilder
         if self.get_available_commentfile_count_for_user() > 0:
             built_sidebar = self.__build_sidebar(assignment, builder_queryset)

@@ -538,7 +538,7 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup
         )
-        grade_result = mockresponse.selector.one('.devilry-core-grade').alltext_normalized
+        grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
         self.assertEquals(grade_result, 'passed')
 
     def test_get_event_grading_passed_failed_result_failed(self):
@@ -548,7 +548,7 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup
         )
-        grade_result = mockresponse.selector.one('.devilry-core-grade').alltext_normalized
+        grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
         self.assertEquals(grade_result, 'failed')
 
     def test_get_event_grading_points_result_passed(self):
@@ -564,7 +564,7 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup
         )
-        grade_result = mockresponse.selector.one('.devilry-core-grade').alltext_normalized
+        grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
         self.assertEquals(grade_result, '75/100 (passed)')
 
     def test_get_event_grading_points_result_failed(self):
@@ -580,7 +580,7 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup
         )
-        grade_result = mockresponse.selector.one('.devilry-core-grade').alltext_normalized
+        grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
         self.assertEquals(grade_result, '25/100 (failed)')
 
     def test_get_event_grading_grade_mapper_failed(self):
@@ -607,7 +607,7 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup
         )
-        grade_result = mockresponse.selector.one('.devilry-core-grade').alltext_normalized
+        grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
         self.assertEquals(grade_result, 'F (failed)')
 
     def test_get_event_grading_grade_mapper_passed(self):
@@ -634,7 +634,7 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup
         )
-        grade_result = mockresponse.selector.one('.devilry-core-grade').alltext_normalized
+        grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
         self.assertEquals(grade_result, 'E (passed)')
 
     def test_get_event_grading_grade_mapper_failed_can_see_points(self):
@@ -662,7 +662,7 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup
         )
-        grade_result = mockresponse.selector.one('.devilry-core-grade').alltext_normalized
+        grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
         self.assertEquals(grade_result, 'F (failed - 5/35)')
 
     def test_get_event_grading_grade_mapper_passed_can_see_points(self):
@@ -690,7 +690,7 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup
         )
-        grade_result = mockresponse.selector.one('.devilry-core-grade').alltext_normalized
+        grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
         self.assertEquals(grade_result, 'E (passed - 10/35)')
 
 
@@ -1075,7 +1075,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
                    _quantity=20)
         mock_cradmininstance = mock.MagicMock()
         mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'student'
-        with self.assertNumQueries(17):
+        with self.assertNumQueries(18):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=candidate.relatedstudent.user,
                                                cradmin_instance=mock_cradmininstance)
@@ -1110,7 +1110,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
                    filename='test2.py',
                    comment=comment2,
                    _quantity=20)
-        with self.assertNumQueries(20):
+        with self.assertNumQueries(21):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=candidate.relatedstudent.user)
         self.assertEquals(1, group_models.FeedbackSet.objects.count())

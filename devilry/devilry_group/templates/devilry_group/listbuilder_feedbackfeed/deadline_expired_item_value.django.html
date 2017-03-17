@@ -4,23 +4,7 @@
 {% load i18n %}
 
 {% block details %}
-    {% if me.devilry_viewrole == 'examiner' %}
-        {% if me.group.cached_data.last_feedbackset == me.feedbackset %}
-            <span class="devilry-group-event__deadline-expired-last">
-                <strong> {% trans "Deadline expired" context 'devilry_group feedbackfeed' %}</strong>
-                <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="move-deadline" deadline=me.deadline_as_string group_id=me.group.id %}"
-                   class="btn btn-default devilry-group-event__deadline-expired-last-move-deadline-button">
-                    {% trans "Move deadline" %}
-                </a>
-            </span>
-        {% else %}
-            <span class="devilry-group-event__deadline-expired-before-last">
-                <strong> {% trans "Deadline expired" context 'devilry_group feedbackfeed' %}</strong>
-            </span>
-        {% endif %}
-    {% else %}
-        <span class="devilry-group-event__deadline-expired">
-            <strong> {% trans "Deadline expired" context 'devilry_group feedbackfeed' %}</strong>
-        </span>
-    {% endif %}
+    <span class="devilry-group-event__deadline-expired">
+        <strong> {% trans "Deadline expired" context 'devilry_group feedbackfeed' %}</strong>
+    </span>
 {% endblock details %}

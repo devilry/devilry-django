@@ -26,36 +26,6 @@
                         </p>
                     </div>
                 </div>
-                <div class="col-sm-5 devilry-group-feedbackfeed-current-deadline-wrapper">
-                    {% if last_deadline %}
-                        <h2 class="devilry-group-feedbackfeed-current-deadline-heading">
-                            {% trans "Current deadline" %}
-                        </h2>
-                        <p class="
-                            {% if current_date >= last_deadline %}
-                                devilry-group-feedbackfeed-current-deadline-expired
-                            {% else %}
-                                devilry-group-feedbackfeed-current-deadline
-                            {% endif %}">
-                            {% if current_date >= last_deadline %}
-                                <span class="devilry-group-feedbackfeed-current-deadline-expired-label">
-                                    {% trans "Expired" %} -
-                                </span>
-                            {% endif %}
-                            <span class="devilry-group-feedbackfeed-current-deadline-datetime">
-                                {% if devilry_ui_role == 'examiner' %}
-                                {% endif %}
-                                {{ last_deadline|date:"SHORT_DATETIME_FORMAT" }}
-                            </span>
-                        </p>
-                        {% if devilry_ui_role == 'examiner' %}
-                            <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="move-deadline" deadline=last_deadline_as_string group_id=group.id %}"
-                               class="btn btn-default btn-sm">
-                                {% trans "Move current deadline" %}
-                            </a>
-                        {% endif %}
-                    {% endif %}
-                </div>
             </div>
         </div>
     </div>
