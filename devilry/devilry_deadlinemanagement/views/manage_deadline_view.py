@@ -44,10 +44,14 @@ class ManageDeadlineForm(SelectedItemsForm):
     def __init__(self, *args, **kwargs):
         super(ManageDeadlineForm, self).__init__(*args, **kwargs)
         self.fields['new_deadline'].widget = DateTimePickerWidget(
-            minimum_datetime=timezone.now().replace(second=0, microsecond=0),
+            minimum_datetime=self.get_minimum_datetime(),
         )
         self.fields['new_deadline'].help_text = ugettext_lazy('Pick a date and time from the '
                                                               'calendar, or select one of the suggested deadlines.')
+
+    def get_minimum_datetime(self):
+        minimum_datetime = timezone.now() + timezone.timedelta(days=3)
+        return minimum_datetime.replace(second=0, microsecond=0)
 
     def clean(self):
         super(ManageDeadlineForm, self).clean()
