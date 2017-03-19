@@ -6,7 +6,6 @@ from devilry.apps.core import models as core_models
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.models import GroupComment
 from devilry.devilry_group.tests.test_feedbackfeed.mixins import test_feedbackfeed_common
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 
 
 class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMixin):
@@ -213,64 +212,6 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
         self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-groupcomment-draft-edit'))
         self.assertTrue('Edit',
                         mockresponse.selector.one('.devilry-feedbackfeed-groupcomment-draft-edit').alltext_normalized)
-
-    def test_get_feedbackset_header_grading_info_passed(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
-        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            requestuser=examiner.relatedexaminer.user,
-        )
-        self.assertEquals(mockresponse.selector.one('.header-grading-info').alltext_normalized, 'passed (1/1)')
-
-    def test_get_feedbackset_header_grading_info_failed(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=0)
-        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            requestuser=examiner.relatedexaminer.user,
-        )
-        self.assertEquals(mockresponse.selector.one('.header-grading-info').alltext_normalized, 'failed (0/1)')
-
-    def test_get_feedbackset_header_buttons_not_graded(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            requestuser=examiner.relatedexaminer.user,
-        )
-        self.assertEquals(
-            mockresponse.selector.one('.devilry-group-event__grade-move-deadline-button').alltext_normalized,
-            'Move deadline')
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-event__grade-last-edit-button'))
-        self.assertNotIn('Edit grade', mockresponse.response.content)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-event__grade-last-new-attempt-button'))
-        self.assertNotIn('Give new attempt', mockresponse.response.content)
-
-    def test_get_feedbackset_header_buttons_graded(self):
-        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        group_mommy.feedbackset_first_attempt_published(group=testgroup)
-        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup,
-            requestuser=examiner.relatedexaminer.user,
-        )
-        self.assertEquals(
-            mockresponse.selector.one('.devilry-group-event__grade-move-deadline-button').alltext_normalized,
-            'Move deadline')
-        self.assertEquals(
-            mockresponse.selector.one('.devilry-group-event__grade-last-edit-button').alltext_normalized,
-            'Edit grade')
-        self.assertEquals(
-            mockresponse.selector.one('.devilry-group-event__grade-last-new-attempt-button').alltext_normalized,
-            'Give new attempt')
 
     # def test_get_num_queries(self):
     #     testgroup = mommy.make('core.AssignmentGroup')
