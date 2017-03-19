@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from datetime import timedelta, datetime
-from devilry.project.common.formats.nb import formats
-from django.utils.dateparse import parse_date
+from datetime import timedelta
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.utils import timezone
+from django.conf import settings
 from model_mommy import mommy
 
 from devilry.devilry_comment import models as comment_models

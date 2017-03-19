@@ -80,6 +80,15 @@ class FeedbackFeedTimelineBuilder(AbstractTimelineBuilder, builder_base.Feedback
         super(FeedbackFeedTimelineBuilder, self). __init__(**kwargs)
         self.time_line = {}
 
+    def get_as_list_flat(self):
+        timeline_list = []
+        for datetime_obj in sorted(self.time_line.keys()):
+            for event_dict in self.time_line[datetime_obj]:
+                timeline_list.append(event_dict)
+                for feedbackset_event_dict in event_dict['feedbackset_events']:
+                    timeline_list.append(feedbackset_event_dict)
+        return timeline_list
+
     def build(self):
         for feedback_set in self.feedbacksets:
             feedback_set_event = FeedbackSetEventTimeLine(

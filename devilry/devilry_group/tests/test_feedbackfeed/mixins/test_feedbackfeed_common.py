@@ -225,3 +225,55 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
         expired = mockresponse.selector.list('.devilry-group-feedbackfeed-event-message__deadline-expired')
         self.assertEqual(2, len(expired))
         self.assertEquals(2, group_models.FeedbackSet.objects.count())
+
+    def test_get_feedbackset_header(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+        )
+        self.assertTrue(
+            mockresponse.selector.one('.devilry-group-feedbackfeed-feed__feedbackset-wrapper--header-first-attempt'))
+
+    def test_get_feedbackset_header_title(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        with self.settings(DATETIME_FORMAT='l j F, Y, H:i', USE_L10N=False):
+            mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup,
+            )
+        self.assertEquals(mockresponse.selector.one('.header-title').alltext_normalized,
+                          'Deadline: Saturday 15 January, 2000, 23:59')
+
+    def test_get_feedbackset_header_attempt(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+        )
+        self.assertEquals(mockresponse.selector.one('.header-attempt-number').alltext_normalized,
+                          'Attempt 1')
+
+    def test_get_feedbackset_header_grading_info_waiting_for_feedback(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+        )
+        self.assertEquals(mockresponse.selector.one('.header-grading-info').alltext_normalized, 'Waiting for feedback')
+
+    def test_get_feedbackset_header_two_attempts(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        group_mommy.feedbackset_new_attempt_unpublished(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+        )
+        self.assertEquals(mockresponse.selector.list('.header-attempt-number')[0].alltext_normalized,
+                          'Attempt 1')
+        self.assertEquals(mockresponse.selector.list('.header-attempt-number')[1].alltext_normalized,
+                          'Attempt 2')
