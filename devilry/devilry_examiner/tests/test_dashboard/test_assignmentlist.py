@@ -76,7 +76,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testuser,
                                                           requestuser=testuser)
         self.assertEqual(
-            'Dashboard for the examiner role. You use this role to provide feedback to students.',
+            'Listing of assigments where you are set as examiner.',
             mockresponse.selector.one('.devilry-page-subheader').alltext_normalized)
 
     def test_not_assignments_where_not_examiner(self):
