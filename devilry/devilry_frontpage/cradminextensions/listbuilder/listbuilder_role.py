@@ -63,7 +63,7 @@ class AnyAdminRoleItemValue(AbstractRoleItemValue):
 
     def get_description(self):
         return pgettext_lazy('roleselect',
-                             'Administrators manage departments, courses, semesters and assignments.')
+                             'Manage departments, courses, semesters and assignments.')
 
 
 class AbstractRoleItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):

@@ -1,7 +1,7 @@
 # Dependencies required for development
 -r common.txt
 
-django-debug-toolbar==1.4
+django-debug-toolbar==1.5
 
 # django_dbdev==0.9.4
 django_dbdev==1.0.0

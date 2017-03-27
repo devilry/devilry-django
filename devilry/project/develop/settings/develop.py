@@ -11,7 +11,8 @@ DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(developfilesdir, 'devilry_c
 profiler_middleware = False
 if profiler_middleware:
     MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
-        'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
+        'devilry.utils.profile.ProfilerMiddleware', # Enable profiling. Just add ?prof=yes to any url to see a profile report
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
     ]
 
 # DELAY_MIDDLEWARE_TIME = (80, 120) # Wait for randint(*DELAY_MIDDLEWARE_TIME)/100.0 before responding to each request when using DelayMiddleware
@@ -23,7 +24,7 @@ if profiler_middleware:
 
 
 INSTALLED_APPS += [
-    # 'debug_toolbar'
+    'debug_toolbar',
 ]
 
 
