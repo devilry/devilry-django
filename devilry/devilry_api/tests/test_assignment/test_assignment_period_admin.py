@@ -279,6 +279,18 @@ class TestPeriodAdminAssignmentViewPost(api_test_helper.TestCaseMixin,
         self.assertEqual(400, response.status_code)
         self.assertEqual(['This field is required.'], response.data['publishing_time'])
 
+    def test_first_deadline_missing(self):
+        period_admin = core_mommy.period_admin(period=mommy.make('core.Period', id=10))
+        apikey = api_mommy.api_key_admin_permission_write(user=period_admin.user)
+        response = self.mock_post_request(apikey=apikey.key, data={
+            'period_id': 10,
+            'short_name': 'assignment1',
+            'long_name': 'The best assignment',
+            'publishing_time': core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME
+        })
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(['This field is required.'], response.data['first_deadline'])
+
     def test_post_assignment_sanity(self):
         period_admin = core_mommy.period_admin(period=mommy.make('core.Period', id=10,
                                                                  short_name='spriiiiing',
@@ -288,7 +300,8 @@ class TestPeriodAdminAssignmentViewPost(api_test_helper.TestCaseMixin,
             'period_id': 10,
             'short_name': 'assignment1',
             'long_name': 'The best assignment',
-            'publishing_time': core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME
+            'publishing_time': core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME,
+            'first_deadline': core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_FIRST_DEADLINE
         })
         self.assertEqual(201, response.status_code)
         self.assertEqual(response.data['anonymizationmode'], Assignment.ANONYMIZATIONMODE_OFF)
@@ -307,7 +320,8 @@ class TestPeriodAdminAssignmentViewPost(api_test_helper.TestCaseMixin,
             'period_id': 10,
             'short_name': 'assignment1',
             'long_name': 'The best assignment',
-            'publishing_time': core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME
+            'publishing_time': core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME,
+            'first_deadline': core_recipes.ASSIGNMENT_ACTIVEPERIOD_MIDDLE_FIRST_DEADLINE
         })
         self.assertEqual(201, response.status_code)
         assignment = Assignment.objects.get(id=response.data['id'])

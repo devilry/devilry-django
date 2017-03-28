@@ -77,6 +77,11 @@ class PeriodAdminAssignmentView(mixins.CreateModelMixin,
               required: true
               type: DateTime
               description: The time when the assignment is to be published (visible to students and examiners).
+            - name: first_deadline
+              paramType: form
+              required: true
+              ty[e: DateTime
+              description: The deadline date time of the first deadline.
 
         """
         return super(PeriodAdminAssignmentView, self).create(request, *args, **kwargs)
