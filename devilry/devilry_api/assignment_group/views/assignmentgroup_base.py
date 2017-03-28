@@ -99,9 +99,6 @@ class BaseAssignmentGroupView(ListAPIView):
             .prefetch_related(
                 models.Prefetch('examiners',
                                 queryset=self.get_examiner_queryset())) \
-            .annotate_with_is_waiting_for_feedback() \
-            .annotate_with_is_waiting_for_deliveries() \
-            .annotate_with_is_corrected() \
             .distinct()
 
         id = self.request.query_params.get('id', None)
