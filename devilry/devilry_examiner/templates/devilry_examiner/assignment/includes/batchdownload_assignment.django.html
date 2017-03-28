@@ -1,0 +1,32 @@
+{% load devilry_group_tags %}
+{% load cradmin_tags %}
+{% load i18n %}
+
+<div class="devilry-batchprocessed-download devilry-batchprocessed-download--none"
+            data-ievv-jsbase-widget="devilry-download-compressed-archive"
+            data-ievv-jsbase-widget-config='{
+                 "apiurl": "{% cradmin_instance_url appname="download" viewname="assignment-file-download-api" content_object_id=assignment.id %}",
+                 "signalNameSpace": "download-assignment-{{ assignment.id }}"
+            }'>
+    <span class="devilry-batchprocessed-download__preparing-download">
+        <span class="fa fa-spinner fa-spin" aria-hidden="true"></span>
+        <span class="text-muted">{% trans "preparing download" %}</span>
+    </span>
+    <button class="btn btn-default devilry-batchprocessed-download__startbutton"
+            data-ievv-jsbase-widget="devilry-download-compressed-archive-startbutton"
+                data-ievv-jsbase-widget-config='{
+                     "signalNameSpace": "download-assignment-{{ assignment.id }}"
+                }'>
+        {% trans "Download assignment" %}
+    </button>
+    <a class="btn btn-default devilry-batchprocessed-download__downloadlink"
+            data-ievv-jsbase-widget="devilry-download-compressed-archive-downloadlink"
+            data-ievv-jsbase-widget-config='{
+                 "signalNameSpace": "download-assignment-{{ assignment.id }}"
+            }'>
+        <small class="text-muted devilry-batchprocessed-download__download-ready-message">
+            {% trans "download is ready" %}
+        </small>
+        {% trans "Download assignment" %}
+    </a>
+</div>

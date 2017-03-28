@@ -10,7 +10,8 @@ from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
-from devilry.devilry_examiner.views.assignment import bulk_feedback
+from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_feedback
+from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_feedback_simple
 
 
 class GroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
@@ -114,9 +115,9 @@ class GroupListView(listbuilderview.FilterListMixin,
             .prefetch_related(
                 models.Prefetch('examiners',
                                 queryset=examinerqueryset)) \
-            .annotate_with_is_waiting_for_feedback()\
-            .annotate_with_is_waiting_for_deliveries()\
-            .annotate_with_is_corrected() \
+            .annotate_with_is_waiting_for_feedback_count()\
+            .annotate_with_is_waiting_for_deliveries_count()\
+            .annotate_with_is_corrected_count() \
             .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user) \
             .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)\
             .distinct()\
@@ -157,21 +158,21 @@ class GroupListView(listbuilderview.FilterListMixin,
         return self.get_filterlist()\
             .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
                     exclude={'status'})\
-            .filter(annotated_is_waiting_for_feedback=True)\
+            .filter(annotated_is_waiting_for_feedback__gt=0)\
             .count()
 
     def get_filtered_waiting_for_deliveries_count(self):
         return self.get_filterlist()\
             .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
                     exclude={'status'})\
-            .filter(annotated_is_waiting_for_deliveries=True)\
+            .filter(annotated_is_waiting_for_deliveries__gt=0)\
             .count()
 
     def get_filtered_corrected_count(self):
         return self.get_filterlist()\
             .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
                     exclude={'status'})\
-            .filter(annotated_is_corrected=True)\
+            .filter(annotated_is_corrected__gt=0)\
             .count()
 
     def __get_distinct_relatedexaminer_ids(self):
@@ -194,11 +195,15 @@ class GroupListView(listbuilderview.FilterListMixin,
 
     def get_context_data(self, **kwargs):
         context = super(GroupListView, self).get_context_data(**kwargs)
+        context['assignment'] = self.assignment
         context['status_filter_value_normalized'] = self.__get_status_filter_value()
         total_groupcount = self.__get_total_groupcount()
         context['excluding_filters_other_than_status_is_applied'] = \
             self.__get_excluding_filters_other_than_status_is_applied(
                 total_groupcount=total_groupcount)
+        context['total_group_count'] = total_groupcount
+        context['waiting_for_feedback_count'] = self.get_filtered_waiting_for_feedback_count()
+        context['corrected_count'] = self.get_filtered_corrected_count()
         return context
 
 
@@ -210,13 +215,26 @@ class App(crapp.App):
         crapp.Url(r'^filter/(?P<filters_string>.+)?$',
                   GroupListView.as_view(),
                   name='filter'),
-        crapp.Url(r'bulk-feedback$',
-                  bulk_feedback.BulkFeedbackView.as_view(),
+
+        # Bulk feedback views
+        crapp.Url(r'^bulk-feedback$',
+                  bulk_feedback.BulkFeedbackRedirectView.as_view(),
                   name='bulk-feedback'),
-        crapp.Url(r'bulk-feedback-points$',
+        crapp.Url(r'^bulk-feedback-points$',
                   bulk_feedback.BulkFeedbackPointsView.as_view(),
                   name='bulk-feedback-points'),
-        crapp.Url(r'bulk-feedback-passedfailed',
+        crapp.Url(r'^bulk-feedback-passedfailed$',
                   bulk_feedback.BulkFeedbackPassedFailedView.as_view(),
-                  name='bulk-feedback-passedfailed')
+                  name='bulk-feedback-passedfailed'),
+        crapp.Url(r'^bulk-feedback-points-filter/filter/(?P<filters_string>.+)?$',
+                  bulk_feedback.BulkFeedbackPointsView.as_view(),
+                  name='bulk-feedback-points-filter'),
+        crapp.Url(r'^bulk-feedback-passedfailed/filter/(?P<filters_string>.+)?$',
+                  bulk_feedback.BulkFeedbackPassedFailedView.as_view(),
+                  name='bulk-feedback-passedfailed-filter'),
+
+        # Bulk feedback simple
+        crapp.Url(r'^bulk-feedback-simple$',
+                  bulk_feedback_simple.SimpleGroupBulkFeedbackView.as_view(),
+                  name='bulk-feedback-simple')
     ]

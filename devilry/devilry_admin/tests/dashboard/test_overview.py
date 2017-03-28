@@ -316,3 +316,15 @@ class TestOverviewSubjectListViewApp(TestCase, cradmin_testhelpers.TestCaseMixin
             'C',
             mockresponse.selector.one(
                 '.django-cradmin-listbuilder-list li:nth-child(3)').alltext_normalized)
+
+    def test_createsubject_button_not_superuser_not_rendered(self):
+        mommy.make('core.Subject')
+        requestuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=False)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
+        self.assertFalse(mockresponse.selector.exists('#id_createsubject_button'))
+
+    def test_createsubject_button_is_superuser_rendered(self):
+        mommy.make('core.Subject')
+        requestuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=requestuser)
+        self.assertTrue(mockresponse.selector.exists('#id_createsubject_button'))

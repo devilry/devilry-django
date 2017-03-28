@@ -1,0 +1,29 @@
+<table class="devilry-qualifiesforexam-table">
+    <tr class="devilry-qualifiesforexam-tr">
+        <th class="devilry-qualifiesforexam-th">
+            <h4>Student</h4>
+        </th>
+        <th class="devilry-qualifiesforexam-th">
+            <h4>Qualified for final exams</h4>
+        </th>
+    </tr>
+    {% for relatedstudent in relatedstudents %}
+        <a class="devilry-qualifiesforexam-link">
+            <tr class="devilry-qualifiesforexam-tr">
+                <td class="devilry-qualifiesforexam-cell-studentinfo">
+                    <h3> {{ relatedstudent.user.fullname }}</h3>
+                    <h5> {{ relatedstudent.user.shortname }}</h5>
+                </td>
+                {% if relatedstudent.id in passing_relatedstudentids %}
+                    <td class="devilry-qualifiesforexam-cell-qualify">
+                        <h2><span class="label label-success">YES</span></h2>
+                    </td>
+                {% else %}
+                    <td class="devilry-qualifiesforexam-cell-qualify">
+                        <h2><span class="label label-warning">NO</span></h2>
+                    </td>
+                {% endif %}
+            </tr>
+        </a>
+    {% endfor %}
+</table>

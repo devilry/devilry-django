@@ -14,7 +14,8 @@ from abstract_is_candidate import AbstractIsCandidate
 from abstract_is_examiner import AbstractIsExaminer
 from basenode import BaseNode
 from custom_db_fields import ShortNameField, LongNameField
-from devilry.apps.core.models.relateduser import RelatedStudentSyncSystemTag, RelatedExaminerSyncSystemTag
+# from devilry.apps.core.models.relateduser import RelatedStudentTag, RelatedExaminerTag
+from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import User, PeriodPermissionGroup
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
 from .node import Node
@@ -301,7 +302,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         If this is ``True`` students should be allowed to join/leave groups.
         If :attr:`.students_can_not_create_groups_after` is specified, this
         students can not create groups after ``students_can_not_create_groups_after``
-        even if this is ``True``.
+        even if this is ``True``.ar 16 2017, 17:45 : This delivery was corrected, and given:
 
         This does not in any way affect an admins ability to organize students
         in groups manually.
@@ -400,8 +401,20 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                           'examiners after the first feedback is provided.')
         ),
     ]
+
     #: Dictionary for getting the :obj:`~.Assignment.ANONYMIZATIONMODE_CHOICES` descriptions
     ANONYMIZATIONMODE_CHOICES_DICT = dict(ANONYMIZATIONMODE_CHOICES)
+
+    #: Dictionary mapping :obj:`.Assignment.anonymizationmode` choices to short
+    #: labels.
+    ANONYMIZATIONMODE_CHOICES_SHORT_LABEL_DICT = {
+        ANONYMIZATIONMODE_OFF: pgettext_lazy(
+            'assignment anonymizationmode', 'off'),
+        ANONYMIZATIONMODE_SEMI_ANONYMOUS: pgettext_lazy(
+            'assignment anonymizationmode', 'semi anonymous'),
+        ANONYMIZATIONMODE_FULLY_ANONYMOUS: pgettext_lazy(
+            'assignment anonymizationmode', 'fully anonymized'),
+    }
 
     #: A choicefield that specifies how the assignment is anonymized (or not).
     #:
@@ -457,16 +470,13 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         help_text=('Percent to scale points on this assignment by for '
                    'period overviews. The default is 100, which means '
                    'no change to the points.'))
-    first_deadline = models.DateTimeField(blank=True, null=True)
+    first_deadline = models.DateTimeField(blank=False, null=False)
 
     max_points = models.PositiveIntegerField(
         null=True, blank=True,
-        verbose_name=_('Maximum points'),
-        help_text=_('Specify the maximum number of points possible for this assignment.'),
         default=1)
     passing_grade_min_points = models.PositiveIntegerField(
         null=True, blank=True,
-        verbose_name=_('Minumum number of points required to pass'),
         default=1)
 
     #: The "passed-or-failed" value for :obj:`~.Assignment.points_to_grade_mapper`.
@@ -487,17 +497,17 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         (
             POINTS_TO_GRADE_MAPPER_PASSED_FAILED,
             pgettext_lazy('assignment points-to-grade mapper',
-                          'As passed or failed')
+                          'Passed or failed')
         ),
         (
             POINTS_TO_GRADE_MAPPER_RAW_POINTS,
             pgettext_lazy('assignment points-to-grade mapper',
-                          'As points')
+                          'Points')
         ),
         (
             POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
             pgettext_lazy('assignment points-to-grade mapper',
-                          'As a text looked up in a custom table')
+                          'Lookup in a table defined by you (A-F, and other grading systems)')
         ),
     ]
     #: Dictionary for getting the :obj:`~.Assignment.POINTS_TO_GRADE_MAPPER_CHOICES` descriptions
@@ -516,7 +526,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED = 'devilry_gradingsystemplugin_approved'
     GRADING_SYSTEM_PLUGIN_ID_POINTS = 'devilry_gradingsystemplugin_points'
-    GRADING_SYSTEM_PLUGIN_ID_SCHEMA = 'schema'
+    # GRADING_SYSTEM_PLUGIN_ID_SCHEMA = 'schema'
     GRADING_SYSTEM_PLUGIN_ID_CHOICES = [
         (
             GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED,
@@ -531,13 +541,14 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                 'POINTS. The examiner types in the number of points to award the '
                 'student(s) for this assignment.')
         ),
-        (
-            GRADING_SYSTEM_PLUGIN_ID_SCHEMA,
-            pgettext_lazy(
-                'assignment grading plugin',
-                'SCHEMA. The examiner fill in a schema defined by you.')
-        )
+        # (
+        #     GRADING_SYSTEM_PLUGIN_ID_SCHEMA,
+        #     pgettext_lazy(
+        #         'assignment grading plugin',
+        #         'SCHEMA. The examiner fill in a schema defined by you.')
+        # )
     ]
+
     #: Dictionary for getting the :obj:`~.Assignment.GRADING_SYSTEM_PLUGIN_ID_CHOICES` descriptions
     GRADING_SYSTEM_PLUGIN_ID_CHOICES_DICT = dict(GRADING_SYSTEM_PLUGIN_ID_CHOICES)
 
@@ -835,7 +846,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     def get_point_to_grade_map(self):
         """
-        Get the :class:`~devilry.apps.core.models.PointToGradeMap` for this assinment,
+        Get the :class:`~devilry.apps.core.models.PointToGradeMap` for this assignment,
         or ``None`` if there is no PointToGradeMap for this assignment.
         """
         if not hasattr(self, 'prefetched_point_to_grade_map'):
@@ -861,9 +872,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def points_is_passing_grade(self, points):
         """
         Checks if the given points represents a passing grade.
-
-        WARNING: This will only work if ``passing_grade_min_points`` is set. The best
-        way to check that is with :meth:`.has_valid_grading_setup`.
         """
         return points >= self.passing_grade_min_points
 
@@ -924,7 +932,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     def _clean_first_deadline(self, errors):
         # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
-        self.first_deadline = self.first_deadline.replace(microsecond=0, tzinfo=None)
+        self.first_deadline = self.first_deadline.replace(second=0, microsecond=0, tzinfo=None)
 
         if self.first_deadline > self.parentnode.end_time or self.first_deadline < self.parentnode.start_time:
             errors['first_deadline'] = _("First deadline must be within %(periodname)s, "
@@ -1081,9 +1089,18 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             candidates.append(candidate)
         Candidate.objects.bulk_create(candidates)
 
+    def __prefetch_relatedstudents_with_candidates(self):
+        from devilry.apps.core.models import Candidate
+        return RelatedStudent.objects\
+            .select_related('user')\
+            .prefetch_related(
+                models.Prefetch('candidate_set',
+                                queryset=Candidate.objects.select_related('assignment_group')))
+
     def setup_examiners_by_relateduser_syncsystem_tags(self):
         from devilry.apps.core.models import Candidate
         from devilry.apps.core.models import Examiner
+        import period_tag
         period = self.period
 
         # We use this to avoid adding examiners to groups they are already on
@@ -1092,38 +1109,23 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         groupid_to_examineruserid_map = dict(Examiner.objects.filter(
             assignmentgroup__parentnode=self).values_list('assignmentgroup_id', 'relatedexaminer__user_id'))
 
-        # We collect all the examiners to be created in this list, and bulk create
-        # them at the end
         examinerobjects = []
+        for periodtag in period_tag.PeriodTag.objects.filter(period=period):
+            relatedstudentids = [relatedstudent.id for relatedstudent in periodtag.relatedstudents.all()]
 
-        for relatedexaminer_syncsystem_tag in RelatedExaminerSyncSystemTag.objects\
-                .filter(relatedexaminer__period=period)\
-                .select_related('relatedexaminer__user'):
-
-            # Step1: Collect all relatedstudents with same tag as examiner
-            relatedstudentids = []
-            for relatedstudent_syncsystem_tag in RelatedStudentSyncSystemTag.objects\
-                    .filter(relatedstudent__period=period,
-                            tag=relatedexaminer_syncsystem_tag.tag):
-                relatedstudentids.append(relatedstudent_syncsystem_tag.relatedstudent_id)
-
-            # Step2: Find the group of all the students matching the tag
-            #        and bulk create Examiner objects for the groups
-            #        if the user is not already examiner.
             if relatedstudentids:
-                relatedexaminer = relatedexaminer_syncsystem_tag.relatedexaminer
-                examineruser = relatedexaminer_syncsystem_tag.relatedexaminer.user
-                groupids = set()
-                for candidate in Candidate.objects\
-                        .filter(assignment_group__parentnode=self,
-                                relatedstudent_id__in=relatedstudentids)\
-                        .distinct():
-                    if groupid_to_examineruserid_map.get(candidate.assignment_group_id, None) != examineruser.id:
-                        groupids.add(candidate.assignment_group_id)
-
-                examinerobjects.extend([Examiner(
-                    assignmentgroup_id=groupid,
-                    relatedexaminer=relatedexaminer
-                ) for groupid in groupids])
+                candidate_queryset = Candidate.objects \
+                    .filter(assignment_group__parentnode=self, relatedstudent_id__in=relatedstudentids) \
+                    .select_related('assignment_group', 'relatedstudent', 'relatedstudent__user') \
+                    .distinct()
+                for relatedexaminer in periodtag.relatedexaminers.all().select_related('user'):
+                    examineruser = relatedexaminer.user
+                    groupids = set()
+                    for candidate in candidate_queryset:
+                        if groupid_to_examineruserid_map.get(candidate.assignment_group_id, None) != examineruser.id:
+                            groupids.add(candidate.assignment_group_id)
+                    examinerobjects.extend([Examiner(
+                        assignmentgroup_id=groupid,
+                        relatedexaminer=relatedexaminer) for groupid in groupids])
         if examinerobjects:
             Examiner.objects.bulk_create(examinerobjects)

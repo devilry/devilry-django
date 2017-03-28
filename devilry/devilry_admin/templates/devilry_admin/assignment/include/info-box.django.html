@@ -1,0 +1,80 @@
+{% load i18n %}
+{% load humanize %}
+{% load cradmin_tags %}
+
+{% if show_info_box %}
+<div class="row">
+    <div class="col-sm-12">
+        <div id="devilry_admin_assignment_overview_info_box" class="alert alert-info">
+            {% if relatedstudents_count == 0 %}
+                <p>
+                <strong>{% trans 'There are no students on the semester' %}</strong>
+                </p>
+                <p>
+                    <a href="{% cradmin_url instanceid='devilry_admin_periodadmin' appname='students' roleid=assignment.period.id viewname='add' %}" class="btn btn-default">
+                        {% trans 'Add students' %}
+                    </a>
+                </p>
+            {% elif candidates_count == 0 %}
+                <p>
+                <strong>{% trans 'There are no students on the assignment' %}</strong>
+                </p>
+                <p>
+                    <a href="{% cradmin_instance_url 'create_groups' 'manual-select' %}" class="btn btn-default">
+                        {% trans 'Add students' %}
+                    </a>
+                </p>
+            {% elif relatedexaminers_count == 0 %}
+                <p>
+                <strong>{% trans 'There are no examiners on the semester' %}</strong>
+                </p>
+                <p>
+                    <a href="{% cradmin_url instanceid='devilry_admin_periodadmin' appname='examiners' roleid=assignment.period.id viewname='add' %}" class="btn btn-default">
+                        {% trans 'Add examiners' %}
+                    </a>
+                </p>
+            {% elif examiners_count == 0 %}
+                <p>
+                    <strong>{% trans 'There are no examiners on the assignment' %}</strong>
+                </p>
+                <p>
+                    <a href="{% cradmin_instance_url 'examineroverview' 'INDEX' %}" class="btn btn-default">
+                        {% trans 'Add examiners' %}
+                    </a>
+                </p>
+
+            {% elif not assignment.is_published %}
+                <p>
+                <strong>{% trans 'Everything looks good, ready to publish' %}</strong>
+                </p>
+                <p>
+                    <form id="devilry_admin_assignment_published_publishnow_form_info_box"
+                          method="post"
+                          class="devilry-form-inline"
+                          action="{% cradmin_instance_url 'overview' 'publish_assignment_now' assignment.id %}">{% csrf_token %}
+                        <input type="submit" value="{% trans "Publish now" %}" class="btn btn-success">
+                    </form>
+                </p>
+            {% elif relatedstudents_count > candidates_count %}
+                <p>
+                <strong>{% trans 'There are still students who are on the semester, but not on the assignment' %}</strong>
+                </p>
+                <p>
+                    <a href="{% cradmin_instance_url 'create_groups' 'manual-select' %}" class="btn btn-default">
+                        {% trans 'Add students' %}
+                    </a>
+                </p>
+            {% elif relatedexaminers_count > examiners_count %}
+                <p>
+                <strong>{% trans 'There are still examiners who are on the semester, but not on the assignment' %}</strong>
+                </p>
+                <p>
+                    <a href="{% cradmin_instance_url 'examineroverview' 'INDEX' %}" class="btn btn-default">
+                        {% trans 'Add examiners' %}
+                    </a>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}

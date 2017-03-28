@@ -1,0 +1,24 @@
+{% extends "django_cradmin/viewhelpers/multiselect2view/listbuilderfilterview.django.html" %}
+
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_appindex_url %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to period tags overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% blocktrans trimmed with assignmentname=assignment.long_name %}
+            {{ pageheading }}
+        {% endblocktrans %}
+    </h1>
+{% endblock pageheader-inner %}

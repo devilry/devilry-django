@@ -1,6 +1,6 @@
 from devilry.apps.core.models import Subject
 from devilry.devilry_account.models import SubjectPermissionGroup
-from devilry.devilry_admin.cradminextensions import devilry_crinstance_admin
+from devilry.devilry_cradmin import devilry_crinstance
 from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
 from devilry.devilry_admin.views.subject import admins
 from devilry.devilry_admin.views.subject import createperiod
@@ -16,7 +16,7 @@ class Menu(devilry_crmenu_admin.Menu):
         self.add_subject_breadcrumb_item(subject=subject, active=True)
 
 
-class CrAdminInstance(devilry_crinstance_admin.BaseCrInstanceAdmin):
+class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
     menuclass = Menu
     roleclass = Subject
     apps = [

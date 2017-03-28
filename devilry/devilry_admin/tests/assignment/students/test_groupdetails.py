@@ -120,7 +120,7 @@ class TestGroupDetailsRenderable(test.TestCase):
     def test_status_is_corrected(self):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             grading_points=1)
-        testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        testgroup = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
                                                                assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-status'))
@@ -128,7 +128,7 @@ class TestGroupDetailsRenderable(test.TestCase):
     def test_status_is_waiting_for_feedback(self):
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start'))
-        testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+        testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count().first()
         selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
                                                                assignment=testgroup.assignment).render())
         self.assertEqual(
@@ -140,7 +140,7 @@ class TestGroupDetailsRenderable(test.TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group__parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                 first_deadline=timezone.now() + timedelta(days=2)))
-        testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        testgroup = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count().first()
         selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
                                                                assignment=testgroup.assignment).render())
         self.assertEqual(
@@ -150,7 +150,7 @@ class TestGroupDetailsRenderable(test.TestCase):
 
     def test_grade_not_available_unless_corrected(self):
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished()
-        testgroup = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        testgroup = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         selector = htmls.S(groupdetails.GroupDetailsRenderable(value=testgroup,
                                                                assignment=testgroup.assignment).render())
         self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue-grade'))
@@ -202,6 +202,22 @@ class TestGroupDetailsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'Test User',
             mockresponse.selector.one('h1').alltext_normalized)
+
+    def test_links(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup.assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
+            viewkwargs={'pk': testgroup.id})
+        self.assertEquals(2, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
+        self.assertEquals(
+            mock.call(appname='studentoverview', args=(), viewname='INDEX', kwargs={}),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
+        )
+        self.assertEquals(
+            mock.call(appname='split_group', args=(), viewname='INDEX', kwargs={'pk': testgroup.id}),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[1]
+        )
 
     def test_title_multiple_candidates(self):
         testgroup = mommy.make('core.AssignmentGroup')

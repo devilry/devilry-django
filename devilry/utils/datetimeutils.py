@@ -2,8 +2,6 @@ import datetime
 from django.conf import settings
 
 from django.utils import timezone
-
-
 #: Django datetime formatting string for ``YYYY-MM-DD hh:mm``.
 ISODATETIME_DJANGOFORMAT = 'Y-m-d H:i'
 
@@ -74,3 +72,42 @@ def datetime_with_same_day_of_week_and_time(weekdayandtimesource_datetime, targe
                                                     second=weekdayandtimesource_datetime.second,
                                                     microsecond=weekdayandtimesource_datetime.microsecond)
     return new_datetimeobject
+
+
+def datetime_with_same_time(timesource_datetime, target_datetime):
+    """
+    Returns a new datetime object with the same day as the given ``target_datetime``,
+    with the time replaced with the time from ``timesource_datetime``.
+    """
+    return target_datetime.replace(hour=timesource_datetime.hour,
+                                   minute=timesource_datetime.minute,
+                                   second=timesource_datetime.second,
+                                   microsecond=timesource_datetime.microsecond)
+
+
+URL_DATETIME_FORMAT = '%m_%d_%Y_%H_%M_%S'
+
+
+def datetime_to_url_string(datetime_obj):
+    """
+    Converts datetime object to URL-friendly string.
+
+    Args:
+        datetime_obj (``django.utils.timezone``): ``datetime`` obj to convert.
+
+    Returns:
+        (str): Datetime as string specified by :attr:`.URL_DATETIME_FORMAT`.
+    """
+    return datetime_obj.strftime(URL_DATETIME_FORMAT)
+
+
+def datetime_url_string_to_datetime(datetime_string):
+    """
+    Convert URL-friendly string to ``django.utils.timezone`` datetime object.
+    Args:
+        datetime_string (str): String to convert.
+
+    Returns:
+        (``django.utils.timezone``): Converted datetime object from string.
+    """
+    return timezone.datetime.strptime(datetime_string, URL_DATETIME_FORMAT)

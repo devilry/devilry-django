@@ -1,0 +1,32 @@
+{% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
+
+{% load static %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock pageheader-outer-extraclasses %}
+
+{% block pre_form %}
+    {% include excluded_groups_info_box_template %}
+{% endblock pre_form %}
+
+{% block pageheader-inner %}
+    <a href="{{ backlink_url }}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% blocktrans trimmed with assignmentname=assignment.long_name %}
+            {{ pageheading }}
+        {% endblocktrans %}
+    </h1>
+    <p class="devilry-deadlinemanagement-select-deadline-subheading">
+        {{ page_subheading }}
+    </p>
+{% endblock pageheader-inner %}

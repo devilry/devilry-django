@@ -3,7 +3,6 @@ from ievv_opensource.utils import ievvbuildstatic
 from .base import *
 
 # MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.project.develop.middleware.FakeLoginMiddleware']
-# HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 #: Where to store compressed archives for filedownloads
 DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(developfilesdir, 'devilry_compressed_archives', '')
@@ -12,49 +11,21 @@ DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(developfilesdir, 'devilry_c
 profiler_middleware = False
 if profiler_middleware:
     MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
-        'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
+        'devilry.utils.profile.ProfilerMiddleware', # Enable profiling. Just add ?prof=yes to any url to see a profile report
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
     ]
 
-#DELAY_MIDDLEWARE_TIME = (80, 120) # Wait for randint(*DELAY_MIDDLEWARE_TIME)/100.0 before responding to each request when using DelayMiddleware
-#delay_middleware = True
-#if delay_middleware:
-    #MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
-        #'devilry.utils.delay_middleware.DelayMiddleware'
-    #]
+# DELAY_MIDDLEWARE_TIME = (80, 120) # Wait for randint(*DELAY_MIDDLEWARE_TIME)/100.0 before responding to each request when using DelayMiddleware
+# delay_middleware = True
+# if delay_middleware:
+#     MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
+#         'devilry.utils.delay_middleware.DelayMiddleware'
+#     ]
 
 
 INSTALLED_APPS += [
-    # 'debug_toolbar'
+    'debug_toolbar',
 ]
-
-
-##############################################################
-#
-# Sentry
-#
-##############################################################
-# RAVEN_CONFIG = {
-#     'dsn': 'http://85cc6c611c904a0ebb4afd363fe60fe4:32988134adad4044bc7d13f85f318498@localhost:9000/2',
-# }
-
-
-##################################################################################
-# Haystack (search)
-##################################################################################
-HAYSTACK_CONNECTIONS = {  # Whoosh
-    'default': {
-        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': join(developfilesdir, 'devilry_whoosh_index'),
-    },
-}
-
-# HAYSTACK_CONNECTIONS = {  # Elastisearch
-#     'default': {
-#         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-#         'URL': 'http://127.0.0.1:9200/',
-#         'INDEX_NAME': 'haystack',
-#     },
-# }
 
 
 ##################################################################################
@@ -84,6 +55,11 @@ CELERY_EAGER_TRANSACTION = True
 #EMAIL_HOST = 'localhost'
 #EMAIL_PORT = 1025
 
+# Use the devilry_developemail package to send mails.
+# mails are stored in the database and available through /djangoadmin/
+# EMAIL_BACKEND = 'devilry.devilry_developemail.email_backend.DevelopEmailBackend'
+# INSTALLED_APPS += ['devilry.devilry_developemail']
+
 
 # For testing django-celery-email
 # INSTALLED_APPS += ['djcelery_email']
@@ -96,11 +72,6 @@ CELERY_EAGER_TRANSACTION = True
 # DEVILRY_HELP_PAGE_FOOTER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
 # DEVILRY_PROFILEPAGE_HEADER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
 # DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
-
-DEVILRY_ELASTICSEARCH_HOSTS = [
-    {"host": "localhost", "port": 9491}
-]
-
 
 # Disable migrations when running tests
 # class DisableMigrations(object):
@@ -152,6 +123,7 @@ IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
                     'bower_components',
                 ]
             ),
+            ievvbuildstatic.npmrun_jsbuild.Plugin(),
             ievvbuildstatic.mediacopy.Plugin(),
         ]
     ),

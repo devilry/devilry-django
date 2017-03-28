@@ -1,0 +1,37 @@
+{% extends 'devilry_group/feedbackfeed.django.html' %}
+{% load cradmin_tags %}
+{% load i18n %}
+
+{% block navigation %}
+    <nav class="devilry-tabs__tab-list" id="/tabs">
+        {% if not request.cradmin_role.cached_data.last_published_feedbackset_is_last_feedbackset %}
+            <a href="{% cradmin_appurl 'feedback' %}#/tabs"
+               class="devilry-group-feedbackfeed-feedback-button
+                    devilry-tabs__tab
+                    {% block feedback_navigation_active_class %}{% endblock %}">
+                <span class="devilry-tabs__title">
+                    {% trans 'Feedback' context 'devilry_group feedbackfeed examiner' %}
+                    {% block feedback_navigation_title_suffix %}{% endblock %}
+                </span>
+            </a>
+        {% endif %}
+        <a href="{% cradmin_appurl 'public-discuss' %}#/tabs"
+           class="devilry-group-feedbackfeed-discuss-button
+                devilry-tabs__tab
+                {% block discuss_navigation_active_class %}{% endblock %}">
+            <span class="devilry-tabs__title">
+                {% trans "Discuss" %}
+                {% block discuss_navigation_title_suffix %}{% endblock %}
+            </span>
+        </a>
+        <a href="{% cradmin_appurl 'examiner-admin-discuss' %}#/tabs"
+               class="devilry-group-feedbackfeed-discuss-button
+                    devilry-tabs__tab
+                    {% block examiner_admin_discuss_navigation_active_class %}{% endblock %}">
+                <span class="devilry-tabs__title">
+                    {% trans "Internal notes" %}
+                    {% block examiner_admin_discuss_navigation_title_suffix %}{% endblock %}
+                </span>
+            </a>
+    </nav>
+{% endblock %}

@@ -1,0 +1,54 @@
+{#{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}#}
+{% extends "django_cradmin/viewhelpers/listbuilderview/default.django.html" %}
+
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_appindex_url  %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    {{ block.super }}
+{% endblock pageheader-inner %}
+
+{% block list %}
+    {% if listbuilder_list.has_items %}
+        <div class="devilry-dashboard-container">
+            <p class="text-muted">
+                {% blocktrans %}
+                    Here you can set a grade for each group and add a comment that will be created when the feedback is
+                    published.
+                    <br>
+                    Note that no feedback will be published for groups without a grade set. Comment text is optional.
+                {% endblocktrans %}
+            </p>
+        </div>
+        <form action="{% cradmin_appurl 'bulk-feedback-simple' %}" method="POST">
+            {% csrf_token %}
+            {% cradmin_render_renderable listbuilder_list %}
+            <div class="devilry-dashboard-container">
+                <input type="submit" value="Publish feedbacks" class="btn btn-primary">
+                {% blocktrans %}
+                    When submitted, the operation cannot be undone.
+                {% endblocktrans %}
+            </div>
+        </form>
+    {% else %}
+        {% block no-items-wrapper %}
+            <p class="django-cradmin-listing-no-items-message django-cradmin-listbuilderview-no-items-message">
+                {% block no-items-paragraph-contents %}
+                    {{ no_items_message }}
+                {% endblock no-items-paragraph-contents %}
+            </p>
+        {% endblock no-items-wrapper %}
+    {% endif %}
+{% endblock list %}

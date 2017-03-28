@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy, pgettext_lazy
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.models import FeedbackSet
@@ -99,6 +100,12 @@ class AssignmentGroupCachedData(models.Model):
     last_public_comment_by_examiner_datetime = models.DateTimeField(
         null=True, blank=True, editable=False)
 
+    #: The number of :class:`core.Examiner' within the group
+    examiner_count = models.PositiveIntegerField(default=0, editable=False)
+
+    #: The number of :class:`core.Candidate` within the group
+    candidate_count = models.PositiveIntegerField(default=0, editable=False)
+
     @property
     def last_published_feedbackset_is_last_feedbackset(self):
         """
@@ -121,7 +128,25 @@ class AssignmentGroupCachedData(models.Model):
         :obj:`devilry.devilry_group.models.FeedbackSet.deadline_datetime` of the
         last feedbackset.
         """
-        if self.last_feedbackset == self.first_feedbackset:
-            return self.group.assignment.first_deadline
+        return self.last_feedbackset.deadline_datetime
+
+    @property
+    def prettyformat_current_attempt_number(self):
+        """
+        Format the current attempt number as a human readable string
+        suitable for display in a UI.
+        """
+        if self.new_attempt_count == 0:
+            return pgettext_lazy('devilry attempt number', 'first attempt')
+        elif self.new_attempt_count == 1:
+            return pgettext_lazy('devilry attempt number', 'second attempt')
+        elif self.new_attempt_count == 2:
+            return pgettext_lazy('devilry attempt number', 'third attempt')
+        elif self.new_attempt_count == 4:
+            return pgettext_lazy('devilry attempt number', 'fourth attempt')
         else:
-            return self.last_feedbackset.deadline_datetime
+            return pgettext_lazy(
+                'devilry attempt number',
+                '%(attempt_number)sst attempt') % {
+                'attempt_number': self.new_attempt_count + 1
+            }

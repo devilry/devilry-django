@@ -2,17 +2,11 @@
 from __future__ import unicode_literals
 
 from django.utils import timezone
+from django.core.files.uploadedfile import SimpleUploadedFile
 from model_mommy import mommy
 
 from devilry.devilry_group.models import FeedbackSet
 from devilry.devilry_dbcache import models as cache_models
-
-
-def _get_first_feedbackset_for_group(group):
-    return FeedbackSet.objects\
-        .filter(group=group)\
-        .order_by('created_datetime')\
-        .first()
 
 
 def feedbackset_save(feedbackset, **kwargs):
@@ -24,7 +18,6 @@ def feedbackset_save(feedbackset, **kwargs):
     """
     for key, value in kwargs.iteritems():
         setattr(feedbackset, key, value)
-    feedbackset.full_clean()
     feedbackset.save()
 
 
@@ -42,13 +35,6 @@ def _make_assignment_group_for_feedbackset(group, **kwargs):
     else:
         group = mommy.make('core.AssignmentGroup', **groupkwargs)
     return group
-
-
-def _validate_feedbackset_first_attempt_kwargs(kwargs):
-    if 'deadline_datetime' in kwargs:
-        raise ValueError('deadline_datetime can not be specified for '
-                         'the first FeedbackSet in a group. The deadline should '
-                         'be specifed using Assignment.first_deadline!')
 
 
 def make_first_feedbackset_in_group(group=None, **feedbackset_attributes):
@@ -94,7 +80,7 @@ def make_first_feedbackset_in_group(group=None, **feedbackset_attributes):
             (and saved to the database). Does not clean before saving.
 
     Returns:
-        devilry.devilry_group.models.FeedbackSet: The retrived
+        devilry.devilry_group.models.FeedbackSet: The retrieved
             (and updated if feedbackset_attributes is provided) FeedbackSet.
     """
     group = _make_assignment_group_for_feedbackset(group=group, **feedbackset_attributes)
@@ -129,7 +115,6 @@ def feedbackset_first_attempt_published(group=None, grading_published_datetime=N
     Returns:
         FeedbackSet: Instance of the first FeedbackSet.
     """
-    _validate_feedbackset_first_attempt_kwargs(kwargs)
     group = _make_assignment_group_for_feedbackset(group=group, **kwargs)
     group_cache = cache_models.AssignmentGroupCachedData.objects.get(group=group)
     first_feedbackset = group_cache.first_feedbackset
@@ -158,7 +143,6 @@ def feedbackset_first_attempt_unpublished(group=None, **kwargs):
     Returns:
         FeedbackSet: Instance of the first FeedbackSet.
     """
-    _validate_feedbackset_first_attempt_kwargs(kwargs)
     group = _make_assignment_group_for_feedbackset(group=group, **kwargs)
     group_cache = cache_models.AssignmentGroupCachedData.objects.get(group=group)
     first_feedbackset = group_cache.first_feedbackset
@@ -216,7 +200,7 @@ def feedbackset_new_attempt_unpublished(group, **kwargs):
     """
     if not group:
         raise ValueError('A FeedbackSet as a new attempt must have a pre-existing group!')
-    kwargs.setdefault('deadline_datetime', timezone.now())
+    kwargs.setdefault('deadline_datetime', timezone.now() + timezone.timedelta(days=3))
     feedbackset = mommy.prepare(
         'devilry_group.FeedbackSet',
         group=group,
@@ -225,3 +209,77 @@ def feedbackset_new_attempt_unpublished(group, **kwargs):
     feedbackset.full_clean()
     feedbackset.save()
     return feedbackset
+
+
+def _add_file_to_collection(temporary_filecollection, file_like_object):
+    """
+    Creates a :obj:`django_cradmin.apps.cradmin_temporaryfileuploadstore.models.TemporaryFile` for the
+    ``temporary_filecollection```.
+
+    Args:
+        temporary_filecollection: TemporaryFileCollection for the TemporaryFile created.
+        file_like_object: A object that implements the general file attributes.
+    """
+    mommy.make('cradmin_temporaryfileuploadstore.TemporaryFile',
+               collection=temporary_filecollection,
+               filename=file_like_object.name,
+               file=file_like_object,
+               mimetype=file_like_object.content_type)
+
+
+def temporary_file_collection_with_tempfile(**collection_attributes):
+    """
+    Create a :obj:`django_cradmin.apps.cradmin_temporaryfileuploadstore.models.TemporaryFileCollection`
+    using ``mommy.make('cradmin_temporaryfileuploadstore.TemporaryFileCollection')`` with a attached default
+    :obj:`django_cradmin.apps.cradmin_temporaryfileuploadstore.models.TemporaryFile`.
+
+    Note::
+        Use this if you don't care for the actual file, only that a file is added.
+
+    Args:
+        **temporary_filecollection_attributes: Attributes for TemporaryFileCollection.
+
+    Returns:
+        cradmin_temporaryfileuploadstore.TemporaryFileCollection: TemporaryFileCollection instance.
+    """
+    temp_collection = mommy.make('cradmin_temporaryfileuploadstore.TemporaryFileCollection', **collection_attributes)
+    _add_file_to_collection(
+        temporary_filecollection=temp_collection,
+        file_like_object=SimpleUploadedFile(name='testfile.txt', content=b'Test content', content_type='text/txt')
+    )
+    return temp_collection
+
+
+def temporary_file_collection_with_tempfiles(file_list=None, **collection_attributes):
+    """
+    Create a :obj:`django_cradmin.apps.cradmin_temporaryfileuploadstore.models.TemporaryFileCollection`
+    using ``mommy.make('cradmin_temporaryfileuploadstore.TemporaryFileCollection')``.
+
+    Add files to the ``file_list``, preferably Django`s ``SimpleUploadedFile``.
+
+    Examples:
+
+        Create a TemporaryFileCollection with TemporaryFiles (adds 3 files)::
+
+            devilry_group_mommy_factories.temporary_file_collection_with_tempfiles(
+                file_list=[
+                    SimpleUploadedFile(name='testfile1.txt', content=b'Test content 1', content_type='text/txt'),
+                    SimpleUploadedFile(name='testfile1.txt', content=b'Test content 1', content_type='text/txt'),
+                    SimpleUploadedFile(name='testfile1.txt', content=b'Test content 1', content_type='text/txt')
+                ],
+                # attributes for the TemporaryFileCollection
+                ...
+            )
+
+    Args:
+        file_list: A list of files implementing the general attributes of a file.
+        **collection_attributes: Attributes for TemporaryFileCollection.
+
+    Returns:
+        cradmin_temporaryfileuploadstore.TemporaryFileCollection: TemporaryFileCollection.
+    """
+    temp_collection = mommy.make('cradmin_temporaryfileuploadstore.TemporaryFileCollection', **collection_attributes)
+    if file_list:
+        for file_obj in file_list:
+            _add_file_to_collection(temporary_filecollection=temp_collection, file_like_object=file_obj)
+    return temp_collection

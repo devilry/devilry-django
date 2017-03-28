@@ -30,7 +30,7 @@ class CreateUpdateForm(forms.ModelForm):
         self.fields['end_time'].widget = DateTimePickerWidget(required=True)
 
 
-class CreateForm(forms.ModelForm):
+class CreateForm(CreateUpdateForm):
     class Meta:
         model = Period
         fields = CreateUpdateForm.Meta.fields + [

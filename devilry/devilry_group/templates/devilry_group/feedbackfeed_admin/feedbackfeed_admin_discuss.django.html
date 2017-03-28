@@ -1,0 +1,10 @@
+{% extends 'devilry_group/feedbackfeed_admin/feedbackfeed_admin_base.django.html' %}
+{% load i18n %}
+
+{% block discuss_navigation_active_class %}
+    devilry-tabs__tab--active
+{% endblock discuss_navigation_active_class %}
+
+{% block discuss_navigation_title_suffix %}
+    ({% trans "active" %})
+{% endblock discuss_navigation_title_suffix %}

@@ -1,0 +1,12 @@
+{% extends "devilry_cradmin/new_devilry_tablebuilder/base_cell.django.html" %}
+
+{% load i18n %}
+{% load cradmin_tags %}
+{% load devilry_core_tags %}
+{% load devilry_account_tags %}
+
+{% block content %}
+    <div class="devilry-assignmentgroup-users">
+        {% devilry_multiple_candidates_long_displayname me.assignment me.candidates 'examiner' %}
+    </div>
+{% endblock content %}

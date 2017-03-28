@@ -4,8 +4,10 @@ from django_cradmin import crinstance
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_examiner.cradminextensions import devilry_crmenu_examiner
-from devilry.devilry_examiner.cradminextensions import devilry_crinstance_examiner
+from devilry.devilry_cradmin import devilry_crinstance
 from devilry.devilry_examiner.views.assignment import grouplist
+from devilry.devilry_examiner.views.assignment.download_files import download_archive
+from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_manage_deadline
 
 
 class Menu(devilry_crmenu_examiner.Menu):
@@ -16,11 +18,13 @@ class Menu(devilry_crmenu_examiner.Menu):
         self.add_assignment_breadcrumb_item(assignment=assignment, active=True)
 
 
-class CrAdminInstance(devilry_crinstance_examiner.BaseCrInstanceExaminer):
+class CrAdminInstance(devilry_crinstance.BaseCrInstanceExaminer):
     menuclass = Menu
     roleclass = Assignment
     apps = [
         ('grouplist', grouplist.App),
+        ('download', download_archive.App),
+        ('manage-deadlines', bulk_manage_deadline.App)
     ]
     id = 'devilry_examiner_assignment'
     rolefrontpage_appname = 'grouplist'
@@ -39,6 +43,10 @@ class CrAdminInstance(devilry_crinstance_examiner.BaseCrInstanceExaminer):
         """
         assignment = role
         return assignment.get_path()
+
+    @property
+    def assignment(self):
+        return self.request.cradmin_role
 
     @classmethod
     def matches_urlpath(cls, urlpath):

@@ -1,0 +1,26 @@
+.devilry-singlefile-download {
+  &__preview {
+  }
+
+  &__filename-truncated {
+    //color: red;
+  }
+
+  &__fullview {
+    display: none;
+  }
+
+  &__filename-truncated, &__filename-full {
+    word-break: break-all;
+    font-weight: bold;
+  }
+
+  &:hover {
+    .devilry-singlefile-download__preview {
+      display: none;
+    }
+    .devilry-singlefile-download__fullview {
+      display: block;
+    }
+  }
+}

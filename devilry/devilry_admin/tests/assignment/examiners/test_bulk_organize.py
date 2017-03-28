@@ -1,11 +1,16 @@
 import mock
+import time
 from django import test
+from django.conf import settings
 from django.contrib import messages
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
+from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Examiner
 from devilry.devilry_admin.views.assignment.examiners import bulk_organize
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from unittest import skip
 
 
 class TestSelectMethodView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -44,7 +49,7 @@ class TestSelectMethodView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedExaminer', period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
-            3,
+            4,
             mockresponse.selector.count(
                 '#devilry_admin_assignment_examiners_bulk_organize_buttons .btn'))
 
@@ -788,3 +793,232 @@ class TestManualReplaceView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             messages.ERROR,
             bulk_organize.ManualAddOrReplaceExaminersForm.invalid_students_selected_message,
             '')
+
+
+@skip('Skip tests, organize examiners by period tags')
+class TestOrganizeByTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = bulk_organize.OrganizeByTagListbuilderView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_no_related_students(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testperiodtag = mommy.make('core.PeriodTag', period=testassignment.parentnode)
+        testrelatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.parentnode)
+        testperiodtag.relatedexaminers.add(testrelatedexaminer)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_no_related_students_message_link(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testperiodtag = mommy.make('core.PeriodTag', period=testassignment.parentnode)
+        testrelatedstudent = mommy.make('core.RelatedStudent', period=testassignment.parentnode)
+        testperiodtag.relatedstudents.add(testrelatedstudent)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-listbuilderlist-footer'))
+        self.assertEquals(mockresponse.selector.one('.devilry-listbuilderlist-footer').alltext_normalized,
+                          'Tags exist for the semester, but is missing either examiners, students or both. '
+                          'Manage tags.')
+
+    def test_no_related_examiners(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testperiodtag = mommy.make('core.PeriodTag', period=testassignment.parentnode)
+        testrelatedstudent = mommy.make('core.RelatedStudent', period=testassignment.parentnode)
+        testperiodtag.relatedstudents.add(testrelatedstudent)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_no_related_examiners_message_link(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testperiodtag = mommy.make('core.PeriodTag', period=testassignment.parentnode)
+        testrelatedstudent = mommy.make('core.RelatedStudent', period=testassignment.parentnode)
+        testperiodtag.relatedstudents.add(testrelatedstudent)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-listbuilderlist-footer'))
+        self.assertEquals(mockresponse.selector.one('.devilry-listbuilderlist-footer').alltext_normalized,
+                          'Tags exist for the semester, but is missing either examiners, students or both. '
+                          'Manage tags.')
+
+    def test_no_period_tags_message_link(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-listbuilderlist-footer'))
+        self.assertEquals(mockresponse.selector.one('.devilry-listbuilderlist-footer').alltext_normalized,
+                          'No tags registered on the semester. If you add tags, '
+                          'you can organize examiners and students based on the tags. Add semester tags.')
+
+    def test_no_candidates_in_groups(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testperiodtag1 = mommy.make('core.PeriodTag', period=testassignment.parentnode)
+        testperiodtag2 = mommy.make('core.PeriodTag', period=testassignment.parentnode)
+        testrelatedstudent = mommy.make('core.RelatedStudent', period=testassignment.parentnode)
+        testrelatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.parentnode)
+        testperiodtag1.relatedstudents.add(testrelatedstudent)
+        testperiodtag1.relatedexaminers.add(testrelatedexaminer)
+        testperiodtag2.relatedstudents.add(testrelatedstudent)
+        testperiodtag2.relatedexaminers.add(testrelatedexaminer)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_no_candidates_in_groups_where_relatedstudent_is_registered_on_tag(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testperiodtag = mommy.make('core.PeriodTag', period=testassignment.parentnode)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.RelatedStudent', period=testassignment.parentnode)
+        testrelatedstudent = mommy.make('core.RelatedStudent', period=testassignment.parentnode)
+        testrelatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.parentnode)
+        testperiodtag.relatedstudents.add(testrelatedstudent)
+        testperiodtag.relatedexaminers.add(testrelatedexaminer)
+        mommy.make('core.Candidate', assignment_group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_candidates_in_groups(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testperiodtag1 = mommy.make('core.PeriodTag', period=testassignment.parentnode)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testrelatedstudent = mommy.make('core.RelatedStudent', period=testassignment.parentnode)
+        testrelatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.parentnode)
+        testperiodtag1.relatedstudents.add(testrelatedstudent)
+        testperiodtag1.relatedexaminers.add(testrelatedexaminer)
+        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent=testrelatedstudent)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment
+        )
+        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertTrue(mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_post(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testperiodtag = mommy.make('core.PeriodTag', period=testassignment.parentnode)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testrelatedstudent = mommy.make('core.RelatedStudent', period=testassignment.parentnode, user__shortname='sa')
+        testrelatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.parentnode)
+
+        # add relatedstudent and relatedexaminer to tag
+        testperiodtag.relatedstudents.add(testrelatedstudent)
+        testperiodtag.relatedexaminers.add(testrelatedexaminer)
+        mommy.make('core.Candidate', assignment_group=testgroup1, relatedstudent=testrelatedstudent)
+        mommy.make('core.Candidate', assignment_group=testgroup2, relatedstudent=testrelatedstudent)
+
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment
+        )
+
+        examiners = Examiner.objects.all()
+        group1 = AssignmentGroup.objects.get(id=testgroup1.id)
+        group2 = AssignmentGroup.objects.get(id=testgroup2.id)
+        self.assertEquals(examiners.count(), 2)
+        self.assertEquals(examiners[0].relatedexaminer, testrelatedexaminer)
+        self.assertEquals(examiners[1].relatedexaminer, testrelatedexaminer)
+        self.assertIn(examiners[0], group1.examiners.all())
+        self.assertIn(examiners[1], group2.examiners.all())
+
+    def test_post_examiner_in_unrelated_group_is_not_deleted(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testperiodtag = mommy.make('core.PeriodTag', period=testassignment.parentnode)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testrelatedstudent = mommy.make('core.RelatedStudent', period=testassignment.parentnode, user__shortname='sa')
+        testrelatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.parentnode)
+
+        # add relatedstudent and relatedexaminer to tag
+        testperiodtag.relatedstudents.add(testrelatedstudent)
+        testperiodtag.relatedexaminers.add(testrelatedexaminer)
+
+        testexaminer_in_another_group = mommy.make('core.Examiner', relatedexaminer=testrelatedexaminer)
+        testcandidate = mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent=testrelatedstudent)
+
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment
+        )
+
+        examiners = Examiner.objects.all()
+        group = AssignmentGroup.objects.get(id=testgroup.id)
+        self.assertEquals(examiners.count(), 2)
+        self.assertIn(testcandidate, group.candidates.all())
+        self.assertNotIn(testexaminer_in_another_group, group.examiners.all())
+        self.assertEquals(group.examiners.all().count(), 1)
+
+    def test_examiner_and_candidate_already_in_group(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testperiodtag = mommy.make('core.PeriodTag', period=testassignment.parentnode)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testrelatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.parentnode)
+        testrelatedstudent = mommy.make('core.RelatedStudent', period=testassignment.parentnode)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=testrelatedexaminer)
+        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent=testrelatedstudent)
+        testperiodtag.relatedexaminers.add(testrelatedexaminer)
+        testperiodtag.relatedstudents.add(testrelatedstudent)
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment
+        )
+
+    def test_post_sanity_multiple_tags(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testperiodtags = mommy.make('core.PeriodTag', period=testassignment.parentnode, _quantity=5)
+        testrelatedstudents = mommy.make('core.RelatedStudent', period=testassignment.parentnode, _quantity=30)
+        testrelatedexaminers = mommy.make('core.RelatedExaminer', period=testassignment.parentnode, _quantity=3)
+
+        for periodtag in testperiodtags:
+            for relatedstudent in testrelatedstudents:
+                periodtag.relatedstudents.add(relatedstudent)
+                mommy.make('core.Candidate', assignment_group__parentnode=testassignment, relatedstudent=relatedstudent)
+            for relatedexaminer in testrelatedexaminers:
+                periodtag.relatedexaminers.add(relatedexaminer)
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        with self.assertNumQueries(6):
+            self.mock_http302_postrequest(
+                cradmin_role=testassignment,
+                requestuser=requestuser
+            )
+        examiners = Examiner.objects.all()
+        self.assertEquals(examiners.count(), 450)
+
+    def test_get_query_count(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testperiodtag1 = mommy.make('core.PeriodTag', period=testassignment.parentnode)
+        testperiodtag2 = mommy.make('core.PeriodTag', period=testassignment.parentnode)
+        testperiodtag3 = mommy.make('core.PeriodTag', period=testassignment.parentnode)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testrelatedstudent1 = mommy.make('core.RelatedStudent', period=testassignment.parentnode)
+        testrelatedstudent2 = mommy.make('core.RelatedStudent', period=testassignment.parentnode)
+        testrelatedstudent3 = mommy.make('core.RelatedStudent', period=testassignment.parentnode)
+        testrelatedstudent4 = mommy.make('core.RelatedStudent', period=testassignment.parentnode)
+        testrelatedexaminer1 = mommy.make('core.RelatedExaminer', period=testassignment.parentnode)
+        testrelatedexaminer2 = mommy.make('core.RelatedExaminer', period=testassignment.parentnode)
+        testrelatedexaminer3 = mommy.make('core.RelatedExaminer', period=testassignment.parentnode)
+
+        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent=testrelatedstudent1)
+        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent=testrelatedstudent2)
+        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent=testrelatedstudent3)
+        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent=testrelatedstudent4)
+        testperiodtag1.relatedstudents.add(testrelatedstudent1, testrelatedstudent2, testrelatedstudent3,
+                                           testrelatedstudent4)
+        testperiodtag1.relatedexaminers.add(testrelatedexaminer1, testrelatedexaminer2, testrelatedexaminer3)
+        testperiodtag2.relatedstudents.add(testrelatedstudent1, testrelatedstudent2, testrelatedstudent3,
+                                           testrelatedstudent4)
+        testperiodtag2.relatedexaminers.add(testrelatedexaminer1, testrelatedexaminer2, testrelatedexaminer3)
+        testperiodtag3.relatedstudents.add(testrelatedstudent1, testrelatedstudent2, testrelatedstudent3,
+                                           testrelatedstudent4)
+        testperiodtag3.relatedexaminers.add(testrelatedexaminer1, testrelatedexaminer2, testrelatedexaminer3)
+
+        with self.assertNumQueries(7):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testassignment
+            )

@@ -1,6 +1,7 @@
 import re
 
-from devilry.devilry_admin.cradminextensions import devilry_crinstance_admin
+from devilry.devilry_admin.views.dashboard import createsubject
+from devilry.devilry_cradmin import devilry_crinstance
 from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
 from devilry.devilry_admin.views.dashboard import overview
 
@@ -11,10 +12,11 @@ class Menu(devilry_crmenu_admin.Menu):
         self.add_role_menuitem_object(active=True)
 
 
-class CrAdminInstance(devilry_crinstance_admin.BaseCrInstanceAdmin):
+class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
     menuclass = Menu
     apps = [
         ('overview', overview.App),
+        ('createsubject', createsubject.App),
     ]
     id = 'devilry_admin'
     rolefrontpage_appname = 'overview'
@@ -36,6 +38,3 @@ class CrAdminInstance(devilry_crinstance_admin.BaseCrInstanceAdmin):
     @classmethod
     def matches_urlpath(cls, urlpath):
         return re.match('/devilry_admin/', urlpath)
-
-    def add_extra_instance_variables_to_request(self, request):
-        setattr(request, 'devilryrole', 'admin')

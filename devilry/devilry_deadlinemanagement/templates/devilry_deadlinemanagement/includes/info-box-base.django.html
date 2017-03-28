@@ -1,0 +1,14 @@
+{% load i18n %}
+
+{% if num_excluded_groups > 0 %}
+    <div class="container">
+        <div class="devilry-dashboard-container devilry-dashboard-container-focus devilry-deadline-management-info-box">
+            <h4>Important info</h4>
+            <p class="muted">
+                <strong>{{ num_excluded_groups }}</strong>
+                {% trans "group(s) excluded" %}
+            </p>
+            {% block context_descriptive_info %}{% endblock context_descriptive_info %}
+        </div>
+    </div>
+{% endif %}

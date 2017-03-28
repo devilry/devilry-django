@@ -12,14 +12,4 @@ recursive-include devilry *.woff
 recursive-include devilry *.woff2
 recursive-include devilry *.svg
 recursive-include devilry *.otf
-prune devilry/devilry_gradingsystem/static/devilry_gradingsystem/node_modules
-prune devilry/devilry_header/static/devilry_header/node_modules
-prune devilry/devilry_theme2/static/devilry_theme2/node_modules
-prune devilry/devilry_nodeadmin/static/devilry_nodeadmin/all-classes.js
-prune devilry/devilry_nodeadmin/static/devilry_nodeadmin/app.jsb3
-prune devilry/devilry_nodeadmin/static/devilry_nodeadmin/app
-prune devilry/devilry_subjectadmin/static/devilry_subjectadmin/all-classes.js
-prune devilry/devilry_subjectadmin/static/devilry_subjectadmin/app.jsb3
-prune devilry/devilry_subjectadmin/static/devilry_subjectadmin/app
-prune devilry/devilry_subjectadmin/static/devilry_subjectadmin/bower
-prune devilry/devilry_subjectadmin/static/devilry_subjectadmin/node_modules
+prune devilry/devilry_theme3/staticsources

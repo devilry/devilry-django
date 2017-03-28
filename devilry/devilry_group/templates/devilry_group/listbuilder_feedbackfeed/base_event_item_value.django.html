@@ -6,7 +6,9 @@
 
 {% block content %}
     <p>
-        {{ me.get_timeline_datetime|date:'SHORT_DATETIME_FORMAT' }}:
+        <span class="timeline-datetime">
+            {{ me.get_timeline_datetime|date:'SHORT_DATETIME_FORMAT' }}
+        </span>:
         {% block details %}
         {% endblock details %}
     </p>

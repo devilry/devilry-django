@@ -1,7 +1,13 @@
 # Django imports
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
+from django.utils.translation import ugettext_lazy
+
+from devilry.devilry_compressionutil import backend_registry
 
 
 class GenericMeta(models.Model):
@@ -22,7 +28,7 @@ class GenericMeta(models.Model):
 
         #: Can only exist one meta model for each model it references
         #: with its GenericForeignKey.
-        unique_together = ('content_type', 'content_object_id')
+        # unique_together = ('content_type', 'content_object_id')
 
 
 class CompressedArchiveMetaManager(models.Manager):
@@ -44,7 +50,8 @@ class CompressedArchiveMetaManager(models.Manager):
                 content_object=instance,
                 archive_name=zipfile_backend.archive_name,
                 archive_path=zipfile_backend.archive_path,
-                archive_size=zipfile_backend.archive_size()
+                archive_size=zipfile_backend.archive_size(),
+                backend_id=zipfile_backend.backend_id
         )
         archive_meta.clean()
         archive_meta.save()
@@ -70,5 +77,27 @@ class CompressedArchiveMeta(GenericMeta):
     #: Size of the archive in bytes.
     archive_size = models.PositiveIntegerField(null=False, blank=False)
 
+    #: The ID of the backend used.
+    #: This is the ID attribute
+    #: :attr:`~.devilry.devilry_compressionutil.backends.backends_base.BaseArchiveBackend.backend_id`.
+    backend_id = models.CharField(max_length=100, blank=True, null=False, default='')
+
+    #: When the entry was marked for deletion.
+    deleted_datetime = models.DateTimeField(null=True, default=None)
+
+    def clean(self):
+        if backend_registry.Registry.get_instance().get(self.backend_id) is None:
+            raise ValidationError({
+                'backend_id': ugettext_lazy('backend_id must refer to a valid backend')
+            })
+
     def __unicode__(self):
         return self.archive_path
+
+
+@receiver(pre_delete, sender=CompressedArchiveMeta)
+def pre_compressed_archive_meta_delete(sender, instance, **kwargs):
+    compressed_archive_meta = instance
+    backend_class = backend_registry.Registry.get_instance().get(compressed_archive_meta.backend_id)
+    backend_class.delete_archive(full_path=compressed_archive_meta.archive_path)
+

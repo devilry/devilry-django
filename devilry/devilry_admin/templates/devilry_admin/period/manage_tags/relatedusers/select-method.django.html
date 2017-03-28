@@ -1,0 +1,75 @@
+{% extends "django_cradmin/base.django.html" %}
+
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="#" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% blocktrans %}
+            How would you like to bulk-manage tags for {{ relateduser_type }}s?
+        {% endblocktrans %}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8" id="devilry_admin_period_bulk_manage_tags_buttons">
+                    <p>
+                        <a href="{% cradmin_appurl 'add-tag' %}"
+                                id="devilry_admin_period_manage_tags_button_add"
+                                class="btn btn-default btn-block devilry-btn-titledescription">
+                            <strong>{% trans "Add tags" %}</strong>
+                            <small>
+                                <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
+                                    {% blocktrans %}
+                                        Select {{ relateduser_type }}(s) and add tags
+                                    {% endblocktrans %}
+                                <span class="sr-only">)</span>
+                            </small>
+                        </a>
+                    </p>
+                    <p>
+                        <a href="{% cradmin_appurl 'choose-tag-replace' %}"
+                                id="devilry_admin_period_manage_tags_button_replace"
+                                class="btn btn-default btn-block devilry-btn-titledescription">
+                            <strong>{% trans "Replace tag" %}</strong>
+                            <small>
+                                <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
+                                    {% blocktrans %}
+                                        Select {{ relateduser_type }}(s) and replace tag
+                                    {% endblocktrans %}
+                                <span class="sr-only">)</span>
+                            </small>
+                        </a>
+                    </p>
+                    <p>
+                        <a href="{% cradmin_appurl 'choose-tag-remove' %}"
+                                id="devilry_admin_period_manage_tags_button_remove"
+                                class="btn btn-default btn-block devilry-btn-titledescription">
+                            <strong>{% trans "Remove tag" %}</strong>
+                            <small>
+                                <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
+                                    {% blocktrans %}
+                                        Select {{ relateduser_type }}(s) and remove tags
+                                    {% endblocktrans %}
+                                <span class="sr-only">)</span>
+                            </small>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+{% endblock content %}

@@ -43,8 +43,6 @@ INSTALLED_APPS = [
     'errortemplates',
     'crispy_forms',
     'gunicorn',
-    'extjs4',
-    # 'haystack',
     'ievv_opensource.ievvtasks_common',
     'ievv_opensource.ievv_batchframework',
     'ievv_opensource.ievv_customsql',
@@ -69,8 +67,6 @@ INSTALLED_APPS = [
     'devilry.devilry_send_email_to_students',
 
     'devilry.devilry_help',
-    'devilry.devilry_theme',
-    'devilry.devilry_theme2',
     'devilry.devilry_theme3',
     'devilry.devilry_header',
     'devilry.devilry_frontpage',
@@ -83,6 +79,9 @@ INSTALLED_APPS = [
     'devilry.devilry_settings',
     # 'devilry.devilry_search',
     'devilry.devilry_qualifiesforexam',
+    'devilry.devilry_qualifiesforexam_plugin_approved',
+    'devilry.devilry_qualifiesforexam_plugin_points',
+    'devilry.devilry_qualifiesforexam_plugin_students',
     # 'devilry.devilry_qualifiesforexam_approved',
     # 'devilry.devilry_qualifiesforexam_points',
     # 'devilry.devilry_qualifiesforexam_select',
@@ -93,6 +92,7 @@ INSTALLED_APPS = [
     'devilry.devilry_detektor',
     'devilry.devilry_admin',
     'devilry.devilry_dbcache',
+    'devilry.devilry_deadlinemanagement',
     'devilry.project.common',
     'rest_framework_swagger',
     'rest_framework',
@@ -126,20 +126,6 @@ MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
 AUTHENTICATION_BACKENDS = (
     'devilry.devilry_account.authbackend.default.EmailAuthBackend',
 )
-
-
-##################################################################################
-#
-# Haystack (search)
-#
-##################################################################################
-
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
-    },
-}
-HAYSTACK_SIGNAL_PROCESSOR = 'devilry.devilry_search.haystack_signal_processor.DevilryCelerySignalProcessor'
 
 
 ########################################################################

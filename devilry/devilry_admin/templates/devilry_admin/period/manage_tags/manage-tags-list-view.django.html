@@ -1,0 +1,39 @@
+{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
+
+{% load static %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block title %}
+    {{ pagetitle }}
+{% endblock title %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock pageheader-outer-extraclasses %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'overview' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    {{ block.super }}
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        <p id="devilry_admin_period_manage_tags_overview_buttonbar"
+                class="devilry-buttonbar">
+            <a href="{% cradmin_instance_url appname='manage_tags' viewname='add_tag' %}"
+                    id="devilry_admin_period_manage_tags_overview_button_add_tag"
+                    class="btn btn-primary">
+                {% trans "Add tag" %}
+            </a>
+        </p>
+    </div>
+    {{ block.super }}
+{% endblock content %}

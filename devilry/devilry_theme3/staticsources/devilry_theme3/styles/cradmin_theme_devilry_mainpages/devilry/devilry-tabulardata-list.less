@@ -1,0 +1,58 @@
+.devilry-tabulardata-list {
+  &--as-table{
+    max-width: 100%;
+    overflow-x: auto;
+
+    .devilry-tabulardata-list__content{
+      min-width: 100%;
+      display: table;
+    }
+  }
+  .devilry-tabulardata-list__header {
+    display: table-row-group;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .devilry-tabulardata-list__body {
+    display: table-row-group;
+  }
+
+  .devilry-tabulardata-list__row {
+    display: table-row;
+    clear: both;
+
+    &--result-info{
+      &:hover {
+        background-color: @devilry-brand-color-admin-light3;
+      }
+    }
+  }
+
+  .devilry-tabulardata-list__cell {
+    display: table-cell;
+    padding: 20px;
+    border-bottom: 1px solid @devilry-brand-color-admin-light3;
+
+    &--columnheader{
+      border-bottom: 5px solid @devilry-brand-color-admin;
+    }
+  }
+
+  .devilry-tabulardata-list__cell-examiner {
+    display: table-cell;
+    padding: 20px;
+    border-bottom: 1px solid @devilry-brand-color-examiner-light3;
+
+    &--columnheader{
+      border-bottom: 5px solid @devilry-brand-color-examiner;
+    }
+  }
+}
+
+
+.tabular-datalist-footer {
+  margin-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+}

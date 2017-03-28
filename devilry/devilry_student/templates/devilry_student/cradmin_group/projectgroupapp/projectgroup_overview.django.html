@@ -1,11 +1,24 @@
 {% extends "django_cradmin/base.django.html" %}
-{% load cradmin_tags %}
-{% load crispy_forms_tags %}
 {% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+{% load crispy_forms_tags %}
+{% load cradmin_icon_tags %}
 
 {% block title %}{% trans "Project group" %}{% endblock title %}
 
+{% block pageheader-outer-extraclasses %}
+   {{ block.super }}
+   devilry-page-header-with-backlink
+{% endblock %}
+
 {% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'feedbackfeed' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to project group" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
     <h1>
         {% trans "Project group" %}
     </h1>
@@ -17,27 +30,28 @@
 {% endblock pageheader-inner %}
 
 {% block content %}
-    <div class="container-fluid">
+    <div class="container">
         {% if unanswered_received_invites.exists %}
-            {% with invite=unanswered_received_invites.get %}
                 <div class="alert alert-success">
+                    {% for invite in unanswered_received_invites %}
                     <p>
                         <strong>{% trans "You have been invited to join a group!" %}</strong>
-                        {% blocktrans with sent_by=invite.sent_by.get_full_name %}{{ sent_by }} invited you to join their group.{% endblocktrans %}
+                        {% blocktrans with sent_by=invite.sent_by.get_displayname %}{{ sent_by }} invited you to join their group.{% endblocktrans %}
                     </p>
                     <p>
-                        <a class="btn btn-default" href="{% url 'devilry_student_groupinvite_respond' invite.id %}">
+                        <a class="btn btn-default" href="{% cradmin_appurl 'respond' invite_id=invite.id %}">
                             <i class="fa fa-arrow-circle-o-right"></i>
                             {% trans "More info" %}
                         </a>
                     </p>
+                    {% endfor %}
                 </div>
-            {% endwith %}
         {% endif %}
 
 
         {% if group.assignment.students_can_create_groups_now %}
-            <div id="devilry_student_projectgroupoverview_invitebox">
+            <div id="devilry_student_projectgroupoverview_invitebox"
+                 class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
                 <h2>{% trans "Invite someone to join your group?" %}</h2>
                 <div class="devilry-focusbox">
                     {% crispy form %}
@@ -45,19 +59,21 @@
             </div>
         {% endif %}
 
-        {% if unanswered_sent_invites.exists %}        
-            <h3>{% trans "Waiting for response from" %}</h3>
-            <div id="devilry_student_projectgroup_overview_waiting_for_response_from" class="table-responsive">
-                <table class="table table-striped table-bordered">
-                    <thead>
+        {% if unanswered_sent_invites.exists %}
+            <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
+                <h3>{% trans "Waiting for response from" %}</h3>
+                <div id="devilry_student_projectgroup_overview_waiting_for_response_from"
+                     class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
                         <tr>
                             <th>{% trans "Name" %}</th>
                             <th>{% trans "Invited by" %}</th>
                             <th>{% trans "Sent time" %}</th>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for invite in unanswered_sent_invites %}                
+                        </thead>
+                        <tbody>
+                        {% for invite in unanswered_sent_invites %}
                             <tr>
                                 <td>
                                     <a href="{% cradmin_appurl 'delete' invite_id=invite.id %}" class="btn btn-danger btn-xs">
@@ -65,51 +81,32 @@
                                     </a>
                                     &nbsp;
                                     <span class="invite_sent_to_displayname">
-                                        {{ invite.sent_to.get_full_name }}
+                                        {{ invite.sent_to.get_displayname }}
                                     </span>
                                 </td>
-                                <td>{{ invite.sent_by.get_full_name }}</td>
+                                <td>
+                                    <span class="invited_sent_by_displayname">
+                                        {{ invite.sent_by.get_displayname }}
+                                    </span>
+                                </td>
                                 <td>{{ invite.sent_datetime|date:"DATETIME_FORMAT" }}</td>
                             </tr>
                         {% endfor %}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         {% endif %}
 
         {% if groupmemberusers %}
-            <h3>{% trans "Project group members" %}</h3>
-            <div id="devilry_student_projectgroup_overview_already_in_group" class="table-responsive">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>{% trans "Name" %}</th>
-                            <th>{% trans "Username" %}</th>
-                            <th>{% trans "Email" %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for user in groupmemberusers %}
-                            <tr>
-                                {% if user.fullname %}
-                                    <td class="devilry-student-projectgroupoverview-fullname">
-                                        {{ user.fullname }}
-                                    </td>
-                                {% endif %}
-                                {% if user.primary_username %}
-                                    <td class="devilry-student-projectgroupoverview-username">
-                                        {{ user.primary_username }}
-                                    </td>
-                                {% endif %}
-                                {% if user.primary_email %}
-                                    <td class="devilry-student-projectgroupoverview-email">
-                                        <a href="mailto:{{ user.primary_email }}">{{ user.primary_email }}</a>
-                                    </td>
-                                {% endif %}
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin"
+                id="devilry_student_projectgroup_overview_already_in_group">
+                <h3>{% trans "Project group members" %}</h3>
+                <ul>
+                    {% for user in groupmemberusers %}
+                        <li>{{ user }}</li>
+                    {% endfor %}
+                </ul>
             </div>
         {% endif %}
     </div>

@@ -1,8 +1,0 @@
-{% extends 'devilry_group/listbuilder_feedbackfeed/base_event_item_value.django.html' %}
-
-{% load i18n %}
-
-{% block details %}
-    {% trans "New deadline" context 'devilry_group feedbackfeed' %}:
-    <strong>{{ me.feedbackset.current_deadline|date:'DATETIME_FORMAT' }}</strong>
-{% endblock details %}

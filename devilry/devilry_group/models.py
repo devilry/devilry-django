@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import warnings
 import json
 
 from django.conf import settings
@@ -11,6 +12,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy
 
 from devilry.apps.core.models import assignment_group
+from devilry.apps.core.models.custom_db_fields import ShortNameField, LongNameField
 from devilry.devilry_comment import models as comment_models
 
 
@@ -164,6 +166,33 @@ class AbstractGroupComment(comment_models.Comment):
         self.full_clean()
         self.save()
 
+    def copy_comment_into_feedbackset(self, feedbackset):
+        """
+        Creates a new GroupComment, copies all fields in self into
+        the new comment and sets feedback_set foreign key to ``feedbackset``
+        Args:
+            feedbackset: :class:`~devilry_group.FeedbackSet`
+
+        Returns:
+            :class:`~devilry_group.GroupComment` a new group comment
+        """
+        commentcopy = GroupComment(
+            part_of_grading=self.part_of_grading,
+            feedback_set=feedbackset,
+            text=self.text,
+            draft_text=self.draft_text,
+            user=self.user,
+            parent=self.parent,
+            created_datetime=self.created_datetime,
+            published_datetime=self.published_datetime,
+            user_role=self.user_role,
+            comment_type=self.comment_type,
+        )
+        commentcopy.save()
+        for commentfile in self.commentfile_set.all():
+            commentfile.copy_into_comment(commentcopy)
+        return commentcopy
+
 
 class FeedbackSetQuerySet(models.QuerySet):
     """
@@ -233,11 +262,23 @@ class FeedbackSet(models.Model):
     #: Choice for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_RE_EDIT = 're_edit'
 
+    #: A merged first attempt feedbackset
+    FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT = 'merge_first_attempt'
+
+    #: A merged new attempt feedbackset
+    FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT = 'merge_new_attempt'
+
+    #: A merged re edit feedbackset
+    FEEDBACKSET_TYPE_MERGE_RE_EDIT = 'merge_re_edit'
+
     #: Grading status choices for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_CHOICES = [
         (FEEDBACKSET_TYPE_FIRST_ATTEMPT, 'first attempt'),
         (FEEDBACKSET_TYPE_NEW_ATTEMPT, 'new attempt'),
         (FEEDBACKSET_TYPE_RE_EDIT, 're edit'),
+        (FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT, 'merge first attempt'),
+        (FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT, 'merge new attempt'),
+        (FEEDBACKSET_TYPE_MERGE_RE_EDIT, 'merge re edit'),
     ]
 
     #: Sets the type of the feedbackset.
@@ -272,7 +313,7 @@ class FeedbackSet(models.Model):
     #: (ordered by :obj:`~.FeedbackSet.created_datetime`) does not
     #: have a deadline. It inherits this from the ``first_deadline`` field
     #: of :class:`devilry.apps.core.models.assignment.Assignment`.
-    deadline_datetime = models.DateTimeField(null=True, blank=True)
+    deadline_datetime = models.DateTimeField(null=False, blank=False)
 
     #: The datetime when the feedback was published.
     #: Set when an examiner publishes the feedback for this FeedbackSet.
@@ -314,8 +355,12 @@ class FeedbackSet(models.Model):
                 self.group.assignment,
                 self.feedbackset_type,
                 self.group.get_unanonymized_long_displayname(),
-                self.deadline_datetime,
+                self.current_deadline(),
                 self.grading_points)
+
+    @classmethod
+    def clean_deadline(cls, deadline_datetime):
+        return deadline_datetime.replace(microsecond=0, tzinfo=None)
 
     def clean(self):
         """
@@ -358,27 +403,10 @@ class FeedbackSet(models.Model):
                     'grading_published_datetime': ugettext_lazy('An assignment can not be published '
                                                                 'without providing "points".'),
                 })
+        self.deadline_datetime = FeedbackSet.clean_deadline(self.deadline_datetime)
 
     def current_deadline(self, assignment=None):
-        """
-        If :obj:`~.FeedbackSet.feedbackset_type` IS :obj:`~.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT`, it will try to
-        return :obj:`~.FeedbackSet.deadline_datetime` if not ``None``, else it will try to return ``first_deadline`` in
-        :class:`~devilry.apps.core.models.assignment.Assignment`
-
-        If :obj:`~.FeedbackSet.feedbackset_type` IS NOT :obj:`~.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT`,
-        :obj:`~.FeedbackSet.deadline_datetime` will be returned without checking ``first_deadline`` in
-        :class:`~devilry.apps.core.models.assignment.Assignment`.
-
-        Args:
-            assignment: Uses first_deadline of this assignment if not ``None``.
-
-        Returns:
-            datetime or ``None``.
-        """
-        if self.feedbackset_type == FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
-            if assignment:
-                return self.deadline_datetime or assignment.first_deadline
-            return self.deadline_datetime or self.group.assignment.first_deadline
+        warnings.warn("deprecated, use FeedbackSet.deadline_datetime instead", DeprecationWarning)
         return self.deadline_datetime
 
     def __get_drafted_comments(self, user):
@@ -409,22 +437,58 @@ class FeedbackSet(models.Model):
         if current_deadline is None:
             return False, 'Cannot publish feedback without a deadline.'
 
-        if current_deadline > timezone.now():
-            return False, 'The deadline has not expired. Feedback was saved, but not published.'
-
         drafted_comments = self.__get_drafted_comments(published_by)
-        now_without_seconds = timezone.now().replace(second=0, microsecond=0)
+        now_without_seconds = timezone.now().replace(microsecond=0)
         for modifier, draft in enumerate(drafted_comments):
-            draft.publish_draft(now_without_seconds + timezone.timedelta(milliseconds=modifier))
+            draft.publish_draft(now_without_seconds + timezone.timedelta(microseconds=modifier))
 
         self.grading_points = grading_points
         self.grading_published_datetime = now_without_seconds + timezone.timedelta(
-                milliseconds=drafted_comments.count() + 1)
+            microseconds=drafted_comments.count() + 1)
         self.grading_published_by = published_by
         self.full_clean()
         self.save()
 
         return True, ''
+
+    def copy_feedbackset_into_group(self, group, target=None):
+        """
+        Copy this feedbackset into ``target`` or create a new feedbackset,
+        and set group foreign key to ``group``
+
+        Args:
+            group: :class:`~core.AssignmentGroup`
+            target: :class:`~devilry_group.FeedbackSet`
+
+        Returns:
+            :class:`~devilry_group.FeedbackSet` a feedbackset with copied data from self
+
+        """
+        feedbackset_kwargs = {
+            'group': group,
+            'feedbackset_type': self.feedbackset_type,
+            'ignored': self.ignored,
+            'ignored_reason': self.ignored_reason,
+            'ignored_datetime': self.ignored_datetime,
+            'created_by': self.created_by,
+            'created_datetime': self.created_datetime,
+            'deadline_datetime': self.deadline_datetime,
+            'grading_published_datetime': self.grading_published_datetime,
+            'grading_published_by': self.grading_published_by,
+            'grading_points': self.grading_points,
+            'gradeform_data_json': self.gradeform_data_json
+        }
+        if target is None:
+            target = FeedbackSet(**feedbackset_kwargs)
+        else:
+            for key, value in feedbackset_kwargs.iteritems():
+                setattr(target, key, value)
+        target.save()
+
+        for comment in self.groupcomment_set.all():
+            comment.copy_comment_into_feedbackset(target)
+
+        return target
 
     @property
     def gradeform_data(self):
@@ -442,6 +506,81 @@ class FeedbackSet(models.Model):
         self.gradeform_data_json = json.dumps(gradeform_data)
         if hasattr(self, '_gradeform_data'):
             delattr(self, '_gradeform_data')
+
+
+class FeedbacksetPassedPreviousPeriod(models.Model):
+    """
+    This model is used when a student have passed an assignment in previous period.
+    Therefore we need to save some old data about the :class:`core.Assignment`, :class:`devilry_group.FeedbackSet`
+    and :class:`core.Period` from previous period.
+    """
+
+    #: Foreign key to class:`devilry_group.FeedbackSet` in current period.
+    feedbackset = models.ForeignKey(FeedbackSet, null=True, blank=True,
+                                    on_delete=models.SET_NULL)
+
+    #: Old :attr:`core.Assignment.short_name`.
+    assignment_short_name = ShortNameField()
+
+    #: Old :attr:`core.Assignment.long_name`.
+    assignment_long_name = LongNameField()
+
+    # Old :attr:`core.Assignment.max_points`.
+    assignment_max_points = models.PositiveIntegerField(default=0)
+
+    # Old :attr:`core.Assignment.passing_grade_min_points`
+    assignment_passing_grade_min_points = models.PositiveIntegerField(default=0)
+
+    # Old :attr:`core.Period.short_name`.
+    period_short_name = ShortNameField()
+
+    # Old :attr:`core.Period.long_name`
+    period_long_name = LongNameField()
+
+    # Old :attr:`core.Period.start_time`
+    period_start_time = models.DateTimeField()
+
+    # Old :attr:`core.Period.end_time`
+    period_end_time = models.DateTimeField()
+
+    # Old :attr:`FeedbackSet.grading_points`.
+    grading_points = models.PositiveIntegerField(default=0)
+
+    # Old :attr:`FeedbackSet.grading_published_by`
+    grading_published_by = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        null=True, blank=True
+    )
+
+    # Old :attr:`FeedbackSet.
+    grading_published_datetime = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+
+class FeedbackSetDeadlineHistory(models.Model):
+    """
+    Logs change in deadline for a FeedbackSet.
+    """
+    #: The :class:`~.FeedbackSet` the change is for.
+    feedback_set = models.ForeignKey(FeedbackSet)
+
+    #: The User that made the deadline change.
+    changed_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
+
+    #: Time of change.
+    #: Defaults to ``timezone.now``.
+    changed_datetime = models.DateTimeField(null=False, blank=False, default=timezone.now)
+
+    #: The old :attr:`~.FeedbackDet.deadline_datetime`.
+    deadline_old = models.DateTimeField(null=False, blank=False)
+
+    #: The new :attr:`~.FeedbackDet.deadline_datetime`.
+    deadline_new = models.DateTimeField(null=False, blank=False)
+
+    def __unicode__(self):
+        return u'Changed {}: from {} to {}'.format(self.changed_datetime, self.deadline_old, self.deadline_new)
 
 
 class GroupCommentQuerySet(AbstractGroupCommentQuerySet):

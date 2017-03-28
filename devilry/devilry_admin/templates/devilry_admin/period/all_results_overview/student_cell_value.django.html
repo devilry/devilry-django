@@ -1,0 +1,9 @@
+{% extends "devilry_cradmin/new_devilry_tablebuilder/base_cell.django.html" %}
+
+{% load i18n %}
+{% load cradmin_tags %}
+{% load devilry_account_tags %}
+
+{% block content %}
+    {% devilry_user_verbose_inline me.related_student.user %}
+{% endblock content %}

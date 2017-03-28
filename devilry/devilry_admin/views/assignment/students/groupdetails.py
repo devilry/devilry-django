@@ -38,9 +38,9 @@ class GroupDetailsView(detail.DetailView):
             .prefetch_related(
                 models.Prefetch('examiners',
                                 queryset=examinerqueryset))\
-            .annotate_with_is_waiting_for_feedback()\
-            .annotate_with_is_waiting_for_deliveries()\
-            .annotate_with_is_corrected() \
+            .annotate_with_is_waiting_for_feedback_count()\
+            .annotate_with_is_waiting_for_deliveries_count()\
+            .annotate_with_is_corrected_count() \
             .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user) \
             .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)\
             .distinct() \

@@ -1,12 +1,24 @@
 {% extends "django_cradmin/base.django.html" %}
-
-{% load crispy_forms_tags %}
 {% load i18n %}
-{% load url from future %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+{% load crispy_forms_tags %}
+{% load cradmin_icon_tags %}
 
 {% block title %}{% trans "Delete group invite" %}{% endblock title %}
 
+{% block pageheader-outer-extraclasses %}
+   {{ block.super }}
+   devilry-page-header-with-backlink
+{% endblock %}
+
 {% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'projectgroup' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to project group" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
     <h1>
         {% trans "Delete group invite" %}
     </h1>
@@ -21,7 +33,7 @@
     <div class="container django-cradmin-container-focus">
         <form action="{{ request.path }}" method="post">{% csrf_token %}
             <p>{% blocktrans with user=groupinvite.sent_to.get_full_name %}Are you sure you want to delete the invite for {{ user }}?{% endblocktrans %}</p>
-            <a class="btn btn-default" href="{{ cancel_url }}">{% trans "Cancel" %}</a>
+            <a class="btn btn-default" href="{% cradmin_instance_appindex_url 'projectgroup' %}">{% trans "Cancel" %}</a>
             <button type="submit" class="btn btn-danger">{% trans 'Delete invite' %}</button>
         </form>
     </div>

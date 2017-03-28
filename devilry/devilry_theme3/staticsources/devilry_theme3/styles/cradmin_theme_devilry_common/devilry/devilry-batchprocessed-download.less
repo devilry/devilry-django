@@ -1,0 +1,33 @@
+.devilry-batchprocessed-download {
+  &__preparing-download,
+  &__startbutton,
+  &__download-ready-message,
+  &__downloadlink {
+    display: none;
+  }
+
+  &--not-created {
+    .devilry-batchprocessed-download__startbutton {
+      display: inline-block;
+    }
+  }
+
+  &--not-started,
+  &--running {
+    .devilry-batchprocessed-download__preparing-download {
+      display: inline-block;
+    }
+  }
+
+  &--finished {
+    .devilry-batchprocessed-download__downloadlink {
+      display: inline-block;
+    }
+  }
+
+  &--finished-within-same-session {
+    .devilry-batchprocessed-download__download-ready-message {
+      display: block;
+    }
+  }
+}

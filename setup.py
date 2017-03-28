@@ -49,10 +49,9 @@ setup(
         'dj-database-url>=0.3.0',
         'bleach==1.5.0',
         'html5lib==0.9999999',
-        'psycopg2==2.4.6',
-        'elasticsearch==1.6.0',
+        'psycopg2==2.6.2',
         'django_cradmin==1.1.1',
-        'ievv_opensource==4.0.0b15',
+        'ievv_opensource==4.0.0rc1',
         'django-rest-swagger==0.3.8',
         'djangorestframework==3.3.3',
     ]

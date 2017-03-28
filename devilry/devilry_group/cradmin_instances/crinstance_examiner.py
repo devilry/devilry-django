@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-# Devilry/cradmin imports
 from devilry.devilry_examiner.cradminextensions import devilry_crmenu_examiner
+from devilry.devilry_cradmin import devilry_crinstance
 from devilry.devilry_group.cradmin_instances import crinstance_base
-from devilry.devilry_group.views.download_files import feedbackfeed_bulkfiledownload
 from devilry.devilry_group.views.download_files import batch_download_files
 from devilry.devilry_group.views.examiner import feedbackfeed_examiner
+from devilry.devilry_group.views.examiner import manage_deadline
 
 
 class Menu(devilry_crmenu_examiner.Menu):
@@ -20,17 +20,21 @@ class Menu(devilry_crmenu_examiner.Menu):
         self.add_group_breadcrumb_item(group=group, active=True)
 
 
-class ExaminerCrInstance(crinstance_base.CrInstanceBase):
+class ExaminerCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_crinstance.BaseCrInstanceExaminer):
     """
     CrInstance class for examiners.
     """
     menuclass = Menu
     apps = [
         ('feedbackfeed', feedbackfeed_examiner.App),
-        ('feedbackfeed', feedbackfeed_bulkfiledownload.App),
-        ('feedbackfeed', batch_download_files.App)
+        ('download', batch_download_files.App),
+        ('manage-deadline', manage_deadline.App)
     ]
     id = 'devilry_group_examiner'
+
+    @property
+    def assignment(self):
+        return self.request.cradmin_role.parentnode
 
     @classmethod
     def matches_urlpath(cls, urlpath):
@@ -47,12 +51,3 @@ class ExaminerCrInstance(crinstance_base.CrInstanceBase):
         """
         return self._get_base_rolequeryset()\
             .filter_examiner_has_access(self.request.user)
-
-    def get_devilryrole_for_requestuser(self):
-        """
-        Get the role of the user.
-
-        Returns:
-            str: ``examiner`` as devilryrole.
-        """
-        return 'examiner'

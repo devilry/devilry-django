@@ -89,7 +89,8 @@ class TestPointRangeToGradeManager(TestCase):
 class TestPointRangeToGrade(TestCase):
     def setUp(self):
         self.periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()
-        self.assignment = self.periodbuilder.add_assignment('assignment').assignment
+        self.assignment = self.periodbuilder.add_assignment('assignment',
+                                                            max_points=100).assignment
 
     def test_clean_max_smaller_than_min_fails(self):
         pointrange_to_grade = PointRangeToGrade(
@@ -147,7 +148,8 @@ class TestPointRangeToGrade(TestCase):
         pointrange_to_grade.clean()
 
     def test_clean_does_not_match_overlapping_range_in_other_assignments(self):
-        assignment2 = self.periodbuilder.add_assignment('assignment2').assignment
+        assignment2 = self.periodbuilder.add_assignment(
+            'assignment2', max_points=100).assignment
         pointrange_to_grade = PointRangeToGrade(
             point_to_grade_map=PointToGradeMap.objects.create(assignment=self.assignment),
             minimum_points=12,
@@ -401,7 +403,7 @@ class TestPointToGradeMap(TestCase):
         point_to_grade_map = mommy.make('core.PointToGradeMap')
         with self.assertRaisesMessage(AttributeError,
                                       'The prefetched_pointrangetogrades property requires '
-                                      'PointToGradeMap.prefetch_pointrange_to_grade()'):
+                                      'PointToGradeMapQuerySet.prefetch_pointrange_to_grade()'):
             str(point_to_grade_map.prefetched_pointrangetogrades)
 
     def test_prefetched_pointrangetogrades_property_is_prefetched(self):

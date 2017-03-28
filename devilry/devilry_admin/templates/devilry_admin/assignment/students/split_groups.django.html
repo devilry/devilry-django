@@ -1,0 +1,24 @@
+{% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block pageheader-outer-extraclasses %}
+   {{ block.super }}
+   devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_url 'groupdetails' 'groupdetails' pk=group.id %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to project group overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% trans "Split students from project group" %}
+    </h1>
+    <p>
+        {% trans 'Select the student to split from project group' %}
+    </p>
+{% endblock pageheader-inner %}

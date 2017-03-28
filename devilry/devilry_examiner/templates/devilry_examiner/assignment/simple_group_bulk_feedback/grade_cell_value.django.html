@@ -1,0 +1,13 @@
+{% extends "devilry_cradmin/new_devilry_tablebuilder/base_cell.django.html" %}
+
+{% block content %}
+    {% if assignment.grading_system_plugin_id == assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED %}
+        <select class="form-control grade_input" name="{{ me.field_name }}">
+            <option value=""></option>
+            <option value="Passed">Passed</option>
+            <option value="Failed">Failed</option>
+        </select>
+    {% elif assignment.grading_system_plugin_id == assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS %}
+        <input type="number" class="form-control" name="{{ me.field_name }}" min="0" max="{{ assignment.max_points }}">
+    {% endif %}
+{% endblock content %}

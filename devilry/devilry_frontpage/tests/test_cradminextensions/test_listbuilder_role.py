@@ -32,7 +32,7 @@ class TestStudentRoleItemValue(test.TestCase):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         selector = htmls.S(listbuilder_role.StudentRoleItemValue(value=testuser).render())
         self.assertEqual(
-            'Students can upload deliveres and browse their own delivery and feedback history.',
+            'Upload deliveries or see your delivery and feedback history.',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
 
@@ -60,7 +60,7 @@ class TestExaminerRoleItemValue(test.TestCase):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         selector = htmls.S(listbuilder_role.ExaminerRoleItemValue(value=testuser).render())
         self.assertEqual(
-            'Examiners give students feedback on their deliveries.',
+            'Give students feedback on their deliveries as examiner.',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
 

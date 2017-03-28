@@ -1,0 +1,58 @@
+
+.devilry-tabs {
+  &__tab-list {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    //border-bottom: 3px solid @btn-default-border;
+  }
+
+  &__tab {
+    font-weight: bold;
+    display: block;
+    text-align: center;
+    padding: 7px 15px;
+    border: 0;
+    border-top-left-radius: @border-radius-base;
+    border-top-right-radius: @border-radius-base;
+    margin-right: 5px;
+    background-color: @btn-default-bg;
+    color: @btn-default-color;
+
+    &:hover,
+    &:focus {
+      background-color: @cradmin-btn-default-hover-bg;
+      color: @cradmin-btn-default-hover-color;
+      text-decoration: none;
+    }
+
+    &--active {
+      &,
+      &:hover,
+      &:focus {
+        color: #fff;
+        background-color: @link-color;
+      }
+    }
+  }
+
+  &__title {
+    font-weight: bold;
+    display: block;
+  }
+
+  &__meta {
+    margin-top: 5px;
+    font-weight: normal;
+    font-size: @font-size-small;
+  }
+
+  &__panel {
+    display: none;
+
+    &--active {
+      display: block;
+    }
+  }
+}

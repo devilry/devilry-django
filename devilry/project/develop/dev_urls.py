@@ -1,3 +1,4 @@
+import debug_toolbar
 from django.conf.urls import patterns, url, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
@@ -5,7 +6,9 @@ from devilry.apps.core import pluginloader
 from devilry.project.common.default_urls import devilry_urls
 
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
+    url(r'^__debug__/', include(debug_toolbar.urls)),
     # Urls for apps under development
     #url(r'^rosetta/', include('rosetta.urls')),
     url(r'^devilry_sandbox/', include('devilry.devilry_sandbox.urls')),

@@ -1,0 +1,16 @@
+{% extends "devilry_cradmin/new_devilry_tablebuilder/base_cell.django.html" %}
+
+{% load i18n %}
+{% load cradmin_tags %}
+{% load devilry_core_tags %}
+
+{% block content %}
+    {% if me.assignment_result == 'not-registered' %}
+        <i>{% trans "Not registered" %}</i>
+    {% elif me.assignment_result == 'waiting-for-feedback' %}
+        <i>{% trans "Waiting for feedback" %}</i>
+    {% else %}
+        {% devilry_grade_full assignment=me.assignment points=me.points devilryrole=me.devilryrole %}
+    {% endif %}
+
+{% endblock content %}

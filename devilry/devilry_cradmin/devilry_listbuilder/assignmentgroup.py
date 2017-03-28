@@ -59,8 +59,7 @@ class StudentItemValueMixin(ItemValueMixin):
         return 'student'
 
     def get_assignment(self):
-        # Requires devilry.apps.core.models.AssignmentGroupQuerySet.prefetch_assignment_with_points_to_grade_map
-        return self.group.prefetched_assignment
+        return self.kwargs['assignment_id_to_assignment_map'][self.group.parentnode_id]
 
     def should_include_examiners(self):
         return False

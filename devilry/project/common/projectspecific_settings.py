@@ -14,7 +14,6 @@ DEVILRY_DEFAULT_GRADEEDITOR = 'approved'
 DEVILRY_GROUP_ZIPFILE_DIRECTORY = None
 
 DEVILRY_STATIC_URL = '/static'  # Must not end in / (this means that '' is the server root)
-DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/extjs4'
 DEVILRY_MATHJAX_URL = 'https://cdn.mathjax.org/mathjax/latest/MathJax.js'
 DEVILRY_LOGOUT_URL = '/authenticate/logout'
 DEVILRY_HELP_URL = 'https://devilry-userdoc.readthedocs.org'
@@ -54,11 +53,6 @@ DEVILRY_DEFAULT_EMAIL_SUFFIX = None
 #     'devilry_qualifiesforexam_points',
 #     'devilry_qualifiesforexam_select',
 # ]
-
-DEVILRY_ELASTICSEARCH_HOSTS = [
-    {"host": "localhost", "port": 9200}
-]
-
 
 #: Deadline handling method:
 #:

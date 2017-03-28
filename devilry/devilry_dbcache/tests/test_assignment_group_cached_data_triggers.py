@@ -4,11 +4,16 @@ from django import test
 from model_mommy import mommy
 
 from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import Candidate
+from devilry.apps.core.models import Examiner
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START
+from devilry.apps.core import devilry_core_mommy_factories as core_mommy
+from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from devilry.devilry_dbcache.models import AssignmentGroupCachedData
 from devilry.devilry_group import devilry_group_mommy_factories
-from devilry.devilry_group.models import GroupComment, ImageAnnotationComment
+from devilry.devilry_group.models import GroupComment, ImageAnnotationComment, FeedbackSet
 
 
 class TestAssignmentGroupCachedDataBasics(test.TestCase):
@@ -24,7 +29,8 @@ class TestAssignmentGroupCachedDataBasics(test.TestCase):
         self.assertEqual(group.cached_data.last_published_feedbackset, None)
 
     def test_first_feedbackset(self):
-        group = mommy.make('core.AssignmentGroup')
+        assignment = mommy.make('core.Assignment', first_deadline=ACTIVE_PERIOD_START - timedelta(days=2))
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         first_feedbackset = group.feedbackset_set.first()
         mommy.make('devilry_group.FeedbackSet',
                    group=group,
@@ -36,7 +42,8 @@ class TestAssignmentGroupCachedDataBasics(test.TestCase):
         self.assertEqual(group.cached_data.first_feedbackset, first_feedbackset)
 
     def test_last_feedbackset(self):
-        group = mommy.make('core.AssignmentGroup')
+        assignment = mommy.make('core.Assignment', first_deadline=ACTIVE_PERIOD_START - timedelta(days=2))
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         mommy.make('devilry_group.FeedbackSet',
                    group=group,
                    deadline_datetime=ACTIVE_PERIOD_START)
@@ -112,6 +119,113 @@ class TestAssignmentGroupCachedDataBasics(test.TestCase):
             deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=2))
         group.cached_data.refresh_from_db()
         self.assertEqual(group.cached_data.new_attempt_count, 2)
+
+
+class TestAssignmentGroupCachedDataExaminerCount(test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_none(self):
+        group = mommy.make('core.AssignmentGroup')
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.examiner_count, 0)
+
+    def test_examiner_simple(self):
+        group = mommy.make('core.AssignmentGroup')
+        core_mommy.examiner(group=group)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.examiner_count, 1)
+
+    def test_examiner_multiple(self):
+        group = mommy.make('core.AssignmentGroup')
+        core_mommy.examiner(group=group)
+        core_mommy.examiner(group=group)
+        core_mommy.examiner(group=group)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.examiner_count, 3)
+
+    def test_examiner_delete_decrements_count(self):
+        group = mommy.make('core.AssignmentGroup')
+        core_mommy.examiner(group=group)
+        examiner = core_mommy.examiner(group=group)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.examiner_count, 2)
+        examiner.delete()
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.examiner_count, 1)
+
+    def test_examiner_count_when_examiner_moved(self):
+        group1 = mommy.make('core.AssignmentGroup')
+        group2 = mommy.make('core.AssignmentGroup')
+        core_mommy.examiner(group=group1)
+        core_mommy.examiner(group=group2)
+        examiner = core_mommy.examiner(group=group1)
+        core_mommy.examiner(group=group2)
+        self.assertEqual(group1.cached_data.examiner_count, 2)
+        self.assertEqual(group2.cached_data.examiner_count, 2)
+        examiner.assignmentgroup = group2
+        examiner.save()
+        group1.cached_data.refresh_from_db()
+        self.assertEqual(group1.cached_data.examiner_count, 1)
+        group2.cached_data.refresh_from_db()
+        self.assertEqual(group2.cached_data.examiner_count, 3)
+
+
+class TestAssignmentGroupCachedDataCandidateCount(test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_none(self):
+        group = mommy.make('core.AssignmentGroup')
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.candidate_count, 0)
+
+    def test_examiner_simple(self):
+        group = mommy.make('core.AssignmentGroup')
+        core_mommy.candidate(group=group)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.candidate_count, 1)
+
+    def test_candidate_multiple(self):
+        group = mommy.make('core.AssignmentGroup')
+        core_mommy.candidate(group=group)
+        core_mommy.candidate(group=group)
+        core_mommy.candidate(group=group)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.candidate_count, 3)
+
+    def test_candidate_delete_decrements_count(self):
+        group = mommy.make('core.AssignmentGroup')
+        core_mommy.candidate(group=group)
+        candidate = core_mommy.candidate(group=group)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.candidate_count, 2)
+        candidate.delete()
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.candidate_count, 1)
+
+    def test_num_queries(self):
+        group = mommy.make('core.AssignmentGroup')
+        core_mommy.candidate(group=group)
+        core_mommy.examiner(group=group)
+        with self.assertNumQueries(20):
+            group.delete()
+
+    def test_candidate_count_when_candidate_moved(self):
+        group1 = mommy.make('core.AssignmentGroup')
+        group2 = mommy.make('core.AssignmentGroup')
+        core_mommy.candidate(group=group1)
+        core_mommy.candidate(group=group2)
+        candidate = core_mommy.candidate(group=group1)
+        core_mommy.candidate(group=group2)
+        self.assertEqual(group1.cached_data.candidate_count, 2)
+        self.assertEqual(group2.cached_data.candidate_count, 2)
+        candidate.assignment_group = group2
+        candidate.save()
+        group1.cached_data.refresh_from_db()
+        self.assertEqual(group1.cached_data.candidate_count, 1)
+        group2.cached_data.refresh_from_db()
+        self.assertEqual(group2.cached_data.candidate_count, 3)
 
 
 class TestAssignmentGroupCachedDataPublicTotalCommentCount(test.TestCase):
@@ -1342,3 +1456,41 @@ class TestRecrateCacheData(test.TestCase):
         AssignmentGroupDbCacheCustomSql().recreate_data()
         testgroup = AssignmentGroup.objects.get(id=testgroup.id)
         self.assertEqual(testgroup.cached_data.public_total_comment_count, 2)
+
+
+class TestAssignmentGroupDelete(test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_delete_cached_data(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        cached_data_id = testgroup.cached_data.id
+        core_mommy.examiner(group=testgroup)
+        core_mommy.candidate(group=testgroup)
+        testgroup.delete()
+        self.assertFalse(AssignmentGroupCachedData.objects.filter(id=cached_data_id).exists())
+
+    def test_delete_with_candidates_examiners_feedbacksets(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        examiner = core_mommy.examiner(group=testgroup)
+        candidate = core_mommy.candidate(group=testgroup)
+        feedbackset1 = group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        feedbackset2 = group_mommy.feedbackset_new_attempt_published(group=testgroup)
+        feedbackset3 = group_mommy.feedbackset_new_attempt_unpublished(group=testgroup)
+        testgroup.delete()
+        self.assertFalse(AssignmentGroup.objects.filter(id=testgroup.id).exists())
+        self.assertFalse(Examiner.objects.filter(id=examiner.id).exists())
+        self.assertFalse(Candidate.objects.filter(id=candidate.id).exists())
+        self.assertFalse(FeedbackSet.objects.filter(id=feedbackset1.id).exists())
+        self.assertFalse(FeedbackSet.objects.filter(id=feedbackset2.id).exists())
+        self.assertFalse(FeedbackSet.objects.filter(id=feedbackset3.id).exists())
+
+    def test_delete_num_queries(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        core_mommy.examiner(group=testgroup)
+        core_mommy.candidate(group=testgroup)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        group_mommy.feedbackset_new_attempt_published(group=testgroup)
+        group_mommy.feedbackset_new_attempt_unpublished(group=testgroup)
+        with self.assertNumQueries(20):
+            testgroup.delete()

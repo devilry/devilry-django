@@ -5,12 +5,26 @@
 {% load i18n %}
 
 {% block content %}
-    <span style="padding-left: 35px;">
-        <a href="{% cradmin_appurl 'file-download' me.delivery_file.id %}" >{{ me.delivery_file.filename|devilry_truncatefileextension:26 }}</a>
-    </span>
-    {% if me.delivery_file.comment.published_datetime > me.delivery_file.comment.feedback_set.deadline_datetime and me.delivery_file.comment.user_role != 'examiner' %}
-        <i class="after-deadline-icon pull-left" tooltip="Submitted after deadline"></i>
-    {% elif me.delivery_file.comment.user_role == 'examiner' %}
-        <i class="examiner-file-icon pull-left" tooltip="Submitted by examiner"></i>
-    {% endif %}
+    <a href="{% cradmin_instance_url appname='download' viewname='file-download' commentfile_id=me.delivery_file.id %}"
+            class="btn btn-default btn-sm devilry-singlefile-download devilry-singlefile-download--{{ me.delivery_file.comment.user_role }}">
+        <span class="devilry-singlefile-download__preview">
+            <span class="devilry-singlefile-download__filename-truncated">
+                {{ me.delivery_file.filename|devilry_truncatefileextension:15 }}
+            </span>
+        </span>
+        <span class="devilry-singlefile-download__fullview">
+            <span class="devilry-singlefile-download__filename-full">
+                {{ me.delivery_file.filename }}
+            </span>
+            {% if me.delivery_file.comment.published_datetime > me.delivery_file.comment.feedback_set.deadline_datetime and me.delivery_file.comment.user_role != 'examiner' %}
+                <span class="devilry-singlefile-download__meta">
+                    {% trans "Submitted after deadline" %}
+                </span>
+            {% elif me.delivery_file.comment.user_role == 'examiner' %}
+                <span class="devilry-singlefile-download__meta">
+                    {% trans "Submitted by examiner" %}
+                </span>
+            {% endif %}
+        </span>
+    </a>
 {% endblock content %}

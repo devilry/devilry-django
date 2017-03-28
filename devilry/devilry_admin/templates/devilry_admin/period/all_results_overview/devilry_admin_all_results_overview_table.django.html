@@ -1,0 +1,10 @@
+{% extends "devilry_cradmin/new_devilry_tablebuilder/base_tablebuilder.django.html" %}
+
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block paginate %}
+    {% include "django_cradmin/viewhelpers/listbuilderview/includes/loadmorepager.django.html" %}
+{% endblock paginate %}
+
+

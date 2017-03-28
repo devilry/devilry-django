@@ -1,0 +1,13 @@
+{% extends 'devilry_group/listbuilder_feedbackfeed/base_event_item_value.django.html' %}
+
+{% load cradmin_tags %}
+{% load i18n %}
+
+{% block content %}
+    <p class="muted deadline-move-info">
+        {% trans 'Deadline moved from ' %}
+        <strong>{{ me.value.deadline_old }}</strong>
+        {% trans ' to ' %}
+        <strong>{{ me.value.deadline_new }}</strong>
+    </p>
+{% endblock content %}

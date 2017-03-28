@@ -1,0 +1,24 @@
+{% extends 'django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html' %}
+
+{% load i18n %}
+{% load cradmin_tags %}
+{% load devilry_core_tags %}
+
+
+{% block description %}
+    <p class="text-muted">
+        {% devilry_relatedexaminers_on_period_tag me.value %}
+        {% trans 'Will be added to groups: ' %}
+        <br>
+        {% for group in me.assignment_groups %}
+            {{ group }},
+        {% endfor %}
+{#        {% for relatedstudent in me.value.relatedstudents.all %}#}
+{#            {% for candidate in relatedstudent.candidate_set.all %}#}
+{#                {% if candidate.assignment_group %}#}
+{#                    {{ candidate.assignment_group }}#}
+{#                {% endif %}#}
+{#            {% endfor %}#}
+{#        {% endfor %}#}
+    </p>
+{% endblock %}

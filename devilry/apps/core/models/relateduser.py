@@ -1,4 +1,5 @@
 import re
+import warnings
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -11,6 +12,7 @@ from abstract_is_admin import AbstractIsAdmin
 from devilry.devilry_account.models import User
 from node import Node
 from period import Period
+import period_tag
 
 
 class BulkCreateFromEmailsResult(object):
@@ -350,6 +352,10 @@ class RelatedExaminer(RelatedUserBase):
         else:
             return ugettext_lazy('Anonymous ID missing')
 
+    @property
+    def relatedusertag_set(self):
+        return self.relatedexaminertag_set
+
 
 class RelatedStudentQuerySet(models.QuerySet):
     """
@@ -371,10 +377,11 @@ class RelatedStudentQuerySet(models.QuerySet):
         :class:`.RelatedStudentSyncSystemTag` objects ordered by
         ``tag`` in ascending order.
         """
+        warnings.warn('deprecated, function up to date but will be refactored', DeprecationWarning)
         return self.prefetch_related(
-                models.Prefetch('relatedstudentsyncsystemtag_set',
-                                queryset=RelatedStudentSyncSystemTag.objects.order_by('tag'),
-                                to_attr='syncsystemtag_objects'))
+            models.Prefetch('periodtag_set',
+                            queryset=period_tag.PeriodTag.objects.order_by('tag'),
+                            to_attr='syncsystemtag_objects'))
 
 
 class RelatedStudentManager(AbstractRelatedUserManager):
@@ -416,6 +423,10 @@ class RelatedStudent(RelatedUserBase):
             return ugettext_lazy('Anonymous ID missing')
 
     @property
+    def relatedusertag_set(self):
+        return self.relatedstudenttag_set
+
+    @property
     def syncsystemtag_stringlist(self):
         """
         A shortcut for getting a list of tag strings from the
@@ -426,79 +437,6 @@ class RelatedStudent(RelatedUserBase):
             raise AttributeError('The syncsystemtag_stringlist property requires '
                                  'RelatedStudentQuerySet.prefetch_syncsystemtag_objects().')
         return [syncsystemtag.tag for syncsystemtag in self.syncsystemtag_objects]
-
-
-class RelatedUserSyncSystemTag(models.Model):
-    """
-    Base class for :class:`.RelatedExaminerSyncSystemTag` and
-    :class:`.RelatedExaminerSyncSystemTag`.
-    """
-
-    class Meta:
-        abstract = True
-
-    #: A tag unique for a the related student/examiner.
-    #: Max 15 characters.
-    tag = models.CharField(db_index=True, max_length=15)
-
-
-class RelatedExaminerSyncSystemTag(RelatedUserSyncSystemTag):
-    """
-    A tag for a :class:`.RelatedExaminer`.
-
-    Used by a third-party sync system to organize students.
-
-    We use this as one of the ways admins can auto-assign examiners
-    to students (match :class:`.RelatedExaminerSyncSystemTag` to
-    :class:`.RelatedExaminerSyncSystemTag`).
-    """
-
-    class Meta:
-        unique_together = [
-            ('relatedexaminer', 'tag')
-        ]
-
-    #: Foreignkey to the :class:`.RelatedExaminer` this tag is for.
-    relatedexaminer = models.ForeignKey(RelatedExaminer)
-
-
-class RelatedStudentSyncSystemTagQuerySet(models.QuerySet):
-    """
-    QuerySet for :class:`.RelatedStudentSyncSystemTag`.
-    """
-    def get_all_distinct_tags_in_period(self, period):
-        """
-        Get a ValuesListQuerySet of all distinct tag (strings) within
-        the given period.
-        """
-        return self.filter(relatedstudent__period=period)\
-            .order_by('tag')\
-            .values_list('tag', flat=True)\
-            .distinct()
-
-
-class RelatedStudentSyncSystemTag(RelatedUserSyncSystemTag):
-    """
-    A tag for a :class:`.RelatedStudent`.
-
-    Used by a third-party sync system to organize tag students.
-
-    We use this as one of the ways admins can auto-assign examiners
-    to students (match :class:`.RelatedExaminerSyncSystemTag` to
-    :class:`.RelatedExaminerSyncSystemTag`).
-    """
-    objects = RelatedStudentSyncSystemTagQuerySet.as_manager()
-
-    class Meta:
-        unique_together = [
-            ('relatedstudent', 'tag')
-        ]
-
-    #: Foreignkey to the :class:`.RelatedStudent` this tag is for.
-    relatedstudent = models.ForeignKey(RelatedStudent)
-
-    def __unicode__(self):
-        return u'{}: {}'.format(self.tag, self.relatedstudent)
 
 
 class RelatedStudentKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):

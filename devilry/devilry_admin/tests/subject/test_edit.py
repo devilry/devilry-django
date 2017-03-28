@@ -1,10 +1,10 @@
 import mock
-from devilry.apps.core.models import Subject
-from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START
-from devilry.devilry_admin.views.subject import edit
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
+
+from devilry.apps.core.models import Subject
+from devilry.devilry_admin.views.subject import edit
 
 
 class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -12,7 +12,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_get_render_title(self):
         testsubject = mommy.make('core.Subject',
-                                short_name='testsubject')
+                                 short_name='testsubject')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testsubject)
         self.assertIn('Edit testsubject',
@@ -20,7 +20,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_get_render_h1(self):
         testsubject = mommy.make('core.Subject',
-                                short_name='testsubject')
+                                 short_name='testsubject')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testsubject)
         self.assertEqual('Edit testsubject',
@@ -28,8 +28,8 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_get_render_formfields(self):
         testsubject = mommy.make('core.Subject',
-                                long_name='Test subject',
-                                short_name='testsubject')
+                                 long_name='Test subject',
+                                 short_name='testsubject')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testsubject)
         self.assertEqual(
@@ -67,10 +67,7 @@ class TestUpdateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             'This field is required.',
             mockresponse.selector.one('#error_1_id_long_name').alltext_normalized)
 
-
     def __valid_post_request(self, testsubject,
-                             start_time=ACTIVE_PERIOD_START,
-                             end_time=ACTIVE_PERIOD_END,
                              **kwargs):
         mockresponse = self.mock_http302_postrequest(
             cradmin_role=testsubject,

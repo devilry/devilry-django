@@ -1,10 +1,13 @@
 {% load i18n %}
 {% load humanize %}
-<div class="row">
-    <div class="col-sm-6">
+{% load cradmin_tags %}
+{#<div class="row">#}
+{#    <div class="col-sm-6">#}
         <div id="devilry_admin_assignment_overview_utilities_passed_previous">
             <h3>
-                <a href="#">{% trans "Passed previous semester" %}</a>
+                <a href="{% cradmin_instance_appindex_url 'passed_previous_period' %}">
+                    {% trans "Passed previous semester" %}
+                </a>
             </h3>
             <p>
                 {% blocktrans trimmed context "passed previous semester description" %}
@@ -12,19 +15,19 @@
                 {% endblocktrans %}
             </p>
         </div>
-    </div>
+{#    </div>#}
 
-    <div class="col-sm-6">
-        <div id="devilry_admin_assignment_overview_utilities_detektor">
-            <h3>
-                <a href="{% url "devilry_detektor_admin_assignmentassembly" assignment.id %}">{% trans "Detektor" %}</a>
-            </h3>
-            <p>
-                {% blocktrans trimmed context "assignment overview detektor description"%}
-                    Compare programming code delivered by your students and get statistics
-                    about similarities in the uploaded files.
-                {% endblocktrans %}
-            </p>
-        </div>
-    </div>
-</div>
+{#    <div class="col-sm-6">#}
+{#        <div id="devilry_admin_assignment_overview_utilities_detektor">#}
+{#            <h3>#}
+{#                <a href="{% url "devilry_detektor_admin_assignmentassembly" assignment.id %}">{% trans "Detektor" %}</a>#}
+{#            </h3>#}
+{#            <p>#}
+{#                {% blocktrans trimmed context "assignment overview detektor description"%}#}
+{#                    Compare programming code delivered by your students and get statistics#}
+{#                    about similarities in the uploaded files.#}
+{#                {% endblocktrans %}#}
+{#            </p>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}

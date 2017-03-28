@@ -1,0 +1,31 @@
+{% extends "django_cradmin/viewhelpers/update.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+{% load devilry_core_tags %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'manage_tags' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to period tags overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    {{ block.super }}
+{% endblock pageheader-inner %}
+
+{% block pre_form %}
+    <div id="devilry_admin_period_admins_help_container" class="container">
+        <p class="alert alert-info">
+            <strong>
+                {% trans 'Existing tags' %}:
+            </strong>
+            {% devilry_period_tags_on_period period=period period_tags=period_tags %}
+        </p>
+    </div>
+{% endblock pre_form %}

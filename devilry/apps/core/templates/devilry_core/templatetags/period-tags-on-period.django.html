@@ -1,0 +1,7 @@
+{% load devilry_core_tags %}
+{% load i18n %}
+
+{% for period_tag in period_tags %}
+    <span>{{ period_tag.tag }}</span>
+    {% if not forloop.last %}, {% endif %}
+{% endfor %}

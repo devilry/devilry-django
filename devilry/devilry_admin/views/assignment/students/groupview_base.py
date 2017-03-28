@@ -11,6 +11,7 @@ from django_cradmin.viewhelpers import multiselect2view
 
 from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer, Assignment, AssignmentGroup
+from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
 
@@ -36,6 +37,7 @@ class GroupViewMixin(object):
         filterlist.append(devilry_listfilter.assignmentgroup.PointsFilter())
         filterlist.append(devilry_listfilter.assignmentgroup.ExaminerFilter(view=self))
         filterlist.append(devilry_listfilter.assignmentgroup.ExaminerCountFilter(view=self))
+        filterlist.append(devilry_listfilter.assignmentgroup.CandidateCountFilter(view=self))
         filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
 
     def get_unfiltered_queryset_for_role(self, role):
@@ -72,15 +74,17 @@ class GroupViewMixin(object):
             .prefetch_related(
                 models.Prefetch('examiners',
                                 queryset=examinerqueryset))\
-            .annotate_with_is_waiting_for_feedback()\
-            .annotate_with_is_waiting_for_deliveries()\
-            .annotate_with_is_corrected() \
+            .annotate_with_is_waiting_for_feedback_count()\
+            .annotate_with_is_waiting_for_deliveries_count()\
+            .annotate_with_is_corrected_count() \
             .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user) \
             .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user)\
             .distinct() \
             .select_related('cached_data__last_published_feedbackset',
                             'cached_data__last_feedbackset',
                             'cached_data__first_feedbackset',
+                            'cached_data__examiner_count',
+                            'cached_data__candidate_count',
                             'parentnode')
         return queryset
 
@@ -114,21 +118,21 @@ class GroupViewMixin(object):
         return self.get_filterlist()\
             .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
                     exclude={'status'})\
-            .filter(annotated_is_waiting_for_feedback=True)\
+            .filter(annotated_is_waiting_for_feedback__gt=0)\
             .count()
 
     def get_filtered_waiting_for_deliveries_count(self):
         return self.get_filterlist()\
             .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
                     exclude={'status'})\
-            .filter(annotated_is_waiting_for_deliveries=True)\
+            .filter(annotated_is_waiting_for_deliveries__gt=0)\
             .count()
 
     def get_filtered_corrected_count(self):
         return self.get_filterlist()\
             .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
                     exclude={'status'})\
-            .filter(annotated_is_corrected=True)\
+            .filter(annotated_is_corrected__gt=0)\
             .count()
 
     def __get_distinct_relatedexaminer_ids(self):
@@ -143,6 +147,21 @@ class GroupViewMixin(object):
     def get_distinct_relatedexaminers(self):
         return RelatedExaminer.objects\
             .filter(id__in=self.__get_distinct_relatedexaminer_ids())\
+            .select_related('user')\
+            .order_by(Lower(Concat('user__fullname', 'user__shortname')))
+
+    def __get_distinct_relatedstudent_ids(self):
+        if not hasattr(self, '_distinct_relatedstudent_ids'):
+            self._distinct_relatedstudent_ids = Candidate.objects\
+                .filter(assignment_group__in=self.__get_unfiltered_queryset_for_role())\
+                .values_list('relatedstudent_id', flat=True)\
+                .distinct()
+            self._distinct_relatedstudent_ids = list(self._distinct_relatedstudent_ids)
+        return self._distinct_relatedstudent_ids
+
+    def get_distinct_relatedstudents(self):
+        return RelatedStudent.objects\
+            .filter(id__in=self.__get_distinct_relatedstudent_ids())\
             .select_related('user')\
             .order_by(Lower(Concat('user__fullname', 'user__shortname')))
 

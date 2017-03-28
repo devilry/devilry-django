@@ -491,6 +491,8 @@ class PeriodBuilder(BaseNodeBuilderBase):
 
     def add_assignment(self, *args, **kwargs):
         kwargs['parentnode'] = self.period
+        if 'first_deadline' not in kwargs:
+            kwargs['first_deadline'] = datetime.now()
         return AssignmentBuilder(*args, **kwargs)
 
     def add_assignment_x_weeks_ago(self, weeks, **kwargs):

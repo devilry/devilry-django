@@ -1,0 +1,38 @@
+{% extends "django_cradmin/base.django.html" %}
+
+{% load static %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block title %}
+    {{ pagetitle }}
+{% endblock title %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock pageheader-outer-extraclasses %}
+
+{% block pageheader-inner %}
+    <a href="{{ backlink_url }}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% blocktrans trimmed with assignmentname=assignment.long_name %}
+            {{ pageheading }}
+        {% endblocktrans %}
+    </h1>
+    <p class="devilry-deadlinemanagement-select-deadline-subheading">
+        {{ page_subheading }}
+    </p>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        {% cradmin_render_renderable listbuilder_list %}
+    </div>
+{% endblock content %}

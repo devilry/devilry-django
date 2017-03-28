@@ -1,5 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
+import mock
 from django.conf import settings
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
@@ -7,6 +8,8 @@ from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_admin.views.assignment import overview
+from devilry.apps.core import devilry_core_mommy_factories as core_mommy
+from django_cradmin.crinstance import reverse_cradmin_url
 
 
 class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -182,11 +185,11 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_gradingconfiguration_examiner_chooses(self):
         assignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertEqual(
-                mockresponse.selector.one(
-                        '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(1) td:nth-child(1)').alltext_normalized,
-                "Examiner chooses")
+        self.assertEquals(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_gradingconfiguration_information '
+                'dl:nth-child(1) dt:nth-child(1)').alltext_normalized,
+            'Examiner chooses')
 
     def test_gradingconfiguration_examiner_chooses_passed_failed(self):
         assignment = mommy.make('core.Assignment')
@@ -194,7 +197,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(1) td:nth-child(2)').alltext_normalized,
+                        'dl:nth-child(1) dd:nth-child(2)').alltext_normalized,
                 str(Assignment.GRADING_SYSTEM_PLUGIN_ID_CHOICES_DICT.get(
                         Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED)))
 
@@ -204,19 +207,19 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(1) td:nth-child(2)').alltext_normalized,
+                        'dl:nth-child(1) dd:nth-child(2)').alltext_normalized,
                 str(Assignment.GRADING_SYSTEM_PLUGIN_ID_CHOICES_DICT.get(
                         Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)))
 
-    def test_gradingconfiguration_examiner_chooses_schema(self):
-        assignment = mommy.make('core.Assignment', grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_SCHEMA)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertEqual(
-                mockresponse.selector.one(
-                        '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(1) td:nth-child(2)').alltext_normalized,
-                str(Assignment.GRADING_SYSTEM_PLUGIN_ID_CHOICES_DICT.get(
-                        Assignment.GRADING_SYSTEM_PLUGIN_ID_SCHEMA)))
+    # def test_gradingconfiguration_examiner_chooses_schema(self):
+    #     assignment = mommy.make('core.Assignment', grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_SCHEMA)
+    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+    #     self.assertEqual(
+    #             mockresponse.selector.one(
+    #                     '#devilry_admin_assignment_overview_gradingconfiguration_information '
+    #                     'table tbody tr:nth-child(1) td:nth-child(2)').alltext_normalized,
+    #             str(Assignment.GRADING_SYSTEM_PLUGIN_ID_CHOICES_DICT.get(
+    #                     Assignment.GRADING_SYSTEM_PLUGIN_ID_SCHEMA)))
 
     def test_gradingconfiguration_students_see(self):
         assignment = mommy.make('core.Assignment')
@@ -224,7 +227,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(2) td:nth-child(1)').alltext_normalized,
+                        'dl:nth-child(1) dt:nth-child(3)').alltext_normalized,
                 "Students see")
 
     def test_gradingconfiguration_students_see_passed_failed(self):
@@ -233,7 +236,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(2) td:nth-child(2)').alltext_normalized,
+                        'dl:nth-child(1) dd:nth-child(4)').alltext_normalized,
                 str(Assignment.POINTS_TO_GRADE_MAPPER_CHOICES_DICT.get(
                         Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED)))
 
@@ -243,55 +246,69 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(2) td:nth-child(2)').alltext_normalized,
+                        'dl:nth-child(1) dd:nth-child(4)').alltext_normalized,
                 str(Assignment.POINTS_TO_GRADE_MAPPER_CHOICES_DICT.get(
                         Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS)))
 
     def test_gradingconfiguration_students_see_schema(self):
         assignment = mommy.make('core.Assignment',
                                 points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)
+        point_to_grade_map = mommy.make('core.PointToGradeMap', assignment=assignment)
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=5,
+                   maximum_points=9, grade='F')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=10,
+                   maximum_points=14,grade='E')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=15,
+                   maximum_points=19, grade='D')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=20,
+                   maximum_points=24, grade='C')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=25,
+                   maximum_points=29, grade='B')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map, minimum_points=30,
+                   maximum_points=35, grade='A')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(2) td:nth-child(2)').alltext_normalized,
-                str(Assignment.POINTS_TO_GRADE_MAPPER_CHOICES_DICT.get(
-                        Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE)))
+                        'dl:nth-child(1) dd:nth-child(4)').alltext_normalized,
+                'F, E, D, C, B or A')
 
     def test_gradingconfiguration_max_points(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = mommy.make('core.Assignment', grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(3) td:nth-child(1)').alltext_normalized,
+                        'dl:nth-child(1) dt:nth-child(5)').alltext_normalized,
                 "Maximum number of points achievable")
 
     def test_gradingconfiguration_max_points_100(self):
-        assignment = mommy.make('core.Assignment', max_points=100)
+        assignment = mommy.make('core.Assignment', max_points=100,
+                                grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(3) td:nth-child(2)').alltext_normalized,
+                        'dl:nth-child(1) dd:nth-child(6)').alltext_normalized,
                 "100")
 
     def test_gradingconfiguration_min_points(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = mommy.make('core.Assignment', grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(4) td:nth-child(1)').alltext_normalized,
+                        'dl:nth-child(1) dt:nth-child(7)').alltext_normalized,
                 "Minimum number of points required to pass")
 
     def test_gradingconfiguration_min_points_0(self):
-        assignment = mommy.make('core.Assignment', passing_grade_min_points=0)
+        assignment = mommy.make('core.Assignment', passing_grade_min_points=0,
+                                grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
                         '#devilry_admin_assignment_overview_gradingconfiguration_information '
-                        'table tbody tr:nth-child(4) td:nth-child(2)').alltext_normalized,
+                        'dl:nth-child(1) dd:nth-child(8)').alltext_normalized,
                 "0")
 
     def test_utilities_row_passed_previous(self):
@@ -310,19 +327,179 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                         '#devilry_admin_assignment_overview_utilities_passed_previous p').alltext_normalized,
                 "Mark students that have passed this assignment previously.")
 
-    def test_utilities_row_detektor(self):
-        assignment = mommy.make('core.Assignment')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertEqual(
-                mockresponse.selector.one(
-                        '#devilry_admin_assignment_overview_utilities_detektor a').alltext_normalized,
-                "Detektor")
+    # def test_utilities_row_detektor(self):
+    #     assignment = mommy.make('core.Assignment')
+    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+    #     self.assertEqual(
+    #             mockresponse.selector.one(
+    #                     '#devilry_admin_assignment_overview_utilities_detektor a').alltext_normalized,
+    #             "Detektor")
+    #
+    # def test_utilities_row_detektor_description(self):
+    #     assignment = mommy.make('core.Assignment')
+    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+    #     self.assertEqual(
+    #             mockresponse.selector.one(
+    #                     '#devilry_admin_assignment_overview_utilities_detektor p').alltext_normalized,
+    #             'Compare programming code delivered by your students and '
+    #             'get statistics about similarities in the uploaded files.')
 
-    def test_utilities_row_detektor_description(self):
+
+class TestOverviewInfoBox(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = overview.Overview
+
+    def test_no_students_on_period(self):
         assignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertIn(
+            'There are no students on the semester',
+            mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
+        )
+        self.assertIn(
+            'Add students',
+            mockresponse.selector.one('#devilry_admin_assignment_overview_info_box > p > a').alltext_normalized
+        )
+        url = reverse_cradmin_url(
+            instanceid='devilry_admin_periodadmin',
+            appname='students',
+            roleid=assignment.period.id,
+            viewname='add')
         self.assertEqual(
-                mockresponse.selector.one(
-                        '#devilry_admin_assignment_overview_utilities_detektor p').alltext_normalized,
-                'Compare programming code delivered by your students and '
-                'get statistics about similarities in the uploaded files.')
+            url,
+            mockresponse.selector.one('#devilry_admin_assignment_overview_info_box > p > a').get('href')
+        )
+
+    def test_no_students_on_the_assignment(self):
+        assignment = mommy.make('core.Assignment')
+        mommy.make('core.RelatedStudent', period=assignment.period)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertIn(
+            'There are no students on the assignment',
+            mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
+        )
+        self.assertIn(
+            'Add students',
+            mockresponse.selector.one('#devilry_admin_assignment_overview_info_box > p > a').alltext_normalized
+        )
+        self.assertEqual(
+            mock.call(appname='create_groups', args=(), kwargs={}, viewname='manual-select'),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
+        )
+
+    def test_no_examiners_on_period(self):
+        assignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        mommy.make('core.RelatedStudent', period=assignment.period)
+        core_mommy.candidate(group=group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertIn(
+            'There are no examiners on the semester',
+            mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
+        )
+        self.assertIn(
+            'Add examiners',
+            mockresponse.selector.one('#devilry_admin_assignment_overview_info_box > p > a').alltext_normalized
+        )
+        url = reverse_cradmin_url(
+            instanceid='devilry_admin_periodadmin',
+            appname='examiners',
+            roleid=assignment.period.id,
+            viewname='add')
+        self.assertEqual(
+            url,
+            mockresponse.selector.one('#devilry_admin_assignment_overview_info_box > p > a').get('href')
+        )
+
+    def test_no_examiners_on_the_assignment(self):
+        assignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        mommy.make('core.RelatedStudent', period=assignment.period)
+        mommy.make('core.RelatedExaminer', period=assignment.period)
+        core_mommy.candidate(group=group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertIn(
+            'There are no examiners on the assignment',
+            mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
+        )
+        self.assertIn(
+            'Add examiners',
+            mockresponse.selector.one('#devilry_admin_assignment_overview_info_box > p > a').alltext_normalized
+        )
+        self.assertEqual(
+            mock.call(appname='examineroverview', args=(), kwargs={}, viewname='INDEX'),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
+        )
+
+    def test_publish_now(self):
+        assignment = mommy.make('core.Assignment', publishing_time=datetime.now() + timedelta(days=1))
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        core_mommy.candidate(group=group)
+        core_mommy.examiner(group=group)
+        mommy.make('core.RelatedStudent', period=assignment.period)
+        mommy.make('core.RelatedExaminer', period=assignment.period)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertIn(
+            'Everything looks good, ready to publish',
+            mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
+        )
+        self.assertEqual(
+            mock.call(appname='overview', args=(assignment.id, ), kwargs={}, viewname='publish_assignment_now'),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
+        )
+        self.assertTrue(mockresponse.selector.exists('#devilry_admin_assignment_published_publishnow_form_info_box'))
+
+    def test_still_students_who_are_on_the_semester_but_not_on_the_assignemnt(self):
+        assignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        relatedstudent = mommy.make('core.RelatedStudent', period=assignment.period)
+        mommy.make('core.Candidate', assignment_group=group, relatedstudent=relatedstudent)
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=assignment.period)
+        mommy.make('core.Examiner', assignmentgroup=group, relatedexaminer=relatedexaminer)
+        mommy.make('core.RelatedStudent', period=assignment.period)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertIn(
+            'There are still students who are on the semester, but not on the assignment',
+            mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
+        )
+        self.assertIn(
+            'Add students',
+            mockresponse.selector.one('#devilry_admin_assignment_overview_info_box > p > a').alltext_normalized
+        )
+        self.assertEqual(
+            mock.call(appname='create_groups', args=(), kwargs={}, viewname='manual-select'),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
+        )
+
+    def test_still_examiners_who_are_on_the_semester_but_not_on_the_assignment(self):
+        assignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        relatedstudent = mommy.make('core.RelatedStudent', period=assignment.period)
+        mommy.make('core.Candidate', assignment_group=group, relatedstudent=relatedstudent)
+        relatedexaminer = mommy.make('core.RelatedExaminer', period=assignment.period)
+        mommy.make('core.Examiner', assignmentgroup=group, relatedexaminer=relatedexaminer)
+        mommy.make('core.RelatedExaminer', period=assignment.period)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertIn(
+            'There are still examiners who are on the semester, but not on the assignment',
+            mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
+        )
+        self.assertIn(
+            'Add examiners',
+            mockresponse.selector.one('#devilry_admin_assignment_overview_info_box > p > a').alltext_normalized
+        )
+        self.assertEqual(
+            mock.call(appname='examineroverview', args=(), kwargs={}, viewname='INDEX'),
+            mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
+        )
+
+    def test_info_box_is_not_shown(self):
+        assignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        core_mommy.candidate(group=group)
+        core_mommy.examiner(group=group)
+        mommy.make('core.RelatedStudent', period=assignment.period)
+        mommy.make('core.RelatedExaminer', period=assignment.period)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertFalse(
+            mockresponse.selector.exists('#devilry_admin_assignment_overview_info_box')
+        )

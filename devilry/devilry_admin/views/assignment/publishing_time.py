@@ -8,6 +8,7 @@ from django.utils import timezone
 
 from devilry.apps.core import models as coremodels
 
+
 class PublishNowRedirectView(RedirectView):
     http_method_names = ['post']
     permanent = False

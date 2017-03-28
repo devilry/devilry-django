@@ -1,24 +1,29 @@
-import unittest
+import shutil
+import json
 from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
+from django.core.files.base import ContentFile
 from django.test import TestCase
 from django.utils import timezone
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 from model_mommy import mommy
 
+from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Delivery
+from devilry.apps.core.models import Examiner
 from devilry.apps.core.models import deliverytypes, Assignment, RelatedStudent
-from devilry.apps.core.models.assignment_group import GroupPopNotCandiateError
-from devilry.apps.core.models.assignment_group import GroupPopToFewCandiatesError
+from devilry.apps.core.models.assignment_group import GroupPopNotCandidateError, AssignmentGroupTag
+from devilry.apps.core.models.assignment_group import GroupPopToFewCandidatesError
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START, ACTIVE_PERIOD_END
-from devilry.apps.core.testhelper import TestHelper
-from devilry.devilry_comment.models import Comment
+from devilry.devilry_comment.models import Comment, CommentFile
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories
+from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group.models import FeedbackSet, GroupComment, ImageAnnotationComment
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
@@ -543,7 +548,7 @@ class TestAssignmentGroup(TestCase):
 
         for created_feedbackset in FeedbackSet.objects.all():
             self.assertEqual(testuser, created_feedbackset.created_by)
-            self.assertIsNone(created_feedbackset.deadline_datetime)
+            self.assertIsNotNone(created_feedbackset.deadline_datetime)
 
     def test_bulk_create_groups_multiple(self):
         testperiod = mommy.make('core.Period')
@@ -724,410 +729,391 @@ class TestAssignmentGroup(TestCase):
             list(AssignmentGroup.objects.filter_user_is_examiner(user=testuser)))
 
 
-@unittest.skip('Must be updated for new FeedbackSet structure')
-class TestAssignmentGroupSplit(TestCase):
+class TestAssignmentGroupMerge(TestCase):
+
     def setUp(self):
-        self.testhelper = TestHelper()
-        self.testhelper.add(nodes="uni",
-                            subjects=["sub"],
-                            periods=["p1"],
-                            assignments=['a1'])
+        AssignmentGroupDbCacheCustomSql().initialize()
 
-    def _create_testdata(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2,student3)'
-                                    ':examiner(examiner1,examiner2,examiner3)')
-        self.testhelper.sub_p1_a1.max_points = 100
-        self.testhelper.sub_p1_a1.save()
+    def test_merge_not_part_of_same_assignment(self):
+        testassignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testassignment2 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        with self.assertRaises(ValidationError):
+            AssignmentGroup.merge_groups([testgroup1, testgroup2, testgroup3])
 
-        # Add d1 and deliveries
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(1)')
-        self.testhelper.add_delivery("sub.p1.a1.g1", {"firsttry.py": "print first"},
-                                     time_of_delivery=datetime(2002, 1, 1))
-        delivery2 = self.testhelper.add_delivery("sub.p1.a1.g1", {"secondtry.py": "print second"},
-                                                 time_of_delivery=-1)  # days after deadline
-        self.testhelper.add_feedback(delivery=delivery2,
-                                     verdict={'grade': 'F', 'points': 10, 'is_passing_grade': False},
-                                     rendered_view='Bad',
-                                     timestamp=datetime(2005, 1, 1))
+    def test_candidate_foreign_key_is_moved(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        core_mommy.candidate(group=group2)
+        core_mommy.candidate(group=group2)
+        AssignmentGroup.merge_groups([group1, group2])
+        candidates = Candidate.objects.filter(assignment_group=group1).count()
+        self.assertEqual(candidates, 2)
 
-        # Add d2 and deliveries
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d2:ends(4)')
-        delivery3 = self.testhelper.add_delivery("sub.p1.a1.g1", {"thirdtry.py": "print third"},
-                                                 time_of_delivery=-1)  # days after deadline
-        self.testhelper.add_feedback(delivery=delivery3,
-                                     verdict={'grade': 'C', 'points': 40, 'is_passing_grade': True},
-                                     rendered_view='Better',
-                                     timestamp=datetime(2010, 1, 1))
+    def test_duplicate_candidate_is_not_merged_and_removed(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        relatedstudent = mommy.make('core.RelatedStudent')
+        mommy.make('candidate', assignment_group=group1, relatedstudent=relatedstudent)
+        testcandidate = mommy.make('candidate', assignment_group=group2, relatedstudent=relatedstudent)
+        candidates = Candidate.objects.filter(assignment_group=group1)
+        self.assertEqual(len(candidates), 1)
+        AssignmentGroup.merge_groups([group1, group2])
+        candidates = Candidate.objects.filter(assignment_group=group1)
+        self.assertEqual(len(candidates), 1)
+        with self.assertRaises(Candidate.DoesNotExist):
+            Candidate.objects.get(id=testcandidate.id)
 
-        # Set attributes and tags
-        g1 = self.testhelper.sub_p1_a1_g1
-        g1.name = 'Stuff'
-        g1.is_open = True
-        g1.save()
-        g1.tags.create(tag='a')
-        g1.tags.create(tag='b')
+    def test_examiners_is_merged(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        core_mommy.examiner(group=group2, fullname='Thor')
+        core_mommy.examiner(group=group2, fullname='Odin')
+        AssignmentGroup.merge_groups([group1, group2])
+        examiners = group1.examiners.all().order_by('relatedexaminer__user__fullname')
+        examiner_names = [examiner.relatedexaminer.user.fullname for examiner in examiners]
+        self.assertListEqual(examiner_names, ['Odin', 'Thor'])
 
-    def test_copy_all_except_candidates(self):
-        self._create_testdata()
-        g1 = self.testhelper.sub_p1_a1_g1
-        g1copy = g1.copy_all_except_candidates()
-        g1copy = self.testhelper.reload_from_db(g1copy)
+    def test_duplicate_examiner_is_not_merged_and_removed(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        related_examiner = mommy.make('core.RelatedExaminer', user__fullname='Thor')
+        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=group1)
+        duplicate_examiner = mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=group2)
+        core_mommy.examiner(group=group2, fullname='Odin')
+        AssignmentGroup.merge_groups([group1, group2])
+        examiners = group1.examiners.all().order_by('relatedexaminer__user__fullname')
+        examiner_names = [examiner.relatedexaminer.user.fullname for examiner in examiners]
+        self.assertListEqual(examiner_names, ['Odin', 'Thor'])
+        with self.assertRaises(Examiner.DoesNotExist):
+            Examiner.objects.get(id=duplicate_examiner.id)
 
-        # Basics
-        self.assertEquals(g1copy.name, 'Stuff')
-        self.assertTrue(g1copy.is_open)
-        self.assertEquals(g1copy.candidates.count(), 0)
+    def test_tags_is_merged(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.AssignmentGroupTag', assignment_group=group2, tag='AAA')
+        mommy.make('core.AssignmentGroupTag', assignment_group=group2, tag='QQQ')
+        AssignmentGroup.merge_groups([group1, group2])
+        tags = AssignmentGroupTag.objects.filter(assignment_group=group1).order_by('tag')
+        tag_name = [tag.tag for tag in tags]
+        self.assertListEqual(tag_name, ['AAA', 'QQQ'])
 
-        # Tags
-        self.assertEquals(g1copy.tags.count(), 2)
-        tags = [t.tag for t in g1copy.tags.all()]
-        self.assertEquals(set(tags), {'a', 'b'})
+    def test_tag_duplicate_is_not_merged_and_removed(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.AssignmentGroupTag', assignment_group=group1, tag='AAA')
+        duplicate_tag = mommy.make('core.AssignmentGroupTag', assignment_group=group2, tag='AAA')
+        mommy.make('core.AssignmentGroupTag', assignment_group=group2, tag='QQQ')
+        AssignmentGroup.merge_groups([group1, group2])
+        tags = AssignmentGroupTag.objects.filter(assignment_group=group1).order_by('tag')
+        tag_name = [tag.tag for tag in tags]
+        self.assertListEqual(tag_name, ['AAA', 'QQQ'])
+        with self.assertRaises(AssignmentGroupTag.DoesNotExist):
+            AssignmentGroupTag.objects.get(id=duplicate_tag.id)
 
-        # Examiners
-        self.assertEquals(g1copy.examiners.count(), 3)
-        examiner_usernames = [e.user.shortname for e in g1copy.examiners.all()]
-        examiner_usernames.sort()
-        self.assertEquals(examiner_usernames, ['examiner1', 'examiner2', 'examiner3'])
+    def test_cannot_merge_less_than_2_groups(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        targetassignmentgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        with self.assertRaises(ValidationError):
+            AssignmentGroup.merge_groups([targetassignmentgroup])
 
-        # Deliveries
-        deliveries = Delivery.objects.filter(deadline__assignment_group=g1).order_by('time_of_delivery')
-        copydeliveries = Delivery.objects.filter(deadline__assignment_group=g1copy).order_by('time_of_delivery')
-        self.assertEquals(len(deliveries), len(copydeliveries))
-        self.assertEquals(len(deliveries), 3)
-        for delivery, deliverycopy in zip(deliveries, copydeliveries):
-            self.assertEquals(delivery.delivery_type, deliverycopy.delivery_type)
-            self.assertEquals(delivery.time_of_delivery, deliverycopy.time_of_delivery)
-            self.assertEquals(delivery.number, deliverycopy.number)
-            self.assertEquals(delivery.delivered_by, deliverycopy.delivered_by)
-            self.assertEquals(delivery.deadline.deadline, deliverycopy.deadline.deadline)
-            self.assertEquals(delivery.delivered_by, deliverycopy.delivered_by)
-            self.assertEquals(delivery.alias_delivery, deliverycopy.alias_delivery)
+    def test_merge_type_first_attempt(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        AssignmentGroup.merge_groups([group1, group2, group3])
+        merged_feedbacksets = FeedbackSet.objects.filter(
+            group=group1,
+            feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT).count()
+        self.assertEqual(merged_feedbacksets, 2)
 
-        # Active feedback
-        self.assertEquals(g1copy.feedback.grade, 'C')
-        self.assertEquals(g1copy.feedback.save_timestamp, datetime(2010, 1, 1))
-        self.assertEquals(g1copy.feedback.rendered_view, 'Better')
-        self.assertEquals(g1copy.feedback.points, 40)
+    def test_merge_type_new_attempt(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_new_attempt_published(group=group2)
+        group_mommy.feedbackset_new_attempt_published(group=group3)
+        AssignmentGroup.merge_groups([group1, group2, group3])
+        merged_feedbacksets = FeedbackSet.objects.filter(
+            group=group1,
+            feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT).count()
+        self.assertEqual(merged_feedbacksets, 2)
 
-        self.assertEquals(
-            Delivery.objects.filter(deadline__assignment_group=g1copy).first().filemetas.first().filename,
-            'thirdtry.py')
+    def test_merge_type_re_edit(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=group2,
+                   deadline_datetime=group2.cached_data.first_feedbackset.current_deadline(),
+                   grading_points=1,
+                   grading_published_datetime=timezone.now(),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_RE_EDIT)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=group3,
+                   deadline_datetime=group3.cached_data.first_feedbackset.current_deadline(),
+                   grading_points=1,
+                   grading_published_datetime=timezone.now(),
+                   feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_RE_EDIT)
+        AssignmentGroup.merge_groups([group1, group2, group3])
+        merged_feedbacksets = FeedbackSet.objects.filter(
+            group=group1,
+            feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_MERGE_RE_EDIT).count()
+        self.assertEqual(merged_feedbacksets, 2)
 
-    def test_pop_candidate(self):
-        self._create_testdata()
-        g1 = self.testhelper.sub_p1_a1_g1
-        self.assertEquals(g1.candidates.count(), 3)  # We check this again after popping
-        candidate = g1.candidates.order_by('student__username')[1]
-        g1copy = g1.pop_candidate(candidate)
+    def test_merge_unpublished_feedbackset(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_new_attempt_unpublished(group=group2)
+        group_mommy.feedbackset_new_attempt_unpublished(group=group3)
+        AssignmentGroup.merge_groups([group1, group2, group3])
+        merged_feedbacksets = FeedbackSet.objects.filter(
+            group=group1,
+            feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT,
+            grading_published_datetime=None).count()
+        self.assertEqual(merged_feedbacksets, 2)
 
-        self.assertEquals(g1copy.name, 'Stuff')  # Sanity test - the tests for copying are above
-        self.assertEquals(g1copy.candidates.count(), 1)
-        self.assertEquals(g1.candidates.count(), 2)
-        self.assertEquals(candidate.student.shortname, 'student2')
-        self.assertEquals(g1copy.candidates.all()[0], candidate)
 
-    def test_pop_candidate_not_candidate(self):
-        self._create_testdata()
-        self.testhelper.add_to_path('uni;sub.p1.a2.other:candidate(student10)')
-        g1 = self.testhelper.sub_p1_a1_g1
-        other = self.testhelper.sub_p1_a2_other
-        candidate = other.candidates.all()[0]
-        with self.assertRaises(GroupPopNotCandiateError):
-            g1.pop_candidate(candidate)
+class TestAssignmentGroupPopCandidate(TestCase):
 
-    def test_pop_candidate_to_few_candidates(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
-        g1 = self.testhelper.sub_p1_a1_g1
-        candidate = g1.candidates.all()[0]
-        with self.assertRaises(GroupPopToFewCandiatesError):
-            g1.pop_candidate(candidate)
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
-    def _create_mergetestdata(self):
-        self._create_testdata()
-        source = self.testhelper.sub_p1_a1_g1
+    def tearDown(self):
+        # Ignores errors if the path is not created.
+        shutil.rmtree('devilry_testfiles/filestore/', ignore_errors=True)
 
-        self.testhelper.add_to_path('uni;sub.p1.a1.target:candidate(dewey):examiner(donald)')
+    def make_test_data(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        testcandidate1 = core_mommy.candidate(group=testgroup1)
+        testcandidate2 = core_mommy.candidate(group=testgroup1)
+        core_mommy.examiner(group=testgroup1)
+        core_mommy.examiner(group=testgroup1)
+        core_mommy.examiner(group=testgroup1)
+        mommy.make('core.AssignmentGroupTag', assignment_group=testgroup1, tag='AAA')
+        mommy.make('core.AssignmentGroupTag', assignment_group=testgroup1, tag='DDD')
+        mommy.make('core.AssignmentGroupTag', assignment_group=testgroup1, tag='QQQ')
+        feedbacksets = []
+        feedbacksets.append(group_mommy.feedbackset_first_attempt_published(testgroup1))
+        feedbacksets.append(group_mommy.feedbackset_new_attempt_published(testgroup1))
+        feedbacksets.append(group_mommy.feedbackset_new_attempt_unpublished(testgroup1))
 
-        # Add d1 and deliveries. d1 matches d1 in g1 (the source)
-        self.testhelper.add_to_path('uni;sub.p1.a1.target.d1:ends(1)')
-        self.testhelper.add_delivery("sub.p1.a1.target", {"a.py": "print a"},
-                                     time_of_delivery=1)  # days after deadline
+        for feedbackset in feedbacksets:
+            for index in range(3):
+                comment = mommy.make('devilry_group.GroupComment',
+                                     feedback_set=feedbackset,
+                                     user=testcandidate1.relatedstudent.user,
+                                     user_role=GroupComment.USER_ROLE_STUDENT,
+                                     text='imba{}'.format(index+200))
+                testcommentfile1 = mommy.make('devilry_comment.CommentFile', filename='testfile1.txt', comment=comment)
+                testcommentfile1.file.save('testfile1.txt', ContentFile('test1'))
+                testcommentfile2 = mommy.make('devilry_comment.CommentFile', filename='testfile2.txt', comment=comment)
+                testcommentfile2.file.save('testfile2.txt', ContentFile('test2'))
 
-        # Add d2 and deliveries
-        self.testhelper.add_to_path('uni;sub.p1.a1.target.d2:ends(11)')
-        delivery = self.testhelper.add_delivery("sub.p1.a1.target", {"b.py": "print b"},
-                                                time_of_delivery=-1)  # days after deadline
+            for index in range(3):
+                mommy.make('devilry_group.GroupComment',
+                           feedback_set=feedbackset,
+                           user=testcandidate2.relatedstudent.user,
+                           user_role=GroupComment.USER_ROLE_STUDENT,
+                           text='lol{}'.format(index+100))
 
-        # Create a delivery in g1 that is copy of one in target
-        delivery.copy(self.testhelper.sub_p1_a1_g1_d2)
+            for index in range(7):
+                mommy.make('devilry_group.GroupComment',
+                           feedback_set=feedbackset,
+                           user_role=GroupComment.USER_ROLE_EXAMINER,
+                           text='cool{}'.format(index+7))
 
-        # Double check the important values before the merge
-        self.assertEquals(self.testhelper.sub_p1_a1_g1_d1.deadline,
-                          self.testhelper.sub_p1_a1_target_d1.deadline)
-        self.assertNotEquals(self.testhelper.sub_p1_a1_g1_d2.deadline,
-                             self.testhelper.sub_p1_a1_target_d2.deadline)
-        target = self.testhelper.sub_p1_a1_target
-        self.assertEquals(source.deadlines.count(), 2)
-        self.assertEquals(target.deadlines.count(), 2)
-        self.assertEquals(self.testhelper.sub_p1_a1_g1_d1.deliveries.count(), 2)
-        self.assertEquals(self.testhelper.sub_p1_a1_g1_d2.deliveries.count(), 2)
-        self.assertEquals(self.testhelper.sub_p1_a1_target_d1.deliveries.count(), 1)
-        self.assertEquals(self.testhelper.sub_p1_a1_target_d2.deliveries.count(), 1)
-        return source, target
+        return (testgroup1, testcandidate1, testcandidate2)
 
-    def test_merge_into_sanity(self):
-        source, target = self._create_mergetestdata()
-        source.name = 'The source'
-        source.is_open = False
-        source.save()
-        target.name = 'The target'
-        source.is_open = True
-        target.save()
-        source.merge_into(target)
+    def test_pop_candidate_not_part_of_assignmentgroup(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        core_mommy.candidate(group=testgroup1)
+        testcandidate = core_mommy.candidate(group=testgroup2)
+        with self.assertRaises(GroupPopNotCandidateError):
+            testgroup1.pop_candidate(testcandidate)
 
-        # Source has been deleted?
-        self.assertFalse(AssignmentGroup.objects.filter(id=source.id).exists())
+    def test_pop_candidate_when_there_is_only_one(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testcandidate = core_mommy.candidate(group=testgroup)
+        with self.assertRaises(GroupPopToFewCandidatesError):
+            testgroup.pop_candidate(testcandidate)
 
-        # Name or is_open unchanged?
-        target = self.testhelper.reload_from_db(target)
-        self.assertEquals(target.name, 'The target')
-        self.assertEquals(target.is_open, True)
+    def test_pop_candidate_has_left_from_assignment_group(self):
+        testgroup1, testcandidate1, testcandidate2 = self.make_test_data()
 
-    def test_merge_into_last_delivery(self):
-        source, target = self._create_mergetestdata()
-        source.merge_into(target)
-        target = self.testhelper.reload_from_db(target)
-        self.assertEquals(
-            Delivery.objects.filter(deadline__assignment_group=target).first().filemetas.first().filename,
-            'b.py')
+        testgroup1.pop_candidate(testcandidate2)
 
-    def test_merge_into_candidates(self):
-        source, target = self._create_mergetestdata()
-        source.merge_into(target)
-        self.assertEquals(target.examiners.count(), 4)
-        self.assertEquals(set([e.user.shortname for e in target.examiners.all()]),
-                          {'donald', 'examiner1', 'examiner2', 'examiner3'})
+        # testgroup1 contains 1 candidate
+        # testgroup1.cached_data.refresh_from_db()
+        self.assertEqual(testgroup1.cached_data.candidate_count, 1)
+        self.assertFalse(testgroup1.candidates.filter(id=testcandidate2.id).exists())
 
-    def test_merge_into_examiners(self):
-        source, target = self._create_mergetestdata()
-        source.merge_into(target)
-        self.assertEquals(target.candidates.count(), 4)
-        self.assertEquals(set([e.student.shortname for e in target.candidates.all()]),
-                          {'dewey', 'student1', 'student2', 'student3'})
+        # testgroup1 and testgroup2 is different
+        testgroup2 = Candidate.objects.get(id=testcandidate2.id).assignment_group
+        self.assertNotEqual(testgroup1, testgroup2)
 
-    def test_merge_into_deadlines(self):
-        source, target = self._create_mergetestdata()
-        deadline1 = self.testhelper.sub_p1_a1_g1_d1.deadline
-        deadline2 = self.testhelper.sub_p1_a1_g1_d2.deadline
-        deadline3 = self.testhelper.sub_p1_a1_target_d2.deadline
+        # testgroup2 contains 1 candidate
+        self.assertEqual(testgroup2.cached_data.candidate_count, 1)
+        self.assertFalse(testgroup2.candidates.filter(id=testcandidate1.id).exists())
 
-        # A control delivery that we use to make sure timestamps are not messed with
-        control_delivery = self.testhelper.sub_p1_a1_g1_d1.deliveries.order_by('time_of_delivery')[0]
-        control_delivery_id = control_delivery.id
-        self.assertEquals(control_delivery.time_of_delivery, datetime(2002, 1, 1))
+    def test_pop_candidate_first_feedbackset_cointains_equal_amount_of_comments(self):
+        testgroup1, testcandidate1, testcandidate2 = self.make_test_data()
 
-        source.merge_into(target)
-        deadlines = target.deadlines.order_by('deadline')
-        self.assertEquals(len(deadlines), 3)
-        self.assertEquals(deadlines[0].deadline, deadline1)
-        self.assertEquals(deadlines[1].deadline, deadline2)
-        self.assertEquals(deadlines[2].deadline, deadline3)
+        testgroup1.pop_candidate(testcandidate2)
 
-        self.assertEquals(deadlines[0].deliveries.count(), 3)  # d1 from both have been merged
-        self.assertEquals(deadlines[1].deliveries.count(), 1)  # g1(source) d2
-        self.assertEquals(deadlines[2].deliveries.count(), 1)  # target d2
+        testgroup2 = Candidate.objects.get(id=testcandidate2.id).assignment_group
 
-        control_delivery = Delivery.objects.get(deadline__assignment_group=target,
-                                                id=control_delivery_id)
-        self.assertEquals(control_delivery.time_of_delivery, datetime(2002, 1, 1))
+        groupcomments1 = GroupComment.objects.filter(feedback_set=testgroup1.cached_data.first_feedbackset)
+        groupcomments2 = GroupComment.objects.filter(feedback_set=testgroup2.cached_data.first_feedbackset)
+        self.assertEqual(len(groupcomments1), len(groupcomments2))
 
-    def test_merge_into_active_feedback(self):
-        source, target = self._create_mergetestdata()
-        source.merge_into(target)
-        self.assertEquals(target.feedback.grade, 'C')
-        self.assertEquals(target.feedback.save_timestamp, datetime(2010, 1, 1))
-        self.assertEquals(target.feedback.rendered_view, 'Better')
-        self.assertEquals(target.feedback.points, 40)
+    def test_pop_candiate_multiple_feedbacksets_with_comments(self):
+        testgroup1, testcandidate1, testcandidate2 = self.make_test_data()
 
-    def test_merge_into_active_feedback_target(self):
-        source, target = self._create_mergetestdata()
+        testgroup1.pop_candidate(testcandidate2)
+        testgroup2 = Candidate.objects.get(id=testcandidate2.id).assignment_group
+        self.assertNotEqual(testgroup1, testgroup2)
+        feedbacksets1 = FeedbackSet.objects.filter(group=testgroup1).order_by_deadline_datetime()
+        feedbacksets2 = FeedbackSet.objects.filter(group=testgroup2).order_by_deadline_datetime()
 
-        # Create the feedack that should become "active feedback" after the merge
-        delivery = self.testhelper.add_delivery(target, {"good.py": "print good"},
-                                                time_of_delivery=2)  # days after deadline
-        self.testhelper.add_feedback(delivery=delivery,
-                                     verdict={'grade': 'A', 'points': 100, 'is_passing_grade': True},
-                                     rendered_view='Good',
-                                     timestamp=datetime(2011, 1, 1))
+        for feedbackset1, feedbackset2 in zip(feedbacksets1, feedbacksets2):
+            groupcomments1 = GroupComment.objects.filter(feedback_set=feedbackset1).order_by('created_datetime')
+            groupcomments2 = GroupComment.objects.filter(feedback_set=feedbackset2).order_by('created_datetime')
+            self.assertEqual(len(groupcomments1), 13)
+            self.assertEqual(len(groupcomments2), 13)
 
-        source.merge_into(target)
-        self.assertEquals(target.feedback.grade, 'A')
-        self.assertEquals(target.feedback.save_timestamp, datetime(2011, 1, 1))
-        self.assertEquals(target.feedback.rendered_view, 'Good')
-        self.assertEquals(target.feedback.points, 100)
+            for comment1, comment2 in zip(groupcomments1, groupcomments2):
+                self.assertEqual(comment1.text, comment2.text)
 
-    def test_merge_into_delivery_numbers(self):
-        source, target = self._create_mergetestdata()
+    def test_examiners_has_been_copied_to_new_group(self):
+        testgroup1, testcandidate1, testcandidate2 = self.make_test_data()
+        testgroup1.pop_candidate(testcandidate2)
+        testgroup2 = Candidate.objects.get(id=testcandidate2.id).assignment_group
 
-        def get_deliveries_ordered_by_timestamp(group):
-            return Delivery.objects.filter(deadline__assignment_group=group).order_by('time_of_delivery')
-        for delivery in get_deliveries_ordered_by_timestamp(source):
-            delivery.number = 0
-            delivery.save()
+        examiners1 = testgroup1.examiners.all().order_by('relatedexaminer__user__id')
+        examiners2 = testgroup2.examiners.all().order_by('relatedexaminer__user__id')
 
-        source.merge_into(target)
-        deliveries = get_deliveries_ordered_by_timestamp(target)
-        self.assertEquals(deliveries[0].number, 1)
-        self.assertEquals(deliveries[1].number, 2)
-        self.assertEquals(deliveries[2].number, 3)
+        for examiner1, examiner2 in zip(examiners1, examiners2):
+            self.assertEqual(examiner1.relatedexaminer, examiner2.relatedexaminer)
 
-    def test_merge_into_delivery_numbers_unsuccessful(self):
-        source, target = self._create_mergetestdata()
+    def test_tags_has_been_copied_to_new_group(self):
+        testgroup1, testcandidate1, testcandidate2 = self.make_test_data()
+        testgroup1.pop_candidate(testcandidate2)
+        testgroup2 = Candidate.objects.get(id=testcandidate2.id).assignment_group
 
-        # Make all deliveries unsuccessful with number=0
-        def get_deliveries_ordered_by_timestamp(group):
-            return Delivery.objects.filter(deadline__assignment_group=group).order_by('time_of_delivery')
+        tags1 = testgroup1.tags.all().order_by('tag')
+        tags2 = testgroup2.tags.all().order_by('tag')
 
-        def set_all_unsuccessful(group):
-            for unsuccessful_delivery in get_deliveries_ordered_by_timestamp(group):
-                unsuccessful_delivery.number = 0
-                unsuccessful_delivery.successful = False
-                unsuccessful_delivery.save()
+        for tag1, tag2 in zip(tags1, tags2):
+            self.assertEqual(tag1.tag, tag2.tag)
 
-        set_all_unsuccessful(source)
-        set_all_unsuccessful(target)
+    def test_commentfile_has_been_copied_into_new_group(self):
+        testgroup1, testcandidate1, testcandidate2 = self.make_test_data()
+        testgroup1.pop_candidate(testcandidate2)
+        testgroup2 = Candidate.objects.get(id=testcandidate2.id).assignment_group
 
-        # Make a single delivery successful, and set its timestamp so it is the oldest
-        deliveries = get_deliveries_ordered_by_timestamp(source)
-        delivery = deliveries[0]
-        delivery.number = 10
-        delivery.successful = True
-        delivery.time_of_delivery = datetime(2001, 1, 1)
-        delivery.save()
+        feedbacksets1 = FeedbackSet.objects.filter(group=testgroup1).order_by_deadline_datetime()
+        feedbacksets2 = FeedbackSet.objects.filter(group=testgroup2).order_by_deadline_datetime()
+        for feedbackset1, feedbackset2 in zip(feedbacksets1, feedbacksets2):
+            groupcomments1 = GroupComment.objects.filter(feedback_set=feedbackset1).order_by('created_datetime')
+            groupcomments2 = GroupComment.objects.filter(feedback_set=feedbackset2).order_by('created_datetime')
+            for comment1, comment2 in zip(groupcomments1, groupcomments2):
+                commentfiles1 = CommentFile.objects.filter(comment=comment1).order_by('filename')
+                commentfiles2 = CommentFile.objects.filter(comment=comment2).order_by('filename')
+                for commentfile1, commentfile2 in zip(commentfiles1, commentfiles2):
+                    self.assertEqual(commentfile1.file, commentfile2.file)
+                    self.assertEqual(commentfile1.filename, commentfile2.filename)
+                    self.assertEqual(commentfile1.file.path, commentfile2.file.path)
 
-        source.merge_into(target)
-        deliveries = get_deliveries_ordered_by_timestamp(target)
-        self.assertEquals(deliveries[0].time_of_delivery, datetime(2001, 1, 1))
-        self.assertEquals(deliveries[0].number, 1)
-        self.assertEquals(deliveries[1].number, 0)
-        self.assertEquals(deliveries[2].number, 0)
-        self.assertEquals(deliveries[3].number, 0)
 
-    def test_merge_with_copy_of_in_both(self):
-        for groupname in 'source', 'target':
-            self.testhelper.add(
-                nodes="uni",
-                subjects=["sub"],
-                periods=["p1"],
-                assignments=['a1'],
-                assignmentgroups=['{groupname}:candidate(student1):examiner(examiner1)'.format(groupname=groupname)],
-                deadlines=['d1:ends(1)'])
-            self.testhelper.add_delivery("sub.p1.a1.{groupname}".format(groupname=groupname),
-                                         {'a.txt': "a"},
-                                         time_of_delivery=datetime(2002, 1, 1))
-        source = self.testhelper.sub_p1_a1_source
-        target = self.testhelper.sub_p1_a1_target
+class TestAssignmentGroupGetCurrentState(TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
-        # Copy the delivery from source into target, and vica versa
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source).count(), 1)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target).count(), 1)
-        sourcedeadline = source.deadlines.all()[0]
-        targetdeadine = target.deadlines.all()[0]
-        sourcedeadline.deliveries.all()[0].copy(targetdeadine)
-        targetdeadine.deliveries.all()[0].copy(sourcedeadline)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source).count(), 2)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target).count(), 2)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source,
-                                                  copy_of__deadline__assignment_group=target).count(), 1)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target,
-                                                  copy_of__deadline__assignment_group=source).count(), 1)
+    def test_candidate_ids(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        candidate1 = core_mommy.candidate(group=testgroup).relatedstudent.user.id
+        candidate2 = core_mommy.candidate(group=testgroup).relatedstudent.user.id
+        candidate3 = core_mommy.candidate(group=testgroup).relatedstudent.user.id
+        state = testgroup.get_current_state()
+        self.assertListEqual(state['candidates'], [candidate1, candidate2, candidate3])
 
-        # Merge and make sure we do not get any duplicates
-        # - We should only end up with 2 deliveries, since 2 of the deliveries are copies
-        source.merge_into(target)
-        deliveries = Delivery.objects.filter(deadline__assignment_group=target)
-        self.assertEquals(len(deliveries), 2)
-        self.assertEquals(deliveries[0].copy_of, None)
-        self.assertEquals(deliveries[1].copy_of, None)
+    def test_examiner_ids(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        examiner1 = core_mommy.examiner(group=testgroup).relatedexaminer.user.id
+        examiner2 = core_mommy.examiner(group=testgroup).relatedexaminer.user.id
+        examiner3 = core_mommy.examiner(group=testgroup).relatedexaminer.user.id
+        state = testgroup.get_current_state()
+        self.assertListEqual(state['examiners'], [examiner1, examiner2, examiner3])
 
-    def test_merge_with_copy_of_in_other(self):
-        for groupname in 'source', 'target', 'other':
-            self.testhelper.add(
-                nodes="uni",
-                subjects=["sub"],
-                periods=["p1"],
-                assignments=['a1'],
-                assignmentgroups=['{groupname}:candidate(student1):examiner(examiner1)'.format(groupname=groupname)],
-                deadlines=['d1:ends(1)'])
-            self.testhelper.add_delivery("sub.p1.a1.{groupname}".format(groupname=groupname),
-                                         {'a.txt': "a"},
-                                         time_of_delivery=datetime(2002, 1, 1))
-        source = self.testhelper.sub_p1_a1_source
-        target = self.testhelper.sub_p1_a1_target
-        other = self.testhelper.sub_p1_a1_other
+    def test_tags(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        mommy.make('core.AssignmentGroupTag', assignment_group=testgroup, tag='awesome')
+        mommy.make('core.AssignmentGroupTag', assignment_group=testgroup, tag='cool')
+        mommy.make('core.AssignmentGroupTag', assignment_group=testgroup, tag='imba')
+        state = testgroup.get_current_state()
+        self.assertListEqual(state['tags'], ['awesome', 'cool', 'imba'])
 
-        # Copy the delivery from source into target, and vica versa
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source).count(), 1)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target).count(), 1)
-        for group in source, target:
-            deadline = group.deadlines.all()[0]
-            other.deadlines.all()[0].deliveries.all()[0].copy(deadline)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source).count(), 2)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target).count(), 2)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source,
-                                                  copy_of__deadline__assignment_group=target).count(), 0)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target,
-                                                  copy_of__deadline__assignment_group=source).count(), 0)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=source,
-                                                  copy_of__deadline__assignment_group=other).count(), 1)
-        self.assertEquals(Delivery.objects.filter(deadline__assignment_group=target,
-                                                  copy_of__deadline__assignment_group=other).count(), 1)
+    def test_name(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment, name='group1')
+        state = testgroup.get_current_state()
+        self.assertEqual(state['name'], 'group1')
 
-        # Merge and make sure we do not get any duplicates
-        # - We should only end up with 3 deliveries, one from source, one from
-        #   target, and one copy from other (both have the same copy from
-        #   other, so we should not get any duplicates)
-        source.merge_into(target)
-        deliveries = Delivery.objects.filter(deadline__assignment_group=target)
-        self.assertEquals(deliveries.filter(copy_of__isnull=True).count(), 2)
-        self.assertEquals(deliveries.filter(copy_of__isnull=False).count(), 1)
-        self.assertEquals(len(deliveries), 3)
+    def test_created_datetime(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        state = testgroup.get_current_state()
+        self.assertEqual(state['created_datetime'], testgroup.created_datetime.isoformat())
 
-    def test_merge_many_groups(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.a:candidate(student1):examiner(examiner1)')
-        self.testhelper.add_to_path('uni;sub.p1.a1.b:candidate(student2):examiner(examiner2)')
-        self.testhelper.add_to_path('uni;sub.p1.a1.c:candidate(student1,student3):examiner(examiner1,examiner3)')
-        for groupname in 'a', 'b', 'c':
-            self.testhelper.add(nodes="uni",
-                                subjects=["sub"],
-                                periods=["p1"],
-                                assignments=['a1'],
-                                assignmentgroups=[groupname],
-                                deadlines=['d1:ends(1)'])
-            self.testhelper.add_delivery("sub.p1.a1.{groupname}".format(**vars()),
-                                         {groupname: groupname},
-                                         time_of_delivery=datetime(2002, 1, 1))
-        a = self.testhelper.sub_p1_a1_a
-        b = self.testhelper.sub_p1_a1_b
-        c = self.testhelper.sub_p1_a1_c
+    def test_parentnode(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', id=10)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        state = testgroup.get_current_state()
+        self.assertEqual(state['parentnode'], 10)
 
-        AssignmentGroup.merge_many_groups([a, b], c)
-        self.assertFalse(AssignmentGroup.objects.filter(id=a.id).exists())
-        self.assertFalse(AssignmentGroup.objects.filter(id=b.id).exists())
-        self.assertTrue(AssignmentGroup.objects.filter(id=c.id).exists())
-        c = self.testhelper.reload_from_db(self.testhelper.sub_p1_a1_c)
-        candidates = [cand.student.shortname for cand in c.candidates.all()]
-        self.assertEquals(len(candidates), 3)
-        self.assertEquals(set(candidates), {'student1', 'student2', 'student3'})
+    def test_feedbacksets(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        feedbacksets = []
+        feedbacksets.append(group_mommy.feedbackset_first_attempt_published(testgroup).id)
+        feedbacksets.append(group_mommy.feedbackset_new_attempt_published(testgroup).id)
+        feedbacksets.append(group_mommy.feedbackset_new_attempt_unpublished(testgroup).id)
+        state = testgroup.get_current_state()
+        state_feedbacksets_ids = [id for id in state['feedbacksets']]
+        self.assertListEqual(state_feedbacksets_ids, feedbacksets)
 
-        examiners = [cand.user.shortname for cand in c.examiners.all()]
-        self.assertEquals(len(examiners), 3)
-        self.assertEquals(set(examiners), {'examiner1', 'examiner2', 'examiner3'})
-
-        deadlines = c.deadlines.all()
-        self.assertEquals(len(deadlines), 1)
-        deliveries = deadlines[0].deliveries.all()
-        self.assertEquals(len(deliveries), 3)
+    def test_is_json_serializeable(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        core_mommy.candidate(group=testgroup)
+        core_mommy.candidate(group=testgroup)
+        core_mommy.examiner(group=testgroup)
+        core_mommy.examiner(group=testgroup)
+        group_mommy.feedbackset_first_attempt_published(testgroup)
+        group_mommy.feedbackset_new_attempt_published(testgroup)
+        state = testgroup.get_current_state()
+        json.dumps(state)
 
 
 class TestAssignmentGroupStatus(TestCase):
@@ -1870,7 +1856,7 @@ class TestAssignmentGroupIsWaitingForFeedback(TestCase):
             group=testgroup)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
-            deadline_datetime=ACTIVE_PERIOD_START)
+            deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=10))
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.is_waiting_for_feedback)
 
@@ -1884,13 +1870,13 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_published_datetime=ACTIVE_PERIOD_START)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count().first()
         self.assertFalse(annotated_group.annotated_is_waiting_for_feedback)
 
     def test_ignore_deadline_not_expired_first_attempt(self):
         mommy.make('core.AssignmentGroup',
                    parentnode__first_deadline=ACTIVE_PERIOD_END)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count().first()
         self.assertFalse(annotated_group.annotated_is_waiting_for_feedback)
 
     def test_ignore_deadline_not_expired_new_attempt(self):
@@ -1898,13 +1884,13 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             deadline_datetime=ACTIVE_PERIOD_END)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count().first()
         self.assertFalse(annotated_group.annotated_is_waiting_for_feedback)
 
     def test_include_deadline_expired_first_attempt(self):
         mommy.make('core.AssignmentGroup',
                    parentnode__first_deadline=ACTIVE_PERIOD_START)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count().first()
         self.assertTrue(annotated_group.annotated_is_waiting_for_feedback)
 
     def test_include_deadline_expired_new_attempt(self):
@@ -1912,7 +1898,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             deadline_datetime=ACTIVE_PERIOD_START)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count().first()
         self.assertTrue(annotated_group.annotated_is_waiting_for_feedback)
 
     def test_include_multiple_feedbacksets(self):
@@ -1922,8 +1908,8 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
             group=testgroup)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
-            deadline_datetime=ACTIVE_PERIOD_START)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback().first()
+            deadline_datetime=ACTIVE_PERIOD_START + timedelta(days=10))
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count().first()
         self.assertTrue(annotated_group.annotated_is_waiting_for_feedback)
 
     def test_multiple_groups(self):
@@ -1957,7 +1943,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsWaitingForFeedback(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup5)
 
-        annotated_groups = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback()
+        annotated_groups = AssignmentGroup.objects.annotate_with_is_waiting_for_feedback_count()
         self.assertTrue(annotated_groups.get(id=testgroup1.id).annotated_is_waiting_for_feedback)
         self.assertTrue(annotated_groups.get(id=testgroup2.id).annotated_is_waiting_for_feedback)
         self.assertFalse(annotated_groups.get(id=testgroup3.id).annotated_is_waiting_for_feedback)
@@ -2026,13 +2012,13 @@ class TestAssignmentGroupQuerysetAnnotateWithIsWaitingForDeliveries(TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count().first()
         self.assertFalse(annotated_group.annotated_is_waiting_for_deliveries)
 
     def test_false_deadline_expired_first_attempt(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__first_deadline=ACTIVE_PERIOD_START)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count().first()
         self.assertFalse(annotated_group.annotated_is_waiting_for_deliveries)
 
     def test_false_deadline_expired_new_attempt(self):
@@ -2040,7 +2026,7 @@ class TestAssignmentGroupQuerysetAnnotateWithIsWaitingForDeliveries(TestCase):
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             deadline_datetime=ACTIVE_PERIOD_START)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count().first()
         self.assertFalse(annotated_group.annotated_is_waiting_for_deliveries)
 
     def test_true_deadline_not_expired_first_attempt(self):
@@ -2048,7 +2034,7 @@ class TestAssignmentGroupQuerysetAnnotateWithIsWaitingForDeliveries(TestCase):
                                parentnode__first_deadline=ACTIVE_PERIOD_END)
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count().first()
         self.assertTrue(annotated_group.annotated_is_waiting_for_deliveries)
 
     def test_true_deadline_not_expired_new_attempt(self):
@@ -2056,7 +2042,7 @@ class TestAssignmentGroupQuerysetAnnotateWithIsWaitingForDeliveries(TestCase):
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             deadline_datetime=ACTIVE_PERIOD_END)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count().first()
         self.assertTrue(annotated_group.annotated_is_waiting_for_deliveries)
 
     def test_true_multiple_feedbacksets(self):
@@ -2067,7 +2053,7 @@ class TestAssignmentGroupQuerysetAnnotateWithIsWaitingForDeliveries(TestCase):
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             deadline_datetime=timezone.now() + timedelta(days=1))
-        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count().first()
         self.assertTrue(annotated_group.annotated_is_waiting_for_deliveries)
 
     def test_multiple_groups(self):
@@ -2101,7 +2087,7 @@ class TestAssignmentGroupQuerysetAnnotateWithIsWaitingForDeliveries(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup5)
 
-        annotated_groups = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries()
+        annotated_groups = AssignmentGroup.objects.annotate_with_is_waiting_for_deliveries_count()
         self.assertTrue(annotated_groups.get(id=testgroup1.id).annotated_is_waiting_for_deliveries)
         self.assertTrue(annotated_groups.get(id=testgroup2.id).annotated_is_waiting_for_deliveries)
         self.assertFalse(annotated_groups.get(id=testgroup3.id).annotated_is_waiting_for_deliveries)
@@ -2170,21 +2156,21 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
 
     def test_false_feedback_not_published_first_attempt(self):
         mommy.make('core.AssignmentGroup')
-        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         self.assertFalse(annotated_group.annotated_is_corrected)
 
     def test_false_feedback_not_published_new_attempt(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         self.assertFalse(annotated_group.annotated_is_corrected)
 
     def test_true_feedback_is_published_first_attempt(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         self.assertTrue(annotated_group.annotated_is_corrected)
 
     def test_true_feedback_is_published_new_attempt(self):
@@ -2193,7 +2179,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
             group=testgroup)
         devilry_group_mommy_factories.feedbackset_new_attempt_published(
             group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         self.assertTrue(annotated_group.annotated_is_corrected)
 
     def test_false_multiple_feedbacksets_last_is_not_published(self):
@@ -2204,7 +2190,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
             group=testgroup)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         self.assertFalse(annotated_group.annotated_is_corrected)
 
     def test_true_multiple_feedbacksets_last_is_published(self):
@@ -2215,7 +2201,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
             group=testgroup)
         devilry_group_mommy_factories.feedbackset_new_attempt_published(
             group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_is_corrected_count().first()
         self.assertTrue(annotated_group.annotated_is_corrected)
 
     def test_multiple_groups(self):
@@ -2244,7 +2230,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsCorrected(TestCase):
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup4)
 
-        annotated_groups = AssignmentGroup.objects.annotate_with_is_corrected()
+        annotated_groups = AssignmentGroup.objects.annotate_with_is_corrected_count()
         self.assertTrue(annotated_groups.get(id=testgroup1.id).annotated_is_corrected)
         self.assertTrue(annotated_groups.get(id=testgroup2.id).annotated_is_corrected)
         self.assertFalse(annotated_groups.get(id=testgroup3.id).annotated_is_corrected)
@@ -2286,7 +2272,8 @@ class TestAssignmentGroupPublishedGradingPoints(TestCase):
             grading_points=10)
         devilry_group_mommy_factories.feedbackset_new_attempt_published(
             group=testgroup,
-            grading_points=20)
+            grading_points=20,
+            deadline_datetime=timezone.now() + timedelta(days=3))
         testgroup.refresh_from_db()
         self.assertEqual(20, testgroup.published_grading_points)
 
@@ -2381,7 +2368,8 @@ class TestAssignmentGroupPublishedGradeIsPassingGrade(TestCase):
             grading_points=5)
         devilry_group_mommy_factories.feedbackset_new_attempt_published(
             group=testgroup,
-            grading_points=15)
+            grading_points=15,
+            deadline_datetime=timezone.now() + timedelta(days=3))
         testgroup.refresh_from_db()
         self.assertTrue(testgroup.published_grade_is_passing_grade)
 
@@ -2804,26 +2792,26 @@ class TestAssignmentGroupAnnotateWithHasUnpublishedFeedbackset(TestCase):
 
     def test_no_feedbackset(self):
         testgroup = mommy.make('core.AssignmentGroup')
-        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft_count().first()
         self.assertFalse(annotated_group.annotated_has_unpublished_feedbackdraft)
 
     def test_false_published(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_published(group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft_count().first()
         self.assertFalse(annotated_group.annotated_has_unpublished_feedbackdraft)
 
     def test_false_no_grading_points(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
-        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft_count().first()
         self.assertFalse(annotated_group.annotated_has_unpublished_feedbackdraft)
 
     def test_true(self):
         testgroup = mommy.make('core.AssignmentGroup')
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup, grading_points=1)
-        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft_count().first()
         self.assertTrue(annotated_group.annotated_has_unpublished_feedbackdraft)
 
     def test_multiple_feedbacksets(self):
@@ -2832,31 +2820,8 @@ class TestAssignmentGroupAnnotateWithHasUnpublishedFeedbackset(TestCase):
             group=testgroup)
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup, grading_points=1)
-        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft().first()
+        annotated_group = AssignmentGroup.objects.annotate_with_has_unpublished_feedbackdraft_count().first()
         self.assertTrue(annotated_group.annotated_has_unpublished_feedbackdraft)
-
-
-class TestAssignmentGroupQuerySetAnnotateWithNumberOfExaminers(TestCase):
-    def test_no_examiners(self):
-        mommy.make('core.AssignmentGroup')
-        annotated_group = AssignmentGroup.objects.annotate_with_number_of_examiners().first()
-        self.assertEqual(0, annotated_group.number_of_examiners)
-
-    def test_has_examiners(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner', assignmentgroup=testgroup, _quantity=5)
-        annotated_group = AssignmentGroup.objects.annotate_with_number_of_examiners().first()
-        self.assertEqual(5, annotated_group.number_of_examiners)
-
-    def test_multiple_groups(self):
-        testgroup1 = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner', assignmentgroup=testgroup1, _quantity=5)
-        testgroup2 = mommy.make('core.AssignmentGroup')
-        mommy.make('core.Examiner', assignmentgroup=testgroup2, _quantity=7)
-        annotated_group1 = AssignmentGroup.objects.annotate_with_number_of_examiners().get(id=testgroup1.id)
-        self.assertEqual(5, annotated_group1.number_of_examiners)
-        annotated_group2 = AssignmentGroup.objects.annotate_with_number_of_examiners().get(id=testgroup2.id)
-        self.assertEqual(7, annotated_group2.number_of_examiners)
 
 
 class TestAssignmentGroupQuerySetPrefetchAssignmentWithPointsToGradeMap(TestCase):
@@ -3052,7 +3017,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(
             group=testgroup,
             grading_points=10)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade_count()
         self.assertFalse(queryset.first().is_passing_grade)
 
     def test_false_published(self):
@@ -3061,7 +3026,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=9)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade_count()
         self.assertFalse(queryset.first().is_passing_grade)
 
     def test_true(self):
@@ -3070,7 +3035,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=20)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade_count()
         self.assertTrue(queryset.first().is_passing_grade)
 
     def test_true_gte(self):
@@ -3079,7 +3044,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup,
             grading_points=10)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade_count()
         self.assertTrue(queryset.first().is_passing_grade)
 
     def test_multiple_last_published(self):
@@ -3090,8 +3055,9 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
             grading_points=5)
         devilry_group_mommy_factories.feedbackset_new_attempt_published(
             group=testgroup,
-            grading_points=15)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+            grading_points=15,
+            deadline_datetime=timezone.now() + timedelta(days=3))
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade_count()
         self.assertTrue(queryset.first().is_passing_grade)
 
     def test_multiple_last_unpublished(self):
@@ -3103,7 +3069,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
         devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(
             group=testgroup,
             grading_points=20)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade_count()
         self.assertFalse(queryset.first().is_passing_grade)
 
     def test_multiple_groups(self):
@@ -3122,7 +3088,7 @@ class TestAssignmentGroupQuerySetAnnotateWithIsPassingGrade(TestCase):
         devilry_group_mommy_factories.feedbackset_first_attempt_published(
             group=testgroup3,
             grading_points=30)
-        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade()
+        queryset = AssignmentGroup.objects.all().annotate_with_is_passing_grade_count()
         self.assertTrue(queryset.get(id=testgroup1.id).is_passing_grade)
         self.assertFalse(queryset.get(id=testgroup2.id).is_passing_grade)
         self.assertTrue(queryset.get(id=testgroup3.id).is_passing_grade)

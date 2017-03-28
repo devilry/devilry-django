@@ -61,6 +61,24 @@
                 </a>
             </p>
         </div>
+        <div class="devilry-dashboard-container*">
+            <h2>
+                {% trans "Semester tags" %}
+            </h2>
+            <p class="text-muted">
+                {% blocktrans trimmed %}
+                    Create, edit and delete tags within this semester. Add and
+                    remove students/examiners from tags. Tags can be used to
+                    accociate examiners with students.
+                {% endblocktrans %}
+            </p>
+            <p>
+                <a href="{% cradmin_instance_url appname='manage_tags' viewname='INDEX' %}"
+                        class="btn btn-default btn-sm">
+                    {% trans "Manage tags" %}
+                </a>
+            </p>
+        </div>
         <div class="devilry-dashboard-container">
             <h2>{% trans "Semester administrators" %}</h2>
             <p class="text-muted">
@@ -76,11 +94,11 @@
         <div class="devilry-dashboard-container">
             <h2>{% trans "Utilities" %}</h2>
             <p>
-                <a href="#" onclick="alert('TODO');"
+                <a href="{% cradmin_instance_appindex_url appname='overview_all_results' %}"
                         class="btn btn-default btn-sm">
                     {% trans "Overview of all results" %}
                 </a>
-                <a href="#" onclick="alert('TODO');"
+                <a href="{% cradmin_instance_url appname='qualifiesforexam' viewname='INDEX' %}"
                         class="btn btn-default btn-sm">
                     {% trans "Qualified for final exams" %}
                 </a>

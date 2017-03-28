@@ -47,6 +47,8 @@
         <option value="$MODULE_DIR$/devilry/devilry_account/templates" />
         <option value="$MODULE_DIR$/devilry/apps/core/templates" />
         <option value="$MODULE_DIR$/devilry/devilry_frontpage/templates" />
+        <option value="$MODULE_DIR$/devilry/devilry_qualifiesforexam/templates" />
+        <option value="$MODULE_DIR$/devilry/devilry_deadlinemanagement/templates" />
       </list>
     </option>
   </component>

@@ -1,0 +1,64 @@
+{% load i18n %}
+{% load cradmin_icon_tags %}
+
+<div django-cradmin-acemarkdown="{{ directiveconfig }}" class="devilry-ace-editor {{ extra_css_classes }}">
+    <div class="btn-toolbar" role="toolbar">
+        {% block toolbar %}
+            {% block buttonbars %}
+                <div class="btn-group">
+                    <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
+                            pre: '\n\n## ', post: '\n'}">
+                        <span class="{% cradmin_icon 'h2' %}"></span>
+                        <span class="sr-only">{% trans "Heading" %}</span>
+                    </a>
+                    <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
+                            pre: '**', post: '**', emptyText: '{% trans "Text here" %}'}">
+                        <span class="{% cradmin_icon 'bold' %}"></span>
+                        <span class="sr-only">{% trans "Bold" %}</span>
+                    </a>
+                    <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
+                            pre: '_', post: '_'}">
+                        <span class="{% cradmin_icon 'italic' %}"></span>
+                        <span class="sr-only">{% trans "Italic" %}</span>
+                    </a>
+                    <a class="btn btn-default"
+                            django-cradmin-acemarkdown-link="{
+                                help: '{% trans "Write the URL in the field below. Make sure you include the http:// or https:// part of the URL." %}',
+                                emptyText: '{% trans "Link title here" %}'}">
+                        <span class="{% cradmin_icon 'link' %}"></span>
+                        <span class="sr-only">{% trans "Link" %}</span>
+                    </a>
+                </div>
+            {% endblock buttonbars %}
+            {% block listbuttons %}
+                <div class="btn-group">
+                    <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
+                            pre: '\n* ', post: '\n'}">
+                        <span class="{% cradmin_icon 'list-ul' %}"></span>
+                        <span class="sr-only">{% trans "Bulletlist" %}</span>
+                    </a>
+                    <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
+                            pre: '\n1. ', post: '\n'}">
+                        <span class="{% cradmin_icon 'list-ol' %}"></span>
+                        <span class="sr-only">{% trans "Numbered list" %}</span>
+                    </a>
+                </div>
+            {% endblock listbuttons %}
+            {% block codebuttons %}
+                <div class="btn-group">
+                    <a class="btn btn-default" django-cradmin-acemarkdown-tool="{
+                                pre: '``` ', post: '\n\n```',
+                                emptyText: '{% trans "programminglanguage" %}'
+                            }">
+                        <span class="{% cradmin_icon 'codeblock' %}"></span>
+                        <span class="sr-only">{% trans "Code block" %}</span>
+                    </a>
+                </div>
+            {% endblock codebuttons %}
+        {% endblock toolbar %}
+    </div>
+    <div class="devilry-ace-editor-acewrapper">
+        <div django-cradmin-acemarkdown-editor></div>
+    </div>
+    {{ textarea|safe }}
+</div>

@@ -1,0 +1,25 @@
+{% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block pageheader-outer-extraclasses %}
+   {{ block.super }}
+   devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url 'overview' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to assignment overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% trans "Step 1 of 3: select the earliest semester you want to approve for" %}
+    </h1>
+    <p>
+        {% trans 'Everything from the selected period will be included, ' %}
+        {% trans 'and not any assignments thate were done before the selected period' %}
+    </p>
+{% endblock pageheader-inner %}

@@ -1,0 +1,53 @@
+{% extends 'django_cradmin/viewhelpers/listbuilder/base/itemvalue.django.html' %}
+
+{% load devilry_group_tags %}
+{% load devilry_core_tags %}
+{% load devilry_account_tags %}
+{% load cradmin_tags %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block content %}
+    <h3>
+        <span>
+            <span class="header-title">
+                {% trans "Deadline" %}: {{ me.feedbackset.deadline_datetime|date:'DATETIME_FORMAT' }}
+            </span>
+        </span>
+    </h3>
+    <div class="header-attempt-number">
+        Attempt {{ me.attempt_num }}
+    </div>
+
+    <div class="header-grading-info">
+        {% if me.is_graded %}
+            {% devilry_grade_full assignment=me.assignment points=me.feedbackset.grading_points devilryrole=me.devilryrole %}
+        {% else %}
+            {% trans "Waiting for feedback" %}
+        {% endif %}
+    </div>
+
+    {% if me.devilry_viewrole == 'examiner' %}
+        {% if me.feedbackset.group.cached_data.last_feedbackset == me.feedbackset %}
+            <div class="header-buttons">
+                {% if me.feedbackset.group.cached_data.last_published_feedbackset_is_last_feedbackset and me.feedbackset.group.cached_data.last_published_feedbackset == me.feedbackset %}
+                    <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="move-deadline" deadline=me.deadline_as_string group_id=me.feedbackset.group.id %}"
+                        class="btn btn-default devilry-group-event__grade-move-deadline-button">
+                        {% trans "Move deadline" %}
+                    </a>
+                    <a href="{% cradmin_appurl 'edit' pk=me.feedbackset.id %}"
+                       class="btn btn-default devilry-group-event__grade-last-edit-button">
+                        {% trans "Edit grade" %}
+                    </a>
+                    <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="new-attempt" deadline=me.deadline_as_string group_id=me.feedbackset.group.id %}"
+                        class="btn btn-primary devilry-group-event__grade-last-new-attempt-button">
+                        {% trans "Give new attempt" %}
+                    </a>
+                {% elif not me.feedbackset.group.cached_data.last_published_feedbackset_is_last_feedbackset %}
+                    <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="move-deadline" deadline=me.deadline_as_string group_id=me.feedbackset.group.id %}"
+                        class="btn btn-default devilry-group-event__grade-move-deadline-button">{% trans "Move deadline" %}</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock content %}
