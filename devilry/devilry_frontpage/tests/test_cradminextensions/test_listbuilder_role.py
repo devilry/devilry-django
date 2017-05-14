@@ -88,7 +88,7 @@ class TestAnyAdminRoleItemValue(test.TestCase):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         selector = htmls.S(listbuilder_role.AnyAdminRoleItemValue(value=testuser).render())
         self.assertEqual(
-            'Administrators manage departments, courses, semesters and assignments.',
+            'Manage departments, courses, semesters and assignments.',
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
 
