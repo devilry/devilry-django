@@ -39,10 +39,10 @@ DATABASES = {
 }
 DATABASES['default']['PORT'] = 24376
 
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS += [
     'seleniumhelpers',
-    'djangosenchatools',
     'django_dbdev',
     # 'raven.contrib.django.raven_compat', # Sentry client (Raven)
     'devilry.devilry_sandbox',
@@ -53,19 +53,11 @@ INSTALLED_APPS += [
 
     # Not apps, but here for the Django test system to discover them:
     'devilry.utils',
-
-    ## For Trix development
-    #'trix',
-    #'trix_extjshelpers',
-    #'trix_restful',
-    #'trix_simplified',
 ]
 
 
 INTERNAL_IPS = ["127.0.0.1"]
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-EXTJS4_DEBUG = True
 STATIC_ROOT = 'static'
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 

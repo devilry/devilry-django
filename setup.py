@@ -23,7 +23,6 @@ setup(
         'Markdown==2.3.1',
         'Pygments==1.5',
         'flup==1.0.2',
-        'django-extjs4==1.1.4-extjs4.1.1',
         'gunicorn==19.2.1',
         'django-crispy-forms==1.6.0',
         'openpyxl==1.6.1',

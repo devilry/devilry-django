@@ -1,5 +1,7 @@
 from devilry.project.common.settings import *  # noqa
 
+TEMPLATES[0]['OPTIONS']['debug'] = False
+
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 

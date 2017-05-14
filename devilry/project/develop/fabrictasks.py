@@ -103,49 +103,6 @@ def new_demodb(djangoenv='develop'):
 
 
 @task
-def jsbuild(appname, nocompress=False, watch=False, no_jsbcreate=False, no_buildserver=False):
-    """
-    Use ``bin/django_dev.py senchatoolsbuild`` to build the app with the given
-    ``appname``.
-
-    :param appname: Name of an app (E.g.: devilry.devilry_frontpage).
-    :param nocompress: Run with ``--nocompress``. Good for debugging.
-    :param watch: Run with ``--watch ../src/``. Good for development.
-    :param no_jsbcreate:
-        Do not re-create app.jsb3 (the slowest part of building)?
-        Re-creating the jsb-file is only needed when you add requirements/deps
-        or new files. Set to ``true`` to not generate JSB-file, or set to
-        ``next`` and use --watch to generate the jsb-file at startup, but
-        not when the watcher triggers re-build.
-    :param no_buildserver:
-        Do not run the buildserver.
-
-    Workaround if the buildserver hangs (gets lots of 500 responses):
-
-        $ DJANGOENV=extjsbuild python manage.py runserver 127.0.0.1:15041
-        ... and in another shell:
-        $ fab jsbuild:devilry.devilry_subjectadmin,no_buildserver=true
-    """
-    extra_args = []
-    if no_buildserver:
-        extra_args.append('--dont-use-buildserver')
-    if nocompress:
-        extra_args.append('--nocompress')
-    if watch:
-        extra_args.append('--watch ../src/')
-    if no_jsbcreate:
-        if no_jsbcreate == 'next':
-            if not watch:
-                abort('no_jsbcreate="next" only makes sense with --watch')
-            jsbuild(appname, nocompress, watch=False)  # build one with no_jsbcreate=False
-        extra_args.append('--no-jsbcreate')
-    extra_args = ' '.join(extra_args)
-    _managepy(
-        'senchatoolsbuild {extra_args} --app {appname}'.format(appname=appname, extra_args=extra_args),
-        djangoenv='extjsbuild')
-
-
-@task
 def makemessages():
     for languagecode in LANGUAGES:
         _managepy(

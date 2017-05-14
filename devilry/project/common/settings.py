@@ -11,8 +11,6 @@ from .projectspecific_settings import *  # noqa
 from .django_cradmin_settings import *  # noqa
 
 DEBUG = False
-EXTJS4_DEBUG = DEBUG
-TEMPLATE_DEBUG = DEBUG
 
 TIME_ZONE = 'Europe/Oslo'
 SITE_ID = 1
@@ -97,16 +95,30 @@ INSTALLED_APPS = [
     'devilry.devilry_import_v2database',
 ]
 
-TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
-                               "django.core.context_processors.debug",
-                               "django.core.context_processors.i18n",
-                               "django.core.context_processors.media",
-                               "django.core.context_processors.debug",
-                               "django.core.context_processors.request",
-                               'django.contrib.messages.context_processors.messages',
-                               'extjs4.context_processors.extjs4',
-                               'devilry.project.common.templatecontext.template_variables',
-                               'django_cradmin.context_processors.cradmin')
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            # insert your TEMPLATE_DIRS here
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'debug': True,
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
+                'django_cradmin.context_processors.cradmin',
+                'devilry.project.common.templatecontext.template_variables',
+            ],
+        },
+    },
+]
 
 
 MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
