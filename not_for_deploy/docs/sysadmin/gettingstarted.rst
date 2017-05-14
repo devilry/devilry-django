@@ -46,9 +46,6 @@ messy to maintain. Instead, we use a PIP requirements-file. Create
     # PostgreSQL python bindings
     psycopg2
 
-    # Elastic search python bindings
-    elasticsearch
-
     # Supervisord process manager
     supervisor
 
@@ -304,7 +301,6 @@ Whats next?
 You now have a working Devilry server, but you still need to:
 
 - :doc:`authbackend`.
-- :doc:`elasticsearch`.
 - :doc:`celery`.
 - :doc:`supervisord`.
 - :doc:`webserver`.

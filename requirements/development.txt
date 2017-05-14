@@ -32,8 +32,6 @@ transifex-client==0.10
 mock==2.0.0
 fabric==1.8.3
 
-elasticsearch-dsl==0.0.4
-
 # For celery
 celery==3.1.20
 django-celery==3.1.17

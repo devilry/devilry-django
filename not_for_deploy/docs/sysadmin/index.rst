@@ -6,7 +6,6 @@ Devilry sysadmin docs
    :maxdepth: 2
 
    gettingstarted
-   elasticsearch
    authbackend
    celery
    supervisord

@@ -77,7 +77,6 @@ INSTALLED_APPS = [
     'devilry.devilry_comment',
     'devilry.devilry_i18n',
     'devilry.devilry_settings',
-    # 'devilry.devilry_search',
     'devilry.devilry_qualifiesforexam',
     'devilry.devilry_qualifiesforexam_plugin_approved',
     'devilry.devilry_qualifiesforexam_plugin_points',
@@ -96,8 +95,6 @@ INSTALLED_APPS = [
     'devilry.devilry_deadlinemanagement',
     'devilry.project.common',
     'devilry.devilry_import_v2database',
-
-    # 'devilry.devilry_elasticsearch_cache.apps.ElasticsearchCacheAppConfig',
 ]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",

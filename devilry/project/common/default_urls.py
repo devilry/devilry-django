@@ -38,7 +38,6 @@ devilry_urls = [
     url(r'^djangoadmin/', include(admin.site.urls)),
     url(r'^superuser/', include(superuserui_registry.default.make_cradmin_instance_class().urls())),
     url(r'^devilry_send_email_to_students/', include('devilry.devilry_send_email_to_students.urls')),
-    # url(r'^devilry_search/', include('devilry.devilry_search.urls')),
     url(r'^devilry_header/', include('devilry.devilry_header.urls')),
     url(r'^devilry_bulkcreate_users/', include('devilry.devilry_bulkcreate_users.urls')),
     url(r'^devilry_examiner/', include('devilry.devilry_examiner.urls')),
