@@ -42,7 +42,6 @@ DATABASES['default']['PORT'] = 24376
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS += [
-    'seleniumhelpers',
     'django_dbdev',
     # 'raven.contrib.django.raven_compat', # Sentry client (Raven)
     'devilry.devilry_sandbox',
@@ -78,13 +77,6 @@ DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDeliveryStore'
 DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 10
 DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
-
-## django_seleniumhelpers
-## - http://django_seleniumhelpers.readthedocs.org/
-#SKIP_SELENIUMTESTS = True
-SELENIUM_BROWSER = 'Chrome'  # Default selenium browser
-SELENIUM_DEFAULT_TIMEOUT = 8
-
 
 PASSWORD_HASHERS = (
     #    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
