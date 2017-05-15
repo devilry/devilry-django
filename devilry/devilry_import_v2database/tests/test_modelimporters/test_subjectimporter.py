@@ -1,3 +1,4 @@
+from devilry.devilry_import_v2database.models import ImportedModel
 from django import test
 from django.conf import settings
 
@@ -72,3 +73,14 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
         subjects_for_admin_list = Subject.objects.filter_user_is_admin(test_admin_user)
         self.assertEquals(len(subjects_for_admin_list), 1)
         self.assertEquals(subjects_for_admin_list[0], subject)
+
+    def test_importer_imported_model_created(self):
+        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
+        subject_data_dict = self._create_subject_dict(test_admin_user=test_admin_user)
+        self.create_v2dump(model_name='core.subject',
+                           data=subject_data_dict)
+        subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
+        subjectimporter.import_models()
+        self.assertEquals(ImportedModel.objects.count(), 1)
+        imported_model = ImportedModel.objects.first()
+        self.assertEquals(imported_model.data, subject_data_dict)

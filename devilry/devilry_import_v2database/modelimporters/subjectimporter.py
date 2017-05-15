@@ -58,6 +58,7 @@ class SubjectImporter(modelimporter.ModelImporter):
         subject.full_clean()
         subject.save()
         self._create_subject_permissiongroup(subject=subject, admin_user_ids=object_dict['admin_user_ids'])
+        self.log_create(model_object=subject, data=object_dict)
 
     def import_models(self, fake=False):
         for object_dict in self.v2subject_directoryparser.iterate_object_dicts():
