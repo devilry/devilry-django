@@ -40,7 +40,7 @@ class Command(BaseCommand):
         return [
             modeldumpers.UserDumper,
             modeldumpers.SubjectDumper,
-            modeldumpers.DeadlineDumper,
+            # modeldumpers.DeadlineDumper,
             # modeldumpers.RelatedExaminerDumper,
             # modeldumpers.PeriodDumper,
             # modeldumpers.AssignmentDumper,
