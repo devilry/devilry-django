@@ -1,3 +1,4 @@
+import json
 import os
 
 from django.core import serializers
@@ -46,7 +47,7 @@ class ModelDumper(object):
         Serialize a model object.
         """
         json_array = serializers.serialize('json', [obj], ensure_ascii=False)
-        return json_array[1:-1]
+        return json.loads(json_array[1:-1])
 
     def get_unique_id_for_model_object(self, obj):
         """
@@ -79,5 +80,5 @@ class ModelDumper(object):
                 print
             else:
                 with open(filepath, 'wb') as outfile:
-                    outfile.write(serialized.encode('utf-8'))
+                    outfile.write(json.dumps(serialized, encoding='utf-8', indent=2))
                     outfile.close()
