@@ -1,6 +1,10 @@
 from devilry.devilry_import_v2database import v2dump_directoryparsers
 
 
+class ModelImporterException(Exception):
+    pass
+
+
 class ModelImporter(object):
     def __init__(self, input_root):
         self.input_root = input_root
@@ -41,3 +45,15 @@ class ModelImporter(object):
     def v2user_directoryparser(self):
         return v2dump_directoryparsers.V2UserDirectoryParser(
             input_root=self.input_root)
+
+    @property
+    def v2subject_directoryparser(self):
+        return v2dump_directoryparsers.V2SubjectDirectoryParser(
+            input_root=self.input_root
+        )
+
+    @property
+    def v2period_directoryparser(self):
+        return v2dump_directoryparsers.V2PeriodDirectoryParser(
+            input_root=self.input_root
+        )
