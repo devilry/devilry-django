@@ -1,3 +1,4 @@
+from devilry.devilry_import_v2database.models import ImportedModel
 from django import test
 from django.conf import settings
 from django.utils.dateparse import parse_datetime
@@ -113,3 +114,15 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         periods_for_admin_list = Period.objects.filter_user_is_admin(test_admin_user)
         self.assertEquals(len(periods_for_admin_list), 1)
         self.assertEquals(periods_for_admin_list[0], period)
+
+    def test_importer_imported_model_created(self):
+        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_subject = mommy.make('core.Subject')
+        period_data_dict = self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user)
+        self.create_v2dump(model_name='core.period',
+                           data=period_data_dict)
+        subjectimporter = PeriodImporter(input_root=self.temp_root_dir)
+        subjectimporter.import_models()
+        self.assertEquals(ImportedModel.objects.count(), 1)
+        imported_model = ImportedModel.objects.first()
+        self.assertEquals(imported_model.data, period_data_dict)

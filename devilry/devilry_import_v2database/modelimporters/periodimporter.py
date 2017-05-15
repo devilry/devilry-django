@@ -68,6 +68,7 @@ class PeriodImporter(modelimporter.ModelImporter):
         period.full_clean()
         period.save()
         self._create_period_permissiongroup(period=period, admin_user_ids=object_dict['admin_user_ids'])
+        self.log_create(model_object=period, data=object_dict)
 
     def import_models(self, fake=False):
         for object_dict in self.v2period_directoryparser.iterate_object_dicts():
