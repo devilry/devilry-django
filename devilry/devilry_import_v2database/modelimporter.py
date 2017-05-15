@@ -1,4 +1,5 @@
 from devilry.devilry_import_v2database import v2dump_directoryparsers
+from devilry.devilry_import_v2database.models import ImportedModel
 
 
 class ModelImporterException(Exception):
@@ -40,6 +41,15 @@ class ModelImporter(object):
             else:
                 value = object_dict['fields'][from_attribute]
             setattr(model_object, to_attribute, value)
+
+    def log_create(self, model_object, data):
+        imported_model = ImportedModel.objects.create(
+            content_object=model_object,
+            content_object_id=model_object.id,
+            data=data
+        )
+        imported_model.full_clean()
+        imported_model.save()
 
     @property
     def v2user_directoryparser(self):
