@@ -1,7 +1,9 @@
 from django import test
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 
 from .importer_testcase_mixin import ImporterTestCaseMixin
+from devilry.devilry_import_v2database.models import ImportedModel
 from devilry.devilry_import_v2database.modelimporters.userimporter import UserImporter
 from devilry.devilry_account.models import UserEmail, UserName
 
@@ -93,3 +95,10 @@ class TestUserImporter(ImporterTestCaseMixin, test.TestCase):
         user = self.user_model.objects.first()
         self.assertEquals(username.username, 'april')
         self.assertEquals(username.user, user)
+
+    def test_importer_imported_model_created(self):
+        userimporter = UserImporter(input_root=self.temp_root_dir)
+        userimporter.import_models()
+        self.assertEquals(ImportedModel.objects.count(), 1)
+        imported_model = ImportedModel.objects.first()
+        self.assertEquals(imported_model.data, test_user_april)

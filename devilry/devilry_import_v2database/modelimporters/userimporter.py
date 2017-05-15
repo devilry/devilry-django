@@ -53,6 +53,7 @@ class UserImporter(modelimporter.ModelImporter):
         if not settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
             self._create_username(user=user, username=username)
         self._create_useremail(user=user, email=email)
+        self.log_create(model_object=user, data=object_dict)
 
     def import_models(self, fake=False):
         for object_dict in self.v2user_directoryparser.iterate_object_dicts():
