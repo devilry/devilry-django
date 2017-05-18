@@ -33,16 +33,17 @@ class PeriodImporter(modelimporter.ModelImporter):
         return permission_group
 
     def _create_period_permissiongroup(self, period, admin_user_ids):
-        permission_group = self._create_permissiongroup(
-            name=period.short_name,
-            admin_user_ids=admin_user_ids
-        )
-        period_permissiongroup = account_models.PeriodPermissionGroup(
-            permissiongroup=permission_group,
-            period=period
-        )
-        period_permissiongroup.full_clean()
-        period_permissiongroup.save()
+        if len(admin_user_ids) > 0:
+            permission_group = self._create_permissiongroup(
+                name=period.short_name,
+                admin_user_ids=admin_user_ids
+            )
+            period_permissiongroup = account_models.PeriodPermissionGroup(
+                permissiongroup=permission_group,
+                period=period
+            )
+            period_permissiongroup.full_clean()
+            period_permissiongroup.save()
 
     def _get_subject_from_parentnode_id(self, id):
         try:
@@ -51,7 +52,7 @@ class PeriodImporter(modelimporter.ModelImporter):
             raise modelimporter.ModelImporterException('No Subject with id={} exists for imported Period'.format(id))
         return subject
 
-    def _create_subject_from_object_dict(self, object_dict):
+    def _create_period_from_object_dict(self, object_dict):
         period = self.get_model_class()()
         self.patch_model_from_object_dict(
             model_object=period,
@@ -75,5 +76,5 @@ class PeriodImporter(modelimporter.ModelImporter):
             if fake:
                 print('Would import: {}'.format(pprint.pformat(object_dict)))
             else:
-                self._create_subject_from_object_dict(object_dict=object_dict)
+                self._create_period_from_object_dict(object_dict=object_dict)
 

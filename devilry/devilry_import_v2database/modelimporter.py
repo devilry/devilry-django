@@ -7,8 +7,9 @@ class ModelImporterException(Exception):
 
 
 class ModelImporter(object):
-    def __init__(self, input_root):
+    def __init__(self, input_root, **kwargs):
         self.input_root = input_root
+        self.kwargs = kwargs
 
     def get_model_class(self):
         """
@@ -65,5 +66,17 @@ class ModelImporter(object):
     @property
     def v2period_directoryparser(self):
         return v2dump_directoryparsers.V2PeriodDirectoryParser(
+            input_root=self.input_root
+        )
+
+    @property
+    def v2assignment_directoryparser(self):
+        return v2dump_directoryparsers.V2AssignmentDirectoryParser(
+            input_root=self.input_root
+        )
+    
+    @property
+    def v2node_directoryparser(self):
+        return v2dump_directoryparsers.V2NodeDirectoryParser(
             input_root=self.input_root
         )

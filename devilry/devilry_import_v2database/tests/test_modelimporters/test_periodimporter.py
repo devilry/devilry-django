@@ -1,3 +1,4 @@
+from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_import_v2database.models import ImportedModel
 from django import test
 from django.conf import settings
@@ -12,17 +13,17 @@ from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
 class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
-    def _create_period_dict(self, subject, test_admin_user):
+    def _create_period_dict(self, subject, test_admin_user=None):
         return {
             'pk': 1,
             'model': 'core.period',
-            'admin_user_ids': [test_admin_user.id],
+            'admin_user_ids': [test_admin_user.id] if test_admin_user else [],
             'fields': {
                 'short_name': 'testsemester',
                 'start_time': '2017-02-14T11:04:46.585',
                 'parentnode': subject.id,
                 'long_name': 'Testsemester',
-                'admins': [test_admin_user.id],
+                'admins': [test_admin_user.id] if test_admin_user else [],
                 'etag': '2017-05-15T11:04:46.585',
                 'end_time': '2017-08-13T11:04:46.585'
             }
@@ -46,6 +47,25 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         periodimporter.import_models()
         period = Period.objects.first()
         self.assertEquals(period.id, 1)
+
+    def test_importer_imported_model_with_admins(self):
+        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_subject = mommy.make('core.Subject')
+        period_data_dict = self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user)
+        self.create_v2dump(model_name='core.period',
+                           data=period_data_dict)
+        subjectimporter = PeriodImporter(input_root=self.temp_root_dir)
+        subjectimporter.import_models()
+        self.assertEquals(PeriodPermissionGroup.objects.count(), 1)
+
+    def test_importer_imported_model_without_admins(self):
+        test_subject = mommy.make('core.Subject')
+        period_data_dict = self._create_period_dict(subject=test_subject)
+        self.create_v2dump(model_name='core.period',
+                           data=period_data_dict)
+        subjectimporter = PeriodImporter(input_root=self.temp_root_dir)
+        subjectimporter.import_models()
+        self.assertEquals(PeriodPermissionGroup.objects.count(), 0)
 
     def test_importer_short_name(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)

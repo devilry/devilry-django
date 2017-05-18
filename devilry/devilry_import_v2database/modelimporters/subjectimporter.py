@@ -24,7 +24,7 @@ class SubjectImporter(modelimporter.ModelImporter):
         admin_users_queryset = get_user_model().objects.filter(id__in=admin_user_ids)
         permission_group = account_models.PermissionGroup(
             grouptype=account_models.PermissionGroup.GROUPTYPE_SUBJECTADMIN,
-            name='{} admins'.format(name)
+            name='{}'.format(name)
         )
         permission_group.full_clean()
         permission_group.save()
@@ -33,16 +33,17 @@ class SubjectImporter(modelimporter.ModelImporter):
         return permission_group
 
     def _create_subject_permissiongroup(self, subject, admin_user_ids):
-        permission_group = self._create_permissiongroup(
-            name=subject.short_name,
-            admin_user_ids=admin_user_ids
-        )
-        subject_permissiongroup = account_models.SubjectPermissionGroup(
-            permissiongroup=permission_group,
-            subject=subject
-        )
-        subject_permissiongroup.full_clean()
-        subject_permissiongroup.save()
+        if len(admin_user_ids) > 0:
+            permission_group = self._create_permissiongroup(
+                name=subject.short_name,
+                admin_user_ids=admin_user_ids
+            )
+            subject_permissiongroup = account_models.SubjectPermissionGroup(
+                permissiongroup=permission_group,
+                subject=subject
+            )
+            subject_permissiongroup.full_clean()
+            subject_permissiongroup.save()
 
     def _create_subject_from_object_dict(self, object_dict):
         subject = self.get_model_class()()
