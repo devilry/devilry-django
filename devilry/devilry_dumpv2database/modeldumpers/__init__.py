@@ -6,3 +6,4 @@ from .assignmentgroupdumper import AssignmentGroupDumper
 from .examinerdumper import ExaminerDumper
 from .relatedexaminerdumper import RelatedExaminerDumper
 from .deadlinedumper import DeadlineDumper
+from .nodedumper import NodeDumper
