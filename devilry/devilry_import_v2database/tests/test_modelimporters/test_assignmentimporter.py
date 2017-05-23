@@ -8,7 +8,7 @@ from django.utils.dateparse import parse_datetime
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
-from devilry.devilry_import_v2database.modelimporters.assignmentimporter import AssignmentImporter
+from devilry.devilry_import_v2database.modelimporters.assignment_importer import AssignmentImporter
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 

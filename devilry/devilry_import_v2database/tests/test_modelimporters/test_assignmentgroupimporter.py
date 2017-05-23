@@ -10,7 +10,7 @@ from model_mommy import mommy
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.models import FeedbackSet
-from devilry.devilry_import_v2database.modelimporters.assignmentgroupimporter import AssignmentGroupImporter
+from devilry.devilry_import_v2database.modelimporters.assignmentgroup_importer import AssignmentGroupImporter
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 

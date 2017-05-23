@@ -7,6 +7,9 @@ from devilry.devilry_import_v2database import modelimporter
 
 
 class ImporterMixin(object):
+    def get_related_user_model_class(self):
+        raise NotImplementedError()
+
     def _get_user_from_id(self, user_id):
         try:
             user = get_user_model().objects.get(id=user_id)
@@ -23,19 +26,32 @@ class ImporterMixin(object):
                 'AssignmentGroup with id {} does not exist.'.format(assignment_group_id))
         return assignment_group
 
+    def _get_related_user(self, period, user):
+        related_user_class = self.get_related_user_model_class()
+        try:
+            related_user = related_user_class.objects.get(period=period, user=user)
+        except related_user_class.DoesNotExist:
+            return None
+        return related_user
+
+    def _create_related_user(self, user, period, **kwargs):
+        related_user = self.get_related_user_model_class()(
+            user=user,
+            period=period,
+            active=False,
+            **kwargs
+        )
+        related_user.full_clean()
+        related_user.save()
+        return related_user
+
 
 class ExaminerImporter(ImporterMixin, modelimporter.ModelImporter):
     def get_model_class(self):
         return Examiner
 
-    def _create_relatedexaminer(self, user, period):
-        related_examiner = RelatedExaminer(
-            user=user,
-            period=period
-        )
-        related_examiner.full_clean()
-        related_examiner.save()
-        return related_examiner
+    def get_related_user_model_class(self):
+        return RelatedExaminer
 
     def _create_examiner_from_object_dict(self, object_dict):
         examiner = self.get_model_class()()
@@ -49,8 +65,14 @@ class ExaminerImporter(ImporterMixin, modelimporter.ModelImporter):
         user = self._get_user_from_id(user_id=object_dict['fields']['user'])
         assignment_group = self._get_assignment_group_from_id(
             assignment_group_id=object_dict['fields']['assignmentgroup'])
-        related_examiner = self._create_relatedexaminer(user=user, period=assignment_group.parentnode.parentnode)
-        examiner.relatedexaminer = related_examiner
+        related_examiner = self._get_related_user(period=assignment_group.parentnode.parentnode, user=user)
+        if not related_examiner:
+            examiner.relatedexaminer = self._create_related_user(
+                user=user,
+                period=assignment_group.parentnode.parentnode
+            )
+        else:
+            examiner.relatedexaminer = related_examiner
         examiner.assignmentgroup = assignment_group
         examiner.full_clean()
         examiner.save()
@@ -68,15 +90,8 @@ class CandidateImporter(ImporterMixin, modelimporter.ModelImporter):
     def get_model_class(self):
         return Candidate
 
-    def _create_relatedstudent(self, user, period, **kwargs):
-        related_student = RelatedStudent(
-            user=user,
-            period=period,
-            **kwargs
-        )
-        related_student.full_clean()
-        related_student.save()
-        return related_student
+    def get_related_user_model_class(self):
+        return RelatedStudent
 
     def _create_candidate_from_object_dict(self, object_dict):
         candidate = self.get_model_class()()
@@ -91,12 +106,14 @@ class CandidateImporter(ImporterMixin, modelimporter.ModelImporter):
         user = self._get_user_from_id(user_id=object_dict['fields']['student'])
         assignment_group = self._get_assignment_group_from_id(
             assignment_group_id=object_dict['fields']['assignment_group'])
-        related_student = self._create_relatedstudent(
-            user=user,
-            period=assignment_group.parentnode.parentnode,
-            candidate_id=object_dict['fields']['candidate_id']
-        )
-        candidate.relatedstudent = related_student
+        related_student = self._get_related_user(period=assignment_group.parentnode.parentnode, user=user)
+        if not related_student:
+            candidate.relatedstudent = self._create_related_user(
+                user=user,
+                period=assignment_group.parentnode.parentnode
+            )
+        else:
+            candidate.relatedstudent = related_student
         candidate.assignment_group = assignment_group
         candidate.full_clean()
         candidate.save()

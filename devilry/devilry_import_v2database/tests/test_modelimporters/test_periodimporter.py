@@ -10,7 +10,7 @@ from model_mommy import mommy
 
 from devilry.apps.core.models import Period
 from devilry.devilry_account import models as account_models
-from devilry.devilry_import_v2database.modelimporters.periodimporter import PeriodImporter
+from devilry.devilry_import_v2database.modelimporters.period_importer import PeriodImporter
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 

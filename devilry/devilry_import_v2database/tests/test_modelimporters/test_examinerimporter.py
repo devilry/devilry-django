@@ -1,6 +1,5 @@
 from django.contrib.contenttypes.models import ContentType
 
-from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_import_v2database.models import ImportedModel
 from django import test
 from django.conf import settings
@@ -16,7 +15,6 @@ from .importer_testcase_mixin import ImporterTestCaseMixin
 class TestExaminerImporter(ImporterTestCaseMixin, test.TestCase):
     def setUp(self):
         super(TestExaminerImporter, self).setUp()
-        AssignmentGroupDbCacheCustomSql().initialize()
 
     def _create_examiner_dict(self, assignment_group, user):
         return {
@@ -57,6 +55,29 @@ class TestExaminerImporter(ImporterTestCaseMixin, test.TestCase):
         examiner_importer.import_models()
         examiner = Examiner.objects.first()
         self.assertEquals(examiner.assignmentgroup, test_group)
+
+    def test_importer_existing_related_examiner_active_is_true(self):
+        test_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_group = mommy.make('core.AssignmentGroup')
+        mommy.make('core.RelatedExaminer', period=test_group.parentnode.parentnode, user=test_user)
+        self.create_v2dump(model_name='core.examiner',
+                           data=self._create_examiner_dict(assignment_group=test_group, user=test_user))
+        examiner_importer = ExaminerImporter(input_root=self.temp_root_dir)
+        examiner_importer.import_models()
+        self.assertEquals(RelatedExaminer.objects.count(), 1)
+        related_examiner = RelatedExaminer.objects.first()
+        self.assertTrue(related_examiner.active)
+
+    def test_importer_related_examiner_with_active_false_is_created(self):
+        test_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_group = mommy.make('core.AssignmentGroup')
+        self.create_v2dump(model_name='core.examiner',
+                           data=self._create_examiner_dict(assignment_group=test_group, user=test_user))
+        examiner_importer = ExaminerImporter(input_root=self.temp_root_dir)
+        examiner_importer.import_models()
+        self.assertEquals(RelatedExaminer.objects.count(), 1)
+        related_examiner = RelatedExaminer.objects.first()
+        self.assertFalse(related_examiner.active)
 
     def test_importer_related_examiner_user(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)

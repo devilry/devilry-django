@@ -98,3 +98,21 @@ class ModelImporter(object):
         return v2dump_directoryparsers.V2CandidateDirectoryParser(
             input_root=self.input_root
         )
+
+    @property
+    def v2deadline_directoryparser(self):
+        return v2dump_directoryparsers.V2DeadlineDirectoryParser(
+            input_root=self.input_root
+        )
+
+    @property
+    def v2relatedexaminer_directoryparser(self):
+        return v2dump_directoryparsers.V2RelatedExaminerDirectoryParser(
+            input_root=self.input_root
+        )
+
+    @property
+    def v2relatedstudent_directoryparser(self):
+        return v2dump_directoryparsers.V2RelatedStudentDirectoryParser(
+            input_root=self.input_root
+        )

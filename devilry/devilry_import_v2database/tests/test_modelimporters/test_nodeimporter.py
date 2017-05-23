@@ -7,7 +7,7 @@ from model_mommy import mommy
 
 from devilry.apps.core.models import Subject
 from devilry.devilry_account import models as account_models
-from devilry.devilry_import_v2database.modelimporters.nodeimporter import NodeImporter
+from devilry.devilry_import_v2database.modelimporters.node_importer import NodeImporter
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 

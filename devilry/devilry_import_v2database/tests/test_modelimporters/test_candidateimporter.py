@@ -1,6 +1,5 @@
 from django.contrib.contenttypes.models import ContentType
 
-from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_import_v2database.models import ImportedModel
 from django import test
 from django.conf import settings
@@ -16,7 +15,6 @@ from .importer_testcase_mixin import ImporterTestCaseMixin
 class TestCandidateImporter(ImporterTestCaseMixin, test.TestCase):
     def setUp(self):
         super(TestCandidateImporter, self).setUp()
-        AssignmentGroupDbCacheCustomSql().initialize()
 
     def _create_candidate_dict(self, assignment_group, user):
         return {
@@ -60,7 +58,30 @@ class TestCandidateImporter(ImporterTestCaseMixin, test.TestCase):
         candidate = Candidate.objects.first()
         self.assertEquals(candidate.assignment_group, test_group)
 
-    def test_importer_related_student_user(self):
+    def test_importer_existing_related_candidate_active_is_true(self):
+        test_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_group = mommy.make('core.AssignmentGroup')
+        mommy.make('core.RelatedStudent', period=test_group.parentnode.parentnode, user=test_user)
+        self.create_v2dump(model_name='core.candidate',
+                           data=self._create_candidate_dict(assignment_group=test_group, user=test_user))
+        candidate_importer = CandidateImporter(input_root=self.temp_root_dir)
+        candidate_importer.import_models()
+        self.assertEquals(RelatedStudent.objects.count(), 1)
+        related_candidate = RelatedStudent.objects.first()
+        self.assertTrue(related_candidate.active)
+
+    def test_importer_related_candidate_with_active_false_is_created(self):
+        test_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_group = mommy.make('core.AssignmentGroup')
+        self.create_v2dump(model_name='core.candidate',
+                           data=self._create_candidate_dict(assignment_group=test_group, user=test_user))
+        candidate_importer = CandidateImporter(input_root=self.temp_root_dir)
+        candidate_importer.import_models()
+        self.assertEquals(RelatedStudent.objects.count(), 1)
+        related_student = RelatedStudent.objects.first()
+        self.assertFalse(related_student.active)
+
+    def test_importer_related_candidate_user(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
         test_group = mommy.make('core.AssignmentGroup')
         self.create_v2dump(model_name='core.candidate',
@@ -70,7 +91,7 @@ class TestCandidateImporter(ImporterTestCaseMixin, test.TestCase):
         candidate = Candidate.objects.first()
         self.assertEquals(candidate.relatedstudent.user, test_user)
 
-    def test_importer_related_student_period(self):
+    def test_importer_related_candidate_period(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
         test_group = mommy.make('core.AssignmentGroup')
         self.create_v2dump(model_name='core.candidate',
@@ -83,9 +104,9 @@ class TestCandidateImporter(ImporterTestCaseMixin, test.TestCase):
     def test_importer_imported_model_created(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
         test_group = mommy.make('core.AssignmentGroup')
-        candidate_data_dict = self._create_candidate_dict(assignment_group=test_group, user=test_user)
+        examiner_data_dict = self._create_candidate_dict(assignment_group=test_group, user=test_user)
         self.create_v2dump(model_name='core.candidate',
-                           data=candidate_data_dict)
+                           data=examiner_data_dict)
         candidate_importer = CandidateImporter(input_root=self.temp_root_dir)
         candidate_importer.import_models()
         candidate = Candidate.objects.first()
@@ -95,4 +116,4 @@ class TestCandidateImporter(ImporterTestCaseMixin, test.TestCase):
             content_type=ContentType.objects.get_for_model(model=candidate)
         )
         self.assertEquals(imported_model.content_object, candidate)
-        self.assertEquals(imported_model.data, candidate_data_dict)
+        self.assertEquals(imported_model.data, examiner_data_dict)

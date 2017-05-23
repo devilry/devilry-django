@@ -6,3 +6,6 @@ from .v2node_directoryparser import V2NodeDirectoryParser  # noqa
 from .v2assignmentgroup_directoryparser import V2AssignmentGroupDirectoryParser  # noqa
 from .v2examiner_directoryparser import V2ExaminerDirectoryParser  # noqa
 from .v2candidate_directoryparser import V2CandidateDirectoryParser  # noqa
+from .v2deadline_directoryparser import V2DeadlineDirectoryParser  # noqa
+from .v2relatedexaminer_directoryparser import V2RelatedExaminerDirectoryParser  # noqa
+from .v2relatedstudent_directoryparser import V2RelatedStudentDirectoryParser  # noqa

@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from .importer_testcase_mixin import ImporterTestCaseMixin
 from devilry.devilry_import_v2database.models import ImportedModel
-from devilry.devilry_import_v2database.modelimporters.userimporter import UserImporter
+from devilry.devilry_import_v2database.modelimporters.user_importer import UserImporter
 from devilry.devilry_account.models import UserEmail, UserName
 
 
