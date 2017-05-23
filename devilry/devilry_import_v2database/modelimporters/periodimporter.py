@@ -23,7 +23,7 @@ class PeriodImporter(modelimporter.ModelImporter):
     def _create_permissiongroup(self, name, admin_user_ids):
         admin_users_queryset = get_user_model().objects.filter(id__in=admin_user_ids)
         permission_group = account_models.PermissionGroup(
-            grouptype=account_models.PermissionGroup.GROUPTYPE_PERIODADMIN,
+            grouptype=account_models.PermissionGroup.GROUPTYPE_SUBJECTADMIN,
             name='{} admins'.format(name)
         )
         permission_group.full_clean()
@@ -32,18 +32,21 @@ class PeriodImporter(modelimporter.ModelImporter):
             self._create_permissiongroup_user(permission_group, admin_user)
         return permission_group
 
-    def _create_period_permissiongroup(self, period, admin_user_ids):
+    def _create_subject_permissiongroup(self, subject, admin_user_ids):
+        """
+        User that where admins on ``Period`` are now set as subject-admins.
+        """
         if len(admin_user_ids) > 0:
             permission_group = self._create_permissiongroup(
-                name=period.short_name,
+                name='{}#{}'.format(subject.short_name, subject.id),
                 admin_user_ids=admin_user_ids
             )
-            period_permissiongroup = account_models.PeriodPermissionGroup(
+            subject_permissiongroup = account_models.SubjectPermissionGroup(
                 permissiongroup=permission_group,
-                period=period
+                subject=subject
             )
-            period_permissiongroup.full_clean()
-            period_permissiongroup.save()
+            subject_permissiongroup.full_clean()
+            subject_permissiongroup.save()
 
     def _get_subject_from_parentnode_id(self, id):
         try:
@@ -65,10 +68,11 @@ class PeriodImporter(modelimporter.ModelImporter):
                 'end_time',
             ]
         )
-        period.parentnode = self._get_subject_from_parentnode_id(id=object_dict['fields']['parentnode'])
+        subject = self._get_subject_from_parentnode_id(id=object_dict['fields']['parentnode'])
+        period.parentnode = subject
         period.full_clean()
         period.save()
-        self._create_period_permissiongroup(period=period, admin_user_ids=object_dict['admin_user_ids'])
+        self._create_subject_permissiongroup(subject=subject, admin_user_ids=object_dict['admin_user_ids'])
         self.log_create(model_object=period, data=object_dict)
 
     def import_models(self, fake=False):

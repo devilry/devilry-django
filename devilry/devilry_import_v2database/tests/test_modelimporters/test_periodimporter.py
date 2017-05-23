@@ -1,4 +1,6 @@
-from devilry.devilry_account.models import PeriodPermissionGroup
+from django.contrib.contenttypes.models import ContentType
+
+from devilry.devilry_account.models import SubjectPermissionGroup
 from devilry.devilry_import_v2database.models import ImportedModel
 from django import test
 from django.conf import settings
@@ -56,7 +58,7 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
                            data=period_data_dict)
         subjectimporter = PeriodImporter(input_root=self.temp_root_dir)
         subjectimporter.import_models()
-        self.assertEquals(PeriodPermissionGroup.objects.count(), 1)
+        self.assertEquals(SubjectPermissionGroup.objects.count(), 1)
 
     def test_importer_imported_model_without_admins(self):
         test_subject = mommy.make('core.Subject')
@@ -65,7 +67,7 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
                            data=period_data_dict)
         subjectimporter = PeriodImporter(input_root=self.temp_root_dir)
         subjectimporter.import_models()
-        self.assertEquals(PeriodPermissionGroup.objects.count(), 0)
+        self.assertEquals(SubjectPermissionGroup.objects.count(), 0)
 
     def test_importer_short_name(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -130,19 +132,24 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         period = Period.objects.first()
         self.assertEquals(account_models.PermissionGroup.objects.count(), 1)
         self.assertEquals(account_models.PermissionGroupUser.objects.count(), 1)
-        self.assertEquals(account_models.PeriodPermissionGroup.objects.count(), 1)
+        self.assertEquals(account_models.SubjectPermissionGroup.objects.count(), 1)
         periods_for_admin_list = Period.objects.filter_user_is_admin(test_admin_user)
         self.assertEquals(len(periods_for_admin_list), 1)
         self.assertEquals(periods_for_admin_list[0], period)
 
-    def test_importer_imported_model_created(self):
+    def test_importer_imported_model_log_created(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
         test_subject = mommy.make('core.Subject')
         period_data_dict = self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user)
         self.create_v2dump(model_name='core.period',
                            data=period_data_dict)
-        subjectimporter = PeriodImporter(input_root=self.temp_root_dir)
-        subjectimporter.import_models()
+        periodimporter = PeriodImporter(input_root=self.temp_root_dir)
+        periodimporter.import_models()
+        period = Period.objects.first()
         self.assertEquals(ImportedModel.objects.count(), 1)
-        imported_model = ImportedModel.objects.first()
+        imported_model = ImportedModel.objects.get(
+            content_object_id=period.id,
+            content_type=ContentType.objects.get_for_model(model=period)
+        )
+        self.assertEquals(imported_model.content_object, period)
         self.assertEquals(imported_model.data, period_data_dict)

@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.models import ContentType
+
 from devilry.devilry_account.models import PermissionGroup, SubjectPermissionGroup
 from devilry.devilry_import_v2database.models import ImportedModel
 from django import test
@@ -97,6 +99,11 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
                            data=subject_data_dict)
         subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
         subjectimporter.import_models()
+        subject = Subject.objects.first()
         self.assertEquals(ImportedModel.objects.count(), 1)
-        imported_model = ImportedModel.objects.first()
+        imported_model = ImportedModel.objects.get(
+            content_object_id=subject.id,
+            content_type=ContentType.objects.get_for_model(model=subject)
+        )
+        self.assertEquals(imported_model.content_object, subject)
         self.assertEquals(imported_model.data, subject_data_dict)
