@@ -45,10 +45,10 @@ class Command(BaseCommand):
             modeldumpers.AssignmentDumper,
             modeldumpers.AssignmentGroupDumper,
             modeldumpers.DeadlineDumper,
-            # modeldumpers.RelatedExaminerDumper,
-            # modeldumpers.RelatedStudentDumper,
-            # modeldumpers.ExaminerDumper,
-            # modeldumpers.CandidateDumper,
+            modeldumpers.RelatedExaminerDumper,
+            modeldumpers.RelatedStudentDumper,
+            modeldumpers.ExaminerDumper,
+            modeldumpers.CandidateDumper,
         ]
 
     def __run(self):
