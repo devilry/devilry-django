@@ -194,7 +194,7 @@ class PeriodTag(models.Model):
     #: A tag unique for the period.
     #: If the prefix is blank, the tag itself is unique, else
     #: the combination of the prefix and the tag is unique.
-    tag = models.CharField(db_index=True, max_length=30)
+    tag = models.TextField(db_index=True)
 
     #: A tag can be set to hidden for filtering purposes.
     #: I.g, you don't want to remove a tag yet, but you do not want it
