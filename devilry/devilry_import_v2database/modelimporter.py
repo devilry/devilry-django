@@ -80,3 +80,21 @@ class ModelImporter(object):
         return v2dump_directoryparsers.V2NodeDirectoryParser(
             input_root=self.input_root
         )
+
+    @property
+    def v2assignmentgroup_directoryparser(self):
+        return v2dump_directoryparsers.V2AssignmentGroupDirectoryParser(
+            input_root=self.input_root
+        )
+
+    @property
+    def v2examiner_directoryparser(self):
+        return v2dump_directoryparsers.V2ExaminerDirectoryParser(
+            input_root=self.input_root
+        )
+
+    @property
+    def v2candidate_directoryparser(self):
+        return v2dump_directoryparsers.V2CandidateDirectoryParser(
+            input_root=self.input_root
+        )
