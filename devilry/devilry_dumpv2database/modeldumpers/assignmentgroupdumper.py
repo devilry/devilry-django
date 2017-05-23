@@ -8,4 +8,6 @@ class AssignmentGroupDumper(modeldumper.ModelDumper):
 
     def serialize_model_object(self, obj):
         serialized = super(AssignmentGroupDumper, self).serialize_model_object(obj=obj)
+        if serialized['fields']['name'] is None:
+            serialized['fields']['name'] = ''
         return serialized

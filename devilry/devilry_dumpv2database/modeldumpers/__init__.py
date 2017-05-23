@@ -4,6 +4,8 @@ from .perioddumper import PeriodDumper
 from .assignmentdumper import AssignmentDumper
 from .assignmentgroupdumper import AssignmentGroupDumper
 from .examinerdumper import ExaminerDumper
+from .candidatedumper import CandidateDumper
 from .relatedexaminerdumper import RelatedExaminerDumper
+from .relatedstudentdumper import RelatedStudentDumper
 from .deadlinedumper import DeadlineDumper
 from .nodedumper import NodeDumper
