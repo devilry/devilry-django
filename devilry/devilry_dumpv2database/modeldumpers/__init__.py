@@ -9,3 +9,4 @@ from .relatedexaminerdumper import RelatedExaminerDumper
 from .relatedstudentdumper import RelatedStudentDumper
 from .deadlinedumper import DeadlineDumper
 from .nodedumper import NodeDumper
+from .deliverydumper import DeliveryDumper
