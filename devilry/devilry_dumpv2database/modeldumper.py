@@ -77,8 +77,7 @@ class ModelDumper(object):
         )
         meta_file_path = os.path.join(self.output_root, meta_file_name)
         with open(meta_file_path, 'wb') as outfile:
-            outfile.write(json.dumps(self.get_meta_file_data()))
-            outfile.close()
+            outfile.write(json.dumps(self.get_meta_file_data(), ensure_ascii=False, encoding='utf-8'))
 
     def optimize_queryset(self, queryset):
         """

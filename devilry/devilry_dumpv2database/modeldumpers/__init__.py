@@ -10,3 +10,5 @@ from .relatedstudentdumper import RelatedStudentDumper
 from .deadlinedumper import DeadlineDumper
 from .nodedumper import NodeDumper
 from .deliverydumper import DeliveryDumper
+from .staticfeedbackdumper import StaticFeedbackDumper
+from .filemetadumper import FileMetaDumper
