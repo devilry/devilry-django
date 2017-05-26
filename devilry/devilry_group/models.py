@@ -395,12 +395,12 @@ class FeedbackSet(models.Model):
         else:
             if self.grading_published_datetime is not None and self.grading_published_by is None:
                 raise ValidationError({
-                    'grading_published_datetime': ugettext_lazy('An assignment can not be published '
+                    'grading_published_datetime': ugettext_lazy('A FeedbackSet can not be published '
                                                                 'without being published by someone.'),
                 })
             if self.grading_published_datetime is not None and self.grading_points is None:
                 raise ValidationError({
-                    'grading_published_datetime': ugettext_lazy('An assignment can not be published '
+                    'grading_published_datetime': ugettext_lazy('A FeedbackSet can not be published '
                                                                 'without providing "points".'),
                 })
         self.deadline_datetime = FeedbackSet.clean_deadline(self.deadline_datetime)

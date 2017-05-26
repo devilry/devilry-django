@@ -164,7 +164,7 @@ class TestFeedbackSetModel(TestCase):
         test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
             group__parentnode__first_deadline=timezone.now() - timezone.timedelta(days=1))
         with self.assertRaisesMessage(ValidationError,
-                                      'An assignment can not be published without being published by someone.'):
+                                      'A FeedbackSet can not be published without being published by someone.'):
             test_feedbackset.publish(published_by=None, grading_points=grading_points)
 
     def test_feedbackset_publish_grading_points_is_none(self):
@@ -172,7 +172,7 @@ class TestFeedbackSetModel(TestCase):
         test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
             group__parentnode__first_deadline=timezone.now() - timezone.timedelta(days=1))
         with self.assertRaisesMessage(ValidationError,
-                                      'An assignment can not be published without providing "points".'):
+                                      'A FeedbackSet can not be published without providing "points".'):
             test_feedbackset.publish(published_by=testuser, grading_points=None)
 
     def test_clean_published_by_is_none(self):
@@ -181,7 +181,7 @@ class TestFeedbackSetModel(TestCase):
                                         grading_published_by=None,
                                         grading_points=10)
         with self.assertRaisesMessage(ValidationError,
-                                      'An assignment can not be published without being published by someone.'):
+                                      'A FeedbackSet can not be published without being published by someone.'):
             testfeedbackset.clean()
 
     def test_clean_grading_points_is_none(self):
@@ -191,5 +191,5 @@ class TestFeedbackSetModel(TestCase):
                                         grading_published_by=testuser,
                                         grading_points=None)
         with self.assertRaisesMessage(ValidationError,
-                                      'An assignment can not be published without providing "points".'):
+                                      'A FeedbackSet can not be published without providing "points".'):
             testfeedbackset.clean()
