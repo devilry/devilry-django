@@ -20,10 +20,16 @@ class ModelImporter(object):
         raise NotImplementedError()
 
     def target_model_has_objects(self):
+        if not self.get_model_class():
+            # We need this when importing Node as this model
+            # no longer exists in Devilry 3.0
+            return False
         return self.get_model_class().objects.exists()
 
     def prettyformat_model_name(self):
         model_class = self.get_model_class()
+        if not model_class:
+            return ''
         return '{}.{}'.format(model_class._meta.app_label,
                               model_class.__name__)
 
@@ -126,5 +132,11 @@ class ModelImporter(object):
     @property
     def v2staticfeedback_directoryparser(self):
         return v2dump_directoryparsers.V2StaticFeedbackDirectoryParser(
+            input_root=self.input_root
+        )
+
+    @property
+    def v2filemeta_directoryparser(self):
+        return v2dump_directoryparsers.V2FileMetaDirectoryParser(
             input_root=self.input_root
         )
