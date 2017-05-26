@@ -9,3 +9,5 @@ from .v2candidate_directoryparser import V2CandidateDirectoryParser  # noqa
 from .v2deadline_directoryparser import V2DeadlineDirectoryParser  # noqa
 from .v2relatedexaminer_directoryparser import V2RelatedExaminerDirectoryParser  # noqa
 from .v2relatedstudent_directoryparser import V2RelatedStudentDirectoryParser  # noqa
+from .v2delivery_directoryparser import V2DeliveryDirectoryParser  # noqa
+from .v2staticfeedback_directoryparser import V2StaticFeedbackDirectoryParser  # noqa

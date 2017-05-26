@@ -116,3 +116,15 @@ class ModelImporter(object):
         return v2dump_directoryparsers.V2RelatedStudentDirectoryParser(
             input_root=self.input_root
         )
+
+    @property
+    def v2delivery_directoryparser(self):
+        return v2dump_directoryparsers.V2DeliveryDirectoryParser(
+            input_root=self.input_root
+        )
+
+    @property
+    def v2staticfeedback_directoryparser(self):
+        return v2dump_directoryparsers.V2StaticFeedbackDirectoryParser(
+            input_root=self.input_root
+        )
