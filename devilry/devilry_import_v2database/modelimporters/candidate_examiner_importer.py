@@ -21,7 +21,7 @@ class ImporterMixin(object):
     def _get_assignment_group_from_id(self, assignment_group_id):
         try:
             assignment_group = AssignmentGroup.objects.get(id=assignment_group_id)
-        except get_user_model().DoesNotExist():
+        except AssignmentGroup.DoesNotExist():
             raise modelimporter.ModelImporterException(
                 'AssignmentGroup with id {} does not exist.'.format(assignment_group_id))
         return assignment_group
