@@ -11,3 +11,4 @@ from .v2relatedexaminer_directoryparser import V2RelatedExaminerDirectoryParser 
 from .v2relatedstudent_directoryparser import V2RelatedStudentDirectoryParser  # noqa
 from .v2delivery_directoryparser import V2DeliveryDirectoryParser  # noqa
 from .v2staticfeedback_directoryparser import V2StaticFeedbackDirectoryParser  # noqa
+from .v2filemeta_directoryparser import V2FileMetaDirectoryParser  # noqa

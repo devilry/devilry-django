@@ -2,9 +2,11 @@ import pprint
 
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+from django.core import files
 
+from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import AssignmentGroup
-from devilry.devilry_comment.models import Comment
+from devilry.devilry_comment.models import Comment, CommentFile
 from devilry.devilry_group.models import GroupComment, FeedbackSet
 from devilry.devilry_import_v2database import modelimporter
 
@@ -46,6 +48,14 @@ class DeliveryImporter(ImporterMixin, modelimporter.ModelImporter):
             return False
         return True
 
+    def _get_user_from_candidate_id(self, candidate_id):
+        try:
+            candidate = Candidate.objects.get(id=candidate_id)
+        except Candidate.DoesNotExist:
+            raise modelimporter.ModelImporterException(
+                'Candidate with id {} does not exist'.format(candidate_id))
+        return candidate.relatedstudent.user
+
     def _create_group_comment_from_object_dict(self, object_dict):
         group_comment = self.get_model_class()()
         self.patch_model_from_object_dict(
@@ -59,7 +69,7 @@ class DeliveryImporter(ImporterMixin, modelimporter.ModelImporter):
             ]
         )
         feedback_set = self._get_feedback_set_from_id(feedback_set_id=object_dict['fields']['deadline'])
-        candidate_user = self._get_user_from_id(object_dict['fields']['delivered_by'])
+        candidate_user = self._get_user_from_candidate_id(object_dict['fields']['delivered_by'])
         if self._user_is_candidate_in_group(assignment_group=feedback_set.group, user=candidate_user):
             group_comment.user = candidate_user
         else:
@@ -149,3 +159,44 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
                 print('Would import: {}'.format(pprint.pformat(object_dict)))
             else:
                 self._create_group_comment_from_object_dict(object_dict=object_dict)
+
+
+class FileMetaImporter(ImporterMixin, modelimporter.ModelImporter):
+    def get_model_class(self):
+        return CommentFile
+
+    def _get_delivery_comment_from_id(self, group_comment_id):
+        try:
+            group_comment = GroupComment.objects.get(id=group_comment_id)
+        except GroupComment.DoesNotExist:
+            raise modelimporter.ModelImporterException(
+                'GroupComment with id {} does not exist.'.format(group_comment_id))
+        return group_comment
+
+    def _create_comment_file_from_object_id(self, object_dict):
+        comment_file = self.get_model_class()()
+        self.patch_model_from_object_dict(
+            model_object=comment_file,
+            object_dict=object_dict,
+            attributes=[
+                'filename',
+                ('size', 'filesize'),
+                'mimetype'
+            ]
+        )
+        delivery_comment = self._get_delivery_comment_from_id(group_comment_id=object_dict['fields']['delivery'])
+        comment_file.comment = delivery_comment
+        comment_file.save()
+        fp = open(object_dict['fields']['absolute_file_path'], 'rb')
+        comment_file.file = files.File(fp, object_dict['fields']['filename'])
+        comment_file.full_clean()
+        comment_file.save()
+        fp.close()
+        self.log_create(model_object=comment_file, data=object_dict)
+
+    def import_models(self, fake=False):
+        for object_dict in self.v2filemeta_directoryparser.iterate_object_dicts():
+            if fake:
+                print('Would import: {}'.format(pprint.pformat(object_dict)))
+            else:
+                self._create_comment_file_from_object_id(object_dict=object_dict)
