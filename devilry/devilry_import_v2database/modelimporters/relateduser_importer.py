@@ -46,17 +46,36 @@ class ImporterMixin(object):
                 )
         PeriodTag.objects.bulk_create(period_tag_list)
 
+    def _get_tags_and_tags_to_exclude(self, period, tags_string):
+        """
+        Get the tags from v2 separated in a list and a list of tags that should
+        be excluded(``PeriodTag``s already exists)
+
+        Note:
+            Performs query to fetch the existing ``PeriodTag``s for this ``Period`` passed
+            as parameter.
+
+        Args:
+            period: The ``Period`` for the ``PeriodTag``s.
+            tags: a string of tags separated by a comma, no whitespace(according to v2 RelatedUser.tags).
+
+        Returns:
+            tuple (list, list): A list of tags, and a list of tags that should be excluded.
+        """
+        tags_list = [tag for tag in tags_string.split(',')]
+        period_tag_queryset = self._get_period_tag_queryset(period=period, v2_tags_list=tags_list)
+        tags_to_exclude = [period_tag.tag for period_tag in period_tag_queryset]
+        return tags_list, tags_to_exclude
+
     def _create_or_update_period_tag_for_related_user_type(self, related_user, period, tags):
         """
         Adds the relatedexaminer to each period tag or creates tags that does not exist.
         """
-        tags_list = [tag for tag in tags.split(',')]
-        period_tag_queryset = self._get_period_tag_queryset(period=period, v2_tags_list=tags_list)
-        tags_to_exclude = [period_tag.tag for period_tag in period_tag_queryset]
+        tags_list, tags_to_exclude_list = self._get_tags_and_tags_to_exclude(period, tags)
         self._bulk_create_period_tags(
             period=period,
             v2_tags_list=tags_list,
-            tags_to_exclude=tags_to_exclude
+            tags_to_exclude=tags_to_exclude_list
         )
         period_tag_queryset = self._get_period_tag_queryset(period=period, v2_tags_list=tags_list)
         for period_tag in period_tag_queryset:
@@ -93,7 +112,9 @@ class RelatedExaminerImporter(ImporterMixin, modelimporter.ModelImporter):
         self.log_create(model_object=related_examiner, data=object_dict)
 
     def import_models(self, fake=False):
-        for object_dict in self.v2relatedexaminer_directoryparser.iterate_object_dicts():
+        directory_parser = self.v2relatedexaminer_directoryparser
+        directory_parser.set_max_id_for_models_with_auto_generated_sequence_numbers(self.get_model_class())
+        for object_dict in directory_parser.iterate_object_dicts():
             if fake:
                 print('Would import: {}'.format(pprint.pformat(object_dict)))
             else:
@@ -128,7 +149,9 @@ class RelatedStudentImporter(ImporterMixin, modelimporter.ModelImporter):
         self.log_create(model_object=related_student, data=object_dict)
 
     def import_models(self, fake=False):
-        for object_dict in self.v2relatedstudent_directoryparser.iterate_object_dicts():
+        directory_parser = self.v2relatedstudent_directoryparser
+        directory_parser.set_max_id_for_models_with_auto_generated_sequence_numbers(self.get_model_class())
+        for object_dict in directory_parser.iterate_object_dicts():
             if fake:
                 print('Would import: {}'.format(pprint.pformat(object_dict)))
             else:

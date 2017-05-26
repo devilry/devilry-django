@@ -3,7 +3,6 @@ from django.contrib.contenttypes.models import ContentType
 from devilry.devilry_import_v2database.models import ImportedModel
 from django import test
 from django.conf import settings
-from django.utils.dateparse import parse_datetime
 
 from model_mommy import mommy
 
@@ -13,8 +12,12 @@ from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
 class TestExaminerImporter(ImporterTestCaseMixin, test.TestCase):
-    def setUp(self):
-        super(TestExaminerImporter, self).setUp()
+    def _create_model_meta(self):
+        return {
+            'model_class_name': 'Examiner',
+            'max_id': 156,
+            'app_label': 'core'
+        }
 
     def _create_examiner_dict(self, assignment_group, user):
         return {
@@ -115,3 +118,19 @@ class TestExaminerImporter(ImporterTestCaseMixin, test.TestCase):
         )
         self.assertEquals(imported_model.content_object, examiner)
         self.assertEquals(imported_model.data, examiner_data_dict)
+
+    def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
+        test_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_group = mommy.make('core.AssignmentGroup')
+        self.create_v2dump(model_name='core.examiner',
+                           data=self._create_examiner_dict(assignment_group=test_group, user=test_user),
+                           model_meta=self._create_model_meta())
+        examiner_importer = ExaminerImporter(input_root=self.temp_root_dir)
+        examiner_importer.import_models()
+        self.assertEquals(Examiner.objects.count(), 1)
+        examiner = Examiner.objects.first()
+        self.assertEquals(examiner.pk, 156)
+        self.assertEquals(examiner.id, 156)
+        examiner_with_auto_id = mommy.make('core.Examiner')
+        self.assertEquals(examiner_with_auto_id.pk, self._create_model_meta()['max_id']+1)
+        self.assertEquals(examiner_with_auto_id.id, self._create_model_meta()['max_id']+1)

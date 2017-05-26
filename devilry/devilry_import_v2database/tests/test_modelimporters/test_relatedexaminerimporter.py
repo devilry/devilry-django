@@ -13,6 +13,13 @@ from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
 class TestRelatedExaminerImporter(ImporterTestCaseMixin, test.TestCase):
+    def _create_model_meta(self):
+        return {
+            'model_class_name': 'RelatedExaminer',
+            'max_id': 16,
+            'app_label': 'core'
+        }
+
     def _create_related_examiner_dict(self, period, user):
         return {
             'pk': 6,
@@ -44,6 +51,17 @@ class TestRelatedExaminerImporter(ImporterTestCaseMixin, test.TestCase):
         related_examiner = RelatedExaminer.objects.first()
         self.assertEquals(related_examiner.pk, 6)
         self.assertEquals(related_examiner.id, 6)
+
+    def test_importer_period_tag_period(self):
+        test_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_period = mommy.make('core.Period')
+        self.create_v2dump(model_name='core.relatedexaminer',
+                           data=self._create_related_examiner_dict(period=test_period, user=test_user))
+        relatedexaminer_importer = RelatedExaminerImporter(input_root=self.temp_root_dir)
+        relatedexaminer_importer.import_models()
+        period_tag = PeriodTag.objects.first()
+        self.assertEquals(period_tag.period, test_period)
+        self.assertEquals(ImportedModel.objects.count(), 1)
 
     def test_importer_period_tag_single_tag_created(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
@@ -100,14 +118,48 @@ class TestRelatedExaminerImporter(ImporterTestCaseMixin, test.TestCase):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
         test_period = mommy.make('core.Period')
         mommy.make('core.PeriodTag', period=test_period, tag='group1')
+        mommy.make('core.PeriodTag', period=test_period, tag='group3')
         relatedexaminer_data_dict = self._create_related_examiner_dict(period=test_period, user=test_user)
-        relatedexaminer_data_dict['fields']['tags'] = 'group1,group2'
+        relatedexaminer_data_dict['fields']['tags'] = 'group1,group2,group3,group4'
         self.create_v2dump(model_name='core.relatedexaminer',
                            data=relatedexaminer_data_dict)
         relatedexaminer_importer = RelatedExaminerImporter(input_root=self.temp_root_dir)
         relatedexaminer_importer.import_models()
         related_examiner = RelatedExaminer.objects.first()
         period_tags = PeriodTag.objects.all()
-        self.assertEquals(period_tags.count(), 2)
+        self.assertEquals(period_tags.count(), 4)
         for period_tag in period_tags:
             self.assertIn(related_examiner, period_tag.relatedexaminers.all())
+
+    def test_importer_imported_model_created(self):
+        test_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_period = mommy.make('core.Period')
+        related_examiner_data_dict = self._create_related_examiner_dict(period=test_period, user=test_user)
+        self.create_v2dump(model_name='core.relatedexaminer',
+                           data=related_examiner_data_dict)
+        relatedexaminer_importer = RelatedExaminerImporter(input_root=self.temp_root_dir)
+        relatedexaminer_importer.import_models()
+        related_examiner = RelatedExaminer.objects.first()
+        self.assertEquals(ImportedModel.objects.count(), 1)
+        imported_model = ImportedModel.objects.get(
+            content_object_id=related_examiner.id,
+            content_type=ContentType.objects.get_for_model(model=related_examiner)
+        )
+        self.assertEquals(imported_model.content_object, related_examiner)
+        self.assertEquals(imported_model.data, related_examiner_data_dict)
+
+    def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
+        test_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_period = mommy.make('core.Period')
+        self.create_v2dump(model_name='core.relatedexaminer',
+                           data=self._create_related_examiner_dict(period=test_period, user=test_user),
+                           model_meta=self._create_model_meta())
+        relatedexaminer_importer = RelatedExaminerImporter(input_root=self.temp_root_dir)
+        relatedexaminer_importer.import_models()
+        self.assertEquals(RelatedExaminer.objects.count(), 1)
+        related_examiner = RelatedExaminer.objects.first()
+        self.assertEquals(related_examiner.pk, 6)
+        self.assertEquals(related_examiner.id, 6)
+        related_examiner_with_auto_id = mommy.make('core.RelatedExaminer')
+        self.assertEquals(related_examiner_with_auto_id.pk, self._create_model_meta()['max_id']+1)
+        self.assertEquals(related_examiner_with_auto_id.id, self._create_model_meta()['max_id']+1)

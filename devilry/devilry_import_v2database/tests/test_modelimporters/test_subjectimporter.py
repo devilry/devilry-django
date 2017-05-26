@@ -14,6 +14,13 @@ from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
 class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
+    def _create_model_meta(self):
+        return {
+            'model_class_name': 'Subject',
+            'max_id': 16,
+            'app_label': 'core'
+        }
+
     def _create_subject_dict(self, test_admin_user=None):
         return {
             'pk': 1,
@@ -107,3 +114,18 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
         )
         self.assertEquals(imported_model.content_object, subject)
         self.assertEquals(imported_model.data, subject_data_dict)
+
+    def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
+        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
+        self.create_v2dump(model_name='core.subject',
+                           data=self._create_subject_dict(test_admin_user=test_admin_user),
+                           model_meta=self._create_model_meta())
+        subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
+        subjectimporter.import_models()
+        self.assertEquals(Subject.objects.count(), 1)
+        subject = Subject.objects.first()
+        self.assertEquals(subject.pk, 1)
+        self.assertEquals(subject.id, 1)
+        subject_with_auto_id = mommy.make('core.Subject')
+        self.assertEquals(subject_with_auto_id.id, self._create_model_meta()['max_id']+1)
+        self.assertEquals(subject_with_auto_id.pk, self._create_model_meta()['max_id']+1)

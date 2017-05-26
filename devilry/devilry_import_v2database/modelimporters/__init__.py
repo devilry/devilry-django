@@ -7,3 +7,5 @@ from .assignmentgroup_importer import AssignmentGroupImporter  # noqa
 from .relateduser_importer import RelatedExaminerImporter  # noqa
 from .candidate_examiner_importer import CandidateImporter  # noqa
 from .candidate_examiner_importer import ExaminerImporter  # noqa
+from .delivery_feedback_importers import DeliveryImporter  # noqa
+from .delivery_feedback_importers import StaticFeedbackImporter  # noqa

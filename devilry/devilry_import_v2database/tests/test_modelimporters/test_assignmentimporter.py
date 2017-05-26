@@ -13,6 +13,13 @@ from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
 class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
+    def _create_model_meta(self):
+        return {
+            'model_class_name': 'Assignment',
+            'max_id': 12,
+            'app_label': 'core'
+        }
+
     def _create_assignment_dict(self, period, admin_user_ids_list=None):
         return {
             'pk': 6,
@@ -212,3 +219,18 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
         )
         self.assertEquals(imported_model.content_object, assignment)
         self.assertEquals(imported_model.data, assignment_data_dict)
+
+    def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
+        test_period = mommy.make_recipe('devilry.apps.core.period_active')
+        self.create_v2dump(model_name='core.assignment',
+                           data=self._create_assignment_dict(period=test_period),
+                           model_meta=self._create_model_meta())
+        assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
+        assignmentimporter.import_models()
+        self.assertEquals(Assignment.objects.count(), 1)
+        assignment = Assignment.objects.first()
+        self.assertEquals(assignment.pk, 6)
+        self.assertEquals(assignment.id, 6)
+        assignment_with_auto_id = mommy.make('core.Assignment', parentnode=test_period)
+        self.assertEquals(assignment_with_auto_id.pk, self._create_model_meta()['max_id']+1)
+        self.assertEquals(assignment_with_auto_id.id, self._create_model_meta()['max_id']+1)

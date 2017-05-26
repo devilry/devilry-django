@@ -76,7 +76,9 @@ class PeriodImporter(modelimporter.ModelImporter):
         self.log_create(model_object=period, data=object_dict)
 
     def import_models(self, fake=False):
-        for object_dict in self.v2period_directoryparser.iterate_object_dicts():
+        directory_parser = self.v2period_directoryparser
+        directory_parser.set_max_id_for_models_with_auto_generated_sequence_numbers(model_class=self.get_model_class())
+        for object_dict in directory_parser.iterate_object_dicts():
             if fake:
                 print('Would import: {}'.format(pprint.pformat(object_dict)))
             else:

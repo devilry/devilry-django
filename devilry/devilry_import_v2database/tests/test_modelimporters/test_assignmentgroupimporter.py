@@ -15,9 +15,12 @@ from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
 class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
-    def setUp(self):
-        super(TestAssignmentGroupImporter, self).setUp()
-        AssignmentGroupDbCacheCustomSql().initialize()
+    def _create_model_meta(self):
+        return {
+            'model_class_name': 'AssignmentGroup',
+            'max_id': 156,
+            'app_label': 'core'
+        }
 
     def _create_assignmentgroup_dict(self, assignment):
         return {
@@ -42,7 +45,7 @@ class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
         group_importer = AssignmentGroupImporter(input_root=self.temp_root_dir)
         group_importer.import_models()
         self.assertEquals(AssignmentGroup.objects.count(), 1)
-        self.assertEquals(FeedbackSet.objects.count(), 1)
+        self.assertEquals(FeedbackSet.objects.count(), 0)
 
     def test_importer_pk(self):
         test_assignment = mommy.make('core.Assignment')
@@ -96,3 +99,18 @@ class TestAssignmentGroupImporter(ImporterTestCaseMixin, test.TestCase):
         )
         self.assertEquals(imported_model.content_object, group)
         self.assertEquals(imported_model.data, assignment_data_dict)
+
+    def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
+        test_assignment = mommy.make('core.Assignment')
+        self.create_v2dump(model_name='core.assignmentgroup',
+                           data=self._create_assignmentgroup_dict(assignment=test_assignment),
+                           model_meta=self._create_model_meta())
+        group_importer = AssignmentGroupImporter(input_root=self.temp_root_dir)
+        group_importer.import_models()
+        self.assertEquals(AssignmentGroup.objects.count(), 1)
+        group = AssignmentGroup.objects.first()
+        self.assertEquals(group.pk, 1)
+        self.assertEquals(group.id, 1)
+        group_with_auto_id = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
+        self.assertEquals(group_with_auto_id.pk, self._create_model_meta()['max_id']+1)
+        self.assertEquals(group_with_auto_id.id, self._create_model_meta()['max_id']+1)

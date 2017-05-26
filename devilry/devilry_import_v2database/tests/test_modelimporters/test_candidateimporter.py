@@ -13,8 +13,12 @@ from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
 class TestCandidateImporter(ImporterTestCaseMixin, test.TestCase):
-    def setUp(self):
-        super(TestCandidateImporter, self).setUp()
+    def _create_model_meta(self):
+        return {
+            'model_class_name': 'Candidate',
+            'max_id': 156,
+            'app_label': 'core'
+        }
 
     def _create_candidate_dict(self, assignment_group, user):
         return {
@@ -117,3 +121,19 @@ class TestCandidateImporter(ImporterTestCaseMixin, test.TestCase):
         )
         self.assertEquals(imported_model.content_object, candidate)
         self.assertEquals(imported_model.data, examiner_data_dict)
+
+    def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
+        test_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_group = mommy.make('core.AssignmentGroup')
+        self.create_v2dump(model_name='core.candidate',
+                           data=self._create_candidate_dict(assignment_group=test_group, user=test_user),
+                           model_meta=self._create_model_meta())
+        candidate_importer = CandidateImporter(input_root=self.temp_root_dir)
+        candidate_importer.import_models()
+        self.assertEquals(Candidate.objects.count(), 1)
+        candidate = Candidate.objects.first()
+        self.assertEquals(candidate.pk, 156)
+        self.assertEquals(candidate.id, 156)
+        candidate_with_auto_id = mommy.make('core.Candidate')
+        self.assertEquals(candidate_with_auto_id.pk, self._create_model_meta()['max_id']+1)
+        self.assertEquals(candidate_with_auto_id.id, self._create_model_meta()['max_id']+1)

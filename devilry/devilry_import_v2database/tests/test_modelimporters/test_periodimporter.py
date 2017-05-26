@@ -15,6 +15,13 @@ from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
 class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
+    def _create_model_meta(self):
+        return {
+            'model_class_name': 'Period',
+            'max_id': 16,
+            'app_label': 'core'
+        }
+
     def _create_period_dict(self, subject, test_admin_user=None):
         return {
             'pk': 1,
@@ -153,3 +160,19 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         )
         self.assertEquals(imported_model.content_object, period)
         self.assertEquals(imported_model.data, period_data_dict)
+
+    def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
+        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_subject = mommy.make('core.Subject')
+        self.create_v2dump(model_name='core.period',
+                           data=self._create_period_dict(subject=test_subject, test_admin_user=test_admin_user),
+                           model_meta=self._create_model_meta())
+        periodimporter = PeriodImporter(input_root=self.temp_root_dir)
+        periodimporter.import_models()
+        self.assertEquals(Period.objects.count(), 1)
+        period = Period.objects.first()
+        self.assertEquals(period.pk, 1)
+        self.assertEquals(period.id, 1)
+        period_with_auto_id = mommy.make('core.Period')
+        self.assertEquals(period_with_auto_id.id, self._create_model_meta()['max_id']+1)
+        self.assertEquals(period_with_auto_id.pk, self._create_model_meta()['max_id']+1)
