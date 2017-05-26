@@ -38,18 +38,20 @@ class Command(BaseCommand):
 
     def __get_dumper_classes(self):
         return [
-            # modeldumpers.UserDumper,
-            # modeldumpers.NodeDumper,
-            # modeldumpers.SubjectDumper,
-            # modeldumpers.PeriodDumper,
-            # modeldumpers.AssignmentDumper,
-            # modeldumpers.AssignmentGroupDumper,
-            # modeldumpers.DeadlineDumper,
-            # modeldumpers.RelatedExaminerDumper,
-            # modeldumpers.RelatedStudentDumper,
-            # modeldumpers.ExaminerDumper,
-            # modeldumpers.CandidateDumper,
-            # modeldumpers.DeliveryDumper,
+            modeldumpers.UserDumper,
+            modeldumpers.NodeDumper,
+            modeldumpers.SubjectDumper,
+            modeldumpers.PeriodDumper,
+            modeldumpers.AssignmentDumper,
+            modeldumpers.AssignmentGroupDumper,
+            modeldumpers.DeadlineDumper,
+            modeldumpers.RelatedExaminerDumper,
+            modeldumpers.RelatedStudentDumper,
+            modeldumpers.ExaminerDumper,
+            modeldumpers.CandidateDumper,
+            modeldumpers.DeliveryDumper,
+            modeldumpers.StaticFeedbackDumper,
+            modeldumpers.FileMetaDumper,
         ]
 
     def __run(self):
