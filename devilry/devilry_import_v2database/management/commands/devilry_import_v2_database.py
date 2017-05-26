@@ -39,7 +39,20 @@ class Command(BaseCommand):
 
     def __get_importer_classes(self):
         return [
-            modelimporters.UserImporter
+            modelimporters.UserImporter,
+            modelimporters.NodeImporter,
+            modelimporters.SubjectImporter,
+            modelimporters.PeriodImporter,
+            modelimporters.AssignmentImporter,
+            modelimporters.RelatedExaminerImporter,
+            modelimporters.RelatedStudentImporter,
+            modelimporters.AssignmentGroupImporter,
+            modelimporters.ExaminerImporter,
+            modelimporters.CandidateImporter,
+            modelimporters.FeedbackSetImporter,
+            modelimporters.DeliveryImporter,
+            modelimporters.StaticFeedbackImporter,
+            modelimporters.FileMetaImporter,
         ]
 
     def __iterate_importers(self):
