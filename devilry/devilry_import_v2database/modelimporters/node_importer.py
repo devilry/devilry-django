@@ -91,12 +91,3 @@ class NodeImporter(modelimporter.ModelImporter):
                 print('Would import: {}'.format(pprint.pformat(object_dict)))
             else:
                 self._create_node_permissions_from_object_dict(object_dict=object_dict)
-
-    def target_model_has_objects(self):
-        pass
-
-    def prettyformat_model_name(self):
-        pass
-
-    def patch_model_from_object_dict(self, model_object, object_dict, attributes):
-        pass
