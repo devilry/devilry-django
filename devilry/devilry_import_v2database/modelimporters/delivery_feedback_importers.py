@@ -109,17 +109,33 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
 
     def _save_and_publish_feedback_set(self, feedback_set, published_by, grading_points, publish_datetime):
         """
-        Args:
-            feedback_set:
-            published_by:
-            grading_points:
-            publish_datetime:
+        Publish Feedback.
         """
         feedback_set.grading_published_by = published_by
         feedback_set.grading_points = grading_points
         feedback_set.grading_published_datetime = publish_datetime
         feedback_set.full_clean()
         feedback_set.save()
+
+    def _create_feedback_comment_files(self, group_comment, file_info_list):
+        """
+        Create and save CommentFiles for each file uploaded by examiners in v2.
+        """
+        if len(file_info_list) == 0:
+            return
+        for file_info_dict in file_info_list:
+            comment_file = CommentFile(
+                comment=group_comment,
+                mimetype=file_info_dict['mimetype'],
+                filename=file_info_dict['filename'],
+                filesize=file_info_dict['size']
+            )
+            comment_file.save()
+            fp = open(file_info_dict['absolute_file_path'], 'rb')
+            comment_file.file = files.File(fp, file_info_dict['filename'])
+            comment_file.full_clean()
+            comment_file.save()
+            fp.close()
 
     def _create_group_comment_from_object_dict(self, object_dict):
         group_comment = self.get_model_class()()
@@ -151,6 +167,7 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
         group_comment.user_role = GroupComment.USER_ROLE_EXAMINER
         group_comment.full_clean()
         group_comment.save()
+        self._create_feedback_comment_files(group_comment, object_dict['fields']['files'])
         self.log_create(model_object=group_comment, data=object_dict)
 
     def import_models(self, fake=False):
