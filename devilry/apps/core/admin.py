@@ -1,5 +1,5 @@
 from django.contrib import admin
-from devilry.apps.core.models import AssignmentGroup, Node, Subject
+from devilry.apps.core.models import AssignmentGroup, Node, Subject, StaticFeedbackFileAttachment
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -75,3 +75,11 @@ class AssignmentGroupAdmin(admin.ModelAdmin):
     # admins_as_string.short_description = "Admins"
 
 admin.site.register(AssignmentGroup, AssignmentGroupAdmin)
+
+
+class StaticFeedbackFileAttachmentAdmin(admin.ModelAdmin):
+    search_fields = [
+        'id'
+    ]
+
+admin.site.register(StaticFeedbackFileAttachment, StaticFeedbackFileAttachmentAdmin)
