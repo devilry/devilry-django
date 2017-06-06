@@ -27,6 +27,7 @@ devilry_urls = [
     url(r'^devilry_resetpassword/', include('devilry.devilry_resetpassword.urls')),
     url(r'^cradmin_temporaryfileuploadstore/', include('django_cradmin.apps.cradmin_temporaryfileuploadstore.urls')),
 
+    url(r'^account/', include('devilry.devilry_account.urls')),
     url(r'^devilry_help/', include('devilry.devilry_help.urls')),
     url(r'^devilry_core/', include('devilry.apps.core.urls')),
     url(r'^devilry_settings/', include('devilry.devilry_settings.urls')),
