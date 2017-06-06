@@ -195,7 +195,7 @@ class UserManager(BaseUserManager):
                                       use_for_notifications=True)
         return user
 
-    def create_superuser(self, username='', email='', password=None, **kwargs):
+    def create_superuser(self, password=None, **kwargs):
         """
         Create a new superuser.
         """
