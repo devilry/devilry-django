@@ -5,12 +5,15 @@
     {{ request.user.get_displayname }} - {% trans "Account" %}
 {% endblock title %}
 
+{% block pageheader-inner %}
+    <h1 class="test-primary-h1">{% trans "Account overview" %}</h1>
+{% endblock pageheader-inner %}
+
 {% block content %}
     <div class="container">
         <div class="devilry-dashboard-container">
-            <h1 class="test-primary-h1">{% trans "Account overview" %}</h1>
 
-            <h2>{% trans "Name" %}</h2>
+            <h3>{% trans "Name" %}</h3>
             <p class="test-fullname">
                 {% if request.user.fullname %}
                     {{ request.user.fullname }}
@@ -19,26 +22,26 @@
                 {% endif %}
             </p>
 
-            <h2>{% trans "Short name" %}</h2>
+            <h3>{% trans "Short name" %}</h3>
             <p>
                 <small class="text-muted">({% trans "Shown instead of your name some places in the UI" %})</small>
                 <br>
                 <span class="test-shortname">{{ request.user.shortname }}</span>
             </p>
 
-            <h2>{% trans "Last login" %}</h2>
+            <h3>{% trans "Last login" %}</h3>
             <p class="test-last-login">
                 {{ request.user.last_login|date:"DATETIME_FORMAT" }}
             </p>
 
             {% if not email_auth_backend %}
-                <h2 class="test-usernames-title">
+                <h3 class="test-usernames-title">
                     {% if username_count > 1 %}
                         {% trans "Usernames" %}
                     {% else %}
                         {% trans "Username" %}
                     {% endif %}
-                </h2>
+                </h3>
                 <ul class="list-unstyled">
                     {% for username in usernames %}
                         <li class="test-username">
@@ -48,13 +51,13 @@
                 </ul>
             {% endif %}
 
-            <h2 class="test-emails-title">
+            <h3 class="test-emails-title">
                 {% if useremail_count > 1 %}
                     {% trans "Email addresses" %}
                 {% else %}
                     {% trans "Email address" %}
                 {% endif %}
-            </h2>
+            </h3>
             <ul class="list-unstyled">
                 {% for useremail in useremails %}
                     <li class="test-email">
