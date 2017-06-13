@@ -113,12 +113,12 @@ MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
 #
 ##################################################################################
 
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
-    },
-}
-HAYSTACK_SIGNAL_PROCESSOR = 'devilry.devilry_search.haystack_signal_processor.DevilryCelerySignalProcessor'
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+#     },
+# }
+# HAYSTACK_SIGNAL_PROCESSOR = 'devilry.devilry_search.haystack_signal_processor.DevilryCelerySignalProcessor'
 
 
 ########################################################################
@@ -126,11 +126,11 @@ HAYSTACK_SIGNAL_PROCESSOR = 'devilry.devilry_search.haystack_signal_processor.De
 # Celery
 #
 ########################################################################
-CELERY_ALWAYS_EAGER = True
-CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
-CELERY_EAGER_TRANSACTION = True
-CELERY_TIMEZONE = 'Europe/Oslo'
-CELERY_ENABLE_UTC = True
+# CELERY_ALWAYS_EAGER = True
+# CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+# CELERY_EAGER_TRANSACTION = True
+# CELERY_TIMEZONE = 'Europe/Oslo'
+# CELERY_ENABLE_UTC = True
 
 
 ########################################################################
