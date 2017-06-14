@@ -9,6 +9,25 @@ class CustomUsernameLoginForm(UsernameLoginForm):
     shortname = forms.CharField(
         label=_('Username'))
 
+    def clean(self):
+        """
+        validate the form, and execute :func:`django.contrib.auth.authenticate` to login the user if form is valid.
+        """
+        username = self.cleaned_data.get(self.username_field)
+        password = self.cleaned_data.get('password')
+        if username and password:
+            authenticated_user = self.authenticate(**{
+                'username': username,
+                'password': password
+            })
+
+            if authenticated_user is None:
+                raise forms.ValidationError(self.error_message_invalid_login)
+            elif not authenticated_user.is_active:
+                raise forms.ValidationError(self.error_message_inactive)
+            self.__authenticated_user = authenticated_user
+        return self.cleaned_data
+
 
 class CustomLoginView(LoginView):
     def get_form_class(self):
