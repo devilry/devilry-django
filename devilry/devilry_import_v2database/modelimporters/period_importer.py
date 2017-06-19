@@ -22,7 +22,7 @@ class PeriodImporter(modelimporter.ModelImporter):
 
     def _create_permissiongroup(self, name, admin_user_ids):
         admin_users_queryset = get_user_model().objects.filter(id__in=admin_user_ids)
-        permission_group = account_models.PermissionGroup(
+        permission_group, created = account_models.PermissionGroup.objects.get_or_create(
             grouptype=account_models.PermissionGroup.GROUPTYPE_SUBJECTADMIN,
             name='{} admins'.format(name)
         )
