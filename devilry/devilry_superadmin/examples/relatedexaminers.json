@@ -1,6 +1,6 @@
 [
-    {"username":"examiner0", "tags":"super,duper"},
-    {"username":"examiner0", "tags":"super,duper"},
-    {"username":"donald", "tags":"super,duper"},
-    {"username":"daisy", "tags":"super,duper"}
+    {"username":"examiner0", "tags":"group1,group2"},
+    {"username":"examiner1", "tags":"group2"},
+    {"username":"donald", "tags":"group2"},
+    {"username":"daisy", "tags":"group1"}
 ]

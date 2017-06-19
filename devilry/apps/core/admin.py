@@ -174,6 +174,8 @@ admin.site.register(AssignmentGroup, AssignmentGroupAdmin)
 
 
 class PeriodTagAdmin(admin.ModelAdmin):
+    raw_id_fields = ['period']
+
     list_display = [
         'id',
         'prefix',
@@ -184,6 +186,10 @@ class PeriodTagAdmin(admin.ModelAdmin):
     filter_horizontal = [
         'relatedstudents',
         'relatedexaminers',
+    ]
+
+    list_filter = [
+        'prefix'
     ]
 
 admin.site.register(PeriodTag, PeriodTagAdmin)

@@ -30,6 +30,7 @@ DEVILRY_EMAIL_SIGNATURE = \
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDeliveryStore'
 DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 1000
 DEVILRY_SYNCSYSTEM = 'YOUR SYNC SYSTEM HERE'
+DEVILRY_SYNCSYSTEM_TAG_PREFIX = 'x'
 DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
 DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-admin@example.com'
 DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
@@ -41,10 +42,10 @@ DEVILRY_ENABLE_CELERY = True
 
 #: If this is set, and the ``DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND``-setting
 #: is ``False``, users will be assigned
-#: ``"<username>@DEVILRY_DEFAULT_EMAIL_SUFFIX"`` as their primary email
+#: ``<username><DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX>`` as their primary email
 #: address when they are created.
-# DEVILRY_DEFAULT_EMAIL_SUFFIX = 'example.com'
-DEVILRY_DEFAULT_EMAIL_SUFFIX = None
+# DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX = 'example.com'
+DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX = None
 
 
 # DEVILRY_QUALIFIESFOREXAM_PLUGINS = [
