@@ -74,5 +74,9 @@
                 {% endif %}
             </p>
         </div>
+    {% elif me.value.is_hidden %}
+        <em class="text-warning">
+            {% trans "Hidden tag - not visible anywhere except in this list." %}
+        </em>
     {% endif %}
 {% endblock end-of-content %}
