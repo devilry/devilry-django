@@ -5,7 +5,7 @@ from django_auth_ldap.backend import LDAPBackend
 
 class LDAPUsernameAuthBackend(LDAPBackend):
     """
-    An authentication backend that authenticates a user by username.
+    Devilry LDAP authentication backend that authenticates a user by username.
     """
 
     def get_or_create_user(self, username, ldap_user):
@@ -15,14 +15,21 @@ class LDAPUsernameAuthBackend(LDAPBackend):
         the user's DN and ldap_user.attrs contains all of their LDAP attributes.
         """
         username = username.lower()
+        cn = ldap_user.attrs.get('cn')
+        fullname = ''
+        if cn and isinstance(cn, list):
+            fullname = cn[0]
         kwargs = {
-            'username': username
+            'username': username,
+            'fullname': fullname
         }
-        import sys
-        print >> sys.stderr, 'LDAP attrs', ldap_user.attrs
-        # TODO: Add fullname, and if available lastname to kwargs
-        user, created = get_user_model().objects.get_or_create(**kwargs)
-        # TODO: If created is false, update fullname and lastname
+        # import sys
+        # print >> sys.stderr, 'LDAP attrs', ldap_user.attrs
+        user, created = get_user_model().objects.get_or_create_user(**kwargs)
+        if fullname and user.fullname != fullname:
+            user.fullname = fullname
+            user.clean()
+            user.save()
         return user, created
 
     def get_user(self, user_id):
