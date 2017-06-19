@@ -1,27 +1,26 @@
-from optparse import make_option
-import sys
 from django.core.management.base import BaseCommand
 
 from devilry.apps.core.models import Subject
-from devilry.utils.management import make_output_encoding_option
+from devilry.utils.management import add_output_encoding_argument
 
 
 class NodeSearchBase(BaseCommand):
     nodecls = None
     args = '[search|empty for all]'
-    attrs=['short_name', 'long_name']
+    attrs = ['short_name', 'long_name']
 
-    option_list = BaseCommand.option_list + (
-        make_option('--short_name-only',
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--short_name-only',
             action='store_true',
             dest='short_name_only',
             default=False,
             help='Only print short name (one line per short_name)'),
-        make_output_encoding_option()
-    )
+        add_output_encoding_argument(parser)
 
     def _print_details(self, record):
         print self.get_short(record)
+        print '   id: {}'.format(record.id)
         for attrname in self.attrs:
             attr = getattr(record, attrname)
             try:
@@ -30,10 +29,9 @@ class NodeSearchBase(BaseCommand):
                 attr = attr.encode('ascii', 'replace')
             print '   {attrname}: {attr}'.format(attrname=attrname,
                                                  attr=attr)
-        print '   admins:'
-        for admin in record.admins.all():
-            print '        - {0}'.format(admin)
-
+        # print '   admins:'
+        # for admin in record.admins.all():
+        #     print '        - {0}'.format(admin)
 
     def show_search_results(self, options, qry):
         for record in qry:
@@ -55,6 +53,7 @@ class NodeSearchBase(BaseCommand):
 
     def get_short(self, record):
         return record.short_name
+
 
 class Command(NodeSearchBase):
     help = 'Search for a subject by short_name. Matches any part of the short_name.'
