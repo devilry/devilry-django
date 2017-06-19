@@ -1,11 +1,8 @@
-from optparse import make_option
 from django.contrib.auth import get_user_model
-
+from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand, CommandError
 
-from django.core.exceptions import ValidationError
-
-from devilry.utils.management import make_input_encoding_option, add_input_encoding_argument
+from devilry.utils.management import add_input_encoding_argument
 
 
 class UserModCommand(BaseCommand):
