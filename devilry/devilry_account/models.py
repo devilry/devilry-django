@@ -195,6 +195,22 @@ class UserManager(BaseUserManager):
                                       use_for_notifications=True)
         return user
 
+    def get_or_create_user(self, username='', email='', password=None, **kwargs):
+        if not username and not email:
+            raise ValueError('username or email must be supplied')
+        user = None
+        try:
+            if username:
+                user = self.get_by_username(username=username)
+            else:
+                user = self.get_by_email(email=email)
+        except self.model.DoesNotExist:
+            pass
+
+        if user:
+            return user, False
+        return self.create_user(username=username, email=email, password=password, **kwargs), True
+
     def create_superuser(self, password=None, **kwargs):
         """
         Create a new superuser.
