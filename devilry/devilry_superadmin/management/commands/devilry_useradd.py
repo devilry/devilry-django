@@ -1,57 +1,67 @@
-from optparse import make_option
+from django.conf import settings
 from django.contrib.auth import get_user_model
-
 from django.core.management.base import BaseCommand, CommandError
 
-from devilry.devilry_superadmin.management.commands.devilry_usermod import UserModCommand
-from devilry.utils.management import make_input_encoding_option
+from devilry.utils.management import add_input_encoding_argument
 
 
-class Command(UserModCommand):
-    args = '<username>'
+class Command(BaseCommand):
     help = 'Create new user.'
-    option_list = BaseCommand.option_list + (
-        make_option('--email',
-                    dest='email',
-                    default='',
-                    help='Email address'),
-        make_option('--full_name',
-                    dest='full_name',
-                    default='',
-                    help='Full name'),
-        make_option('--superuser',
-                    action='store_true',
-                    dest='is_superuser',
-                    default=False,
-                    help='Make the user a superuser, with access to everything in the system.'),
-        make_option('--password',
-                    dest='password',
-                    default=False,
-                    help='Set a password for the user. If not specified, we set an unusable password.'),
-        make_input_encoding_option()
-    )
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'username_v2_compat',
+            default='',
+            help='Username. Alias for --username for devilry v2 compatibility.'),
+        parser.add_argument(
+            '--username',
+            dest='username',
+            default='',
+            help='Username. Must be specified if you use usernames for '
+                 'authentication.'),
+        parser.add_argument(
+            '--email',
+            dest='email',
+            default='',
+            help='Email address. Must be specified if you use emails for '
+                 'authentication'),
+        parser.add_argument(
+            '--full_name',
+            dest='full_name',
+            default='',
+            help='Full name'),
+        parser.add_argument(
+            '--superuser',
+            action='store_true',
+            dest='is_superuser',
+            default=False,
+            help='Make the user a superuser, with access to everything in the system.'),
+        parser.add_argument(
+            '--password',
+            dest='password',
+            default=False,
+            help='Set a password for the user. If not specified, we set an unusable password.'),
+        add_input_encoding_argument(parser)
 
     def handle(self, *args, **options):
         self.inputencoding = options['inputencoding']
-        if len(args) != 1:
-            raise CommandError('Username is required. See --help.')
         verbosity = int(options.get('verbosity', '1'))
-        username = args[0]
-        kw = {}
-        for attrname in ('email', 'is_superuser'):
-            kw[attrname] = options[attrname]
-        if options['is_superuser']:
-            kw['is_staff'] = True
-
-        if get_user_model().objects.filter(username=username).count() == 0:
-            user = get_user_model()(username=username, **kw)
-            full_name = options.get('full_name')
-            if full_name:
-                user.fullname = unicode(full_name, self.inputencoding)
-            if options['password']:
-                user.set_password(options['password'])
-            else:
-                user.set_unusable_password()
-            self.save_user(user, verbosity)
+        kwargs = {
+            'email': options['email'],
+            'username': options['username'] or options['username_v2_compat'],
+            'is_superuser': options['is_superuser'],
+            'fullname': unicode(options['full_name'], self.inputencoding),
+            'password': options['password']
+        }
+        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+            if not kwargs['email']:
+                raise CommandError('email is required. See --help.')
         else:
-            raise CommandError('User "{0}" already exists.'.format(username))
+            if not kwargs['username']:
+                raise CommandError('username is required. See --help.')
+
+        user, created = get_user_model().objects.get_or_create_user(**kwargs)
+        if created and verbosity > 0:
+            print 'User "{0}" created successfully.'.format(user.shortname)
+        else:
+            raise CommandError('User "{0}" already exists.'.format(user.shortname))

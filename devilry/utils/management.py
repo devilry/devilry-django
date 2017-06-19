@@ -24,6 +24,22 @@ def make_input_encoding_option():
                              'to ``sys.getdefaultencoding()`` and back to utf-8 if both are undefined. '
                              'It is currently is set to: {0}').format(get_input_encoding()))
 
+
+def add_input_encoding_argument(parser):
+    """
+    Make optparse ``--input-encoding`` option that should be used on management
+    commands using input/output.
+
+    ``dest`` is set to ``inputencoding``.
+    """
+    return parser.add_argument(
+        '--input-encoding',
+        dest='inputencoding',
+        default=get_input_encoding(),
+        help=('Input encoding. Defaults to ``sys.stdin.encoding``, falling back '
+              'to ``sys.getdefaultencoding()`` and back to utf-8 if both are undefined. '
+              'It is currently is set to: {0}').format(get_input_encoding()))
+
 def get_output_encoding():
     """ Get the output encoding used for output to management commands.
 
