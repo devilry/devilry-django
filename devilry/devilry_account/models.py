@@ -190,22 +190,31 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         if username:
             user.username_set.create(username=username, is_primary=True)
+
+        if username and not email:
+            if getattr(settings, 'DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX', None):
+                email = u'{}{}'.format(username, settings.DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX)
+
         if email:
             user.useremail_set.create(email=email, is_primary=True,
                                       use_for_notifications=True)
         return user
 
+    def get_user(self, username='', email=''):
+        if not username and not email:
+            raise ValueError('username or email must be supplied')
+        if username:
+            return self.get_by_username(username=username)
+        else:
+            return self.get_by_email(email=email)
+
     def get_or_create_user(self, username='', email='', password=None, **kwargs):
         if not username and not email:
             raise ValueError('username or email must be supplied')
-        user = None
         try:
-            if username:
-                user = self.get_by_username(username=username)
-            else:
-                user = self.get_by_email(email=email)
+            user = self.get_user(username=username, email=email)
         except self.model.DoesNotExist:
-            pass
+            user = None
 
         if user:
             return user, False
