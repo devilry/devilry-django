@@ -1,5 +1,7 @@
 from optparse import make_option
 import sys
+
+from django.conf import settings
 from django.contrib.auth import get_user_model
 
 from django.core.management.base import BaseCommand
@@ -8,36 +10,42 @@ from devilry.devilry_superadmin.management.commands.devilry_usermod import UserM
 
 
 class Command(UserModCommand):
-    help = 'Add users from standard in.'
-    option_list = BaseCommand.option_list + (
-        make_option('--emailsuffix',
-                    dest='emailsuffix',
-                    default=None,
-                    help='Email suffix set for all users. Example: {username}@example.com'),
-    )
+    help = 'Add users from standard in or from arguments. Stdin must be a list of ' \
+           'usernames or emails separated by whitespace ' \
+           '(newline, space or tab).'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'username_or_email',
+            nargs='*',
+            help='Usernames or emails. Must be usernames if the '
+                 'authentication backend uses usernames, otherwise it must be '
+                 'emails.'),
 
     def handle(self, *args, **options):
-        print "Reading users from stdin..."
-        usernames = sys.stdin.read().split()
-        users_created_count = 0
         verbosity = int(options.get('verbosity', '1'))
-        emailsuffix = options['emailsuffix']
 
+        if options['username_or_email']:
+            usernames = options['username_or_email']
+        else:
+            if verbosity > 0:
+                print "Reading users from stdin..."
+            usernames = sys.stdin.read().split()
+
+        users_created_count = 0
         for username in usernames:
+            email = None
+            if '@' in username:
+                email = username
+                username = None
             try:
-                get_user_model().objects.get(shortname=username)
+                if username:
+                    get_user_model().objects.get_by_username(username=username)
+                else:
+                    get_user_model().objects.get_by_email(email=email)
             except get_user_model().DoesNotExist:
-                email = None
-                if emailsuffix != None:
-                    try:
-                        email = emailsuffix.format(username=username)
-                    except KeyError:
-                        print "Error: emailsuffix must contain '{username}'"
-                        sys.exit()
-                user = get_user_model()(username=username, email=email)
-                print "Create user:%s with email %s" % (username, email)
-                user.set_unusable_password()
-                self.save_user(user, verbosity)
+                get_user_model().objects.create_user(username=username,
+                                                     email=email)
                 users_created_count += 1
         if verbosity > 0:
             print "Added %d users." % users_created_count

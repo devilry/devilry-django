@@ -192,8 +192,11 @@ class UserManager(BaseUserManager):
             user.username_set.create(username=username, is_primary=True)
 
         if username and not email:
-            if getattr(settings, 'DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX', None):
-                email = u'{}{}'.format(username, settings.DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX)
+            email_username_suffix = getattr(settings, 'DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX', None)
+            if email_username_suffix:
+                if '@' not in email_username_suffix:
+                    email_username_suffix = '@{}'.format(email_username_suffix)
+                email = u'{}{}'.format(username, email_username_suffix)
 
         if email:
             user.useremail_set.create(email=email, is_primary=True,
