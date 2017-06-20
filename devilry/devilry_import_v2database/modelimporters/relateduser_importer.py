@@ -62,6 +62,8 @@ class ImporterMixin(object):
         Returns:
             tuple (list, list): A list of tags, and a list of tags that should be excluded.
         """
+        if tags_string is None:
+            tags_string = ''
         tags_list = [tag for tag in tags_string.split(',')]
         period_tag_queryset = self._get_period_tag_queryset(period=period, v2_tags_list=tags_list)
         tags_to_exclude = [period_tag.tag for period_tag in period_tag_queryset]

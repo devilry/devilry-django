@@ -1,5 +1,7 @@
 import pprint
 
+from django.core.exceptions import ValidationError
+
 from devilry.apps.core.models import Assignment, Period
 from devilry.devilry_import_v2database import modelimporter
 
@@ -53,8 +55,11 @@ class AssignmentImporter(modelimporter.ModelImporter):
         assignment.grading_system_plugin_id = self._get_new_grading_plugin_system_id(
             old_grading_system_plugin_id=object_dict['fields']['grading_system_plugin_id'])
         assignment.anonymizationmode = self._get_new_anonymization_mode(object_dict['fields']['anonymous'])
-        assignment.full_clean()
-        assignment.save()
+        try:
+            assignment.full_clean()
+            assignment.save()
+        except ValidationError:
+            print("ERROR: assignment {}#{} did not validate".format(assignment.long_name, assignment.id))
         self.log_create(model_object=assignment, data=object_dict)
 
     def import_models(self, fake=False):

@@ -12,7 +12,7 @@ class PeriodImporter(modelimporter.ModelImporter):
         return Period
 
     def _create_permissiongroup_user(self, permission_group, user):
-        permission_group_user = account_models.PermissionGroupUser(
+        permission_group_user, created = account_models.PermissionGroupUser.objects.get_or_create(
             permissiongroup=permission_group,
             user=user
         )
@@ -22,7 +22,7 @@ class PeriodImporter(modelimporter.ModelImporter):
 
     def _create_permissiongroup(self, name, admin_user_ids):
         admin_users_queryset = get_user_model().objects.filter(id__in=admin_user_ids)
-        permission_group = account_models.PermissionGroup(
+        permission_group, created = account_models.PermissionGroup.objects.get_or_create(
             grouptype=account_models.PermissionGroup.GROUPTYPE_SUBJECTADMIN,
             name='{} admins'.format(name)
         )
@@ -41,7 +41,7 @@ class PeriodImporter(modelimporter.ModelImporter):
                 name='{}#{}'.format(subject.short_name, subject.id),
                 admin_user_ids=admin_user_ids
             )
-            subject_permissiongroup = account_models.SubjectPermissionGroup(
+            subject_permissiongroup, created = account_models.SubjectPermissionGroup.objects.get_or_create(
                 permissiongroup=permission_group,
                 subject=subject
             )
