@@ -49,7 +49,7 @@ class TestPeriodadminaddCommand(test.TestCase):
         self.__run_management_command(subject_short_name='testsubject',
                                       period_short_name='testperiod',
                                       user_shortname='testuser')
-        expected_groupname = PermissionGroup.objects.make_name_from_syncsystem(
+        expected_groupname = PermissionGroup.objects.get_name_from_syncsystem(
             basenode=period, grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
         self.assertEqual(PermissionGroup.objects.count(), 1)
         created_permissiongroup = PermissionGroup.objects.first()
@@ -69,7 +69,7 @@ class TestPeriodadminaddCommand(test.TestCase):
         user = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser')
         subject = mommy.make('core.Subject', short_name='testsubject')
         period = mommy.make('core.Period', short_name='testperiod', parentnode=subject)
-        groupname = PermissionGroup.objects.make_name_from_syncsystem(
+        groupname = PermissionGroup.objects.get_name_from_syncsystem(
             basenode=period, grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
         mommy.make('devilry_account.PermissionGroup',
                    name=groupname, is_custom_manageable=False,
@@ -90,7 +90,7 @@ class TestPeriodadminaddCommand(test.TestCase):
         user = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser')
         subject = mommy.make('core.Subject', short_name='testsubject')
         period = mommy.make('core.Period', short_name='testperiod', parentnode=subject)
-        groupname = PermissionGroup.objects.make_name_from_syncsystem(
+        groupname = PermissionGroup.objects.get_name_from_syncsystem(
             basenode=period, grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
         permissiongroup = mommy.make('devilry_account.PermissionGroup',
                                      name=groupname, is_custom_manageable=False,

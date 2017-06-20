@@ -762,22 +762,20 @@ class PermissionGroupUser(models.Model):
 
 
 class PermissionGroupQuerySet(models.QuerySet):
-    def make_name_from_syncsystem(self, grouptype, basenode):
-        return '{prefix}-{grouptype}-{path}'.format(
+    def get_name_prefix_from_syncsystem(self, grouptype, basenode):
+        return '{prefix}-{grouptype}-#{id}'.format(
             prefix=settings.DEVILRY_SYNCSYSTEM_SHORTNAME,
             grouptype=grouptype,
-            path=basenode.get_path())
+            id=basenode.id)
 
-    def create_permissiongroup(self, basenode, grouptype,
-                               name=None,
-                               is_custom_manageable=False):
-        if name is None and is_custom_manageable:
-            raise ValueError('Can not generate an automatic name unless '
-                             'is_custom_manageable=False.')
-        if not name:
-            name = self.make_name_from_syncsystem(
-                grouptype=grouptype,
-                basenode=basenode)
+    def get_name_from_syncsystem(self, grouptype, basenode):
+        return '{}({})'.format(
+            self.get_name_prefix_from_syncsystem(grouptype=grouptype,
+                                                  basenode=basenode),
+            basenode.get_path())
+
+    def create_permissiongroup(self, grouptype, basenode,
+                               name, is_custom_manageable=False):
         permissiongroup = self.model(
             name=name,
             grouptype=grouptype,
@@ -798,27 +796,32 @@ class PermissionGroupQuerySet(models.QuerySet):
             subject_permissiongroup.save()
         return permissiongroup
 
-    def create_or_update_permissiongroup(self, basenode, grouptype,
-                                         name=None,
-                                         is_custom_manageable=False):
-        if name is None and is_custom_manageable:
-            raise ValueError('Can not generate an automatic name unless '
-                             'is_custom_manageable=False.')
-        if not name:
-            name = self.make_name_from_syncsystem(
+    def get_syncsystem_permissiongroup(self, grouptype, basenode):
+        name_prefix = self.get_name_prefix_from_syncsystem(
+            grouptype=grouptype,
+            basenode=basenode)
+        return PermissionGroup.objects \
+            .filter(name__startswith=name_prefix,
+                    grouptype=grouptype) \
+            .get()
+
+    def create_or_update_syncsystem_permissiongroup(
+            self, grouptype, basenode):
+        try:
+            permissiongroup = self.get_syncsystem_permissiongroup(
                 grouptype=grouptype,
                 basenode=basenode)
-        try:
-            permissiongroup = PermissionGroup.objects.get(name=name)
         except PermissionGroup.DoesNotExist:
+            name = self.get_name_from_syncsystem(
+                grouptype=grouptype,
+                basenode=basenode)
             permissiongroup = self.create_permissiongroup(
                 basenode=basenode,
                 grouptype=grouptype,
                 name=name,
-                is_custom_manageable=is_custom_manageable)
+                is_custom_manageable=False)
             return permissiongroup, True
         else:
-            permissiongroup.is_custom_manageable = is_custom_manageable
             return permissiongroup, False
 
 

@@ -30,14 +30,10 @@ class Command(BaseCommand):
             period = Period.objects.get(short_name=period_short_name, parentnode=subject)
         except Period.DoesNotExist:
             raise CommandError('Invalid period_short_name.')
-        groupname = PermissionGroup.objects.make_name_from_syncsystem(
-            basenode=period,
-            grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
         try:
-            permissiongroup = PermissionGroup.objects\
-                .filter(name=groupname,
-                        grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)\
-                .get()
+            permissiongroup = PermissionGroup.objects.get_syncsystem_permissiongroup(
+                grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN,
+                basenode=period)
         except PermissionGroup.DoesNotExist:
             self.stdout.write('WARNING: No sync-system permission group exists '
                               'for this period, so there is no admins to clear.')

@@ -34,7 +34,7 @@ class TestSubjectadminaddCommand(test.TestCase):
         subject = mommy.make('core.Subject', short_name='testsubject')
         self.__run_management_command(subject_short_name='testsubject',
                                       user_shortname='testuser')
-        expected_groupname = PermissionGroup.objects.make_name_from_syncsystem(
+        expected_groupname = PermissionGroup.objects.get_name_from_syncsystem(
             basenode=subject, grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
 
         self.assertEqual(PermissionGroup.objects.count(), 1)
@@ -54,7 +54,7 @@ class TestSubjectadminaddCommand(test.TestCase):
     def test_ok_existing_permission_group(self):
         user = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser')
         subject = mommy.make('core.Subject', short_name='testsubject')
-        groupname = PermissionGroup.objects.make_name_from_syncsystem(
+        groupname = PermissionGroup.objects.get_name_from_syncsystem(
             basenode=subject, grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
         mommy.make('devilry_account.PermissionGroup',
                    name=groupname, is_custom_manageable=False,
@@ -73,7 +73,7 @@ class TestSubjectadminaddCommand(test.TestCase):
     def test_ok_existing_permission_group_and_permission_group_user(self):
         user = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser')
         subject = mommy.make('core.Subject', short_name='testsubject')
-        groupname = PermissionGroup.objects.make_name_from_syncsystem(
+        groupname = PermissionGroup.objects.get_name_from_syncsystem(
             basenode=subject, grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
         permissiongroup = mommy.make('devilry_account.PermissionGroup',
                                      name=groupname, is_custom_manageable=False,

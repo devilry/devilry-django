@@ -22,14 +22,10 @@ class Command(BaseCommand):
         except Subject.DoesNotExist:
             raise CommandError('Invalid subject_short_name.')
 
-        groupname = PermissionGroup.objects.make_name_from_syncsystem(
-            basenode=subject,
-            grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
         try:
-            permissiongroup = PermissionGroup.objects\
-                .filter(name=groupname,
-                        grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)\
-                .get()
+            permissiongroup = PermissionGroup.objects.get_syncsystem_permissiongroup(
+                grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                basenode=subject)
         except PermissionGroup.DoesNotExist:
             self.stdout.write('WARNING: No sync-system permission group exists '
                               'for this subject, so there is no admins to clear.')

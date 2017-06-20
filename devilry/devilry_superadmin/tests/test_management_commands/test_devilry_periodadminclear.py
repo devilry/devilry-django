@@ -41,7 +41,7 @@ class TestPeriodadminclearCommand(test.TestCase):
     def test_ok_existing_permission_group(self):
         subject = mommy.make('core.Subject', short_name='testsubject')
         period = mommy.make('core.Period', short_name='testperiod', parentnode=subject)
-        groupname = PermissionGroup.objects.make_name_from_syncsystem(
+        groupname = PermissionGroup.objects.get_name_from_syncsystem(
             basenode=period, grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
         permissiongroup = mommy.make(
             'devilry_account.PermissionGroup',
@@ -61,7 +61,7 @@ class TestPeriodadminclearCommand(test.TestCase):
         user = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser')
         subject = mommy.make('core.Subject', short_name='testsubject')
         period = mommy.make('core.Period', short_name='testperiod', parentnode=subject)
-        groupname = PermissionGroup.objects.make_name_from_syncsystem(
+        groupname = PermissionGroup.objects.get_name_from_syncsystem(
             basenode=period, grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
         permissiongroup = mommy.make(
             'devilry_account.PermissionGroup',

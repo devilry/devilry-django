@@ -25,10 +25,9 @@ class AdminAddBase(BaseCommand):
         except get_user_model().DoesNotExist:
             raise CommandError('Invalid user_shortname.')
 
-        permissiongroup, created = PermissionGroup.objects.create_or_update_permissiongroup(
+        permissiongroup, created = PermissionGroup.objects.create_or_update_syncsystem_permissiongroup(
             basenode=self.basenode,
-            grouptype=self.permissiongroup_type
-        )
+            grouptype=self.permissiongroup_type)
         if not permissiongroup.users.filter(id=user.id):
             permissiongroupuser = PermissionGroupUser(
                 permissiongroup=permissiongroup,
