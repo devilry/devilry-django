@@ -1,23 +1,46 @@
-from django.core.management.base import CommandError
+from django.core.management.base import CommandError, BaseCommand
 
-from devilry.devilry_superadmin.management.commands.devilry_subjectadminadd import AdminAddBase
+from devilry.apps.core.models import Subject, Period
+from devilry.devilry_account.models import PermissionGroup
 
 
-class Command(AdminAddBase):
-    args = '<subject-short_name> <period short name>'
-    help = 'Clear period admins (removes all subject admins on a subject).'
+class Command(BaseCommand):
+    help = 'Clear period admins (removes the syncsystem permission group ' \
+           'for the period).'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'subject_short_name',
+            help='Short name of the subject that contains the period you '
+                 'wish to add an admin to.')
+        parser.add_argument(
+            'period_short_name',
+            help='Short name of the period you wish to add an admin to.')
 
     def handle(self, *args, **options):
-        from devilry.apps.core.models import Period
+        subject_short_name = options['subject_short_name']
+        period_short_name = options['period_short_name']
 
-        if len(args) != 2:
-            raise CommandError('Subject and period is required. See --help.')
-        short_name = args[0]
-        period_short_name = args[1]
+        try:
+            subject = Subject.objects.get(short_name=subject_short_name)
+        except Subject.DoesNotExist:
+            raise CommandError('Invalid subject_short_name.')
 
-        subject = self.get_subject(short_name)
         try:
             period = Period.objects.get(short_name=period_short_name, parentnode=subject)
-        except Period.DoesNotExist, e:
-            raise CommandError('Invalid period-short_name.')
-        period.admins.clear()
+        except Period.DoesNotExist:
+            raise CommandError('Invalid period_short_name.')
+        groupname = PermissionGroup.objects.make_name_from_syncsystem(
+            basenode=period,
+            grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
+        try:
+            permissiongroup = PermissionGroup.objects\
+                .filter(name=groupname,
+                        grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)\
+                .get()
+        except PermissionGroup.DoesNotExist:
+            self.stdout.write('WARNING: No sync-system permission group exists '
+                              'for this period, so there is no admins to clear.')
+            return
+        else:
+            permissiongroup.delete()
