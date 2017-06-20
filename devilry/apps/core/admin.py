@@ -44,7 +44,7 @@ class BaseNodeAdmin(admin.ModelAdmin):
 
 
 class SubjectAdmin(BaseNodeAdmin):
-    pass
+    raw_id_fields = []
 
 
 admin.site.register(Subject, SubjectAdmin)
