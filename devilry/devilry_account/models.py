@@ -766,7 +766,7 @@ class PermissionGroupUser(models.Model):
 
 class PermissionGroupQuerySet(models.QuerySet):
     def get_name_prefix_from_syncsystem(self, grouptype, basenode):
-        return '{prefix}-{grouptype}-#{id}'.format(
+        return '{prefix}-{grouptype}-#{id}-'.format(
             prefix=settings.DEVILRY_SYNCSYSTEM_SHORTNAME,
             grouptype=grouptype,
             id=basenode.id)
