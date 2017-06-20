@@ -41,25 +41,6 @@ AbstractIsExaminer
 .. autoclass:: devilry.apps.core.models.AbstractIsExaminer
 
 
-Node
-####
-
-A node at the top of the navigation tree. It is a generic element used to
-organize administrators. A Node can be organized below another Node, and it
-can only have one parent.
-
-Let us say you use Devilry within two departments at *Fantasy University*;
-informatics and mathematics. The university has an administration, and each
-department have their own administration. You would end up with this
-node-hierarchy:
-
-    - Fantasy University
-        - Department of informatics
-        - Department of mathematics
-
-.. autoclass:: devilry.apps.core.models.Node
-
-
 Subject
 #######
 
@@ -130,59 +111,6 @@ AssignmentGroupTag
 
 .. autoclass:: devilry.apps.core.models.AssignmentGroupTag
 
-
-Deadline
-########
-
-Each `AssignmentGroup`_ have zero or more deadlines.
-
-.. autoclass:: devilry.apps.core.models.Deadline
-
-
-Delivery
-########
-
-
-Examples
-========
-
-Simple example::
-
-    assignmentgroup = AssignmentGroup.objects.get(id=1)
-    assignmentgroup.deliveries.create(delivered_by=student1,
-                                      successful=True)
-
-
-More advanced example::
-
-    assignmentgroup = AssignmentGroup.objects.get(id=1)
-    delivery = assignmentgroup.deliveries.create(delivered_by=student1,
-                                                 successful=False)
-    delivery.add_file('test.py', ['print', 'hello world'])
-    delivery.add_file('test2.py', ['print "hi"'])
-    delivery.successful = True
-    delivery.save()
-
-The input to :meth:`add_file` will normally be a file-like object,
-but as shown above it can be anything you want.
-
-
-Delivery API
-============
-
-.. autoclass:: devilry.apps.core.models.Delivery
-
-
-StaticFeedback
-##############
-
-.. autoclass:: devilry.apps.core.models.StaticFeedback
-
-
-FileMeta
-########
-
-.. autoclass:: devilry.apps.core.models.FileMeta
 
 
 
