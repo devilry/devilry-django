@@ -62,7 +62,6 @@ INSTALLED_APPS = [
     'devilry.devilry_markup',
     'devilry.devilry_superadmin',
     'devilry.devilry_authenticate',
-    'devilry.devilry_send_email_to_students',
 
     'devilry.devilry_help',
     'devilry.devilry_theme3',
