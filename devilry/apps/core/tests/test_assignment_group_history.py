@@ -1,12 +1,12 @@
+from django.test import TestCase
+from django.utils import timezone
+from django.utils.timezone import timedelta
 from model_mommy import mommy
-from django.utils.timezone import datetime, timedelta
 
+from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import AssignmentGroupHistory
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
-from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
-from devilry.apps.core import devilry_core_mommy_factories as core_mommy
-from django.test import TestCase
 
 
 class TestAssignmentGroupHistory(TestCase):
@@ -16,8 +16,8 @@ class TestAssignmentGroupHistory(TestCase):
 
     def test_merge_history_meta_data(self):
         assignment_group_history = mommy.make('core.AssignmentGroupHistory')
-        datetime1 = (datetime.now() - timedelta(days=1)).isoformat()
-        datetime2 = (datetime.now() - timedelta(days=2)).isoformat()
+        datetime1 = (timezone.now() - timedelta(days=1)).isoformat()
+        datetime2 = (timezone.now() - timedelta(days=2)).isoformat()
         assignment_group_history.merge_history = {
                 'merge_datetime': datetime1,
                 'state': None,

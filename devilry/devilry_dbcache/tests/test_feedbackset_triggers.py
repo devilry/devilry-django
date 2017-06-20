@@ -168,7 +168,7 @@ class TestFeedbackSetTriggers(test.TestCase):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         group_mommy.feedbackset_first_attempt_published(group=group)
-        new_attempt_deadline = timezone.now() + timezone.timedelta(days=1)
+        new_attempt_deadline = timezone.localtime(timezone.now() + timezone.timedelta(days=1))
         new_attempt_deadline = new_attempt_deadline.replace(microsecond=0)
         feedback_set_new_attempt = group_mommy.feedbackset_new_attempt_unpublished(
             group=group,

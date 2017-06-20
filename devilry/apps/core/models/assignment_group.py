@@ -1,5 +1,4 @@
 import warnings
-from datetime import datetime
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -119,7 +118,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
 
     def filter_waiting_for_feedback(self):
         warnings.warn("deprecated", DeprecationWarning)
-        now = datetime.now()
+        now = timezone.now()
         return self.filter(
             Q(parentnode__delivery_types=deliverytypes.NON_ELECTRONIC,
               delivery_status="waiting-for-something") |
@@ -129,7 +128,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
 
     def filter_waiting_for_deliveries(self):
         warnings.warn("deprecated", DeprecationWarning)
-        now = datetime.now()
+        now = timezone.now()
         return self.filter(
             parentnode__delivery_types=deliverytypes.ELECTRONIC,
             delivery_status="waiting-for-something",
@@ -137,7 +136,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
 
     def filter_can_add_deliveries(self):
         warnings.warn("deprecated", DeprecationWarning)
-        now = datetime.now()
+        now = timezone.now()
         return self\
             .filter(parentnode__delivery_types=deliverytypes.ELECTRONIC,
                     delivery_status="waiting-for-something")\
@@ -174,7 +173,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             delivery = Delivery(
                 deadline=deadline,
                 delivery_type=deliverytypes.NON_ELECTRONIC,
-                time_of_delivery=datetime.now())
+                time_of_delivery=timezone.now())
             delivery.set_number()
             delivery.full_clean()
             delivery.save()
@@ -245,7 +244,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         Filter all :class:`.AssignmentGroup` objects within a published
         :class:`devilry.apps.core.models.Assignment`.
         """
-        return self.filter(parentnode__publishing_time__lt=datetime.now())
+        return self.filter(parentnode__publishing_time__lt=timezone.now())
 
     def filter_is_active(self):
         """
@@ -253,7 +252,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         :class:`devilry.apps.core.models.Assignment` within an
         active :class:`devilry.apps.core.models.Period`.
         """
-        now = datetime.now()
+        now = timezone.now()
         return self.filter_is_published().filter(
             parentnode__parentnode__start_time__lt=now,
             parentnode__parentnode__end_time__gt=now)
@@ -1085,7 +1084,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     @classmethod
     def q_published(cls, old=True, active=True):
-        now = datetime.now()
+        now = timezone.now()
         q = Q(parentnode__publishing_time__lt=now)
         if not active:
             q &= ~Q(parentnode__parentnode__end_time__gte=now)
@@ -1626,7 +1625,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             if self.assignment.delivery_types == deliverytypes.NON_ELECTRONIC:
                 return 'waiting-for-feedback'
             else:
-                now = datetime.now()
+                now = timezone.now()
                 if self.last_deadline.deadline > now:
                     return 'waiting-for-deliveries'
                 else:

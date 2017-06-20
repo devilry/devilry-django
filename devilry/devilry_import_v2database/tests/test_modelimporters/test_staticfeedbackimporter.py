@@ -2,7 +2,7 @@ import os
 
 from django import test
 from django.conf import settings
-from django.utils.dateparse import parse_datetime
+from devilry.utils import datetimeutils
 
 from model_mommy import mommy
 
@@ -174,7 +174,7 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         comment = GroupComment.objects.first()
         self.assertEquals(
             comment.published_datetime,
-            parse_datetime(staticfeedback_data_dict['fields']['save_timestamp'])
+            datetimeutils.from_isoformat(staticfeedback_data_dict['fields']['save_timestamp'])
         )
 
     def test_importer_feedback_set_grading_published_datetime(self):
@@ -197,7 +197,7 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         feedback_set = GroupComment.objects.first().feedback_set
         self.assertEquals(
             feedback_set.grading_published_datetime,
-            parse_datetime(staticfeedback_data_dict['fields']['save_timestamp']))
+            datetimeutils.from_isoformat(staticfeedback_data_dict['fields']['save_timestamp']))
 
     def test_importer_feedback_set_grading_points(self):
         test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)

@@ -70,7 +70,7 @@ class FileMeta(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 
     @classmethod
     def q_published(cls, old=True, active=True):
-        now = datetime.now()
+        now = timezone.now()
         q = Q(delivery__deadline__assignment_group__parentnode__publishing_time__lt=now)
         if not active:
             q &= ~Q(delivery__deadline__assignment_group__parentnode__parentnode__end_time__gte=now)

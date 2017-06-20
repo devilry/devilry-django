@@ -1,6 +1,7 @@
 from django.core import mail
 from django.core.exceptions import ValidationError
 from django.test import TestCase
+from django.utils import timezone
 from django.utils.timezone import datetime, timedelta
 from django.core.urlresolvers import reverse
 from model_mommy import mommy
@@ -67,7 +68,7 @@ class TestGroupInviteErrors(TestCase):
     def test_create_groups_expired(self):
         testgroup = mommy.make('core.AssignmentGroup',
                                parentnode__students_can_create_groups=True,
-                               parentnode__students_can_not_create_groups_after=datetime.now() - timedelta(days=1))
+                               parentnode__students_can_not_create_groups_after=timezone.now() - timedelta(days=1))
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testgroup.parentnode)
         sent_by = core_mommy.candidate(testgroup).relatedstudent.user
         sent_to = core_mommy.candidate(testgroup1).relatedstudent.user
@@ -236,12 +237,12 @@ class TestGroupInviteQueryset(TestCase):
         assignment_expired = mommy.make(
             'core.Assignment',
             students_can_create_groups=True,
-            students_can_not_create_groups_after=datetime.now() - timedelta(days=1)
+            students_can_not_create_groups_after=timezone.now() - timedelta(days=1)
         )
         assignment_not_expired = mommy.make(
             'core.Assignment',
             students_can_create_groups=True,
-            students_can_not_create_groups_after=datetime.now() + timedelta(days=1)
+            students_can_not_create_groups_after=timezone.now() + timedelta(days=1)
         )
         assignment_not_allowed = mommy.make('core.Assignment', students_can_create_groups=False)
         assignment_allowed = mommy.make('core.Assignment', students_can_create_groups=True)

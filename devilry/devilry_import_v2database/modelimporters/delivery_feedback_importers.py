@@ -9,6 +9,7 @@ from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_comment.models import Comment, CommentFile
 from devilry.devilry_group.models import GroupComment, FeedbackSet
 from devilry.devilry_import_v2database import modelimporter
+from devilry.utils import datetimeutils
 
 
 class ImporterMixin(object):
@@ -159,7 +160,7 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
             feedback_set=feedback_set,
             published_by=examiner_user,
             grading_points=object_dict['fields']['points'],
-            publish_datetime=object_dict['fields']['save_timestamp']
+            publish_datetime=datetimeutils.from_isoformat(object_dict['fields']['save_timestamp'])
         )
         group_comment.feedback_set = feedback_set
         group_comment.text = object_dict['fields']['rendered_view']

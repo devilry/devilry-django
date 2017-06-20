@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 # 3rd party imports
 import mock
+from django.utils import timezone
 from model_mommy import mommy
 
 # Django imports
@@ -66,7 +67,7 @@ class TestQualificationStatusPreviewTableRendering(test.TestCase, cradmin_testhe
                 'Status')
         self.assertEquals(
                 mockresponse.selector.one('.devilry-qualifiesforexam-status-description-date').alltext_normalized,
-                teststatus.createtime.strftime('%A %B %-d, %Y, %H:%M'))
+                timezone.localtime(teststatus.createtime).strftime('%A %B %-d, %Y, %H:%M'))
 
     def test_status_ready_in_list(self):
         testperiod = mommy.make('core.Period')

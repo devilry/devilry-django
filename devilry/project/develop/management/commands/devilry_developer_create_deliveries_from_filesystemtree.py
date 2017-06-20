@@ -1,9 +1,11 @@
-from datetime import datetime, timedelta
 import fnmatch
-from optparse import make_option
 import os
 import random
+from datetime import timedelta
+from optparse import make_option
+
 from django.core.management.base import BaseCommand, CommandError
+from django.utils import timezone
 
 
 class Command(BaseCommand):
@@ -106,7 +108,7 @@ class Command(BaseCommand):
                     successful=True,
                     # NOTE: Set time_of_delivery to ensure sorting is correct (can create multiple deliveries during
                     # a single second)
-                    time_of_delivery=datetime.now() + timedelta(seconds=deliverynumber))
+                    time_of_delivery=timezone.now() + timedelta(seconds=deliverynumber))
                 delivery.save(autoset_time_of_delivery=False)
                 self._print_message('Adding {} files to {}'.format(len(files), delivery))
                 for filepath in files:

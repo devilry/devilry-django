@@ -1,17 +1,16 @@
-from datetime import datetime
 import os
 import uuid
-from django.conf import settings
-from django.core.urlresolvers import reverse
 
-from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Q
-from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
 from abstract_is_admin import AbstractIsAdmin
-from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
+from abstract_is_examiner import AbstractIsExaminer
 from delivery import Delivery
 from devilry.devilry_account.models import User
 
@@ -96,7 +95,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
 
     @classmethod
     def q_published(cls, old=True, active=True):
-        now = datetime.now()
+        now = timezone.now()
         q = Q(delivery__deadline__assignment_group__parentnode__publishing_time__lt=now)
         if not active:
             q &= ~Q(delivery__deadline__assignment_group__parentnode__parentnode__end_time__gte=now)
@@ -184,7 +183,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         autoupdate_related_models = kwargs.pop('autoupdate_related_models', True)
         autoset_timestamp_to_now = kwargs.pop('autoset_timestamp_to_now', True)
         if autoset_timestamp_to_now:
-            self.save_timestamp = datetime.now()
+            self.save_timestamp = timezone.now()
         super(StaticFeedback, self).save(*args, **kwargs)
         if autoupdate_related_models:
             delivery = self.delivery

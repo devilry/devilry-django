@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.test import TestCase
+from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
@@ -38,7 +39,7 @@ class TestPublishNowRedirectView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.mock_http302_postrequest(cradmin_role=assignment)
         assignment = Assignment.objects.get(id=assignment.id)
         assignment_publishing_time_ignore_sec_and_ms = assignment.publishing_time.replace(second=0, microsecond=0)
-        now_ignore_sec_and_ms = datetime.now().replace(second=0, microsecond=0)
+        now_ignore_sec_and_ms = timezone.now().replace(second=0, microsecond=0)
         self.assertEquals(assignment_publishing_time_ignore_sec_and_ms, now_ignore_sec_and_ms)
 
     def test_update_publishing_time_on_correct_assignment(self):
@@ -50,7 +51,7 @@ class TestPublishNowRedirectView(TestCase, cradmin_testhelpers.TestCaseMixin):
         assignment1_publishing_time_ignore_ms = assignment1.publishing_time.replace(microsecond=0)
         assignment2_publishing_time_ignore_ms = assignment2.publishing_time.replace(microsecond=0)
         assignment3_publishing_time_ignore_ms = assignment3.publishing_time.replace(microsecond=0)
-        now_ignore_ms = datetime.now().replace(second=assignment3.publishing_time.second, microsecond=0)
+        now_ignore_ms = timezone.now().replace(second=assignment3.publishing_time.second, microsecond=0)
         self.assertEquals(assignment1_publishing_time_ignore_ms, datetime(2000, 1, 1))
         self.assertEquals(assignment2_publishing_time_ignore_ms, datetime(2000, 1, 1))
         self.assertEquals(assignment3_publishing_time_ignore_ms, now_ignore_ms)

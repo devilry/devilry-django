@@ -1,20 +1,19 @@
+import os
 from cStringIO import StringIO
-from datetime import datetime
+
+import detektor
 from celery import shared_task
 from celery.utils.log import get_task_logger
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
-from django.conf import settings
-import os
 
-import detektor
 from devilry.apps.core.models import Delivery
+from devilry.devilry_detektor.comparer import CompareManyCollection
 from devilry.devilry_detektor.models import DetektorAssignment
 from devilry.devilry_detektor.models import DetektorDeliveryParseResult
-from devilry.devilry_detektor.comparer import CompareManyCollection
 from devilry.utils.devilry_email import send_message
-
 
 logger = get_task_logger(__name__)
 
@@ -194,6 +193,6 @@ def run_detektor_on_assignment(assignment_id):
     CompareManyCollection(assignmentparser.detektorassignment).save()
     _send_success_email(assignmentparser.detektorassignment)
 
-    assignmentparser.detektorassignment.processing_finished_datetime = datetime.now()
+    assignmentparser.detektorassignment.processing_finished_datetime = timezone.now()
     assignmentparser.detektorassignment.status = 'finished'
     assignmentparser.detektorassignment.save()

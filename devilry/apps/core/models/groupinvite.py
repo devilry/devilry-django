@@ -1,8 +1,8 @@
-from django.utils.timezone import datetime
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db import transaction
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy
 
 from devilry.apps.core.models import Assignment
@@ -54,7 +54,7 @@ class GroupInviteQuerySet(models.QuerySet):
         return self.filter(
             models.Q(
                 models.Q(group__parentnode__students_can_create_groups=True) &
-                models.Q(group__parentnode__students_can_not_create_groups_after__gt=datetime.now())
+                models.Q(group__parentnode__students_can_not_create_groups_after__gt=timezone.now())
             ) |
             models.Q(
                 models.Q(group__parentnode__students_can_create_groups=True) &
@@ -86,7 +86,7 @@ class GroupInvite(models.Model):
     invite.respond(accepted=True)
     """
     group = models.ForeignKey(AssignmentGroup)
-    sent_datetime = models.DateTimeField(default=datetime.now)
+    sent_datetime = models.DateTimeField(default=timezone.now)
     sent_by = models.ForeignKey(User, related_name='groupinvite_sent_by_set')
     sent_to = models.ForeignKey(User, related_name='groupinvite_sent_to_set')
 
@@ -147,7 +147,7 @@ class GroupInvite(models.Model):
 
     def clean(self):
         if self.accepted and not self.responded_datetime:
-            self.responded_datetime = datetime.now()
+            self.responded_datetime = timezone.now()
         if self.sent_by and not self.group.candidates.filter(relatedstudent__user=self.sent_by).exists():
             raise ValidationError(ugettext_lazy('The user sending an invite must be a Candiate on the group.'))
         if self.sent_to and self.group.candidates.filter(relatedstudent__user=self.sent_to).exists():
@@ -161,7 +161,7 @@ class GroupInvite(models.Model):
         assignment = self.group.assignment
         if assignment.students_can_create_groups:
             if assignment.students_can_not_create_groups_after and \
-                            assignment.students_can_not_create_groups_after < datetime.now():
+                            assignment.students_can_not_create_groups_after < timezone.now():
                 raise ValidationError(ugettext_lazy(
                     'Creating project groups without administrator approval is not '
                     'allowed on this assignment anymore. Please contact you course '
@@ -199,7 +199,7 @@ class GroupInvite(models.Model):
         if self.accepted is not None and not self.accepted:
             raise ValidationError(ugettext_lazy('This invite has already been declined.'))
         self.accepted = accepted
-        self.responded_datetime = datetime.now()
+        self.responded_datetime = timezone.now()
         self.full_clean()
         self.save()
         self._send_response_notification()

@@ -2,6 +2,7 @@ from datetime import datetime
 from random import randint
 
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.http import Http404
 from django import forms
@@ -112,7 +113,7 @@ class FeedbackBulkEditorFormView(BulkViewBase):
         self.save_pluginspecific_state(form)
         draft_ids = self.create_feedbackdrafts(**self.get_create_feedbackdraft_kwargs(form, publish))
         if preview:
-            randomkey = '{}.{}'.format(datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f'), randint(0, 10000000))
+            randomkey = '{}.{}'.format(timezone.now().strftime('%Y-%m-%d_%H-%M-%S-%f'), randint(0, 10000000))
             sessionkey = 'devilry_gradingsystem_draftids_{}'.format(randomkey)
             self.request.session[sessionkey] = draft_ids
             return redirect(self._get_preview_redirect_url(randomkey))

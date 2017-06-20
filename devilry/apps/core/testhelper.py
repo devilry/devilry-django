@@ -137,7 +137,7 @@ class TestHelper(object):
             # set the deliverytime to after the deadline
             delivery.time_of_delivery = group.get_active_deadline().deadline + timedelta(days=1)
         else:
-            delivery.time_of_delivery = datetime.now()
+            delivery.time_of_delivery = timezone.now()
         delivery.save()
 
         # add it to the groups delivery list
@@ -326,7 +326,7 @@ class TestHelper(object):
     #######
     def _create_or_add_period(self, period_name, parentnode, extras):
         period = Period(parentnode=parentnode, short_name=period_name, long_name=period_name.capitalize(),
-                        start_time=datetime.now(), end_time=datetime.now() + timedelta(days=5 * 30))
+                        start_time=timezone.now(), end_time=timezone.now() + timedelta(days=5 * 30))
         try:
             period.full_clean()
             period.save()
@@ -338,7 +338,7 @@ class TestHelper(object):
             period.admins.add(self._create_or_add_user(admin))
 
         if extras['begins']:
-            period.start_time = datetime.now() + timedelta(days=int(extras['begins'][0]) * 30)
+            period.start_time = timezone.now() + timedelta(days=int(extras['begins'][0]) * 30)
         if extras['ends']:
             period.end_time = period.start_time + timedelta(days=int(extras['ends'][0]) * 30)
         elif extras['begins'] and not extras['ends']:

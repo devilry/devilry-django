@@ -5,6 +5,7 @@ from zipfile import ZipFile
 
 from django import test
 from django.core.files.base import ContentFile
+from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.devilry_comment.models import Comment
@@ -39,7 +40,7 @@ class TestBulkFileDownloadBase(AbstractTestCase):
         mommy.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser1")
-        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
+        tomorrow = timezone.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
@@ -68,7 +69,7 @@ class TestBulkFileDownloadBase(AbstractTestCase):
         mommy.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser2")
-        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
+        tomorrow = timezone.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
@@ -94,7 +95,7 @@ class TestBulkFileDownloadBase(AbstractTestCase):
         mommy.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser1")
-        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
+        tomorrow = timezone.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
@@ -132,7 +133,7 @@ class TestBulkFileDownloadBase(AbstractTestCase):
         mommy.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser1")
-        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
+        tomorrow = timezone.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
@@ -167,7 +168,7 @@ class TestBulkFileDownloadBase(AbstractTestCase):
         mommy.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser1")
-        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
+        tomorrow = timezone.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
@@ -199,7 +200,7 @@ class TestBulkFileDownloadBase(AbstractTestCase):
         mommy.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser1")
-        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
+        tomorrow = timezone.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
@@ -225,7 +226,7 @@ class TestBulkFileDownloadBase(AbstractTestCase):
         mommy.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser1")
-        yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+        yesterday = timezone.now() - datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,
@@ -252,7 +253,7 @@ class TestBulkFileDownloadBase(AbstractTestCase):
         mommy.make('core.Candidate',
                    assignment_group=assignmentgroup1,
                    relatedstudent__user__shortname="testuser1")
-        tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
+        tomorrow = timezone.now() + datetime.timedelta(days=1)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   group=assignmentgroup1,
                                   feedbackset_type=groupmodels.FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT,

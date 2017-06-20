@@ -1,16 +1,14 @@
-from datetime import datetime
-
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
-from abstract_is_examiner import AbstractIsExaminer
-from abstract_is_candidate import AbstractIsCandidate
-from assignment_group import AssignmentGroup
-from abstract_is_admin import AbstractIsAdmin
 import deliverytypes
+from abstract_is_admin import AbstractIsAdmin
+from abstract_is_candidate import AbstractIsCandidate
+from abstract_is_examiner import AbstractIsExaminer
+from assignment_group import AssignmentGroup
 from devilry.devilry_account.models import User
 
 
@@ -67,7 +65,7 @@ class DeadlineQuerySet(models.QuerySet):
                        autocreate_first_deadline_for_nonelectronic=False)
 
         assignment = groups[0].assignment  # NOTE: We assume all groups are within the same assignment - as documented
-        time_of_delivery = datetime.now().replace(microsecond=0, tzinfo=None)
+        time_of_delivery = timezone.now().replace(microsecond=0, tzinfo=None)
         if assignment.delivery_types == deliverytypes.NON_ELECTRONIC:
             from .delivery import Delivery
 
@@ -286,7 +284,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
                 delivery = Delivery(
                     deadline=self,
                     successful=True,
-                    time_of_delivery=datetime.now(),
+                    time_of_delivery=timezone.now(),
                     delivery_type=deliverytypes.NON_ELECTRONIC,
                     number=1)
                 delivery.save()
@@ -307,11 +305,11 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         # TODO delete this?
         # def is_old(self):
         # """ Return True if :attr:`deadline` expired. """
-        # return self.deadline < datetime.now()
+        # return self.deadline < timezone.now()
 
     @classmethod
     def q_published(cls, old=True, active=True):
-        now = datetime.now()
+        now = timezone.now()
         q = Q(assignment_group__parentnode__publishing_time__lt=now)
         if not active:
             q &= ~Q(assignment_group__parentnode__parentnode__end_time__gte=now)
@@ -386,13 +384,13 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         """
         Return ``True`` if this deadline is in the future.
         """
-        return self.deadline > datetime.now()
+        return self.deadline > timezone.now()
 
     def is_in_the_past(self):
         """
         Return ``True`` if this deadline is in the past.
         """
-        return self.deadline < datetime.now()
+        return self.deadline < timezone.now()
 
     def has_text(self):
         """

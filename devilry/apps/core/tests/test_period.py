@@ -14,8 +14,6 @@ from devilry.apps.core.models import Period, Subject
 from devilry.apps.core.models.model_utils import EtagMismatchException
 from devilry.apps.core.testhelper import TestHelper
 from devilry.devilry_qualifiesforexam.models import Status
-from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
-from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 
 
 class TestPeriodQuerySetFilterActive(TestCase):
@@ -397,12 +395,12 @@ class TestPeriodOld(TestCase, TestHelper):
     def test_unique(self):
         n = Period(parentnode=Subject.objects.get(short_name='inf1100'),
                    short_name='old', long_name='Old',
-                   start_time=datetime.now(),
-                   end_time=datetime.now())
+                   start_time=timezone.now(),
+                   end_time=timezone.now())
         self.assertRaises(IntegrityError, n.save)
 
     def test_etag_update(self):
-        etag = datetime.now()
+        etag = timezone.now()
         obj = self.inf1100_looong
         obj.long_name = 'Updated'
         self.assertRaises(EtagMismatchException, obj.etag_update, etag)
@@ -439,7 +437,7 @@ class TestPeriodOld(TestCase, TestHelper):
         q = Period.published_where_is_examiner(examiner1).order_by('short_name')
         self.assertEquals(q.count(), 3)
         assignment1010 = self.inf1010_spring10_oblig1_student1.parentnode
-        assignment1010.publishing_time = datetime.now() + timedelta(10)
+        assignment1010.publishing_time = timezone.now() + timedelta(10)
         assignment1010.save()
         self.assertEquals(q.count(), 2)
 
@@ -452,6 +450,6 @@ class TestPeriodOld(TestCase, TestHelper):
         activeperiods = Period.objects.filter(Period.q_is_active())
         self.assertEquals(activeperiods.count(), 1)
         self.assertEqual(activeperiods[0], self.inf1100_looong)
-        self.inf1100_old.end_time = datetime.now() + timedelta(days=10)
+        self.inf1100_old.end_time = timezone.now() + timedelta(days=10)
         self.inf1100_old.save()
         self.assertEquals(Period.objects.filter(Period.q_is_active()).count(), 2)

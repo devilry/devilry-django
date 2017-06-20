@@ -2,6 +2,7 @@ import mock
 from django.contrib import messages
 from django.http import Http404
 from django.test import TestCase
+from django.utils import timezone
 from django.utils.timezone import datetime, timedelta
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
@@ -110,7 +111,7 @@ class TestProjectGroupOverviewViewStudentsCannotCreateGroups(TestCase, cradmin_t
     def test_submit_button_students_cannot_create_groups_expired(self):
         group = mommy.make('core.AssignmentGroup',
                            parentnode__students_can_create_groups=True,
-                           parentnode__students_can_not_create_groups_after=datetime.now() - timedelta(days=10))
+                           parentnode__students_can_not_create_groups_after=timezone.now() - timedelta(days=10))
         candidate = core_mommy.candidate(group=group)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group, requestuser=candidate.relatedstudent.user)
         self.assertFalse(mockresponse.selector.exists('#submit-id-submit'))
@@ -160,7 +161,7 @@ class TestProjectGroupOverviewViewStudentsCannotCreateGroups(TestCase, cradmin_t
         test_assignment = mommy.make(
             'core.Assignment',
             students_can_create_groups=True,
-            students_can_not_create_groups_after=datetime.now() - timedelta(days=1)
+            students_can_not_create_groups_after=timezone.now() - timedelta(days=1)
         )
         group = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
         group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
@@ -715,7 +716,7 @@ class TestGroupInviteRespondView(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_404_student_can_no_longer_invite(self):
         testassignment = mommy.make('core.Assignment',
                                     students_can_create_groups=True,
-                                    students_can_not_create_groups_after=datetime.now() - timedelta(days=1))
+                                    students_can_not_create_groups_after=timezone.now() - timedelta(days=1))
         group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         candidate = core_mommy.candidate(group=group, fullname="April Duck", shortname="april@example.com")
@@ -1515,7 +1516,7 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
         test_assignment = mommy.make(
             'core.Assignment',
             students_can_create_groups=True,
-            students_can_not_create_groups_after=datetime.now() - timedelta(days=1)
+            students_can_not_create_groups_after=timezone.now() - timedelta(days=1)
         )
         group = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
         group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
@@ -1575,7 +1576,7 @@ class TestGroupInviteRespondViewStandalone(TestCase, cradmin_testhelpers.TestCas
         test_assignment = mommy.make(
             'core.Assignment',
             students_can_create_groups=True,
-            students_can_not_create_groups_after=datetime.now() - timedelta(days=1)
+            students_can_not_create_groups_after=timezone.now() - timedelta(days=1)
         )
         group = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
         group1 = mommy.make('core.AssignmentGroup', parentnode=test_assignment)

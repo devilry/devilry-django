@@ -17,6 +17,7 @@ from devilry.devilry_deadlinemanagement.views import manage_deadline_view
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
 from devilry.utils import datetimeutils
+from devilry.utils.datetimeutils import isoformat_withseconds
 
 
 class AdminTestCaseMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -146,6 +147,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
+        new_deadline = new_deadline.replace(microsecond=0)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -157,7 +159,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
             },
             requestkwargs={
                 'data': {
-                    'new_deadline': new_deadline,
+                    'new_deadline': isoformat_withseconds(timezone.localtime(new_deadline)),
                     'comment_text': 'You have been given a new attempt.',
                     'selected_items': [testgroup1.id]
                 }
@@ -180,6 +182,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
+        new_deadline = new_deadline.replace(microsecond=0)
         with self.assertRaises(http.Http404):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
@@ -192,7 +195,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(AdminTestCaseMixin):
                 },
                 requestkwargs={
                     'data': {
-                        'new_deadline': new_deadline,
+                        'new_deadline': isoformat_withseconds(timezone.localtime(new_deadline)),
                         'comment_text': 'You have been given a new attempt.',
                         'selected_items': [testgroup1.id, testgroup2.id]
                     }
@@ -281,6 +284,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
+        new_deadline = new_deadline.replace(microsecond=0)
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -292,7 +296,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
             },
             requestkwargs={
                 'data': {
-                    'new_deadline': new_deadline,
+                    'new_deadline': isoformat_withseconds(timezone.localtime(new_deadline)),
                     'comment_text': 'You have been given a new attempt.',
                     'selected_items': [testgroup1.id]
                 }
@@ -316,6 +320,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
+        new_deadline = new_deadline.replace(microsecond=0)
         with self.assertRaises(http.Http404):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
@@ -328,7 +333,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(AdminTestCaseMixin):
                 },
                 requestkwargs={
                     'data': {
-                        'new_deadline': new_deadline,
+                        'new_deadline': isoformat_withseconds(timezone.localtime(new_deadline)),
                         'comment_text': 'You have been given a new attempt.',
                         'selected_items': [testgroup1.id, testgroup2.id]
                     }
@@ -396,6 +401,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
+        new_deadline = new_deadline.replace(microsecond=0)
         self.mock_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -407,7 +413,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
             },
             requestkwargs={
                 'data': {
-                    'new_deadline': new_deadline,
+                    'new_deadline': isoformat_withseconds(timezone.localtime(new_deadline)),
                     'comment_text': 'You have been given a new attempt.',
                     'selected_items': [testgroup1.id, testgroup2.id]
                 }
@@ -433,6 +439,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
+        new_deadline = new_deadline.replace(microsecond=0)
         with self.assertRaises(http.Http404):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
@@ -445,7 +452,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
                 },
                 requestkwargs={
                     'data': {
-                        'new_deadline': new_deadline,
+                        'new_deadline': isoformat_withseconds(timezone.localtime(new_deadline)),
                         'comment_text': 'You have been given a new attempt.',
                         'selected_items': [testgroup1.id, testgroup2.id]
                     }
@@ -510,6 +517,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
+        new_deadline = new_deadline.replace(microsecond=0)
         self.mock_postrequest(
             cradmin_role=testassignment,
             cradmin_instance=self._get_mock_instance(testassignment),
@@ -521,7 +529,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
             },
             requestkwargs={
                 'data': {
-                    'new_deadline': new_deadline,
+                    'new_deadline': isoformat_withseconds(timezone.localtime(new_deadline)),
                     'comment_text': 'You have been given a new attempt.',
                     'selected_items': [testgroup1.id, testgroup2.id]
                 }
@@ -547,6 +555,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
         new_deadline = timezone.now() + timezone.timedelta(days=3)
+        new_deadline = new_deadline.replace(microsecond=0)
         with self.assertRaises(http.Http404):
             self.mock_http302_postrequest(
                 cradmin_role=testassignment,
@@ -559,7 +568,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
                 },
                 requestkwargs={
                     'data': {
-                        'new_deadline': new_deadline,
+                        'new_deadline': isoformat_withseconds(timezone.localtime(new_deadline)),
                         'comment_text': 'You have been given a new attempt.',
                         'selected_items': [testgroup1.id, testgroup2.id]
                     }

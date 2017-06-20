@@ -360,7 +360,7 @@ class FeedbackSet(models.Model):
 
     @classmethod
     def clean_deadline(cls, deadline_datetime):
-        return deadline_datetime.replace(microsecond=0, tzinfo=None)
+        return deadline_datetime.replace(microsecond=0)
 
     def clean(self):
         """

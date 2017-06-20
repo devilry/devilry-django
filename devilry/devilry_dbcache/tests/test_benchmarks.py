@@ -21,10 +21,10 @@ class TimeExecution(object):
         self.label = label
 
     def __enter__(self):
-        self.start_time = datetime.now()
+        self.start_time = timezone.now()
 
     def __exit__(self, ttype, value, traceback):
-        end_time = datetime.now()
+        end_time = timezone.now()
         duration = (end_time - self.start_time).total_seconds()
         print
         print '{}: {}s'.format(self.label, duration)
