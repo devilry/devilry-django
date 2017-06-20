@@ -12,38 +12,30 @@ class SubjectImporter(modelimporter.ModelImporter):
         return Subject
 
     def _create_permissiongroup_user(self, permission_group, user):
-        permission_group_user = account_models.PermissionGroupUser(
-            permissiongroup=permission_group,
-            user=user
-        )
-        permission_group_user.full_clean()
-        permission_group_user.save()
-        return permission_group_user
+        if not permission_group.users.filter(id=user.id).exists():
+            permission_group_user = account_models.PermissionGroupUser(
+                permissiongroup=permission_group,
+                user=user
+            )
+            permission_group_user.full_clean()
+            permission_group_user.save()
+            return permission_group_user
 
-    def _create_permissiongroup(self, name, admin_user_ids):
+    def _create_permissiongroup(self, subject, admin_user_ids):
+        permission_group, created = account_models.PermissionGroup.objects.create_or_update_syncsystem_permissiongroup(
+            basenode=subject,
+            grouptype=account_models.PermissionGroup.GROUPTYPE_SUBJECTADMIN)
+
         admin_users_queryset = get_user_model().objects.filter(id__in=admin_user_ids)
-        permission_group = account_models.PermissionGroup(
-            grouptype=account_models.PermissionGroup.GROUPTYPE_SUBJECTADMIN,
-            name='{}'.format(name)
-        )
-        permission_group.full_clean()
-        permission_group.save()
         for admin_user in admin_users_queryset.all():
             self._create_permissiongroup_user(permission_group, admin_user)
         return permission_group
 
     def _create_subject_permissiongroup(self, subject, admin_user_ids):
         if len(admin_user_ids) > 0:
-            permission_group = self._create_permissiongroup(
-                name=subject.short_name,
-                admin_user_ids=admin_user_ids
-            )
-            subject_permissiongroup = account_models.SubjectPermissionGroup(
-                permissiongroup=permission_group,
-                subject=subject
-            )
-            subject_permissiongroup.full_clean()
-            subject_permissiongroup.save()
+            self._create_permissiongroup(
+                subject=subject,
+                admin_user_ids=admin_user_ids)
 
     def _create_subject_from_object_dict(self, object_dict):
         subject = self.get_model_class()()
