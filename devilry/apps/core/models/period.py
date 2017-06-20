@@ -15,7 +15,6 @@ from basenode import BaseNode
 from custom_db_fields import ShortNameField, LongNameField
 from devilry.devilry_account.models import User, PeriodPermissionGroup
 from model_utils import Etag
-from node import Node
 from subject import Subject
 
 
@@ -217,13 +216,6 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     def q_is_candidate(cls, user_obj):
         return Q(assignments__assignmentgroups__candidates__student=user_obj)
 
-    @classmethod
-    def q_is_admin(cls, user_obj):
-        return \
-            Q(admins=user_obj) | \
-            Q(parentnode__admins=user_obj) | \
-            Q(parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
-
     def clean(self, *args, **kwargs):
         """Validate the period.
 
@@ -289,13 +281,6 @@ class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
     class Meta:
         unique_together = ('period', 'application', 'key')
         app_label = 'core'
-
-    @classmethod
-    def q_is_admin(cls, user_obj):
-        return \
-            Q(period__admins=user_obj) | \
-            Q(period__parentnode__admins=user_obj) | \
-            Q(period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     def __unicode__(self):
         return '{0}: {1}'.format(self.period, super(AbstractApplicationKeyValue, self).__unicode__())

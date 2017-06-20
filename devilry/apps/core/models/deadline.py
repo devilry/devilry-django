@@ -12,7 +12,6 @@ from assignment_group import AssignmentGroup
 from abstract_is_admin import AbstractIsAdmin
 import deliverytypes
 from devilry.devilry_account.models import User
-from node import Node
 
 
 class NewerDeadlineExistsError(Exception):
@@ -309,15 +308,6 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         # def is_old(self):
         # """ Return True if :attr:`deadline` expired. """
         # return self.deadline < datetime.now()
-
-    @classmethod
-    def q_is_admin(cls, user_obj):
-        return \
-            Q(assignment_group__parentnode__admins=user_obj) | \
-            Q(assignment_group__parentnode__parentnode__admins=user_obj) | \
-            Q(assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
-            Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(
-                user_obj))
 
     @classmethod
     def q_published(cls, old=True, active=True):

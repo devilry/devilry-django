@@ -14,7 +14,6 @@ from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
 from delivery import Delivery
 from devilry.devilry_account.models import User
-from node import Node
 
 
 class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate):
@@ -86,15 +85,6 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         verbose_name = 'Static feedback'
         verbose_name_plural = 'Static feedbacks'
         ordering = ['-save_timestamp']
-
-    @classmethod
-    def q_is_admin(cls, user_obj):
-        return \
-            Q(delivery__deadline__assignment_group__parentnode__admins=user_obj) | \
-            Q(delivery__deadline__assignment_group__parentnode__parentnode__admins=user_obj) | \
-            Q(delivery__deadline__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
-            Q(delivery__deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(  # noqa
-                user_obj))
 
     @classmethod
     def q_is_candidate(cls, user_obj):

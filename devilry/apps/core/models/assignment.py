@@ -18,7 +18,6 @@ from custom_db_fields import ShortNameField, LongNameField
 from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import User, PeriodPermissionGroup
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
-from .node import Node
 from .period import Period
 from .subject import Subject
 from . import deliverytypes
@@ -897,15 +896,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def q_is_candidate(cls, user_obj):
         warnings.warn("deprecated", DeprecationWarning)
         return Q(assignmentgroups__candidates__student=user_obj)
-
-    @classmethod
-    def q_is_admin(cls, user_obj):
-        warnings.warn("deprecated", DeprecationWarning)
-        return \
-            Q(admins=user_obj) | \
-            Q(parentnode__admins=user_obj) | \
-            Q(parentnode__parentnode__admins=user_obj) | \
-            Q(parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
     def q_is_examiner(cls, user_obj):

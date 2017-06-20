@@ -1,5 +1,5 @@
 from django.contrib import admin
-from devilry.apps.core.models import AssignmentGroup, Node, Subject, Period, Assignment, PeriodTag
+from devilry.apps.core.models import AssignmentGroup, Subject, Period, Assignment, PeriodTag
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -41,21 +41,6 @@ class BaseNodeAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return super(BaseNodeAdmin, self).get_queryset(request) \
             .prefetch_related('admins')
-
-
-class NodeAdmin(BaseNodeAdmin):
-    list_display_middle = ['path_as_string']
-
-    def path_as_string(self, obj):
-        return obj.get_path()
-    path_as_string.short_description = _("Path")
-
-    def get_queryset(self, request):
-        return super(NodeAdmin, self).get_queryset(request) \
-            .select_related('parentnode')
-
-
-admin.site.register(Node, NodeAdmin)
 
 
 class SubjectAdmin(BaseNodeAdmin):

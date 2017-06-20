@@ -1,12 +1,9 @@
-from django.conf import settings
 from django.db import models
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _
 
 from abstract_is_admin import AbstractIsAdmin
 from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_account.models import User
-from node import Node
 
 
 class Examiner(models.Model, AbstractIsAdmin):
@@ -35,15 +32,6 @@ class Examiner(models.Model, AbstractIsAdmin):
     #: ForeignKey to :class:`devilry.apps.core.models.relateduser.RelatedExaminer`
     #: (the model that ties User as examiner on a Period).
     relatedexaminer = models.ForeignKey(RelatedExaminer)
-
-    @classmethod
-    def q_is_admin(cls, user_obj):
-        return \
-            Q(assignmentgroup__parentnode__admins=user_obj) | \
-            Q(assignmentgroup__parentnode__parentnode__admins=user_obj) | \
-            Q(assignmentgroup__parentnode__parentnode__parentnode__admins=user_obj) | \
-            Q(assignmentgroup__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(
-                user_obj))
 
     def get_anonymous_name(self):
         """

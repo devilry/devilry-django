@@ -5,7 +5,6 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.signals import pre_delete
 
-from node import Node
 from abstract_is_admin import AbstractIsAdmin
 from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
@@ -86,15 +85,6 @@ class FileMeta(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     @classmethod
     def q_is_examiner(cls, user_obj):
         return Q(delivery__deadline__assignment_group__examiners__user=user_obj)
-
-    @classmethod
-    def q_is_admin(cls, user_obj):
-        return \
-            Q(delivery__deadline__assignment_group__parentnode__admins=user_obj) | \
-            Q(delivery__deadline__assignment_group__parentnode__parentnode__admins=user_obj) | \
-            Q(delivery__deadline__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
-            Q(delivery__deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(  # noqa
-                user_obj))
 
     def __unicode__(self):
         return self.filename

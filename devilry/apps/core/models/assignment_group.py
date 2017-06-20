@@ -14,12 +14,10 @@ from devilry.apps.core.models import Subject
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_dbcache.bulk_create_queryset_mixin import BulkCreateQuerySetMixin
-from devilry.utils import devilry_djangoaggregate_functions
 from model_utils import Etag
 from .abstract_is_admin import AbstractIsAdmin
 from .abstract_is_examiner import AbstractIsExaminer
 from .assignment import Assignment
-from .node import Node
 
 
 class GroupPopValueError(ValueError):
@@ -1031,13 +1029,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         super(AssignmentGroup, self).save(*args, **kwargs)
         if create_dummy_deadline:
             self.deadlines.create(deadline=self.parentnode.parentnode.end_time)
-
-    @classmethod
-    def q_is_admin(cls, user_obj):
-        return Q(parentnode__admins=user_obj) | \
-            Q(parentnode__parentnode__admins=user_obj) | \
-            Q(parentnode__parentnode__parentnode__admins=user_obj) | \
-            Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
     def q_is_candidate(cls, user_obj):

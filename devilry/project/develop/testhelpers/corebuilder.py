@@ -7,7 +7,7 @@ from django.core.files.base import ContentFile
 
 from model_mommy import mommy
 
-from devilry.apps.core.models import Node, StaticFeedbackFileAttachment
+from devilry.apps.core.models import StaticFeedbackFileAttachment
 from devilry.apps.core.models import Subject
 from devilry.apps.core.models import Period
 from devilry.apps.core.models import Assignment
@@ -540,7 +540,7 @@ class SubjectBuilder(BaseNodeBuilderBase):
 
     @classmethod
     def quickadd_ducku_duck1010(cls, **kwargs):
-        return NodeBuilder('ducku').add_subject('duck1010', **kwargs)
+        return SubjectBuilder('duck1010', **kwargs)
 
     def add_period(self, *args, **kwargs):
         kwargs['parentnode'] = self.subject
@@ -585,28 +585,4 @@ class SubjectBuilder(BaseNodeBuilderBase):
 
     @classmethod
     def make(cls, **kwargs):
-        return NodeBuilder.make().add_subject(**kwargs)
-
-
-class NodeBuilder(BaseNodeBuilderBase):
-    object_attribute_name = 'node'
-    modelcls = Node
-
-    @classmethod
-    def quickadd_ducku(cls, **kwargs):
-        return NodeBuilder('ducku')
-
-    def add_subject(self, *args, **kwargs):
-        kwargs['parentnode'] = self.node
-        return SubjectBuilder(*args, **kwargs)
-
-    def add_duck1010_subject(self):
-        return SubjectBuilder(parentnode=self.node, short_name='duck1010')
-
-    def add_childnode(self, *args, **kwargs):
-        kwargs['parentnode'] = self.node
-        return NodeBuilder(*args, **kwargs)
-
-    @classmethod
-    def make(cls, **kwargs):
-        return NodeBuilder(**kwargs)
+        return SubjectBuilder(**kwargs)

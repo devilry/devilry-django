@@ -9,7 +9,6 @@ from custom_db_fields import ShortNameField, LongNameField
 from devilry.devilry_account.models import User, SubjectPermissionGroup, PeriodPermissionGroup
 from devilry.utils import devilry_djangoaggregate_functions
 from model_utils import Etag
-from node import Node
 
 
 class SubjectQuerySet(models.QuerySet):
@@ -99,11 +98,6 @@ class SubjectQuerySet(models.QuerySet):
 class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """
 
-    .. attribute:: parentnode
-
-        A django.db.models.ForeignKey_ that points to the parent node,
-        which is always a `Node`_.
-
     .. attribute:: admins
 
         A django.db.models.ManyToManyField_ that holds all the admins of the
@@ -136,8 +130,6 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
 
     short_name = ShortNameField(unique=True)
     long_name = LongNameField()
-    parentnode = models.ForeignKey(Node, related_name='subjects',
-                                   null=True, blank=True)
     admins = models.ManyToManyField(User, blank=True)
     etag = models.DateTimeField(auto_now_add=True)
 

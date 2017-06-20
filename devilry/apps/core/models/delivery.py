@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from deadline import Deadline
 from filemeta import FileMeta
-from . import AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate, Node
+from . import AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate
 import deliverytypes
 
 
@@ -214,15 +214,6 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         if not old:
             q &= ~Q(deadline__assignment_group__parentnode__parentnode__end_time__lt=now)
         return q
-
-    @classmethod
-    def q_is_admin(cls, user_obj):
-        return \
-            Q(successful=True) & \
-            Q(Q(deadline__assignment_group__parentnode__admins=user_obj) |
-              Q(deadline__assignment_group__parentnode__parentnode__admins=user_obj) |
-              Q(deadline__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) |
-              Q(deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)))  # noqa
 
     @classmethod
     def q_is_examiner(cls, user_obj):

@@ -10,7 +10,6 @@ from django.utils.translation import ugettext_lazy
 from abstract_applicationkeyvalue import AbstractApplicationKeyValue
 from abstract_is_admin import AbstractIsAdmin
 from devilry.devilry_account.models import User
-from node import Node
 from period import Period
 import period_tag
 
@@ -242,13 +241,6 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
         unique_together = ('period', 'user')
         app_label = 'core'
 
-    @classmethod
-    def q_is_admin(cls, user_obj):
-        return \
-            Q(period__admins=user_obj) | \
-            Q(period__parentnode__admins=user_obj) | \
-            Q(period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
-
     def clean(self):
         if self.tags and not self.tags_patt.match(self.tags):
             raise ValidationError('tags must be a comma-separated list of tags, each tag only containing '
@@ -449,12 +441,6 @@ class RelatedStudentKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
     class Meta:
         unique_together = ('relatedstudent', 'application', 'key')
         app_label = 'core'
-
-    @classmethod
-    def q_is_admin(cls, user_obj):
-        return (Q(relatedstudent__period__admins=user_obj) |
-                Q(relatedstudent__period__parentnode__admins=user_obj) |
-                Q(relatedstudent__period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)))
 
     def __unicode__(self):
         return '{0}: {1}'.format(self.relatedstudent, super(RelatedStudentKeyValue, self).__unicode__())
