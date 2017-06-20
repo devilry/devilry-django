@@ -37,10 +37,10 @@ class RelatedBaseCommand(BaseCommand):
         parser.add_argument(
             '--tag-prefix',
             dest='tag_prefix',
-            default=settings.DEVILRY_SYNCSYSTEM_TAG_PREFIX,
+            default=settings.DEVILRY_SYNCSYSTEM_SHORTNAME,
             help='The prefix to use for imported tags. Defaults '
-                 'to the value of the DEVILRY_SYNCSYSTEM_TAG_PREFIX setting '
-                 '(which is {!r}).'.format(settings.DEVILRY_SYNCSYSTEM_TAG_PREFIX)
+                 'to the value of the DEVILRY_SYNCSYSTEM_SHORTNAME setting '
+                 '(which is {!r}).'.format(settings.DEVILRY_SYNCSYSTEM_SHORTNAME)
         )
 
     @property

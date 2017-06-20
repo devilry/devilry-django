@@ -761,6 +761,67 @@ class PermissionGroupUser(models.Model):
         }
 
 
+class PermissionGroupQuerySet(models.QuerySet):
+    def make_name_from_syncsystem(self, grouptype, basenode):
+        return '{prefix}-{grouptype}-{path}'.format(
+            prefix=settings.DEVILRY_SYNCSYSTEM_SHORTNAME,
+            grouptype=grouptype,
+            path=basenode.get_path())
+
+    def create_permissiongroup(self, basenode, grouptype,
+                               name=None,
+                               is_custom_manageable=False):
+        if name is None and is_custom_manageable:
+            raise ValueError('Can not generate an automatic name unless '
+                             'is_custom_manageable=False.')
+        if not name:
+            name = self.make_name_from_syncsystem(
+                grouptype=grouptype,
+                basenode=basenode)
+        permissiongroup = self.model(
+            name=name,
+            grouptype=grouptype,
+            is_custom_manageable=is_custom_manageable)
+        permissiongroup.full_clean()
+        permissiongroup.save()
+        if grouptype == PermissionGroup.GROUPTYPE_PERIODADMIN:
+            period_permissiongroup = PeriodPermissionGroup(
+                period=basenode,
+                permissiongroup=permissiongroup)
+            period_permissiongroup.full_clean()
+            period_permissiongroup.save()
+        else:
+            subject_permissiongroup = SubjectPermissionGroup(
+                subject=basenode,
+                permissiongroup=permissiongroup)
+            subject_permissiongroup.full_clean()
+            subject_permissiongroup.save()
+        return permissiongroup
+
+    def create_or_update_permissiongroup(self, basenode, grouptype,
+                                         name=None,
+                                         is_custom_manageable=False):
+        if name is None and is_custom_manageable:
+            raise ValueError('Can not generate an automatic name unless '
+                             'is_custom_manageable=False.')
+        if not name:
+            name = self.make_name_from_syncsystem(
+                grouptype=grouptype,
+                basenode=basenode)
+        try:
+            permissiongroup = PermissionGroup.objects.get(name=name)
+        except PermissionGroup.DoesNotExist:
+            permissiongroup = self.create_permissiongroup(
+                basenode=basenode,
+                grouptype=grouptype,
+                name=name,
+                is_custom_manageable=is_custom_manageable)
+            return permissiongroup, True
+        else:
+            permissiongroup.is_custom_manageable = is_custom_manageable
+            return permissiongroup, False
+
+
 class PermissionGroup(models.Model):
     """
     Permission group data model.
@@ -768,6 +829,7 @@ class PermissionGroup(models.Model):
     Each group has a :obj:`~.PermissionGroup.grouptype` which determines
     the type of objects it can be added to.
     """
+    objects = PermissionGroupQuerySet.as_manager()
 
     #: The value for :obj:`~.PermissionGroup.grouptype` that identifies the group as
     #: a departmentadmin permission group.

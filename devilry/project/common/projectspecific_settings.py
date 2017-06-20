@@ -29,11 +29,19 @@ DEVILRY_EMAIL_SIGNATURE = \
 
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDeliveryStore'
 DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 1000
-DEVILRY_SYNCSYSTEM = 'YOUR SYNC SYSTEM HERE'
-DEVILRY_SYNCSYSTEM_TAG_PREFIX = 'x'
 DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
 DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-admin@example.com'
 DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
+
+# The name of the primary sync system where data is imported from.
+# This is shown in the user interface, and can be a longer string
+# with spaces.
+DEVILRY_SYNCSYSTEM = 'YOUR SYNC SYSTEM HERE'
+
+# The short name of the sync system that data is imported from.
+# This can only contain english lower-case letters (a-z),
+# numbers and ``_``.
+DEVILRY_SYNCSYSTEM_SHORTNAME = 'x'
 
 #: If this is False, we disable features that require background processing,
 #: such as search.
