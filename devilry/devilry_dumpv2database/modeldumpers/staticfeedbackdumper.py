@@ -27,7 +27,7 @@ class StaticFeedbackDumper(modeldumper.ModelDumper):
                 files: [
                     {
                         'filename': 'somefile.py',
-                        'absolute_file_path': absolute/path/to/somefile.py,
+                        'relative_file_path': path/to/somefile.py,
                         'size': size of the file(e.g 512 bytes),
                         'mimetype': 'text/x-python'
                     },
@@ -41,10 +41,9 @@ class StaticFeedbackDumper(modeldumper.ModelDumper):
 
     def _get_file_attachement_info_dict(self, file_attachement):
         file_name = file_attachement.filename
-        abs_path = os.path.abspath(file_attachement.file.file.name)
         return {
             'filename': file_name,
-            'absolute_file_path': abs_path,
+            'relative_file_path': file_attachement.file.file.name,
             'size': os.stat(abs_path).st_size,
             'mimetype': mimetypes.guess_type(file_name)[0]
         }

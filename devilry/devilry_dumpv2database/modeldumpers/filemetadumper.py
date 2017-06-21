@@ -10,7 +10,11 @@ class FileMetaDumper(modeldumper.ModelDumper):
 
     def serialize_model_object(self, obj):
         serialized = super(FileMetaDumper, self).serialize_model_object(obj=obj)
-        file_abs_path = os.path.abspath(obj.deliverystore._get_filepath(obj))
-        serialized['fields']['absolute_file_path'] = file_abs_path
+        file_path = obj.deliverystore._get_filepath(obj)
+        root = obj.deliverystore.root
+        relative_path = os.path.relpath(file_path, root)
+
+        # settings.DEVILRY_FSHIERDELIVERYSTORE_ROOT
+        serialized['fields']['relative_file_path'] = relative_path
         serialized['fields']['mimetype'] = mimetypes.guess_type(obj.filename)[0]
         return serialized
