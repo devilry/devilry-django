@@ -1,5 +1,6 @@
 import os
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from devilry.devilry_import_v2database import modelimporters
@@ -33,6 +34,15 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.input_directory = options['input-directory']
         self.fake = options['fake']
+        v2_media_root = getattr(settings, 'DEVILRY_V2_MEDIA_ROOT', None)
+        if not v2_media_root:
+            self.stderr.write('WARNING: settings.DEVILRY_V2_MEDIA_ROOT is not set,'
+                              'so StaticFeedback attachments will not be imported.')
+        v2_delivery_file_root = getattr(settings, 'DEVILRY_V2_DELIVERY_FILE_ROOT', None)
+        if not v2_delivery_file_root:
+            self.stderr.write('WARNING: settings.DEVILRY_V2_DELIVERY_FILE_ROOT is not set,'
+                              'so FileMeta will not be imported.')
+
         self.__abort_if_input_directory_does_not_exist()
         self.__verify_empty_database()
         self.__run()
