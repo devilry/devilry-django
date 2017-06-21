@@ -30,6 +30,14 @@ class ImporterMixin(object):
                 'User with id {} does not exist'.format(user_id))
         return user
 
+    def _get_user_from_id_with_fallback(self, user_id, fallback=None):
+        user_model = get_user_model()
+        try:
+            user = user_model.objects.get(id=user_id)
+        except user_model.DoesNotExist:
+            return fallback
+        return user
+
 
 class DeliveryImporter(ImporterMixin, modelimporter.ModelImporter):
     def get_model_class(self):
@@ -53,9 +61,9 @@ class DeliveryImporter(ImporterMixin, modelimporter.ModelImporter):
         try:
             candidate = Candidate.objects.get(id=candidate_id)
         except Candidate.DoesNotExist:
-            raise modelimporter.ModelImporterException(
-                'Candidate with id {} does not exist'.format(candidate_id))
-        return candidate.relatedstudent.user
+            return None
+        else:
+            return candidate.relatedstudent.user
 
     def _create_group_comment_from_object_dict(self, object_dict):
         group_comment = self.get_model_class()()
@@ -70,13 +78,7 @@ class DeliveryImporter(ImporterMixin, modelimporter.ModelImporter):
             ]
         )
         feedback_set = self._get_feedback_set_from_id(feedback_set_id=object_dict['fields']['deadline'])
-        candidate_user = self._get_user_from_candidate_id(object_dict['fields']['delivered_by'])
-        if self._user_is_candidate_in_group(assignment_group=feedback_set.group, user=candidate_user):
-            group_comment.user = candidate_user
-        else:
-            raise modelimporter.ModelImporterException(
-                'User is not Candidate on AssignmentGroup. '
-                'This may be caused by an error in the V2 scripts for dumping.')
+        group_comment.user = self._get_user_from_candidate_id(object_dict['fields']['delivered_by'])
         group_comment.feedback_set = feedback_set
         group_comment.text = 'Delivery'
         group_comment.comment_type = GroupComment.COMMENT_TYPE_GROUPCOMMENT
@@ -149,13 +151,8 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
             ]
         )
         feedback_set = self._get_feedback_set_from_id(feedback_set_id=object_dict['fields']['deadline_id'])
-        examiner_user = self._get_user_from_id(object_dict['fields']['saved_by'])
-        if self._user_is_examiner_on_group(assignment_group=feedback_set.group, user=examiner_user):
-            group_comment.user = examiner_user
-        else:
-            raise modelimporter.ModelImporterException(
-                'User is not Examiner on AssignmentGroup. '
-                'This may be caused by an error in the V2 scripts for dumping.')
+        examiner_user = self._get_user_from_id_with_fallback(object_dict['fields']['saved_by'])
+        group_comment.user = examiner_user
         self._save_and_publish_feedback_set(
             feedback_set=feedback_set,
             published_by=examiner_user,
