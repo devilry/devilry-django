@@ -1,5 +1,7 @@
+import os
 import pprint
 
+from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.core import files
@@ -126,6 +128,9 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
         """
         if len(file_info_list) == 0:
             return
+        v2_media_root = getattr(settings, 'DEVILRY_V2_MEDIA_ROOT', None)
+        if not v2_media_root:
+            return
         for file_info_dict in file_info_list:
             comment_file = CommentFile(
                 comment=group_comment,
@@ -134,7 +139,9 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
                 filesize=file_info_dict['size']
             )
             comment_file.save()
-            fp = open(file_info_dict['absolute_file_path'], 'rb')
+            path = os.path.join(v2_media_root,
+                                file_info_dict['relative_file_path'])
+            fp = open(path, 'rb')
             comment_file.file = files.File(fp, file_info_dict['filename'])
             comment_file.full_clean()
             comment_file.save()
@@ -189,6 +196,9 @@ class FileMetaImporter(ImporterMixin, modelimporter.ModelImporter):
         return group_comment
 
     def _create_comment_file_from_object_id(self, object_dict):
+        v2_delivery_file_root = getattr(settings, 'DEVILRY_V2_DELIVERY_FILE_ROOT', None)
+        if not v2_delivery_file_root:
+            return
         comment_file = self.get_model_class()()
         self.patch_model_from_object_dict(
             model_object=comment_file,
@@ -202,7 +212,9 @@ class FileMetaImporter(ImporterMixin, modelimporter.ModelImporter):
         delivery_comment = self._get_delivery_comment_from_id(group_comment_id=object_dict['fields']['delivery'])
         comment_file.comment = delivery_comment
         comment_file.save()
-        fp = open(object_dict['fields']['absolute_file_path'], 'rb')
+        path = os.path.join(v2_delivery_file_root,
+                            object_dict['fields']['relative_file_path'])
+        fp = open(path, 'rb')
         comment_file.file = files.File(fp, object_dict['fields']['filename'])
         comment_file.full_clean()
         comment_file.save()
