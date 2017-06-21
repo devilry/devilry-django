@@ -107,3 +107,8 @@ def devilry_group_comment_published(comment):
 @register.filter("devilry_group_markdown")
 def devilry_group_markdown(value):
     return parse_markdown.markdown_full(value)
+
+
+@register.inclusion_tag("devilry_group/template_tags/devilry_group_comment_user_is_none.django.html")
+def devilry_group_comment_user_is_none():
+    return {}

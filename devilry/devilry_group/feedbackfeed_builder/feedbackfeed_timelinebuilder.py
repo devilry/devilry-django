@@ -162,10 +162,11 @@ class FeedbackSetEventTimeLine(AbstractTimelineBuilder):
             "obj": group_comment,
             "related_deadline": self.feedback_set.current_deadline(assignment=self.assignment),
         }
+        user_id = group_comment.user.id if group_comment.user else None
         if group_comment.user_role == Comment.USER_ROLE_STUDENT:
-            event_dict['candidate'] = self.candidate_map.get(group_comment.user.id)
+            event_dict['candidate'] = self.candidate_map.get(user_id, None)
         elif group_comment.user_role == Comment.USER_ROLE_EXAMINER:
-            event_dict['examiner'] = self.examiner_map.get(group_comment.user.id)
+            event_dict['examiner'] = self.examiner_map.get(user_id, None)
         self._add_event_item_to_timeline(
             datetime_obj=group_comment.published_datetime,
             event_dict=event_dict

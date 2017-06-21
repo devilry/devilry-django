@@ -14,12 +14,16 @@
                 ({{ me.group_comment.user_role }})
             </span>
             <span class="devilry-group-comment-created-by comment-created-by-text">
-                {% if me.group_comment.user_role == 'student'%}
-                    {% devilry_single_candidate_long_displayname me.assignment me.user_obj me.devilry_viewrole %}
-                {% elif me.group_comment.user_role == 'examiner' %}
-                    {% devilry_single_examiner_long_displayname me.assignment me.user_obj me.devilry_viewrole %} &nbsp;
+                {% if me.group_comment.user == None %}
+                    {% devilry_group_comment_user_is_none %}
                 {% else %}
-                    {% devilry_user_verbose_inline me.group_comment.user %}
+                    {% if me.group_comment.user_role == 'student'%}
+                        {% devilry_single_candidate_long_displayname me.assignment me.user_obj me.devilry_viewrole %}
+                    {% elif me.group_comment.user_role == 'examiner' %}
+                        {% devilry_single_examiner_long_displayname me.assignment me.user_obj me.devilry_viewrole %}
+                    {% else %}
+                        {% devilry_user_verbose_inline me.group_comment.user %}
+                    {% endif %}
                 {% endif %}
             </span>
 

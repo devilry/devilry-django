@@ -62,6 +62,42 @@ class TestFeedbackFeedGroupCommentMixin(cradmin_testhelpers.TestCaseMixin):
     """
     Tests the rendering of GroupComment in a feedbackfeed.
     """
+    def test_get_feedbackfeed_candidate_user_deleted(self):
+        testassignment = mommy.make('core.Assignment')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   user_role='student',
+                   user=None,
+                   feedback_set=testfeedbackset)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
+        self.assertEqual('USER DELETED',
+                         mockresponse.selector.one('.devilry-group-comment-user-deleted').alltext_normalized)
+
+    def test_get_feedbackfeed_examiner_user_deleted(self):
+        testassignment = mommy.make('core.Assignment')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   user_role='examiner',
+                   user=None,
+                   feedback_set=testfeedbackset)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
+        self.assertEqual('USER DELETED',
+                         mockresponse.selector.one('.devilry-group-comment-user-deleted').alltext_normalized)
+
+    def test_get_feedbackfeed_admin_user_deleted(self):
+        testassignment = mommy.make('core.Assignment')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   user_role='admin',
+                   user=None,
+                   feedback_set=testfeedbackset)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
+        self.assertEqual('USER DELETED',
+                         mockresponse.selector.one('.devilry-group-comment-user-deleted').alltext_normalized)
+
     def test_get_comment_student(self):
         # test that student comment-style is rendered.
         group = mommy.make('core.AssignmentGroup')
