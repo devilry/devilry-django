@@ -49,7 +49,7 @@ class TestSelectMethodView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedExaminer', period=testassignment.period)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
-            4,
+            3,
             mockresponse.selector.count(
                 '#devilry_admin_assignment_examiners_bulk_organize_buttons .btn'))
 

@@ -1,25 +1,24 @@
-from datetime import datetime
 from datetime import timedelta
-from django.conf import settings
 
+import arrow
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
-
+from django.utils import timezone
 from model_mommy import mommy
 
-from devilry.apps.core.models import Node, StaticFeedbackFileAttachment
-from devilry.apps.core.models import Subject
-from devilry.apps.core.models import Period
+from devilry.apps.core.deliverystore import MemoryDeliveryStore
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Deadline
 from devilry.apps.core.models import Delivery
-from devilry.apps.core.models import StaticFeedback
 from devilry.apps.core.models import FileMeta
-from devilry.apps.core.models import RelatedStudent
+from devilry.apps.core.models import Period
 from devilry.apps.core.models import RelatedExaminer
-from devilry.apps.core.deliverystore import MemoryDeliveryStore
-from .datebuilder import DateTimeBuilder
+from devilry.apps.core.models import RelatedStudent
+from devilry.apps.core.models import StaticFeedback
+from devilry.apps.core.models import StaticFeedbackFileAttachment
+from devilry.apps.core.models import Subject
 from devilry.devilry_comment.models import CommentFile
 
 
@@ -203,7 +202,7 @@ class DeliveryBuilder(CoreBuilderBase):
 
     def __init__(self, **kwargs):
         if 'time_of_delivery' not in kwargs:
-            kwargs['time_of_delivery'] = datetime.now()
+            kwargs['time_of_delivery'] = timezone.now()
         self.delivery = Delivery(**kwargs)
         if 'number' not in kwargs:
             self.delivery.set_number()
@@ -306,12 +305,12 @@ class GroupCommentBuilder(CoreBuilderBase):
         return FeedbackSetBuilder \
             .quickadd_ducku_duck1010_active_assignment1_group_feedbackset(studentuser=studentuser, examiner=examiner) \
             .add_groupcomment(
-            user=studentuser,
-            user_role='student',
-            instant_publish=True,
-            visible_for_students=True,
-            text=comment if comment is not None else 'Lorem ipsum I dont know it from memory bla bla bla..',
-            published_datetime=DateTimeBuilder.now().minus(weeks=4, days=3, hours=10))
+                user=studentuser,
+                user_role='student',
+                instant_publish=True,
+                visible_for_students=True,
+                text=comment if comment is not None else 'Lorem ipsum I dont know it from memory bla bla bla..',
+                published_datetime=arrow.get(timezone.now()).replace(weeks=-4, days=-3, hours=-10).datetime)
 
     def __init__(self, **kwargs):
         kwargs['comment_type'] = 'groupcomment'
@@ -349,7 +348,7 @@ class FeedbackSetBuilder(CoreBuilderBase):
             .add_feedback_set(points=10,
                               published_by=examiner,
                               created_by=examiner,
-                              deadline_datetime=DateTimeBuilder.now().minus(weeks=4))
+                              deadline_datetime=arrow.get(timezone.now()).replace(weeks=-4).datetime)
 
     def __init__(self, **kwargs):
         self.feedback_set = mommy.make('devilry_group.FeedbackSet', **kwargs)
@@ -421,14 +420,14 @@ class AssignmentGroupBuilder(CoreBuilderBase):
     def add_deadline_in_x_weeks(self, weeks, **kwargs):
         if 'deadline' in kwargs:
             raise ValueError('add_deadline_in_x_weeks does not accept ``deadline`` as kwarg, it sets it automatically.')
-        kwargs['deadline'] = DateTimeBuilder.now().plus(weeks=weeks)
+        kwargs['deadline'] = arrow.get(timezone.now()).replace(weeks=+weeks).datetime
         return self.add_deadline(**kwargs)
 
     def add_deadline_x_weeks_ago(self, weeks, **kwargs):
         if 'deadline' in kwargs:
             raise ValueError(
                 'add_deadline_x_weeks_ago does not accept ``deadline`` as kwarg, it sets it automatically.')
-        kwargs['deadline'] = DateTimeBuilder.now().minus(weeks=weeks)
+        kwargs['deadline'] = arrow.get(timezone.now()).replace(weeks=-weeks).datetime
         return self.add_deadline(**kwargs)
 
     def add_feedback_set(self, **kwargs):
@@ -456,7 +455,7 @@ class AssignmentBuilder(BaseNodeBuilderBase):
 
     def __init__(self, *args, **kwargs):
         if not 'publishing_time' in kwargs:
-            kwargs['publishing_time'] = datetime.now()
+            kwargs['publishing_time'] = timezone.now()
         super(AssignmentBuilder, self).__init__(*args, **kwargs)
 
     def add_group(self, *args, **kwargs):
@@ -492,15 +491,15 @@ class PeriodBuilder(BaseNodeBuilderBase):
     def add_assignment(self, *args, **kwargs):
         kwargs['parentnode'] = self.period
         if 'first_deadline' not in kwargs:
-            kwargs['first_deadline'] = datetime.now()
+            kwargs['first_deadline'] = timezone.now()
         return AssignmentBuilder(*args, **kwargs)
 
     def add_assignment_x_weeks_ago(self, weeks, **kwargs):
-        kwargs['publishing_time'] = DateTimeBuilder.now().minus(weeks=weeks)
+        kwargs['publishing_time'] = arrow.get(timezone.now()).replace(weeks=-weeks).datetime
         return self.add_assignment(**kwargs)
 
     def add_assignment_in_x_weeks(self, weeks, **kwargs):
-        kwargs['publishing_time'] = DateTimeBuilder.now().plus(weeks=weeks)
+        kwargs['publishing_time'] = arrow.get(timezone.now()).replace(weeks=+weeks).datetime
         return self.add_assignment(**kwargs)
 
     def add_relatedstudents(self, *users):
@@ -540,14 +539,14 @@ class SubjectBuilder(BaseNodeBuilderBase):
 
     @classmethod
     def quickadd_ducku_duck1010(cls, **kwargs):
-        return NodeBuilder('ducku').add_subject('duck1010', **kwargs)
+        return SubjectBuilder('duck1010', **kwargs)
 
     def add_period(self, *args, **kwargs):
         kwargs['parentnode'] = self.subject
         if 'start_time' not in kwargs:
-            kwargs['start_time'] = DateTimeBuilder.now().minus(days=30 * 3)
+            kwargs['start_time'] = arrow.get(timezone.now()).replace(days=-(30 * 3)).datetime
         if 'end_time' not in kwargs:
-            kwargs['end_time'] = DateTimeBuilder.now().plus(days=30 * 3)
+            kwargs['end_time'] = arrow.get(timezone.now()).replace(days=30 * 3).datetime
         return PeriodBuilder(*args, **kwargs)
 
     def add_6month_active_period(self, **kwargs):
@@ -555,8 +554,8 @@ class SubjectBuilder(BaseNodeBuilderBase):
         if 'start_time' in kwargs or 'end_time' in kwargs:
             raise ValueError(
                 'add_6month_active_period does not accept ``start_time`` or ``end_time`` as kwargs, it sets them automatically.')
-        kwargs['start_time'] = DateTimeBuilder.now().minus(days=30 * 3)
-        kwargs['end_time'] = DateTimeBuilder.now().plus(days=30 * 3)
+        kwargs['start_time'] = arrow.get(timezone.now()).replace(days=-(30 * 3)).datetime
+        kwargs['end_time'] = arrow.get(timezone.now()).replace(days=30 * 3).datetime
         if not 'short_name' in kwargs:
             kwargs['short_name'] = 'active'
         return self.add_period(**kwargs)
@@ -566,8 +565,8 @@ class SubjectBuilder(BaseNodeBuilderBase):
         if 'start_time' in kwargs or 'end_time' in kwargs:
             raise ValueError(
                 'add_6month_lastyear_period does not accept ``start_time`` or ``end_time`` as kwargs, it sets them automatically.')
-        kwargs['start_time'] = DateTimeBuilder.now().minus(days=365 + 30 * 3)
-        kwargs['end_time'] = DateTimeBuilder.now().minus(days=365 - 30 * 3)
+        kwargs['start_time'] = arrow.get(timezone.now()).replace(days=-(365 + 30 * 3)).datetime
+        kwargs['end_time'] = arrow.get(timezone.now()).replace(days=-(365 - 30 * 3)).datetime
         if not 'short_name' in kwargs:
             kwargs['short_name'] = 'lastyear'
         return self.add_period(**kwargs)
@@ -577,36 +576,12 @@ class SubjectBuilder(BaseNodeBuilderBase):
         if 'start_time' in kwargs or 'end_time' in kwargs:
             raise ValueError(
                 'add_6month_nextyear_period does not accept ``start_time`` or ``end_time`` as kwargs, it sets them automatically.')
-        kwargs['start_time'] = DateTimeBuilder.now().plus(days=365 - 30 * 3)
-        kwargs['end_time'] = DateTimeBuilder.now().plus(days=365 + 30 * 3)
+        kwargs['start_time'] = arrow.get(timezone.now()).replace(days=365 - 30 * 3).datetime
+        kwargs['end_time'] = arrow.get(timezone.now()).replace(days=365 + 30 * 3).datetime
         if not 'short_name' in kwargs:
             kwargs['short_name'] = 'nextyear'
         return self.add_period(**kwargs)
 
     @classmethod
     def make(cls, **kwargs):
-        return NodeBuilder.make().add_subject(**kwargs)
-
-
-class NodeBuilder(BaseNodeBuilderBase):
-    object_attribute_name = 'node'
-    modelcls = Node
-
-    @classmethod
-    def quickadd_ducku(cls, **kwargs):
-        return NodeBuilder('ducku')
-
-    def add_subject(self, *args, **kwargs):
-        kwargs['parentnode'] = self.node
-        return SubjectBuilder(*args, **kwargs)
-
-    def add_duck1010_subject(self):
-        return SubjectBuilder(parentnode=self.node, short_name='duck1010')
-
-    def add_childnode(self, *args, **kwargs):
-        kwargs['parentnode'] = self.node
-        return NodeBuilder(*args, **kwargs)
-
-    @classmethod
-    def make(cls, **kwargs):
-        return NodeBuilder(**kwargs)
+        return SubjectBuilder(**kwargs)

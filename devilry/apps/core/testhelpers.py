@@ -1,18 +1,19 @@
-from datetime import datetime, timedelta
-import unittest
 import os
+import unittest
+from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
-from models import Node, Subject, Period, Assignment, AssignmentGroup, \
-        FileMeta, Candidate
 from deliverystore import FileNotFoundError
+from models import Subject, Period, Assignment, AssignmentGroup, \
+    FileMeta, Candidate
 from testhelper import TestHelper
 
 
 def create_from_path(path):
-    """ Create a Node, Subject, Period, Assignment or AssignmentGroup from
+    """ Create a Subject, Period, Assignment or AssignmentGroup from
     ``path``.
 
     Examples::
@@ -24,23 +25,13 @@ def create_from_path(path):
     """
     split = path.split(':', 1)
     nodes = split[0].split('.')
-    for nodename in nodes:
-        node = Node(short_name=nodename, long_name=nodename.capitalize())
-        try:
-            node.clean()
-            node.save()
-        except:
-            node = Node.objects.get(short_name=nodename)
-        last = node
 
-    if len(split) != 2:
-        return last
     pathsplit = split[1].split('.')
 
     # Subject
     subjectname = pathsplit[0]
-    subject = Subject(parentnode=node, short_name=subjectname,
-            long_name=subjectname.capitalize())
+    subject = Subject(short_name=subjectname,
+                      long_name=subjectname.capitalize())
     try:
         subject.clean()
         subject.save()
@@ -52,8 +43,8 @@ def create_from_path(path):
     if len(pathsplit) > 1:
         periodname = pathsplit[1]
         period = Period(parentnode=subject, short_name=periodname,
-                long_name=periodname.capitalize(), start_time=datetime.now(),
-                end_time=datetime.now() + timedelta(10))
+                long_name=periodname.capitalize(), start_time=timezone.now(),
+                end_time=timezone.now() + timedelta(10))
         try:
             period.clean()
             period.save()
@@ -66,7 +57,7 @@ def create_from_path(path):
     if len(pathsplit) > 2:
         assignmentname = pathsplit[2]
         assignment = Assignment(parentnode=period, short_name=assignmentname,
-                long_name=assignmentname.capitalize(), publishing_time=datetime.now())
+                long_name=assignmentname.capitalize(), publishing_time=timezone.now())
         
         assignment.clean()
         try:
@@ -119,8 +110,7 @@ class DeliveryStoreTestMixin(TestHelper):
     def setUp(self):
         """ Make sure to call this if you override it in subclasses, or the
         tests **will fail**. """
-        self.add(nodes="uio.ifi",
-                 subjects=["inf1100"],
+        self.add(subjects=["inf1100"],
                  periods=["period"],
                  assignments=["assignment1"],
                  assignmentgroups=["g1:candidate(student1)"],

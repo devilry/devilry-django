@@ -45,6 +45,7 @@ class UserImporter(modelimporter.ModelImporter):
         # (See devilry.devilry_account.models.UserName.clean and
         # devilry.devilry_account.models.UserEmail.clean).
         user.shortname = str(object_dict['pk'])
+        user.set_unusable_password()
         user.full_clean()
         user.save()
 

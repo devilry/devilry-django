@@ -2,6 +2,7 @@ from datetime import datetime
 import unittest
 from django.http import Http404
 from django.test import TestCase, RequestFactory
+from django.utils import timezone
 
 from devilry.devilry_detektor.models import DetektorAssignment
 from devilry.devilry_detektor.tasks import AssignmentParser
@@ -54,7 +55,7 @@ class TestAssignmentAssemblyView(TestCase):
         self.assertIn('Run/re-run similarity check', response.content)
 
     def test_already_running(self):
-        processing_started_datetime = datetime.now()
+        processing_started_datetime = timezone.now()
         DetektorAssignment.objects.create(
             assignment_id=self.assignmentbuilder.assignment.id,
             processing_started_by=self.testuser,

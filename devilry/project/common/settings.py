@@ -16,6 +16,7 @@ TIME_ZONE = 'Europe/Oslo'
 SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
+USE_TZ = True
 FORMAT_MODULE_PATH = 'devilry.project.common.formats'
 LOGIN_URL = '/authenticate/login'
 STATIC_URL = '/static/'
@@ -62,7 +63,6 @@ INSTALLED_APPS = [
     'devilry.devilry_markup',
     'devilry.devilry_superadmin',
     'devilry.devilry_authenticate',
-    'devilry.devilry_send_email_to_students',
 
     'devilry.devilry_help',
     'devilry.devilry_theme3',

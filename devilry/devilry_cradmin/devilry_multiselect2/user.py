@@ -43,6 +43,7 @@ class SelectUsersForm(forms.Form):
 class BaseMultiselectUsersView(multiselect2view.ListbuilderFilterView):
     value_renderer_class = ItemValue
     model = User
+    paginate_by = 70
 
     def add_filterlist_items(self, filterlist):
         filterlist.append(devilry_listfilter.user.Search())

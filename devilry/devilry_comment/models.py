@@ -24,7 +24,9 @@ class Comment(models.Model):
     draft_text = models.TextField(null=False, blank=True, default='')
 
     #: the user who posted the comment
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             null=True, blank=True,
+                             on_delete=models.SET_NULL)
 
     #: if this comment is a reply to another comment, that comment will be parent
     parent = models.ForeignKey('self', null=True, blank=True)

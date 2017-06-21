@@ -1,4 +1,7 @@
-from django_cradmin import crapp
+from django.core.urlresolvers import reverse
+from django.template import defaultfilters
+from django.utils.translation import ugettext_lazy
+from django_cradmin import crapp, crinstance
 from django_cradmin import crmenu
 from django_cradmin.crinstance import reverse_cradmin_url
 
@@ -31,6 +34,13 @@ class Menu(crmenu.Menu):
             ),
             active=self.get_frontpage_breadcrumb_is_active()
         ))
+        self.add_footeritem(
+            label=defaultfilters.truncatechars(self.request.user.get_displayname(), 15),
+            url=crinstance.reverse_cradmin_url(
+                instanceid='devilry_account',
+                appname='account'
+            )
+        )
 
     def render(self, context):
         """

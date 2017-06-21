@@ -1,5 +1,4 @@
 import warnings
-from datetime import datetime
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -14,12 +13,10 @@ from devilry.apps.core.models import Subject
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_dbcache.bulk_create_queryset_mixin import BulkCreateQuerySetMixin
-from devilry.utils import devilry_djangoaggregate_functions
 from model_utils import Etag
 from .abstract_is_admin import AbstractIsAdmin
 from .abstract_is_examiner import AbstractIsExaminer
 from .assignment import Assignment
-from .node import Node
 
 
 class GroupPopValueError(ValueError):
@@ -121,7 +118,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
 
     def filter_waiting_for_feedback(self):
         warnings.warn("deprecated", DeprecationWarning)
-        now = datetime.now()
+        now = timezone.now()
         return self.filter(
             Q(parentnode__delivery_types=deliverytypes.NON_ELECTRONIC,
               delivery_status="waiting-for-something") |
@@ -131,7 +128,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
 
     def filter_waiting_for_deliveries(self):
         warnings.warn("deprecated", DeprecationWarning)
-        now = datetime.now()
+        now = timezone.now()
         return self.filter(
             parentnode__delivery_types=deliverytypes.ELECTRONIC,
             delivery_status="waiting-for-something",
@@ -139,7 +136,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
 
     def filter_can_add_deliveries(self):
         warnings.warn("deprecated", DeprecationWarning)
-        now = datetime.now()
+        now = timezone.now()
         return self\
             .filter(parentnode__delivery_types=deliverytypes.ELECTRONIC,
                     delivery_status="waiting-for-something")\
@@ -176,7 +173,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             delivery = Delivery(
                 deadline=deadline,
                 delivery_type=deliverytypes.NON_ELECTRONIC,
-                time_of_delivery=datetime.now())
+                time_of_delivery=timezone.now())
             delivery.set_number()
             delivery.full_clean()
             delivery.save()
@@ -247,7 +244,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         Filter all :class:`.AssignmentGroup` objects within a published
         :class:`devilry.apps.core.models.Assignment`.
         """
-        return self.filter(parentnode__publishing_time__lt=datetime.now())
+        return self.filter(parentnode__publishing_time__lt=timezone.now())
 
     def filter_is_active(self):
         """
@@ -255,7 +252,7 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
         :class:`devilry.apps.core.models.Assignment` within an
         active :class:`devilry.apps.core.models.Period`.
         """
-        now = datetime.now()
+        now = timezone.now()
         return self.filter_is_published().filter(
             parentnode__parentnode__start_time__lt=now,
             parentnode__parentnode__end_time__gt=now)
@@ -1033,13 +1030,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             self.deadlines.create(deadline=self.parentnode.parentnode.end_time)
 
     @classmethod
-    def q_is_admin(cls, user_obj):
-        return Q(parentnode__admins=user_obj) | \
-            Q(parentnode__parentnode__admins=user_obj) | \
-            Q(parentnode__parentnode__parentnode__admins=user_obj) | \
-            Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
-
-    @classmethod
     def q_is_candidate(cls, user_obj):
         """
         Returns a django.models.Q object matching AssignmentGroups where
@@ -1094,7 +1084,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     @classmethod
     def q_published(cls, old=True, active=True):
-        now = datetime.now()
+        now = timezone.now()
         q = Q(parentnode__publishing_time__lt=now)
         if not active:
             q &= ~Q(parentnode__parentnode__end_time__gte=now)
@@ -1188,19 +1178,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             'groupid': self.id
         }
 
-    @property
-    def short_displayname(self):
-        """
-        A short displayname for the group. If the assignment is anonymous,
-        we list the candidate IDs. If the group has a name, the name is used,
-        else we fall back to a comma separated list of usernames. If the group has no name and no
-        students, we use the ID.
-
-        .. seealso:: https://github.com/devilry/devilry-django/issues/498
-        """
-        assignment = self.assignment
+    def get_short_displayname(self, assignment=None):
+        assignment = assignment or self.assignment
         if assignment.is_anonymous:
-            return self.get_anonymous_displayname()
+            return self.get_anonymous_displayname(assignment=assignment)
         else:
             candidates = self.candidates.all()
             names = [candidate.relatedstudent.user.shortname for candidate in candidates]
@@ -1213,6 +1194,18 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             else:
                 return self.__get_no_candidates_nonanonymous_displayname()
 
+    @property
+    def short_displayname(self):
+        """
+        A short displayname for the group. If the assignment is anonymous,
+        we list the candidate IDs. If the group has a name, the name is used,
+        else we fall back to a comma separated list of usernames. If the group has no name and no
+        students, we use the ID.
+
+        .. seealso:: https://github.com/devilry/devilry-django/issues/498
+        """
+        return self.get_short_displayname()
+
     def get_unanonymized_long_displayname(self):
         candidates = self.candidates.all()
         names = [candidate.relatedstudent.user.get_full_name() for candidate in candidates]
@@ -1221,6 +1214,25 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             out = self.__get_no_candidates_nonanonymous_displayname()
         if self.name:
             out = u'{} ({})'.format(self.name, out)
+        return out
+
+    def get_long_displayname(self, assignment=None):
+        """
+        A long displayname for the group. If the assignment is anonymous,
+        we list the candidate IDs.
+
+        If the assignment is not anonymous, we use a comma separated list of
+        the displaynames (full names with fallback to shortname) of the
+        students. If the group has a name, we use the groupname with the names
+        of the students in parenthesis.
+
+        .. seealso:: https://github.com/devilry/devilry-django/issues/499
+        """
+        assignment = assignment or self.assignment
+        if assignment.is_anonymous:
+            out = self.get_anonymous_displayname(assignment=assignment)
+        else:
+            out = self.get_unanonymized_long_displayname()
         return out
 
     @property
@@ -1236,12 +1248,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         .. seealso:: https://github.com/devilry/devilry-django/issues/499
         """
-        assignment = self.assignment
-        if assignment.is_anonymous:
-            out = self.get_anonymous_displayname()
-        else:
-            out = self.get_unanonymized_long_displayname()
-        return out
+        return self.get_long_displayname()
 
     def __unicode__(self):
         return u'{} - {}'.format(self.short_displayname, self.parentnode.get_path())
@@ -1635,7 +1642,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             if self.assignment.delivery_types == deliverytypes.NON_ELECTRONIC:
                 return 'waiting-for-feedback'
             else:
-                now = datetime.now()
+                now = timezone.now()
                 if self.last_deadline.deadline > now:
                     return 'waiting-for-deliveries'
                 else:

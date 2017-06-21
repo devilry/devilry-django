@@ -1,9 +1,8 @@
-from datetime import datetime
-
 from model_mommy import recipe
 
 from devilry.apps.core.models import Period, Assignment
-
+#: The ``start_time`` of the period created by the :obj:`.period_old` recipe.
+from devilry.utils.datetimeutils import default_timezone_datetime
 
 #
 #
@@ -11,27 +10,26 @@ from devilry.apps.core.models import Period, Assignment
 #
 #
 
-#: The ``start_time`` of the period created by the :obj:`.period_old` recipe.
-OLD_PERIOD_START = datetime(1000, 1, 1, 0, 0)
+OLD_PERIOD_START = default_timezone_datetime(1000, 1, 1, 0, 0)
 
 #: The ``end_time`` of the period created by the :obj:`.period_old` recipe.
-OLD_PERIOD_END = datetime(1999, 12, 31, 23, 59)
+OLD_PERIOD_END = default_timezone_datetime(1999, 12, 31, 23, 59)
 
 #: The ``first_deadline`` of the assignment created by the
 #: :obj:`.assignment_activeperiod_start`.
-ASSIGNMENT_OLDPERIOD_START_FIRST_DEADLINE = datetime(1000, 1, 15, 23, 59)
+ASSIGNMENT_OLDPERIOD_START_FIRST_DEADLINE = default_timezone_datetime(1000, 1, 15, 23, 59)
 
 #: The ``publishing_time`` of the assignment created by the
 #: :obj:`.assignment_oldperiod_end`.
-ASSIGNMENT_OLDPERIOD_MIDDLE_PUBLISHING_TIME = datetime(1500, 1, 1, 0, 0)
+ASSIGNMENT_OLDPERIOD_MIDDLE_PUBLISHING_TIME = default_timezone_datetime(1500, 1, 1, 0, 0)
 
 #: The ``publishing_time`` of the assignment created by the
 #: :obj:`.assignment_oldperiod_end`.
-ASSIGNMENT_OLDPERIOD_MIDDLE_FIRST_DEADLINE = datetime(1500, 1, 15, 23, 59)
+ASSIGNMENT_OLDPERIOD_MIDDLE_FIRST_DEADLINE = default_timezone_datetime(1500, 1, 15, 23, 59)
 
 #: The ``publishing_time`` of the assignment created by the
 #: :obj:`.assignment_oldperiod_end`.
-ASSIGNMENT_OLDPERIOD_END_PUBLISHING_TIME = datetime(1999, 12, 1, 0, 0)
+ASSIGNMENT_OLDPERIOD_END_PUBLISHING_TIME = default_timezone_datetime(1999, 12, 1, 0, 0)
 
 
 #
@@ -41,26 +39,26 @@ ASSIGNMENT_OLDPERIOD_END_PUBLISHING_TIME = datetime(1999, 12, 1, 0, 0)
 #
 
 #: The ``start_time`` of the period created by the :obj:`.period_active` recipe.
-ACTIVE_PERIOD_START = datetime(2000, 1, 1, 0, 0)
+ACTIVE_PERIOD_START = default_timezone_datetime(2000, 1, 1, 0, 0)
 
 #: The ``end_time`` of the period created by the :obj:`.period_active` recipe.
-ACTIVE_PERIOD_END = datetime(5999, 12, 31, 23, 59)
+ACTIVE_PERIOD_END = default_timezone_datetime(5999, 12, 31, 23, 59)
 
 #: The ``first_deadline`` of the assignment created by the
 #: :obj:`.assignment_activeperiod_start`.
-ASSIGNMENT_ACTIVEPERIOD_START_FIRST_DEADLINE = datetime(2000, 1, 15, 23, 59)
+ASSIGNMENT_ACTIVEPERIOD_START_FIRST_DEADLINE = default_timezone_datetime(2000, 1, 15, 23, 59)
 
 #: The ``publishing_time`` of the assignment created by the
 #: :obj:`.assignment_activeperiod_end`.
-ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME = datetime(3500, 1, 1, 0, 0)
+ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME = default_timezone_datetime(3500, 1, 1, 0, 0)
 
 #: The ``publishing_time`` of the assignment created by the
 #: :obj:`.assignment_activeperiod_end`.
-ASSIGNMENT_ACTIVEPERIOD_MIDDLE_FIRST_DEADLINE = datetime(3500, 1, 15, 23, 59)
+ASSIGNMENT_ACTIVEPERIOD_MIDDLE_FIRST_DEADLINE = default_timezone_datetime(3500, 1, 15, 23, 59)
 
 #: The ``publishing_time`` of the assignment created by the
 #: :obj:`.assignment_activeperiod_end`.
-ASSIGNMENT_ACTIVEPERIOD_END_PUBLISHING_TIME = datetime(5999, 12, 1, 0, 0)
+ASSIGNMENT_ACTIVEPERIOD_END_PUBLISHING_TIME = default_timezone_datetime(5999, 12, 1, 0, 0)
 
 
 #
@@ -70,26 +68,26 @@ ASSIGNMENT_ACTIVEPERIOD_END_PUBLISHING_TIME = datetime(5999, 12, 1, 0, 0)
 #
 
 #: The ``start_time`` of the period created by the :obj:`.period_future` recipe.
-FUTURE_PERIOD_START = datetime(6000, 1, 1, 0, 0)
+FUTURE_PERIOD_START = default_timezone_datetime(6000, 1, 1, 0, 0)
 
 #: The ``end_time`` of the period created by the :obj:`.period_future` recipe.
-FUTURE_PERIOD_END = datetime(9999, 12, 31, 23, 59)
+FUTURE_PERIOD_END = default_timezone_datetime(9998, 1, 1, 23, 59)
 
 #: The ``first_deadline`` of the assignment created by the
 #: :obj:`.assignment_futureperiod_start`.
-ASSIGNMENT_FUTUREPERIOD_START_FIRST_DEADLINE = datetime(6000, 1, 15, 23, 59)
+ASSIGNMENT_FUTUREPERIOD_START_FIRST_DEADLINE = default_timezone_datetime(6000, 1, 15, 23, 59)
 
 #: The ``publishing_time`` of the assignment created by the
 #: :obj:`.assignment_futureperiod_end`.
-ASSIGNMENT_FUTUREPERIOD_MIDDLE_PUBLISHING_TIME = datetime(7500, 1, 1, 0, 0)
+ASSIGNMENT_FUTUREPERIOD_MIDDLE_PUBLISHING_TIME = default_timezone_datetime(7500, 1, 1, 0, 0)
 
 #: The ``publishing_time`` of the assignment created by the
 #: :obj:`.assignment_futureperiod_end`.
-ASSIGNMENT_FUTUREPERIOD_MIDDLE_FIRST_DEADLINE = datetime(7500, 1, 15, 23, 59)
+ASSIGNMENT_FUTUREPERIOD_MIDDLE_FIRST_DEADLINE = default_timezone_datetime(7500, 1, 15, 23, 59)
 
 #: The ``publishing_time`` of the assignment created by the
 #: :obj:`.assignment_futureperiod_end`.
-ASSIGNMENT_FUTUREPERIOD_END_PUBLISHING_TIME = datetime(9999, 12, 1, 0, 0)
+ASSIGNMENT_FUTUREPERIOD_END_PUBLISHING_TIME = default_timezone_datetime(9998, 1, 1, 0, 0)
 
 
 #: Use this Recipe to create a Period that has start time
@@ -106,7 +104,7 @@ ASSIGNMENT_FUTUREPERIOD_END_PUBLISHING_TIME = datetime(9999, 12, 1, 0, 0)
 period_old = recipe.Recipe(
     Period,
     start_time=OLD_PERIOD_START,
-    end_time=datetime(1999, 12, 31, 23, 59, 59)
+    end_time=default_timezone_datetime(1999, 12, 31, 23, 59, 59)
 )
 
 
@@ -129,7 +127,7 @@ period_active = recipe.Recipe(
 )
 
 #: Use this Recipe to create a Period that has start time
-#: set to ``6000-01-01 00:00`` and end time set to ``9999-12-31 23:59:59``.
+#: set to ``6000-01-01 00:00`` and end time set to ``9999-01-01 23:59``.
 #:
 #: This makes it possible to test with exact datetime values instead
 #: of writing tests that mocks the time.
@@ -327,8 +325,8 @@ assignment_futureperiod_middle = recipe.Recipe(
 
 
 #: Use this Recipe to create an Assignment that has ``publishing_time``
-#: set to ``9999-12-01 00:00`` and ``first_deadline`` set to
-#: ``9999-12-31 23:59``.
+#: set to ``9998-01-01 00:00`` and ``first_deadline`` set to
+#: ``9998-01-01 23:59``.
 #:
 #: This means that the first deadline is exactly at the end of
 #: a period created with the :obj:`.period_future` recipe.

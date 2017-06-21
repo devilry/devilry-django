@@ -1,11 +1,10 @@
 from __future__ import print_function
 
-from datetime import datetime
-
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
 from abstract_applicationkeyvalue import AbstractApplicationKeyValue
 from abstract_is_admin import AbstractIsAdmin
@@ -15,7 +14,6 @@ from basenode import BaseNode
 from custom_db_fields import ShortNameField, LongNameField
 from devilry.devilry_account.models import User, PeriodPermissionGroup
 from model_utils import Etag
-from node import Node
 from subject import Subject
 
 
@@ -35,14 +33,14 @@ class PeriodQuerySet(models.QuerySet):
         """
         Filter only active periods.
         """
-        now = datetime.now()
+        now = timezone.now()
         return self.filter(start_time__lt=now, end_time__gt=now)
 
     def filter_has_started(self):
         """
         Filter only started periods.
         """
-        now = datetime.now()
+        now = timezone.now()
         return self.filter(start_time__lt=now)
 
     def filter_user_is_admin(self, user):
@@ -205,7 +203,7 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
 
     @classmethod
     def q_published(cls, old=True, active=True):
-        now = datetime.now()
+        now = timezone.now()
         q = Q(assignments__publishing_time__lt=now)
         if not active:
             q &= ~Q(end_time__gte=now)
@@ -216,13 +214,6 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     @classmethod
     def q_is_candidate(cls, user_obj):
         return Q(assignments__assignmentgroups__candidates__student=user_obj)
-
-    @classmethod
-    def q_is_admin(cls, user_obj):
-        return \
-            Q(admins=user_obj) | \
-            Q(parentnode__admins=user_obj) | \
-            Q(parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     def clean(self, *args, **kwargs):
         """Validate the period.
@@ -240,7 +231,7 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     def is_active(self):
         """ Returns true if the period is active
         """
-        now = datetime.now()
+        now = timezone.now()
         return self.start_time < now < self.end_time
 
     @classmethod
@@ -253,7 +244,7 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
 
             activeperiods = Period.objects.filter(Period.q_is_active())
         """
-        now = datetime.now()
+        now = timezone.now()
         return Q(start_time__lt=now, end_time__gt=now)
 
     @classmethod
@@ -289,13 +280,6 @@ class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
     class Meta:
         unique_together = ('period', 'application', 'key')
         app_label = 'core'
-
-    @classmethod
-    def q_is_admin(cls, user_obj):
-        return \
-            Q(period__admins=user_obj) | \
-            Q(period__parentnode__admins=user_obj) | \
-            Q(period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     def __unicode__(self):
         return '{0}: {1}'.format(self.period, super(AbstractApplicationKeyValue, self).__unicode__())

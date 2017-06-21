@@ -18,7 +18,6 @@ from custom_db_fields import ShortNameField, LongNameField
 from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import User, PeriodPermissionGroup
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
-from .node import Node
 from .period import Period
 from .subject import Subject
 from . import deliverytypes
@@ -102,14 +101,14 @@ class AssignmentQuerySet(models.QuerySet):
         """
         Returns all active assignments (published assignments within a period that is currently started and not ended).
         """
-        now = datetime.now()
+        now = timezone.now()
         return self.filter(publishing_time__lt=now)
 
     def filter_is_active(self):
         """
         Returns all active assignments (published assignments within a period that is currently started and not ended).
         """
-        now = datetime.now()
+        now = timezone.now()
         return self.filter_is_published().filter(
             parentnode__start_time__lt=now,
             parentnode__end_time__gt=now)
@@ -606,7 +605,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """
         Returns ``True`` if ``publishing_time`` is in the future.
         """
-        if self.publishing_time > datetime.now():
+        if self.publishing_time > timezone.now():
             return True
         return False
 
@@ -615,7 +614,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """
         Returns ``True`` if ``publishing_time`` is in the past.
         """
-        if self.publishing_time < datetime.now():
+        if self.publishing_time < timezone.now():
             return True
         return False
 
@@ -627,7 +626,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """
         return self.students_can_create_groups and (
             self.students_can_not_create_groups_after is None or
-            self.students_can_not_create_groups_after > datetime.now())
+            self.students_can_not_create_groups_after > timezone.now())
 
     def students_must_be_anonymized_for_devilryrole(self, devilryrole):
         """
@@ -885,7 +884,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     @classmethod
     def q_published(cls, old=True, active=True):
         warnings.warn("deprecated", DeprecationWarning)
-        now = datetime.now()
+        now = timezone.now()
         q = Q(publishing_time__lt=now)
         if not active:
             q &= ~Q(parentnode__end_time__gte=now)
@@ -899,22 +898,13 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         return Q(assignmentgroups__candidates__student=user_obj)
 
     @classmethod
-    def q_is_admin(cls, user_obj):
-        warnings.warn("deprecated", DeprecationWarning)
-        return \
-            Q(admins=user_obj) | \
-            Q(parentnode__admins=user_obj) | \
-            Q(parentnode__parentnode__admins=user_obj) | \
-            Q(parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
-
-    @classmethod
     def q_is_examiner(cls, user_obj):
         warnings.warn("deprecated", DeprecationWarning)
         return Q(assignmentgroups__examiners__user=user_obj)
 
     def _clean_first_deadline(self, errors):
         # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
-        self.first_deadline = self.first_deadline.replace(second=0, microsecond=0, tzinfo=None)
+        self.first_deadline = self.first_deadline.replace(second=0, microsecond=0)
 
         if self.first_deadline > self.parentnode.end_time or self.first_deadline < self.parentnode.start_time:
             errors['first_deadline'] = _("First deadline must be within %(periodname)s, "
@@ -970,7 +960,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         Returns ``True`` if this assignment is published, and the period has not ended yet.
         """
         warnings.warn("deprecated", DeprecationWarning)
-        now = datetime.now()
+        now = timezone.now()
         return self.publishing_time < now and self.parentnode.end_time > now
 
     def deadline_handling_is_hard(self):

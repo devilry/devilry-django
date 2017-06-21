@@ -6,6 +6,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import StaticFeedback
@@ -94,7 +95,7 @@ class FeedbackDraft(models.Model):
             raise ValidationError('Published FeedbackDraft requires a StaticFeedback.')
 
     def save(self, *args, **kwargs):
-        self.save_timestamp = datetime.now()
+        self.save_timestamp = timezone.now()
         super(FeedbackDraft, self).save(*args, **kwargs)
 
     def to_staticfeedback(self, assignment=None):

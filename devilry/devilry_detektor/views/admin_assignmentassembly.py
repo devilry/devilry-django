@@ -3,6 +3,7 @@ from django import forms
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.views.generic import ListView
 
 from devilry.apps.core.models import Assignment
@@ -63,7 +64,7 @@ class AssignmentAssemblyView(ListView):
     def post(self, *args, **kwargs):
         detektorassignment = self._get_detektorassignment()
         if detektorassignment.status != 'running':
-            detektorassignment.processing_started_datetime = datetime.now()
+            detektorassignment.processing_started_datetime = timezone.now()
             detektorassignment.processing_started_by_id = self.request.user
             detektorassignment.status = 'running'
             detektorassignment.save()

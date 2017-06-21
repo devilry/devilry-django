@@ -9,6 +9,7 @@ from django import http
 from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import redirect
+from django.template import defaultfilters
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy, pgettext_lazy
@@ -103,12 +104,12 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
         return self.post_type_received_data in self.request.POST
 
     def get_pagetitle(self):
-        return pgettext_lazy('{} manage_deadline'.format(self.request.cradmin_app.get_devilryrole()),
-                             'Manage deadline {}'.format(self.deadline))
+        return ugettext_lazy('Manage deadline %(deadline)s') % {
+            'deadline': defaultfilters.date(self.deadline, 'DATETIME_FORMAT')
+        }
 
     def get_pageheading(self):
-        return pgettext_lazy('{} manage_deadline'.format(self.request.cradmin_app.get_devilryrole()),
-                             'Manage deadline {}'.format(self.deadline))
+        return self.get_pagetitle()
 
     def get_form_class(self):
         if self.post_new_attempt:
@@ -350,9 +351,9 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
                     text=text
                 )
 
-    def get_groups_anonymous_display_names(self, form):
+    def get_groups_display_names(self, form):
         groups = form.cleaned_data['selected_items']
-        anonymous_display_names = [unicode(group.get_anonymous_displayname(assignment=self.assignment))
+        anonymous_display_names = [group.get_long_displayname(assignment=self.assignment)
                                    for group in groups]
         return anonymous_display_names
 
@@ -360,7 +361,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
         self.form_valid_extra_check(form=form)
         new_deadline = form.cleaned_data.get('new_deadline')
         comment_text = form.cleaned_data.get('comment_text')
-        anonymous_display_names = self.get_groups_anonymous_display_names(form=form)
+        anonymous_display_names = self.get_groups_display_names(form=form)
         if self.post_move_deadline:
             self.__move_deadline(
                 deadline=new_deadline,

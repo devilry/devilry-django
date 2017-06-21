@@ -1,7 +1,6 @@
 from datetime import datetime
 from datetime import timedelta
 
-
 DJANGO_ISODATETIMEFORMAT = 'Y-m-d H:i'
 
 

@@ -1,7 +1,8 @@
-import shutil
 import json
-from datetime import datetime, timedelta
+import shutil
+from datetime import timedelta
 
+import arrow
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
@@ -28,7 +29,7 @@ from devilry.devilry_group.models import FeedbackSet, GroupComment, ImageAnnotat
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
+from devilry.utils.datetimeutils import default_timezone_datetime
 
 
 class TestAssignmentGroup(TestCase):
@@ -270,7 +271,7 @@ class TestAssignmentGroup(TestCase):
         groupbuilder.add_deadline_x_weeks_ago(weeks=1).add_delivery()
         self.assertFalse(groupbuilder.group.missing_expected_delivery)
 
-    def test_annotate_with_last_deadline_datetime(self):
+    def test_annotate_with_last_deadline_default_timezone_datetime(self):
         assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')
 
@@ -1080,7 +1081,7 @@ class TestAssignmentGroupGetCurrentState(TestCase):
         state = testgroup.get_current_state()
         self.assertEqual(state['name'], 'group1')
 
-    def test_created_datetime(self):
+    def test_created_default_timezone_datetime(self):
         test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=test_assignment)
         state = testgroup.get_current_state()
@@ -1231,16 +1232,16 @@ class TestAssignmentGroupManager(TestCase):
     def test_filter_is_published(self):
         periodbuilder = SubjectBuilder.quickadd_ducku_duck1010()\
             .add_period('period1',
-                        start_time=DateTimeBuilder.now().minus(days=60),
-                        end_time=DateTimeBuilder.now().plus(days=60))
+                        start_time=arrow.get(timezone.now()).replace(days=-60).datetime,
+                        end_time=arrow.get(timezone.now()).replace(days=+60).datetime)
         group1 = periodbuilder.add_assignment('assignment1',
-                                              publishing_time=DateTimeBuilder.now().minus(days=30))\
+                                              publishing_time=arrow.get(timezone.now()).replace(days=-30).datetime)\
             .add_group().group
         periodbuilder.add_assignment('assignment2',
-                                     publishing_time=DateTimeBuilder.now().plus(days=10))\
+                                     publishing_time=arrow.get(timezone.now()).replace(days=+10).datetime)\
             .add_group()
         periodbuilder.add_assignment('assignment3',
-                                     publishing_time=DateTimeBuilder.now().plus(days=50))\
+                                     publishing_time=arrow.get(timezone.now()).replace(days=+50).datetime)\
             .add_group()
         qry = AssignmentGroup.objects.filter_is_published()
         self.assertEquals(qry.count(), 1)
@@ -1251,16 +1252,16 @@ class TestAssignmentGroupManager(TestCase):
         otherstudent = UserBuilder('otherstudent').user
         periodbuilder = SubjectBuilder.quickadd_ducku_duck1010()\
             .add_period('period1',
-                        start_time=DateTimeBuilder.now().minus(days=60),
-                        end_time=DateTimeBuilder.now().plus(days=60))
+                        start_time=arrow.get(timezone.now()).replace(days=-60).datetime,
+                        end_time=arrow.get(timezone.now()).replace(days=+60).datetime)
         group1 = periodbuilder.add_assignment('assignment1',
-                                              publishing_time=DateTimeBuilder.now().minus(days=30))\
+                                              publishing_time=arrow.get(timezone.now()).replace(days=-30).datetime)\
             .add_group(students=[student1]).group
         periodbuilder.add_assignment('assignment2',
-                                     publishing_time=DateTimeBuilder.now().minus(days=10))\
+                                     publishing_time=arrow.get(timezone.now()).replace(days=-10).datetime)\
             .add_group(students=[otherstudent])
         periodbuilder.add_assignment('assignment3',
-                                     publishing_time=DateTimeBuilder.now().plus(days=50))\
+                                     publishing_time=arrow.get(timezone.now()).replace(days=+50).datetime)\
             .add_group(students=[student1])
         qry = AssignmentGroup.objects.filter_student_has_access(student1)
         self.assertEquals(qry.count(), 1)
@@ -2393,9 +2394,9 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastAdminComment(Tes
                    feedback_set__group=testgroup,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_ADMIN,
-                   published_datetime=datetime(2010, 12, 24, 0, 0))
+                   published_datetime=default_timezone_datetime(2010, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_admin_comment()
-        self.assertEqual(datetime(2010, 12, 24, 0, 0),
+        self.assertEqual(default_timezone_datetime(2010, 12, 24, 0, 0),
                          queryset.first().datetime_of_last_admin_comment)
 
     def test_extra_annotate_datetime_of_last_admin_comment_ignore_private_comment(self):
@@ -2404,7 +2405,7 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastAdminComment(Tes
                    feedback_set__group=testgroup,
                    visibility=GroupComment.VISIBILITY_PRIVATE,
                    user_role=Comment.USER_ROLE_ADMIN,
-                   published_datetime=datetime(2010, 12, 24, 0, 0))
+                   published_datetime=default_timezone_datetime(2010, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_admin_comment()
         self.assertEqual(None,
                          queryset.first().datetime_of_last_admin_comment)
@@ -2415,7 +2416,7 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastAdminComment(Tes
                    feedback_set__group=testgroup,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_STUDENT,
-                   published_datetime=datetime(2010, 12, 24, 0, 0))
+                   published_datetime=default_timezone_datetime(2010, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_admin_comment()
         self.assertEqual(None,
                          queryset.first().datetime_of_last_admin_comment)
@@ -2426,7 +2427,7 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastAdminComment(Tes
                    feedback_set__group=testgroup,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_EXAMINER,
-                   published_datetime=datetime(2010, 12, 24, 0, 0))
+                   published_datetime=default_timezone_datetime(2010, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_admin_comment()
         self.assertEqual(None,
                          queryset.first().datetime_of_last_admin_comment)
@@ -2437,19 +2438,19 @@ class TestAssignmentGroupQuerySetExtraAnnotateWithDatetimeOfLastAdminComment(Tes
                    feedback_set__group=testgroup,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_ADMIN,
-                   published_datetime=datetime(2010, 12, 24, 0, 0))
+                   published_datetime=default_timezone_datetime(2010, 12, 24, 0, 0))
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_ADMIN,
-                   published_datetime=datetime(2009, 12, 24, 0, 0))
+                   published_datetime=default_timezone_datetime(2009, 12, 24, 0, 0))
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    user_role=Comment.USER_ROLE_ADMIN,
-                   published_datetime=datetime(2011, 12, 24, 0, 0))
+                   published_datetime=default_timezone_datetime(2011, 12, 24, 0, 0))
         queryset = AssignmentGroup.objects.all().extra_annotate_datetime_of_last_admin_comment()
-        self.assertEqual(datetime(2011, 12, 24, 0, 0),
+        self.assertEqual(default_timezone_datetime(2011, 12, 24, 0, 0),
                          queryset.first().datetime_of_last_admin_comment)
 
 
@@ -2459,17 +2460,17 @@ class TestAssignmentGroupQuerySetExtraOrderByDatetimeOfLastAdminComment(TestCase
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup1,
                    user_role=Comment.USER_ROLE_ADMIN,
-                   published_datetime=datetime(2011, 12, 24, 0, 0))
+                   published_datetime=default_timezone_datetime(2011, 12, 24, 0, 0))
         testgroup2 = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup2,
                    user_role=Comment.USER_ROLE_ADMIN,
-                   published_datetime=datetime(2012, 12, 24, 0, 0))
+                   published_datetime=default_timezone_datetime(2012, 12, 24, 0, 0))
         testgroup3 = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup3,
                    user_role=Comment.USER_ROLE_ADMIN,
-                   published_datetime=datetime(2010, 12, 24, 0, 0))
+                   published_datetime=default_timezone_datetime(2010, 12, 24, 0, 0))
         groups = list(AssignmentGroup.objects.all().extra_order_by_datetime_of_last_admin_comment())
         self.assertEqual(testgroup3, groups[0])
         self.assertEqual(testgroup1, groups[1])
@@ -2480,13 +2481,13 @@ class TestAssignmentGroupQuerySetExtraOrderByDatetimeOfLastAdminComment(TestCase
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup1,
                    user_role=Comment.USER_ROLE_ADMIN,
-                   published_datetime=datetime(2010, 12, 24, 0, 0))
+                   published_datetime=default_timezone_datetime(2010, 12, 24, 0, 0))
         testgroup2 = mommy.make('core.AssignmentGroup')
         testgroup3 = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup3,
                    user_role=Comment.USER_ROLE_ADMIN,
-                   published_datetime=datetime(2012, 12, 24, 0, 0))
+                   published_datetime=default_timezone_datetime(2012, 12, 24, 0, 0))
         groups = list(AssignmentGroup.objects.all().extra_order_by_datetime_of_last_admin_comment())
         self.assertEqual(testgroup1, groups[0])
         self.assertEqual(testgroup3, groups[1])

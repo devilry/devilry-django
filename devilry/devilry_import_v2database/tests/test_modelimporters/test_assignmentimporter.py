@@ -1,14 +1,10 @@
-from django.contrib.contenttypes.models import ContentType
-
-from devilry.devilry_import_v2database.models import ImportedModel
 from django import test
-from django.conf import settings
-from django.utils.dateparse import parse_datetime
-
+from django.contrib.contenttypes.models import ContentType
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_import_v2database.modelimporters.assignment_importer import AssignmentImporter
+from devilry.devilry_import_v2database.models import ImportedModel
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 

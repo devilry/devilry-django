@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 from random import randint
 from django.contrib.auth.models import User
 from django.db import IntegrityError
+from django.utils import timezone
+
 from devilry.apps.core.models import Node
 from devilry.apps.core.models import Subject
 from devilry.apps.core.models import Period
@@ -110,8 +112,8 @@ class Sandbox(object):
         period = self.subject.periods.create(
             short_name=short_name,
             long_name=long_name,
-            start_time=datetime.now() - timedelta(days=30),
-            end_time=datetime.now() + timedelta(days=150))
+            start_time=timezone.now() - timedelta(days=30),
+            end_time=timezone.now() + timedelta(days=150))
         self.add_relatedstudents(period)
         self.add_relatedexaminers(period)
         return period

@@ -1,14 +1,13 @@
-from datetime import datetime
-
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q, Max
-from django.core.exceptions import ValidationError
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+import deliverytypes
 from deadline import Deadline
 from filemeta import FileMeta
-from . import AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate, Node
-import deliverytypes
+from . import AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate
 
 
 class DeliveryQuerySet(models.QuerySet):
@@ -23,7 +22,7 @@ class DeliveryQuerySet(models.QuerySet):
         return self.filter(deadline__assignment_group__candidates__relatedstudent__user=user).distinct()
 
     def filter_is_active(self):
-        now = datetime.now()
+        now = timezone.now()
         return self.filter(
             deadline__assignment_group__parentnode__publishing_time__lt=now,
             deadline__assignment_group__parentnode__parentnode__start_time__lt=now,
@@ -151,7 +150,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     time_of_delivery = models.DateTimeField(
         verbose_name=_('Time of delivery'),
         help_text='Holds the date and time the Delivery was uploaded.',
-        default=datetime.now)
+        default=timezone.now)
     deadline = models.ForeignKey(
         Deadline, related_name='deliveries',
         verbose_name=_('Deadline'))
@@ -207,22 +206,13 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
     @classmethod
     def q_published(cls, old=True, active=True):
-        now = datetime.now()
+        now = timezone.now()
         q = Q(deadline__assignment_group__parentnode__publishing_time__lt=now)
         if not active:
             q &= ~Q(deadline__assignment_group__parentnode__parentnode__end_time__gte=now)
         if not old:
             q &= ~Q(deadline__assignment_group__parentnode__parentnode__end_time__lt=now)
         return q
-
-    @classmethod
-    def q_is_admin(cls, user_obj):
-        return \
-            Q(successful=True) & \
-            Q(Q(deadline__assignment_group__parentnode__admins=user_obj) |
-              Q(deadline__assignment_group__parentnode__parentnode__admins=user_obj) |
-              Q(deadline__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) |
-              Q(deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)))  # noqa
 
     @classmethod
     def q_is_examiner(cls, user_obj):
@@ -283,7 +273,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         self.number = (m['number__max'] or 0) + 1
 
     def set_time_of_delivery_to_now(self):
-        self.time_of_delivery = datetime.now().replace(microsecond=0, tzinfo=None)
+        self.time_of_delivery = timezone.now().replace(microsecond=0, tzinfo=None)
 
     def clean(self):
         """ Validate the delivery. """

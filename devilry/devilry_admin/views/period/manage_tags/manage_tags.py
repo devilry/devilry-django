@@ -401,7 +401,8 @@ class BaseRelatedUserMultiSelectView(multiselect2view.ListbuilderFilterView):
 
     def get_period_tag(self):
         period = self.request.cradmin_role
-        return PeriodTag.objects.get(period=period, tag=self.tag_name)
+        return PeriodTag.objects.get(
+            prefix='', period=period, tag=self.tag_name)
 
     def get_tags_for_period(self):
         return PeriodTag.objects.filter(period=self.request.cradmin_role)

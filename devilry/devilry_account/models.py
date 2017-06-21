@@ -190,12 +190,40 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         if username:
             user.username_set.create(username=username, is_primary=True)
+
+        if username and not email:
+            email_username_suffix = getattr(settings, 'DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX', None)
+            if email_username_suffix:
+                if '@' not in email_username_suffix:
+                    email_username_suffix = '@{}'.format(email_username_suffix)
+                email = u'{}{}'.format(username, email_username_suffix)
+
         if email:
             user.useremail_set.create(email=email, is_primary=True,
                                       use_for_notifications=True)
         return user
 
-    def create_superuser(self, username='', email='', password=None, **kwargs):
+    def get_user(self, username='', email=''):
+        if not username and not email:
+            raise ValueError('username or email must be supplied')
+        if username:
+            return self.get_by_username(username=username)
+        else:
+            return self.get_by_email(email=email)
+
+    def get_or_create_user(self, username='', email='', password=None, **kwargs):
+        if not username and not email:
+            raise ValueError('username or email must be supplied')
+        try:
+            user = self.get_user(username=username, email=email)
+        except self.model.DoesNotExist:
+            user = None
+
+        if user:
+            return user, False
+        return self.create_user(username=username, email=email, password=password, **kwargs), True
+
+    def create_superuser(self, password=None, **kwargs):
         """
         Create a new superuser.
         """
@@ -736,6 +764,70 @@ class PermissionGroupUser(models.Model):
         }
 
 
+class PermissionGroupQuerySet(models.QuerySet):
+    def get_name_prefix_from_syncsystem(self, grouptype, basenode):
+        return '{prefix}-{grouptype}-#{id}-'.format(
+            prefix=settings.DEVILRY_SYNCSYSTEM_SHORTNAME,
+            grouptype=grouptype,
+            id=basenode.id)
+
+    def get_name_from_syncsystem(self, grouptype, basenode):
+        return '{}({})'.format(
+            self.get_name_prefix_from_syncsystem(grouptype=grouptype,
+                                                  basenode=basenode),
+            basenode.get_path())
+
+    def create_permissiongroup(self, grouptype, basenode,
+                               name, is_custom_manageable=False):
+        permissiongroup = self.model(
+            name=name,
+            grouptype=grouptype,
+            is_custom_manageable=is_custom_manageable)
+        permissiongroup.full_clean()
+        permissiongroup.save()
+        if grouptype == PermissionGroup.GROUPTYPE_PERIODADMIN:
+            period_permissiongroup = PeriodPermissionGroup(
+                period=basenode,
+                permissiongroup=permissiongroup)
+            period_permissiongroup.full_clean()
+            period_permissiongroup.save()
+        else:
+            subject_permissiongroup = SubjectPermissionGroup(
+                subject=basenode,
+                permissiongroup=permissiongroup)
+            subject_permissiongroup.full_clean()
+            subject_permissiongroup.save()
+        return permissiongroup
+
+    def get_syncsystem_permissiongroup(self, grouptype, basenode):
+        name_prefix = self.get_name_prefix_from_syncsystem(
+            grouptype=grouptype,
+            basenode=basenode)
+        return PermissionGroup.objects \
+            .filter(name__startswith=name_prefix,
+                    grouptype=grouptype) \
+            .get()
+
+    def create_or_update_syncsystem_permissiongroup(
+            self, grouptype, basenode):
+        try:
+            permissiongroup = self.get_syncsystem_permissiongroup(
+                grouptype=grouptype,
+                basenode=basenode)
+        except PermissionGroup.DoesNotExist:
+            name = self.get_name_from_syncsystem(
+                grouptype=grouptype,
+                basenode=basenode)
+            permissiongroup = self.create_permissiongroup(
+                basenode=basenode,
+                grouptype=grouptype,
+                name=name,
+                is_custom_manageable=False)
+            return permissiongroup, True
+        else:
+            return permissiongroup, False
+
+
 class PermissionGroup(models.Model):
     """
     Permission group data model.
@@ -743,6 +835,7 @@ class PermissionGroup(models.Model):
     Each group has a :obj:`~.PermissionGroup.grouptype` which determines
     the type of objects it can be added to.
     """
+    objects = PermissionGroupQuerySet.as_manager()
 
     #: The value for :obj:`~.PermissionGroup.grouptype` that identifies the group as
     #: a departmentadmin permission group.

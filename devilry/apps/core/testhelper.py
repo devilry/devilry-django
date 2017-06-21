@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 
-from models import (Node, Subject, Period, Assignment, AssignmentGroup,
+from models import (Subject, Period, Assignment, AssignmentGroup,
                     Candidate, Deadline, Delivery, StaticFeedback, FileMeta)
 from deliverystore import MemoryDeliveryStore
 from devilry.apps.core.models import deliverytypes
@@ -137,7 +137,7 @@ class TestHelper(object):
             # set the deliverytime to after the deadline
             delivery.time_of_delivery = group.get_active_deadline().deadline + timedelta(days=1)
         else:
-            delivery.time_of_delivery = datetime.now()
+            delivery.time_of_delivery = timezone.now()
         delivery.save()
 
         # add it to the groups delivery list
@@ -272,52 +272,6 @@ class TestHelper(object):
         vars(self)[user.shortname] = user
         return user
 
-    #######
-    #
-    # Node specifics
-    #
-    #######
-    def _create_or_add_node(self, parent, name, users):
-        node = Node(parentnode=parent, short_name=name, long_name=name.capitalize())
-        try:
-            node.full_clean()
-            node.save()
-        except ValidationError:
-            node = Node.objects.get(parentnode=parent, short_name=name)
-
-        # allowed roles in node are:
-        for admin in users['admin']:
-            node.admins.add(self._create_or_add_user(admin))
-
-        if users['ln']:
-            node.long_name = users['ln'][0]
-
-        node.full_clean()
-        node.save()
-
-        vars(self)[node.get_path().replace('.', '_')] = node
-        return node
-
-    def _do_the_nodes(self, nodes):
-
-        if not nodes:
-            return None
-
-        new_node = None
-        # separate the nodes
-
-        prev_node = None
-        for n in nodes.split('.'):
-            # initialize the admin-argument
-            try:
-                node_name, extras_arg = n.split(':', 1)
-            except ValueError:
-                node_name = n
-                extras_arg = None
-            users = self._parse_extras(extras_arg, ['admin', 'ln'])
-            new_node = self._create_or_add_node(prev_node, node_name, users)
-            prev_node = new_node
-        return new_node
 
     #######
     #
@@ -372,7 +326,7 @@ class TestHelper(object):
     #######
     def _create_or_add_period(self, period_name, parentnode, extras):
         period = Period(parentnode=parentnode, short_name=period_name, long_name=period_name.capitalize(),
-                        start_time=datetime.now(), end_time=datetime.now() + timedelta(days=5 * 30))
+                        start_time=timezone.now(), end_time=timezone.now() + timedelta(days=5 * 30))
         try:
             period.full_clean()
             period.save()
@@ -384,7 +338,7 @@ class TestHelper(object):
             period.admins.add(self._create_or_add_user(admin))
 
         if extras['begins']:
-            period.start_time = datetime.now() + timedelta(days=int(extras['begins'][0]) * 30)
+            period.start_time = timezone.now() + timedelta(days=int(extras['begins'][0]) * 30)
         if extras['ends']:
             period.end_time = period.start_time + timedelta(days=int(extras['ends'][0]) * 30)
         elif extras['begins'] and not extras['ends']:
@@ -661,7 +615,7 @@ class TestHelper(object):
                     i += 1
         return True
 
-    def add(self, nodes=None, subjects=None, periods=None, assignments=None,
+    def add(self, subjects=None, periods=None, assignments=None,
             assignmentgroups=None, deadlines=None):
         """
         Smart add.
@@ -675,13 +629,6 @@ class TestHelper(object):
         each extra has the following format::
 
             <name>(<args>)
-
-        :param nodes: List of nodes.
-
-            admin
-                Comma-separated list of admins (usernames) to add to the node.
-            ln
-                Long name of the period. Defaults to capitalize short name.
 
         :param subjects: List of subjects. Extras:
 
@@ -746,10 +693,6 @@ class TestHelper(object):
         args = [subjects, periods, assignments, assignmentgroups, deadlines]
         if not self._validate_args(args):
             raise ValueError('Invalid parameters. ')
-
-        if not nodes:
-            return
-        nodes = self._do_the_nodes(nodes)
 
         if not subjects:
             return

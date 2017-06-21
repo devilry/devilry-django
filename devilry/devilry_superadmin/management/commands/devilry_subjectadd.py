@@ -1,7 +1,5 @@
-from django.core.management.base import BaseCommand, CommandError
 from django.core.exceptions import ValidationError
-from optparse import make_option
-
+from django.core.management.base import BaseCommand, CommandError
 
 
 class RecordSaveModCommand(BaseCommand):
@@ -15,43 +13,32 @@ class RecordSaveModCommand(BaseCommand):
             raise CommandError('\n'.join(errmsg))
         record.save()
         if verbosity > 0:
-            print '"{0}" saved successfully.'.format(record.__class__.__name__, record)
+            print '{} "{}" saved successfully.'.format(
+                record.__class__.__name__, str(record).encode('utf-8'))
 
 
 class Command(RecordSaveModCommand):
-    args = '<node path> <short_name>'
     help = 'Create new subject.'
-    option_list = BaseCommand.option_list + (
-        make_option('--admins',
-            dest='admins',
-            default=None,
-            help='Administrator usernames separated by comma (,).'),
-        make_option('--long-name',
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'short_name',
+            default='',
+            help='Short name for the subject. (Required)'),
+        parser.add_argument(
+            '--long-name',
             dest='long_name',
             default=None,
+            required=True,
             help='Long name (Required)')
-    )
 
     def handle(self, *args, **options):
-        from devilry.apps.core.models import Subject, Node
-        from devilry.coreutils.utils import get_by_path
-
-        if len(args) != 2:
-            raise CommandError('Node path and short name is required. See --help.')
-        if options['long_name'] == None:
-            raise CommandError('Long name is required. See --help.')
+        from devilry.apps.core.models import Subject
         verbosity = int(options.get('verbosity', '1'))
-        node_path = args[0]
-        short_name = args[1]
-
-        try:
-            node = get_by_path(node_path)
-        except Node.DoesNotExist, e:
-            raise CommandError('Invalid node path.')
-
-        if Subject.objects.filter(short_name=short_name).count() == 0:
-            long_name = options['long_name']
-            record = Subject(short_name=short_name, long_name=long_name, parentnode=node)
-            self.save_record(record, verbosity)
-        else:
+        short_name = options['short_name']
+        long_name = options['long_name']
+        if Subject.objects.filter(short_name=short_name).exists():
             raise CommandError('Subject "{0}" already exists.'.format(short_name))
+        else:
+            subject = Subject(short_name=short_name, long_name=long_name)
+            self.save_record(subject, verbosity)

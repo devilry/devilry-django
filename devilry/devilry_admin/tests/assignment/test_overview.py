@@ -1,15 +1,16 @@
 from datetime import datetime, timedelta
 
 import mock
-from django.conf import settings
 from django.test import TestCase
+from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
+from django_cradmin.crinstance import reverse_cradmin_url
 from model_mommy import mommy
 
+from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.apps.core.models import Assignment
 from devilry.devilry_admin.views.assignment import overview
-from devilry.apps.core import devilry_core_mommy_factories as core_mommy
-from django_cradmin.crinstance import reverse_cradmin_url
+from devilry.utils.datetimeutils import default_timezone_datetime
 
 
 class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -71,21 +72,21 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.exists('.devilry-admin-assignment-examiners-exists'))
 
     def test_published_row(self):
-        assignment = mommy.make('core.Assignment', publishing_time=datetime(2000, 1, 1))
+        assignment = mommy.make('core.Assignment', publishing_time=default_timezone_datetime(2000, 1, 1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one('#devilry_admin_assignment_overview_published h3').alltext_normalized,
                 "Was published: Jan 1 2000, 00:00")
 
     def test_published_row_published_time_in_future(self):
-        assignment = mommy.make('core.Assignment', publishing_time=datetime(3000, 1, 1))
+        assignment = mommy.make('core.Assignment', publishing_time=default_timezone_datetime(3000, 1, 1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one('#devilry_admin_assignment_overview_published h3').alltext_normalized,
                 "Will be published: Jan 1 3000, 00:00")
 
     def test_published_row_buttons(self):
-        assignment = mommy.make('core.Assignment', publishing_time=datetime(3000, 1, 1))
+        assignment = mommy.make('core.Assignment', publishing_time=default_timezone_datetime(3000, 1, 1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
@@ -99,7 +100,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_published_row_buttons_when_already_published(self):
-        assignment = mommy.make('core.Assignment', publishing_time=datetime(2000, 1, 1))
+        assignment = mommy.make('core.Assignment', publishing_time=default_timezone_datetime(2000, 1, 1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertFalse(
                 mockresponse.selector.exists(
@@ -115,7 +116,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                 "Edit first deadline")
 
     def test_settings_row_first_deadline_description(self):
-        assignment = mommy.make('core.Assignment', first_deadline=datetime(2000, 1, 1))
+        assignment = mommy.make('core.Assignment', first_deadline=default_timezone_datetime(2000, 1, 1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
                 mockresponse.selector.one(
@@ -431,7 +432,7 @@ class TestOverviewInfoBox(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
     def test_publish_now(self):
-        assignment = mommy.make('core.Assignment', publishing_time=datetime.now() + timedelta(days=1))
+        assignment = mommy.make('core.Assignment', publishing_time=timezone.now() + timedelta(days=1))
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         core_mommy.candidate(group=group)
         core_mommy.examiner(group=group)

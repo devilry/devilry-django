@@ -1,16 +1,14 @@
-from django.contrib.contenttypes.models import ContentType
-
-from devilry.devilry_account.models import SubjectPermissionGroup
-from devilry.devilry_import_v2database.models import ImportedModel
 from django import test
 from django.conf import settings
-from django.utils.dateparse import parse_datetime
-
+from django.contrib.contenttypes.models import ContentType
 from model_mommy import mommy
 
 from devilry.apps.core.models import Period
 from devilry.devilry_account import models as account_models
+from devilry.devilry_account.models import SubjectPermissionGroup
 from devilry.devilry_import_v2database.modelimporters.period_importer import PeriodImporter
+from devilry.devilry_import_v2database.models import ImportedModel
+from devilry.utils import datetimeutils
 from .importer_testcase_mixin import ImporterTestCaseMixin
 
 
@@ -104,7 +102,7 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
         periodimporter.import_models()
         period = Period.objects.first()
-        start_time = parse_datetime('2017-02-14T11:04:46.585')
+        start_time = datetimeutils.from_isoformat('2017-02-14T11:04:46.585')
         self.assertEquals(period.start_time, start_time)
 
     def test_importer_end_time(self):
@@ -115,7 +113,7 @@ class TestPeriodImporter(ImporterTestCaseMixin, test.TestCase):
         periodimporter = PeriodImporter(input_root=self.temp_root_dir)
         periodimporter.import_models()
         period = Period.objects.first()
-        end_time = parse_datetime('2017-08-13T11:04:46.585')
+        end_time = datetimeutils.from_isoformat('2017-08-13T11:04:46.585')
         self.assertEquals(period.end_time, end_time)
 
     def test_importer_subject(self):

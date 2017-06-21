@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.template import defaultfilters
+from django.utils import timezone
 from django.utils.translation import pgettext_lazy, ugettext_lazy
 from django.views.generic import TemplateView
 from django_cradmin.viewhelpers import listbuilder
@@ -30,9 +32,12 @@ class SelectDeadlineItemValue(listbuilder.itemvalue.TitleDescription):
         return count
 
     def get_title(self):
+        formatted_deadline = defaultfilters.date(timezone.localtime(self.value), 'DATETIME_FORMAT')
         if self.value == self.assignment.first_deadline:
-            return ugettext_lazy('{} (Assignment first deadline)'.format(self.value))
-        return super(SelectDeadlineItemValue, self).get_title()
+            return ugettext_lazy('%(deadline)s (Assignment first deadline)') % {
+                'deadline': formatted_deadline
+            }
+        return formatted_deadline
 
 
 class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):

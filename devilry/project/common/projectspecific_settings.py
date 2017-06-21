@@ -29,10 +29,19 @@ DEVILRY_EMAIL_SIGNATURE = \
 
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDeliveryStore'
 DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 1000
-DEVILRY_SYNCSYSTEM = 'YOUR SYNC SYSTEM HERE'
 DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
 DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-admin@example.com'
 DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
+
+# The name of the primary sync system where data is imported from.
+# This is shown in the user interface, and can be a longer string
+# with spaces.
+DEVILRY_SYNCSYSTEM = 'YOUR SYNC SYSTEM HERE'
+
+# The short name of the sync system that data is imported from.
+# This can only contain english lower-case letters (a-z),
+# numbers and ``_``.
+DEVILRY_SYNCSYSTEM_SHORTNAME = 'x'
 
 #: If this is False, we disable features that require background processing,
 #: such as search.
@@ -41,10 +50,10 @@ DEVILRY_ENABLE_CELERY = True
 
 #: If this is set, and the ``DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND``-setting
 #: is ``False``, users will be assigned
-#: ``"<username>@DEVILRY_DEFAULT_EMAIL_SUFFIX"`` as their primary email
+#: ``<username><DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX>`` as their primary email
 #: address when they are created.
-# DEVILRY_DEFAULT_EMAIL_SUFFIX = 'example.com'
-DEVILRY_DEFAULT_EMAIL_SUFFIX = None
+# DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX = 'example.com'
+DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX = None
 
 
 # DEVILRY_QUALIFIESFOREXAM_PLUGINS = [

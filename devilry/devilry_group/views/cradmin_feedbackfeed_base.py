@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import datetime
 import json
 from xml.sax.saxutils import quoteattr
 
@@ -10,6 +9,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.viewhelpers import create
@@ -181,7 +181,7 @@ class FeedbackFeedBaseView(create.CreateView):
         context['assignment'] = assignment
         context['last_deadline'] = last_feedbackset.deadline_datetime
         context['last_feedbackset'] = last_feedbackset
-        context['current_date'] = datetime.datetime.now()
+        context['current_date'] = timezone.now()
         context['last_deadline_as_string'] = datetimeutils\
             .datetime_to_url_string(last_feedbackset.deadline_datetime)
         context['listbuilder_list'] = feedbackfeed_timeline.TimeLineListBuilderList.from_built_timeline(

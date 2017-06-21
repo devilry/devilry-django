@@ -1,5 +1,8 @@
+from django.db import models
+
 from devilry.devilry_import_v2database import v2dump_directoryparsers
 from devilry.devilry_import_v2database.models import ImportedModel
+from devilry.utils import datetimeutils
 
 
 class ModelImporterException(Exception):
@@ -47,6 +50,10 @@ class ModelImporter(object):
                 value = object_dict[from_attribute]
             else:
                 value = object_dict['fields'][from_attribute]
+                if value:
+                    field = model_object._meta.get_field(to_attribute)
+                    if isinstance(field, models.DateTimeField):
+                        value = datetimeutils.from_isoformat(value)
             setattr(model_object, to_attribute, value)
 
     def log_create(self, model_object, data):

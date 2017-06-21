@@ -1,11 +1,11 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit
-from django.utils.timezone import datetime
 from django import forms
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.shortcuts import redirect
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
@@ -276,7 +276,7 @@ class GroupInviteRespondViewStandalone(DetailView):
             raise ValidationError(ugettext_lazy('You have already declined this invite'))
         if invite.group.assignment.students_can_create_groups:
             if invite.group.assignment.students_can_not_create_groups_after and \
-                            invite.group.assignment.students_can_not_create_groups_after < datetime.now():
+                            invite.group.assignment.students_can_not_create_groups_after < timezone.now():
                 raise ValidationError(ugettext_lazy(
                     'Creating project groups without administrator approval is not '
                     'allowed on this assignment anymore. Please contact you course '

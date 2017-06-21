@@ -1,18 +1,18 @@
-from datetime import datetime, timedelta
-
 import unittest
+from datetime import timedelta
 
+import mock
 from django.test import TestCase
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
-import mock
-from model_mommy import mommy
 from django_cradmin import crinstance
+from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment, Candidate, Examiner
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START, OLD_PERIOD_START, FUTURE_PERIOD_END
 from devilry.devilry_admin.views.period import createassignment
 from devilry.utils import datetimeutils
+from devilry.utils.datetimeutils import default_timezone_datetime
 
 
 class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -114,10 +114,10 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         # This should be the one that is used for suggestions
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=period,
-                          first_deadline=datetime(2015, 9, 2, 13, 30))  # Wed
+                          first_deadline=default_timezone_datetime(2015, 9, 2, 13, 30))  # Wed
 
         timezonemock = mock.MagicMock()
-        timezonemock.now.return_value = datetime(2015, 9, 10, 22, 18)  # Thursday
+        timezonemock.now.return_value = default_timezone_datetime(2015, 9, 10, 22, 18)  # Thursday
         with mock.patch('devilry.devilry_admin.views.period.createassignment.timezone', timezonemock):
             mockresponse = self.mock_http200_getrequest_htmls(
                 cradmin_role=period)
@@ -142,7 +142,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         # This should be the one that is used for suggestions
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=period,
-                          first_deadline=datetime(3500, 9, 5, 13, 30))
+                          first_deadline=default_timezone_datetime(3500, 9, 5, 13, 30))
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=period)
@@ -167,7 +167,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         # This should be the one that is used for suggestions
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=period,
-                          first_deadline=datetime(3500, 9, 5, 13, 30))
+                          first_deadline=default_timezone_datetime(3500, 9, 5, 13, 30))
 
         with self.settings(DATETIME_FORMAT='D M j Y H:i', USE_L10N=False):
             mockresponse = self.mock_http200_getrequest_htmls(
