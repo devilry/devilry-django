@@ -303,7 +303,11 @@ class FeedbackSet(models.Model):
 
     #: The User that created the feedbackset. Only used as metadata
     #: for superusers (for debugging).
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="created_feedbacksets", null=True, blank=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="created_feedbacksets",
+        null=True, blank=True,
+        on_delete=models.SET_NULL)
 
     #: The datetime when this FeedbackSet was created.
     created_datetime = models.DateTimeField(default=timezone.now)
@@ -334,7 +338,8 @@ class FeedbackSet(models.Model):
     grading_published_by = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         related_name="published_feedbacksets",
-        null=True, blank=True
+        null=True, blank=True,
+        on_delete=models.SET_NULL
     )
 
     #: Points given by examiner for this feedbackset.
