@@ -41,6 +41,7 @@ class StaticFeedbackDumper(modeldumper.ModelDumper):
 
     def _get_file_attachement_info_dict(self, file_attachement):
         file_name = file_attachement.filename
+        abs_path = os.path.join(settings.MEDIA_ROOT, file_attachement.file.file.name)
         return {
             'filename': file_name,
             'relative_file_path': file_attachement.file.file.name,
