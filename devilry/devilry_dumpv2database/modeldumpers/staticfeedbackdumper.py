@@ -58,5 +58,6 @@ class StaticFeedbackDumper(modeldumper.ModelDumper):
     def serialize_model_object(self, obj):
         serialized = super(StaticFeedbackDumper, self).serialize_model_object(obj=obj)
         serialized['fields']['deadline_id'] = obj.delivery.deadline.id
-        serialized['fields']['files'] = self._get_list_of_attachment_file_info_dicts(obj.files.all())
+        serialized['fields']['files'] = [] # self._get_list_of_attachment_file_info_dicts(obj.files.all())
+        #TODO TEMPORARILY DISABLE FILES
         return serialized
