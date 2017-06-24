@@ -11,6 +11,9 @@ class NodeImporter(modelimporter.ModelImporter):
     def get_model_class(self):
         return None
 
+    def prettyformat_model_name(self):
+        return "core.Node"
+
     def _bulk_create_subject_permission_groups(self, permission_group, subject_queryset):
         """
         Bulk-creates ``SubjectPermissionGroup``s for the all the ``Subject``s under this ``Node``.

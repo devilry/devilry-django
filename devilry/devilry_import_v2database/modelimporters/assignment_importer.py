@@ -55,11 +55,8 @@ class AssignmentImporter(modelimporter.ModelImporter):
         assignment.grading_system_plugin_id = self._get_new_grading_plugin_system_id(
             old_grading_system_plugin_id=object_dict['fields']['grading_system_plugin_id'])
         assignment.anonymizationmode = self._get_new_anonymization_mode(object_dict['fields']['anonymous'])
-        try:
-            assignment.full_clean()
-            assignment.save()
-        except ValidationError:
-            print("ERROR: assignment {}#{} did not validate".format(assignment.long_name, assignment.id))
+        # assignment.full_clean()
+        assignment.save()
         self.log_create(model_object=assignment, data=object_dict)
 
     def import_models(self, fake=False):

@@ -14,8 +14,8 @@ class AssignmentGroupImporter(modelimporter.ModelImporter):
         try:
             assignment = Assignment.objects.get(id=id)
         except Assignment.DoesNotExist:
-            raise modelimporter.ModelImporterException(
-                'No Assignment with id={} exists for imported AssignmentGroup'.format(id))
+            print('No Assignment with id={} exists for imported AssignmentGroup'.format(id))
+            return None
         return assignment
 
     def _create_assignmentgroup_from_object_dict(self, object_dict):
@@ -30,9 +30,10 @@ class AssignmentGroupImporter(modelimporter.ModelImporter):
             ]
         )
         assignment = self._get_assignment_from_parentnode_id(id=object_dict['fields']['parentnode'])
-        assignment_group.parentnode = assignment
-        assignment_group.full_clean()
-        assignment_group.save()
+        if assignment:
+            assignment_group.parentnode = assignment
+            assignment_group.full_clean()
+            assignment_group.save()
         self.log_create(model_object=assignment_group, data=object_dict)
 
     def import_models(self, fake=False):
