@@ -211,6 +211,7 @@ class FileMetaImporter(ImporterMixin, modelimporter.ModelImporter):
         )
         delivery_comment = self._get_delivery_comment_from_id(group_comment_id=object_dict['fields']['delivery'])
         comment_file.comment = delivery_comment
+        comment_file.mimetype = object_dict['fields'].get('mimetype', 'application/octet-stream')
         comment_file.save()
         path = os.path.join(v2_delivery_file_root,
                             object_dict['fields']['relative_file_path'])
