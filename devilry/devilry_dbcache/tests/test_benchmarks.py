@@ -1,17 +1,16 @@
 import unittest
-from datetime import datetime
 
 from django import test
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db import connection
+from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_dbcache.models import AssignmentGroupCachedData
-from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_group.models import FeedbackSet, GroupComment
 
 
