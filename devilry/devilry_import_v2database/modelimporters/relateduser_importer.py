@@ -26,28 +26,28 @@ class ImporterMixin(object):
                 'User with id {} does not exist'.format(user_id))
         return user
 
-    def _get_period_tag_queryset(self, period, v2_tags_list):
+    def _get_period_tag_queryset(self, period_id, v2_tags_list):
         return PeriodTag.objects\
-            .filter(period=period, tag__in=v2_tags_list)
+            .filter(period_id=period_id, tag__in=v2_tags_list)
 
-    def _bulk_create_period_tags(self, period, v2_tags_list, tags_to_exclude):
+    def _bulk_create_period_tags(self, period_id, v2_tags_list, tags_to_exclude):
         """
         Bulk create tags ``PeriodTag``s.
 
         Args:
-            period: The Period the tags are for.
+            period_id: The Period the tags are for.
             v2_tags_list: List of strings (Devilry 2.0 tags).
-            tags_to_exclude: List of strings of tags that already exists for this period.
+            tags_to_exclude: List of strings of tags that already exists for this period_id.
         """
         period_tag_list = []
         for tag in v2_tags_list:
             if tag not in tags_to_exclude:
                 period_tag_list.append(
-                    PeriodTag(period=period, tag=tag)
+                    PeriodTag(period_id=period_id, tag=tag)
                 )
         PeriodTag.objects.bulk_create(period_tag_list)
 
-    def _get_tags_and_tags_to_exclude(self, period, tags_string):
+    def _get_tags_and_tags_to_exclude(self, period_id, tags_string):
         """
         Get the tags from v2 separated in a list and a list of tags that should
         be excluded(``PeriodTag``s already exists)
@@ -57,7 +57,7 @@ class ImporterMixin(object):
             as parameter.
 
         Args:
-            period: The ``Period`` for the ``PeriodTag``s.
+            period_id: The ``Period`` for the ``PeriodTag``s.
             tags: a string of tags separated by a comma, no whitespace(according to v2 RelatedUser.tags).
 
         Returns:
@@ -66,21 +66,21 @@ class ImporterMixin(object):
         if tags_string is None:
             tags_string = ''
         tags_list = [tag for tag in tags_string.split(',')]
-        period_tag_queryset = self._get_period_tag_queryset(period=period, v2_tags_list=tags_list)
+        period_tag_queryset = self._get_period_tag_queryset(period_id=period_id, v2_tags_list=tags_list)
         tags_to_exclude = [period_tag.tag for period_tag in period_tag_queryset]
         return tags_list, tags_to_exclude
 
-    def _create_or_update_period_tag_for_related_user_type(self, related_user, period, tags):
+    def _create_or_update_period_tag_for_related_user_type(self, related_user, period_id, tags):
         """
-        Adds the relatedexaminer to each period tag or creates tags that does not exist.
+        Adds the relatedexaminer to each period_id tag or creates tags that does not exist.
         """
-        tags_list, tags_to_exclude_list = self._get_tags_and_tags_to_exclude(period, tags)
+        tags_list, tags_to_exclude_list = self._get_tags_and_tags_to_exclude(period_id, tags)
         self._bulk_create_period_tags(
-            period=period,
+            period_id=period_id,
             v2_tags_list=tags_list,
             tags_to_exclude=tags_to_exclude_list
         )
-        period_tag_queryset = self._get_period_tag_queryset(period=period, v2_tags_list=tags_list)
+        period_tag_queryset = self._get_period_tag_queryset(period_id=period_id, v2_tags_list=tags_list)
         for period_tag in period_tag_queryset:
             if self.get_model_class() == RelatedExaminer:
                 period_tag.relatedexaminers.add(related_user)
@@ -101,18 +101,17 @@ class RelatedExaminerImporter(ImporterMixin, modelimporter.ModelImporter):
                 'pk',
             ]
         )
-        period = self._get_period_from_id(period_id=object_dict['fields']['period'])
-        user = self._get_user_from_id(user_id=object_dict['fields']['user'])
-        related_examiner.period = period
-        related_examiner.user = user
-        related_examiner.full_clean()
+        period_id = period_id=object_dict['fields']['period']
+        related_examiner.period_id = period_id
+        related_examiner.user_id = object_dict['fields']['user']
+        if self.should_clean():
+            related_examiner.full_clean()
         related_examiner.save()
         self._create_or_update_period_tag_for_related_user_type(
             related_user=related_examiner,
-            period=period,
+            period_id=period_id,
             tags=object_dict['fields']['tags']
         )
-        self.log_create(model_object=related_examiner, data=object_dict)
 
     def import_models(self, fake=False):
         directory_parser = self.v2relatedexaminer_directoryparser
@@ -138,24 +137,26 @@ class RelatedStudentImporter(ImporterMixin, modelimporter.ModelImporter):
                 'candidate_id'
             ]
         )
-        period = self._get_period_from_id(period_id=object_dict['fields']['period'])
-        user = self._get_user_from_id(user_id=object_dict['fields']['user'])
-        related_student.period = period
-        related_student.user = user
-        related_student.full_clean()
+        period_id = object_dict['fields']['period']
+        related_student.period_id = period_id
+        related_student.user_id = object_dict['fields']['user']
+        if self.should_clean():
+            related_student.full_clean()
         related_student.save()
         self._create_or_update_period_tag_for_related_user_type(
             related_user=related_student,
-            period=period,
+            period_id=period_id,
             tags=object_dict['fields']['tags']
         )
-        self.log_create(model_object=related_student, data=object_dict)
+        return related_student
 
     def import_models(self, fake=False):
         directory_parser = self.v2relatedstudent_directoryparser
         directory_parser.set_max_id_for_models_with_auto_generated_sequence_numbers(self.get_model_class())
+
         for object_dict in directory_parser.iterate_object_dicts():
             if fake:
                 print('Would import: {}'.format(pprint.pformat(object_dict)))
             else:
                 self._create_related_student_from_object_dict(object_dict=object_dict)
+

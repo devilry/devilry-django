@@ -200,21 +200,21 @@ class TestAssignmentImporter(ImporterTestCaseMixin, test.TestCase):
         assignment = Assignment.objects.first()
         self.assertEquals(assignment.parentnode, test_period)
 
-    def test_importer_imported_model_created(self):
-        test_period = mommy.make_recipe('devilry.apps.core.period_active')
-        assignment_data_dict = self._create_assignment_dict(period=test_period)
-        self.create_v2dump(model_name='core.assignment',
-                           data=assignment_data_dict)
-        assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
-        assignmentimporter.import_models()
-        assignment = Assignment.objects.first()
-        self.assertEquals(ImportedModel.objects.count(), 1)
-        imported_model = ImportedModel.objects.get(
-            content_object_id=assignment.id,
-            content_type=ContentType.objects.get_for_model(model=assignment)
-        )
-        self.assertEquals(imported_model.content_object, assignment)
-        self.assertEquals(imported_model.data, assignment_data_dict)
+    # def test_importer_imported_model_created(self):
+    #     test_period = mommy.make_recipe('devilry.apps.core.period_active')
+    #     assignment_data_dict = self._create_assignment_dict(period=test_period)
+    #     self.create_v2dump(model_name='core.assignment',
+    #                        data=assignment_data_dict)
+    #     assignmentimporter = AssignmentImporter(input_root=self.temp_root_dir)
+    #     assignmentimporter.import_models()
+    #     assignment = Assignment.objects.first()
+    #     self.assertEquals(ImportedModel.objects.count(), 1)
+    #     imported_model = ImportedModel.objects.get(
+    #         content_object_id=assignment.id,
+    #         content_type=ContentType.objects.get_for_model(model=assignment)
+    #     )
+    #     self.assertEquals(imported_model.content_object, assignment)
+    #     self.assertEquals(imported_model.data, assignment_data_dict)
 
     def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
         test_period = mommy.make_recipe('devilry.apps.core.period_active')

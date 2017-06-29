@@ -128,20 +128,20 @@ class TestUserImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEquals(username.username, 'april')
         self.assertEquals(username.user, user)
 
-    def test_importer_imported_model_created(self):
-        user_data_dict = self._create_user_dict()
-        self.create_v2dump(model_name='auth.user',
-                           data=user_data_dict)
-        userimporter = UserImporter(input_root=self.temp_root_dir)
-        userimporter.import_models()
-        user = get_user_model().objects.first()
-        self.assertEquals(ImportedModel.objects.count(), 1)
-        imported_model = ImportedModel.objects.get(
-            content_object_id=user.id,
-            content_type=ContentType.objects.get_for_model(model=user)
-        )
-        self.assertEquals(imported_model.content_object, user)
-        self.assertEquals(imported_model.data, user_data_dict)
+    # def test_importer_imported_model_created(self):
+    #     user_data_dict = self._create_user_dict()
+    #     self.create_v2dump(model_name='auth.user',
+    #                        data=user_data_dict)
+    #     userimporter = UserImporter(input_root=self.temp_root_dir)
+    #     userimporter.import_models()
+    #     user = get_user_model().objects.first()
+    #     self.assertEquals(ImportedModel.objects.count(), 1)
+    #     imported_model = ImportedModel.objects.get(
+    #         content_object_id=user.id,
+    #         content_type=ContentType.objects.get_for_model(model=user)
+    #     )
+    #     self.assertEquals(imported_model.content_object, user)
+    #     self.assertEquals(imported_model.data, user_data_dict)
 
     def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
         self.create_v2dump(model_name='auth.user',

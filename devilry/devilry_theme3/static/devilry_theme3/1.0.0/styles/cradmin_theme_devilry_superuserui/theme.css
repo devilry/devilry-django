@@ -7091,6 +7091,20 @@ body {
   border-color: #afafaf;
   color: #000000;
 }
+.btn.btn-primary,
+.btn.btn-success {
+  background: #fff;
+  border-color: #000000;
+  color: #000000;
+}
+.btn.btn-primary:hover,
+.btn.btn-success:hover,
+.btn.btn-primary:focus,
+.btn.btn-success:focus {
+  background: #000000;
+  border-color: #000000;
+  color: #fff;
+}
 .btn.btn-danger {
   background: #a0372f;
   border-color: #a0372f;
@@ -7316,10 +7330,12 @@ h3 .devilry-user-verbose-inline small {
   padding: 15px 15px 5px 15px;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
 }
+.devilry-dashboard-container h1,
 .devilry-dashboard-container h2,
 .devilry-dashboard-container h3 {
   margin-bottom: 5px;
 }
+.devilry-dashboard-container h1:first-child,
 .devilry-dashboard-container h2:first-child,
 .devilry-dashboard-container h3:first-child {
   margin-top: 0;
