@@ -12,3 +12,5 @@ from .nodedumper import NodeDumper
 from .deliverydumper import DeliveryDumper
 from .staticfeedbackdumper import StaticFeedbackDumper
 from .filemetadumper import FileMetaDumper
+from .qualifiesforexamdumper import QualifiesForExamStatusDumper
+from .qualifiesforexamdumper import QualifiesForFinalExamDumper
