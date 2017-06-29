@@ -11,6 +11,7 @@ from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_comment.models import Comment, CommentFile
 from devilry.devilry_group.models import GroupComment, FeedbackSet
 from devilry.devilry_import_v2database import modelimporter
+from devilry.devilry_import_v2database.modelimporters.modelimporter_utils import BulkCreator
 from devilry.utils import datetimeutils
 
 
@@ -79,16 +80,16 @@ class DeliveryImporter(ImporterMixin, modelimporter.ModelImporter):
                 ('time_of_delivery', 'published_datetime')
             ]
         )
-        feedback_set = self._get_feedback_set_from_id(feedback_set_id=object_dict['fields']['deadline'])
+        feedback_set_id = object_dict['fields']['deadline']
         group_comment.user = self._get_user_from_candidate_id(object_dict['fields']['delivered_by'])
-        group_comment.feedback_set = feedback_set
+        group_comment.feedback_set_id = feedback_set_id
         group_comment.text = 'Delivery'
         group_comment.comment_type = GroupComment.COMMENT_TYPE_GROUPCOMMENT
         group_comment.user_role = GroupComment.USER_ROLE_STUDENT
         if self.should_clean():
             group_comment.full_clean()
         group_comment.save()
-        self.log_create(model_object=group_comment, data=object_dict)
+        return group_comment
 
     def import_models(self, fake=False):
         directory_parser = self.v2delivery_directoryparser
