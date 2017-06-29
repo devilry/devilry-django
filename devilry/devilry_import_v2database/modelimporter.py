@@ -1,6 +1,7 @@
 from django.db import models
 
 from devilry.devilry_import_v2database import v2dump_directoryparsers
+from devilry.devilry_import_v2database.modelimporters import modelimporter_utils
 from devilry.devilry_import_v2database.models import ImportedModel
 from devilry.utils import datetimeutils
 
@@ -57,13 +58,12 @@ class ModelImporter(object):
             setattr(model_object, to_attribute, value)
 
     def log_create(self, model_object, data):
-        imported_model = ImportedModel.objects.create(
+        imported_model = ImportedModel(
             content_object=model_object,
             content_object_id=model_object.id,
             data=data
         )
-        imported_model.full_clean()
-        imported_model.save()
+        modelimporter_utils.logger_singleton.add(imported_model)
 
     @property
     def v2user_directoryparser(self):
