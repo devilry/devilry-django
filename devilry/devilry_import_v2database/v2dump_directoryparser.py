@@ -1,6 +1,7 @@
 import json
 import os
 
+import sys
 from django.db import connection
 
 
@@ -55,8 +56,6 @@ class V2DumpDirectoryParser(object):
         """
         """
         meta_dict = self.get_model_class_meta_dict()
-        if not meta_dict:
-            return
         sql = """
         SELECT setval(pg_get_serial_sequence('{db_table}', 'id'), {max_id});
         """.format(db_table=model_class._meta.db_table, max_id=meta_dict['max_id'])
@@ -77,6 +76,12 @@ class V2DumpDirectoryParser(object):
         return self.get_object_dict_by_filename(filename)
 
     def iterate_object_dicts(self):
+        count = 0
         for filename in os.listdir(self.input_directory):
+            if count % 50 == 0:
+                sys.stdout.write('.')
+                sys.stdout.flush()
             if filename.endswith('.json'):
                 yield self.get_object_dict_by_filename(filename)
+            count += 1
+        sys.stdout.write('\n')

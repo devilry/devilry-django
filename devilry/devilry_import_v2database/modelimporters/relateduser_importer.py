@@ -1,4 +1,5 @@
 import pprint
+
 from django.contrib.auth import get_user_model
 
 from devilry.apps.core.models import RelatedExaminer, RelatedStudent, Period, PeriodTag

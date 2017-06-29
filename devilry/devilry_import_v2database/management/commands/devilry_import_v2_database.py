@@ -2,8 +2,25 @@ import os
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from devilry.devilry_import_v2database import modelimporters
+
+
+class TimeExecution(object):
+    def __init__(self, label, command):
+        self.start_time = None
+        self.label = label
+        self.command = command
+
+    def __enter__(self):
+        self.start_time = timezone.now()
+
+    def __exit__(self, ttype, value, traceback):
+        end_time = timezone.now()
+        duration = (end_time - self.start_time).total_seconds()
+        self.command.stdout.write('{}: {}s'.format(self.label, duration))
+        self.command.stdout.write('')
 
 
 class Command(BaseCommand):
@@ -86,4 +103,5 @@ class Command(BaseCommand):
                 index=index,
                 count=len(importer_classes),
                 model=importer.prettyformat_model_name()))
-            importer.import_models(fake=self.fake)
+            with TimeExecution(importer.prettyformat_model_name(), self):
+                importer.import_models(fake=self.fake)
