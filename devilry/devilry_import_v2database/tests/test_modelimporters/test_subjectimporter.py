@@ -99,21 +99,21 @@ class TestSubjectImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEquals(len(subjects_for_admin_list), 1)
         self.assertEquals(subjects_for_admin_list[0], subject)
 
-    def test_importer_imported_model_created(self):
-        test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
-        subject_data_dict = self._create_subject_dict(test_admin_user=test_admin_user)
-        self.create_v2dump(model_name='core.subject',
-                           data=subject_data_dict)
-        subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
-        subjectimporter.import_models()
-        subject = Subject.objects.first()
-        self.assertEquals(ImportedModel.objects.count(), 1)
-        imported_model = ImportedModel.objects.get(
-            content_object_id=subject.id,
-            content_type=ContentType.objects.get_for_model(model=subject)
-        )
-        self.assertEquals(imported_model.content_object, subject)
-        self.assertEquals(imported_model.data, subject_data_dict)
+    # def test_importer_imported_model_created(self):
+    #     test_admin_user = mommy.make(settings.AUTH_USER_MODEL)
+    #     subject_data_dict = self._create_subject_dict(test_admin_user=test_admin_user)
+    #     self.create_v2dump(model_name='core.subject',
+    #                        data=subject_data_dict)
+    #     subjectimporter = SubjectImporter(input_root=self.temp_root_dir)
+    #     subjectimporter.import_models()
+    #     subject = Subject.objects.first()
+    #     self.assertEquals(ImportedModel.objects.count(), 1)
+    #     imported_model = ImportedModel.objects.get(
+    #         content_object_id=subject.id,
+    #         content_type=ContentType.objects.get_for_model(model=subject)
+    #     )
+    #     self.assertEquals(imported_model.content_object, subject)
+    #     self.assertEquals(imported_model.data, subject_data_dict)
 
     def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
         test_admin_user = mommy.make(settings.AUTH_USER_MODEL)

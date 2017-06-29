@@ -41,7 +41,8 @@ class ImporterMixin(object):
             active=False,
             **kwargs
         )
-        related_user.full_clean()
+        if self.should_clean():
+            related_user.full_clean()
         related_user.save()
         return related_user
 
@@ -74,7 +75,8 @@ class ExaminerImporter(ImporterMixin, modelimporter.ModelImporter):
         else:
             examiner.relatedexaminer = related_examiner
         examiner.assignmentgroup = assignment_group
-        examiner.full_clean()
+        if self.should_clean():
+            examiner.full_clean()
         examiner.save()
         self.log_create(model_object=examiner, data=object_dict)
 
@@ -117,7 +119,8 @@ class CandidateImporter(ImporterMixin, modelimporter.ModelImporter):
         else:
             candidate.relatedstudent = related_student
         candidate.assignment_group = assignment_group
-        candidate.full_clean()
+        if self.should_clean():
+            candidate.full_clean()
         candidate.save()
         self.log_create(model_object=candidate, data=object_dict)
 

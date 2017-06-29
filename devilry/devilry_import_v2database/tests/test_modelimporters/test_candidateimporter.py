@@ -105,22 +105,22 @@ class TestCandidateImporter(ImporterTestCaseMixin, test.TestCase):
         candidate = Candidate.objects.first()
         self.assertEquals(candidate.relatedstudent.period, test_group.parentnode.parentnode)
 
-    def test_importer_imported_model_created(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_group = mommy.make('core.AssignmentGroup')
-        examiner_data_dict = self._create_candidate_dict(assignment_group=test_group, user=test_user)
-        self.create_v2dump(model_name='core.candidate',
-                           data=examiner_data_dict)
-        candidate_importer = CandidateImporter(input_root=self.temp_root_dir)
-        candidate_importer.import_models()
-        candidate = Candidate.objects.first()
-        self.assertEquals(ImportedModel.objects.count(), 1)
-        imported_model = ImportedModel.objects.get(
-            content_object_id=candidate.id,
-            content_type=ContentType.objects.get_for_model(model=candidate)
-        )
-        self.assertEquals(imported_model.content_object, candidate)
-        self.assertEquals(imported_model.data, examiner_data_dict)
+    # def test_importer_imported_model_created(self):
+    #     test_user = mommy.make(settings.AUTH_USER_MODEL)
+    #     test_group = mommy.make('core.AssignmentGroup')
+    #     examiner_data_dict = self._create_candidate_dict(assignment_group=test_group, user=test_user)
+    #     self.create_v2dump(model_name='core.candidate',
+    #                        data=examiner_data_dict)
+    #     candidate_importer = CandidateImporter(input_root=self.temp_root_dir)
+    #     candidate_importer.import_models()
+    #     candidate = Candidate.objects.first()
+    #     self.assertEquals(ImportedModel.objects.count(), 1)
+    #     imported_model = ImportedModel.objects.get(
+    #         content_object_id=candidate.id,
+    #         content_type=ContentType.objects.get_for_model(model=candidate)
+    #     )
+    #     self.assertEquals(imported_model.content_object, candidate)
+    #     self.assertEquals(imported_model.data, examiner_data_dict)
 
     def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)

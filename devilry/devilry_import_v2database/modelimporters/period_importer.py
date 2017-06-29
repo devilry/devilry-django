@@ -16,7 +16,8 @@ class PeriodImporter(modelimporter.ModelImporter):
             permission_group_user, created = account_models.PermissionGroupUser.objects.get_or_create(
                 permissiongroup=permission_group,
                 user=user)
-            permission_group_user.full_clean()
+            if self.should_clean():
+                permission_group_user.full_clean()
             permission_group_user.save()
             return permission_group_user
 
@@ -64,7 +65,8 @@ class PeriodImporter(modelimporter.ModelImporter):
         )
         subject = self._get_subject_from_parentnode_id(id=object_dict['fields']['parentnode'])
         period.parentnode = subject
-        period.full_clean()
+        if self.should_clean():
+            period.full_clean()
         period.save()
         self._create_subject_permissiongroup(subject=subject, admin_user_ids=object_dict['admin_user_ids'])
         self.log_create(model_object=period, data=object_dict)

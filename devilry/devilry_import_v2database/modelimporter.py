@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 from devilry.devilry_import_v2database import v2dump_directoryparsers
@@ -58,12 +59,13 @@ class ModelImporter(object):
             setattr(model_object, to_attribute, value)
 
     def log_create(self, model_object, data):
-        imported_model = ImportedModel(
-            content_object=model_object,
-            content_object_id=model_object.id,
-            data=data
-        )
-        modelimporter_utils.logger_singleton.add(imported_model)
+        # imported_model = ImportedModel(
+        #     content_object=model_object,
+        #     content_object_id=model_object.id,
+        #     data=data
+        # )
+        # modelimporter_utils.logger_singleton.add(imported_model)
+        pass
 
     @property
     def v2user_directoryparser(self):
@@ -159,3 +161,6 @@ class ModelImporter(object):
         return v2dump_directoryparsers.V2QualifiesForFinalExamDirectoryParser(
             input_root=self.input_root
         )
+
+    def should_clean(self):
+        return getattr(settings, 'DEVILRY_V2_DATABASE_SHOULD_CLEAN', False)

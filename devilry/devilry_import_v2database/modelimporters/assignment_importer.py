@@ -56,7 +56,8 @@ class AssignmentImporter(modelimporter.ModelImporter):
         assignment.grading_system_plugin_id = self._get_new_grading_plugin_system_id(
             old_grading_system_plugin_id=object_dict['fields']['grading_system_plugin_id'])
         assignment.anonymizationmode = self._get_new_anonymization_mode(object_dict['fields']['anonymous'])
-        assignment.full_clean()
+        if self.should_clean():
+            assignment.full_clean()
         self.log_create(model_object=assignment, data=object_dict)
         return assignment
 

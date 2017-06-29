@@ -17,7 +17,8 @@ class SubjectImporter(modelimporter.ModelImporter):
                 permissiongroup=permission_group,
                 user=user
             )
-            permission_group_user.full_clean()
+            if self.should_clean():
+                permission_group_user.full_clean()
             permission_group_user.save()
             return permission_group_user
 
@@ -48,7 +49,8 @@ class SubjectImporter(modelimporter.ModelImporter):
                 'long_name',
             ]
         )
-        subject.full_clean()
+        if self.should_clean():
+            subject.full_clean()
         subject.save()
         self._create_subject_permissiongroup(subject=subject, admin_user_ids=object_dict['admin_user_ids'])
         self.log_create(model_object=subject, data=object_dict)

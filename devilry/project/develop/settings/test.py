@@ -63,3 +63,6 @@ class DisableMigrations(object):
         return self.apps_with_test_migrations.get(key, 'notmigrations')
 
 MIGRATION_MODULES = DisableMigrations()
+
+DEVILRY_V2_DATABASE_MAX_BULK_CREATE_OVERRIDE = 0
+DEVILRY_V2_DATABASE_PRINT_PROGRESS_DOTS = False

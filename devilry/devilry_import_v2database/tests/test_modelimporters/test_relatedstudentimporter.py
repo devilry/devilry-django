@@ -131,22 +131,22 @@ class TestRelatedStudentImporter(ImporterTestCaseMixin, test.TestCase):
         for period_tag in period_tags:
             self.assertIn(related_examiner, period_tag.relatedstudents.all())
 
-    def test_importer_imported_model_created(self):
-        test_user = mommy.make(settings.AUTH_USER_MODEL)
-        test_period = mommy.make('core.Period')
-        related_student_data_dict = self._create_related_student_dict(period=test_period, user=test_user)
-        self.create_v2dump(model_name='core.relatedstudent',
-                           data=related_student_data_dict)
-        relatedstudent_importer = RelatedStudentImporter(input_root=self.temp_root_dir)
-        relatedstudent_importer.import_models()
-        related_student = RelatedStudent.objects.first()
-        self.assertEquals(ImportedModel.objects.count(), 1)
-        imported_model = ImportedModel.objects.get(
-            content_object_id=related_student.id,
-            content_type=ContentType.objects.get_for_model(model=related_student)
-        )
-        self.assertEquals(imported_model.content_object, related_student)
-        self.assertEquals(imported_model.data, related_student_data_dict)
+    # def test_importer_imported_model_created(self):
+    #     test_user = mommy.make(settings.AUTH_USER_MODEL)
+    #     test_period = mommy.make('core.Period')
+    #     related_student_data_dict = self._create_related_student_dict(period=test_period, user=test_user)
+    #     self.create_v2dump(model_name='core.relatedstudent',
+    #                        data=related_student_data_dict)
+    #     relatedstudent_importer = RelatedStudentImporter(input_root=self.temp_root_dir)
+    #     relatedstudent_importer.import_models()
+    #     related_student = RelatedStudent.objects.first()
+    #     self.assertEquals(ImportedModel.objects.count(), 1)
+    #     imported_model = ImportedModel.objects.get(
+    #         content_object_id=related_student.id,
+    #         content_type=ContentType.objects.get_for_model(model=related_student)
+    #     )
+    #     self.assertEquals(imported_model.content_object, related_student)
+    #     self.assertEquals(imported_model.data, related_student_data_dict)
 
     def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
         test_user = mommy.make(settings.AUTH_USER_MODEL)
