@@ -2,16 +2,14 @@ import os
 import pprint
 
 from django.conf import settings
-from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.core import files
 
-from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import Candidate
 from devilry.devilry_comment.models import Comment, CommentFile
 from devilry.devilry_group.models import GroupComment, FeedbackSet
 from devilry.devilry_import_v2database import modelimporter
-from devilry.devilry_import_v2database.modelimporters.modelimporter_utils import BulkCreator
 from devilry.utils import datetimeutils
 
 
@@ -137,7 +135,7 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
         for file_info_dict in file_info_list:
             comment_file = CommentFile(
                 comment=group_comment,
-                mimetype=file_info_dict['mimetype'],
+                mimetype=file_info_dict.get('mimetype', None) or 'application/octet-stream',
                 filename=file_info_dict['filename'],
                 filesize=file_info_dict['size']
             )
@@ -192,14 +190,6 @@ class FileMetaImporter(ImporterMixin, modelimporter.ModelImporter):
     def get_model_class(self):
         return CommentFile
 
-    def _get_delivery_comment_from_id(self, group_comment_id):
-        try:
-            group_comment = GroupComment.objects.get(id=group_comment_id)
-        except GroupComment.DoesNotExist:
-            raise modelimporter.ModelImporterException(
-                'GroupComment with id {} does not exist.'.format(group_comment_id))
-        return group_comment
-
     def _create_comment_file_from_object_id(self, object_dict):
         v2_delivery_file_root = getattr(settings, 'DEVILRY_V2_DELIVERY_FILE_ROOT', None)
         if not v2_delivery_file_root:
@@ -214,9 +204,9 @@ class FileMetaImporter(ImporterMixin, modelimporter.ModelImporter):
                 'mimetype'
             ]
         )
-        delivery_comment = self._get_delivery_comment_from_id(group_comment_id=object_dict['fields']['delivery'])
-        comment_file.comment = delivery_comment
-        comment_file.mimetype = object_dict['fields'].get('mimetype', 'application/octet-stream')
+        comment_id = object_dict['fields']['delivery']
+        comment_file.comment_id = comment_id
+        comment_file.mimetype = object_dict['fields'].get('mimetype', None) or 'application/octet-stream'
         comment_file.save()
         path = os.path.join(v2_delivery_file_root,
                             object_dict['fields']['relative_file_path'])
@@ -226,7 +216,6 @@ class FileMetaImporter(ImporterMixin, modelimporter.ModelImporter):
             comment_file.full_clean()
         comment_file.save()
         fp.close()
-        self.log_create(model_object=comment_file, data=object_dict)
 
     def import_models(self, fake=False):
         for object_dict in self.v2filemeta_directoryparser.iterate_object_dicts():
