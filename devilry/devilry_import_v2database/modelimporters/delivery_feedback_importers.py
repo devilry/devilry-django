@@ -85,7 +85,8 @@ class DeliveryImporter(ImporterMixin, modelimporter.ModelImporter):
         group_comment.text = 'Delivery'
         group_comment.comment_type = GroupComment.COMMENT_TYPE_GROUPCOMMENT
         group_comment.user_role = GroupComment.USER_ROLE_STUDENT
-        group_comment.full_clean()
+        if self.should_clean():
+            group_comment.full_clean()
         group_comment.save()
         self.log_create(model_object=group_comment, data=object_dict)
 
@@ -119,7 +120,8 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
         feedback_set.grading_published_by = published_by
         feedback_set.grading_points = grading_points
         feedback_set.grading_published_datetime = publish_datetime
-        feedback_set.full_clean()
+        if self.should_clean():
+            feedback_set.full_clean()
         feedback_set.save()
 
     def _create_feedback_comment_files(self, group_comment, file_info_list):
@@ -143,7 +145,8 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
                                 file_info_dict['relative_file_path'])
             fp = open(path, 'rb')
             comment_file.file = files.File(fp, file_info_dict['filename'])
-            comment_file.full_clean()
+            if self.should_clean():
+                comment_file.full_clean()
             comment_file.save()
             fp.close()
 
@@ -170,7 +173,8 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
         group_comment.text = object_dict['fields']['rendered_view']
         group_comment.comment_type = GroupComment.COMMENT_TYPE_GROUPCOMMENT
         group_comment.user_role = GroupComment.USER_ROLE_EXAMINER
-        group_comment.full_clean()
+        if self.should_clean():
+            group_comment.full_clean()
         group_comment.save()
         self._create_feedback_comment_files(group_comment, object_dict['fields']['files'])
         self.log_create(model_object=group_comment, data=object_dict)
@@ -217,7 +221,8 @@ class FileMetaImporter(ImporterMixin, modelimporter.ModelImporter):
                             object_dict['fields']['relative_file_path'])
         fp = open(path, 'rb')
         comment_file.file = files.File(fp, object_dict['fields']['filename'])
-        comment_file.full_clean()
+        if self.should_clean():
+            comment_file.full_clean()
         comment_file.save()
         fp.close()
         self.log_create(model_object=comment_file, data=object_dict)

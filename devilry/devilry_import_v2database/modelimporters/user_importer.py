@@ -16,7 +16,10 @@ class UserImporter(modelimporter.ModelImporter):
             user=user,
             username=username,
             is_primary=True)
-        username_object.full_clean()
+        if self.should_clean():
+            username_object.full_clean()
+        else:
+            username_object.clean()
         username_object.save()
 
     def _create_useremail(self, user, email):
@@ -25,7 +28,10 @@ class UserImporter(modelimporter.ModelImporter):
             email=email,
             use_for_notifications=True,
             is_primary=True)
-        username_object.full_clean()
+        if self.should_clean():
+            username_object.full_clean()
+        else:
+            username_object.clean()
         username_object.save()
 
     def _create_user_from_object_dict(self, object_dict):
@@ -46,7 +52,8 @@ class UserImporter(modelimporter.ModelImporter):
         # devilry.devilry_account.models.UserEmail.clean).
         user.shortname = str(object_dict['pk'])
         user.set_unusable_password()
-        user.full_clean()
+        if self.should_clean():
+            user.full_clean()
         user.save()
 
         username = object_dict['fields']['username']

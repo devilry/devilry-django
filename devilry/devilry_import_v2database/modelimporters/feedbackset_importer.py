@@ -61,7 +61,8 @@ class FeedbackSetImporter(modelimporter.ModelImporter):
         feedback_set.group = assignment_group
         feedback_set.feedbackset_type = self._get_feedback_set_type(assignment_group=assignment_group)
         feedback_set.created_datetime = self._get_created_datetime(assignment_group=assignment_group)
-        feedback_set.full_clean()
+        if self.should_clean():
+            feedback_set.full_clean()
         feedback_set.save()
         self.log_create(model_object=feedback_set, data=object_dict)
 

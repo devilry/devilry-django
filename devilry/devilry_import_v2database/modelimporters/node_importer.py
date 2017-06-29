@@ -68,7 +68,8 @@ class NodeImporter(modelimporter.ModelImporter):
             name=name,
             grouptype=account_models.PermissionGroup.GROUPTYPE_DEPARTMENTADMIN
         )
-        permission_group.full_clean()
+        if self.should_clean():
+            permission_group.full_clean()
         permission_group.save()
         self._bulk_create_subject_permission_groups(permission_group, subject_queryset)
         self._bulk_create_permission_group_users(permission_group, admin_user_queryset)
