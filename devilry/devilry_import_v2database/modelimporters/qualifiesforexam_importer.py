@@ -63,6 +63,8 @@ class StatusImporter(modelimporter.ModelImporter):
         status.user = self._get_user_from_id(user_id=object_dict['fields']['user'])
         status.period = self._get_period_from_id(period_id=object_dict['fields']['period'])
         status.plugin = self._get_plugin_id(v2_pluginid=object_dict['fields']['plugin'])
+        if self.should_clean():
+            status.full_clean()
         self.log_create(model_object=status, data=object_dict)
         return status
 
@@ -114,15 +116,18 @@ class QualifiesForFinalExamImporter(modelimporter.ModelImporter):
             object_dict['fields']['relatedstudent']
         )
         qualifies_for_final_exam.status = self._get_status_from_id(object_dict['fields']['status'])
-        qualifies_for_final_exam.full_clean()
-        qualifies_for_final_exam.save()
+        if self.should_clean():
+            qualifies_for_final_exam.full_clean()
         self.log_create(model_object=qualifies_for_final_exam, data=object_dict)
+        return qualifies_for_final_exam
 
     def import_models(self, fake=False):
         directory_parser = self.v2qualifiesforexamfinalexam_directoryparser
         directory_parser.set_max_id_for_models_with_auto_generated_sequence_numbers(model_class=self.get_model_class())
-        for object_dict in directory_parser.iterate_object_dicts():
-            if fake:
-                print('Would import: {}'.format(pprint.pformat(object_dict)))
-            else:
-                self._create_qualifiesforfinalexam_from_object_dict(object_dict=object_dict)
+        with BulkCreator(model_class=self.get_model_class()) as qualifies_bulk_creator:
+            for object_dict in directory_parser.iterate_object_dicts():
+                if fake:
+                    print('Would import: {}'.format(pprint.pformat(object_dict)))
+                else:
+                    qualifies_for_final_exam = self._create_qualifiesforfinalexam_from_object_dict(object_dict=object_dict)
+                    qualifies_bulk_creator.add(qualifies_for_final_exam)
