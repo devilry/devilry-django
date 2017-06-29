@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 
@@ -106,7 +107,7 @@ class Status(models.Model):
     period = models.ForeignKey(Period, related_name='qualifiedforexams_status')
 
     #: Status created datetime. This is changed if the list updated.
-    createtime = models.DateTimeField(auto_now_add=True)
+    createtime = models.DateTimeField(default=timezone.now)
 
     #: Message provided with the qualification list of why
     #: it was retracted.

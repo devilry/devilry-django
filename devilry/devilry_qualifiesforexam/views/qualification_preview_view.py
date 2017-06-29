@@ -75,7 +75,9 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
         Args:
             request: ``HttpRequest`` with the attached cradmin_role.
         """
-        status = status_models.Status.objects.order_by('-createtime').first()
+        status = status_models.Status.objects\
+            .filter(period=self.request.cradmin_role)\
+            .order_by('-createtime').first()
         if status:
             if status.status == status_models.Status.READY:
                 return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(

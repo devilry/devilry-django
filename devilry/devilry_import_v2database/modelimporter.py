@@ -150,5 +150,17 @@ class ModelImporter(object):
             input_root=self.input_root
         )
 
+    @property
+    def v2qualifiesforexam_status_directoryparser(self):
+        return v2dump_directoryparsers.V2QualifiesForExamStatusDirectoryParser(
+            input_root=self.input_root
+        )
+
+    @property
+    def v2qualifiesforexamfinalexam_directoryparser(self):
+        return v2dump_directoryparsers.V2QualifiesForFinalExamDirectoryParser(
+            input_root=self.input_root
+        )
+
     def should_clean(self):
         return getattr(settings, 'DEVILRY_V2_DATABASE_SHOULD_CLEAN', False)
