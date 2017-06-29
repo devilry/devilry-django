@@ -147,3 +147,15 @@ class ModelImporter(object):
         return v2dump_directoryparsers.V2FileMetaDirectoryParser(
             input_root=self.input_root
         )
+
+    @property
+    def v2qualifiesforexam_status_directoryparser(self):
+        return v2dump_directoryparsers.V2QualifiesForExamStatusDirectoryParser(
+            input_root=self.input_root
+        )
+
+    @property
+    def v2qualifiesforexamfinalexam_directoryparser(self):
+        return v2dump_directoryparsers.V2QualifiesForFinalExamDirectoryParser(
+            input_root=self.input_root
+        )

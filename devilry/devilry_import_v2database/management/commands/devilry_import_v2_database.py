@@ -63,6 +63,8 @@ class Command(BaseCommand):
             modelimporters.DeliveryImporter,
             modelimporters.StaticFeedbackImporter,
             modelimporters.FileMetaImporter,
+            modelimporters.StatusImporter,
+            modelimporters.QualifiesForFinalExamImporter
         ]
 
     def __iterate_importers(self):
