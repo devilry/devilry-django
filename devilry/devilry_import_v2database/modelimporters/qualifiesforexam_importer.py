@@ -8,6 +8,7 @@ from devilry.devilry_qualifiesforexam import models
 from devilry.devilry_qualifiesforexam_plugin_approved import plugin as approved_plugin
 from devilry.devilry_qualifiesforexam_plugin_points import plugin as points_plugin
 from devilry.devilry_qualifiesforexam_plugin_students import plugin as students_plugin
+from devilry.devilry_import_v2database.modelimporters.modelimporter_utils import BulkCreator
 
 
 class StatusImporter(modelimporter.ModelImporter):
@@ -38,6 +39,8 @@ class StatusImporter(modelimporter.ModelImporter):
         """
         if v2_pluginid == 'devilry_qualifiesforexam_approved.all':
             return approved_plugin.SelectAssignmentsPlugin.plugintypeid
+        if v2_pluginid == 'devilry_qualifiesforexam_approved.subset':
+            return approved_plugin.SelectAssignmentsPlugin.plugintypeid
         if v2_pluginid == 'devilry_qualifiesforexam_points':
             return points_plugin.PointsPlugin.plugintypeid
         if v2_pluginid == 'devilry_qualifiesforexam_select':
@@ -60,19 +63,19 @@ class StatusImporter(modelimporter.ModelImporter):
         status.user = self._get_user_from_id(user_id=object_dict['fields']['user'])
         status.period = self._get_period_from_id(period_id=object_dict['fields']['period'])
         status.plugin = self._get_plugin_id(v2_pluginid=object_dict['fields']['plugin'])
-        status.full_clean()
-        status.save()
         self.log_create(model_object=status, data=object_dict)
         return status
 
     def import_models(self, fake=False):
         directory_parser = self.v2qualifiesforexam_status_directoryparser
         directory_parser.set_max_id_for_models_with_auto_generated_sequence_numbers(model_class=self.get_model_class())
-        for object_dict in directory_parser.iterate_object_dicts():
-            if fake:
-                print('Would import: {}'.format(pprint.pformat(object_dict)))
-            else:
-                self._create_status_from_object_dict(object_dict=object_dict)
+        with BulkCreator(model_class=self.get_model_class()) as status_bulk_creator:
+            for object_dict in directory_parser.iterate_object_dicts():
+                if fake:
+                    print('Would import: {}'.format(pprint.pformat(object_dict)))
+                else:
+                    status = self._create_status_from_object_dict(object_dict=object_dict)
+                    status_bulk_creator.add(status)
 
 
 class QualifiesForFinalExamImporter(modelimporter.ModelImporter):
