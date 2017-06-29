@@ -56,6 +56,8 @@ class V2DumpDirectoryParser(object):
         """
         """
         meta_dict = self.get_model_class_meta_dict()
+        if not meta_dict:
+            return
         sql = """
         SELECT setval(pg_get_serial_sequence('{db_table}', 'id'), {max_id});
         """.format(db_table=model_class._meta.db_table, max_id=meta_dict['max_id'])

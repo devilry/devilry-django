@@ -63,6 +63,7 @@ class StatusImporter(modelimporter.ModelImporter):
         status.full_clean()
         status.save()
         self.log_create(model_object=status, data=object_dict)
+        return status
 
     def import_models(self, fake=False):
         directory_parser = self.v2qualifiesforexam_status_directoryparser
