@@ -5,6 +5,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from devilry.devilry_import_v2database import modelimporters
+from devilry.devilry_import_v2database.modelimporters import modelimporter_utils
 
 
 class TimeExecution(object):
@@ -98,6 +99,7 @@ class Command(BaseCommand):
 
     def __run(self):
         importer_classes = self.__get_importer_classes()
+        modelimporter_utils.logger_singleton.clear()
         for index, importer in enumerate(self.__iterate_importers(), start=1):
             self.stdout.write('Importing model {index}/{count} {model!r}'.format(
                 index=index,
@@ -105,3 +107,4 @@ class Command(BaseCommand):
                 model=importer.prettyformat_model_name()))
             with TimeExecution(importer.prettyformat_model_name(), self):
                 importer.import_models(fake=self.fake)
+        modelimporter_utils.logger_singleton.save_objects()

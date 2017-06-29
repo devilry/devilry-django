@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 
 from devilry.apps.core.models import Assignment, Period
 from devilry.devilry_import_v2database import modelimporter
+from devilry.devilry_import_v2database.modelimporters.modelimporter_utils import BulkCreator
 
 
 class AssignmentImporter(modelimporter.ModelImporter):
@@ -55,16 +56,17 @@ class AssignmentImporter(modelimporter.ModelImporter):
         assignment.grading_system_plugin_id = self._get_new_grading_plugin_system_id(
             old_grading_system_plugin_id=object_dict['fields']['grading_system_plugin_id'])
         assignment.anonymizationmode = self._get_new_anonymization_mode(object_dict['fields']['anonymous'])
-        # assignment.full_clean()
-        assignment.save()
+        assignment.full_clean()
         self.log_create(model_object=assignment, data=object_dict)
+        return assignment
 
     def import_models(self, fake=False):
         directory_parser = self.v2assignment_directoryparser
         directory_parser.set_max_id_for_models_with_auto_generated_sequence_numbers(model_class=self.get_model_class())
-        for object_dict in directory_parser.iterate_object_dicts():
-            if fake:
-                print('Would import: {}'.format(pprint.pformat(object_dict)))
-            else:
-                self._create_assignment_from_object_dict(object_dict=object_dict)
-
+        with BulkCreator(model_class=Assignment) as assignment_bulk_creator:
+            for object_dict in directory_parser.iterate_object_dicts():
+                if fake:
+                    print('Would import: {}'.format(pprint.pformat(object_dict)))
+                else:
+                    assignment = self._create_assignment_from_object_dict(object_dict=object_dict)
+                    assignment_bulk_creator.add(assignment)
