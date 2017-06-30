@@ -1,8 +1,36 @@
 import json
 import os
+import sys
 
 from django.core import serializers
 from django.db import models
+from django.conf import settings
+
+
+class ProgressDots(object):
+    def __init__(self, interval=100, messageformat='One dot per {interval}: '):
+        self._count = 0
+        self._interval = interval
+        self._messageformat = messageformat
+        self._enabled = getattr(settings, 'DEVILRY_V2_DATABASE_PRINT_PROGRESS_DOTS', True)
+
+    def increment_progress(self, increment=1):
+        self._count += increment
+        if self._enabled:
+            if self._count % self._interval == 0:
+                sys.stdout.write('.')
+                sys.stdout.flush()
+
+    def __enter__(self):
+        self._count = 0
+        if self._enabled:
+            sys.stdout.write(self._messageformat.format(interval=self._interval))
+            sys.stdout.flush()
+        return self
+
+    def __exit__(self, ttype, value, traceback):
+        if self._enabled:
+            sys.stdout.write('\n')
 
 
 class ModelDumper(object):
@@ -126,15 +154,17 @@ class ModelDumper(object):
             print '## model meta for', self.get_model_class().__name__
             print self.get_meta_file_data()
             print
-        for obj in self.get_object_iterator():
-            serialized = self.serialize_model_object(obj)
-            filepath = self.get_output_filepath_for_model_object(obj)
-            if fake:
-                print
-                print '##', filepath
-                print serialized
-                print
-            else:
-                with open(filepath, 'wb') as outfile:
-                    outfile.write(json.dumps(serialized, encoding='utf-8', indent=2))
-                    outfile.close()
+        with ProgressDots() as progressdots:
+            for obj in self.get_object_iterator():
+                serialized = self.serialize_model_object(obj)
+                filepath = self.get_output_filepath_for_model_object(obj)
+                if fake:
+                    print
+                    print '##', filepath
+                    print serialized
+                    print
+                else:
+                    with open(filepath, 'wb') as outfile:
+                        outfile.write(json.dumps(serialized, encoding='utf-8', indent=2))
+                        outfile.close()
+                progressdots.increment_progress()
