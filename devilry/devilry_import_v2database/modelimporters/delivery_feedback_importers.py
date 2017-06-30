@@ -12,6 +12,7 @@ from devilry.devilry_comment.models import Comment, CommentFile
 from devilry.devilry_group.models import GroupComment, FeedbackSet
 from devilry.devilry_import_v2database import modelimporter
 from devilry.devilry_import_v2database.modelimporters import modelimporter_utils
+from devilry.devilry_import_v2database.modelimporters.modelimporter_utils import BulkCreator
 from devilry.utils import datetimeutils
 
 
@@ -135,7 +136,9 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
             # Handle the slightly older format where the files where
             # a list, not a dict - just to avoid crashes until we
             # create a new dump. This can be removed later.
-            return
+            sys.stderr.write('x')
+            return []
+        commentfiles = []
         for file_info_dict in file_infos_dict.values():
             mimetype = modelimporter_utils.get_mimetype_from_filename(file_info_dict['filename'])
             comment_file = CommentFile(
@@ -147,15 +150,8 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
                     staticfeedback_id=staticfeedback_id,
                     attachment_id=file_info_dict['id'])
             )
-            comment_file.save()
-            # path = os.path.join(v2_media_root,
-            #                     file_info_dict['relative_file_path'])
-            # fp = open(path, 'rb')
-            # comment_file.file = files.File(fp, file_info_dict['filename'])
-            # if self.should_clean():
-            #     comment_file.full_clean()
-            # comment_file.save()
-            # fp.close()
+            commentfiles.append(comment_file)
+        return commentfiles
 
     def _create_group_comment_from_object_dict(self, object_dict):
         group_comment = self.get_model_class()()
@@ -184,18 +180,22 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
         if self.should_clean():
             group_comment.full_clean()
         group_comment.save()
-        self._create_feedback_comment_files(
+        commentfiles = self._create_feedback_comment_files(
             group_comment,
             staticfeedback_id=object_dict['pk'],
             file_infos_dict=object_dict['fields']['files'])
         self.log_create(model_object=group_comment, data=object_dict)
+        return group_comment, commentfiles
 
     def import_models(self, fake=False):
-        for object_dict in self.v2staticfeedback_directoryparser.iterate_object_dicts():
-            if fake:
-                print('Would import: {}'.format(pprint.pformat(object_dict)))
-            else:
-                self._create_group_comment_from_object_dict(object_dict=object_dict)
+        with BulkCreator(model_class=CommentFile) as commentfile_bulk_creator:
+            for object_dict in self.v2staticfeedback_directoryparser.iterate_object_dicts():
+                if fake:
+                    print('Would import: {}'.format(pprint.pformat(object_dict)))
+                else:
+                    group_comment, commentfiles = self._create_group_comment_from_object_dict(object_dict=object_dict)
+                    if commentfiles:
+                        commentfile_bulk_creator.add(*commentfiles)
 
 
 class FileMetaImporter(ImporterMixin, modelimporter.ModelImporter):
@@ -217,15 +217,16 @@ class FileMetaImporter(ImporterMixin, modelimporter.ModelImporter):
         comment_file.mimetype = modelimporter_utils.get_mimetype_from_filename(
             filename=object_dict['fields'].get('filename', None))
         comment_file.v2_id = modelimporter_utils.make_flat_v2_id(object_dict)
-        comment_file.save()
         return comment_file
 
     def import_models(self, fake=False):
-        for object_dict in self.v2filemeta_directoryparser.iterate_object_dicts():
-            if fake:
-                print('Would import: {}'.format(pprint.pformat(object_dict)))
-            else:
-                self._create_comment_file_from_object_id(object_dict=object_dict)
+        with BulkCreator(model_class=CommentFile) as commentfile_bulk_creator:
+            for object_dict in self.v2filemeta_directoryparser.iterate_object_dicts():
+                if fake:
+                    print('Would import: {}'.format(pprint.pformat(object_dict)))
+                else:
+                    comment_file = self._create_comment_file_from_object_id(object_dict=object_dict)
+                    commentfile_bulk_creator.add(comment_file)
 
 
 class CommentFileContentImporter(ImporterMixin, modelimporter.ModelImporter):

@@ -61,7 +61,7 @@ class V2DumpDirectoryParser(object):
             return
         sql = """
         SELECT setval(pg_get_serial_sequence('{db_table}', 'id'), {max_id});
-        """.format(db_table=model_class._meta.db_table, max_id=meta_dict['max_id'])
+        """.format(db_table=model_class._meta.db_table, max_id=meta_dict['max_id'] or 1)
         cursor = connection.cursor()
         cursor.execute(sql)
 

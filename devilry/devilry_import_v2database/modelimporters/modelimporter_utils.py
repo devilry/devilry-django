@@ -12,8 +12,8 @@ class BulkCreator(object):
                                        5000)
         self._objects = []
 
-    def add(self, obj):
-        self._objects.append(obj)
+    def add(self, *obj):
+        self._objects.extend(obj)
         if len(self._objects) >= self.max_bulk_create:
             self.save_objects()
 

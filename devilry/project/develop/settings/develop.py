@@ -160,3 +160,5 @@ IEVVTASKS_RECREATE_DEVDB_POST_MANAGEMENT_COMMANDS = [
 
 
 #DEVILRY_V2_DATABASE_SHOULD_CLEAN = True
+DEVILRY_V2_MEDIA_ROOT = '/Users/espenak/code/v2-devilry-django/devilry_developfiles/filestore'
+DEVILRY_V2_DELIVERY_FILE_ROOT = '/Users/espenak/code/v2-devilry-django/devilry_developfiles/deliverystorehier'

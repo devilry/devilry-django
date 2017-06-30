@@ -12,5 +12,6 @@ from .feedbackset_importer import FeedbackSetImporter  # noqa
 from .delivery_feedback_importers import DeliveryImporter  # noqa
 from .delivery_feedback_importers import StaticFeedbackImporter  # noqa
 from .delivery_feedback_importers import FileMetaImporter  # noqa
+from .delivery_feedback_importers import CommentFileContentImporter  # noqa
 from .qualifiesforexam_importer import StatusImporter  # noqa
 from .qualifiesforexam_importer import QualifiesForFinalExamImporter  # noqa

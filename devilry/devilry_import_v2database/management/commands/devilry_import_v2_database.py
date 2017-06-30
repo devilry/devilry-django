@@ -95,8 +95,9 @@ class Command(BaseCommand):
             modelimporters.DeliveryImporter,
             modelimporters.StaticFeedbackImporter,
             modelimporters.FileMetaImporter,
-            # modelimporters.StatusImporter,
-            # modelimporters.QualifiesForFinalExamImporter
+            modelimporters.CommentFileContentImporter,
+            modelimporters.StatusImporter,
+            modelimporters.QualifiesForFinalExamImporter
         ]
 
     def __get_all_importer_classnames(self):
