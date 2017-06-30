@@ -96,19 +96,25 @@ class Comment(models.Model):
         commentfile.save()
 
 
-def commentfile_directory_path_unlimited_files_per_directory(commentfile):
-    return 'devilry_comment/{}/{}'.format(commentfile.comment_id, commentfile.id)
+def get_comment_directory_path_unlimited_files_per_directory(comment_id):
+    return 'devilry_comment/{}'.format(comment_id)
 
 
-def commentfile_directory_path_restrict_files_per_directory(commentfile):
+def get_comment_directory_path_restrict_files_per_directory(comment_id):
     interval = 1000
-    toplevel = commentfile.id / (interval * interval)
-    sublevel = (commentfile.id - (toplevel * interval * interval)) / interval
-    return 'devilry_comment/{toplevel}/{sublevel}/{comment_id}/{commentfile_id}'.format(
+    toplevel = comment_id / (interval * interval)
+    sublevel = (comment_id - (toplevel * interval * interval)) / interval
+    return 'devilry_comment/{toplevel}/{sublevel}/{comment_id}'.format(
         toplevel=toplevel,
         sublevel=sublevel,
-        comment_id=commentfile.comment_id,
-        commentfile_id=commentfile.id)
+        comment_id=comment_id)
+
+
+def get_comment_directory_path(comment_id):
+    if getattr(settings, 'DEVILRY_RESTRICT_NUMBER_OF_FILES_PER_DIRECTORY', False):
+        return get_comment_directory_path_restrict_files_per_directory(comment_id=comment_id)
+    else:
+        return get_comment_directory_path_unlimited_files_per_directory(comment_id=comment_id)
 
 
 def commentfile_directory_path(instance, filename):
@@ -123,10 +129,8 @@ def commentfile_directory_path(instance, filename):
     """
     if instance.id is None:
         raise ValueError('Can not save a CommentFile.file on a CommentFile without an id.')
-    if getattr(settings, 'DEVILRY_RESTRICT_NUMBER_OF_FILES_PER_DIRECTORY', False):
-        return commentfile_directory_path_restrict_files_per_directory(commentfile=instance)
-    else:
-        return commentfile_directory_path_unlimited_files_per_directory(commentfile=instance)
+    comment_directory = get_comment_directory_path(comment_id=instance.comment_id)
+    return '{}/file/{}'.format(comment_directory, instance.id)
 
 
 class CommentFile(models.Model):
@@ -201,19 +205,35 @@ class CommentFile(models.Model):
 
 
 def commentfileimage_directory_path(instance, filename):
+    """The ``upload_to`` function for :obj:`.CommentFileImage.file`.
+
+    Args:
+        instance: The :class:`.CommentFileImage` instance.
+        filename: Not used to generate the ``upload_to`` path.
+
+    Raises:
+        ValidationError: If ``instance.id`` is ``None``.
+    """
     if instance.id is None:
-        raise ValueError('Can not save a CommentCommentFileImageFile.image '
-                         'on a CommentFileImage without an id.')
-    return 'devilry_comment/{}/{}_{}'.format(instance.comment_file.comment.id, instance.comment_file.id, instance.id)
+        raise ValueError('Can not save a CommentFileImage.image on a CommentFileImage without an id.')
+    comment_directory = get_comment_directory_path(comment_id=instance.comment_file.comment_id)
+    return '{}/image/{}_{}'.format(comment_directory, instance.comment_file.id, instance.id)
 
 
 def commentfileimage_thumbnail_directory_path(instance, filename):
+    """The ``upload_to`` function for :obj:`.CommentFileImage.file`.
+
+    Args:
+        instance: The :class:`.CommentFileImage` instance.
+        filename: Not used to generate the ``upload_to`` path.
+
+    Raises:
+        ValidationError: If ``instance.id`` is ``None``.
+    """
     if instance.id is None:
-        raise ValueError('Can not save a CommentCommentFileImageFile.thumbnail '
-                         'on a CommentFileImage without an id.')
-    return 'devilry_comment/{}/{}_{}_thumbnail'.format(instance.comment_file.comment.id,
-                                                       instance.comment_file.id,
-                                                       instance.id)
+        raise ValueError('Can not save a CommentFileImage.thumbnail on a CommentFile without an id.')
+    comment_directory = get_comment_directory_path(comment_id=instance.comment_file.comment_id)
+    return '{}/thumbnail/{}_{}'.format(comment_directory, instance.comment_file.id, instance.id)
 
 
 class CommentFileImage(models.Model):
