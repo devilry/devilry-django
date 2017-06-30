@@ -33,6 +33,11 @@ class StatusImporter(modelimporter.ModelImporter):
             )
         return user
 
+    def _get_status(self, v2_status):
+        if v2_status == 'ready':
+            return models.Status.READY
+        return models.Status.NOTREADY
+
     def _get_plugin_id(self, v2_pluginid):
         """
         Get v3 plugintypeid from v2 pluginid
@@ -57,12 +62,13 @@ class StatusImporter(modelimporter.ModelImporter):
                 'createtime',
                 'exported_timestamp',
                 'message',
-                'status',
+                # 'status',
             ]
         )
         status.user = self._get_user_from_id(user_id=object_dict['fields']['user'])
         status.period = self._get_period_from_id(period_id=object_dict['fields']['period'])
         status.plugin = self._get_plugin_id(v2_pluginid=object_dict['fields']['plugin'])
+        status.status = self._get_status(v2_status=object_dict['fields']['status'])
         if self.should_clean():
             status.full_clean()
         self.log_create(model_object=status, data=object_dict)
