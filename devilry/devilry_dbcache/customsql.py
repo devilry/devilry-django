@@ -11,22 +11,24 @@ log = logging.getLogger(__name__)
 
 class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
 
+    _initialize_sqlfiles = [
+        'general_purpose_functions.sql',
+        'feedbackset/helperfunctions.sql',
+        'commentfile/helperfunctions.sql',
+        'assignment_group/triggers.sql',
+        'feedbackset/validate.sql',
+        'feedbackset/triggers.sql',
+        'groupcomment/triggers.sql',
+        'imageannotationcomment/triggers.sql',
+        'commentfile/triggers.sql',
+        'examiner/triggers.sql',
+        'candidate/triggers.sql',
+        'assignment_group_cached_data/rebuild.sql',
+        'assignment/triggers.sql'
+    ]
+
     def initialize(self):
-        self.execute_sql_from_files([
-            'general_purpose_functions.sql',
-            'feedbackset/helperfunctions.sql',
-            'commentfile/helperfunctions.sql',
-            'assignment_group/triggers.sql',
-            'feedbackset/validate.sql',
-            'feedbackset/triggers.sql',
-            'groupcomment/triggers.sql',
-            'imageannotationcomment/triggers.sql',
-            'commentfile/triggers.sql',
-            'examiner/triggers.sql',
-            'candidate/triggers.sql',
-            'assignment_group_cached_data/rebuild.sql',
-            'assignment/triggers.sql'
-        ])
+        self.execute_sql_from_files(self._initialize_sqlfiles)
 
     def recreate_data(self):
         from devilry.apps.core.models import AssignmentGroup, Candidate, Examiner
@@ -47,3 +49,13 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
             self.execute_sql("""
                 SELECT devilry__rebuild_assignmentgroupcacheddata_for_period({period_id});
             """.format(period_id=period.id))
+
+    def clear(self):
+        drop_statements = self.make_drop_statements_from_sql_files(self._initialize_sqlfiles)
+        self.execute_sql_multiple(reversed(drop_statements))
+        self._delete_generated_objects()
+
+    def _delete_generated_objects(self):
+        self.execute_sql("""
+            DELETE FROM devilry_dbcache_assignmentgroupcacheddata;
+        """)

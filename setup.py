@@ -48,7 +48,7 @@ setup(
         'html5lib==0.9999999',
         'psycopg2==2.6.2',
         'django_cradmin==1.1.1',
-        'ievv_opensource==4.0.0rc1',
+        'ievv_opensource==4.1.0',
         'arrow==0.10.0',
     ]
 )
