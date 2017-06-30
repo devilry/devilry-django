@@ -96,6 +96,21 @@ class Comment(models.Model):
         commentfile.save()
 
 
+def commentfile_directory_path_unlimited_files_per_directory(commentfile):
+    return 'devilry_comment/{}/{}'.format(commentfile.comment_id, commentfile.id)
+
+
+def commentfile_directory_path_restrict_files_per_directory(commentfile):
+    interval = 1000
+    toplevel = commentfile.id / (interval * interval)
+    sublevel = (commentfile.id - (toplevel * interval * interval)) / interval
+    return 'devilry_comment/{toplevel}/{sublevel}/{comment_id}/{commentfile_id}'.format(
+        toplevel=toplevel,
+        sublevel=sublevel,
+        comment_id=commentfile.comment_id,
+        commentfile_id=commentfile.id)
+
+
 def commentfile_directory_path(instance, filename):
     """The ``upload_to`` function for :obj:`.CommentFile.file`.
 
@@ -108,7 +123,10 @@ def commentfile_directory_path(instance, filename):
     """
     if instance.id is None:
         raise ValueError('Can not save a CommentFile.file on a CommentFile without an id.')
-    return 'devilry_comment/{}/{}'.format(instance.comment.id, instance.id)
+    if getattr(settings, 'DEVILRY_RESTRICT_NUMBER_OF_FILES_PER_DIRECTORY', False):
+        return commentfile_directory_path_restrict_files_per_directory(commentfile=instance)
+    else:
+        return commentfile_directory_path_unlimited_files_per_directory(commentfile=instance)
 
 
 class CommentFile(models.Model):
@@ -180,6 +198,7 @@ class CommentFile(models.Model):
             created_datetime=self.created_datetime
         )
         commentfilecopy.save()
+
 
 def commentfileimage_directory_path(instance, filename):
     if instance.id is None:

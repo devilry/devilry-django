@@ -121,3 +121,6 @@ DEVILRY_ENABLE_MATHJAX = True
 #: This is also the minimum amount of time between the current time and
 #: the first deadline.
 DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES = 60 * 6
+
+
+DEVILRY_RESTRICT_NUMBER_OF_FILES_PER_DIRECTORY = False
