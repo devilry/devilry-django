@@ -10,6 +10,8 @@ from devilry.apps.core.models import Candidate
 from devilry.devilry_comment.models import Comment, CommentFile
 from devilry.devilry_group.models import GroupComment, FeedbackSet
 from devilry.devilry_import_v2database import modelimporter
+from devilry.devilry_import_v2database.modelimporters import modelimporter_utils
+from devilry.devilry_import_v2database.modelimporters.modelimporter_utils import BulkCreator
 from devilry.utils import datetimeutils
 
 
@@ -133,9 +135,10 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
         if not v2_media_root:
             return
         for file_info_dict in file_info_list:
+            mimetype = modelimporter_utils.get_mimetype_from_filename(file_info_dict['filename'])
             comment_file = CommentFile(
                 comment=group_comment,
-                mimetype=file_info_dict.get('mimetype', None) or 'application/octet-stream',
+                mimetype=mimetype,
                 filename=file_info_dict['filename'],
                 filesize=file_info_dict['size']
             )
@@ -200,13 +203,13 @@ class FileMetaImporter(ImporterMixin, modelimporter.ModelImporter):
             object_dict=object_dict,
             attributes=[
                 'filename',
-                ('size', 'filesize'),
-                'mimetype'
+                ('size', 'filesize')
             ]
         )
         comment_id = object_dict['fields']['delivery']
         comment_file.comment_id = comment_id
-        comment_file.mimetype = object_dict['fields'].get('mimetype', None) or 'application/octet-stream'
+        comment_file.mimetype = modelimporter_utils.get_mimetype_from_filename(
+            filename=object_dict['fields'].get('filename', None))
         comment_file.save()
         path = os.path.join(v2_delivery_file_root,
                             object_dict['fields']['relative_file_path'])
@@ -216,6 +219,7 @@ class FileMetaImporter(ImporterMixin, modelimporter.ModelImporter):
             comment_file.full_clean()
         comment_file.save()
         fp.close()
+        return comment_file
 
     def import_models(self, fake=False):
         for object_dict in self.v2filemeta_directoryparser.iterate_object_dicts():

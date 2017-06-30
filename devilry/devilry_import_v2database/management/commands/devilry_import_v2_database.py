@@ -145,5 +145,5 @@ class Command(BaseCommand):
                             '{!r} failed. Revering changes for this importer. '
                             'You can re-run from this point on with '
                             '"--start-at {}"'.format(importer.prettyformat_model_name(),
-                                                   importer.__class__.__name__))
+                                                     importer.__class__.__name__))
                         raise
