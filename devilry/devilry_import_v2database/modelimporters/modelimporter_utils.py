@@ -1,3 +1,5 @@
+import mimetypes
+
 from django.conf import settings
 
 from devilry.devilry_import_v2database.models import ImportedModel
@@ -35,3 +37,12 @@ class BulkCreator(object):
 
 
 # logger_singleton = BulkCreator(model_class=ImportedModel)
+
+
+def get_mimetype_from_filename(filename):
+    mimetype = 'application/octet-stream'
+    if filename:
+        detected_mimetype = mimetypes.guess_type(filename)
+        if detected_mimetype[0]:
+            mimetype = detected_mimetype[0]
+    return mimetype

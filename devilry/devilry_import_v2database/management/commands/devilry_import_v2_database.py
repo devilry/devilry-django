@@ -35,6 +35,18 @@ class Command(BaseCommand):
             help='The input directory - a directory created with '
                  '"devilry_dump_database_for_v3_migration" with Devilry 2.x.')
         parser.add_argument(
+            '--start-at',
+            dest='start_at_importer_classname',
+            choices=self.__get_all_importer_classnames(),
+            help='Name of the importer to start at. Skips any importers before this '
+                 'importer.')
+        parser.add_argument(
+            '--stop-at',
+            dest='stop_at_importer_classname',
+            choices=self.__get_all_importer_classnames(),
+            help='Name of the importer to stop at. Skips any importers after this '
+                 'importer.')
+        parser.add_argument(
             '--fake',
             dest='fake', action='store_true',
             default=False,
@@ -53,6 +65,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.input_directory = options['input-directory']
         self.fake = options['fake']
+        self.start_at_importer_classname = options['start_at_importer_classname']
+        self.stop_at_importer_classname = options['stop_at_importer_classname']
         v2_media_root = getattr(settings, 'DEVILRY_V2_MEDIA_ROOT', None)
         if not v2_media_root:
             self.stderr.write('WARNING: settings.DEVILRY_V2_MEDIA_ROOT is not set,'
@@ -66,7 +80,7 @@ class Command(BaseCommand):
         self.__verify_empty_database()
         self.__run()
 
-    def __get_importer_classes(self):
+    def __get_all_importer_classes(self):
         return [
             modelimporters.UserImporter,
             modelimporters.NodeImporter,
@@ -85,6 +99,23 @@ class Command(BaseCommand):
             # modelimporters.StatusImporter,
             # modelimporters.QualifiesForFinalExamImporter
         ]
+
+    def __get_all_importer_classnames(self):
+        return [cls.__name__ for cls in self.__get_all_importer_classes()]
+
+    def __get_importer_classes(self):
+        found_start = True
+        if self.start_at_importer_classname:
+            found_start = False
+        final_importer_classes = []
+        for importer_class in self.__get_all_importer_classes():
+            if self.start_at_importer_classname and importer_class.__name__ == self.start_at_importer_classname:
+                found_start = True
+            if found_start:
+                final_importer_classes.append(importer_class)
+            if self.stop_at_importer_classname and importer_class.__name__ == self.stop_at_importer_classname:
+                break
+        return final_importer_classes
 
     def __iterate_importers(self):
         for importer_class in self.__get_importer_classes():
@@ -107,4 +138,12 @@ class Command(BaseCommand):
                 model=importer.prettyformat_model_name()))
             with TimeExecution(importer.prettyformat_model_name(), self):
                 with transaction.atomic():
-                    importer.import_models(fake=self.fake)
+                    try:
+                        importer.import_models(fake=self.fake)
+                    except:
+                        self.stderr.write(
+                            '{!r} failed. Revering changes for this importer. '
+                            'You can re-run from this point on with '
+                            '"--start-at {}"'.format(importer.prettyformat_model_name(),
+                                                     importer.__class__.__name__))
+                        raise

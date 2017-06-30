@@ -119,7 +119,7 @@ class CommentFile(models.Model):
     """
     MAX_FILENAME_LENGTH = 255
 
-    mimetype = models.CharField(max_length=42)
+    mimetype = models.CharField(max_length=255)
 
     #: The file uploaded to the comment. Note that this is ``blank=True`` because the
     #: comment must first be created with this field set to ``''`` to get an ID
