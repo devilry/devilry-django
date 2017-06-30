@@ -1,10 +1,9 @@
 import json
 import os
 
-import sys
-
-from django.conf import settings
 from django.db import connection
+
+from devilry.devilry_import_v2database.modelimporters import modelimporter_utils
 
 
 class V2DumpDirectoryParser(object):
@@ -80,15 +79,8 @@ class V2DumpDirectoryParser(object):
         return self.get_object_dict_by_filename(filename)
 
     def iterate_object_dicts(self):
-        count = 0
-        print_progress_dots = getattr(settings, 'DEVILRY_V2_DATABASE_PRINT_PROGRESS_DOTS', True)
-        for filename in os.listdir(self.input_directory):
-            if print_progress_dots:
-                if count % 50 == 0:
-                    sys.stdout.write('.')
-                    sys.stdout.flush()
-            if filename.endswith('.json'):
-                yield self.get_object_dict_by_filename(filename)
-            count += 1
-        if print_progress_dots:
-            sys.stdout.write('\n')
+        with modelimporter_utils.ProgressDots() as progressdots:
+            for filename in os.listdir(self.input_directory):
+                if filename.endswith('.json'):
+                    yield self.get_object_dict_by_filename(filename)
+                progressdots.increment_progress()

@@ -23,7 +23,7 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         super(TestStaticFeedbackImporterImporter, self).tearDown()
         shutil.rmtree(self.v2_media_root_temp_dir)
 
-    def _create_staticfeedback_dict(self, feedback_set, file_info_list=None, examiner_user_id=None):
+    def _create_staticfeedback_dict(self, feedback_set, file_info_dict=None, examiner_user_id=None):
         return {
             'pk': 1,
             'model': 'core.staticfeedback',
@@ -33,7 +33,7 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
                 'saved_by': examiner_user_id,
                 'delivery': 1,
                 'points': 2,
-                'files': [] if not file_info_list else file_info_list,
+                'files': file_info_dict or {},
                 'deadline_id': feedback_set.id,
                 'save_timestamp': '2017-05-15T11:04:46.817',
                 'rendered_view': u'<p>Quo tempore facilis eos suscipit eum doloremque libero'
@@ -252,10 +252,6 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         with self.settings(DEVILRY_V2_MEDIA_ROOT=self.v2_media_root_temp_dir):
             test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
             test_group = mommy.make('core.AssignmentGroup')
-            abs_path = os.path.join(self.v2_media_root_temp_dir, 'test.py')
-            v2_file = open(abs_path, 'wb')
-            v2_file.write("print('Hello, world!')")
-            v2_file.close()
             mommy.make('core.Examiner',
                        assignmentgroup=test_group,
                        relatedexaminer__user=test_examiner_user,
@@ -266,99 +262,19 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
                 data=self._create_staticfeedback_dict(
                     feedback_set=test_feedbackset,
                     examiner_user_id=test_examiner_user.id,
-                    file_info_list=[{
-                        'filename': 'test.py',
-                        'relative_file_path': 'test.py',
-                        'size': os.stat(abs_path).st_size,
-                        'mimetype': 'text/x-python'
-                    }])
+                    file_info_dict={
+                        '1': {
+                            'id': 1,
+                            'filename': 'test.py',
+                            'relative_file_path': 'test.py',
+                        }
+                    })
             )
             StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
             self.assertEquals(CommentFile.objects.count(), 1)
             comment_file = CommentFile.objects.first()
             self.assertEquals(comment_file.filename, 'test.py')
             self.assertEquals(comment_file.mimetype, 'text/x-python')
-            self.assertEquals(comment_file.filesize, os.stat(abs_path).st_size)
-            self.assertEquals(comment_file.file.read(), "print('Hello, world!')")
-
-    def test_importer_comment_file_comment(self):
-        with self.settings(DEVILRY_V2_MEDIA_ROOT=self.v2_media_root_temp_dir):
-            test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-            test_group = mommy.make('core.AssignmentGroup')
-            v2_file = open(os.path.join(self.v2_media_root_temp_dir, 'test.py'), 'wb')
-            abs_path = os.path.join(self.v2_media_root_temp_dir, 'test.py')
-            v2_file.write("print('Hello, world!')")
-            v2_file.close()
-            mommy.make('core.Examiner',
-                       assignmentgroup=test_group,
-                       relatedexaminer__user=test_examiner_user,
-                       relatedexaminer__period=test_group.parentnode.parentnode)
-            test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
-            self.create_v2dump(
-                model_name='core.staticfeedback',
-                data=self._create_staticfeedback_dict(
-                    feedback_set=test_feedbackset,
-                    examiner_user_id=test_examiner_user.id,
-                    file_info_list=[{
-                        'filename': 'test.py',
-                        'relative_file_path': 'test.py',
-                        'size': os.stat(abs_path).st_size,
-                        'mimetype': 'text/x-python'
-                    }])
-            )
-            StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
-            self.assertEquals(CommentFile.objects.count(), 1)
-            self.assertEquals(GroupComment.objects.count(), 1)
-            comment_file = CommentFile.objects.first()
-            comment_file_group_comment = GroupComment.objects.get(id=comment_file.comment.id)
-            group_comment = GroupComment.objects.first()
-            self.assertEquals(comment_file_group_comment, group_comment)
-
-    def test_importer_multiple_feedback_files(self):
-        with self.settings(DEVILRY_V2_MEDIA_ROOT=self.v2_media_root_temp_dir):
-            test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
-            test_group = mommy.make('core.AssignmentGroup')
-            abs_path1 = os.path.join(self.v2_media_root_temp_dir, 'test_file_1.py')
-            v2_file1 = open(abs_path1, 'wb')
-            v2_file1.write("print('Hello, world1!')")
-            v2_file1.close()
-            abs_path2 = os.path.join(self.v2_media_root_temp_dir, 'test_file_2.py')
-            v2_file2 = open(abs_path2, 'wb')
-            v2_file2.write("print('Hello, world2!')")
-            v2_file2.close()
-
-            mommy.make('core.Examiner',
-                       assignmentgroup=test_group,
-                       relatedexaminer__user=test_examiner_user,
-                       relatedexaminer__period=test_group.parentnode.parentnode)
-            test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
-            self.create_v2dump(
-                model_name='core.staticfeedback',
-                data=self._create_staticfeedback_dict(
-                    feedback_set=test_feedbackset,
-                    examiner_user_id=test_examiner_user.id,
-                    file_info_list=[
-                        {
-                            'filename': 'test_file_1.py',
-                            'relative_file_path': 'test_file_1.py',
-                            'size': os.stat(abs_path1).st_size,
-                            'mimetype': 'text/x-python'
-                        },
-                        {
-                            'filename': 'test_file_2.py',
-                            'relative_file_path': 'test_file_2.py',
-                            'size': os.stat(abs_path2).st_size,
-                            'mimetype': 'text/x-python'
-                        }
-                    ])
-            )
-            StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
-            self.assertEquals(CommentFile.objects.count(), 2)
-            self.assertEquals(GroupComment.objects.count(), 1)
-            group_comment = GroupComment.objects.first()
-            comment_file_names_list = [comment_file.filename for comment_file in CommentFile.objects.all()]
-            for comment_file in group_comment.commentfile_set.all():
-                self.assertIn(comment_file.filename, comment_file_names_list)
 
 
 class TestDeliveryAndStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):

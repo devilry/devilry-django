@@ -6,7 +6,6 @@ from django.db import transaction
 from django.utils import timezone
 
 from devilry.devilry_import_v2database import modelimporters
-from devilry.devilry_import_v2database.modelimporters import modelimporter_utils
 
 
 class TimeExecution(object):
@@ -20,8 +19,8 @@ class TimeExecution(object):
 
     def __exit__(self, ttype, value, traceback):
         end_time = timezone.now()
-        duration = (end_time - self.start_time).total_seconds()
-        self.command.stdout.write('{}: {}s'.format(self.label, duration))
+        duration_minutes = (end_time - self.start_time).total_seconds() / 60.0
+        self.command.stdout.write('{}: {}min'.format(self.label, duration_minutes))
         self.command.stdout.write('')
 
 
@@ -132,7 +131,8 @@ class Command(BaseCommand):
     def __run(self):
         importer_classes = self.__get_importer_classes()
         for index, importer in enumerate(self.__iterate_importers(), start=1):
-            self.stdout.write('Importing model {index}/{count} {model!r}'.format(
+            self.stdout.write('Importing {index}/{count} {importer!r} - model: {model!r}'.format(
+                importer=importer.__class__.__name__,
                 index=index,
                 count=len(importer_classes),
                 model=importer.prettyformat_model_name()))
