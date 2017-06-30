@@ -39,25 +39,21 @@ class StaticFeedbackDumper(modeldumper.ModelDumper):
 
     def _get_file_attachement_info_dict(self, file_attachement):
         file_name = file_attachement.filename
-        abs_path = file_attachement.file.file.name
         return {
+            'id': file_attachement.id,
             'filename': file_name,
-            'relative_file_path': file_attachement.file.name,
-            'size': os.stat(abs_path).st_size
+            'relative_file_path': file_attachement.file.name
         }
 
     def _get_list_of_attachment_file_info_dicts(self, staticfeedback):
         file_attachment_queryset = staticfeedback.files.all()
-        if file_attachment_queryset.count() == 0:
-            return []
-        # print 'StaticFeedback#{} has files!'.format(staticfeedback.id)
-        file_list = [self._get_file_attachement_info_dict(file_attachement)
-                     for file_attachement in file_attachment_queryset]
-        return file_list
+        files = {}
+        for file_attachement in file_attachment_queryset:
+            files[str(file_attachement.id)] = self._get_file_attachement_info_dict(file_attachement)
+        return files
 
     def serialize_model_object(self, obj):
         serialized = super(StaticFeedbackDumper, self).serialize_model_object(obj=obj)
         serialized['fields']['deadline_id'] = obj.delivery.deadline.id
-        serialized['fields']['files'] = [] # self._get_list_of_attachment_file_info_dicts(obj)
-        # TODO handle files
+        serialized['fields']['files'] = self._get_list_of_attachment_file_info_dicts(obj)
         return serialized
