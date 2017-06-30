@@ -14,13 +14,34 @@ class StudentQualificationForm(base_multiselect_view.SelectedQualificationForm):
     qualification_modelclass = core_models.RelatedStudent
 
 
+class SelectedStudentQualificationItem(base_multiselect_view.SelectedQualificationItem):
+    def __init__(self, *args, **kwargs):
+        super(SelectedStudentQualificationItem, self).__init__(*args, **kwargs)
+
+    def get_title(self):
+        return 'asd'
+
+    def get_description(self):
+        return 'asd'
+
+
 class StudentQualificationItemTargetRenderer(base_multiselect_view.QualificationItemTargetRenderer):
     descriptive_item_name = 'students'
+    selected_target_renderer = SelectedStudentQualificationItem
+
+    def __init__(self, *args, **kwargs):
+        super(StudentQualificationItemTargetRenderer, self).__init__(*args, **kwargs)
+
+
+class SelectableStudentQualificationItem(base_multiselect_view.SelectableQualificationItemValue):
+    def get_title(self):
+        return self.value.user.get_short_name()
 
 
 class PluginSelectStudentsView(base_multiselect_view.QualificationItemListView, plugin_mixin.PluginMixin):
     model = core_models.RelatedStudent
     plugintypeid = 'devilry_qualifiesforexam_plugin_students.plugin_select_students'
+    value_renderer_class = SelectableStudentQualificationItem
 
     def get_period_result_collector_class(self):
         pass

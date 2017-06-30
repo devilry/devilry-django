@@ -3,12 +3,15 @@ from __future__ import unicode_literals
 
 # Django imports
 from django import forms
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy
 from django.views import generic
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.db import models
 
 # CrAdmin imports
+from django_cradmin.crispylayouts import PrimarySubmit
 from django_cradmin.viewhelpers import update
 
 # Devilry imports
@@ -75,19 +78,19 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
         Args:
             request: ``HttpRequest`` with the attached cradmin_role.
         """
-        status = status_models.Status.objects\
-            .filter(period=self.request.cradmin_role)\
-            .order_by('-createtime').first()
-        if status:
-            if status.status == status_models.Status.READY:
-                return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
-                    viewname='show-status',
-                    kwargs={
-                        'roleid': self.request.cradmin_role.id
-                    }
-                ))
         if 'plugintypeid' not in request.session or 'passing_relatedstudentids' not in request.session:
             return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+        status = status_models.Status.objects\
+            .filter(period=self.request.cradmin_role)\
+            .filter(status=status_models.Status.READY)\
+            .order_by('-createtime').first()
+        if status:
+            return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
+                viewname='show-status',
+                kwargs={
+                    'roleid': self.request.cradmin_role.id
+                }
+            ))
         return super(QualificationPreviewView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -255,6 +258,10 @@ class RetractStatusForm(forms.ModelForm):
             'message': 'Provide a message as to why the Status needs to be retracted.'
         }
 
+    def __init__(self, *args, **kwargs):
+        super(RetractStatusForm, self).__init__(*args, **kwargs)
+        self.fields['message'].required = True
+
     @classmethod
     def get_field_layout(cls):
         return ['message']
@@ -266,10 +273,17 @@ class StatusRetractView(update.UpdateView):
 
     Model-view for retracting a :obj:`~.devilry.deviry_qualifiesforexam.models.Status`
     """
+    template_name = 'devilry_qualifiesforexam/retract_status.django.html'
     model = status_models.Status
 
     def get_pagetitle(self):
-        return 'Why is the status retracted?'
+        return ugettext_lazy('Why is the status retracted?')
+
+    def get_buttons(self):
+        buttons = [
+            PrimarySubmit(self.get_submit_save_button_name(), self.get_submit_save_label())
+        ]
+        return buttons
 
     def get_form_class(self):
         return RetractStatusForm
@@ -306,4 +320,4 @@ class StatusRetractView(update.UpdateView):
         return self.request.cradmin_app.reverse_appindexurl()
 
     def get_form_invalid_message(self, form):
-        return 'Cannot retract status without a message.'
+        return ugettext_lazy('Cannot retract status without a message.')
