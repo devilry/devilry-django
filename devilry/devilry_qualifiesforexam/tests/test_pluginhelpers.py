@@ -105,17 +105,6 @@ class TestPluginHelper:
                 }
 
 
-@unittest.skip('Not finished yet! Test result collector.\n')
-class TestPeriodResultsCollector(test.TestCase, TestPluginHelper):
-    def test_get_assignment_queryset(self):
-        dataset_dict = self._build_data_set()
-        collector = pluginhelpers.PeriodResultsCollector(period=dataset_dict['testperiod'],
-                                                         qualifying_assignment_ids=[
-                                                             dataset_dict['testassignments'][0].id,
-                                                             dataset_dict['testassignments'][1].id
-                                                         ])
-
-
 class TestGroupFeedbackSetList(test.TestCase, TestPluginHelper):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
