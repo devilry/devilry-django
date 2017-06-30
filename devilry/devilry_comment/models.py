@@ -144,6 +144,13 @@ class CommentFile(models.Model):
     #: The datetime when the CommentFile was created.
     created_datetime = models.DateTimeField(default=timezone.now)
 
+    #: v2 "<modelname>_<id>"
+    #: This is only here to make it possible to debug and fix
+    #: v2 migrations if anything goes wrong.
+    v2_id = models.CharField(
+        max_length=255,
+        null=False, blank=True, default="")
+
     def __unicode__(self):
         return u'{} - {}'.format(self.comment.user, self.filename)
 

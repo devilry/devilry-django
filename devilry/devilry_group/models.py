@@ -600,6 +600,13 @@ class GroupComment(AbstractGroupComment):
     """
     objects = GroupCommentQuerySet.as_manager()
 
+    #: v2 "<modelname>_<id>"
+    #: This is only here to make it possible to debug and fix
+    #: v2 migrations if anything goes wrong.
+    v2_id = models.CharField(
+        max_length=255,
+        null=False, blank=True, default="")
+
     def __unicode__(self):
         return u"{} - {} - {}".format(self.feedback_set, self.user_role, self.user)
 
