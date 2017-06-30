@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 # Django imports
 from django import forms
+from django.contrib import messages
 from django.utils.translation import ugettext_lazy
 from django.views import generic
 from django.core.exceptions import PermissionDenied
@@ -77,19 +78,19 @@ class QualificationPreviewView(AbstractQualificationPreviewView):
         Args:
             request: ``HttpRequest`` with the attached cradmin_role.
         """
-        status = status_models.Status.objects\
-            .filter(period=self.request.cradmin_role)\
-            .order_by('-createtime').first()
-        if status:
-            if status.status == status_models.Status.READY:
-                return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
-                    viewname='show-status',
-                    kwargs={
-                        'roleid': self.request.cradmin_role.id
-                    }
-                ))
         if 'plugintypeid' not in request.session or 'passing_relatedstudentids' not in request.session:
             return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+        status = status_models.Status.objects\
+            .filter(period=self.request.cradmin_role)\
+            .filter(status=status_models.Status.READY)\
+            .order_by('-createtime').first()
+        if status:
+            return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(
+                viewname='show-status',
+                kwargs={
+                    'roleid': self.request.cradmin_role.id
+                }
+            ))
         return super(QualificationPreviewView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
