@@ -144,9 +144,15 @@ class CommentFile(models.Model):
     #: The datetime when the CommentFile was created.
     created_datetime = models.DateTimeField(default=timezone.now)
 
-    #: v2 "<modelname>_<id>"
     #: This is only here to make it possible to debug and fix
     #: v2 migrations if anything goes wrong.
+    #:
+    #: For CommentFiles imported from StaticFeedbackFileAttachment,
+    #: the format of the string is
+    #: ``staticfeedbackfileattachment__<StaticFeedback.id>__<StaticFeedbackFileAttachment.id>``
+    #:
+    #: For CommentFiles imported from FileMeta, the format of the string
+    #: is ``filemeta__<FileMeta.id>``.
     v2_id = models.CharField(
         max_length=255,
         null=False, blank=True, default="")
