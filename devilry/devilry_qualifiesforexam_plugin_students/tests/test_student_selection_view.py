@@ -35,4 +35,4 @@ class TestStudentSelectionView(test.TestCase, cradmin_testhelpers.TestCaseMixin)
         elements_normalized = [element.alltext_normalized for element in selectorlist]
         self.assertEquals(len(elements_normalized), len(relatedstudents))
         for relatedstudent in relatedstudents:
-            self.assertIn(relatedstudent.__unicode__(), elements_normalized)
+            self.assertIn(relatedstudent.user.shortname, elements_normalized)
