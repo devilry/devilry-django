@@ -1,8 +1,7 @@
 import os
-import mimetypes
 
-from devilry.devilry_dumpv2database import modeldumper
 from devilry.apps.core.models import StaticFeedback, StaticFeedbackFileAttachment
+from devilry.devilry_dumpv2database import modeldumper
 
 
 class StaticFeedbackDumper(modeldumper.ModelDumper):
@@ -28,8 +27,7 @@ class StaticFeedbackDumper(modeldumper.ModelDumper):
                     {
                         'filename': 'somefile.py',
                         'relative_file_path': path/to/somefile.py,
-                        'size': size of the file(e.g 512 bytes),
-                        'mimetype': 'text/x-python'
+                        'size': size of the file(e.g 512 bytes)
                     },
                     ...
                 ]
@@ -45,8 +43,7 @@ class StaticFeedbackDumper(modeldumper.ModelDumper):
         return {
             'filename': file_name,
             'relative_file_path': file_attachement.file.name,
-            'size': os.stat(abs_path).st_size,
-            'mimetype': mimetypes.guess_type(file_name)[0]
+            'size': os.stat(abs_path).st_size
         }
 
     def _get_list_of_attachment_file_info_dicts(self, staticfeedback):
