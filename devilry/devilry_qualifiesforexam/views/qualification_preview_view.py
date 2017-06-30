@@ -3,12 +3,14 @@ from __future__ import unicode_literals
 
 # Django imports
 from django import forms
+from django.utils.translation import ugettext_lazy
 from django.views import generic
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.db import models
 
 # CrAdmin imports
+from django_cradmin.crispylayouts import PrimarySubmit
 from django_cradmin.viewhelpers import update
 
 # Devilry imports
@@ -255,6 +257,10 @@ class RetractStatusForm(forms.ModelForm):
             'message': 'Provide a message as to why the Status needs to be retracted.'
         }
 
+    def __init__(self, *args, **kwargs):
+        super(RetractStatusForm, self).__init__(*args, **kwargs)
+        self.fields['message'].required = True
+
     @classmethod
     def get_field_layout(cls):
         return ['message']
@@ -266,10 +272,17 @@ class StatusRetractView(update.UpdateView):
 
     Model-view for retracting a :obj:`~.devilry.deviry_qualifiesforexam.models.Status`
     """
+    template_name = 'devilry_qualifiesforexam/retract_status.django.html'
     model = status_models.Status
 
     def get_pagetitle(self):
-        return 'Why is the status retracted?'
+        return ugettext_lazy('Why is the status retracted?')
+
+    def get_buttons(self):
+        buttons = [
+            PrimarySubmit(self.get_submit_save_button_name(), self.get_submit_save_label())
+        ]
+        return buttons
 
     def get_form_class(self):
         return RetractStatusForm
@@ -306,4 +319,4 @@ class StatusRetractView(update.UpdateView):
         return self.request.cradmin_app.reverse_appindexurl()
 
     def get_form_invalid_message(self, form):
-        return 'Cannot retract status without a message.'
+        return ugettext_lazy('Cannot retract status without a message.')
