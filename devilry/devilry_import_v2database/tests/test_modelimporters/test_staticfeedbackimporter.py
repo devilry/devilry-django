@@ -326,7 +326,7 @@ class TestDeliveryAndStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.
                 'saved_by': examiner_user_id,
                 'delivery': 1,
                 'points': 2,
-                'files': [],
+                'files': {},
                 'deadline_id': feedback_set.id,
                 'save_timestamp': '2017-05-15T11:04:46.817',
                 'rendered_view': u'<p>Quo tempore facilis eos suscipit eum doloremque libero'
