@@ -69,8 +69,8 @@ class Command(BaseCommand):
             modeldumpers.DeliveryDumper,
             modeldumpers.StaticFeedbackDumper,
             modeldumpers.FileMetaDumper,
-            # modeldumpers.QualifiesForExamStatusDumper,
-            # modeldumpers.QualifiesForFinalExamDumper
+            modeldumpers.QualifiesForExamStatusDumper,
+            modeldumpers.QualifiesForFinalExamDumper
         ]
 
     def __run(self):
