@@ -123,4 +123,8 @@ DEVILRY_ENABLE_MATHJAX = True
 DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES = 60 * 6
 
 
+#: If this is ``True``, we enable an upload directory structure that scales
+#: to a lot of files on filesystems with limits on files per directory.
+#: Normally needed if you are using a traditional filesystem, but not for
+#: blob storage filesystems like AWS S3.
 DEVILRY_RESTRICT_NUMBER_OF_FILES_PER_DIRECTORY = False
