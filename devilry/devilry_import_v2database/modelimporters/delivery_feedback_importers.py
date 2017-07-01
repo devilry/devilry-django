@@ -16,6 +16,21 @@ from devilry.devilry_import_v2database.modelimporters.modelimporter_utils import
 from devilry.utils import datetimeutils
 
 
+class CommentFileFileDoesNotExist(Exception):
+    def __init__(self, filepath, comment_file):
+        self.filepath = filepath
+        self.comment_file = comment_file
+
+    def __str__(self):
+        message = \
+            'File {filepath!r}, CommentFile.id={commentfile_id}, v2_id={v2_id!r}. ' \
+            'Not writing file, this means that the CommentFile.file will be blank.'.format(
+                filepath=self.filepath,
+                v2_id=self.comment_file.v2_id,
+                commentfile_id=self.comment_file.id)
+        return message
+
+
 class ImporterMixin(object):
     def _get_feedback_set_from_id(self, feedback_set_id):
         try:
@@ -235,7 +250,7 @@ class CommentFileContentImporter(ImporterMixin, modelimporter.ModelImporter):
 
     def _write_file_to_commentfile(self, comment_file, filepath):
         if not os.path.exists(filepath):
-            print >> sys.stderr, 'File for {!r} does not exist.'.format(comment_file.v2_id)
+            raise CommentFileFileDoesNotExist(filepath, comment_file)
         comment_file.filesize = os.stat(filepath).st_size
         fp = open(filepath, 'rb')
         comment_file.file = files.File(fp, comment_file.filename)
@@ -282,7 +297,16 @@ class CommentFileContentImporter(ImporterMixin, modelimporter.ModelImporter):
             raise ValueError('Invalid v2model: {}'.format(v2model))
 
     def import_models(self, fake=False):
+        does_not_exist = []
         with modelimporter_utils.ProgressDots() as progressdots:
             for comment_file in CommentFile.objects.exclude(v2_id='').iterator():
-                self._copy_commentfile_file(comment_file)
+                try:
+                    self._copy_commentfile_file(comment_file)
+                except CommentFileFileDoesNotExist as error:
+                    does_not_exist.append(error)
                 progressdots.increment_progress()
+
+        if does_not_exist:
+            print >> sys.stderr, 'Some of the source files did not exist.'
+            for error in does_not_exist:
+                print >> sys.stderr, '- {}'.format(error)
