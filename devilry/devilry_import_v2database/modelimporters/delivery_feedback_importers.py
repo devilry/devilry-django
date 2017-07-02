@@ -31,6 +31,10 @@ class CommentFileFileDoesNotExist(Exception):
         return message
 
 
+class CommentFileIOError(Exception):
+    pass
+
+
 class ImporterMixin(object):
     def _get_feedback_set_from_id(self, feedback_set_id):
         try:
@@ -256,7 +260,13 @@ class CommentFileContentImporter(ImporterMixin, modelimporter.ModelImporter):
         comment_file.file = files.File(fp, comment_file.filename)
         if self.should_clean():
             comment_file.full_clean()
-        comment_file.save()
+        try:
+            comment_file.save()
+        except IOError as error:
+            raise CommentFileIOError('Failed to write CommentFile#{commentfile_id}, filepath={filepath}: {error}'.format(
+                commentfile_id=comment_file.id,
+                filepath=filepath,
+                error=error))
         fp.close()
 
     def _copy_commentfile_file_from_filemeta(self, comment_file, v2idstring):
