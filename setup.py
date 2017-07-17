@@ -49,6 +49,7 @@ setup(
         'djangorestframework==0.3.3',
         'django_cradmin==1.0.0-b18',
         'dj-static>=0.0.6',
-        'dj-database-url>=0.3.0'
+        'dj-database-url>=0.3.0',
+        'html5lib==0.9999999',
     ]
 )
