@@ -38,6 +38,10 @@
                 {% trans "The active deadline has expired, but this assignment is configured with soft deadines so you can still add deliveries." %}
                 <a href="{% cradmin_instance_url 'deliveries' 'add-delivery' %}">{% trans "Add delivery" %}</a>.
             {% endif %}
+        {% elif status == 'no-deadlines' %}
+            <strong class="text-warning">
+                {% trans "This assignment has no deadline, so you can not add deliveries. Contact your examiner if you think this is wrong." %}
+            </strong>
         {% elif status == 'corrected' %}
             {% trans "This assignment is corrected, and the final grade is:" %}
             <strong>

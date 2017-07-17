@@ -381,7 +381,6 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         else:
             return False
 
-
     def copy(self, newgroup):
         """
         Copy this deadline into ``newgroup``, including all deliveries and

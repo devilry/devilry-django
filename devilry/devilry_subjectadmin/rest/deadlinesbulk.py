@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.utils.translation import ugettext as _
 from datetime import datetime
 import hashlib
@@ -404,8 +405,6 @@ class DeadlinesBulkUpdateReadOrDelete(View):
         deadlines = self._deadlineqry(group_ids)
         deadlines = self._update_deadlines(deadlines)
         return self._create_response(deadlines)
-
-
 
     #
     #

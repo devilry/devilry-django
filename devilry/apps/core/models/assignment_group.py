@@ -955,6 +955,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             if self.assignment.delivery_types == deliverytypes.NON_ELECTRONIC:
                 return 'waiting-for-feedback'
             else:
+                if self.last_deadline is None:
+                    return 'no-deadlines'
                 now = datetime.now()
                 if self.last_deadline.deadline > now:
                     return 'waiting-for-deliveries'
