@@ -112,40 +112,22 @@ You need to install `Sencha tools
 ExtJS javascript apps. Sencha tools requires an Oracle Java Runtime Environment.
 
 
-The tasks
-===================================
+Building
+========
 
-Use one of the jsbuild task. Use ``bin/fab -d jsbuild`` for docs. Example::
+We use webpack for building javascript. Go into the static directory of the app,
+where package.json and webpack.develop.js is, and run ``npm run jsbuild`` to build
+for development, and ``npm run jsbuild-production`` to build for production. Example::
 
-    $ cd devenv/
-    $ bin/fab jsbuild:devilry_subjectadmin
+    $ cd devilry/devilry_subjectadmin/static/devilry_subjectadmin
+    $ npm run jsbuild
 
-To build without compressing the JS-sources (**for debugging**)::
+During development, you should use::
 
-    $ cd devenv/
-    $ bin/fab jsbuild:devilry_subjectadmin,nocompress=true
+    $ npm run jsbuild-watch
 
+When the code is stable, you should build for production with::
 
-Watch the filesystem for changes and rebuild
---------------------------------------------
+    $ npm run jsbuild-production
 
-Call the tasks with ``watch=true``. E.g.::
-
-    $ cd devenv/
-    $ bin/fab jsbuild:devilry_subjectadmin,nocompress=true,watch=true
-
-You probably want to use::
-
-    $ cd devenv/
-    $ bin/fab jsbuild:devilry_subjectadmin,nocompress=true,watch=true,no_jsbcreate=next
-
-to create a JSB-file on startup, but no on each watcher-trigger. This
-speeds up rebuild significantly, but you will have to re-start
-``jsbuild`` when you add requires or new files.
-
-
-Broken pipe errors
-===================================
-
-You will most likely get a lot of broken pipe errors. This does not seem
-to cause any problems with the build.
+and commit the changes to production.js and production.js.map
