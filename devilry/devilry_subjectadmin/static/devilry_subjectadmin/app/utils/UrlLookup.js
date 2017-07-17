@@ -50,6 +50,9 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
     assignmentExaminerStats: function(assignment_id) {
         return Ext.String.format('#/assignment/{0}/@@examinerstats', assignment_id);
     },
+    assignmentDownloadDeliveries: function(assignment_id) {
+        return Ext.String.format('assignment/{0}/downloaddeliveries', assignment_id);
+    },
 
     manageStudents: function(assignment_id) {
         return Ext.String.format('#/assignment/{0}/@@manage-students/', assignment_id);

@@ -61,7 +61,15 @@ Ext.define('devilry_subjectadmin.view.assignment.AssignmentOverview' ,{
                     cls: 'bootstrap',
                     margin: '0 0 20 0',
                     itemId: 'header',
-                    tpl: '<h1 style="margin-top: 0;">{heading}</h1>',
+                    tpl: [
+                        '<h1 style="margin-top: 0;">{heading}</h1>',
+                        // '<div>',
+                        //     '<a href="{downloaddeliveries_url}" class="btn btn-default btn-block">',
+                        //         '<i class="fa fa-download"></i>',
+                        //         gettext('Download all deliveries'),
+                        //     '</a>',
+                        // '</div>'
+                    ],
                     data: {
                         heading: gettext('Loading') + ' ...'
                     }

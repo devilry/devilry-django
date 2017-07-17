@@ -8,6 +8,7 @@ from .views.extjsapp import AppView
 from .views.redirectviews import RedirectToSubjectAdminAppView
 from .views.redirectviews import RedirectToGroupAdminAppView
 from .views.redirectviews import RedirectToDeliveryAdminAppView
+from .views.downloadalldeliveries_on_assignment import DownloadAllDeliveriesOnAssignmentView
 from .views.assignment_update import AssignmentUpdateView
 from devilry.devilry_subjectadmin.exportdetailedperiodoverview import ExportDetailedPeriodOverview
 
@@ -39,6 +40,11 @@ urlpatterns = patterns(
     url('assignment/(?P<id>\d+)/update',
         login_required(AssignmentUpdateView.as_view()),
         name='devilry_subjectadmin_assignment_update'),
+
+    # View for downloading all deliveries on assignment.
+    url('^assignment/(?P<assignment_id>\d+)/downloaddeliveries',
+        login_required(DownloadAllDeliveriesOnAssignmentView.as_view()),
+        name='devilry_subjectadmin_download_assignment_deliveries'),
 
     # Views that just redirect to ``/devilry_subjectadmin/#<some-path>``
     url('^subject/(?P<id>\d+)',
