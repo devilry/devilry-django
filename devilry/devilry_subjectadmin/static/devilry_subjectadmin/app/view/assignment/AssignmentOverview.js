@@ -62,13 +62,7 @@ Ext.define('devilry_subjectadmin.view.assignment.AssignmentOverview' ,{
                     margin: '0 0 20 0',
                     itemId: 'header',
                     tpl: [
-                        '<h1 style="margin-top: 0;">{heading}</h1>',
-                        // '<div>',
-                        //     '<a href="{downloaddeliveries_url}" class="btn btn-default btn-block">',
-                        //         '<i class="fa fa-download"></i>',
-                        //         gettext('Download all deliveries'),
-                        //     '</a>',
-                        // '</div>'
+                        '<h1 style="margin-top: 0;">{heading}</h1>'
                     ],
                     data: {
                         heading: gettext('Loading') + ' ...'
@@ -240,11 +234,23 @@ Ext.define('devilry_subjectadmin.view.assignment.AssignmentOverview' ,{
                                             gettext('Run similarity checks for all deliveries on this assignment.'),
                                         '</small>',
                                     '</p></li>',
+                                    '<p><li>',
+                                        '<strong>',
+                                            '<a href="{downloaddeliveries_url}">',
+                                                '<i class="fa fa-download"></i>',
+                                                gettext('Download all deliveries'),
+                                            '</a>',
+                                        '</strong>',
+                                        '<small class="muted"> - ',
+                                            gettext('As zip-file'),
+                                        '</small>',
+                                    '</p></li>',
                                 '</ul>',
                             '</tpl>'
                         ],
                         data: {
-                            loading: true
+                            loading: true,
+                            downloaddeliveries_url: ''
                         }
                     }]
                 }]

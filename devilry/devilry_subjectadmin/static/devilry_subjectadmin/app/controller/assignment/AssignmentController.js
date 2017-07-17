@@ -110,7 +110,6 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
             managedeadlines_url: devilry_subjectadmin.utils.UrlLookup.bulkManageDeadlines(this.assignment_id),
             passedpreviousperiod_url: devilry_subjectadmin.utils.UrlLookup.passedPreviousPeriod(this.assignment_id),
             examinerstats_url: devilry_subjectadmin.utils.UrlLookup.assignmentExaminerStats(this.assignment_id),
-            downloaddeliveries_url: devilry_subjectadmin.utils.UrlLookup.assignmentDownloadDeliveries(this.assignment_id),
             assignmentData: this.assignmentRecord.data,
             electronic: this._isElectronic(),
             has_students: has_students
@@ -130,7 +129,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
     _updateBetaFeaturesBox: function() {
         this.getBetaFeaturesBox().update({
             loading: false,
-            detektor_assemblyview_url: devilry_subjectadmin.utils.UrlLookup.detektorAdminAssemblyView(this.assignmentRecord.get('id'))
+            detektor_assemblyview_url: devilry_subjectadmin.utils.UrlLookup.detektorAdminAssemblyView(this.assignmentRecord.get('id')),
+            downloaddeliveries_url: devilry_subjectadmin.utils.UrlLookup.assignmentDownloadDeliveries(this.assignment_id)
         });
     },
 
