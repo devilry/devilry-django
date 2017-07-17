@@ -30,19 +30,42 @@ class Command(BaseCommand):
         current_django_appname = args[0]
         current_appdirectory_path = self._get_appdirectory_path(current_django_appname)
         jsb3 = json.loads(open(args[1], 'rb').read())
-        print self._make_require_statement(
-            absolute_path=os.path.abspath(os.path.join('devilry', 'devilry_extjsextras', 'extjs_sources', 'ext-all.js')),
-            relative_to_path=current_appdirectory_path)
+        # print self._make_require_statement(
+        #     absolute_path=os.path.abspath(os.path.join('devilry', 'devilry_extjsextras', 'extjs_sources', 'ext-all.js')),
+        #     relative_to_path=current_appdirectory_path)
+        extjs_dependencies = []
+        devilry_dependencies = []
         for fileinfo in jsb3['builds'][0]['files']:
             dirname = fileinfo['path']
-            if not dirname.startswith('static/devilry_'):
-                continue
-            django_appname = dirname.split('/')[1]
-            appstatic_relative_relative_path = dirname.split('/')[1:]
-            appstatic_relative_relative_path.append(fileinfo['name'])
-            absolute_path = os.path.join(
-                self._get_static_path(django_appname), *appstatic_relative_relative_path)
-            print self._make_require_statement(
+            if dirname.startswith('static/devilry_'):
+                django_appname = dirname.split('/')[1]
+                appstatic_relative_relative_path = dirname.split('/')[1:]
+                appstatic_relative_relative_path.append(fileinfo['name'])
+                absolute_path = os.path.join(
+                    self._get_static_path(django_appname), *appstatic_relative_relative_path)
+                devilry_dependencies.append(absolute_path)
+            elif dirname.startswith('static/extjs4/src/'):
+                relative_path = os.path.join(dirname.split('extjs4/src/')[1], fileinfo['name'])
+                absolute_path = os.path.abspath(os.path.join(
+                    'devilry', 'devilry_extjsextras', 'extjs_sources',
+                    relative_path))
+                extjs_dependencies.append(absolute_path)
+            else:
+                raise CommandError('Unknown path: {!r}'.format(fileinfo))
+
+        file_lines = []
+        file_lines.append('')
+        file_lines.append('// ExtJS imports')
+        for absolute_path in extjs_dependencies:
+            file_lines.append(self._make_require_statement(
                 absolute_path=absolute_path,
-                relative_to_path=current_appdirectory_path)
-        print 'require("../app.js");'
+                relative_to_path=current_appdirectory_path))
+        file_lines.append('')
+        file_lines.append('// Devilry imports')
+        for absolute_path in devilry_dependencies:
+            file_lines.append(self._make_require_statement(
+                absolute_path=absolute_path,
+                relative_to_path=current_appdirectory_path))
+        file_lines.append('require("../app.js");')
+        open(os.path.join(current_appdirectory_path, 'entry.js'), 'wb').write(
+            '\n'.join(file_lines))

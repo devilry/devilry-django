@@ -131,26 +131,49 @@ and commit the changes to production.js and production.js.map
 
 Testing a production build
 ==========================
-TODO
+Change the ``EXTJS4_DEBUG`` setting to ``False`` in ``devilry/project/develop/settings/develop.py``.
+This should make all the javascript views serve ``production.js`` instead of ``debug.js``.
 
 
 #################################################
 Update old sencha tools app to build with Webpack
 #################################################
 
-Create an empty ``entry.js`` file in the ``app/`` directory, and copy in the
-output from::
+Run the following management command::
 
     $ python manage.py make_require_statements_from_jsb3 <appname> devilry/<appname>/static/<appname>/app.jsb3
     $ ... E.g.: ...
     $ python manage.py make_require_statements_from_jsb3 devilry_nodeadmin devilry/devilry_nodeadmin/static/devilry_nodeadmin/app.jsb3
 
-into the file.
+This will create an ``entry.js`` file with ``require`` statements for all the required
+files extracted from the ``app.jsb3`` file.
 
 Copy the ``webpack.develop.config.js`` and ``webpack.production.config.js`` files from
 ``devilry/devilry_nodeadmin/static/devilry_nodeadmin`` into the app. Update the
 ``package.json`` file to contain the weback requirements and scripts from
 ``devilry/devilry_nodeadmin/static/devilry_nodeadmin/package.json``
 
+You should now be able to follow the building guide above. You should now run both
+``npm run jsbuild`` and ``npm run jsbuild-production``, and commit the
+generated ``debug.js``, ``production.js`` and ``production.js.map``.
 
-You should now be able to follow the building guide above.
+The last thing you need to do is to make the view that serves the javascript
+to inherit from ``devilry.devilry_extjsextras.views.DevilryExtjs4AppView`` instead
+of from ``Extjs4AppView``. You should not need to make any other changes, just
+switch the superclass of the view.
+
+If the javascript builds, and you have changed the superclass of the view,
+you should now be able to test the code in your browser. Make sure to
+check the network tab in chrome developer tools to ensure that the
+view serves:
+
+- ``debug.js`` instead of ``app.js`` with the ``EXTJS4_DEBUG`` setting set to ``True``.
+- ``production.js` instead of ``app-all.js``  with the ``EXTJS4_DEBUG`` setting set to ``False``.
+
+When you have verified that both development and production builds work, you can remove:
+
+- ``app-all.js``
+- ``app.jsb3``
+- ``all-classes.js``
+
+(they are all replaced by webpack + entry.js).
