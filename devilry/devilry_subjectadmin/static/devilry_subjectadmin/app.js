@@ -2,15 +2,15 @@ var querystring = Ext.Object.fromQueryString(window.location.search);
 if(Ext.isEmpty(querystring.routeTo)) {
     Ext.application({
         name: 'devilry_subjectadmin',
-        appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/devilry_subjectadmin/app',
+        appFolder: window.DevilrySettings.DEVILRY_STATIC_URL + '/devilry_subjectadmin/app',
         paths: {
-            'devilry': DevilrySettings.DEVILRY_STATIC_URL + '/extjs_classes',
-            'devilry_extjsextras': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras',
-            'devilry_theme': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_theme',
-            'devilry_i18n': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_i18n',
-            'devilry_usersearch': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_usersearch',
-            'devilry_header': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_header/app',
-            'devilry_authenticateduserinfo': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_authenticateduserinfo'
+            'devilry': window.DevilrySettings.DEVILRY_STATIC_URL + '/extjs_classes',
+            'devilry_extjsextras': window.DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras',
+            'devilry_theme': window.DevilrySettings.DEVILRY_STATIC_URL + '/devilry_theme',
+            'devilry_i18n': window.DevilrySettings.DEVILRY_STATIC_URL + '/devilry_i18n',
+            'devilry_usersearch': window.DevilrySettings.DEVILRY_STATIC_URL + '/devilry_usersearch',
+            'devilry_header': window.DevilrySettings.DEVILRY_STATIC_URL + '/devilry_header/app',
+            'devilry_authenticateduserinfo': window.DevilrySettings.DEVILRY_STATIC_URL + '/devilry_authenticateduserinfo'
         },
 
         requires: [

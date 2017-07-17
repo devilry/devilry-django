@@ -5,6 +5,13 @@
     "grunt": "~0.4.1",
     "grunt-contrib-watch": "~0.5.3",
     "grunt-contrib-coffee": "~0.7.0",
-    "grunt-contrib-less": "~0.8.2"
+    "grunt-contrib-less": "~0.8.2",
+    "webpack": "^1.13.3"
+  },
+  "scripts": {
+    "jsbuild": "webpack --config webpack.develop.config.js",
+    "jsbuild-error": "webpack --config webpack.develop.config.js --display-error-details",
+    "jsbuild-production": "webpack --config webpack.production.config.js -p",
+    "jsbuild-watch": "webpack --config webpack.develop.config.js --watch"
   }
 }
