@@ -41,3 +41,6 @@ node_modules/
 
 .idea/dataSources.ids
 .idea/dataSources.local.xml
+
+
+npm-debug.log
