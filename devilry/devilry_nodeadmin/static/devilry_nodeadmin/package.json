@@ -1,0 +1,12 @@
+{
+  "name": "devilry_nodeadmin",
+  "devDependencies": {
+    "webpack": "^1.13.3"
+  },
+  "scripts": {
+    "jsbuild": "webpack --config webpack.develop.config.js",
+    "jsbuild-error": "webpack --config webpack.develop.config.js --display-error-details",
+    "jsbuild-production": "webpack --config webpack.production.config.js -p",
+    "jsbuild-watch": "webpack --config webpack.develop.config.js --watch"
+  }
+}
