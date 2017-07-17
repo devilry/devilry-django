@@ -129,6 +129,10 @@ When the code is stable, you should build for production with::
 and commit the changes to production.js and production.js.map
 
 
+Testing a production build
+==========================
+TODO
+
 
 #################################################
 Update old sencha tools app to build with Webpack
