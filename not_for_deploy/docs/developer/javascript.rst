@@ -109,9 +109,13 @@ Building
 
 We use webpack for building javascript. Go into the static directory of the app,
 where package.json and webpack.develop.js is, and run ``npm run jsbuild`` to build
-for development, and ``npm run jsbuild-production`` to build for production. Example::
+for development, and ``npm run jsbuild-production`` to build for production. If this
+is the first time you build javascript for the app, you must run ``npm install`` first.
+
+Example::
 
     $ cd devilry/devilry_subjectadmin/static/devilry_subjectadmin
+    $ npm install
     $ npm run jsbuild
 
 During development, you should use::
@@ -123,3 +127,26 @@ When the code is stable, you should build for production with::
     $ npm run jsbuild-production
 
 and commit the changes to production.js and production.js.map
+
+
+
+#################################################
+Update old sencha tools app to build with Webpack
+#################################################
+
+Create an empty ``entry.js`` file in the ``app/`` directory, and copy in the
+output from::
+
+    $ python manage.py make_require_statements_from_jsb3 <appname> devilry/<appname>/static/<appname>/app.jsb3
+    $ ... E.g.: ...
+    $ python manage.py make_require_statements_from_jsb3 devilry_nodeadmin devilry/devilry_nodeadmin/static/devilry_nodeadmin/app.jsb3
+
+into the file.
+
+Copy the ``webpack.develop.config.js`` and ``webpack.production.config.js`` files from
+``devilry/devilry_nodeadmin/static/devilry_nodeadmin`` into the app. Update the
+``package.json`` file to contain the weback requirements and scripts from
+``devilry/devilry_nodeadmin/static/devilry_nodeadmin/package.json``
+
+
+You should now be able to follow the building guide above.

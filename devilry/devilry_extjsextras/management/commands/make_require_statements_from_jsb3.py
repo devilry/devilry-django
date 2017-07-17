@@ -45,3 +45,4 @@ class Command(BaseCommand):
             print self._make_require_statement(
                 absolute_path=absolute_path,
                 relative_to_path=current_appdirectory_path)
+        print 'require("../app.js");'
