@@ -1,7 +1,7 @@
-from devilry.devilry_dumpv2database import modeldumper
-from devilry.apps.core.models import FileMeta
 import os
-import mimetypes
+
+from devilry.apps.core.models import FileMeta
+from devilry.devilry_dumpv2database import modeldumper
 
 
 class FileMetaDumper(modeldumper.ModelDumper):
@@ -16,5 +16,4 @@ class FileMetaDumper(modeldumper.ModelDumper):
 
         # settings.DEVILRY_FSHIERDELIVERYSTORE_ROOT
         serialized['fields']['relative_file_path'] = relative_path
-        serialized['fields']['mimetype'] = mimetypes.guess_type(obj.filename)[0]
         return serialized
