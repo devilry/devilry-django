@@ -6,7 +6,7 @@ from fabric.api import local, abort, task
 from fabric.context_managers import shell_env, lcd
 
 
-DB_FILE = join('developfiles', 'db.sqlite3')
+DB_FILE = join('devilry_developfiles', 'db.sqlite3')
 LANGUAGES = ['en', 'nb']
 
 
