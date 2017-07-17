@@ -104,14 +104,6 @@ Building the ExtJS javascript apps
     your own ExtJS app.
 
 
-Dependencies
-===================================
-
-You need to install `Sencha tools
-2 <http://www.sencha.com/products/sdk-tools/download/>`_ to build the
-ExtJS javascript apps. Sencha tools requires an Oracle Java Runtime Environment.
-
-
 Building
 ========
 
