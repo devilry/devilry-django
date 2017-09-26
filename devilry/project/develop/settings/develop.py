@@ -51,7 +51,7 @@ HAYSTACK_CONNECTIONS = {  # Whoosh
 
 
 ##################################################################################
-# Celery
+# Celery Redis
 ##################################################################################
 CELERY_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
@@ -63,6 +63,13 @@ CELERY_EAGER_TRANSACTION = True
 # BROKER_URL = 'redis://localhost:6379'
 # CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 
+
+#######################################
+# Celery RabbitMQ
+#######################################
+# CELERY_ALWAYS_EAGER = False
+# BROKER_URL = 'amqp://'
+# CELERY_RESULT_BACKEND = 'amqp://'
 
 
 ######################################################
