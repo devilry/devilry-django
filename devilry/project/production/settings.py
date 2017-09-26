@@ -10,6 +10,12 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Allow all host headers
 ALLOWED_HOSTS = ['*']
 
+
+#####################################################
+#
+# Celery/Redis config
+#
+#####################################################
 redis_url_default = urlparse.urlparse(os.environ.get('REDIS_URL'))
 
 REDIS_URL_CONFIG = {
