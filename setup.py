@@ -50,6 +50,7 @@ setup(
         'django_cradmin==1.0.0-b18',
         'dj-static>=0.0.6',
         'dj-database-url>=0.3.0',
+        'django-celery-email',
         'redis==2.10.6'
     ]
 )
