@@ -15,7 +15,7 @@ redis_url_default = urlparse.urlparse(os.environ.get('REDIS_URL'))
 REDIS_URL_CONFIG = {
     'port': redis_url_default.port,
     'hostname': redis_url_default.hostname,
-    'username': redis_url_default.username
+    'username': redis_url_default.username,
     'password': redis_url_default.password,
 }
 
