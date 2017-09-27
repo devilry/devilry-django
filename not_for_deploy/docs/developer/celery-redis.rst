@@ -56,7 +56,7 @@ It should print some info about the config, the tasks that it detects in Devilry
 and stop for input with the following message: ``celery@<your machine name> is ready``.
 
 
-Try one for the test-tasks
+Try one of the test-tasks
 ==========================
 Open the Django shell, and run one the test-tasks (while Redis and the Celery worker are both running)::
 
@@ -76,6 +76,23 @@ Things to remember
 
 - The output (stdout and stderr) goes to the Celery worker, not to runserver.
 - You can get more verbose output from the worker with ``worker -l debug``.
+
+
+Testing email sending with django-celery-email
+==============================================
+
+Uncomment the following lines in ``devilry.project.develop.settings.develop``::
+
+    # INSTALLED_APPS += ['djcelery_email']
+    # EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+    # CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+And run the following in the Django shell:
+
+    >>> from django.contrib.auth import get_user_model
+    >>> from devilry.utils.devilry_email import send_message
+    >>> send_message('Testsubject', 'Testmessage', get_user_model().objects.get(username='april'))
+
 
 
 .. _Celery: http://celery.readthedocs.org/
