@@ -19,7 +19,7 @@ if profiler_middleware:
     #]
 
 
-EXTJS4_DEBUG = True
+EXTJS4_DEBUG = False
 
 
 ##############################################################

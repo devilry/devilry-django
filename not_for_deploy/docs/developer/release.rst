@@ -13,7 +13,7 @@ In the devilry-django repo
 
 2. Update the version number in::
    
-      src/devilry/setup.py src/devilry/devilry/version.py docs/conf.py
+      devilry/version.json
 
 3. Commit the version changes.
 4. Add a releasenotes document in ``docs/releasenotes-X.Y.Z.rst``, and commit
