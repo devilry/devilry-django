@@ -53,17 +53,42 @@ HAYSTACK_CONNECTIONS = {  # Whoosh
 
 
 ##################################################################################
-# Celery
+# Celery Redis
 ##################################################################################
-CELERY_ALWAYS_EAGER = True
+# CELERY_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 CELERY_EAGER_TRANSACTION = True
 
+
+######################################
+# Celery Redis
+######################################
 ## For testing celery
 ## - Se the "Developing and testing Celery background tasks" chapter of the developer docs.
-# CELERY_ALWAYS_EAGER = False
-# BROKER_URL = 'amqp://'
-# CELERY_RESULT_BACKEND = 'amqp://'
+CELERY_ALWAYS_EAGER = False
+# BROKER_URL = 'redis://localhost:6379/0'
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+REDIS_URL_CONFIG = {
+    'port': 6379,
+    'hostname': 'localhost',
+    'password': 'secret',
+    'db_number': 0
+}
+
+BROKER_URL = 'redis://:{password}@{hostname}:{port}/{db_number}'.format(
+    password=REDIS_URL_CONFIG['password'],
+    hostname=REDIS_URL_CONFIG['hostname'],
+    port=REDIS_URL_CONFIG['port'],
+    db_number=REDIS_URL_CONFIG['db_number']
+)
+
+CELERY_RESULT_BACKEND = 'redis://:{password}@{hostname}:{port}/{db_number}'.format(
+    password=REDIS_URL_CONFIG['password'],
+    hostname=REDIS_URL_CONFIG['hostname'],
+    port=REDIS_URL_CONFIG['port'],
+    db_number=REDIS_URL_CONFIG['db_number']
+)
 
 
 
@@ -82,6 +107,6 @@ CELERY_EAGER_TRANSACTION = True
 
 
 # For testing django-celery-email
-# INSTALLED_APPS += ['djcelery_email']
-# EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
-# CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+INSTALLED_APPS += ['djcelery_email']
+EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

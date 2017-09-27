@@ -4,45 +4,49 @@ Setup the Celery background task server
 
 If you want to scale Devilry to more than a couple of hundred users, you really
 have to configure the Celery background task server. Celery is installed by
-default, but you need to configure a task broker. We recommend RabbitMQ.
+default, but you need to configure a task broker. We recommend Redis.
 
-Install RabbitMQ
-================
-Follow the guides at their website: http://www.rabbitmq.com/download.html.
-
-Refer to the RabbitMQ docs for regular configuration, like logging and
-database-file location. The defaults are usable.
+Install Redis
+=============
+See https://redis.io/.
 
 
-Configure RabbitMQ for Devilry
-==============================
-Start the RabbitMQ server.
+Configure Redis
+===============
+Uncomment the requirepass setting in redis.conf to set a password.
+Remember to run Redis with this config::
 
-RabbitMQ creates a default admin user named ``guest`` with password ``guest``.
-Remove the guest user, and create a new admin user (use another password than
-``secret``)::
+    $ redis-server /path/to/redis.conf
 
-    $ rabbitmqctl delete_user guest
-    $ rabbitmqctl add_user admin secret
-    $ rabbitmqctl set_user_tags admin administrator
-    $ rabbitmqctl set_permissions admin ".*" ".*" ".*"
-
-Setup a vhost for Devilry with a username and password (use another password
-than ``secret``)::
-
-    $ rabbitmqctl add_user devilry secret
-    $ rabbitmqctl add_vhost devilryhost
-    $ rabbitmqctl set_permissions -p devilryhost devilry ".*" ".*" ".*"
+You can tweak other configuration parameters in this file, such as port and other things,
+so check it out.
 
 
-Add RabbitMQ and Celery settings to Devilry
+Add Redis and Celery settings to Devilry
 ===========================================
 Add the following to ``~/devilrydeploy/devilry_settings.py`` (change ``secret`` to
-match your password)::
+match the password in the redis.conf file) and set the correct config parameters in REDIS_CONFIG::
 
-    CELERY_ALWAYS_EAGER = False
-    BROKER_URL = 'amqp://devilry:secret@localhost:5672/devilryhost'
-    CELERY_RESULT_BACKEND = BROKER_URL
+    REDIS_CONFIG = {
+        'port': 6379,
+        'hostname': 'localhost',
+        'password': 'secret',
+        'db_number': 0
+    }
+
+    BROKER_URL = 'redis://:{password}@{hostname}:{port}/{db_number}'.format(
+        password='secret',
+        hostname='localhost',
+        port=6379,
+        db_number=0
+    )
+
+    CELERY_RESULT_BACKEND = 'redis://:{password}@{hostname}:{port}/{db_number}'.format(
+        password='secret',
+        hostname='localhost',
+        port=6379,
+        db_number=0
+    )
 
 Run Celery
 ==========
