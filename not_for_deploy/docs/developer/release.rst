@@ -14,9 +14,9 @@ In the devilry-django repo
    
       devilry/version.json
 
-3. Commit the version changes.
-4. Add a releasenotes document in ``docs/releasenotes-X.Y.Z.rst``, and commit
+3. Add a releasenotes document in ``docs/releasenotes-X.Y.Z.rst``, and commit
    the new file.
+4. Commit the version changes.
 5. Tag the release::
 
     $ git tag vX.Y.Z
