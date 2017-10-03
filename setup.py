@@ -13,7 +13,8 @@ setup(
     license='BSD',
     zip_safe=False,
     author=(u'Tor Johansen, Espen Angell Kristiansen, Bendik Opstad, Vegard Angell, '
-            u'Magne Westlie, Ilya Kostolomov, Christian Tryti, Rebekka M\u00F8rken'),
+            u'Magne Westlie, Ilya Kostolomov, Christian Tryti, Rebekka M\u00F8rken, '
+            u'Stian Julseth, Vegard Angell'),
     author_email='devilry-contact@googlegroups.com',
     include_package_data=True,
     description="A system for handling electronic deliveries. See https://github.com/devilry/devilry-django.",
