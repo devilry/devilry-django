@@ -6,10 +6,9 @@ In the devilry-django repo
 ##########################
 
 1. Make sure you build and commit any changed ExtJS apps (see
-   :doc:`javascript`). You will want to test that the built JS is working
-   correctly with::
-
-      $ bin/django_noextjsdebug.py runserver
+   :doc:`javascript`). Make sure to test out student, examiner, course admin
+   and department admin roles with the ``EXTJS4_DEBUG=False`` setting
+   as explained in :doc:`javascript`.
 
 2. Update the version number in::
    
