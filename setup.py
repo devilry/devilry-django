@@ -51,7 +51,7 @@ setup(
         'dj-static>=0.0.6',
         'dj-database-url>=0.3.0',
         'html5lib==0.9999999',
-        'django-celery-email==2.0.0',
+        'django-celery-email==1.1.2',
         'redis==2.10.6'
     ]
 )
