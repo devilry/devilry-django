@@ -6,3 +6,5 @@ doc2dash==2.0.2
 
 django-storages==1.1.5
 boto==2.32.1
+
+django-auth-ldap==1.2.8
