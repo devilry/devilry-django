@@ -419,44 +419,6 @@ class TestUserEmail(TestCase):
         useremail2.clean()
         self.assertIsNone(UserEmail.objects.get(pk=useremail1.pk).is_primary)
 
-    def test_clean_set_shortname_if_is_primary(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
-            user = mommy.make('devilry_account.User', shortname='oldname@example.com')
-            emailobject = mommy.make('devilry_account.UserEmail',
-                                     email='newname@example.com',
-                                     user=user,
-                                     is_primary=None)
-            emailobject.is_primary = True
-            emailobject.clean()
-            self.assertEqual(emailobject.email, 'newname@example.com')
-            user = User.objects.get(id=user.id)
-            self.assertEqual(user.shortname, 'newname@example.com')
-
-    def test_clean_do_not_set_shortname_if_not_primary(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
-            user = mommy.make('devilry_account.User', shortname='oldname@example.com')
-            emailobject = mommy.make('devilry_account.UserEmail',
-                                     email='newname@example.com',
-                                     user=user,
-                                     is_primary=None)
-            emailobject.clean()
-            self.assertEqual(emailobject.email, 'newname@example.com')
-            user = User.objects.get(id=user.id)
-            self.assertEqual(user.shortname, 'oldname@example.com')
-
-    def test_clean_set_shortname_if_is_primary_but_not_using_email_auth_backend(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
-            user = mommy.make('devilry_account.User', shortname='oldname')
-            emailobject = mommy.make('devilry_account.UserEmail',
-                                     email='newname@example.com',
-                                     user=user,
-                                     is_primary=None)
-            emailobject.is_primary = True
-            emailobject.clean()
-            self.assertEqual(emailobject.email, 'newname@example.com')
-            user = User.objects.get(id=user.id)
-            self.assertEqual(user.shortname, 'oldname')
-
 
 class TestUserName(TestCase):
     def test_username_unique(self):
@@ -507,31 +469,6 @@ class TestUserName(TestCase):
             usernameobject2.is_primary = True
             usernameobject2.clean()
             self.assertIsNone(UserName.objects.get(pk=usernameobject1.pk).is_primary)
-
-    def test_clean_set_shortname_if_is_primary(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
-            user = mommy.make('devilry_account.User', shortname='oldname')
-            usernameobject = mommy.make('devilry_account.UserName',
-                                        username='newname',
-                                        user=user,
-                                        is_primary=None)
-            usernameobject.is_primary = True
-            usernameobject.clean()
-            self.assertEqual(usernameobject.username, 'newname')
-            user = User.objects.get(id=user.id)
-            self.assertEqual(user.shortname, 'newname')
-
-    def test_clean_do_not_set_shortname_if_not_primary(self):
-        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
-            user = mommy.make('devilry_account.User', shortname='oldname')
-            usernameobject = mommy.make('devilry_account.UserName',
-                                        username='newname',
-                                        user=user,
-                                        is_primary=None)
-            usernameobject.clean()
-            self.assertEqual(usernameobject.username, 'newname')
-            user = User.objects.get(id=user.id)
-            self.assertEqual(user.shortname, 'oldname')
 
 
 class TestPermissionGroup(TestCase):
