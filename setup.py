@@ -32,7 +32,7 @@ setup(
         'mimeparse==0.1.3',
         'django_errortemplates==1.0.1',
         'numpy==1.6.2',
-        'amqp==1.4.6',
+        'amqp==1.4.9',
         'anyjson==0.3.3',
         'billiard==3.3.0.19',
         'celery==3.1.23',
