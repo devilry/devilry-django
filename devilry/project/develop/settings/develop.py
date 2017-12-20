@@ -23,8 +23,17 @@ if profiler_middleware:
 #     ]
 
 
+#######################################################
+#
+# Django allauth with Dataporten provider
+#
+#######################################################
 INSTALLED_APPS += [
-    # 'debug_toolbar',
+    'allauth.socialaccount.providers.dataporten',
+]
+
+AUTHENTICATION_BACKENDS += [
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 

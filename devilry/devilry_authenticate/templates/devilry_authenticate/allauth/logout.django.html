@@ -1,0 +1,22 @@
+{% extends "django_cradmin/layouts/standalone/focused.django.html" %}
+{% load i18n %}
+{% load socialaccount %}
+
+{% block title %}
+    {% trans "Are you sure you want to sign out?" %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>{% trans "Are you sure you want to sign out?" %}</h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <form method="post" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">{% trans 'Sign Out' %}</button>
+    </form>
+
+{% endblock content %}

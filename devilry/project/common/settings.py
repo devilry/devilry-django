@@ -101,7 +101,6 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.dataporten',
 ]
 
 TEMPLATES = [
@@ -140,10 +139,9 @@ MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
 ##################################################################################
 # Django Cradmin settings (Auth backend, forgotten password and sitename)
 ##################################################################################
-AUTHENTICATION_BACKENDS = (
+AUTHENTICATION_BACKENDS = [
     'devilry.devilry_account.authbackend.default.EmailAuthBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-)
+]
 
 
 ########################################################################
@@ -212,8 +210,4 @@ LOGGING = create_logging_config()
 # Django allauth settings
 ###################################################
 SOCIALACCOUNT_ADAPTER = 'devilry.devilry_authenticate.allauth_adapter.DevilrySocialAccountAdapter'
-# ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
 ACCOUNT_USER_MODEL_USERNAME_FIELD = 'shortname'
-# ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-# ACCOUNT_EMAIL_REQUIRED = False
-# ACCOUNT_USERNAME_REQUIRED = False

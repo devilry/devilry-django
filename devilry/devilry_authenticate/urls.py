@@ -10,5 +10,8 @@ urlpatterns = [
     url(r"^allauth/login/$",
         allauth_views.AllauthLoginView.as_view(),
         name="account_login"),
+    url(r"^allauth/logout/$",
+        allauth_views.AllauthLogoutView.as_view(),
+        name="account_logout"),
     url(r'^allauth/', include('allauth.urls')),
 ]
