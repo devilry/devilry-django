@@ -34,7 +34,7 @@ setup(
         'numpy==1.6.2',
         'amqp==1.4.9',
         'anyjson==0.3.3',
-        'billiard==3.3.0.19',
+        'billiard==3.3.0.23',
         'celery==3.1.23',
         'kombu==3.0.34',
         'python-dateutil==1.5',
