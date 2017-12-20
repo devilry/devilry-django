@@ -7,7 +7,7 @@ How to setup Dataporten (Feide etc.) login
 Settings
 ********
 Make sure your ``AUTHENTICATION_BACKENDS`` setting includes
-``"allauth.account.auth_backends.AuthenticationBackend"`.
+``"allauth.account.auth_backends.AuthenticationBackend"``.
 
 Example::
 
