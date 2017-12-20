@@ -14,6 +14,7 @@ Devilry sysadmin docs
    update
    autoset_empty_email_by_username
    managementcommands
+   dataporten_setup
 
 
 Migration guides
