@@ -47,3 +47,21 @@ Setup dataporten credentials::
 .. note::
 
     You find your credentials via https://dashboard.dataporten.no.
+
+
+********************************
+Use username instead of feide ID
+********************************
+By default, we use the ``userid_sec`` field from Dataporten as the
+"shortname" for users. This field is not very pretty, but it is unique.
+This means that the shortname which is used some places in the UI, looks
+something like this: ``feide:myuser@uio.no``.
+
+You can change this to just ``myuser`` (the username part) for a single
+``userid_sec`` suffix with the ``DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX``
+setting. For example::
+
+    DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX = 'uio.no'
+
+If you forget this, and set it later, the shortname of users will
+be updated the next time they login.
