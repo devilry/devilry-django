@@ -1,3 +1,5 @@
+from getpass import getpass
+
 from allauth.socialaccount.models import SocialApp
 from allauth.socialaccount.providers.dataporten.provider import DataportenProvider
 from django.conf import settings
@@ -22,7 +24,7 @@ class Command(BaseCommand):
             raise SystemExit()
 
         client_id = options['client_id']
-        secret = raw_input('Please type your Dataporten OAuth Client Secret: ')
+        secret = getpass('Please type your Dataporten OAuth Client Secret: ')
         if not secret:
             self.stderr.write('Secret is required')
             raise SystemExit()
