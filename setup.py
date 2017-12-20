@@ -50,5 +50,16 @@ setup(
         'django_cradmin==1.1.1',
         'ievv_opensource==4.1.0',
         'arrow==0.10.0',
+
+        # For django-allauth
+        'django-allauth==0.34.0',
+        'certifi==2017.11.5',
+        'chardet==3.0.4',
+        'idna==2.6',
+        'oauthlib==2.0.6',
+        'python-openid==2.2.5',
+        'requests==2.18.4',
+        'requests-oauthlib==0.8.0',
+        'urllib3==1.22',
     ]
 )
