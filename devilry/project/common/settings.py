@@ -211,3 +211,4 @@ LOGGING = create_logging_config()
 ###################################################
 SOCIALACCOUNT_ADAPTER = 'devilry.devilry_authenticate.allauth_adapter.DevilrySocialAccountAdapter'
 ACCOUNT_USER_MODEL_USERNAME_FIELD = 'shortname'
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
