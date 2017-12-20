@@ -11,9 +11,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             'domain',
-            default=False,
             help='The domain - E.g.: "devilry.example.com".'),
-        add_output_encoding_argument(parser)
 
     def handle(self, *args, **options):
         domain = options['domain']
@@ -25,3 +23,4 @@ class Command(BaseCommand):
         site.name = 'Primary domain'
         site.full_clean()
         site.save()
+        self.stdout.write('Primary domain successfully setup.')

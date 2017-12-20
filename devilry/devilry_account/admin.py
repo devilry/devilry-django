@@ -1,12 +1,12 @@
 from django import forms
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth import models as authmodels
+from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext_lazy as _
 
-from devilry.devilry_account.models import User, UserEmail, UserName, PermissionGroup, PermissionGroupUser
 from devilry.devilry_account.models import SubjectPermissionGroup, PeriodPermissionGroup
+from devilry.devilry_account.models import User, UserEmail, UserName, PermissionGroup, PermissionGroupUser
 
 
 class UserEmailInline(admin.StackedInline):
@@ -167,6 +167,8 @@ class SubjectPermissionGroupAdmin(admin.ModelAdmin):
         'permissiongroup',
         'subject',
     ]
+
+
 admin.site.register(SubjectPermissionGroup, SubjectPermissionGroupAdmin)
 
 
@@ -187,4 +189,52 @@ class PeriodPermissionGroupAdmin(admin.ModelAdmin):
         'permissiongroup',
         'period',
     ]
+
+
 admin.site.register(PeriodPermissionGroup, PeriodPermissionGroupAdmin)
+
+
+class UserEmailAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'user',
+        'email',
+        'is_primary',
+    ]
+
+    search_fields = [
+        'id',
+        'user__shortname',
+        'user__fullname',
+        'email',
+    ]
+
+    list_filter = [
+        'is_primary'
+    ]
+
+
+admin.site.register(UserEmail, UserEmailAdmin)
+
+
+class UserNameAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'user',
+        'username',
+        'is_primary',
+    ]
+
+    search_fields = [
+        'id',
+        'user__shortname',
+        'user__fullname',
+        'username',
+    ]
+
+    list_filter = [
+        'is_primary'
+    ]
+
+
+admin.site.register(UserName, UserNameAdmin)
