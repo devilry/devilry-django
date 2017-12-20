@@ -26,6 +26,47 @@ redirect directly to dataporten for login instead of asking users
 how they wish to sign in.
 
 
+********************************
+Setup the dataporten application
+********************************
+
+Go to https://dashboard.dataporten.no/, and create a new application.
+You probably want to create the application within an organization instead
+of a personal app, but for local testing, a personal app should work.
+
+In the create new application popup
+===================================
+
+- **Name**: Whatever you want (Typically: "Devilry", "My Devilry test", etc.)
+- **OAuth 2.0 Redirect URL**: ``https://<devilry domain>/authenticate/allauth/dataporten/login/callback/``.
+  E.g.: https://devilry.example.com/authenticate/allauth/dataporten/login/callback/. For localhost
+  development, you can use ``localhost:8000`` as the ``<devilry domain>``, and http instead of https.
+
+
+Within the application dashboard
+================================
+
+Permissions
+-----------
+Devilry requires that you include the following scopes:
+
+- Profilinfo
+- Bruker-ID
+- E-post
+- Feide-navn
+
+
+Auth providers
+--------------
+You will most likely want to deselect: *Accept all social networks*,
+*Feide gjestebrukere* and *Feide testbrukere*. For testing purposes,
+*Feide testbrukere* may be useful, but not for production.
+
+You will most likely want to deselect *Åpne for alle i utdanningsektoren*, and
+just select the relevant schools.
+
+
+
 *********************************
 Add required data to the database
 *********************************
@@ -46,7 +87,8 @@ Setup dataporten credentials::
 
 .. note::
 
-    You find your credentials via https://dashboard.dataporten.no.
+    You find the credentials for your app via https://dashboard.dataporten.no
+    (in the *OAuth credentials* section).
 
 
 ********************************
