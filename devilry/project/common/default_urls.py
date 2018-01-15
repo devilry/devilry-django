@@ -4,7 +4,6 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseBadRequest, HttpResponsePermanentRedirect
-from django_cradmin.superuserui import superuserui_registry
 
 from devilry.devilry_frontpage import crinstance_frontpage
 
@@ -37,7 +36,6 @@ devilry_urls = [
     url(r'^devilry_gradeform/', include('devilry.devilry_gradeform.urls')),
     url(r'^devilry_admin/', include('devilry.devilry_admin.urls')),
     url(r'^djangoadmin/', include(admin.site.urls)),
-    url(r'^superuser/', include(superuserui_registry.default.make_cradmin_instance_class().urls())),
     url(r'^devilry_header/', include('devilry.devilry_header.urls')),
     url(r'^devilry_bulkcreate_users/', include('devilry.devilry_bulkcreate_users.urls')),
     url(r'^devilry_examiner/', include('devilry.devilry_examiner.urls')),

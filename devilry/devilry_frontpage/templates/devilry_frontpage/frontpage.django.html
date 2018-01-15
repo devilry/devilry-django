@@ -34,7 +34,7 @@
                 </div>
                 <div class="col-sm-6 devilry-frontpage-superuser-link-wrapper">
                     {% if request.user.is_superuser %}
-                        <a href="/superuser/" class="devilry-frontpage-superuser-link">
+                        <a href="{% url 'admin:index' %}" class="devilry-frontpage-superuser-link">
                             {% trans "Superuser UI" %}
                         </a>
                     {% endif %}
