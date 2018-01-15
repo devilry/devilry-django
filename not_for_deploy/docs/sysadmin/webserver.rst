@@ -14,7 +14,7 @@ Refer to the Gunicorn_ documentation for more information.
 ********************
 Nginx config example
 ********************
-::
+.. code-block:: nginx
 
     server {
        listen 80;
