@@ -2,4 +2,4 @@
 -r common.txt
 
 # PostgreSQL bindings
-psycopg2==2.4.6
+psycopg2==2.7.3.2

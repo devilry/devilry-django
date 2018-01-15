@@ -128,3 +128,18 @@ DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES = 60 * 6
 #: Normally needed if you are using a traditional filesystem, but not for
 #: blob storage filesystems like AWS S3.
 DEVILRY_RESTRICT_NUMBER_OF_FILES_PER_DIRECTORY = False
+
+
+#: If this is set to a value, we extract a prettier shortname for a user
+#: than "feide:myname@mydomain.no" for the provided suffix.
+#:
+#: I.E.: If you set this to "uio.no", University of Oslo users that
+#: authenticate with Feide will get their UiO username as their shortname.
+#:
+#: It is **very dangerous to change this value after you have users in the database**
+#: because it can lead to users getting access to other users accounts.
+#: Lets say two different users with ID ``feide:peter@test1.com`` and ``feide:peter@test2.com``
+#: exists in Dataporten. If you first set this setting to ``@test1.com``, and
+#: later change this setting to ``test2.com``, the peter from test2.com will gain
+#: access to the Devilry account for the peter from test1.com!
+DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX = None

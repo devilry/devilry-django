@@ -13,12 +13,13 @@ from .django_cradmin_settings import *  # noqa
 DEBUG = False
 
 TIME_ZONE = 'Europe/Oslo'
-SITE_ID = 1
+SITE_ID = 1  # Warning: required by django allauth
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 FORMAT_MODULE_PATH = 'devilry.project.common.formats'
-LOGIN_URL = '/authenticate/login'
+# LOGIN_URL = '/authenticate/login'
+LOGIN_URL = '/authenticate/allauth/login/'
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 DATABASES = {}
@@ -39,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.humanize',
+    'django.contrib.sites',  # Required by django-allauth
+
     'errortemplates',
     'crispy_forms',
     'gunicorn',
@@ -93,6 +96,11 @@ INSTALLED_APPS = [
     'devilry.devilry_deadlinemanagement',
     'devilry.project.common',
     'devilry.devilry_import_v2database',
+
+    # Django-allauth for dataporten login
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 ]
 
 TEMPLATES = [
@@ -131,9 +139,9 @@ MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
 ##################################################################################
 # Django Cradmin settings (Auth backend, forgotten password and sitename)
 ##################################################################################
-AUTHENTICATION_BACKENDS = (
+AUTHENTICATION_BACKENDS = [
     'devilry.devilry_account.authbackend.default.EmailAuthBackend',
-)
+]
 
 
 ########################################################################
@@ -195,3 +203,12 @@ LOCALE_PATHS = [
 ###################################################
 from devilry.project.log import create_logging_config
 LOGGING = create_logging_config()
+
+
+
+###################################################
+# Django allauth settings
+###################################################
+SOCIALACCOUNT_ADAPTER = 'devilry.devilry_authenticate.allauth_adapter.DevilrySocialAccountAdapter'
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'shortname'
+ACCOUNT_AUTHENTICATION_METHOD = 'username'

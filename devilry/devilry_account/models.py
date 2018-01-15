@@ -665,11 +665,11 @@ class UserEmail(AbstractUserIdentity):
                 other_useremails = other_useremails.exclude(id=self.id)
             other_useremails.update(is_primary=None)
 
-            if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
-                user = self.user
-                if user.shortname != self.email:
-                    user.shortname = self.email
-                    user.save()
+            # if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+            #     user = self.user
+            #     if user.shortname != self.email:
+            #         user.shortname = self.email
+            #         user.save()
 
     def __unicode__(self):
         return _('%(email)s - User%(userid)s') % {
@@ -726,10 +726,10 @@ class UserName(AbstractUserIdentity):
                 other_usernames = other_usernames.exclude(id=self.id)
             other_usernames.update(is_primary=None)
 
-            user = self.user
-            if user.shortname != self.username:
-                user.shortname = self.username
-                user.save()
+            # user = self.user
+            # if user.shortname != self.username:
+            #     user.shortname = self.username
+            #     user.save()
 
     def __unicode__(self):
         return _('%(username)s - User%(userid)s') % {
