@@ -292,4 +292,5 @@ class BatchCompressionAPIFeedbackSetView(AbstractBatchCompressionAPIView):
             actiongroup_name=self.batchoperation_type,
             context_object=self.content_object,
             operationtype=self.batchoperation_type,
+            started_by=self.request.user
         )
