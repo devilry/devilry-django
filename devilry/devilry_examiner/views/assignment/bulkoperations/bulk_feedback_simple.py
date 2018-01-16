@@ -206,7 +206,7 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
             If anything goes wrong, the transaction is rolled back and nothing is saved to the database.
 
         Args:
-            feedbackset_data_dict:
+            feedbackset_data_dict: dictionary of ``FeedbackSet``s with posted comment data and points.
         """
         now_without_microseconds = timezone.now().replace(microsecond=0)
         feedbackset_id_list = []

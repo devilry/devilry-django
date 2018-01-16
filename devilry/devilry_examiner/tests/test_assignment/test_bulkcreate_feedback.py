@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import mock
 from django import test
 from django.contrib import messages
+from django.core import mail
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
@@ -780,6 +781,14 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
 
+        # create students for the groups
+        student1 = mommy.make('core.Candidate', assignment_group=testgroup1)
+        student2 = mommy.make('core.Candidate', assignment_group=testgroup2)
+        student3 = mommy.make('core.Candidate', assignment_group=testgroup3)
+        mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
+        mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
+        mommy.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
+
         # create user as examiner for AssignmentGroups
         examiner_user = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
@@ -827,6 +836,7 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
         for feedback_set in feedback_sets:
             self.assertIsNotNone(feedback_set.grading_published_datetime)
             self.assertEquals(feedback_set.grading_points, testassignment.passing_grade_min_points)
+        self.assertEqual(len(mail.outbox), 3)
 
     def test_get_num_queries(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -894,7 +904,7 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
         devilry_group_mommy_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup5)
 
-        with self.assertNumQueries(17):
+        with self.assertNumQueries(23):
             self.mock_postrequest(
                 cradmin_role=testassignment,
                 requestuser=examiner_user,
@@ -1009,6 +1019,14 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
 
+        # create students for the groups
+        student1 = mommy.make('core.Candidate', assignment_group=testgroup1)
+        student2 = mommy.make('core.Candidate', assignment_group=testgroup2)
+        student3 = mommy.make('core.Candidate', assignment_group=testgroup3)
+        mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
+        mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
+        mommy.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
+
         # create user as examiner for AssignmentGroups
         examiner_user = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
@@ -1055,6 +1073,7 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
         for feedback_set in feedback_sets:
             self.assertIsNotNone(feedback_set.grading_published_datetime)
             self.assertEquals(10, feedback_set.grading_points)
+        self.assertEqual(len(mail.outbox), 3)
 
     def test_get_num_queries(self):
         testassignment = mommy.make_recipe(
@@ -1134,7 +1153,7 @@ class TestPointsBulkCreateFeedback(test.TestCase, cradmin_testhelpers.TestCaseMi
         devilry_group_mommy_factories\
             .feedbackset_first_attempt_unpublished(group=testgroup5)
 
-        with self.assertNumQueries(17):
+        with self.assertNumQueries(23):
             self.mock_postrequest(
                 cradmin_role=testassignment,
                 requestuser=examiner_user,
