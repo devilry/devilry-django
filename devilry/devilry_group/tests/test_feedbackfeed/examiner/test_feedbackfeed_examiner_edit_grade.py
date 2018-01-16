@@ -122,8 +122,10 @@ class TestEditGradeView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'pk': testfeedbackset.id
             })
         input_element = mockresponse.selector.list('option')
-        self.assertIsNone(input_element[0].get('selected'))
-        self.assertEquals(input_element[1].get('selected'), 'selected')
+        self.assertEquals(input_element[0].get('value'), 'Passed')
+        self.assertFalse(input_element[0].hasattribute('selected'))
+        self.assertEquals(input_element[1].get('value'), 'Failed')
+        self.assertTrue(input_element[1].hasattribute('selected'))
 
     def test_passed_failed_plugin_initial_passed_if_passed(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -136,5 +138,7 @@ class TestEditGradeView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'pk': testfeedbackset.id
             })
         input_element = mockresponse.selector.list('option')
-        self.assertEquals(input_element[0].get('selected'), 'selected')
-        self.assertIsNone(input_element[1].get('selected'))
+        self.assertEquals(input_element[0].get('value'), 'Passed')
+        self.assertTrue(input_element[0].hasattribute('selected'))
+        self.assertEquals(input_element[1].get('value'), 'Failed')
+        self.assertFalse(input_element[1].hasattribute('selected'))
