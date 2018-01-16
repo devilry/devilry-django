@@ -81,6 +81,7 @@ def group_form(value, groupid):
 # def get_quickmodeform_by_groupid(formcollection, groupid):
 #     return formcollection.get_form_by_groupid(groupid)
 
+
 @register.assignment_tag(takes_context=True)
 def get_last_feedback_draft_for_group(context, group):
     """
