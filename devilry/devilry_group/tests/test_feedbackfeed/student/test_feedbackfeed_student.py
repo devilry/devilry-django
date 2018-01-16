@@ -8,7 +8,6 @@ from django.test import TestCase
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
-from psycopg2.tests import unittest
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_comment import models as comment_models
