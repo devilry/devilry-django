@@ -216,7 +216,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         template_name = 'devilry_core/assignment_feedback_student.txt'
         examiner = Examiner.objects.get(assignmentgroup=feedback_set.group, relatedexaminer__user=user)
         student_users = self.__get_student_users_in_group(feedback_set.group)
-        send_templated_message('Assignment feedback', template_name, {
+        send_templated_message(subject, template_name, {
             'assignment': feedback_set.group.parentnode,
             'examiner': examiner,
             'devilryrole': 'student',
