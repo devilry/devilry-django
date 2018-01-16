@@ -51,7 +51,7 @@ setup(
         'html5lib==0.9999999',
         'psycopg2==2.7.3.2',
         'django_cradmin==1.1.1',
-        'ievv_opensource==4.1.0',
+        'ievv_opensource==4.3.2',
         'arrow==0.10.0',
 
         # For django-allauth
