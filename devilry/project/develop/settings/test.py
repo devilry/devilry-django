@@ -1,16 +1,6 @@
 from .base import *  # noqa
 
 
-###############################################################################
-#
-# Celery
-#
-###############################################################################
-CELERY_ALWAYS_EAGER = True
-CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
-CELERY_EAGER_TRANSACTION = True
-BROKER_BACKEND = 'memory'
-
 # ievv_batchframework celery mode.
 # We want to set the task to be run as syncronous as this make testing easier.
 IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS = True

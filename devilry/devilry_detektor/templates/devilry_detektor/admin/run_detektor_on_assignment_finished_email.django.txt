@@ -1,3 +1,0 @@
-{% load i18n %}{% trans "Follow the link below to see the results." %}
-
-{{ resulturl }}

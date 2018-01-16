@@ -164,3 +164,8 @@ def codeship_test():
     Run all the tests with settings for CodeShip CI.
     """
     _managepy('test devilry', djangoenv='codeship_test')
+
+
+@task
+def remove_pyc_files():
+    os.system('find . -name "*.pyc" -exec rm {} \;')
