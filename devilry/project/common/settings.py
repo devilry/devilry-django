@@ -93,7 +93,6 @@ INSTALLED_APPS = [
     'devilry.devilry_gradingsystemplugin_points.apps.GradingsystemPointsAppConfig',
     'devilry.devilry_gradingsystemplugin_approved.apps.GradingsystemApprovedAppConfig',
     'devilry.devilry_rest',
-    'devilry.devilry_detektor',
     'devilry.devilry_admin',
     'devilry.devilry_dbcache',
     'devilry.devilry_deadlinemanagement',
