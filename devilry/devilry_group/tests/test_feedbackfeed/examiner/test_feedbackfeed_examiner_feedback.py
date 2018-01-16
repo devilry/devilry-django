@@ -555,7 +555,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
         self.assertIn('Assignment: {}'.format(assignment.long_name), mail_content)
         self.assertIn('Subject: {}'.format(assignment.parentnode.long_name), mail_content)
         self.assertIn('Result: 73/100 ( passed )', mail_content)
-        self.assertIn('Corrected by: God of thunder and Battle (thor@example.com)', mail_content)
+        self.assertIn('http://testserver/devilry_group/student/{}/feedbackfeed/'.format(testgroup.id), mail_content)
         self.assertEqual(mail.outbox[0].recipients(), ['student@example.com'])
         self.assertEqual(len(mail.outbox), 1)
 

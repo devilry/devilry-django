@@ -24,6 +24,7 @@ from devilry.apps.core import models as core_models
 from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
+from devilry.devilry_email.feedback_email import feedback_email
 
 
 class AbstractFeedbackForm(cradmin_feedbackfeed_base.GroupCommentForm):
@@ -203,28 +204,6 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
             group_comment = super(ExaminerFeedbackView, self).save_object(form=form, commit=True)
         return group_comment
 
-    def __get_student_users_in_group(self, group):
-        user_queryset = get_user_model().objects\
-            .filter(id__in=group.candidates.values_list('relatedstudent__user', flat=True))
-        return [user for user in user_queryset]
-
-    def _send_feedback_published_email(self, feedback_set, points, user):
-        """
-        Send a feedback mail to all students in group.
-        """
-        subject = ugettext_lazy('Assignment feedback')
-        template_name = 'devilry_core/assignment_feedback_student.txt'
-        examiner = Examiner.objects.get(assignmentgroup=feedback_set.group, relatedexaminer__user=user)
-        student_users = self.__get_student_users_in_group(feedback_set.group)
-        send_templated_message(subject, template_name, {
-            'assignment': feedback_set.group.parentnode,
-            'examiner': examiner,
-            'devilryrole': 'student',
-            'points': points,
-            'deadline_datetime': feedback_set.deadline_datetime,
-            'corrected_datetime': feedback_set.grading_published_datetime
-        }, *student_users)
-
     def _publish_feedback(self, form, feedback_set, user):
         # publish FeedbackSet
         result, error_msg = feedback_set.publish(
@@ -233,7 +212,10 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         if result is False:
             messages.error(self.request, ugettext_lazy(error_msg))
         else:
-            self._send_feedback_published_email(feedback_set=feedback_set, points=form.get_grading_points(), user=user)
+            feedback_email.send_feedback_email(
+                feedback_set=feedback_set, points=form.get_grading_points(),
+                domain_url_start=self.request.build_absolute_uri('/')
+            )
 
     def save_object(self, form, commit=False):
         comment = super(ExaminerFeedbackView, self).save_object(form=form)
