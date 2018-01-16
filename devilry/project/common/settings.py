@@ -25,7 +25,9 @@ STATIC_ROOT = 'static'
 DATABASES = {}
 EMAIL_SUBJECT_PREFIX = '[Devilry] '
 ROOT_URLCONF = 'devilry.project.production.urls'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'devilry-support@example.com'
+EMAIL_BACKEND='ievv.ievv_rq_email_backend.rq_backend.RQEmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 AUTH_USER_MODEL = 'devilry_account.User'
 LOGIN_REDIRECT_URL = '/'
@@ -48,7 +50,7 @@ INSTALLED_APPS = [
     'ievv_opensource.ievvtasks_common',
     'ievv_opensource.ievv_batchframework',
     'ievv_opensource.ievv_customsql',
-
+    'django_rq',
     'devilry.devilry_bulkcreate_users',
     'devilry.devilry_cradmin',
     'django_cradmin',
@@ -76,6 +78,7 @@ INSTALLED_APPS = [
     'devilry.devilry_group',
     'devilry.devilry_gradeform',
     'devilry.devilry_comment',
+    'devilry.devilry_email',
     'devilry.devilry_i18n',
     'devilry.devilry_settings',
     'devilry.devilry_qualifiesforexam',
@@ -149,30 +152,49 @@ AUTHENTICATION_BACKENDS = [
 # Celery
 #
 ########################################################################
-CELERY_ALWAYS_EAGER = True
-CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
-CELERY_EAGER_TRANSACTION = True
-CELERY_TIMEZONE = 'Europe/Oslo'
-CELERY_ENABLE_UTC = True
+# CELERY_ALWAYS_EAGER = True
+# CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+# CELERY_EAGER_TRANSACTION = True
+# CELERY_TIMEZONE = 'Europe/Oslo'
+# CELERY_ENABLE_UTC = True
+#
+# # Celery settings
+# BROKER_URL = 'redis://localhost:6379'
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_IMPORTS = [
+#     'ievv_opensource.ievv_batchframework.celery_tasks',
+# ]
+# CELERYD_TASK_LOG_FORMAT = '[%(asctime)s: %(levelname)s/%(processName)s] ' \
+#                           '[%(name)s] ' \
+#                           '[%(task_name)s(%(task_id)s)] ' \
+#                           '%(message)s'
+#
+# # ievv_batchframework settings
+# IEVV_BATCHFRAMEWORK_CELERY_APP = 'devilry.project.common.celery_app'
 
-# Celery settings
-BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_IMPORTS = [
-    'ievv_opensource.ievv_batchframework.celery_tasks',
-]
-CELERYD_TASK_LOG_FORMAT = '[%(asctime)s: %(levelname)s/%(processName)s] ' \
-                          '[%(name)s] ' \
-                          '[%(task_name)s(%(task_id)s)] ' \
-                          '%(message)s'
 
-# ievv_batchframework settings
-IEVV_BATCHFRAMEWORK_CELERY_APP = 'devilry.project.common.celery_app'
+######################################################################
+#
+# RQ
+#
+######################################################################
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 0,
+        'DEFAULT_TIMEOUT': 360,
+    },
+    'highpriority': {
+        'URL': os.getenv('REDISTOGO_URL', 'redis://localhost:6379/0'),  # If you're on Heroku
+        'DEFAULT_TIMEOUT': 500,
+    },
+}
 
-# ievv_batchframework celery mode.
+# ievv_batchframework task mode.
 IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS = False
 
 

@@ -27,6 +27,7 @@ DEVILRY_EMAIL_SIGNATURE = \
     "This is a message from the Devilry assignment delivery system. "\
     "Please do not respond to this email."
 
+
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDeliveryStore'
 DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 1000
 DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'

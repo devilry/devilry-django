@@ -96,7 +96,7 @@ PASSWORD_HASHERS = (
 # Email
 ##################################################################################
 DEVILRY_SEND_EMAIL_TO_USERS = True
-EMAIL_BACKEND = os.environ.get('DEVILRY_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+EMAIL_BACKEND = 'devilry.devilry_email.rq_backend.RQEmailBackend'
 DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
 DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-support@example.com'
 DEVILRY_DEFAULT_EMAIL_SUFFIX = '@example.com'

@@ -28,8 +28,12 @@ mock==2.0.0
 fabric==1.8.3
 
 # For celery
-celery==3.1.20
-django-celery==3.1.17
+#celery==3.1.20
+#django-celery==3.1.17
+
+# For RQ
+rq==0.10.0
+django-rq==1.0.1
 redis==2.10.5
 
 #-e libs/django_cradmin

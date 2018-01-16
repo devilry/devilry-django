@@ -42,9 +42,9 @@ DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX = 'uio.no'
 ##################################################################################
 # Celery
 ##################################################################################
-CELERY_ALWAYS_EAGER = False
-CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
-CELERY_EAGER_TRANSACTION = True
+# CELERY_ALWAYS_EAGER = False
+# CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+# CELERY_EAGER_TRANSACTION = True
 
 ## For testing celery
 ## - Se the "Developing and testing Celery background tasks" chapter of the developer docs.
@@ -76,6 +76,9 @@ CELERY_EAGER_TRANSACTION = True
 # INSTALLED_APPS += ['djcelery_email']
 # EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 # CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEVILRY_LOWLEVEL_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEVILRY_RQ_EMAIL_BACKEND_QUEUENAME = 'default'
+
 
 # DEVILRY_FRONTPAGE_HEADER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
 # DEVILRY_FRONTPAGE_FOOTER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
@@ -146,14 +149,18 @@ IEVVTASKS_DEVRUN_RUNNABLES = {
         ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
         ievvdevrun.runnables.django_runserver.RunnableThread(),
         ievvdevrun.runnables.redis_server.RunnableThread(),
-        ievvdevrun.runnables.celery_worker.RunnableThread(app='devilry.project.common'),
+        # TODO REMOVE CELERY
+        # ievvdevrun.runnables.celery_worker.RunnableThread(app='devilry.project.common'),
+        ievvdevrun.runnables.rq_worker.RunnableThread(),
     ),
     'design': ievvdevrun.config.RunnableThreadList(
         ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
         ievvdevrun.runnables.django_runserver.RunnableThread(),
         ievvdevrun.runnables.ievv_buildstatic.RunnableThread(),
         ievvdevrun.runnables.redis_server.RunnableThread(),
-        ievvdevrun.runnables.celery_worker.RunnableThread(app='devilry.project.common'),
+        # TODO REMOVE CELERY
+        # ievvdevrun.runnables.celery_worker.RunnableThread(app='devilry.project.common'),
+        ievvdevrun.runnables.rq_worker.RunnableThread(),
     ),
 }
 
