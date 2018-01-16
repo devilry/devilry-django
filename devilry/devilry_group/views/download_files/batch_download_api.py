@@ -251,7 +251,8 @@ class AbstractBatchCompressionAPIView(View):
                 self._set_archive_meta_ready_for_delete(compressed_archive_meta=compressed_archive_meta)
                 self.start_compression_task(content_object_id=content_object_id)
                 return JsonResponse(self.get_status_dict(context_object_id=content_object_id))
-            return JsonResponse(self.get_ready_for_download_status(content_object_id=content_object_id))
+            ready_for_download_status = self.get_ready_for_download_status(content_object_id=content_object_id)
+            return JsonResponse(ready_for_download_status)
 
         # Start compression task and return status.
         self.start_compression_task(content_object_id=content_object_id)

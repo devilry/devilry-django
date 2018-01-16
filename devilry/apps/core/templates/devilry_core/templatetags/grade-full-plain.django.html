@@ -1,0 +1,22 @@
+{% extends "devilry_core/templatetags/grade-base-plain.django.html" %}
+{% load i18n %}
+{% load devilry_core_tags %}
+
+{% block grade %}
+    {{ block.super }}
+    {% if include_is_passing_grade or include_points %}
+        ({% if include_is_passing_grade %}
+            {% if is_passing_grade %}
+                {% trans "passed" %}
+            {% else %}
+                {% trans "failed" %}
+            {% endif %}
+        {% endif %}
+        {% if include_is_passing_grade and include_points %}
+            -
+        {% endif %}
+        {% if include_points %}
+            {{ points }}/{{ assignment.max_points }}
+        {% endif %})
+    {% endif %}
+{% endblock grade %}

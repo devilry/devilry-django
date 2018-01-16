@@ -438,7 +438,7 @@ class FeedbackSet(models.Model):
         :param gradeform_data_json: gradeform(coming soon).
         :return: True or False and an error message.
         """
-        current_deadline = self.current_deadline()
+        current_deadline = self.deadline_datetime
         if current_deadline is None:
             return False, 'Cannot publish feedback without a deadline.'
 

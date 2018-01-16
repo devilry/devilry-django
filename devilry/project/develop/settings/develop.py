@@ -53,6 +53,15 @@ DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX = 'uio.no'
 # CELERY_RESULT_BACKEND = 'amqp://'
 
 
+###################################################################################
+# RQ setup for development
+###################################################################################
+
+# RQ runs asynchronously by default for development.
+RQ_QUEUES['default']['ASYNC'] = True
+RQ_QUEUES['highpriority']['ASYNC'] = True
+
+
 ######################################################
 # Email
 ######################################################
@@ -100,7 +109,6 @@ DEVILRY_RQ_EMAIL_BACKEND_QUEUENAME = 'default'
 
 
 # LANGUAGE_CODE = 'nb'
-
 
 IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
     ievvbuildstatic.config.App(

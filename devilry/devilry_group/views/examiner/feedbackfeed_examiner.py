@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from crispy_forms import layout
 from django import forms
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.http import HttpResponseRedirect
@@ -17,6 +18,8 @@ from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
 from django_cradmin.viewhelpers import update, delete
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
+from devilry.apps.core.models import RelatedStudent, Examiner
+from devilry.utils.devilry_email import send_templated_message
 from devilry.apps.core import models as core_models
 from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_group import models as group_models
@@ -200,21 +203,37 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
             group_comment = super(ExaminerFeedbackView, self).save_object(form=form, commit=True)
         return group_comment
 
+    def __get_student_users_in_group(self, group):
+        user_queryset = get_user_model().objects\
+            .filter(id__in=group.candidates.values_list('relatedstudent__user', flat=True))
+        return [user for user in user_queryset]
+
+    def _send_feedback_published_email(self, feedback_set, points, user):
+        """
+        Send a feedback mail to all students in group.
+        """
+        subject = ugettext_lazy('Assignment feedback')
+        template_name = 'devilry_core/assignment_feedback_student.txt'
+        examiner = Examiner.objects.get(assignmentgroup=feedback_set.group, relatedexaminer__user=user)
+        student_users = self.__get_student_users_in_group(feedback_set.group)
+        send_templated_message('Assignment feedback', template_name, {
+            'assignment': feedback_set.group.parentnode,
+            'examiner': examiner,
+            'devilryrole': 'student',
+            'points': points,
+            'deadline_datetime': feedback_set.deadline_datetime,
+            'corrected_datetime': feedback_set.grading_published_datetime
+        }, *student_users)
+
     def _publish_feedback(self, form, feedback_set, user):
-        """
-
-        Args:
-            group_comment:
-
-        Returns:
-
-        """
         # publish FeedbackSet
         result, error_msg = feedback_set.publish(
             published_by=user,
             grading_points=form.get_grading_points())
         if result is False:
             messages.error(self.request, ugettext_lazy(error_msg))
+        else:
+            self._send_feedback_published_email(feedback_set=feedback_set, points=form.get_grading_points(), user=user)
 
     def save_object(self, form, commit=False):
         comment = super(ExaminerFeedbackView, self).save_object(form=form)
