@@ -5,6 +5,7 @@ from devilry.devilry_gradingsystem.models import FeedbackDraft
 
 register = template.Library()
 
+
 @register.filter(name='formatted_status')
 @stringfilter
 def formatted_status(value):
@@ -20,12 +21,14 @@ def formatted_status(value):
         return _("Closed without feedback")
     return value
 
+
 @register.filter
 def format_is_passing_grade(is_passing_grade):
     if is_passing_grade:
         return _('passed')
     else:
         return _('failed')
+
 
 @register.filter
 def formatted_delivery_count(count):
@@ -34,6 +37,7 @@ def formatted_delivery_count(count):
     if count == 1:
         return _("{0} delivery received").format(count)
     return _("{0} deliveries received").format(count)
+
 
 @register.filter
 def get_feedback_url(assignment):
@@ -63,6 +67,7 @@ def feedback_to_bootstrapclass(feedback):
     else:
         return 'warning'
 
+
 @register.filter
 def group_delivery_status_to_bootstrapclass(group):
     if group.delivery_status == 'waiting-for-something':
@@ -82,7 +87,7 @@ def group_form(value, groupid):
 #     return formcollection.get_form_by_groupid(groupid)
 
 
-@register.assignment_tag(takes_context=True)
+@register.simple_tag(takes_context=True)
 def get_last_feedback_draft_for_group(context, group):
     """
     Very inefficient method of getting last feedback draft for a group.
