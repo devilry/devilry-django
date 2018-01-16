@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.humanize',
+    'django.forms',
     'django.contrib.sites',  # Required by django-allauth
 
     'errortemplates',
