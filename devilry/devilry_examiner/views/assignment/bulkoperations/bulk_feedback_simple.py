@@ -12,7 +12,7 @@ from django_cradmin.viewhelpers import listbuilderview
 
 import django_rq
 
-from devilry.devilry_email.feedback_email.feedback_email import bulk_feedback_mail
+from devilry.devilry_email.feedback_email.feedback_email import bulk_send_email
 from devilry.apps.core import models as core_models
 from devilry.devilry_cradmin.devilry_tablebuilder import base_new
 from devilry.devilry_group.models import GroupComment
@@ -220,8 +220,8 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
                 feedbackset.grading_points = data['grading_points']
                 feedbackset.save(update_fields=['grading_published_by', 'grading_published_datetime', 'grading_points'])
                 feedbackset_id_list.append(feedbackset.id)
-            queue = django_rq.get_queue()
-            queue.enqueue(bulk_feedback_mail, feedbackset_id_list, self.request.build_absolute_uri('/'))
+            bulk_send_email(feedbackset_id_list=feedbackset_id_list,
+                            domain_url_start=self.request.build_absolute_uri('/'))
 
     def post(self, request, *args, **kwargs):
         feedbackset_data_dict = self.__collect_data_for_groups(posted_data=request.POST)

@@ -1,8 +1,10 @@
 import json
 import shutil
+import unittest
 
 import mock
 from django import test
+from devilry.project.develop.testhelpers import skip_rq_tests
 from django.core.files.base import ContentFile
 from django.http import Http404
 from django.test import override_settings
@@ -49,6 +51,8 @@ class TestHelper(object):
                  test='test')
 
 
+@unittest.skipIf(skip_rq_tests.should_skip_tests_that_require_rq_async(),
+                 reason='Tests that require RQ to run async. Disabled if DEVILRY_SKIP_RQ_TESTS is True')
 class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
     """
     """
@@ -86,7 +90,10 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             task=tasks.FeedbackSetCompressAction,
             context_object=testfeedbackset
         )
+        print(CompressedArchiveMeta.objects.all())
         self._mock_batchoperation_status(context_object_id=testfeedbackset.id)
+        batchoperation = BatchOperation.objects.get(context_object_id=testfeedbackset.id)
+        print(batchoperation.status)
         mockresponse = self.mock_getrequest(
             viewkwargs={
                 'content_object_id': testfeedbackset.id

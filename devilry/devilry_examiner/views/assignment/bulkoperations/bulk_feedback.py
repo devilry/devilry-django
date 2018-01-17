@@ -16,7 +16,7 @@ from devilry.devilry_comment import models as comment_models
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_examiner.views.assignment.bulkoperations import bulk_operations_grouplist
 from devilry.devilry_group import models as group_models
-from devilry.devilry_email.feedback_email.feedback_email import bulk_feedback_mail
+from devilry.devilry_email.feedback_email.feedback_email import bulk_send_email
 
 
 class AssignPointsForm(bulk_operations_grouplist.SelectedAssignmentGroupForm):
@@ -159,8 +159,8 @@ class AbstractBulkFeedbackListView(bulk_operations_grouplist.AbstractAssignmentG
                     grading_published_by=self.request.user,
                     grading_published_datetime=now_without_microseconds + timezone.timedelta(microseconds=1),
                     grading_points=points)
-            queue = django_rq.get_queue()
-            queue.enqueue(bulk_feedback_mail, feedback_set_ids, self.request.build_absolute_uri('/'))
+            bulk_send_email(feedbackset_id_list=feedback_set_ids,
+                            domain_url_start=self.request.build_absolute_uri('/'))
 
         self.add_success_message(anonymous_displaynames)
         return super(AbstractBulkFeedbackListView, self).form_valid(form=form)
