@@ -261,6 +261,10 @@ DECLARE
     var_last_public_comment_by_examiner_datetime timestamp with time zone;
 
 BEGIN
+    IF EXISTS (SELECT 1 FROM core_assignmentgroup WHERE id = param_group_id AND internal_is_being_deleted = true) THEN
+        RETURN;
+    END IF;
+
     var_groupcachedata = devilry__collect_groupcachedata(param_group_id);
     var_last_public_comment_by_student_datetime = devilry__largest_datetime(
         var_groupcachedata.last_public_groupcomment_by_student_datetime,
@@ -270,8 +274,7 @@ BEGIN
         var_groupcachedata.last_public_groupcomment_by_examiner_datetime,
         var_groupcachedata.last_public_imageannotationcomment_by_examiner_datetime
     );
-
-    IF EXISTS (SELECT 1 FROM core_assignmentgroup WHERE core_assignmentgroup.id = param_group_id) THEN
+    IF EXISTS (SELECT 1 FROM core_assignmentgroup WHERE id = param_group_id) THEN
         INSERT INTO devilry_dbcache_assignmentgroupcacheddata (
             group_id,
             first_feedbackset_id,

@@ -1464,11 +1464,23 @@ class TestAssignmentGroupDelete(test.TestCase):
 
     def test_delete_cached_data(self):
         testgroup = mommy.make('core.AssignmentGroup')
+        group_id = testgroup.id
         cached_data_id = testgroup.cached_data.id
         core_mommy.examiner(group=testgroup)
         core_mommy.candidate(group=testgroup)
-        testgroup.delete()
+        AssignmentGroup.objects.filter(id=group_id).delete()
         self.assertFalse(AssignmentGroupCachedData.objects.filter(id=cached_data_id).exists())
+        self.assertFalse(AssignmentGroup.objects.filter(id=group_id).exists())
+
+    def test_delete_cached_data_queryset(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        group_id = testgroup.id
+        cached_data_id = testgroup.cached_data.id
+        core_mommy.examiner(group=testgroup)
+        core_mommy.candidate(group=testgroup)
+        AssignmentGroup.objects.filter(id=group_id).delete()
+        self.assertFalse(AssignmentGroupCachedData.objects.filter(id=cached_data_id).exists())
+        self.assertFalse(AssignmentGroup.objects.filter(id=group_id).exists())
 
     def test_delete_with_candidates_examiners_feedbacksets(self):
         testgroup = mommy.make('core.AssignmentGroup')

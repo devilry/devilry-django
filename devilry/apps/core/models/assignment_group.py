@@ -809,6 +809,10 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
             )
         )
 
+    def delete(self, *args, **kwargs):
+        self.update(internal_is_being_deleted=True)
+        return super(AssignmentGroupQuerySet, self).delete(*args, **kwargs)
+
 
 class AssignmentGroupManager(models.Manager):
     """
@@ -1002,6 +1006,19 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     #: The time when this group was created.
     created_datetime = models.DateTimeField(null=False, blank=True,
                                             default=timezone.now)
+
+    # NEVER set this yourself!
+    # This field is used internally to make delete triggers related
+    # to AssignmentGroupCachedData work. The reason for this need is
+    # that Django changed how they handle delete in 1.10, so instead
+    # of cascading deletes, they use the Collector class to delete
+    # child objects (and send out the correct signals). This means that
+    # child objects, such as Examiner objects is deleted before
+    # the AssignmentGroup, and the triggers have no way to know
+    # that this happens as part of an AssignmentGroup delete.
+    # To work around this issue, we set this in AssignmentGroupQuerySet.delete()
+    # and AssignmentGroup.delete() before we delete the AssignmentGroup.
+    internal_is_being_deleted = models.BooleanField(default=False, editable=False)
 
     class Meta:
         app_label = 'core'
@@ -1741,6 +1758,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         if self.is_corrected:
             return False
         return self.cached_data.last_feedbackset_deadline_datetime >= timezone.now()
+
+    def delete(self, *args, **kwargs):
+        self.internal_is_being_deleted = True
+        self.save()
+        return super(AssignmentGroup, self).delete(*args, **kwargs)
 
 
 class AssignmentGroupTag(models.Model):
