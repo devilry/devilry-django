@@ -2,6 +2,7 @@ import posixpath
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy
 
+import django_rq
 from django_cradmin.crinstance import reverse_cradmin_url
 from devilry.apps.core.models import Examiner, Candidate
 from devilry.utils.devilry_email import send_templated_message
@@ -62,3 +63,16 @@ def bulk_feedback_mail(feedbackset_id_list, domain_url_start):
             points=feedback_set.grading_points,
             domain_url_start=domain_url_start
         )
+
+
+def bulk_send_email(**kwargs):
+    """
+    Queues bulk sending of emails to students.
+
+    This method only handles the queueing, and calls :func:`.bulk_feedback_mail` as the RQ task.
+
+    Args:
+        **kwargs: Arguments required by :func:`.bulk_feedback_mail`.
+    """
+    queue = django_rq.get_queue(name='email')
+    queue.enqueue(bulk_feedback_mail, **kwargs)
