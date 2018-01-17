@@ -175,30 +175,6 @@ AUTHENTICATION_BACKENDS = [
 # IEVV_BATCHFRAMEWORK_CELERY_APP = 'devilry.project.common.celery_app'
 
 
-######################################################################
-#
-# RQ
-#
-######################################################################
-RQ_QUEUES = {
-    'default': {
-        'HOST': 'localhost',
-        'PORT': 6379,
-        'DB': 0,
-        'DEFAULT_TIMEOUT': 500,
-    },
-    'bulk_feedback': {
-        'HOST': 'localhost',
-        'PORT': 6379,
-        'DB': 0,
-        'DEFAULT_TIMEOUT': 500,
-    },
-    'highpriority': {
-        'URL': os.getenv('REDISTOGO_URL', 'redis://localhost:6379/0'),  # If you're on Heroku
-        'DEFAULT_TIMEOUT': 500,
-    },
-}
-
 # ievv_batchframework task mode.
 IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS = False
 
@@ -224,6 +200,12 @@ LOCALE_PATHS = [
         'locale')
 ]
 
+###############################
+#
+# RQ
+#
+###############################
+RQ_QUEUES = {}
 
 ###################################################
 # Setup logging using the defaults - logs to stderr

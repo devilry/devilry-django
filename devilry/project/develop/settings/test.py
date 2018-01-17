@@ -63,4 +63,5 @@ DEVILRY_V2_DATABASE_PRINT_PROGRESS_DOTS = False
 
 # RQ runs synchronously by default for tests.
 RQ_QUEUES['default']['ASYNC'] = False
+RQ_QUEUES['email']['ASYNC'] = False
 RQ_QUEUES['highpriority']['ASYNC'] = False

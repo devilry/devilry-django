@@ -52,15 +52,6 @@ DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX = 'uio.no'
 # CELERY_RESULT_BACKEND = 'amqp://'
 
 
-###################################################################################
-# RQ setup for development
-###################################################################################
-
-# RQ runs asynchronously by default for development.
-RQ_QUEUES['default']['ASYNC'] = True
-RQ_QUEUES['highpriority']['ASYNC'] = True
-
-
 ######################################################
 # Email
 ######################################################
@@ -85,7 +76,7 @@ RQ_QUEUES['highpriority']['ASYNC'] = True
 # EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 # CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEVILRY_LOWLEVEL_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEVILRY_RQ_EMAIL_BACKEND_QUEUENAME = 'default'
+DEVILRY_RQ_EMAIL_BACKEND_QUEUENAME = 'email'
 
 
 # DEVILRY_FRONTPAGE_HEADER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
@@ -108,6 +99,7 @@ DEVILRY_RQ_EMAIL_BACKEND_QUEUENAME = 'default'
 
 
 # LANGUAGE_CODE = 'nb'
+
 
 IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
     ievvbuildstatic.config.App(
@@ -156,14 +148,16 @@ IEVVTASKS_DEVRUN_RUNNABLES = {
         ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
         ievvdevrun.runnables.django_runserver.RunnableThread(),
         ievvdevrun.runnables.redis_server.RunnableThread(),
-        ievvdevrun.runnables.rq_worker.RunnableThread()
+        ievvdevrun.runnables.rq_worker.RunnableThread(),
+        ievvdevrun.runnables.rq_worker.RunnableThread(queuename='email'),
     ),
     'design': ievvdevrun.config.RunnableThreadList(
         ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
         ievvdevrun.runnables.django_runserver.RunnableThread(),
         ievvdevrun.runnables.ievv_buildstatic.RunnableThread(),
         ievvdevrun.runnables.redis_server.RunnableThread(),
-        ievvdevrun.runnables.rq_worker.RunnableThread()
+        ievvdevrun.runnables.rq_worker.RunnableThread(),
+        ievvdevrun.runnables.rq_worker.RunnableThread(queuename='email'),
     ),
 }
 

@@ -1,6 +1,7 @@
 """
 Settings added for Devilry.
 """
+import os
 
 
 # Make sure this does not end with / (i.e. '' means / is the main page).
@@ -47,6 +48,9 @@ DEVILRY_SYNCSYSTEM_SHORTNAME = 'x'
 #: If this is False, we disable features that require background processing,
 #: such as search.
 DEVILRY_ENABLE_CELERY = True
+
+#: Disable tests that require celery to run.
+DEVILRY_SKIP_RQ_TESTS = os.environ.get('DEVILRY_SKIP_RQ_TESTS', 'False') == 'True'
 
 
 #: If this is set, and the ``DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND``-setting
