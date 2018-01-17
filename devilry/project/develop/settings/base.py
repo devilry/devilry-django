@@ -1,6 +1,7 @@
 from os.path import join
 from os.path import exists
 from django_dbdev.backends.postgres import DBSETTINGS
+from devilry.utils import rq_setup
 
 from devilry.project.common.settings import *  # noqa
 
@@ -133,23 +134,28 @@ CACHES = {
 ###################################################################################
 
 RQ_QUEUES = {
-    'default': {
-        'HOST': 'localhost',
-        'PORT': 6379,
-        'DB': 0,
-        'DEFAULT_TIMEOUT': 500,
-    },
-    'email': {
-        'HOST': 'localhost',
-        'PORT': 6379,
-        'DB': 0,
-        'DEFAULT_TIMEOUT': 500,
-    },
-    'highpriority': {
-        'URL': os.getenv('REDISTOGO_URL', 'redis://localhost:6379/0'),  # If you're on Heroku
-        'DEFAULT_TIMEOUT': 500,
-    },
+    'default': rq_setup.get_default_queue_setup_dict(),
+    'email': rq_setup.get_email_queue_setup_dict(),
+    'highpriority': rq_setup.get_highpriority_queue_setup_dict()
 }
+# RQ_QUEUES = {
+#     'default': {
+#         'HOST': 'localhost',
+#         'PORT': 6379,
+#         'DB': 0,
+#         'DEFAULT_TIMEOUT': 500,
+#     },
+#     'email': {
+#         'HOST': 'localhost',
+#         'PORT': 6379,
+#         'DB': 0,
+#         'DEFAULT_TIMEOUT': 500,
+#     },
+#     'highpriority': {
+#         'URL': os.getenv('REDISTOGO_URL', 'redis://localhost:6379/0'),  # If you're on Heroku
+#         'DEFAULT_TIMEOUT': 500,
+#     },
+# }
 
 
 class GenerateShortName(object):
