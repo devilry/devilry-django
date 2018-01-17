@@ -2,8 +2,8 @@
 {% load devilry_core_tags %}
 
 {% trans "Result" context "devilry feedback email" %}: {% devilry_grade_full_plain assignment=assignment points=points devilryrole=devilryrole %}
-{% trans "Corrected datetime" context "devilry feedback email" %}: {{ corrected_datetime }}
-{% trans "Deadline datetime" context "devilry feedback email" %}: {{ deadline_datetime }}
+{% trans "Corrected datetime" context "devilry feedback email" %}: {{ corrected_datetime|date:"DATETIME_FORMAT" }}
+{% trans "Deadline datetime" context "devilry feedback email" %}: {{ deadline_datetime|date:"DATETIME_FORMAT" }}
 {% trans "Assignment" context "devilry feedback email" %}: {{ assignment.long_name }}
 {% trans "Subject" context "devilry feedback email" %}: {{ assignment.parentnode.long_name }}
 {% trans "Link" context "devilry feedback email" %}: <a href="{{ url }}">{{ url }}</a>

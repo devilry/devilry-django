@@ -212,7 +212,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         if result is False:
             messages.error(self.request, ugettext_lazy(error_msg))
         else:
-            feedback_email.send_feedback_email(
+            feedback_email.send_feedback_created_email(
                 feedback_set=feedback_set, points=form.get_grading_points(),
                 domain_url_start=self.request.build_absolute_uri('/')
             )
@@ -382,6 +382,14 @@ class ExaminerEditGradeView(update.UpdateView):
             return EditGradePointsForm
         if group.parentnode.grading_system_plugin_id == core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED:
             return EditGradePassedFailedForm
+
+    def save_object(self, form, commit=True):
+        feedback_set = super(ExaminerEditGradeView, self).save_object(form=form, commit=True)
+        feedback_email.send_feedback_edited_email(
+            feedback_set=feedback_set, points=feedback_set.grading_points,
+            domain_url_start=self.request.build_absolute_uri('/')
+        )
+        return feedback_set
 
     def get_field_layout(self):
         return [

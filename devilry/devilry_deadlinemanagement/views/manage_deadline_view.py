@@ -22,6 +22,7 @@ from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_deadlinemanagement.views import viewutils
 from devilry.devilry_group import models as group_models
 from devilry.utils import datetimeutils
+from devilry.devilry_email.deadline_email import deadline_email
 
 
 class SelectedItemsForm(forms.Form):
@@ -326,6 +327,9 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
                     publishing_time=now_without_sec_and_micro,
                     text=text
                 )
+            deadline_email.bulk_send_deadline_moved_email(
+                feedbackset_id_list=feedback_set_ids,
+                domain_url_start=self.request.build_absolute_uri('/'))
 
     def __give_new_attempt(self, deadline, text, assignment_group_ids):
         """
@@ -339,6 +343,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
         """
         now_without_sec_and_micro = timezone.now().replace(microsecond=0)
         with transaction.atomic():
+            feedbackset_id_list = []
             for group_id in assignment_group_ids:
                 feedbackset_id = self.__create_feedbackset(
                     group_id=group_id,
@@ -350,6 +355,10 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
                     publishing_time=now_without_sec_and_micro + timezone.timedelta(microseconds=1),
                     text=text
                 )
+                feedbackset_id_list.append(feedbackset_id)
+            deadline_email.bulk_send_new_attempt_email(
+                feedbackset_id_list=feedbackset_id_list,
+                domain_url_start=self.request.build_absolute_uri('/'))
 
     def get_groups_display_names(self, form):
         groups = form.cleaned_data['selected_items']

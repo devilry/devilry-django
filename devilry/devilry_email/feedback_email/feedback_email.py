@@ -1,10 +1,8 @@
-import posixpath
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy
 
 import django_rq
 from django_cradmin.crinstance import reverse_cradmin_url
-from devilry.apps.core.models import Examiner, Candidate
 from devilry.utils.devilry_email import send_templated_message
 
 
@@ -14,7 +12,7 @@ def get_student_users_in_group(group):
     return [user for user in user_queryset]
 
 
-def send_feedback_email(feedback_set, points, domain_url_start):
+def send_feedback_email(feedback_set, points, domain_url_start, subject):
     """
     Send a feedback mail to all students in and :class:`~.devilry.apps.core.models.AssignmentGroup` for
     a :class:`~.devilry.devilry_group.models.FeedbackSet`.
@@ -23,9 +21,10 @@ def send_feedback_email(feedback_set, points, domain_url_start):
         feedback_set: The feedback_set that was corrected.
         points: Points given on the ``FeedbackSet``.
         user: The user that corrected the ``FeedbackSet``.
+        subject: The email subject.
     """
-    assignment = feedback_set.group.parentnode
-    subject = ugettext_lazy('Feedback for %(assignment_name)s') % {'assignment_name': assignment.long_name}
+    # assignment = feedback_set.group.parentnode
+    # subject = ugettext_lazy('Feedback for %(assignment_name)s') % {'assignment_name': assignment.long_name}
     template_name = 'devilry_email/feedback_email/assignment_feedback_student.txt'
 
     # Build absolute url
@@ -45,6 +44,28 @@ def send_feedback_email(feedback_set, points, domain_url_start):
     }, *student_users)
 
 
+def send_feedback_edited_email(**kwargs):
+    """
+    Send feedback updated email. With customized subject for edited feedback.
+    """
+    assignment = kwargs['feedback_set'].group.parentnode
+    kwargs.update({
+        'subject': ugettext_lazy('Feedback updated for %(assignment_name)s') % {'assignment_name': assignment.long_name}
+    })
+    send_feedback_email(**kwargs)
+
+
+def send_feedback_created_email(**kwargs):
+    """
+    Send feedback created email. With customized subject for newly published feedback.
+    """
+    assignment = kwargs['feedback_set'].group.parentnode
+    kwargs.update({
+        'subject': ugettext_lazy('Feedback for %(assignment_name)s') % {'assignment_name': assignment.long_name}
+    })
+    send_feedback_email(**kwargs)
+
+
 def bulk_feedback_mail(feedbackset_id_list, domain_url_start):
     """
     Starts an RQ task that sends a mail users in  a group for FeedbackSet.
@@ -58,7 +79,7 @@ def bulk_feedback_mail(feedbackset_id_list, domain_url_start):
         .select_related('group', 'group__parentnode', 'group__parentnode__parentnode')\
         .filter(id__in=feedbackset_id_list)
     for feedback_set in feedbackset_queryset:
-        send_feedback_email(
+        send_feedback_created_email(
             feedback_set=feedback_set,
             points=feedback_set.grading_points,
             domain_url_start=domain_url_start

@@ -1,0 +1,6 @@
+{% load i18n %}
+
+{% blocktrans with feedbackset_deadline=deadline|date:"DATETIME_FORMAT" %}
+You have been given a new attempt in {{ assignment_name }} with deadline {{ feedbackset_deadline }}.
+{% endblocktrans %}
+{% trans "Assignment link" %}: <a href="{{ url }}">{{ url }}</a>
