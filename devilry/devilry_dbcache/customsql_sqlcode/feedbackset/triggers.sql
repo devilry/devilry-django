@@ -36,7 +36,7 @@ CREATE TRIGGER devilry__on_feedbackset_after_insert_or_update_trigger
 CREATE OR REPLACE FUNCTION devilry__on_feedbackset_after_delete() RETURNS TRIGGER AS $$
 BEGIN
     PERFORM devilry__rebuild_assignmentgroupcacheddata(OLD.group_id);
-    RETURN NEW;
+    RETURN OLD;
 END
 $$ LANGUAGE plpgsql;
 

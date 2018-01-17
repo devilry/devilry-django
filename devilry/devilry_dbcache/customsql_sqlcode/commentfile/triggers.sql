@@ -26,7 +26,7 @@ BEGIN
     IF var_group_id IS NOT NULL THEN
         PERFORM devilry__rebuild_assignmentgroupcacheddata(var_group_id);
     END IF;
-    RETURN NEW;
+    RETURN OLD;
 END
 $$ LANGUAGE plpgsql;
 

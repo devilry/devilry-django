@@ -22,7 +22,7 @@ DECLARE
 BEGIN
     var_group_id = devilry__get_group_id_from_feedbackset_id(OLD.feedback_set_id);
     PERFORM devilry__rebuild_assignmentgroupcacheddata(var_group_id);
-    RETURN NEW;
+    RETURN OLD;
 END
 $$ LANGUAGE plpgsql;
 
