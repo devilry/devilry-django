@@ -1,18 +1,17 @@
 import os
 
-from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
-from django.conf import settings
-
 from django.test import TestCase
-from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.apps.core.models import AssignmentGroup
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group.models import FeedbackSet
 
 
 class TestFeedbackfeedModel(TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_delete_deletes_comment_files(self):
         testfeedbackset = mommy.make('devilry_group.FeedbackSet')

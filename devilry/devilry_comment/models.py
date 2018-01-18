@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.core import files
 from django.db import models
-from django.db.models.signals import post_delete
+from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils import timezone
 
@@ -257,14 +257,14 @@ class CommentFileImage(models.Model):
     thumbnail_height = models.PositiveIntegerField()
 
 
-@receiver(post_delete, sender=CommentFile)
+@receiver(pre_delete, sender=CommentFile)
 def on_post_delete_commentfile(sender, instance, **kwargs):
     commentfile = instance
     if commentfile.file:
         commentfile.file.delete()
 
 
-@receiver(post_delete, sender=CommentFileImage)
+@receiver(pre_delete, sender=CommentFileImage)
 def on_post_delete_commentfileimage(sender, instance, **kwargs):
     commentfileimage = instance
     if commentfileimage.image:
