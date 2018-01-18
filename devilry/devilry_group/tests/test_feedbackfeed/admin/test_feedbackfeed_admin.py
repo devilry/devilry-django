@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.core import mail
 from model_mommy import mommy
 
 from django.test import TestCase
@@ -57,6 +58,49 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
         self.assertEquals('periodadmin', comments[0].user.shortname)
         self.assertEquals(feedbackset.id, comments[0].feedback_set.id)
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
+
+    def test_post_comment_mail_sent_to_everyone_in_group_sanity(self):
+        admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor')
+        period = mommy.make_recipe('devilry.apps.core.period_active', admins=[admin])
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+
+        # Create two examiners with mails
+        examiner1 = mommy.make('core.Examiner', assignmentgroup=feedbackset.group)
+        examiner1_email = mommy.make('devilry_account.UserEmail', user=examiner1.relatedexaminer.user,
+                                     email='examiner1@example.com')
+        examiner2 = mommy.make('core.Examiner', assignmentgroup=feedbackset.group)
+        examiner2_email = mommy.make('devilry_account.UserEmail', user=examiner2.relatedexaminer.user,
+                                     email='examiner2@example.com')
+
+        # Create two students with mails
+        student1 = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        student1_email = mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user,
+                                    email='student1@example.com')
+        student2 = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        student2_email = mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user,
+                                    email='student2@example.com')
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=admin,
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data': {
+                    'text': 'This is a comment'
+                }
+            })
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(len(mail.outbox[0].recipients()), 2)
+        self.assertEqual(len(mail.outbox[1].recipients()), 2)
+        recipient_list = []
+        for email in mail.outbox[0].recipients():
+            recipient_list.append(email)
+        for email in mail.outbox[1].recipients():
+            recipient_list.append(email)
+        self.assertIn(examiner1_email.email, recipient_list)
+        self.assertIn(examiner2_email.email, recipient_list)
+        self.assertIn(student1_email.email, recipient_list)
+        self.assertIn(student2_email.email, recipient_list)
 
     def test_upload_single_file_visibility_everyone(self):
         # Test that a CommentFile is created on upload.
@@ -254,6 +298,48 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
         self.assertEquals('periodadmin', comments[0].user.shortname)
         self.assertEquals(feedbackset.id, comments[0].feedback_set.id)
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
+
+    def test_post_comment_email_sent_only_to_examiners_sanity(self):
+        admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor')
+        period = mommy.make_recipe('devilry.apps.core.period_active',
+                                   admins=[admin])
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+
+        # Create two examiners with mails
+        examiner1 = mommy.make('core.Examiner', assignmentgroup=feedbackset.group)
+        examiner1_email = mommy.make('devilry_account.UserEmail', user=examiner1.relatedexaminer.user,
+                                     email='examiner1@example.com')
+        examiner2 = mommy.make('core.Examiner', assignmentgroup=feedbackset.group)
+        examiner2_email = mommy.make('devilry_account.UserEmail', user=examiner2.relatedexaminer.user,
+                                     email='examiner2@example.com')
+
+        # Create two students with mails
+        student1 = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        student1_email = mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user,
+                                    email='student1@example.com')
+        student2 = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        student2_email = mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user,
+                                    email='student2@example.com')
+
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=admin,
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data': {
+                    'text': 'This is a comment'
+                }
+            })
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox[0].recipients()), 2)
+        recipient_list = []
+        for email in mail.outbox[0].recipients():
+            recipient_list.append(email)
+        self.assertIn(examiner1_email.email, recipient_list)
+        self.assertIn(examiner2_email.email, recipient_list)
+        self.assertNotIn(student1_email.email, recipient_list)
+        self.assertNotIn(student2_email.email, recipient_list)
 
     def test_upload_single_file_visibility_examiners_and_admins(self):
         # Test that a CommentFile is created on upload.

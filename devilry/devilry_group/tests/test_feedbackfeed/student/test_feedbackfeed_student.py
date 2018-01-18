@@ -2,6 +2,7 @@ from datetime import timedelta
 
 import mock
 from django.conf import settings
+from django.core import mail
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
@@ -440,6 +441,51 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertEquals(0, group_models.GroupComment.objects.count())
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
+    def test_post_feedbackset_comment_email_sent_sanity(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+
+        # Create two examiners with mails
+        examiner1 = mommy.make('core.Examiner', assignmentgroup=feedbackset.group)
+        examiner1_email = mommy.make('devilry_account.UserEmail', user=examiner1.relatedexaminer.user,
+                                email='examiner1@example.com')
+        examiner2 = mommy.make('core.Examiner', assignmentgroup=feedbackset.group)
+        examiner2_email = mommy.make('devilry_account.UserEmail', user=examiner2.relatedexaminer.user,
+                                     email='examiner2@example.com')
+
+        # Create two students with mails
+        student1 = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        student1_email = mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user,
+                                    email='student1@example.com')
+        student2 = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        student2_email = mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user,
+                                    email='student2@example.com')
+        candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        candidate_email = mommy.make('devilry_account.UserEmail', user=candidate.relatedstudent.user,
+                                     email='candidate@example.com')
+        self.mock_http302_postrequest(
+            cradmin_role=candidate.assignment_group,
+            requestuser=candidate.relatedstudent.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': 'test',
+                    'student_add_comment': 'unused value',
+                }
+            })
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(len(mail.outbox[0].recipients()), 2)
+        self.assertEqual(len(mail.outbox[1].recipients()), 2)
+        recipient_list = []
+        for email in mail.outbox[0].recipients():
+            recipient_list.append(email)
+        for email in mail.outbox[1].recipients():
+            recipient_list.append(email)
+        self.assertIn(examiner1_email.email, recipient_list)
+        self.assertIn(examiner2_email.email, recipient_list)
+        self.assertIn(student1_email.email, recipient_list)
+        self.assertIn(student2_email.email, recipient_list)
+        self.assertNotIn(candidate_email.email, recipient_list)
+
     #####
     # Tests making sure that event buttons are not rendered for
     # students(edit grade, new attempt, move deadlin etc.)
@@ -651,8 +697,6 @@ class TestFeedbackfeedGradeMappingStudent(TestCase, cradmin_testhelpers.TestCase
         )
         grade_result = mockresponse.selector.list('.devilry-core-grade')[0].alltext_normalized
         self.assertEquals(grade_result, 'E (passed - 10/35)')
-
-
 
 
 class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMixin):

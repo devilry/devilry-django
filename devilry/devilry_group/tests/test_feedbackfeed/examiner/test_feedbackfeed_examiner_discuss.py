@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 from datetime import timedelta
+
+from django.core import mail
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.utils import timezone
@@ -229,6 +231,53 @@ class TestFeedbackfeedExaminerPublicDiscuss(TestCase, TestFeedbackfeedExaminerDi
             mockresponse.selector.one('.devilry-group-feedbackfeed-form-heading').alltext_normalized
         )
 
+    def test_post_comment_mail_sent_to_everyone_in_group_sanity(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        examiner_email = mommy.make('devilry_account.UserEmail', user=examiner.relatedexaminer.user,
+                                     email='examiner@example.com')
+
+        # Create two examiners with mails
+        examiner1 = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        examiner1_email = mommy.make('devilry_account.UserEmail', user=examiner1.relatedexaminer.user,
+                                     email='examiner1@example.com')
+        examiner2 = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        examiner2_email = mommy.make('devilry_account.UserEmail', user=examiner2.relatedexaminer.user,
+                                     email='examiner2@example.com')
+
+        # Create two students with mails
+        student1 = mommy.make('core.Candidate', assignment_group=testgroup)
+        student1_email = mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user,
+                                    email='student1@example.com')
+        student2 = mommy.make('core.Candidate', assignment_group=testgroup)
+        student2_email = mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user,
+                                    email='student2@example.com')
+
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user,
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data': {
+                    'text': 'This is a comment',
+                }
+            })
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(len(mail.outbox[0].recipients()), 2)
+        self.assertEqual(len(mail.outbox[1].recipients()), 2)
+        recipient_list = []
+        for email in mail.outbox[0].recipients():
+            recipient_list.append(email)
+        for email in mail.outbox[1].recipients():
+            recipient_list.append(email)
+        self.assertIn(examiner1_email.email, recipient_list)
+        self.assertIn(examiner2_email.email, recipient_list)
+        self.assertIn(student1_email.email, recipient_list)
+        self.assertIn(student2_email.email, recipient_list)
+        self.assertNotIn(examiner_email.email, recipient_list)
+
+
     def test_post_first_attempt_unpublished_comment_with_text(self):
         testgroup = mommy.make('core.AssignmentGroup')
         group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
@@ -344,6 +393,49 @@ class TestFeedbackfeedExaminerWithAdminDiscuss(TestCase, TestFeedbackfeedExamine
             'and admins. Students can not see these notes.',
             mockresponse.selector.one('.devilry-group-feedbackfeed-form-heading').alltext_normalized
         )
+
+    def test_post_comment_mail_only_sent_to_examiners(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        examiner_email = mommy.make('devilry_account.UserEmail', user=examiner.relatedexaminer.user,
+                                    email='examiner@example.com')
+
+        # Create two examiners with mails
+        examiner1 = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        examiner1_email = mommy.make('devilry_account.UserEmail', user=examiner1.relatedexaminer.user,
+                                     email='examiner1@example.com')
+        examiner2 = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        examiner2_email = mommy.make('devilry_account.UserEmail', user=examiner2.relatedexaminer.user,
+                                     email='examiner2@example.com')
+
+        # Create two students with mails
+        student1 = mommy.make('core.Candidate', assignment_group=testgroup)
+        student1_email = mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user,
+                                    email='student1@example.com')
+        student2 = mommy.make('core.Candidate', assignment_group=testgroup)
+        student2_email = mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user,
+                                    email='student2@example.com')
+
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user,
+            viewkwargs={'pk': testgroup.id},
+            requestkwargs={
+                'data': {
+                    'text': 'This is a comment',
+                }
+            })
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox[0].recipients()), 2)
+        recipient_list = []
+        for email in mail.outbox[0].recipients():
+            recipient_list.append(email)
+        self.assertIn(examiner1_email.email, recipient_list)
+        self.assertIn(examiner2_email.email, recipient_list)
+        self.assertNotIn(student1_email.email, recipient_list)
+        self.assertNotIn(student2_email.email, recipient_list)
+        self.assertNotIn(examiner_email.email, recipient_list)
 
     def test_post_first_attempt_unpublished_comment_with_text(self):
         testgroup = mommy.make('core.AssignmentGroup')
