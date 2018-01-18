@@ -1,0 +1,49 @@
+.devilry_accountbutton {
+  @media (min-width: @screen-md-min) {
+    background-color: #333;
+  }
+
+  &__link {
+
+  }
+
+  &__iconwrapper {
+    display: inline-block;
+    line-height: 1;
+  }
+
+  .devilry_accountbutton__icon {
+    line-height: 1;
+    font-size: 20px;
+  }
+
+  &__initials {
+    line-height: 1;
+    display: none;
+    @media (min-width: @screen-md-min) {
+      display: inline-block;
+      font-weight: bold;
+      letter-spacing: 3px;
+    }
+  }
+
+  &__shortname {
+    line-height: 1;
+    display: none;
+    @media (min-width: @screen-md-min) {
+      display: inline-block;
+      white-space: nowrap;
+      max-width: 130px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &__displayname {
+    line-height: 1;
+    display: inline;
+    @media (min-width: @screen-md-min) {
+      display: none;
+    }
+  }
+}

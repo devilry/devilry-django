@@ -1,0 +1,15 @@
+{% extends "django_cradmin/menuitem.django.html" %}
+{% load cradmin_icon_tags %}
+
+{% block link-label %}
+    <span class="devilry_accountbutton__iconwrapper">
+        <span class='{% cradmin_icon "devilry-account" %} devilry_accountbutton__icon'
+              aria-hidden="true"></span>
+    </span>
+    {% if menuitem.user.fullname %}
+        <span class="devilry_accountbutton__initials">{{ menuitem.user.get_initials }}</span>
+    {% else %}
+        <span class="devilry_accountbutton__shortname">{{ menuitem.user.shortname }}</span>
+    {% endif %}
+    <span class="devilry_accountbutton__displayname">{{ menuitem.user.get_displayname }}</span>
+{% endblock link-label %}

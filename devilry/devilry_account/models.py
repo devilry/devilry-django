@@ -492,6 +492,15 @@ class User(AbstractBaseUser):
         else:
             return self.shortname
 
+    def get_initials(self):
+        """
+        Get the initials of the users name.
+        """
+        if self.fullname:
+            return u''.join(word[0].upper() for word in self.fullname.split())
+        else:
+            return self.shortname[0].upper()
+
     def has_module_perms(self, *args, **kwargs):
         return self.is_superuser
 
