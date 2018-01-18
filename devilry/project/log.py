@@ -2,11 +2,15 @@
 Sane default logging setup.
 """
 
-def create_logging_config(mail_admins=True,
-                          mail_admins_level='ERROR',
-                          dangerous_actions_loglevel='INFO',
-                          django_loglevel='INFO',
-                          request_loglevel='ERROR'):
+
+def create_logging_config(
+        mail_admins=True,
+        mail_admins_level='ERROR',
+        dangerous_actions_loglevel='INFO',
+        django_loglevel='INFO',
+        db_loglevel='WARNING',
+        sh_loglevel='WARNING',
+        request_loglevel='ERROR'):
     """
     Returns a logging config that can be used for ``settings.LOGGING``.
 
@@ -24,9 +28,17 @@ def create_logging_config(mail_admins=True,
     :param dangerous_actions_loglevel:
         Log dangerous actions? Set to ``"INFO"`` to log any somewhat dangerous
         actions (I.E.: creating a deadline, update a subject, ...). Set to
-        ``"WARN"`` to log only really dangerous actions, like deleting something.
+        ``"WARNING"`` to log only really dangerous actions, like deleting something.
         When ``log_to_file==True``, we log dangerous actions actions to
         ``<log_to_file_dir>/dangerous_actions.log``.
+    :param sh_loglevel:
+        Loglevel for the `sh` library used to run some shell commands.
+        Defaults to "WARNING".
+    :param db_loglevel:
+        Loglevel for Django database actions.
+        Defaults to "WARNING". If you set this to "DEBUG", ALL
+        SQL queries are logged. That is performance intensive,
+        and should only be used for debugging!
     :param django_loglevel:
         Loglevel for logs from the django namespace. See ``mail_admins_level`` for valid levels.
     :param request_loglevel:
@@ -42,15 +54,21 @@ def create_logging_config(mail_admins=True,
 
     return {
         'version': 1,
-        'disable_existing_loggers': True,
+        'disable_existing_loggers': False,
         'formatters': {
             'verbose': {
                 'format': '[%(levelname)s %(asctime)s %(name)s] %(message)s'
             }
         },
 
+        'filters': {
+            'require_debug_false': {
+                '()': 'django.utils.log.RequireDebugFalse'
+            }
+        },
+
         'handlers': {
-                     # We set all handlers except mail_admins to level=DEBUG, and configure the actual loglevel in the loggers
+            # We set all handlers except mail_admins to level=DEBUG, and configure the actual loglevel in the loggers
             'stderr': {
                 'level': 'DEBUG',
                 'formatter': 'verbose',
@@ -59,7 +77,10 @@ def create_logging_config(mail_admins=True,
             'mail_admins': {
                 'level': mail_admins_level,
                 'class': 'django.utils.log.AdminEmailHandler',
-                'include_html': True # The traceback email includes an HTML attachment containing the full content of the debug Web page that would have been produced if DEBUG were True. 
+                # The traceback email includes an HTML attachment containing the
+                # full content of the debug Web page that would have been produced
+                # if DEBUG were True.
+                'include_html': True
             }
         },
         'loggers': {
@@ -73,11 +94,22 @@ def create_logging_config(mail_admins=True,
                 'level': dangerous_actions_loglevel,
                 'propagate': False
             },
+            'django.db': {
+                'handlers': ['stderr'],
+                'level': db_loglevel,
+                'propagate': False
+            },
+            'sh': {
+                'handlers': ['stderr'],
+                'level': sh_loglevel,
+                'propagate': False
+            },
             '': {
                 'handlers': handlers,
                 'level': django_loglevel,
                 'propagate': False
             },
+
         }
     }
 
