@@ -1,0 +1,7 @@
+{% extends "devilry_deploy/custom_css_base.django.html" %}
+
+{% block wrapper %}
+    {% comment %}
+        No custom styles by default
+    {% endcomment %}
+{% endblock wrapper %}

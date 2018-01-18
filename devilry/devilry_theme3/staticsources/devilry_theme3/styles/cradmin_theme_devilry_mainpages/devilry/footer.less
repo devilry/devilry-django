@@ -1,0 +1,49 @@
+.footer {
+  margin-top: 50px;
+  padding-top: 25px;
+  padding-bottom: 25px;
+
+  @media (min-width: @screen-md-min) {
+    margin-top: 80px;
+    padding-top: 45px;
+    padding-bottom: 45px;
+  }
+
+  background-color: @devilry-footer-bg;
+  color: @devilry-footer-color;
+
+  a {
+    font-weight: bold;
+    text-decoration: underline;
+    color: inherit;
+    &:hover {
+      color: inherit;
+    }
+  }
+
+  .container {
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.footer__logo {
+  display: block;
+  max-width: 100%;
+  max-height: 80px;
+  width: auto;
+  height: auto;
+
+  &--small {
+    max-height: 50px;
+  }
+
+  &--large {
+    max-height: 110px;
+  }
+
+  &--xlarge {
+    max-height: 140px;
+  }
+}

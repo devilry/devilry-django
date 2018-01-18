@@ -155,46 +155,10 @@ MOMMY_CUSTOM_FIELDS_GEN = {
 
 IEVVTASKS_DUMPDATA_DIRECTORY = os.path.join(os.path.dirname(THIS_DIR), 'dumps')
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'verbose': {
-            'format': '[%(levelname)s %(asctime)s %(name)s %(pathname)s:%(lineno)s] %(message)s'
-        }
-    },
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'stderr': {
-            'level': 'DEBUG',
-            'formatter': 'verbose',
-            'class': 'logging.StreamHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['stderr'],
-            'level': 'DEBUG',
-            'propagate': False
-        },
-        'django.db': {
-            'handlers': ['stderr'],
-            'level': 'INFO',  # Do not set to debug - logs all queries
-            'propagate': False
-        },
-        'sh': {
-            'handlers': ['stderr'],
-            'level': 'WARNING',
-            'propagate': False
-        },
-        '': {
-            'handlers': ['stderr'],
-            'level': 'DEBUG',
-            'propagate': False
-        }
-    }
-}
+from devilry.project.log import create_logging_config
+LOGGING = create_logging_config(
+    mail_admins=False,
+    dangerous_actions_loglevel='DEBUG',
+    django_loglevel='DEBUG',
+    request_loglevel='DEBUG'
+)
