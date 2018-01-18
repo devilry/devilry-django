@@ -4,6 +4,9 @@
 {% block styles %}
     {{ block.super }}
     {% include "devilry_theme3/favicons.django.html" %}
+    {% block custom_styles %}
+        {% include "devilry_deploy/custom_css.django.css" %}
+    {% endblock custom_styles %}
 {% endblock styles %}
 
 {% block global-pre-body %}
@@ -17,3 +20,9 @@
         devilry-body-{{ request.devilryrole_type }}
     {% endif %}
 {% endblock global-bodyclass %}
+
+{% block global-post-body %}
+    {% block devilry_footer %}
+        {% include "devilry_deploy/footer.django.html" %}
+    {% endblock devilry_footer %}
+{% endblock global-post-body %}

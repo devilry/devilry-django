@@ -7835,6 +7835,47 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
   color: #747474;
   margin-top: 10px;
 }
+.footer {
+  margin-top: 50px;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  background-color: #222222;
+  color: #fff;
+}
+@media (min-width: 992px) {
+  .footer {
+    margin-top: 80px;
+    padding-top: 45px;
+    padding-bottom: 45px;
+  }
+}
+.footer a {
+  font-weight: bold;
+  text-decoration: underline;
+  color: inherit;
+}
+.footer a:hover {
+  color: inherit;
+}
+.footer .container p:last-child {
+  margin-bottom: 0;
+}
+.footer__logo {
+  display: block;
+  max-width: 100%;
+  max-height: 80px;
+  width: auto;
+  height: auto;
+}
+.footer__logo--small {
+  max-height: 50px;
+}
+.footer__logo--large {
+  max-height: 110px;
+}
+.footer__logo--xlarge {
+  max-height: 140px;
+}
 @media (max-width: 991px) {
   nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb .devilry-django-cradmin-menuitem-breadcrumb-icon {
     display: none;

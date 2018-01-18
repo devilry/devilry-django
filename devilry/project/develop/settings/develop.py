@@ -160,3 +160,9 @@ IEVVTASKS_RECREATE_DEVDB_POST_MANAGEMENT_COMMANDS = [
 # DEVILRY_V2_MEDIA_ROOT = '/Users/espenak/code/v2-devilry-django/devilry_developfiles/filestore'
 # DEVILRY_V2_DELIVERY_FILE_ROOT = '/Users/espenak/code/v2-devilry-django/devilry_developfiles/deliverystorehier'
 # DEVILRY_RESTRICT_NUMBER_OF_FILES_PER_DIRECTORY = True
+
+
+# For testing custom deploy templates (see branding.rst)
+# from devilry.utils.custom_templates import add_custom_templates_directory
+# add_custom_templates_directory(
+#     TEMPLATES, 'not_for_deploy/custom_devilry_templates_example/')

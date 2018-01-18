@@ -1,0 +1,7 @@
+{% extends "devilry_deploy/custom_css_base.django.html" %}
+
+{% block css %}
+    .footer {
+        /*color: #ffffcc;*/
+    }
+{% endblock css %}
