@@ -40,6 +40,68 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                           candidate.assignment_group.assignment.get_path())
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
+    def test_feedbackfeed_project_group_button_visible_if_only_one_student_student_can_create_group(self):
+        testassignment = mommy.make('core.Assignment', students_can_create_groups=True)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=testuser
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-project-group-button'))
+
+    def test_feedbackfeed_project_group_button_visible_if_student_can_create_groups_and_before_datetime(self):
+        testassignment = mommy.make('core.Assignment', students_can_create_groups=True,
+                                    students_can_not_create_groups_after=timezone.now() + timezone.timedelta(hours=1))
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=testuser
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-project-group-button'))
+
+    def test_feedbackfeed_project_group_button_not_visible_if_student_can_create_groups_and_after_datetime(self):
+        testassignment = mommy.make('core.Assignment', students_can_create_groups=True,
+                                    students_can_not_create_groups_after=timezone.now() - timezone.timedelta(hours=1))
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=testuser
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-feedbackfeed-project-group-button'))
+
+    def test_feedbackfeed_project_group_button_visible_if_multiple_students_in_group(self):
+        testassignment = mommy.make('core.Assignment')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup, _quantity=2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=testuser
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-project-group-button'))
+
+    def test_feedbackfeed_project_group_button_not_visible_with_only_one_student(self):
+        testassignment = mommy.make('core.Assignment')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate', assignment_group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=testuser
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-feedbackfeed-project-group-button'))
+
     def test_get_feedbackfeed_anonymous_examiner_semi(self):
         testassignment = mommy.make('core.Assignment',
                                     anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
@@ -1078,7 +1140,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
                    _quantity=20)
         mock_cradmininstance = mock.MagicMock()
         mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'student'
-        with self.assertNumQueries(18):
+        with self.assertNumQueries(19):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=candidate.relatedstudent.user,
                                                cradmin_instance=mock_cradmininstance)
@@ -1113,7 +1175,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
                    filename='test2.py',
                    comment=comment2,
                    _quantity=20)
-        with self.assertNumQueries(21):
+        with self.assertNumQueries(22):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=candidate.relatedstudent.user)
         self.assertEquals(1, group_models.FeedbackSet.objects.count())

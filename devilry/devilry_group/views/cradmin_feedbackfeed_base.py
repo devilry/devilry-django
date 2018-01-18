@@ -176,6 +176,7 @@ class FeedbackFeedBaseView(create.CreateView):
         last_feedbackset = group.cached_data.last_feedbackset
         context['devilry_ui_role'] = self.get_devilryrole()
         context['group'] = group
+        context['num_students_in_group'] = group.candidates.count()
         context['subject'] = assignment.period.subject
         context['period'] = assignment.period
         context['assignment'] = assignment
@@ -190,6 +191,10 @@ class FeedbackFeedBaseView(create.CreateView):
             devilryrole=self.get_devilryrole(),
             assignment=assignment
         )
+        context['students_can_create_groups'] = assignment.students_can_create_groups_now
+        print(context['num_students_in_group'])
+        print(context['students_can_create_groups'])
+
         # Build the sidebar using the fetched data from timelinebuilder
         if self.get_available_commentfile_count_for_user() > 0:
             built_sidebar = self.__build_sidebar(assignment, builder_queryset)
