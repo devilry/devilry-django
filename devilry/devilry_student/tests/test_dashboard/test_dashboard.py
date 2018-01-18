@@ -518,7 +518,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group2)
             devilry_group_mommy_factories.feedbackset_first_attempt_published(
                 group=group2, grading_points=1)
-        with self.assertNumQueries(7):
+        with self.assertNumQueries(6):
             mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 loops * 2,
