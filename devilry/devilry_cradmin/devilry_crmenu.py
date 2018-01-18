@@ -13,6 +13,20 @@ class BreadcrumbMenuItem(crmenu.MenuItem):
         return 'django-cradmin-menu-item devilry-django-cradmin-menuitem-breadcrumb'
 
 
+class AccountMenuItem(crmenu.MenuItem):
+    template_name = 'devilry_cradmin/devilry_crmenu/account-menuitem.django.html'
+
+    def __init__(self, user, url):
+        self.user = user
+        super(AccountMenuItem, self).__init__(label='', url=url)
+
+    def get_item_css_class(self):
+        return 'django-cradmin-menu-item devilry_accountbutton'
+
+    def get_link_css_class(self):
+        return 'devilry_accountbutton__link'
+
+
 class Menu(crmenu.Menu):
     """
     Base class for all cradmin menus in Devilry.
@@ -34,13 +48,22 @@ class Menu(crmenu.Menu):
             ),
             active=self.get_frontpage_breadcrumb_is_active()
         ))
-        self.add_footeritem(
-            label=defaultfilters.truncatechars(self.request.user.get_displayname(), 15),
-            url=crinstance.reverse_cradmin_url(
-                instanceid='devilry_account',
-                appname='account'
+        self.add_footeritem_object(
+            AccountMenuItem(
+                user=self.request.user,
+                url=crinstance.reverse_cradmin_url(
+                    instanceid='devilry_account',
+                    appname='account'
+                )
             )
         )
+        # self.add_footeritem(
+        #     label=self.request.user.get_displayname(),
+        #     url=crinstance.reverse_cradmin_url(
+        #         instanceid='devilry_account',
+        #         appname='account'
+        #     )
+        # )
 
     def render(self, context):
         """
