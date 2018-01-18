@@ -25,6 +25,7 @@ from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_email.feedback_email import feedback_email
+from devilry.devilry_email.comment_email import comment_email
 
 
 class AbstractFeedbackForm(cradmin_feedbackfeed_base.GroupCommentForm):
@@ -256,10 +257,18 @@ class ExaminerPublicDiscussView(ExaminerBaseFeedbackFeedView):
         ])
         return buttons
 
+    def __send_comment_email(self, comment):
+        comment_email.bulk_send_comment_email_to_students_and_examiners(
+            group_id=self.request.cradmin_role.id,
+            comment_user_id=comment.user.id,
+            published_datetime=comment.published_datetime,
+            domain_url_start=self.request.build_absolute_uri('/'))
+
     def save_object(self, form, commit=False):
         comment = super(ExaminerPublicDiscussView, self).save_object(form=form)
         comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
         comment.published_datetime = timezone.now()
+        self.__send_comment_email(comment=comment)
         return super(ExaminerPublicDiscussView, self).save_object(form=form, commit=True)
 
     def get_success_url(self):
@@ -287,10 +296,18 @@ class ExaminerWithAdminsDiscussView(ExaminerBaseFeedbackFeedView):
         ])
         return buttons
 
+    def __send_email_to_examiners(self, comment):
+        comment_email.bulk_send_comment_email_to_examiners(
+            group_id=self.request.cradmin_role.id,
+            comment_user_id=comment.user.id,
+            published_datetime=comment.published_datetime,
+            domain_url_start=self.request.build_absolute_uri('/'))
+
     def save_object(self, form, commit=False):
         comment = super(ExaminerWithAdminsDiscussView, self).save_object(form=form)
         comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
         comment.published_datetime = timezone.now()
+        self.__send_email_to_examiners(comment=comment)
         return super(ExaminerWithAdminsDiscussView, self).save_object(form=form, commit=True)
 
     def get_success_url(self):

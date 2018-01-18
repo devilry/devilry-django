@@ -1,0 +1,6 @@
+{% load i18n %}
+
+{% blocktrans with comment_datetime=published_datetime|date:"DATETIME_FORMAT" %}
+New comment added in {{ assignment_name }} on {{ commented_datetime }}.
+{% endblocktrans %}
+{% trans "Assignment link" %}: <a href="{{ url }}">{{ url }}</a>

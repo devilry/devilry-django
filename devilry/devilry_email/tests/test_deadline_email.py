@@ -41,7 +41,7 @@ class TestNewAttemptEmail(test.TestCase):
         deadline_email.send_new_attempt_email(feedback_set=test_feedbackset, domain_url_start='http://www.example.com/')
         self.assertEqual(mail.outbox[0].recipients(), ['student@example.com'])
 
-    def test_send_new_attempt_email_body_text_without_deadline(self):
+    def test_send_new_attempt_email_body_text_with_deadline(self):
         test_feedbackset = self.__setup_feedback_set(new_deadline=datetime.utcnow())
         deadline_email.send_new_attempt_email(feedback_set=test_feedbackset, domain_url_start='http://www.example.com/')
         self.assertIn(

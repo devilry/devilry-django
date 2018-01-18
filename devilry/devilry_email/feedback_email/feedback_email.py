@@ -1,15 +1,9 @@
-from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy
 
 import django_rq
 from django_cradmin.crinstance import reverse_cradmin_url
 from devilry.utils.devilry_email import send_templated_message
-
-
-def get_student_users_in_group(group):
-    user_queryset = get_user_model().objects \
-        .filter(id__in=group.candidates.values_list('relatedstudent__user', flat=True))
-    return [user for user in user_queryset]
+from devilry.devilry_email.utils import get_student_users_in_group
 
 
 def send_feedback_email(feedback_set, points, domain_url_start, subject):
@@ -33,7 +27,7 @@ def send_feedback_email(feedback_set, points, domain_url_start, subject):
         domain_url_start,
         reverse_cradmin_url(instanceid='devilry_group_student', appname='feedbackfeed', roleid=feedback_set.group_id)
     )
-    student_users = get_student_users_in_group(feedback_set.group)
+    student_users = list(get_student_users_in_group(feedback_set.group))
     send_templated_message(subject, template_name, {
         'assignment': feedback_set.group.parentnode,
         'devilryrole': 'student',

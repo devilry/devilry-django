@@ -7,6 +7,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django_cradmin import crapp
 from django_cradmin.crispylayouts import PrimarySubmit
 
+from devilry.devilry_email.comment_email import comment_email
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 
 
@@ -43,7 +44,16 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         obj.user_role = 'student'
         obj.published_datetime = timezone.now()
 
+    def __send_comment_email(self, comment):
+        comment_email.bulk_send_comment_email_to_students_and_examiners(
+            group_id=self.request.cradmin_role.id,
+            comment_user_id=comment.user.id,
+            published_datetime=comment.published_datetime,
+            domain_url_start=self.request.build_absolute_uri('/'))
+
     def save_object(self, form, commit=False):
+        comment = super(StudentFeedbackFeedView, self).save_object(form=form, commit=commit)
+        self.__send_comment_email(comment=comment)
         return super(StudentFeedbackFeedView, self).save_object(form, commit=True)
 
 
