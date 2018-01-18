@@ -60,5 +60,5 @@
     <div class="devilry-ace-editor-acewrapper">
         <div django-cradmin-acemarkdown-editor></div>
     </div>
-    {{ textarea|safe }}
+    {% include "django/forms/widgets/textarea.html" %}
 </div>
