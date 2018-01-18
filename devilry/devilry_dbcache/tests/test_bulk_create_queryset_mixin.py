@@ -12,7 +12,7 @@ class TestBulkCreateQuerySetMixin(test.TestCase):
             Person(name='test2'),
             Person(name='test3'),
         ])
-        print bulk_operation.explain(compact=False)
+        # print bulk_operation.explain(compact=False)
         ids = bulk_operation.execute()
         self.assertEqual(len(ids), 3)
         self.assertTrue(Person.objects.filter(name='test1').exists())
