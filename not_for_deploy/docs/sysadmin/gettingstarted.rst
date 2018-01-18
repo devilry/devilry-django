@@ -49,9 +49,6 @@ messy to maintain. Instead, we use a PIP requirements-file. Create
     # Supervisord process manager
     supervisor
 
-    # Email backend that send email in a Celery background queue
-    django-celery-email
-
     # The devilry library/djangoproject
     # - See http://devilry.org for the latest devilry version
     devilry==VERSION
@@ -143,21 +140,23 @@ Start by copying the following into ``~/devilrydeploy/devilry_settings.py``::
     #:    1: Hard deadlines
     DEFAULT_DEADLINE_HANDLING_METHOD = 0
 
-    #: Configure an email backend
-    EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
-    CELERY_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    INSTALLED_APPS += ['djcelery_email']
+    #: Configure an email backend.
+    #: See https://docs.djangoproject.com/en/2.0/ref/settings/ for details about these settings.
+    #: If you have performance issues with your email backend, see ``Sending emails in background task``.
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST_USER = ''
     EMAIL_HOST_PASSWORD = ''
     EMAIL_PORT = 25
     EMAIL_USE_TLS = False
 
     #: Setup Redis connection settings for background task server.
-    #: For a complete custom setup, see https://github.com/rq/django-rq
+    #: For a complete custom setup, see the ``Setup Redis with RQ for background task processing``
+    #: section of the docs for details about this setting.
     RQ_QUEUES = rq_setup.make_simple_rq_queue_setting(
         host='localhost',
         port=6379,
-        db=0
+        db=0,
+        password='secret'
     )
 
 If you have a ``devilry_prod_settings.py`` file from an older version of Devilry, you should be
@@ -206,13 +205,6 @@ Configure various external pages
 Make sure you create a website that you can link to for the ``DEVILRY_LACKING_PERMISSIONS_URL``
 and ``DEVILRY_WRONG_USERINFO_URL`` pages. You may also want to configure a
 ``DEVILRY_ORGANIZATION_SPECIFIC_DOCUMENTATION_URL``, but that is not required.
-
-
-Configure Email sending
-=======================
-You will probably have to adjust the ``EMAIL_*`` settings. The use of ``djcelery_email.backends.CeleryEmailBackend``
-means that all email is sent via a background queue instead of letting email sending become a potential
-bottleneck. The other email settings are documented in the :djangodoc:`Django settings <topics/settings/>`.
 
 
 Disable debug mode
@@ -310,7 +302,6 @@ Whats next?
 You now have a working Devilry server, but you still need to:
 
 - :doc:`authbackend`.
-- :doc:`celery`.
 - :doc:`supervisord`.
 - :doc:`webserver`.
 

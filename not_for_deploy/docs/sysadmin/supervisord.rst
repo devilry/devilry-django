@@ -47,13 +47,12 @@ Create a file named ``~/devilrydeploy/supervisord.conf`` and add the following::
     stdout_logfile_maxbytes = 150MB
     stdout_logfile_backups = 15
 
-    [program:celery]
-    command = /home/devilryrunner/devilrydeploy/venv/bin/celery -A devilry.project.common worker -l info
-    environment = DJANGO_SETTINGS_MODULE=devilry_settings
-    process_name = celery
+    [program:rqworker]
+    command = /home/devilryrunner/devilrydeploy/venv/bin/python manage.py rqworker default email highpriority
+    process_name = rqworker
     directory = /home/devilryrunner/devilrydeploy
     redirect_stderr = true
-    stdout_logfile = /home/devilryrunner/devilrydeploy/log/celery.log
+    stdout_logfile = /home/devilryrunner/devilrydeploy/log/rq.log
     stdout_logfile_maxbytes = 150MB
     stdout_logfile_backups = 15
 

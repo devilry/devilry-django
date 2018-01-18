@@ -47,7 +47,6 @@ Most developers will not need to bother with these topics.
 .. toctree::
     :maxdepth: 1
 
-    celery
     plugins
     i18n
     javascript
