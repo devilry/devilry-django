@@ -52,9 +52,23 @@ Alternatively you can run one RQ worker for each queue::
     $ venv/bin/python manage.py rqworker highpriority
 
 
-Verifying the setup.
-====================
+Verifying the setup
+===================
 You can verify the setup by running the ``devilry_test_rq_task`` management command::
 
     $ cd ~/devilrydeploy/
     $ venv/bin/python manage.py devilry_test_rq_task --queue default
+
+
+Advanced setup
+==============
+For full documentation for RQ_QUEUES setting, see https://github.com/rq/django-rq .
+Just make sure you set up the config for these qeueues:
+
+- default
+- email
+- highpriority
+
+.. warning::
+    Devilry updates may add more required queues. Be aware that custom
+    tuning the RQ_QUEUES setting may break your setup when you update Devilry.

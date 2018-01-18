@@ -45,8 +45,8 @@ setup(
         'bleach==1.5.0',
         'html5lib==0.9999999',
         'psycopg2==2.7.3.2',
-        'django_cradmin==1.2.1',
-        'ievv_opensource==4.3.3',
+        'django_cradmin==1.2.2',
+        'ievv_opensource==4.4.0',
         'arrow==0.12.0',
 
         # For django-allauth

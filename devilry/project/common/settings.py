@@ -26,8 +26,7 @@ DATABASES = {}
 EMAIL_SUBJECT_PREFIX = '[Devilry] '
 ROOT_URLCONF = 'devilry.project.production.urls'
 DEFAULT_FROM_EMAIL = 'devilry-support@example.com'
-EMAIL_BACKEND='ievv.ievv_rq_email_backend.rq_backend.RQEmailBackend'
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 TEST_RUNNER = 'devilry.project.common.devilry_test_runner.DevilryTestRunner'
 AUTH_USER_MODEL = 'devilry_account.User'
 LOGIN_REDIRECT_URL = '/'
@@ -145,35 +144,6 @@ MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
 AUTHENTICATION_BACKENDS = [
     'devilry.devilry_account.authbackend.default.EmailAuthBackend',
 ]
-
-
-########################################################################
-#
-# Celery
-#
-########################################################################
-# CELERY_ALWAYS_EAGER = True
-# CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
-# CELERY_EAGER_TRANSACTION = True
-# CELERY_TIMEZONE = 'Europe/Oslo'
-# CELERY_ENABLE_UTC = True
-#
-# # Celery settings
-# BROKER_URL = 'redis://localhost:6379'
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379'
-# CELERY_ACCEPT_CONTENT = ['application/json']
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_RESULT_SERIALIZER = 'json'
-# CELERY_IMPORTS = [
-#     'ievv_opensource.ievv_batchframework.celery_tasks',
-# ]
-# CELERYD_TASK_LOG_FORMAT = '[%(asctime)s: %(levelname)s/%(processName)s] ' \
-#                           '[%(name)s] ' \
-#                           '[%(task_name)s(%(task_id)s)] ' \
-#                           '%(message)s'
-#
-# # ievv_batchframework settings
-# IEVV_BATCHFRAMEWORK_CELERY_APP = 'devilry.project.common.celery_app'
 
 
 # ievv_batchframework task mode.

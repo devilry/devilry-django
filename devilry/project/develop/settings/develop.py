@@ -38,20 +38,6 @@ AUTHENTICATION_BACKENDS += [
 DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX = 'uio.no'
 
 
-##################################################################################
-# Celery
-##################################################################################
-# CELERY_ALWAYS_EAGER = False
-# CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
-# CELERY_EAGER_TRANSACTION = True
-
-## For testing celery
-## - Se the "Developing and testing Celery background tasks" chapter of the developer docs.
-# CELERY_ALWAYS_EAGER = False
-# BROKER_URL = 'amqp://'
-# CELERY_RESULT_BACKEND = 'amqp://'
-
-
 ######################################################
 # Email
 ######################################################
@@ -70,13 +56,9 @@ DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX = 'uio.no'
 # EMAIL_BACKEND = 'devilry.devilry_developemail.email_backend.DevelopEmailBackend'
 # INSTALLED_APPS += ['devilry.devilry_developemail']
 
-
-# For testing django-celery-email
-# INSTALLED_APPS += ['djcelery_email']
-# EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
-# CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEVILRY_LOWLEVEL_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEVILRY_RQ_EMAIL_BACKEND_QUEUENAME = 'email'
+# For testing RQ email backend
+# EMAIL_BACKEND = 'devilry.devilry_email.rq_backend.RQEmailBackend'
+# DEVILRY_LOWLEVEL_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 # DEVILRY_FRONTPAGE_HEADER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'

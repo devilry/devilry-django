@@ -45,12 +45,11 @@ DEVILRY_SYNCSYSTEM = 'YOUR SYNC SYSTEM HERE'
 # numbers and ``_``.
 DEVILRY_SYNCSYSTEM_SHORTNAME = 'x'
 
-#: If this is False, we disable features that require background processing,
-#: such as search.
-DEVILRY_ENABLE_CELERY = True
-
-#: Disable tests that require celery to run.
+#: Disable tests that require RQ to run.
 DEVILRY_SKIP_RQ_TESTS = os.environ.get('DEVILRY_SKIP_RQ_TESTS', 'False') == 'True'
+
+#: RQ email queue
+DEVILRY_RQ_EMAIL_BACKEND_QUEUENAME = 'email'
 
 
 #: If this is set, and the ``DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND``-setting
