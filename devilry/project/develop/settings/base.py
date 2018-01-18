@@ -1,6 +1,7 @@
 from os.path import join
 from os.path import exists
 from django_dbdev.backends.postgres import DBSETTINGS
+from devilry.utils import rq_setup
 
 from devilry.project.common.settings import *  # noqa
 
@@ -124,6 +125,15 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
     }
 }
+
+
+###################################################################################
+#
+# RQ setup for development
+#
+###################################################################################
+
+RQ_QUEUES = rq_setup.make_simple_rq_queue_setting()
 
 
 class GenerateShortName(object):

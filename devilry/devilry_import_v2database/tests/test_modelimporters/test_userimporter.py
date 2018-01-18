@@ -1,12 +1,10 @@
 from django import test
 from django.contrib.auth import get_user_model
-from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 
 from model_mommy import mommy
 
 from .importer_testcase_mixin import ImporterTestCaseMixin
-from devilry.devilry_import_v2database.models import ImportedModel
 from devilry.devilry_import_v2database.modelimporters.user_importer import UserImporter
 from devilry.devilry_account.models import UserEmail, UserName
 

@@ -50,13 +50,12 @@ class UserImporter(modelimporter.ModelImporter):
         # depending on the DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND setting
         # (See devilry.devilry_account.models.UserName.clean and
         # devilry.devilry_account.models.UserEmail.clean).
-        user.shortname = str(object_dict['pk'])
+        username = object_dict['fields']['username']
+        user.shortname = username
         user.set_unusable_password()
         if self.should_clean():
             user.full_clean()
         user.save()
-
-        username = object_dict['fields']['username']
         email = object_dict['fields']['email']
         if not settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
             self._create_username(user=user, username=username)

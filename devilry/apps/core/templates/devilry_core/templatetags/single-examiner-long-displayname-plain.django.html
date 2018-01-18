@@ -1,0 +1,7 @@
+{% load devilry_account_tags %}{% load devilry_core_tags %}{% devilrysingleline %}
+    {% if anonymous %}
+    {{ examiner.get_anonymous_name  }}
+{% else %}
+    {% devilry_user_verbose_inline_plain examiner.relatedexaminer.user %}
+{% endif %}
+{% enddevilrysingleline %}

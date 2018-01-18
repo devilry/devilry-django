@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django import test
+from django.core import mail
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
@@ -264,6 +265,36 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
         self.assertEquals('you passed', group_comment_group3.text)
         self.assertEquals(testassignment.max_points, group_comment_group3.feedback_set.grading_points)
 
+    def test_mails_feedback_mails_sent(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        student1 = mommy.make('core.Candidate', assignment_group=testgroup1)
+        student2 = mommy.make('core.Candidate', assignment_group=testgroup2)
+        student3 = mommy.make('core.Candidate', assignment_group=testgroup3)
+        mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
+        mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
+        mommy.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
+        user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=user)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=user)
+        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=user)
+        self.mock_http302_postrequest(
+            requestuser=user,
+            cradmin_role=testassignment,
+            requestkwargs={
+                'data': {
+                    'grade_{}'.format(testgroup1.id): 'Passed',
+                    'comment_text_{}'.format(testgroup1.id): 'you passed',
+                    'grade_{}'.format(testgroup2.id): 'Failed',
+                    'comment_text_{}'.format(testgroup2.id): 'you failed',
+                    'grade_{}'.format(testgroup3.id): 'Passed',
+                    'comment_text_{}'.format(testgroup3.id): 'you passed'
+                }
+            })
+        self.assertEqual(len(mail.outbox), 3)
+
     def test_get_query_count(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -292,14 +323,17 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
         testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-        mommy.make('core.Candidate', assignment_group=testgroup1)
-        mommy.make('core.Candidate', assignment_group=testgroup2)
-        mommy.make('core.Candidate', assignment_group=testgroup3)
+        student1 = mommy.make('core.Candidate', assignment_group=testgroup1)
+        student2 = mommy.make('core.Candidate', assignment_group=testgroup2)
+        student3 = mommy.make('core.Candidate', assignment_group=testgroup3)
+        mommy.make('devilry_account.UserEmail', user=student1.relatedstudent.user, email='student1@example.com')
+        mommy.make('devilry_account.UserEmail', user=student2.relatedstudent.user, email='student2@example.com')
+        mommy.make('devilry_account.UserEmail', user=student3.relatedstudent.user, email='student3@example.com')
         user = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=user)
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=user)
         mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=user)
-        with self.assertNumQueries(13):
+        with self.assertNumQueries(20):
             self.mock_http302_postrequest(
                 requestuser=user,
                 cradmin_role=testassignment,
@@ -310,7 +344,7 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
                         'grade_{}'.format(testgroup2.id): 'Failed',
                         'comment_text_{}'.format(testgroup2.id): 'you failed',
                         'grade_{}'.format(testgroup3.id): 'Passed',
-                        'comment_text_{}'.format(testgroup3.id): 'you passed'
+                        'comment_text_{}'.format(testgroup3.id): 'you passed',
                     }
                 })
 

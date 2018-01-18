@@ -1,5 +1,6 @@
 import json
 import shutil
+import unittest
 
 import mock
 from django import test
@@ -12,6 +13,7 @@ from ievv_opensource.ievv_batchframework import batchregistry
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 from model_mommy import mommy
 
+from devilry.project.develop.testhelpers import skip_rq_tests
 from devilry.devilry_compressionutil.models import CompressedArchiveMeta
 from devilry.devilry_dbcache import customsql
 from devilry.devilry_group import devilry_group_mommy_factories
@@ -50,6 +52,8 @@ class TestHelper(object):
                  test='test')
 
 
+@unittest.skipIf(skip_rq_tests.should_skip_tests_that_require_rq_async(),
+                 reason='Tests that require RQ to run async. Disabled if DEVILRY_SKIP_RQ_TESTS is True')
 class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
     viewclass = BatchCompressionAPIAssignmentView
 

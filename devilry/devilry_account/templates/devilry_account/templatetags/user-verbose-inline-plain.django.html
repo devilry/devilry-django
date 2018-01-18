@@ -1,0 +1,5 @@
+{% if user.fullname %}
+    {{ user.fullname }} ({{ user.shortname }})
+{% else %}
+    {{ user.shortname }}
+{% endif %}

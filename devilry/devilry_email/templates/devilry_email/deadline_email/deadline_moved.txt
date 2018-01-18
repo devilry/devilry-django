@@ -1,0 +1,7 @@
+{% load i18n %}
+
+{% blocktrans with feedbackset_deadline=deadline|date:"DATETIME_FORMAT" %}
+The deadline for {{ assignment_name }} has been moved.
+New deadline is {{ feedbackset_deadline }}.
+{% endblocktrans %}
+{% trans "Assignment link" %}: <a href="{{ url }}">{{ url }}</a>

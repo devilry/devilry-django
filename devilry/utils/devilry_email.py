@@ -1,7 +1,6 @@
 from smtplib import SMTPException
 import logging
-from django.core import mail
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
 
@@ -15,7 +14,6 @@ def send_message(subject, message, *user_objects_to_send_to):
     message += "\n\n--\n"
     message += settings.DEVILRY_EMAIL_SIGNATURE
     emails = []
-
     for user in user_objects_to_send_to:
         users_notification_emails = []
         for useremail in user.useremail_set.filter(use_for_notifications=True):
@@ -31,8 +29,8 @@ def send_message(subject, message, *user_objects_to_send_to):
                   emails, fail_silently=False)
     except SMTPException, e:
         errormsg = ('SMTPException when sending email to users {users} on addresses {emails}. '
-                    'Exception: {exception}'.format(users = ','.join([user.shortname for user in user_objects_to_send_to]),
-                                                    exception = e))
+                    'Exception: {exception}'.format(users=','.join([user.shortname for user in user_objects_to_send_to]),
+                                                    exception=e))
         logger.error(errormsg)
     else:
         if settings.DEBUG:

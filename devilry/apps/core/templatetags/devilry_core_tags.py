@@ -1,3 +1,5 @@
+import re
+
 import bleach
 from django import template
 from django.utils.translation import ugettext_lazy as _
@@ -6,6 +8,22 @@ from devilry.apps.core.models import Assignment
 from devilry.utils import datetimeutils
 
 register = template.Library()
+
+
+class DevilrySingleLineNode(template.Node):
+    def __init__(self, nodelist):
+        self.nodelist = nodelist
+
+    def render(self, context):
+        output = self.nodelist.render(context)
+        return re.sub('(\s|\\xa0)+', ' ', output).strip()
+
+
+@register.tag
+def devilrysingleline(parser, token):
+    nodelist = parser.parse(('enddevilrysingleline',))
+    parser.delete_first_token()
+    return DevilrySingleLineNode(nodelist)
 
 
 @register.filter
@@ -111,6 +129,18 @@ def devilry_single_examiner_long_displayname(assignment, examiner, devilryrole):
         examiner: A :class:`devilry.apps.core.models.Examiner` object.
         devilryrole: See
             :meth:`devilry.apps.core.models.Assignment.examiners_must_be_anonymized_for_devilryrole`.
+    """
+    return {
+        'examiner': examiner,
+        'anonymous': assignment.examiners_must_be_anonymized_for_devilryrole(
+            devilryrole=devilryrole)
+    }
+
+
+@register.inclusion_tag('devilry_core/templatetags/single-examiner-long-displayname-plain.django.html')
+def devilry_single_examiner_long_displayname_plain(assignment, examiner, devilryrole):
+    """
+    Same as :method:`.devilry_single_examiner_long_displayname` but returns the examiner without styling.
     """
     return {
         'examiner': examiner,
@@ -314,6 +344,25 @@ def devilry_grade_full(assignment, points, devilryrole):
         points (int): The points to render the grade for.
         devilryrole (str): Must be one of the choices documented in
             :meth:`devilry.apps.core.models.Assignment.examiners_must_be_anonymized_for_devilryrole`.
+    """
+    include_is_passing_grade = assignment.points_to_grade_mapper != Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED
+    include_points = assignment.points_to_grade_mapper != Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS
+    if devilryrole == 'student' and not assignment.students_can_see_points:
+        include_points = False
+
+    return {
+        'assignment': assignment,
+        'grade': assignment.points_to_grade(points=points),
+        'points': points,
+        'is_passing_grade': assignment.points_is_passing_grade(points=points),
+        'include_is_passing_grade': include_is_passing_grade,
+        'include_points': include_points,
+    }
+
+@register.inclusion_tag('devilry_core/templatetags/grade-full-plain.django.html')
+def devilry_grade_full_plain(assignment, points, devilryrole):
+    """
+    Renders a grade as in its long form - including information about passed or failed without styling.
     """
     include_is_passing_grade = assignment.points_to_grade_mapper != Assignment.POINTS_TO_GRADE_MAPPER_PASSED_FAILED
     include_points = assignment.points_to_grade_mapper != Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS

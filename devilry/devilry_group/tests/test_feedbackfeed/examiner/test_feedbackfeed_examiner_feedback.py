@@ -2,6 +2,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import Http404
 from django.test import TestCase
 from django.utils import timezone
+from django.conf import settings
+from django.core import mail
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
@@ -399,8 +401,8 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                               part_of_grading=True,
                               feedback_set=feedbackset_last)
         self.mock_http302_postrequest(
-            cradmin_role=student.assignment_group,
-            requestuser=student.relatedstudent.user,
+            cradmin_role=testgroup,
+            requestuser=examiner.relatedexaminer.user,
             viewkwargs={'pk': testgroup.id},
             requestkwargs={
                 'data': {
@@ -520,6 +522,42 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
         self.assertIsNotNone(cached_group.last_published_feedbackset.grading_published_datetime)
         self.assertEquals(1, group_models.GroupComment.objects.all().count())
         self.assertEquals('test', group_models.GroupComment.objects.get(feedback_set=feedbackset).text)
+
+    def test_examiner_publishes_email_is_sent(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       grading_system_plugin_id=core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
+                                       points_to_grade_mapper=core_models.Assignment.POINTS_TO_GRADE_MAPPER_RAW_POINTS,
+                                       max_points=100,
+                                       passing_grade_min_points=50,
+                                       long_name='Assignment 1',
+                                       parentnode__long_name='Duck 1010')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=30))
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL, fullname='God of thunder and Battle',
+                                   shortname='thor@example.com')
+        examiner = mommy.make('core.Examiner', assignmentgroup=testgroup,
+                              relatedexaminer=mommy.make('core.RelatedExaminer', user=examiner_user))
+        student_user = mommy.make(settings.AUTH_USER_MODEL, shortname='student')
+        mommy.make('devilry_account.UserEmail', email='student@example.com', user=student_user)
+        mommy.make('core.Candidate', assignment_group=testgroup,
+                   relatedstudent=mommy.make('core.RelatedStudent', user=student_user))
+        self.mock_http302_postrequest(
+            cradmin_role=examiner.assignmentgroup,
+            requestuser=examiner.relatedexaminer.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'points': 73,
+                    'examiner_publish_feedback': 'unused value',
+                }
+            })
+        mail_content = mail.outbox[0].body
+        self.assertIn('Assignment: {}'.format(assignment.long_name), mail_content)
+        self.assertIn('Subject: {}'.format(assignment.parentnode.long_name), mail_content)
+        self.assertIn('Result: 73/100 ( passed )', mail_content)
+        self.assertIn('http://testserver/devilry_group/student/{}/feedbackfeed/'.format(testgroup.id), mail_content)
+        self.assertEqual(mail.outbox[0].recipients(), ['student@example.com'])
+        self.assertEqual(len(mail.outbox), 1)
 
 
 class TestFeedbackfeedFeedbackFileUploadExaminer(TestCase, cradmin_testhelpers.TestCaseMixin):

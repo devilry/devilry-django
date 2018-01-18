@@ -2,14 +2,18 @@
 from __future__ import unicode_literals
 
 from django import test
+from django.core import mail
 from django.http import Http404
 from django.utils import timezone
+from django.conf import settings
+
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group.models import FeedbackSet
 from devilry.devilry_group.views.examiner.feedbackfeed_examiner import ExaminerEditGradeView
 
 
@@ -142,3 +146,114 @@ class TestEditGradeView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(input_element[0].hasattribute('selected'))
         self.assertEquals(input_element[1].get('value'), 'Failed')
         self.assertFalse(input_element[1].hasattribute('selected'))
+
+    def test_post_points_plugin(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
+                                           passing_grade_min_points=60,
+                                           max_points=100)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=10)
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            viewkwargs={
+                'pk': testfeedbackset.id
+            },
+            requestkwargs={
+                'data': {
+                    'grading_points': 70
+                }
+            }
+        )
+        feedbackset = FeedbackSet.objects.get(id=testfeedbackset.id)
+        self.assertEqual(feedbackset.grading_points, 70)
+
+    def __create_student_user_with_email_for_group(self, group):
+        """
+        Creates a student user with email. We the mail sending to work.
+        """
+        student_user = mommy.make(settings.AUTH_USER_MODEL, shortname='student')
+        user_email = mommy.make('devilry_account.UserEmail', email='student@example.com', user=student_user)
+        mommy.make('core.Candidate', assignment_group=group,
+                   relatedstudent=mommy.make('core.RelatedStudent', user=student_user))
+        return user_email
+
+    def test_post_points_plugin_mail_sent(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS,
+                                           passing_grade_min_points=60,
+                                           max_points=100)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        user_email = self.__create_student_user_with_email_for_group(group=testgroup)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=10)
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            viewkwargs={
+                'pk': testfeedbackset.id
+            },
+            requestkwargs={
+                'data': {
+                    'grading_points': 70
+                }
+            }
+        )
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].recipients(), [user_email.email])
+
+    def test_post_passed_plugin_passed_failed(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           passing_grade_min_points=1)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=0)
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            viewkwargs={
+                'pk': testfeedbackset.id
+            },
+            requestkwargs={
+                'data': {
+                    'grading_points': 'Passed'
+                }
+            }
+        )
+        feedbackset = FeedbackSet.objects.get(id=testfeedbackset.id)
+        self.assertEqual(feedbackset.grading_points, 1)
+
+    def test_post_failed_plugin_passed_failed(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           passing_grade_min_points=1)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            viewkwargs={
+                'pk': testfeedbackset.id
+            },
+            requestkwargs={
+                'data': {
+                    'grading_points': 'Failed'
+                }
+            }
+        )
+        feedbackset = FeedbackSet.objects.get(id=testfeedbackset.id)
+        self.assertEqual(feedbackset.grading_points, 0)
+
+    def test_post_failed_plugin_mail_sent(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           passing_grade_min_points=1)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        user_email = self.__create_student_user_with_email_for_group(group=testgroup)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            viewkwargs={
+                'pk': testfeedbackset.id
+            },
+            requestkwargs={
+                'data': {
+                    'grading_points': 'Failed'
+                }
+            }
+        )
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].recipients(), [user_email.email])

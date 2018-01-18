@@ -96,6 +96,7 @@ Start by copying the following into ``~/devilrydeploy/devilry_settings.py``::
 
     from devilry.project.production.settings import *
     import dj_database_url
+    from devilry.utils import rq_setup
 
     # Make this 50 chars and RANDOM - do not share it with anyone
     SECRET_KEY = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
@@ -150,6 +151,14 @@ Start by copying the following into ``~/devilrydeploy/devilry_settings.py``::
     EMAIL_HOST_PASSWORD = ''
     EMAIL_PORT = 25
     EMAIL_USE_TLS = False
+
+    #: Setup Redis connection settings for background task server.
+    #: For a complete custom setup, see https://github.com/rq/django-rq
+    RQ_QUEUES = rq_setup.make_simple_rq_queue_setting(
+        host='localhost',
+        port=6379,
+        db=0
+    )
 
 If you have a ``devilry_prod_settings.py`` file from an older version of Devilry, you should be
 able to copy over most of these settings.

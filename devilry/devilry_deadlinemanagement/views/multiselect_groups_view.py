@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 
 from crispy_forms import layout
 from django import forms
-from django import http
 from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy
 from django_cradmin.viewhelpers import multiselect2

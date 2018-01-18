@@ -76,7 +76,7 @@ DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX = 'uio.no'
 # EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 # CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEVILRY_LOWLEVEL_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEVILRY_RQ_EMAIL_BACKEND_QUEUENAME = 'default'
+DEVILRY_RQ_EMAIL_BACKEND_QUEUENAME = 'email'
 
 
 # DEVILRY_FRONTPAGE_HEADER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
@@ -148,18 +148,16 @@ IEVVTASKS_DEVRUN_RUNNABLES = {
         ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
         ievvdevrun.runnables.django_runserver.RunnableThread(),
         ievvdevrun.runnables.redis_server.RunnableThread(),
-        # TODO REMOVE CELERY
-        # ievvdevrun.runnables.celery_worker.RunnableThread(app='devilry.project.common'),
         ievvdevrun.runnables.rq_worker.RunnableThread(),
+        ievvdevrun.runnables.rq_worker.RunnableThread(queuename='email'),
     ),
     'design': ievvdevrun.config.RunnableThreadList(
         ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
         ievvdevrun.runnables.django_runserver.RunnableThread(),
         ievvdevrun.runnables.ievv_buildstatic.RunnableThread(),
         ievvdevrun.runnables.redis_server.RunnableThread(),
-        # TODO REMOVE CELERY
-        # ievvdevrun.runnables.celery_worker.RunnableThread(app='devilry.project.common'),
         ievvdevrun.runnables.rq_worker.RunnableThread(),
+        ievvdevrun.runnables.rq_worker.RunnableThread(queuename='email'),
     ),
 }
 

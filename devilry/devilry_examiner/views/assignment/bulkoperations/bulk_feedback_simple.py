@@ -10,6 +10,9 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy
 from django_cradmin.viewhelpers import listbuilderview
 
+import django_rq
+
+from devilry.devilry_email.feedback_email.feedback_email import bulk_send_email
 from devilry.apps.core import models as core_models
 from devilry.devilry_cradmin.devilry_tablebuilder import base_new
 from devilry.devilry_group.models import GroupComment
@@ -203,9 +206,10 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
             If anything goes wrong, the transaction is rolled back and nothing is saved to the database.
 
         Args:
-            feedbackset_data_dict:
+            feedbackset_data_dict: dictionary of ``FeedbackSet``s with posted comment data and points.
         """
         now_without_microseconds = timezone.now().replace(microsecond=0)
+        feedbackset_id_list = []
         with transaction.atomic():
             for feedbackset, data in feedbackset_data_dict.iteritems():
                 text = data['comment_text']
@@ -215,6 +219,9 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
                 feedbackset.grading_published_datetime = now_without_microseconds + timezone.timedelta(microseconds=1)
                 feedbackset.grading_points = data['grading_points']
                 feedbackset.save(update_fields=['grading_published_by', 'grading_published_datetime', 'grading_points'])
+                feedbackset_id_list.append(feedbackset.id)
+            bulk_send_email(feedbackset_id_list=feedbackset_id_list,
+                            domain_url_start=self.request.build_absolute_uri('/'))
 
     def post(self, request, *args, **kwargs):
         feedbackset_data_dict = self.__collect_data_for_groups(posted_data=request.POST)

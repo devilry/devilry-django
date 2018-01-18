@@ -185,6 +185,7 @@ class AbstractBatchCompressionAPIView(View):
             return {'status': 'not-created'}
 
         # The ``BatchOperation`` exists. Check the status.
+        # print('Batchoperation: ', batchoperation)
         if batchoperation.status == BatchOperation.STATUS_UNPROCESSED:
             return {'status': 'not-started'}
         return {'status': 'running'}
@@ -219,8 +220,11 @@ class AbstractBatchCompressionAPIView(View):
         Returns:
             (JsonResponse): Status of the compression.
         """
+        # print('::AbstractBatchCompressionAPIView GET::')
         content_object_id = kwargs.get('content_object_id')
         compressed_archive_meta = self._compressed_archive_created(content_object_id=content_object_id)
+        # print('content_object_id: ', content_object_id)
+        # print('Compressed archive meta: ', compressed_archive_meta)
         if compressed_archive_meta and \
                 not self.new_file_is_added(latest_compressed_datetime=compressed_archive_meta.created_datetime):
             return JsonResponse(self.get_ready_for_download_status(content_object_id=content_object_id))
@@ -251,7 +255,8 @@ class AbstractBatchCompressionAPIView(View):
                 self._set_archive_meta_ready_for_delete(compressed_archive_meta=compressed_archive_meta)
                 self.start_compression_task(content_object_id=content_object_id)
                 return JsonResponse(self.get_status_dict(context_object_id=content_object_id))
-            return JsonResponse(self.get_ready_for_download_status(content_object_id=content_object_id))
+            ready_for_download_status = self.get_ready_for_download_status(content_object_id=content_object_id)
+            return JsonResponse(ready_for_download_status)
 
         # Start compression task and return status.
         self.start_compression_task(content_object_id=content_object_id)

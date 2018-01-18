@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from crispy_forms import layout
 from django import forms
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.http import HttpResponseRedirect
@@ -17,10 +18,13 @@ from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
 from django_cradmin.viewhelpers import update, delete
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
+from devilry.apps.core.models import RelatedStudent, Examiner
+from devilry.utils.devilry_email import send_templated_message
 from devilry.apps.core import models as core_models
 from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
+from devilry.devilry_email.feedback_email import feedback_email
 
 
 class AbstractFeedbackForm(cradmin_feedbackfeed_base.GroupCommentForm):
@@ -201,20 +205,17 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         return group_comment
 
     def _publish_feedback(self, form, feedback_set, user):
-        """
-
-        Args:
-            group_comment:
-
-        Returns:
-
-        """
         # publish FeedbackSet
         result, error_msg = feedback_set.publish(
             published_by=user,
             grading_points=form.get_grading_points())
         if result is False:
             messages.error(self.request, ugettext_lazy(error_msg))
+        else:
+            feedback_email.send_feedback_created_email(
+                feedback_set=feedback_set, points=form.get_grading_points(),
+                domain_url_start=self.request.build_absolute_uri('/')
+            )
 
     def save_object(self, form, commit=False):
         comment = super(ExaminerFeedbackView, self).save_object(form=form)
@@ -381,6 +382,14 @@ class ExaminerEditGradeView(update.UpdateView):
             return EditGradePointsForm
         if group.parentnode.grading_system_plugin_id == core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED:
             return EditGradePassedFailedForm
+
+    def save_object(self, form, commit=True):
+        feedback_set = super(ExaminerEditGradeView, self).save_object(form=form, commit=True)
+        feedback_email.send_feedback_edited_email(
+            feedback_set=feedback_set, points=feedback_set.grading_points,
+            domain_url_start=self.request.build_absolute_uri('/')
+        )
+        return feedback_set
 
     def get_field_layout(self):
         return [
