@@ -79,8 +79,6 @@ class FeedbackSetBatchMixin(object):
 class FeedbackSetCompressAction(AbstractBaseBatchAction, FeedbackSetBatchMixin):
     """
     Compress all files that belong to a :obj:`~devilry_group.models.FeedbackSet`.
-
-    A task than will be run by `ievv_opensource`s batchframework in celery.
     """
     backend_id = 'devilry_group_local'
 

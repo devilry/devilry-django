@@ -21,7 +21,7 @@ Run only some tests::
 .. warning::
     We use ``DJANGOENV=test python manage.py`` to run tests, because that makes
     ``manage.py`` use ``devilry.project.develop.settings.test``,
-    which does not load Celery and does not run migrations.
+    which does not run migrations.
 
     If you are using PyCharm or another IDE, make sure it runs tests with
     this environment variable set. In PyCharm, you do this by going to:

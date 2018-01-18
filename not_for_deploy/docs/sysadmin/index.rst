@@ -7,8 +7,8 @@ Devilry sysadmin docs
 
    gettingstarted
    authbackend
-   celery
    rq
+   rq_email
    supervisord
    webserver
    debug
