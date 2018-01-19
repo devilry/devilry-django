@@ -14,7 +14,7 @@ def template_variables(request):
         'DEVILRY_LOGOUT_URL': settings.DEVILRY_LOGOUT_URL,
         'DEVILRY_THEME3_JAVASCRIPT_URL': '{static_url}/devilry_theme3/{theme3_version}/scripts/devilry_all.js'.format(
             static_url=settings.DEVILRY_STATIC_URL,
-            theme3_version=settings.DEVILRY_THEME3_VERSION
+            theme3_version=devilry.__version__
         ),
         'session': request.session,
         'DEVILRY_MATHJAX_URL': settings.DEVILRY_MATHJAX_URL,
@@ -33,5 +33,5 @@ def template_variables(request):
         'DEVILRY_PROFILEPAGE_HEADER_INCLUDE_TEMPLATE': settings.DEVILRY_PROFILEPAGE_HEADER_INCLUDE_TEMPLATE,
         'DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE': settings.DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE,
         'DEVILRY_ENABLE_REALTIME_ZIPFILE_CREATION': settings.DEVILRY_ENABLE_REALTIME_ZIPFILE_CREATION,
-        'DEVILRY_THEME3_DIST_PATH': static('devilry_theme3/{}/'.format(settings.DEVILRY_THEME3_VERSION))
+        'DEVILRY_THEME3_DIST_PATH': static('devilry_theme3/{}/'.format(devilry.__version__))
     }

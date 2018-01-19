@@ -86,7 +86,7 @@ DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX = 'uio.no'
 IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
     ievvbuildstatic.config.App(
         appname='devilry_theme3',
-        version=DEVILRY_THEME3_VERSION,
+        version=devilry.__version__,
         plugins=[
             ievvbuildstatic.bowerinstall.Plugin(
                 packages={
