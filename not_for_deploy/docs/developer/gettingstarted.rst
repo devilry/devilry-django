@@ -83,7 +83,7 @@ Setup a **Python 2.7** virtualenv::
     $ pip install -r requirements/development.txt
 
 
-.. note:: Your path to `python2` may be something other than `/usr/local/bin`.
+.. note:: Your path to `python2` may be something other than `/usr/local/bin/python2`.
 
 
 .. _createdevenvdb:
