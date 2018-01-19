@@ -25,13 +25,13 @@ Migrate the database
 Setup RQ
 ########
 We have replaced Celery with RQ. This means you need to setup RQ
-as explained in :doc:`rq`.
+as explained in :doc:`../rq`.
 
 If you used djcelery-email as email backend previously,
 you will want to update to the new RQ email backend as
-explained in :doc:`rq_email`.
+explained in :doc:`../rq_email`.
 
 
 Add your own branding
 #####################
-Simple branding was added in 3.0.0. See :doc:`branding`.
+Simple branding was added in 3.0.0. See :doc:`../branding`.
