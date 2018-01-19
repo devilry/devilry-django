@@ -116,6 +116,7 @@ class CreateGroupsViewMixin(object):
     def get_unfiltered_queryset_for_role(self, role):
         queryset = self.period.relatedstudent_set\
             .prefetch_syncsystemtag_objects()\
+            .filter(active=True)\
             .select_related('user')
         if not self.replace_groups:
             queryset = queryset.exclude(pk__in=self.__get_relatedstudents_in_group_on_assignment())
