@@ -6,6 +6,8 @@ from django.http import HttpResponseRedirect
 from django import forms
 
 # Devilry imports
+from django.utils.translation import ugettext_lazy
+
 from devilry.devilry_qualifiesforexam.views.plugin_base_views import base_multiselect_view
 from devilry.devilry_qualifiesforexam_plugin_points import resultscollector
 from devilry.devilry_qualifiesforexam.views import plugin_mixin
@@ -19,8 +21,9 @@ class PluginSelectAssignmentsAndPoints(base_multiselect_view.SelectedQualificati
     min_points_to_achieve = forms.IntegerField(
             min_value=0,
             required=False,
-            help_text='If no points are given, the sum of all the qualifying assignments minimun points is needed '
-                      'to qualify.',
+            help_text=ugettext_lazy(
+                'If no points are given, the sum of all the qualifying assignments minimum points is needed '
+                'to qualify.'),
     )
 
 
@@ -36,7 +39,7 @@ class WithPointsFormDataTargetRenderer(base_multiselect_view.QualificationItemTa
 
 class PluginSelectAssignmentsAndPointsView(base_multiselect_view.QualificationItemListView, plugin_mixin.PluginMixin):
 
-    plugintypeid = 'devilry_qualifiesforexam_plugin_approved.plugin_select_assignments_and_points'
+    plugintypeid = 'devilry_qualifiesforexam_plugin_points.plugin_points'
 
     def get_period_result_collector_class(self):
         return resultscollector.PeriodResultSetCollector
