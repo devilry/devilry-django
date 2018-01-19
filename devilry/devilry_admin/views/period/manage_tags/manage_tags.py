@@ -235,6 +235,7 @@ class EditPeriodTagForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.period = kwargs.pop('period')
+        self.tagobject = kwargs.pop('tagobject')
         super(EditPeriodTagForm, self).__init__(*args, **kwargs)
         self.fields['tag'].label = 'Tag name'
         self.fields['tag'].help_text = 'Rename the tag here. Up to 15 characters. ' \
@@ -247,8 +248,9 @@ class EditPeriodTagForm(forms.ModelForm):
                 {'tag': ugettext_lazy('Tag cannot be empty.')}
             )
         tag = cleaned_data['tag']
-        if PeriodTag.objects.filter(period=self.period, tag=tag).count() != 0:
-            raise ValidationError(ugettext_lazy('{} already exists'.format(tag)))
+        if PeriodTag.objects.filter(period=self.period, tag=tag).exists():
+            if tag != self.tagobject.tag:
+                raise ValidationError(ugettext_lazy('{} already exists'.format(tag)))
         if ',' in tag:
             raise ValidationError(
                 {'tag': ugettext_lazy('Tag contains a comma(,).')}
@@ -288,7 +290,9 @@ class EditTagView(crudbase.OnlySaveButtonMixin, EditDeleteViewMixin, update.Upda
     form_class = EditPeriodTagForm
 
     def get_pagetitle(self):
-        return 'Edit {}'.format(PeriodTag.objects.get(id=self.tag_id).displayname)
+        return ugettext_lazy('Edit %(what)s') % {
+            'what': self.tag.displayname
+        }
 
     def get_field_layout(self):
         return [
@@ -301,12 +305,13 @@ class EditTagView(crudbase.OnlySaveButtonMixin, EditDeleteViewMixin, update.Upda
     def save_object(self, form, commit=True):
         period_tag = super(EditTagView, self).save_object(form=form, commit=False)
         period_tag.modified_datetime = timezone.now()
-        self.add_success_messages('Tag successfully edited.')
+        self.add_success_messages(ugettext_lazy('Tag successfully edited.'))
         return super(EditTagView, self).save_object(form=form, commit=True)
 
     def get_form_kwargs(self):
         kwargs = super(EditTagView, self).get_form_kwargs()
         kwargs['period'] = self.request.cradmin_role
+        kwargs['tagobject'] = self.tag
         return kwargs
 
     def get_context_data(self, **kwargs):
