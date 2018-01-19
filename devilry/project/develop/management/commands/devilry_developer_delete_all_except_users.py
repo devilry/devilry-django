@@ -31,7 +31,9 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         djangoenv = os.environ.get('DJANGOENV', 'develop')
         if not settings.DEBUG or djangoenv != 'develop':
-            self.stderr.write('')
+            self.stderr.write(
+                'You can not run this script unless you are in development mode. This means '
+                'that DEBUG must be False, and DJANGOENV must be "develop".')
             raise SystemExit()
         user_model = get_user_model()
         skipped_model_classes = {
