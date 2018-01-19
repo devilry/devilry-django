@@ -39,6 +39,7 @@ class CreateUpdateMixin(object):
 class CreateView(crudbase.OnlySaveButtonMixin, CreateUpdateMixin, create.CreateView):
     form_class = CreateForm
     model = Subject
+    template_name = 'devilry_cradmin/viewhelpers/devilry_createview_with_backlink.django.html'
 
     def get_pagetitle(self):
         return ugettext_lazy('Create new course')
@@ -52,6 +53,17 @@ class CreateView(crudbase.OnlySaveButtonMixin, CreateUpdateMixin, create.CreateV
 
     def form_saved(self, object):
         self.created_subject = object
+
+    def get_backlink_url(self):
+        return crinstance.reverse_cradmin_url(
+            instanceid='devilry_admin',
+            appname='overview'
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateView, self).get_context_data(**kwargs)
+        context['backlink_url'] = self.get_backlink_url()
+        return context
 
 
 class App(crapp.App):
