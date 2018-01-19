@@ -7922,6 +7922,23 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
     display: none;
   }
 }
+.devilry-backlink {
+  position: relative;
+  padding-left: 40px;
+}
+.devilry-backlink a.devilry-backlink__backlink {
+  font-size: 50px;
+  position: absolute;
+  top: -22px;
+  left: 0;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  color: #000000;
+}
+.devilry-backlink a.devilry-backlink__backlink:hover {
+  color: #262626;
+}
 @media (max-width: 991px) {
   nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb .devilry-django-cradmin-menuitem-breadcrumb-icon {
     display: none;
