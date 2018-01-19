@@ -58,9 +58,9 @@ Mac OSX
     $ xcode-select --install
 
 3. `Install virtualenvwrapper <http://virtualenvwrapper.readthedocs.io/en/latest/install.html>`_::
-4. Install postgresql. We recommend you do this via `Homebrew <http://brew.sh/>`_::
+4. Install postgresql and redis. We recommend you do this via `Homebrew <http://brew.sh/>`_::
 
-    $ brew install postgresql
+    $ brew install postgresql redis
 
 
 Ubuntu Linux
