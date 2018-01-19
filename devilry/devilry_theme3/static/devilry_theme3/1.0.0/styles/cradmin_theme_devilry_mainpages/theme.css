@@ -7876,6 +7876,52 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 .footer__logo--xlarge {
   max-height: 140px;
 }
+@media (min-width: 992px) {
+  .devilry_accountbutton {
+    background-color: #333;
+  }
+}
+.devilry_accountbutton__iconwrapper {
+  display: inline-block;
+  line-height: 18px;
+}
+.devilry_accountbutton .devilry_accountbutton__icon {
+  line-height: 18px;
+  font-size: 20px;
+}
+.devilry_accountbutton__initials {
+  line-height: 18px;
+  display: none;
+}
+@media (min-width: 992px) {
+  .devilry_accountbutton__initials {
+    display: inline-block;
+    font-weight: bold;
+    letter-spacing: 3px;
+  }
+}
+.devilry_accountbutton__shortname {
+  line-height: 18px;
+  display: none;
+}
+@media (min-width: 992px) {
+  .devilry_accountbutton__shortname {
+    display: inline-block;
+    white-space: nowrap;
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+.devilry_accountbutton__displayname {
+  line-height: 18px;
+  display: inline;
+}
+@media (min-width: 992px) {
+  .devilry_accountbutton__displayname {
+    display: none;
+  }
+}
 @media (max-width: 991px) {
   nav#django_cradmin_mainmenu.django-cradmin-menu.devilry-django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.devilry-django-cradmin-menuitem-breadcrumb .devilry-django-cradmin-menuitem-breadcrumb-icon {
     display: none;

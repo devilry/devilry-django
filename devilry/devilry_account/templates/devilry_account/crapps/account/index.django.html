@@ -72,8 +72,11 @@
             </ul>
         </div>
 
-        <a href="{% url 'account_logout' %}" class="btn btn-primary">
-            {% trans "Sign out" %}
-        </a>
+        <form method="POST" action="{% url 'account_logout' %}">
+            {% csrf_token %}
+            <button class="btn btn-primary">
+                {% trans "Sign out" %}
+            </button>
+        </form>
     </div>
 {% endblock content %}
