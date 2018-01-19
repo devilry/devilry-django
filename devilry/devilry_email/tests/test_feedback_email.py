@@ -119,7 +119,7 @@ class TestFeedbackEmail(test.TestCase):
         feedback_link = 'http://www.example.com/devilry_group/student/{}/feedbackfeed/'.format(
             test_feedbackset.group.id)
         self.assertIn(
-            'Link: <a href="{}">{}</a>'.format(feedback_link, feedback_link),
+            'Details: {}'.format(feedback_link),
             mail.outbox[0].body
         )
 

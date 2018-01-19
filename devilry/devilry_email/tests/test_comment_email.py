@@ -83,7 +83,7 @@ class TestCommentEmail(test.TestCase):
             feedbackfeed_url=feedbackfeed_url
         )
         self.assertIn(
-            'Assignment link: <a href="{}">{}</a>'.format(feedbackfeed_url, feedbackfeed_url),
+            'Details: {}'.format(feedbackfeed_url),
             mail.outbox[0].body)
 
 
@@ -127,7 +127,7 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
             test_feedbackset.group_id
         )
         self.assertIn(
-            'Assignment link: <a href="{}">{}</a>'.format(feedbackfeed_url, feedbackfeed_url),
+            'Details: {}'.format(feedbackfeed_url, feedbackfeed_url),
             mail.outbox[0].body)
 
     def test_send_student_comment_email_recipients(self):
@@ -183,7 +183,7 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
             test_feedbackset.group_id
         )
         self.assertIn(
-            'Assignment link: <a href="{}">{}</a>'.format(feedbackfeed_url, feedbackfeed_url),
+            'Details: {}'.format(feedbackfeed_url, feedbackfeed_url),
             mail.outbox[0].body)
 
     def test_send_examiner_comment_email_recipients(self):
