@@ -60,10 +60,7 @@ Mac OSX
 
     $ xcode-select --install
 
-3. Install other dependencies/requirements::
-
-    $ sudo easy_install virtualenv
-
+3. `Install virtualenvwrapper <http://virtualenvwrapper.readthedocs.io/en/latest/install.html>`_::
 4. Install postgresql. We recommend you do this via `Homebrew <http://brew.sh/>`_::
 
     $ brew install postgresql
@@ -82,9 +79,11 @@ Setup the development virtualenv
 Setup a **Python 2.7** virtualenv::
 
     $ cd devilry-django
-    $ mkvirtualenv devilry-django
+    $ mkvirtualenv -p /usr/local/bin/python2 devilry-django
     $ pip install -r requirements/development.txt
 
+
+.. note:: Your path to `python2` may be something other than `/usr/local/bin`.
 
 
 .. _createdevenvdb:
