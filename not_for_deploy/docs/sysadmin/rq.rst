@@ -28,6 +28,7 @@ Add the following to ``~/devilrydeploy/devilry_settings.py`` (change ``secret`` 
 match the password in the redis.conf file) and set the correct config parameters for Redis to the RQ-queues::
 
     #: Setup Redis connection settings for background task server.
+    from devilry.utils import rq_setup
     RQ_QUEUES = rq_setup.make_simple_rq_queue_setting(
         host='localhost',
         port=6379,
