@@ -45,9 +45,6 @@ Install dependencies/requirements
     Other dependencies than are not really required, but we recommend that you:
 
     - use Virtualenv to avoid installing anything globally, and to get a clean environment
-    - use Fabric because we have a lot of useful scripts written for Fabric that will ease
-      setting up your development environment and building various components of Devilry.
-      See :ref:`aboutfabric`.
 
     Note that all instructions below assume you have and want to install Fabric and Virtualenv.
 
@@ -91,8 +88,6 @@ Setup a **Python 2.7** virtualenv::
 *****************
 Create a database
 *****************
-We have several alternatives for setting up a demo database. They all
-use Fabric tasks. See :ref:`aboutfabric`.
 
 First, make sure you are in the ``devilry-django`` virtualenv::
 
