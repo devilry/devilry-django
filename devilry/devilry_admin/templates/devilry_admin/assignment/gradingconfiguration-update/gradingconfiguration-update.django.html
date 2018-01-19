@@ -1,4 +1,26 @@
 {% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock pageheader-outer-extraclasses %}
+
+{% block pageheader-inner %}
+    <a href="{{ backlink_url }}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% block pageheading %}
+            {{ pageheading }}
+        {% endblock pageheading %}
+    </h1>
+{% endblock pageheader-inner %}
 
 {% block end-of-body %}
     {{ block.super }}

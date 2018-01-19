@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from django.utils.translation import ugettext_lazy
 from django_cradmin.viewhelpers.crudbase import OnlySaveButtonMixin
 from django_cradmin.viewhelpers.update import UpdateView
 
@@ -11,6 +12,9 @@ class AssignmentFirstDeadlineUpdateView(OnlySaveButtonMixin, UpdateView):
     template_name = 'devilry_cradmin/viewhelpers/devilry_updateview_with_backlink.django.html'
 
     fields = ['first_deadline']
+
+    def get_pagetitle(self):
+        return ugettext_lazy('Edit first deadline')
 
     def get_queryset_for_role(self, role):
         return self.model.objects.filter(id=self.kwargs['pk'])

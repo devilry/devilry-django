@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django import forms
-from django.utils.translation import pgettext_lazy
+from django.utils.translation import pgettext_lazy, ugettext_lazy
 from django_cradmin.viewhelpers.crudbase import OnlySaveButtonMixin
 from django_cradmin.viewhelpers.update import UpdateView
 
@@ -12,6 +12,7 @@ from devilry.apps.core.models import Assignment
 class AssignmentAnonymizationmodeUpdateView(OnlySaveButtonMixin, UpdateView):
     model = coremodels.Assignment
     fields = ['anonymizationmode']
+    template_name = 'devilry_cradmin/viewhelpers/devilry_updateview_with_backlink.django.html'
 
     def __get_anonymizationmode_choices(self):
         return [
@@ -53,3 +54,11 @@ class AssignmentAnonymizationmodeUpdateView(OnlySaveButtonMixin, UpdateView):
             'old_anonymizationmode': old_anonymizationmode,
             'new_anonymizationmode': new_anonymizationmode
         }
+
+    def get_backlink_url(self):
+        return self.request.cradmin_instance.rolefrontpage_url()
+
+    def get_context_data(self, **kwargs):
+        context = super(AssignmentAnonymizationmodeUpdateView, self).get_context_data(**kwargs)
+        context['backlink_url'] = self.get_backlink_url()
+        return context

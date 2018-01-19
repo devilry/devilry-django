@@ -191,3 +191,11 @@ class AssignmentGradingConfigurationUpdateView(OnlySaveButtonMixin, formbase.For
             assignment.save()
             self.__create_point_to_grade_map(form=form, assignment=assignment)
         return super(AssignmentGradingConfigurationUpdateView, self).form_valid(form)
+
+    def get_backlink_url(self):
+        return self.request.cradmin_instance.rolefrontpage_url()
+
+    def get_context_data(self, **kwargs):
+        context = super(AssignmentGradingConfigurationUpdateView, self).get_context_data(**kwargs)
+        context['backlink_url'] = self.get_backlink_url()
+        return context
