@@ -1,0 +1,150 @@
+{% extends "devilry_detektor/admin/base.django.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block breadcrumbtail %}
+    <li class="active">
+        {% trans "Similarity checks" %}
+    </li>
+{% endblock breadcrumbtail %}
+
+{% block belowheading %}
+    <p>
+        {% trans "In this view, you can run similarity checks for all deliveries on this assignment. It only works for Java and Python code for now." %}
+    </p>
+    <p>
+        <strong class="text-warning">
+            This is a beta feature, please contact us via <a href="http://devilry.org">devilry.org</a>
+            if you encounter any problems, if you want to help (provide feedback, request or submit
+            support for more languages, etc.)
+        </strong>
+    </p>
+{% endblock belowheading %}
+
+
+{% block content %}
+    {% if DEVILRY_ENABLE_CELERY %}
+        <div class="container-fluid">
+            {% if detektorassignment.status == "running" %}
+                <div class="alert alert-info">
+                    {% blocktrans with user=detektorassignment.processing_started_by.username email=detektorassignment.processing_started_by.email started_time=detektorassignment.processing_started_datetime %}Similarity check processing was started by {{ user }} {{ started_time }}. An email will be sent to {{ email }} when the task is completed.{% endblocktrans %}
+                </div>
+            {% else %}
+                <form method="post">{% csrf_token %}
+                    <p>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            {% trans "Run/re-run similarity check" %}
+                        </button>
+                    </p>
+                </form>
+
+                {% if detektorassignment.status == "finished" %}
+                    <div class="alert alert-success">
+                        {% blocktrans with user=detektorassignment.processing_started_by started_time=detektorassignment.processing_started_datetime %}Similarity check processing was last run by {{ user }} {{ started_time }}. You can browse the results in the table below.{% endblocktrans %}
+                        {% trans "The points in the first column indicates how similar the programs are. The more points, the more similarities where found between the programs. The last column provides a summary of all the reasons why the programs are considered similar." %}
+                    </div>
+                {% endif %}
+
+                {% if cachelanguages %}
+                    <ul class="nav nav-tabs" role="tablist">
+                        {% for cachelanguage in cachelanguages %}
+                            <li {% if cachelanguage.language == active_language %}class="active"{% endif %}>
+                                <a href="?language={{ cachelanguage.language }}">{{ cachelanguage.language }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="table-responsive">
+                        <table id="detektorassembly-results" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 80px;">
+                                        {% trans "Points" %}
+                                    </th>
+                                    <th style="min-width: 230px;">
+                                        {% trans "Delivery 1" %}
+                                    </th>
+                                    <th style="min-width: 230px;">
+                                        {% trans "Delivery 2" %}
+                                    </th>
+                                    <th>
+                                        {% trans "Similarities" %}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for comparetwo in comparetwo_cacheitems %}
+                                    <tr>
+                                        <td>
+                                            {{ comparetwo.scaled_points }}
+                                        </td>
+
+                                        {% for parseresult in comparetwo.get_parseresults_as_tuple %}
+                                            <td>
+                                                <p>
+                                                    <span class="detektorassembly-delivery{{ forloop.counter }}-displayname">
+                                                        {% if parseresult.delivery.assignment_group.name %}
+                                                            <strong>
+                                                                {{ parseresult.delivery.assignment_group.name }}
+                                                            </strong><br>
+                                                        {% endif %}
+                                                        {% for candidate in parseresult.delivery.assignment_group.candidates.all %}
+                                                            {{ candidate.student.get_full_name }}{% if not forloop.last %}, {% endif %}
+                                                        {% endfor %}
+                                                    </span>
+                                                    {% trans "delivery" %}#{{ parseresult.delivery.number }}
+                                                </p>
+
+                                                <p>
+                                                    <a class="btn btn-default btn-sm" target="_blank"
+                                                            href="{% url 'devilry_subjectadmin_delivery' parseresult.delivery.id %}">
+                                                        <span class="fa fa-external-link"></span>
+                                                        {% trans "Show" %}
+                                                    </a>
+                                                    <a class="btn btn-default btn-sm" href="{% url 'devilry-delivery-download-all-zip' parseresult.delivery.id %}">
+                                                        <span class="fa fa-download"></span>
+                                                        {% trans "Download" %}
+                                                    </a>
+                                                </p>
+                                            </td>
+                                        {% endfor %}
+
+                                        <td>
+                                            {{ comparetwo.get_summary_descriptions_as_string }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul class="pager">
+                        <li class="previous {% if not page_obj.has_previous %}disabled{% endif %}">
+                            <a href="?language={{ active_language }}&amp;page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% else %}1{% endif %}">
+                                <i class="fa fa-chevron-left"></i>
+                                <span class="sr-only">{% trans "Previous" %}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <span>
+                                {% trans "Showing page" %} <strong>{{ page_obj.number }}</strong> {% trans "of" %}
+                                <strong>{{ page_obj.paginator.num_pages }}</strong>
+                            </span>
+                        </li>
+                        <li class="next {% if not page_obj.has_next %}disabled{% endif %}">
+                            <a href="?language={{ active_language }}&amp;page={% if page_obj.has_next %}{{ page_obj.next_page_number }}{% else %}last{% endif %}">
+                                <i class="fa fa-chevron-right"></i>
+                                <span class="sr-only">{% trans "Next" %}</span>
+                            </a>
+                        </li>
+                    </ul>
+                {% endif %}
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="container-fluid">
+            <div class="alert alert-warning">
+                {% trans "This feature is disabled for your Devilry install." %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock content %}

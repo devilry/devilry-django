@@ -1,0 +1,31 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}
+{% trans "Programming code similarity checks" %}
+{% endblock title %}
+
+{% block body %}
+    <div class="page-header">
+        <div class="container-fluid">
+            <h1>
+                {% block heading %}{% trans "Programming code similarity checks" %}{% endblock heading %}
+            </h1>
+            {% block belowheading %}{% endblock belowheading %}
+        </div>
+        {% block subheading %}{% endblock subheading %}
+    </div>
+
+    <div class="container-fluid">
+        <ol class="breadcrumb">
+
+            {% block breadcrumbtail %}
+                <li><a href="{% url 'devilry_detector_admin_assignmentassembly' assignment.id %}">
+                    {% trans "Similarity checks" %}
+                </a></li>
+            {% endblock breadcrumbtail %}
+        </ol>
+    </div>
+    {% block content %}{% endblock content %}
+{% endblock body %}
