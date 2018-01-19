@@ -48,6 +48,7 @@ class GroupViewMixin(object):
                 'assignment_group',
                 'relatedstudent__candidate_id',
                 'relatedstudent__automatic_anonymous_id',
+                'relatedstudent__active',
                 'relatedstudent__user__shortname',
                 'relatedstudent__user__fullname',
             )\
@@ -61,6 +62,7 @@ class GroupViewMixin(object):
                 'assignmentgroup',
                 'relatedexaminer__automatic_anonymous_id',
                 'relatedexaminer__user__shortname',
+                'relatedexaminer__active',
                 'relatedexaminer__user__fullname',
             )\
             .order_by(

@@ -104,6 +104,7 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
                 'assignment_group',
                 'relatedstudent__candidate_id',
                 'relatedstudent__automatic_anonymous_id',
+                'relatedstudent__active',
                 'relatedstudent__user__shortname',
                 'relatedstudent__user__fullname'
             )\
