@@ -78,6 +78,7 @@ class CreateUpdateMixin(object):
 class CreateView(crudbase.OnlySaveButtonMixin, CreateUpdateMixin, create.CreateView):
     form_class = CreateForm
     model = Period
+    template_name = 'devilry_cradmin/viewhelpers/devilry_createview_with_backlink.django.html'
 
     def dispatch(self, *args, **kwargs):
         self.subject = self.request.cradmin_role
@@ -120,6 +121,18 @@ class CreateView(crudbase.OnlySaveButtonMixin, CreateUpdateMixin, create.CreateV
 
     def form_saved(self, object):
         self.created_period = object
+
+    def get_backlink_url(self):
+        return crinstance.reverse_cradmin_url(
+            instanceid='devilry_admin_subjectadmin',
+            appname='overview',
+            roleid=self.request.cradmin_role.id
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateView, self).get_context_data(**kwargs)
+        context['backlink_url'] = self.get_backlink_url()
+        return context
 
 
 class App(crapp.App):
