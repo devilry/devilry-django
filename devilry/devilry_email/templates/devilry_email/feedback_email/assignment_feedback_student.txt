@@ -6,4 +6,4 @@
 {% trans "Deadline datetime" context "devilry feedback email" %}: {{ deadline_datetime|date:"DATETIME_FORMAT" }}
 {% trans "Assignment" context "devilry feedback email" %}: {{ assignment.long_name }}
 {% trans "Subject" context "devilry feedback email" %}: {{ assignment.parentnode.long_name }}
-{% trans "Link" context "devilry feedback email" %}: <a href="{{ url }}">{{ url }}</a>
+{% trans "Details" context "devilry feedback email" %}: {{ url }}

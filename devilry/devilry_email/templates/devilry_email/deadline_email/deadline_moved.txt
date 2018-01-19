@@ -4,4 +4,4 @@
 The deadline for {{ assignment_name }} has been moved.
 New deadline is {{ feedbackset_deadline }}.
 {% endblocktrans %}
-{% trans "Assignment link" %}: <a href="{{ url }}">{{ url }}</a>
+{% trans "Details" %}: {{ url }}
