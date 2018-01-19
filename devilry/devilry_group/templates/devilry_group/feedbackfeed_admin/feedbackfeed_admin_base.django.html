@@ -1,6 +1,22 @@
 {% extends 'devilry_group/feedbackfeed.django.html' %}
-{% load cradmin_tags %}
 {% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block feedbackfeed-header-content %}
+    <div class="devilry-backlink">
+        <a href="{{ backlink_url }}" class="devilry-backlink__backlink">
+            <span class="sr-only">
+                {% trans "Back" %}
+            </span>
+            <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+        </a>
+        <div class="devilry-backlink__content">
+            {{ block.super }}
+        </div>
+    </div>
+{% endblock feedbackfeed-header-content %}
+
 
 {% block navigation %}
     <nav class="devilry-tabs__tab-list" id="/tabs">

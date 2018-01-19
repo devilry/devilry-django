@@ -5,7 +5,7 @@ from django import http
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django_cradmin import crapp
+from django_cradmin import crapp, crinstance
 from django_cradmin.crispylayouts import PrimarySubmit
 
 from devilry.apps.core import models as core_models
@@ -35,6 +35,22 @@ class AdminBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     def set_automatic_attributes(self, obj):
         super(AdminBaseFeedbackFeedView, self).set_automatic_attributes(obj)
         obj.user_role = 'admin'
+
+    def get_backlink_url(self):
+        return crinstance.reverse_cradmin_url(
+            instanceid='devilry_admin_assignmentadmin',
+            appname='groupdetails',
+            roleid=self.request.cradmin_role.parentnode.id,
+            viewname='groupdetails',
+            kwargs={
+                'pk': self.request.cradmin_role.id
+            }
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super(AdminBaseFeedbackFeedView, self).get_context_data(**kwargs)
+        context['backlink_url'] = self.get_backlink_url()
+        return context
 
 
 class AdminPublicDiscussView(AdminBaseFeedbackFeedView):

@@ -13,18 +13,20 @@
     <div class="container">
         <div class="row">
             <div class="devilry-group-feedbackfeed-header">
-                <div class="col-sm-7 text-left">
-                    <h1 class="devilry-group-feedbackfeed-header-assignment">
-                        {{ assignment.long_name }}
-                    </h1>
-                    <div class="devilry-group-feedbackfeed-header-subject-period">
-                        <p class="devilry-group-feedbackfeed-header-subject">
-                            {{ subject.long_name }}
-                        </p>
-                        <p class="devilry-group-feedbackfeed-header-period">
-                            {{ period.long_name }}
-                        </p>
-                    </div>
+                <div class="col-sm-12 text-left">
+                    {% block feedbackfeed-header-content %}
+                        <h1 class="devilry-group-feedbackfeed-header-assignment">
+                            {{ assignment.long_name }}
+                        </h1>
+                        <div class="devilry-group-feedbackfeed-header-subject-period">
+                            <p class="devilry-group-feedbackfeed-header-subject">
+                                {{ subject.long_name }}
+                            </p>
+                            <p class="devilry-group-feedbackfeed-header-period">
+                                {{ period.long_name }}
+                            </p>
+                        </div>
+                    {% endblock feedbackfeed-header-content %}
                 </div>
             </div>
         </div>
