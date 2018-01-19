@@ -90,6 +90,7 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
     model = Assignment
     suggested_deadlines_template_name = 'devilry_admin/period/createassignment/suggested_deadlines.django.html'
     helpbox_template_name = 'devilry_admin/period/createassignment/helpbox.django.html'
+    template_name = 'devilry_cradmin/viewhelpers/devilry_createview_with_backlink.django.html'
 
     def dispatch(self, *args, **kwargs):
         self.period = self.request.cradmin_role
@@ -180,6 +181,18 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
         else:
             self.created_assignment.create_groups_from_relatedstudents_on_period()
             self.created_assignment.setup_examiners_by_relateduser_syncsystem_tags()
+
+    def get_backlink_url(self):
+        return crinstance.reverse_cradmin_url(
+            instanceid='devilry_admin_periodadmin',
+            appname='overview',
+            roleid=self.request.cradmin_role.id
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateView, self).get_context_data(**kwargs)
+        context['backlink_url'] = self.get_backlink_url()
+        return context
 
 
 class App(crapp.App):
