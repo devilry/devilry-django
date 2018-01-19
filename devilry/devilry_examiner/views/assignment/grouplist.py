@@ -89,6 +89,7 @@ class GroupListView(listbuilderview.FilterListMixin,
                 'relatedstudent__candidate_id',
                 'relatedstudent__automatic_anonymous_id',
                 'relatedstudent__user__shortname',
+                'relatedstudent__active',
                 'relatedstudent__user__fullname',
             )\
             .order_by(
