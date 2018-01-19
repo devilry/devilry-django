@@ -48,6 +48,7 @@ setup(
         'django_cradmin==1.2.2',
         'ievv_opensource==4.4.0',
         'arrow==0.12.0',
+        'detektor==1.1.0-beta.012',
 
         # For django-allauth
         'django-allauth==0.34.0',
