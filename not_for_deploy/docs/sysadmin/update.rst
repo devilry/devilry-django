@@ -23,4 +23,9 @@ Update Devilry
     $ cd ~/devilrydeploy
     $ venv/bin/pip install -r requirements.txt
 
-4. Start Supervisord.
+4. Collect static files::
+
+    $ cd ~/devilrydeploy
+    $ venv/bin/python manage.py collectstatic
+
+5. Start Supervisord.
