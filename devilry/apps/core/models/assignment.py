@@ -428,7 +428,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     delivery_types = models.PositiveIntegerField(
         default=deliverytypes.ELECTRONIC,
         choices=deliverytypes.as_choices_tuple(),
-        help_text=('This option controls what types of deliveries this '
+        help_text=_('This option controls what types of deliveries this '
                    'assignment accepts. See the Delivery documentation '
                    'for more info.'))
     deadline_handling = models.PositiveIntegerField(
@@ -448,7 +448,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             'expired is clearly marked for both students and examiners.'))
     scale_points_percent = models.PositiveIntegerField(
         default=100,
-        help_text=('Percent to scale points on this assignment by for '
+        help_text=_('Percent to scale points on this assignment by for '
                    'period overviews. The default is 100, which means '
                    'no change to the points.'))
     first_deadline = models.DateTimeField(blank=False, null=False)
