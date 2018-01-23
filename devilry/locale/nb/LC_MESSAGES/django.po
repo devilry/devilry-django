@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-22 16:44+0100\n"
-"PO-Revision-Date: 2018-01-22 18:00+0100\n"
+"POT-Creation-Date: 2018-01-23 10:07+0100\n"
+"PO-Revision-Date: 2018-01-23 10:09+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -126,6 +126,14 @@ msgctxt "assignment"
 msgid "Students can see points?"
 msgstr "Studenter kan se poengene?"
 
+#: apps/core/models/assignment.py:431
+msgid ""
+"This option controls what types of deliveries this assignment accepts. See "
+"the Delivery documentation for more info."
+msgstr ""
+"Dette alternativer kontrollerer hvilke typer av innleveringer som aksepteres "
+"for oppgaven. Se dokumentasjonen til Delivery for mer informasjon."
+
 #: apps/core/models/assignment.py:436
 msgid "Deadline handling"
 msgstr "Håndtering av innleveringsfrister"
@@ -156,6 +164,14 @@ msgstr ""
 "på en fornuftig måte. Studenter må gjennom et ekstra steg for å bekrefte at "
 "de ønsker å levere etter fristen, og oppgaver der innleveringsfristen har "
 "gått ut er tydelig markert for både rettere og studenter."
+
+#: apps/core/models/assignment.py:451
+msgid ""
+"Percent to scale points on this assignment by for period overviews. The "
+"default is 100, which means no change to the points."
+msgstr ""
+"Prosent for å skalere poeng for denne oppgaven etter periodeoversikt. "
+"Stander er 100, som betyr ikke noen endringer for poengene."
 
 #: apps/core/models/assignment.py:481
 msgctxt "assignment points-to-grade mapper"
@@ -1449,8 +1465,9 @@ msgid ""
 "The first deadline is %(deadline)s. This deadline is common for all students "
 "unless a new deadline have been provided to a group."
 msgstr ""
-"Første frist er %(deadline)s. Denne fristen er felles for alle studenter, "
-"med unntak av grupper som er blitt tildelt en annen frist."
+"Første innleveringsfrist er %(deadline)s. Denne fristen er felles for alle "
+"studenter, med unntak av grupper som er blitt tildelt en annen "
+"innleveringsfrist."
 
 #: devilry_admin/templates/devilry_admin/assignment/include/published.django.html:50
 #: devilry_admin/views/assignment/first_deadline.py:17
@@ -2841,7 +2858,7 @@ msgstr ""
 #: devilry_admin/views/period/createassignment.py:80
 #, python-format
 msgid "First deadline must be at least %(delay)s."
-msgstr "Første tidsfrist må minst være %(delay)s."
+msgstr "Første innleveringsfrist må minst være %(delay)s."
 
 #: devilry_admin/views/period/createassignment.py:154
 msgid "Example: Assignment 1"
@@ -3171,11 +3188,11 @@ msgstr "Navn (synkende)"
 
 #: devilry_cradmin/devilry_listfilter/assignment.py:32
 msgid "First deadline (newest first)"
-msgstr "Første tidsfrist (nyeste først)"
+msgstr "Første innleveringsfrist (nyeste først)"
 
 #: devilry_cradmin/devilry_listfilter/assignment.py:36
 msgid "First deadline (oldest first)"
-msgstr "Første tidsfrist (eldste først)"
+msgstr "Første innleveringsfrist (eldste først)"
 
 #: devilry_cradmin/devilry_listfilter/assignment.py:40
 msgid "Publishing time (newest first)"
@@ -3426,8 +3443,8 @@ msgid ""
 "Write the URL in the field below. Make sure you include the http:// or "
 "https:// part of the URL."
 msgstr ""
-"Skriv in URL'en in feltet under. Pass på at du inkluderer http:// eller "
-"https:// delen av URL'en."
+"Skriv inn URL i feltet under. Pass på at du inkluderer http:// eller "
+"https:// delen i URL."
 
 #: devilry_cradmin/templates/devilry_cradmin/devilry_acemarkdown.django.html:27
 msgid "Link title here"
@@ -3560,7 +3577,7 @@ msgstr "til noen grupper"
 #: devilry_deadlinemanagement/views/deadline_listview.py:37
 #, python-format
 msgid "%(deadline)s (Assignment first deadline)"
-msgstr "%(deadline)s (Oppgavens første tidsfrist)"
+msgstr "%(deadline)s (Oppgavens første innleveringsfrist)"
 
 #: devilry_deadlinemanagement/views/deadline_listview.py:48
 msgctxt "{} select_deadline"
@@ -4451,6 +4468,30 @@ msgstr ""
 "En kommentar fra en retter kan kun være privat hvis den tilhører "
 "karaktersetting."
 
+#: devilry_group/models.py:276
+msgid "first attempt"
+msgstr "første forsøk"
+
+#: devilry_group/models.py:277
+msgid "new attempt"
+msgstr "nytt forsøk"
+
+#: devilry_group/models.py:278
+msgid "re edit"
+msgstr "re-rediger"
+
+#: devilry_group/models.py:279
+msgid "merge first attempt"
+msgstr "flett første forsøk"
+
+#: devilry_group/models.py:280
+msgid "merge new attempt"
+msgstr "flett nytt forsøk"
+
+#: devilry_group/models.py:281
+msgid "merge re edit"
+msgstr "flett re-rediger"
+
 #: devilry_group/models.py:388
 msgid "FeedbackSet can not be ignored without a reason"
 msgstr "Tilbakemeldingssett kan ikke ignoreres uten en årsak"
@@ -4620,10 +4661,10 @@ msgid ""
 "comments for one deadline is considered a part of your delivery, so if you "
 "add a comment that makes a previous comment obsolete, you should say so."
 msgstr ""
-"Du kan også stille spørsmål til din(e) retter(e). All opplastede filer og "
-"kommentarer for en tidsfrist er ansett som en del av din levering. Hvis du "
-"legger til en kommentar for å gjøre forrige kommentar foreldet, bør du si "
-"ifra om dette."
+"Du kan også stille spørsmål til din(e) retter(e). Alle opplastede filer og "
+"kommentarer for en innleveringsfrist er ansett som en del av din levering. "
+"Hvis du legger til en kommentar for å gjøre forrige kommentar utdatert, bør "
+"du si ifra om dette."
 
 #: devilry_group/templates/devilry_group/listbuilder_feedbackfeed/admin_groupcomment_item_value.django.html:9
 #: devilry_group/templates/devilry_group/listbuilder_feedbackfeed/examiner_groupcomment_item_value.django.html:31
@@ -5147,8 +5188,8 @@ msgid ""
 "Welcome! Please select an assignment below to add deliveries, view feedback "
 "or communicate with you examiner."
 msgstr ""
-"Velkommen! Vennligst velg en av oppgavene under for å legge til leveringer, "
-"se tilbakemeldinger eller for kommunikasjon med din retter."
+"Velkommen! Vennligst velg en av oppgavene under for å legge til "
+"innleveringer, se tilbakemeldinger eller for kommunikasjon med din retter."
 
 #: devilry_student/templates/devilry_student/dashboard/dashboard.django.html:19
 msgctxt "student dashboard"

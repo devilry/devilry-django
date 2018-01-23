@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-22 16:44+0100\n"
+"POT-Creation-Date: 2018-01-23 10:07+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -107,6 +107,12 @@ msgctxt "assignment"
 msgid "Students can see points?"
 msgstr ""
 
+#: apps/core/models/assignment.py:431
+msgid ""
+"This option controls what types of deliveries this assignment accepts. See "
+"the Delivery documentation for more info."
+msgstr ""
+
 #: apps/core/models/assignment.py:436
 msgid "Deadline handling"
 msgstr ""
@@ -129,6 +135,12 @@ msgid ""
 "confirm-step when adding deliveries after their active deadline, and "
 "assignments where the deadline has expired is clearly marked for both "
 "students and examiners."
+msgstr ""
+
+#: apps/core/models/assignment.py:451
+msgid ""
+"Percent to scale points on this assignment by for period overviews. The "
+"default is 100, which means no change to the points."
 msgstr ""
 
 #: apps/core/models/assignment.py:481
@@ -4074,6 +4086,30 @@ msgstr ""
 
 #: devilry_group/models.py:142
 msgid "A examiner comment can only be private if part of grading."
+msgstr ""
+
+#: devilry_group/models.py:276
+msgid "first attempt"
+msgstr ""
+
+#: devilry_group/models.py:277
+msgid "new attempt"
+msgstr ""
+
+#: devilry_group/models.py:278
+msgid "re edit"
+msgstr ""
+
+#: devilry_group/models.py:279
+msgid "merge first attempt"
+msgstr ""
+
+#: devilry_group/models.py:280
+msgid "merge new attempt"
+msgstr ""
+
+#: devilry_group/models.py:281
+msgid "merge re edit"
 msgstr ""
 
 #: devilry_group/models.py:388

@@ -273,12 +273,12 @@ class FeedbackSet(models.Model):
 
     #: Grading status choices for :obj:`~.FeedbackSet.feedbackset_type`.
     FEEDBACKSET_TYPE_CHOICES = [
-        (FEEDBACKSET_TYPE_FIRST_ATTEMPT, 'first attempt'),
-        (FEEDBACKSET_TYPE_NEW_ATTEMPT, 'new attempt'),
-        (FEEDBACKSET_TYPE_RE_EDIT, 're edit'),
-        (FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT, 'merge first attempt'),
-        (FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT, 'merge new attempt'),
-        (FEEDBACKSET_TYPE_MERGE_RE_EDIT, 'merge re edit'),
+        (FEEDBACKSET_TYPE_FIRST_ATTEMPT, ugettext_lazy('first attempt')),
+        (FEEDBACKSET_TYPE_NEW_ATTEMPT, ugettext_lazy('new attempt')),
+        (FEEDBACKSET_TYPE_RE_EDIT, ugettext_lazy('re edit')),
+        (FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT, ugettext_lazy('merge first attempt')),
+        (FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT, ugettext_lazy('merge new attempt')),
+        (FEEDBACKSET_TYPE_MERGE_RE_EDIT, ugettext_lazy('merge re edit')),
     ]
 
     #: Sets the type of the feedbackset.
