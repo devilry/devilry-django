@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-23 11:20+0100\n"
+"POT-Creation-Date: 2018-01-23 12:32+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3278,7 +3278,7 @@ msgstr ""
 
 #: devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:30
 #: devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:47
-#: devilry_deadlinemanagement/views/manage_deadline_view.py:244
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:247
 #: devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:36
 #: devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:48
 msgid "Move deadline"
@@ -3321,27 +3321,35 @@ msgstr ""
 msgid "Add a suitable comment describing why the the deadline was changed."
 msgstr ""
 
-#: devilry_deadlinemanagement/views/manage_deadline_view.py:51
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:42
+msgid "Comment Text"
+msgstr ""
+
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:46
+msgid "New deadline"
+msgstr ""
+
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:54
 msgid ""
 "Pick a date and time from the calendar, or select one of the suggested "
 "deadlines."
 msgstr ""
 
-#: devilry_deadlinemanagement/views/manage_deadline_view.py:108
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:111
 #, python-format
 msgid "Manage deadline %(deadline)s"
 msgstr ""
 
-#: devilry_deadlinemanagement/views/manage_deadline_view.py:224
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:227
 msgid "test placeholder"
 msgstr ""
 
-#: devilry_deadlinemanagement/views/manage_deadline_view.py:245
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:248
 #: devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:44
 msgid "Give new attempt"
 msgstr ""
 
-#: devilry_deadlinemanagement/views/manage_deadline_view.py:390
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:393
 #, python-format
 msgid "Deadline managed for %(group_names)s"
 msgstr ""

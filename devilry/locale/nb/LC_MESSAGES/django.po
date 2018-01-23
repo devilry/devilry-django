@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-23 11:20+0100\n"
-"PO-Revision-Date: 2018-01-23 11:03+0100\n"
+"POT-Creation-Date: 2018-01-23 12:32+0100\n"
+"PO-Revision-Date: 2018-01-23 12:35+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -2002,7 +2002,7 @@ msgstr ""
 #: devilry_admin/templates/devilry_admin/period/createassignment/suggested_deadlines.django.html:21
 #: devilry_deadlinemanagement/templates/devilry_deadlinemanagement/suggested-deadlines.django.html:21
 msgid "Select a suggested deadline"
-msgstr "Velg en foreslått tidsfrist"
+msgstr "Velg en foreslått innleveringsfrist"
 
 #: devilry_admin/templates/devilry_admin/period/examiners/add.django.html:7
 #: devilry_admin/templates/devilry_admin/period/examiners/add.django.html:25
@@ -3570,7 +3570,7 @@ msgstr ""
 
 #: devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:30
 #: devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:47
-#: devilry_deadlinemanagement/views/manage_deadline_view.py:244
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:247
 #: devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:36
 #: devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:48
 msgid "Move deadline"
@@ -3612,30 +3612,40 @@ msgstr "Vennligst velg hvordan du vil administrere fristen."
 #: devilry_deadlinemanagement/views/manage_deadline_view.py:41
 msgid "Add a suitable comment describing why the the deadline was changed."
 msgstr ""
-"Legg til en passende kommentar som beskriver hvorfor tidsfristen ble endret."
+"Legg til en passende kommentar som beskriver hvorfor innleveringsfristen ble "
+"endret."
 
-#: devilry_deadlinemanagement/views/manage_deadline_view.py:51
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:42
+msgid "Comment Text"
+msgstr "Kommentar tekst"
+
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:46
+msgid "New deadline"
+msgstr "Ny innleveringsfrist"
+
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:54
 msgid ""
 "Pick a date and time from the calendar, or select one of the suggested "
 "deadlines."
 msgstr ""
-"Velg dato og tid fra kalenderen, eller en av de foreslåtte tidsfristene."
+"Velg dato og tid fra kalenderen, eller en av de foreslåtte "
+"innleveringsfristene."
 
-#: devilry_deadlinemanagement/views/manage_deadline_view.py:108
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:111
 #, python-format
 msgid "Manage deadline %(deadline)s"
-msgstr "Håndter innleveringsfrist %(deadline)s"
+msgstr "Håndter innleveringsfristen %(deadline)s"
 
-#: devilry_deadlinemanagement/views/manage_deadline_view.py:224
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:227
 msgid "test placeholder"
 msgstr "test placeholder"
 
-#: devilry_deadlinemanagement/views/manage_deadline_view.py:245
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:248
 #: devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:44
 msgid "Give new attempt"
 msgstr "Gi et nytt forsøk"
 
-#: devilry_deadlinemanagement/views/manage_deadline_view.py:390
+#: devilry_deadlinemanagement/views/manage_deadline_view.py:393
 #, python-format
 msgid "Deadline managed for %(group_names)s"
 msgstr "Tidsfrist forvaltet for %(group_names)s"
@@ -3819,7 +3829,7 @@ msgstr ""
 
 #: devilry_examiner/templates/devilry_examiner/dashboard/assignmentlist.django.html:7
 msgid "Listing of assigments where you are set as examiner."
-msgstr "Utlasting av oppgaver hvor du er satt som retter."
+msgstr "Utlisting av oppgaver hvor du er satt som retter."
 
 #: devilry_examiner/templatetags/devilry_examiner_tags.py:15
 #: devilry_examiner/templatetags/devilry_examiner_tags.py:53
@@ -4218,7 +4228,7 @@ msgid ""
 "feedback drafts."
 msgstr ""
 "Ingen studenter har mottatt tilbakemelding og ingen retter har lagret noe "
-"utkast til tilbakemelding"
+"utkast til tilbakemelding."
 
 #: devilry_gradingsystem/templates/devilry_gradingsystem/admin/summary.django.html:78
 msgid "Plugins and why you may care about them"
@@ -4579,7 +4589,7 @@ msgstr "Nåværende resultat"
 #: devilry_group/templates/devilry_group/include/admin_commentform_discuss_examiner_headingtext.django.html:5
 #: devilry_group/templates/devilry_group/include/examiner_commentform_discuss_examiner_headingtext.django.html:5
 msgid "Internal notes for this student or project group."
-msgstr "Interne notater for denne studenten eller prjsketgruppen"
+msgstr "Interne notater for denne studenten eller prosjektgruppen."
 
 #: devilry_group/templates/devilry_group/include/admin_commentform_discuss_examiner_headingtext.django.html:9
 msgid ""
