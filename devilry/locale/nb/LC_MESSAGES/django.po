@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-23 10:07+0100\n"
-"PO-Revision-Date: 2018-01-23 10:09+0100\n"
+"POT-Creation-Date: 2018-01-23 11:20+0100\n"
+"PO-Revision-Date: 2018-01-23 11:03+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -3169,6 +3169,21 @@ msgstr "ferdig"
 msgid "Update all candidate IDs and anonymous IDs."
 msgstr "Oppdater alle kandidat ID'er og anonyme ID'er."
 
+#: devilry_comment/models.py:54
+msgctxt "comment user_role_choices"
+msgid "Student"
+msgstr "Student"
+
+#: devilry_comment/models.py:55
+msgctxt "comment user_role_choices"
+msgid "Examiner"
+msgstr "Retter"
+
+#: devilry_comment/models.py:56
+msgctxt "comment user_role_choices"
+msgid "Admin"
+msgstr "Administrator"
+
 #: devilry_compressionutil/models.py:91
 msgid "backend_id must refer to a valid backend"
 msgstr "backend_id må referer til en gyldig backend"
@@ -5292,6 +5307,15 @@ msgstr "Engelsk"
 #: project/common/settings.py:166
 msgid "Norwegian Bokmal"
 msgstr "Norsk bokmål"
+
+#~ msgid "admin"
+#~ msgstr "administrator"
+
+#~ msgid "examiner"
+#~ msgstr "retter"
+
+#~ msgid "student"
+#~ msgstr "student"
 
 #~ msgid ""
 #~ "On anonymous assignments, examiners and students can NOT see each other "
