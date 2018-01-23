@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy, pgettext_lazy
 
 
 class Comment(models.Model):
@@ -50,9 +51,9 @@ class Comment(models.Model):
 
     #: Choices for the :obj:`~.Comment.user_role` field.
     USER_ROLE_CHOICES = (
-        (USER_ROLE_STUDENT, 'Student'),
-        (USER_ROLE_EXAMINER, 'Examiner'),
-        (USER_ROLE_ADMIN, 'Admin'),
+        (USER_ROLE_STUDENT, pgettext_lazy('comment user_role_choices','Student')),
+        (USER_ROLE_EXAMINER, pgettext_lazy('comment user_role_choices','Examiner')),
+        (USER_ROLE_ADMIN, pgettext_lazy('comment user_role_choices','Admin')),
     )
 
     #: What role did the user publish as? This determines the style of the comment
