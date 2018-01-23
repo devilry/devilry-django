@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-23 12:32+0100\n"
-"PO-Revision-Date: 2018-01-23 12:35+0100\n"
+"POT-Creation-Date: 2018-01-23 13:00+0100\n"
+"PO-Revision-Date: 2018-01-23 15:25+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -587,7 +587,7 @@ msgstr[1] "%(commentcount)s upubliserte kommentarer fra deg."
 #: apps/core/templatetags/devilry_core_tags.py:39
 #: devilry_examiner/templatetags/devilry_examiner_tags.py:28
 msgid "passed"
-msgstr "bestått"
+msgstr ""
 
 #: apps/core/templates/devilry_core/templatetags/grade-full-plain.django.html:12
 #: apps/core/templates/devilry_core/templatetags/grade-full.django.html:12
@@ -3607,7 +3607,7 @@ msgstr "Velg tidsfrist"
 #: devilry_deadlinemanagement/views/deadline_listview.py:56
 msgctxt "{} select_deadline"
 msgid "Please choose how you would like to manage the deadline."
-msgstr "Vennligst velg hvordan du vil administrere fristen."
+msgstr "Vennligst velg hvordan du vil administrere tidsfristen."
 
 #: devilry_deadlinemanagement/views/manage_deadline_view.py:41
 msgid "Add a suitable comment describing why the the deadline was changed."
@@ -3648,7 +3648,7 @@ msgstr "Gi et nytt forsøk"
 #: devilry_deadlinemanagement/views/manage_deadline_view.py:393
 #, python-format
 msgid "Deadline managed for %(group_names)s"
-msgstr "Tidsfrist forvaltet for %(group_names)s"
+msgstr "Innleveringsfrist endret for %(group_names)s"
 
 #: devilry_deadlinemanagement/views/multiselect_groups_view.py:21
 msgid ""
@@ -4822,12 +4822,12 @@ msgstr "Tilbakemelding er allerede publisert!"
 msgid "Grading"
 msgstr "Karaktersetting"
 
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:339
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:338
 msgid ""
 "Give a score between {} to {} where {} is the minimum amount of points "
 "needed to pass."
 msgstr ""
-"Oppgi en poengsum mellom {} og {}, hvor {} er minimum antall poeng nødvendig "
+"Sett en poengsum mellom {} og {}, hvor {} er minimum antall poeng som kreves "
 "for å bestå."
 
 #: devilry_group/views/examiner/feedbackfeed_examiner.py:360

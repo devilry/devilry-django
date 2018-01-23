@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-23 12:32+0100\n"
+"POT-Creation-Date: 2018-01-23 13:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4411,7 +4411,7 @@ msgstr ""
 msgid "Grading"
 msgstr ""
 
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:339
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:338
 msgid ""
 "Give a score between {} to {} where {} is the minimum amount of points "
 "needed to pass."
