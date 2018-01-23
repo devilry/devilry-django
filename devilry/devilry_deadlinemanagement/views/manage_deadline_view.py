@@ -38,10 +38,13 @@ class SelectedItemsForm(forms.Form):
 class ManageDeadlineForm(SelectedItemsForm):
     comment_text = forms.CharField(
         widget=devilry_acemarkdown.Small,
-        help_text=ugettext_lazy('Add a suitable comment describing why the the deadline was changed.')
+        help_text=ugettext_lazy('Add a suitable comment describing why the the deadline was changed.'),
+        label=ugettext_lazy('Comment Text')
     )
 
-    new_deadline = forms.DateTimeField()
+    new_deadline = forms.DateTimeField(
+        label=ugettext_lazy('New deadline')
+    )
 
     def __init__(self, *args, **kwargs):
         super(ManageDeadlineForm, self).__init__(*args, **kwargs)
