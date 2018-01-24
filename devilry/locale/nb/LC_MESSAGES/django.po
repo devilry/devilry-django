@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-24 10:39+0100\n"
-"PO-Revision-Date: 2018-01-24 10:39+0100\n"
+"POT-Creation-Date: 2018-01-24 11:33+0100\n"
+"PO-Revision-Date: 2018-01-24 11:35+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -176,7 +176,7 @@ msgstr ""
 #: apps/core/models/assignment.py:481
 msgctxt "assignment points-to-grade mapper"
 msgid "Passed or failed"
-msgstr "Bestått eller ikke bestått"
+msgstr ""
 
 #: apps/core/models/assignment.py:486
 msgctxt "assignment points-to-grade mapper"
@@ -191,7 +191,7 @@ msgstr "Du definerer en tabell for oppslag (A-F eller andre karaktersystemer)"
 #: apps/core/models/assignment.py:516
 msgctxt "assignment grading plugin"
 msgid "PASSED/FAILED. The examiner selects passed or failed."
-msgstr "BESTÅTT/IKKE BESTÅTT. Retteren velger bestått eller ikke bestått."
+msgstr ""
 
 #: apps/core/models/assignment.py:522
 msgctxt "assignment grading plugin"
@@ -264,12 +264,12 @@ msgstr ""
 #: apps/core/models/assignment.py:869
 msgctxt "assignment grade passed-or-failed"
 msgid "failed"
-msgstr "ikke bestått"
+msgstr ""
 
 #: apps/core/models/assignment.py:873
 msgctxt "assignment grade passed-or-failed"
 msgid "passed"
-msgstr "bestått"
+msgstr ""
 
 #: apps/core/models/assignment.py:910
 #, python-format
@@ -2510,7 +2510,7 @@ msgstr "Minimum antall poeng nødvendig for å bestå"
 #: devilry_admin/views/assignment/gradingconfiguration.py:113
 msgctxt "assignment config"
 msgid "Points awarded for passing grade"
-msgstr "Poeng tildelt for karakteren bestått"
+msgstr ""
 
 #: devilry_admin/views/assignment/gradingconfiguration.py:118
 msgctxt "assignment config"
@@ -3604,7 +3604,7 @@ msgctxt "deadline_list_view select_deadline"
 msgid "Select deadline"
 msgstr "Velg innleveringsfrist"
 
-#: devilry_deadlinemanagement/views/deadline_listview.py:57
+#: devilry_deadlinemanagement/views/deadline_listview.py:56
 msgctxt "deadline_list_view select_deadline"
 msgid "Please choose how you would like to manage the deadline."
 msgstr "Vennligst velg hvordan du vil administrere innleveringsfristen."
@@ -3862,13 +3862,13 @@ msgstr "Vis tilbakemelding"
 #: devilry_group/views/examiner/feedbackfeed_examiner.py:354
 msgctxt "grading"
 msgid "Passed?"
-msgstr "Bestått?"
+msgstr ""
 
 #: devilry_examiner/views/assignment/bulkoperations/bulk_feedback.py:53
 #: devilry_group/views/examiner/feedbackfeed_examiner.py:355
 msgctxt "grading"
 msgid "Check to provide a passing grade."
-msgstr "Velg denne for å gi bestått karakter."
+msgstr ""
 
 #: devilry_examiner/views/assignment/bulkoperations/bulk_feedback.py:97
 msgid "Bulk create feedback"
@@ -3891,9 +3891,38 @@ msgstr "Du m sette en karakter for minst en gruppe."
 msgid "No groups to receive feedback"
 msgstr "Ingen grupper som kan motta tilbakemelding"
 
-#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:39
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:21
+msgctxt "selected_assignment_group_form error_message"
+msgid "Invalid assignment group items was selected."
+msgstr "Ugyldige elementer fra oppgavegruppene ble valgt."
+
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:41
+msgid "Add a general comment to the feedback"
+msgstr "Legg til en general kommentar i tilbakemeldingen"
+
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:42
 msgid "Delivery has been corrected."
 msgstr "Denne oppgaven er korrigert."
+
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:43
+msgid "Feedback comment text"
+msgstr "Tilbakemeldingstekst"
+
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:60
+msgid "assignment group"
+msgstr "oppgavegruppe"
+
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:64
+msgid "Submit selected assignment group(s)"
+msgstr "Send inn valgt(e) oppgavegruppe(r)"
+
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:67
+msgid "Selected assignment group"
+msgstr "Valgt oppgavegruppe"
+
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:71
+msgid "No assignment group selected"
+msgstr "Ingen oppgavegruppe er valgt"
 
 #: devilry_examiner/views/dashboard/assignmentlist.py:23
 #, python-format
@@ -4840,7 +4869,7 @@ msgstr ""
 
 #: devilry_group/views/examiner/feedbackfeed_examiner.py:360
 msgid "Check the box to give a passing grade"
-msgstr "Velg denne for å gi bestått karakter."
+msgstr "Velg denne for å gi bestått karakter"
 
 #: devilry_group/views/examiner/feedbackfeed_examiner.py:477
 msgid "Groupcomment"
@@ -5245,7 +5274,7 @@ msgstr "Se igjennom alle oppgaver og kurs"
 #: devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:4
 #: devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:11
 msgid "Passed"
-msgstr "Bestått"
+msgstr ""
 
 #: devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:6
 #: devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:13
@@ -5338,6 +5367,15 @@ msgstr "Engelsk"
 #: project/common/settings.py:166
 msgid "Norwegian Bokmal"
 msgstr "Norsk bokmål"
+
+#~ msgid "Selected {}"
+#~ msgstr "Valgte {}"
+
+#~ msgid "No {} selected"
+#~ msgstr "Ingen {} valgt"
+
+#~ msgid "Selected "
+#~ msgstr "Valgte "
 
 #~ msgid "admin"
 #~ msgstr "administrator"

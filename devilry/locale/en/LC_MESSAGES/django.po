@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-24 10:38+0100\n"
+"POT-Creation-Date: 2018-01-24 11:33+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3312,7 +3312,7 @@ msgctxt "deadline_list_view select_deadline"
 msgid "Select deadline"
 msgstr ""
 
-#: devilry_deadlinemanagement/views/deadline_listview.py:57
+#: devilry_deadlinemanagement/views/deadline_listview.py:56
 msgctxt "deadline_list_view select_deadline"
 msgid "Please choose how you would like to manage the deadline."
 msgstr ""
@@ -3573,8 +3573,37 @@ msgstr ""
 msgid "No groups to receive feedback"
 msgstr ""
 
-#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:39
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:21
+msgctxt "selected_assignment_group_form error_message"
+msgid "Invalid assignment group items was selected."
+msgstr ""
+
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:41
+msgid "Add a general comment to the feedback"
+msgstr ""
+
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:42
 msgid "Delivery has been corrected."
+msgstr ""
+
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:43
+msgid "Feedback comment text"
+msgstr ""
+
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:60
+msgid "assignment group"
+msgstr ""
+
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:64
+msgid "Submit selected assignment group(s)"
+msgstr ""
+
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:67
+msgid "Selected assignment group"
+msgstr ""
+
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:71
+msgid "No assignment group selected"
 msgstr ""
 
 #: devilry_examiner/views/dashboard/assignmentlist.py:23
