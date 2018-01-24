@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django import forms
 from django.db import models
 from django.db.models.functions import Lower, Concat
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin.viewhelpers import multiselect2
 from django_cradmin.viewhelpers import multiselect2view
 
@@ -16,7 +16,10 @@ from devilry.devilry_cradmin import devilry_listfilter
 
 class SelectedAssignmentGroupForm(forms.Form):
     qualification_modelclass = core_models.AssignmentGroup
-    invalid_qualification_item_message = 'Invalid assignment group items was selected.'
+    invalid_qualification_item_message = pgettext_lazy(
+        'selected_assignment_group_form error_message',
+        'Invalid assignment group items was selected.'
+    )
 
     #: The items selected as ModelMultipleChoiceField.
     #: If some or all items should be selected by default, override this.
@@ -35,8 +38,10 @@ class SelectedAssignmentGroupForm(forms.Form):
     #: A wysiwig editor for writing a feedback message.
     feedback_comment_text = forms.CharField(
         widget=devilry_acemarkdown.Small,
-        help_text='Add a general comment to the feedback',
-        initial=ugettext_lazy('Delivery has been corrected.'))
+        help_text=ugettext_lazy('Add a general comment to the feedback'),
+        initial=ugettext_lazy('Delivery has been corrected.'),
+        label=ugettext_lazy('Feedback comment text')
+    )
 
     def __init__(self, *args, **kwargs):
         selectable_qualification_items_queryset = kwargs.pop('selectable_items_queryset')
@@ -51,17 +56,14 @@ class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
     #: By default this is :class:`.SelectedQualificationItem`.
     selected_target_renderer = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
 
-    #: A descriptive name for the items selected.
-    descriptive_item_name = 'assignment group'
-
     def get_submit_button_text(self):
-        return 'Submit selected {}(s)'.format(self.descriptive_item_name)
+        return ugettext_lazy('Submit selected assignment group(s)')
 
     def get_with_items_title(self):
-        return 'Selected {}'.format(self.descriptive_item_name)
+        return ugettext_lazy('Selected assignment group')
 
     def get_without_items_text(self):
-        return 'No {} selected'.format(self.descriptive_item_name)
+        return ugettext_lazy('No assignment group selected')
 
     def get_field_layout(self):
         return [
