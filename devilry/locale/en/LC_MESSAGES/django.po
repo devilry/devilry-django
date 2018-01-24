@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-24 10:36+0100\n"
+"POT-Creation-Date: 2018-01-24 10:38+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3303,17 +3303,17 @@ msgid "%(deadline)s (Assignment first deadline)"
 msgstr ""
 
 #: devilry_deadlinemanagement/views/deadline_listview.py:48
-msgctxt "{} select_deadline"
+msgctxt "deadline_list_view select_deadline"
 msgid "Select deadline to manage"
 msgstr ""
 
 #: devilry_deadlinemanagement/views/deadline_listview.py:52
-msgctxt "{} select_deadline"
+msgctxt "deadline_list_view select_deadline"
 msgid "Select deadline"
 msgstr ""
 
 #: devilry_deadlinemanagement/views/deadline_listview.py:57
-msgctxt "{} select_deadline"
+msgctxt "deadline_list_view select_deadline"
 msgid "Please choose how you would like to manage the deadline."
 msgstr ""
 

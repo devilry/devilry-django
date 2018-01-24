@@ -44,15 +44,15 @@ class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
     template_name = 'devilry_deadlinemanagement/select-deadline.django.html'
 
     def get_pagetitle(self):
-        return pgettext_lazy('{} select_deadline'.format(self.request.cradmin_app.get_devilryrole()),
+        return pgettext_lazy('deadline_list_view select_deadline',
                              'Select deadline to manage')
 
     def get_pageheading(self):
-        return pgettext_lazy('{} select_deadline'.format(self.request.cradmin_app.get_devilryrole()),
+        return pgettext_lazy('deadline_list_view select_deadline',
                              'Select deadline')
 
     def get_page_subheading(self):
-        return pgettext_lazy('{} select_deadline'.format(self.request.cradmin_app.get_devilryrole()),
+        return pgettext_lazy('deadline_list_view select_deadline',
                              'Please choose how you would like to manage the deadline.')
 
     def get_queryset_for_role(self, role):
@@ -63,7 +63,7 @@ class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
             role: :class:`.Assignment`.
         """
         queryset = self.get_queryset_for_role_filtered(role=role)
-        return self.get_annotations_for_queryset(queryset=queryset)\
+        return self.get_annotations_for_queryset(queryset=queryset) \
             .order_by('cached_data__last_feedbackset__deadline_datetime')
 
     def get_distinct_deadlines_with_groups(self):

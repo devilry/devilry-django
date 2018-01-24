@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-24 10:36+0100\n"
-"PO-Revision-Date: 2018-01-24 10:24+0100\n"
+"POT-Creation-Date: 2018-01-24 10:39+0100\n"
+"PO-Revision-Date: 2018-01-24 10:39+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -3595,19 +3595,19 @@ msgid "%(deadline)s (Assignment first deadline)"
 msgstr "%(deadline)s (Oppgavens første innleveringsfrist)"
 
 #: devilry_deadlinemanagement/views/deadline_listview.py:48
-msgctxt "{} select_deadline"
+msgctxt "deadline_list_view select_deadline"
 msgid "Select deadline to manage"
-msgstr "Velg frist som skal administreres"
+msgstr "Velg innleveringsfrist som skal administreres"
 
 #: devilry_deadlinemanagement/views/deadline_listview.py:52
-msgctxt "{} select_deadline"
+msgctxt "deadline_list_view select_deadline"
 msgid "Select deadline"
-msgstr "Velg tidsfrist"
+msgstr "Velg innleveringsfrist"
 
 #: devilry_deadlinemanagement/views/deadline_listview.py:57
-msgctxt "{} select_deadline"
+msgctxt "deadline_list_view select_deadline"
 msgid "Please choose how you would like to manage the deadline."
-msgstr "Vennligst velg hvordan du vil administrere tidsfristen."
+msgstr "Vennligst velg hvordan du vil administrere innleveringsfristen."
 
 #: devilry_deadlinemanagement/views/manage_deadline_view.py:41
 msgid "Add a suitable comment describing why the the deadline was changed."
