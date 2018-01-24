@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-24 15:19+0100\n"
-"PO-Revision-Date: 2018-01-24 15:23+0100\n"
+"POT-Creation-Date: 2018-01-24 17:13+0100\n"
+"PO-Revision-Date: 2018-01-24 17:17+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -345,6 +345,18 @@ msgctxt "core assignmentgroup"
 msgid "group#%(groupid)s - no students in group"
 msgstr "gruppe#%(groupid)s - ingen studenter i gruppen"
 
+#: apps/core/models/assignment_group.py:1548
+msgid ""
+"Cannot merge self into target, self and target is not part of same "
+"AssignmentGroup"
+msgstr ""
+"Kan ikke flette seg selv med målet, seg selv og målet er ikke en del av "
+"samme oppgave gruppe (AssignmentGroup)"
+
+#: apps/core/models/assignment_group.py:1565
+msgid "Cannot merge less than 2 groups"
+msgstr "Kan ikke flette mindre enn 2 grupper"
+
 #: apps/core/models/basenode.py:53
 msgid "Path"
 msgstr "Vei"
@@ -373,7 +385,7 @@ msgstr ""
 
 #: apps/core/models/custom_db_fields.py:33
 msgid "Can only contain numbers, lowercase letters, '_' and '-'. "
-msgstr "Kan kun bestå av nummer, små bokstaver, '_' og '-'."
+msgstr "Kan kun bestå av nummer, små bokstaver, '_' og '-'. "
 
 #: apps/core/models/custom_db_fields.py:40 devilry_account/models.py:876
 #: devilry_account/templates/devilry_account/crapps/account/index.django.html:16
@@ -535,7 +547,7 @@ msgid ""
 "points."
 msgstr ""
 "Kan ikke ha verdier i karaktertabellen som er større enn maksimalt antall "
-"poeng"
+"poeng."
 
 #: apps/core/models/relateduser.py:345 apps/core/models/relateduser.py:415
 msgid "Anonymous ID missing"
@@ -1232,7 +1244,7 @@ msgstr "Legg til studenter"
 
 #: devilry_admin/templates/devilry_admin/assignment/examiners/examinerdetails.django.html:44
 msgid "Remove some or all students"
-msgstr "Fjern noen aller alle studenter"
+msgstr "Fjern noen eller alle studentene"
 
 #: devilry_admin/templates/devilry_admin/assignment/examiners/overview.django.html:7
 #: devilry_admin/templates/devilry_admin/assignment/examiners/overview.django.html:25
@@ -1310,6 +1322,14 @@ msgstr ""
 "i den første kolonnen og den minimale poengsum for å oppnå karakteren i den "
 "andre kolonnen. Den første raden må ha verdien 0 i den andre kolonnen. Dette "
 "kan ikke redigeres."
+
+#: devilry_admin/templates/devilry_admin/assignment/gradingconfiguration-update/custom-table.django.html:17
+msgid "Grade"
+msgstr "Karakter"
+
+#: devilry_admin/templates/devilry_admin/assignment/gradingconfiguration-update/custom-table.django.html:20
+msgid "Minimum points required for grade"
+msgstr "Minimum antall poeng nødvendig for å bestå"
 
 #: devilry_admin/templates/devilry_admin/assignment/gradingconfiguration-update/custom-table.django.html:34
 msgid "Add row"
@@ -1820,7 +1840,7 @@ msgstr ""
 
 #: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:36
 msgid "Course administrator"
-msgstr "Kurseadministrator"
+msgstr "Kursadministrator"
 
 #: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:40
 msgid ""
@@ -1844,11 +1864,19 @@ msgstr ""
 "Hvert kurs har nøyaktig en spesiell tillatelsesgruppe hvor avdelings- og "
 "kursadministratorer kan legge til ekstra administratorer."
 
-#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:61
+#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:54
+msgid ""
+"You add admins to this special permission group using the \"Add course "
+"administrators\" button above."
+msgstr ""
+"Du legger administratorer til denne spesielle tillatelsesgruppen ved å "
+"benytte \"Legg til kursadministrator\" knappen ovenfor."
+
+#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:63
 msgid "Semester administrator"
 msgstr "Semesteradministrator"
 
-#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:65
+#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:67
 msgid ""
 "Semester administrator permission groups is the lowest level of permission "
 "for administrators. Semester administrator permission groups are typically "
@@ -1860,7 +1888,7 @@ msgstr ""
 "er vanligvis bare lagt til for et semester, kanskje to hvis de deler de "
 "samme administratorene."
 
-#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:72
+#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:74
 msgid ""
 "Users in a semester administrator permission group do not have access to "
 "anonymous assignments. The primary use case for semester administrators is "
@@ -1872,7 +1900,7 @@ msgstr ""
 "semesteradministratorer er lærer-assistenter og andre administratorer som "
 "kun skal ha adgang til normale, ikke anonymiserte oppgaver."
 
-#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:79
+#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:81
 msgid ""
 "Each semester has exactly one special permission group where department, "
 "course and semester administrators can add extra administrators."
@@ -1880,7 +1908,7 @@ msgstr ""
 "Hvert semester har nøyaktig en spesiell tillatelsesgruppe hvor avdelings-, "
 "kurs- og semesteradministratorer kan legge til ekstra administratorer"
 
-#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:94
+#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:96
 msgid ""
 "A user is always given the highest level of permission available. This means "
 "that if a user is both in a department administrator permission group and a "

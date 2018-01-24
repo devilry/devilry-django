@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-24 15:19+0100\n"
+"POT-Creation-Date: 2018-01-24 17:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -287,6 +287,16 @@ msgstr ""
 #, python-format
 msgctxt "core assignmentgroup"
 msgid "group#%(groupid)s - no students in group"
+msgstr ""
+
+#: apps/core/models/assignment_group.py:1548
+msgid ""
+"Cannot merge self into target, self and target is not part of same "
+"AssignmentGroup"
+msgstr ""
+
+#: apps/core/models/assignment_group.py:1565
+msgid "Cannot merge less than 2 groups"
 msgstr ""
 
 #: apps/core/models/basenode.py:53
@@ -1186,6 +1196,14 @@ msgid ""
 "and this is not editable."
 msgstr ""
 
+#: devilry_admin/templates/devilry_admin/assignment/gradingconfiguration-update/custom-table.django.html:17
+msgid "Grade"
+msgstr ""
+
+#: devilry_admin/templates/devilry_admin/assignment/gradingconfiguration-update/custom-table.django.html:20
+msgid "Minimum points required for grade"
+msgstr ""
+
 #: devilry_admin/templates/devilry_admin/assignment/gradingconfiguration-update/custom-table.django.html:34
 msgid "Add row"
 msgstr ""
@@ -1676,11 +1694,17 @@ msgid ""
 "course administrators can add extra administrators."
 msgstr ""
 
-#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:61
+#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:54
+msgid ""
+"You add admins to this special permission group using the \"Add course "
+"administrators\" button above."
+msgstr ""
+
+#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:63
 msgid "Semester administrator"
 msgstr ""
 
-#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:65
+#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:67
 msgid ""
 "Semester administrator permission groups is the lowest level of permission "
 "for administrators. Semester administrator permission groups are typically "
@@ -1688,7 +1712,7 @@ msgid ""
 "share the same administrators."
 msgstr ""
 
-#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:72
+#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:74
 msgid ""
 "Users in a semester administrator permission group do not have access to "
 "anonymous assignments. The primary use case for semester administrators is "
@@ -1696,13 +1720,13 @@ msgid ""
 "access to normal non-anonymous assignments."
 msgstr ""
 
-#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:79
+#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:81
 msgid ""
 "Each semester has exactly one special permission group where department, "
 "course and semester administrators can add extra administrators."
 msgstr ""
 
-#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:94
+#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:96
 msgid ""
 "A user is always given the highest level of permission available. This means "
 "that if a user is both in a department administrator permission group and a "

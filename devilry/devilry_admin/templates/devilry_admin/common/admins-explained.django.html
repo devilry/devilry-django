@@ -51,8 +51,10 @@
             {% endblocktrans %}
             {% if in_subject_adminoverview %}
                 <em class="devilry-adminpermissions-explained-in-subject-adminoverview">
-                    You add admins to this special permission group using the "Add course administrators" button
-                    above.
+                    {% blocktrans trimmed %}
+                        You add admins to this special permission group using the "Add course administrators" button
+                        above.
+                    {% endblocktrans %}
                 </em>
             {% endif %}
         </p>
@@ -82,8 +84,10 @@
             {% endblocktrans %}
             {% if in_period_adminoverview %}
                 <em class="devilry-adminpermissions-explained-in-period-adminoverview">
-                    You add users to this special permission group using the "Add semester administrators" button
-                    above.
+                    {% blocktrans trimmed %}
+                        You add users to this special permission group using the "Add semester administrators" button
+                        above.
+                    {% endblocktrans %}
                 </em>
             {% endif %}
         </p>
