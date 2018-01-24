@@ -1544,7 +1544,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             ValidationError
         """
         if self.parentnode_id != target.parentnode_id:
-            raise ValidationError('Cannot merge self into target, self and target is not part of same AssignmentGroup')
+            raise ValidationError(
+                _('Cannot merge self into target, self and target is not part of same AssignmentGroup')
+            )
 
     @classmethod
     def merge_groups(self, groups):
@@ -1560,7 +1562,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             ValidationError if we are not able to merge groups
         """
         if len(groups) < 2:
-            raise ValidationError('Cannot merge less than 2 groups')
+            raise ValidationError(_('Cannot merge less than 2 groups'))
 
         from devilry.apps.core.models import AssignmentGroupHistory
 
