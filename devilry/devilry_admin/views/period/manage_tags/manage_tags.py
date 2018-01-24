@@ -101,6 +101,12 @@ class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.Vi
                                 .order_by('user__shortname')))
         return queryset
 
+    def get_no_items_message(self):
+        return pgettext_lazy(
+            'TagListBuilderListView get_no_items_message',
+            'No period tags'
+        )
+
 
 class CreatePeriodTagForm(forms.Form):
     tag_text = forms.CharField()

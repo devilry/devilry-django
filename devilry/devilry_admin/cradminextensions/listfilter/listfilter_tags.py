@@ -56,11 +56,11 @@ class IsHiddenRadioFilter(abstractradio.AbstractRadioFilter):
 
     def get_choices(self):
         return [
-            ('', 'show all tags'),
-            ('show-hidden-tags-only', 'hidden tags only'),
-            ('show-visible-tags-only', 'visible tags only'),
-            ('show-custom-tags-only', 'custom tags only'),
-            ('show-imported-tags-only', 'imported tags only'),
+            ('', ugettext_lazy('show all tags')),
+            ('show-hidden-tags-only', ugettext_lazy('hidden tags only')),
+            ('show-visible-tags-only', ugettext_lazy('visible tags only')),
+            ('show-custom-tags-only', ugettext_lazy('custom tags only')),
+            ('show-imported-tags-only', ugettext_lazy('imported tags only')),
         ]
 
     def filter(self, queryobject):
