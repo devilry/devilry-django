@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-24 17:13+0100\n"
+"POT-Creation-Date: 2018-01-24 17:18+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1726,7 +1726,13 @@ msgid ""
 "course and semester administrators can add extra administrators."
 msgstr ""
 
-#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:96
+#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:87
+msgid ""
+"You add users to this special permission group using the \"Add semester "
+"administrators\" button above."
+msgstr ""
+
+#: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:98
 msgid ""
 "A user is always given the highest level of permission available. This means "
 "that if a user is both in a department administrator permission group and a "
