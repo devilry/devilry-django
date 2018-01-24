@@ -474,7 +474,7 @@ class GroupCommentDeleteView(GroupCommentEditDeleteMixin, delete.DeleteView):
         return super(GroupCommentDeleteView, self).dispatch(request, *args, **kwargs)
 
     def get_object_preview(self):
-        return 'Groupcomment'
+        return ugettext_lazy('Groupcomment')
 
     def get_success_url(self):
         return self.request.cradmin_app.reverse_appindexurl()
