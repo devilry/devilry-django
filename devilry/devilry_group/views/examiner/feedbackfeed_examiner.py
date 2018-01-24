@@ -507,6 +507,12 @@ class GroupCommentEditView(GroupCommentEditDeleteMixin, update.UpdateView):
             raise PermissionDenied
         return super(GroupCommentEditView, self).dispatch(request, *args, **kwargs)
 
+    def get_pagetitle(self):
+        return ugettext_lazy('Edit group comment')
+
+    def get_pageheading(self):
+        return ugettext_lazy('Edit group comment')
+
     def get_form_class(self):
         """
         Get the formclass to use.
@@ -550,7 +556,7 @@ class GroupCommentEditView(GroupCommentEditDeleteMixin, update.UpdateView):
             GroupComment: The saved comment.
         """
         comment = super(GroupCommentEditView, self).save_object(form=form, commit=commit)
-        self.add_success_messages('GroupComment updated!')
+        self.add_success_messages(ugettext_lazy('GroupComment updated!'))
         return comment
 
     def get_success_url(self):
