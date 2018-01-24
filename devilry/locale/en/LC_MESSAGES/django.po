@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-23 13:00+0100\n"
+"POT-Creation-Date: 2018-01-24 10:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3312,7 +3312,7 @@ msgctxt "{} select_deadline"
 msgid "Select deadline"
 msgstr ""
 
-#: devilry_deadlinemanagement/views/deadline_listview.py:56
+#: devilry_deadlinemanagement/views/deadline_listview.py:57
 msgctxt "{} select_deadline"
 msgid "Please choose how you would like to manage the deadline."
 msgstr ""
@@ -4216,6 +4216,10 @@ msgid ""
 "and admins."
 msgstr ""
 
+#: devilry_group/templates/devilry_group/include/examiner.editlastdelivery.django.html:25
+msgid "Edit last delivery"
+msgstr ""
+
 #: devilry_group/templates/devilry_group/include/examiner_commentform_discuss_examiner_headingtext.django.html:9
 msgid ""
 "Visible only to you, your co-examiners (if any) and admins. Students can not "
@@ -4319,6 +4323,10 @@ msgctxt "devilry_group feedbackfeed part of feedback badge"
 msgid "feedback"
 msgstr ""
 
+#: devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:19
+msgid "Attempt"
+msgstr ""
+
 #: devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:40
 #: devilry_group/views/examiner/feedbackfeed_examiner.py:391
 msgid "Edit grade"
@@ -4411,7 +4419,7 @@ msgstr ""
 msgid "Grading"
 msgstr ""
 
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:338
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:339
 msgid ""
 "Give a score between {} to {} where {} is the minimum amount of points "
 "needed to pass."
@@ -4419,6 +4427,19 @@ msgstr ""
 
 #: devilry_group/views/examiner/feedbackfeed_examiner.py:360
 msgid "Check the box to give a passing grade"
+msgstr ""
+
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:477
+msgid "Groupcomment"
+msgstr ""
+
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:511
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:514
+msgid "Edit group comment"
+msgstr ""
+
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:559
+msgid "GroupComment updated!"
 msgstr ""
 
 #: devilry_group/views/student/feedbackfeed_student.py:37

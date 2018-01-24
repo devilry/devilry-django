@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-23 13:00+0100\n"
-"PO-Revision-Date: 2018-01-23 15:25+0100\n"
+"POT-Creation-Date: 2018-01-24 10:36+0100\n"
+"PO-Revision-Date: 2018-01-24 10:24+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -3604,7 +3604,7 @@ msgctxt "{} select_deadline"
 msgid "Select deadline"
 msgstr "Velg tidsfrist"
 
-#: devilry_deadlinemanagement/views/deadline_listview.py:56
+#: devilry_deadlinemanagement/views/deadline_listview.py:57
 msgctxt "{} select_deadline"
 msgid "Please choose how you would like to manage the deadline."
 msgstr "Vennligst velg hvordan du vil administrere tidsfristen."
@@ -4611,6 +4611,10 @@ msgstr ""
 "Alt du skriver eller laster opp her er synlig for studenten(e), rettere og "
 "administratorer."
 
+#: devilry_group/templates/devilry_group/include/examiner.editlastdelivery.django.html:25
+msgid "Edit last delivery"
+msgstr "Rediger siste innlevering"
+
 #: devilry_group/templates/devilry_group/include/examiner_commentform_discuss_examiner_headingtext.django.html:9
 msgid ""
 "Visible only to you, your co-examiners (if any) and admins. Students can not "
@@ -4725,6 +4729,10 @@ msgctxt "devilry_group feedbackfeed part of feedback badge"
 msgid "feedback"
 msgstr "tilbakemelding"
 
+#: devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:19
+msgid "Attempt"
+msgstr "Forsøk"
+
 #: devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:40
 #: devilry_group/views/examiner/feedbackfeed_examiner.py:391
 msgid "Edit grade"
@@ -4822,7 +4830,7 @@ msgstr "Tilbakemelding er allerede publisert!"
 msgid "Grading"
 msgstr "Karaktersetting"
 
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:338
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:339
 msgid ""
 "Give a score between {} to {} where {} is the minimum amount of points "
 "needed to pass."
@@ -4833,6 +4841,19 @@ msgstr ""
 #: devilry_group/views/examiner/feedbackfeed_examiner.py:360
 msgid "Check the box to give a passing grade"
 msgstr "Velg denne for å gi bestått karakter."
+
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:477
+msgid "Groupcomment"
+msgstr "Gruppekommentar"
+
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:511
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:514
+msgid "Edit group comment"
+msgstr "Rediger gruppekommentar"
+
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:559
+msgid "GroupComment updated!"
+msgstr "Gruppekommentar oppdatert!"
 
 #: devilry_group/views/student/feedbackfeed_student.py:37
 msgid "Add delivery or question"
