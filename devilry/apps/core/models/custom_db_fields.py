@@ -37,7 +37,7 @@ class LongNameField(models.CharField):
     def __init__(self, *args, **kwargs):
         kw = dict(
             max_length=100,
-            verbose_name='Name',
+            verbose_name=_('Name'),
             db_index=True)
         kw.update(kwargs)
         super(LongNameField, self).__init__(*args, **kw)
