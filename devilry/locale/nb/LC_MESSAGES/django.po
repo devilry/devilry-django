@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-24 14:48+0100\n"
-"PO-Revision-Date: 2018-01-24 14:49+0100\n"
+"POT-Creation-Date: 2018-01-24 15:19+0100\n"
+"PO-Revision-Date: 2018-01-24 15:20+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -26,6 +26,7 @@ msgid "Admins"
 msgstr "Admins"
 
 #: apps/core/admin.py:70 apps/core/admin.py:98 apps/core/admin.py:138
+#: apps/core/models/period.py:196
 msgid "Subject"
 msgstr "Kurs"
 
@@ -374,6 +375,16 @@ msgstr ""
 msgid "Can only contain numbers, lowercase letters, '_' and '-'. "
 msgstr "Kan kun bestå av nummer, små bokstaver, '_' og '-'."
 
+#: apps/core/models/custom_db_fields.py:40 devilry_account/models.py:876
+#: devilry_account/templates/devilry_account/crapps/account/index.django.html:16
+#: devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:21
+#: devilry_cradmin/devilry_listfilter/assignment.py:16
+#: devilry_cradmin/devilry_listfilter/assignment.py:54
+#: devilry_header/templates/devilry_header/about_me.django.html:20
+#: devilry_student/templates/devilry_student/cradmin_group/projectgroupapp/projectgroup_overview.django.html:70
+msgid "Name"
+msgstr "Navn"
+
 #: apps/core/models/deadline.py:201
 msgid "Unknown."
 msgstr "Ukjent"
@@ -480,7 +491,19 @@ msgstr "semester"
 msgid "semesters"
 msgstr "semestre"
 
-#: apps/core/models/period.py:228
+#: apps/core/models/period.py:198 apps/core/models/period.py:201
+msgid "Start time and end time defines when the period is active."
+msgstr "Start- og slutt-tid definerer når en periode er aktiv."
+
+#: apps/core/models/period.py:199
+msgid "Start time"
+msgstr "Start-tid"
+
+#: apps/core/models/period.py:202
+msgid "End time"
+msgstr "Slutt-tid"
+
+#: apps/core/models/period.py:230
 msgid "Start time must be before end time."
 msgstr "Start-tidspunktet må være før slutt-tidspunktet."
 
@@ -823,16 +846,6 @@ msgstr "Semesteradministratorgruppe"
 #: devilry_account/models.py:869 devilry_account/models.py:870
 msgid "Permission group"
 msgstr "Tillatelsesgruppe"
-
-#: devilry_account/models.py:876
-#: devilry_account/templates/devilry_account/crapps/account/index.django.html:16
-#: devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:21
-#: devilry_cradmin/devilry_listfilter/assignment.py:16
-#: devilry_cradmin/devilry_listfilter/assignment.py:54
-#: devilry_header/templates/devilry_header/about_me.django.html:20
-#: devilry_student/templates/devilry_student/cradmin_group/projectgroupapp/projectgroup_overview.django.html:70
-msgid "Name"
-msgstr "Navn"
 
 #: devilry_account/models.py:877
 msgid "A unique name for this group."
