@@ -4,11 +4,11 @@
 {#<br>#}
 {% if num_relatedstudents == 0 %}
     <span class="devilry-core-periodtag-no-relatedstudents">
-        <strong>NO STUDENTS</strong>
+        <strong>{% trans "NO STUDENTS" %}</strong>
     </span>
 {% else %}
     <span class="devilry-core-periodtag-relatedstudents">
-        <strong>Students</strong>:
+        <strong>{% trans "Students" %}</strong>:
         {% for relatedstudent in relatedstudents %}
             <span class="devilry-core-periodtag-relatedstudent">
                 {{ relatedstudent.user.shortname }}

@@ -4,11 +4,11 @@
 <br>
     {% if num_relatedexaminers == 0 %}
         <span class="devilry-core-periodtag-no-relatedexaminers">
-            <strong>NO EXAMINERS</strong>
+            <strong>{% trans 'NO EXAMINERS' %}</strong>
         </span>
     {% else %}
         <span class="devilry-core-periodtag-relatedexaminers">
-            <strong>Examiners</strong>:
+            <strong>{% trans 'Examiners' %}</strong>:
             {% for relatedexaminer in relatedexaminers %}
                 <span class="devilry-core-periodtag-relatedexaminer">
                     {{ relatedexaminer.user.shortname }}

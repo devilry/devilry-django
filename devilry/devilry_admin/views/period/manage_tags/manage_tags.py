@@ -113,10 +113,12 @@ class CreatePeriodTagForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(CreatePeriodTagForm, self).__init__(*args, **kwargs)
-        self.fields['tag_text'].label = 'Tags'
-        self.fields['tag_text'].help_text = 'Enter tags here. Tags must be in a comma separated format, ' \
-                                            'e.g: tag1, tag2, tag3. ' \
-                                            'Each tag may be up to 15 characters long.'
+        self.fields['tag_text'].label = ugettext_lazy('Tags')
+        self.fields['tag_text'].help_text = ugettext_lazy(
+            'Enter tags here. Tags must be in a comma separated format, '
+            'e.g: tag1, tag2, tag3. '
+            'Each tag may be up to 15 characters long.'
+        )
         self.fields['tag_text'].widget = forms.Textarea()
 
     def get_added_tags_list(self):
@@ -204,14 +206,14 @@ class AddTagsView(formbase.FormView):
 
         # Check if all tags to be added exists.
         if len(tags_string_list) == excluded_tags.count():
-            self.add_error_message('The tag(s) you wanted to add already exists.')
+            self.add_error_message(ugettext_lazy('The tag(s) you wanted to add already exists.'))
             return HttpResponseRedirect(self.request.cradmin_app.reverse_appurl(viewname='add_tag'))
 
         # Add success message.
         num_tags_created = self.__create_tags(tags_string_list, excluded_tags)
-        message = '{} tag(s) added'
+        message = ugettext_lazy('{} tag(s) added')
         if excluded_tags.count() > 0:
-            message += ', {} tag(s) already existed and were ignored.'
+            message += ugettext_lazy(', {} tag(s) already existed and were ignored.')
         self.add_success_message(message.format(num_tags_created, excluded_tags.count()))
         return super(AddTagsView, self).form_valid(form=form)
 
