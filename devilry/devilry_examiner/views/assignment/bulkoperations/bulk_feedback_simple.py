@@ -79,9 +79,9 @@ class ListAsTable(base_new.AbstractListAsTable):
         super(ListAsTable, self).__init__(**kwargs)
 
     def add_header(self):
-        self.append_header_renderable(ColumnHeader(header_text='Students in groups'))
-        self.append_header_renderable(ColumnHeader(header_text='Grading'))
-        self.append_header_renderable(ColumnHeader(header_text='Comment text'))
+        self.append_header_renderable(ColumnHeader(header_text=ugettext_lazy('Students in groups')))
+        self.append_header_renderable(ColumnHeader(header_text=ugettext_lazy('Grading')))
+        self.append_header_renderable(ColumnHeader(header_text=ugettext_lazy('Comment text')))
 
     def add_rows(self):
         for group in self.assignment_groups:
