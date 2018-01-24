@@ -3,7 +3,7 @@ from devilry.devilry_cradmin.devilry_listbuilder.period import AdminItemValue
 from django.db import models
 from itertools import groupby
 
-from django.utils.translation import ugettext
+from django.utils.translation import ugettext, ugettext_lazy
 from django.views.generic import TemplateView
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
@@ -66,11 +66,11 @@ class OrderSubjectFilter(listfilter.django.single.select.AbstractOrderBy):
     def get_ordering_options(self):
         return [
             ('', {  # This will be the default sort order
-                'label': 'Short Name',
+                'label': ugettext_lazy('Short Name'),
                 'order_by': ['short_name'],
             }),
             ('short_name_descending', {
-                'label': 'Short Name (descending)',
+                'label': ugettext_lazy('Short Name (descending)'),
                 'order_by': ['-short_name'],
             }),
         ]
@@ -113,7 +113,7 @@ class OverviewSubjectListView(listbuilderview.FilterListMixin, listbuilderview.V
             label_is_screenreader_only=True,
             modelfields=['long_name']))
         filterlist.append(OrderSubjectFilter(
-            slug='short_name', label='Short name'))
+            slug='short_name', label=ugettext_lazy('Short name')))
 
     def get_filterlist_url(self, filters_string):
         """

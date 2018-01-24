@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-24 11:33+0100\n"
+"POT-Creation-Date: 2018-01-24 14:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -302,6 +302,7 @@ msgstr ""
 
 #: apps/core/models/custom_db_fields.py:20
 #: devilry_account/templates/devilry_account/crapps/account/index.django.html:25
+#: devilry_admin/views/dashboard/overview.py:116
 msgid "Short name"
 msgstr ""
 
@@ -2533,6 +2534,14 @@ msgstr ""
 msgid "Example: duck1010"
 msgstr ""
 
+#: devilry_admin/views/dashboard/overview.py:69
+msgid "Short Name"
+msgstr ""
+
+#: devilry_admin/views/dashboard/overview.py:73
+msgid "Short Name (descending)"
+msgstr ""
+
 #: devilry_admin/views/period/admins.py:100
 msgid "Add selected users as semester admins"
 msgstr ""
@@ -3258,6 +3267,10 @@ msgstr ""
 msgid "Back to deadline-overview"
 msgstr ""
 
+#: devilry_deadlinemanagement/templates/devilry_deadlinemanagement/includes/info-box-base.django.html:6
+msgid "Important info"
+msgstr ""
+
 #: devilry_deadlinemanagement/templates/devilry_deadlinemanagement/includes/info-box-base.django.html:9
 msgid "group(s) excluded"
 msgstr ""
@@ -3360,14 +3373,38 @@ msgid ""
 "operation while you where selecting. Refresh the page and try again"
 msgstr ""
 
-#: devilry_deadlinemanagement/views/multiselect_groups_view.py:87
-#: devilry_deadlinemanagement/views/multiselect_groups_view.py:91
-msgctxt "{} select_groups"
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:57
+msgctxt "assignment_group_target_renderer move_dealine_text"
+msgid "Move deadline for selected assignment group(s)"
+msgstr ""
+
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:64
+msgctxt "assignment_group_target_renderer submit_button_text"
+msgid "New attempt for selected assignment group(s)"
+msgstr ""
+
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:71
+msgctxt "assignment_group_target_renderer with_items_title"
+msgid "Selected assignment group"
+msgstr ""
+
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:78
+msgctxt "assignment_group_target_renderer without_items_text"
+msgid "No assignment group selected"
+msgstr ""
+
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:103
+msgctxt "assignment_group_multiselect_list_filter_view pagetitle"
 msgid "Select groups"
 msgstr ""
 
-#: devilry_deadlinemanagement/views/multiselect_groups_view.py:95
-msgctxt "{} select_groups"
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:107
+msgctxt "assignment_group_multiselect_list_filter_view pageheading"
+msgid "Select groups"
+msgstr ""
+
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:111
+msgctxt "assignment_group_multiselect_list_filter_view page_subheading"
 msgid "Select the groups you want to manage the deadline for."
 msgstr ""
 
@@ -3490,6 +3527,18 @@ msgstr ""
 msgid "download is ready"
 msgstr ""
 
+#: devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/grade_cell_value.django.html:8
+#: devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:4
+#: devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:11
+msgid "Passed"
+msgstr ""
+
+#: devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/grade_cell_value.django.html:9
+#: devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:6
+#: devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:13
+msgid "Failed"
+msgstr ""
+
 #: devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/simple_group_bulk_feedbackview.django.html:27
 msgid ""
 "\n"
@@ -3502,11 +3551,19 @@ msgid ""
 "                "
 msgstr ""
 
+#: devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/simple_group_bulk_feedbackview.django.html:39
+msgid "Publish feedbacks"
+msgstr ""
+
 #: devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/simple_group_bulk_feedbackview.django.html:40
 msgid ""
 "\n"
 "                    When submitted, the operation cannot be undone.\n"
 "                "
+msgstr ""
+
+#: devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/text_cell_value.django.html:5
+msgid "Short comment"
 msgstr ""
 
 #: devilry_examiner/templates/devilry_examiner/dashboard/assignmentlist.django.html:7
@@ -3561,6 +3618,20 @@ msgstr ""
 msgid "Bulk added feedback for %(group_names)s"
 msgstr ""
 
+#: devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:82
+msgid "Students in groups"
+msgstr ""
+
+#: devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:83
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:336
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:359
+msgid "Grading"
+msgstr ""
+
+#: devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:84
+msgid "Comment text"
+msgstr ""
+
 #: devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:232
 msgid "Feedback published for {} groups"
 msgstr ""
@@ -3591,18 +3662,14 @@ msgid "Feedback comment text"
 msgstr ""
 
 #: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:60
-msgid "assignment group"
-msgstr ""
-
-#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:64
 msgid "Submit selected assignment group(s)"
 msgstr ""
 
-#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:67
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:63
 msgid "Selected assignment group"
 msgstr ""
 
-#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:71
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:66
 msgid "No assignment group selected"
 msgstr ""
 
@@ -4443,11 +4510,6 @@ msgstr ""
 msgid "Feedback is already published!"
 msgstr ""
 
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:336
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:359
-msgid "Grading"
-msgstr ""
-
 #: devilry_group/views/examiner/feedbackfeed_examiner.py:339
 msgid ""
 "Give a score between {} to {} where {} is the minimum amount of points "
@@ -4838,16 +4900,6 @@ msgstr ""
 #: devilry_student/templates/devilry_student/dashboard/dashboard.django.html:19
 msgctxt "student dashboard"
 msgid "Browse all assignments and courses"
-msgstr ""
-
-#: devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:4
-#: devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:11
-msgid "Passed"
-msgstr ""
-
-#: devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:6
-#: devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:13
-msgid "Failed"
 msgstr ""
 
 #: devilry_student/templatetags/devilry_student_tags.py:32

@@ -49,7 +49,7 @@ class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
     selected_target_renderer = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
 
     #: A descriptive name for the items selected.
-    descriptive_item_name = 'assignment group'
+    # descriptive_item_name = 'assignment group'
 
     def get_move_deadline_text(self):
         return pgettext_lazy(
