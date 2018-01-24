@@ -52,16 +52,32 @@ class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
     descriptive_item_name = 'assignment group'
 
     def get_move_deadline_text(self):
-        return 'Move deadline for selected {}(s)'.format(self.descriptive_item_name)
+        return pgettext_lazy(
+            'assignment_group_target_renderer move_dealine_text',
+            'Move deadline for selected assignment group(s)'
+        )
+        # return 'Move deadline for selected {}(s)'.format(self.descriptive_item_name)
 
     def get_submit_button_text(self):
-        return 'New attempt for selected {}(s)'.format(self.descriptive_item_name)
+        return pgettext_lazy(
+            'assignment_group_target_renderer submit_button_text',
+            'New attempt for selected assignment group(s)'
+        )
+        # return 'New attempt for selected {}(s)'.format(self.descriptive_item_name)
 
     def get_with_items_title(self):
-        return 'Selected {}'.format(self.descriptive_item_name)
+        return pgettext_lazy(
+            'assignment_group_target_renderer with_items_title',
+            'Selected assignment group'
+        )
+        # return 'Selected {}'.format(self.descriptive_item_name)
 
     def get_without_items_text(self):
-        return 'No {} selected'.format(self.descriptive_item_name)
+        return pgettext_lazy(
+            'assignment_group_target_renderer without_items_text',
+            'No assignment group selected'
+        )
+        # return 'No {} selected'.format(self.descriptive_item_name)
 
     def get_hidden_fields(self):
         return [
@@ -83,15 +99,15 @@ class AssignmentGroupMultiSelectListFilterView(viewutils.DeadlineManagementMixin
     handle_deadline_type = None
 
     def get_pagetitle(self):
-        return pgettext_lazy('{} select_groups'.format(self.request.cradmin_app.get_devilryrole()),
+        return pgettext_lazy('assignment_group_multiselect_list_filter_view pagetitle',
                              'Select groups')
 
     def get_pageheading(self):
-        return pgettext_lazy('{} select_groups'.format(self.request.cradmin_app.get_devilryrole()),
+        return pgettext_lazy('assignment_group_multiselect_list_filter_view pageheading',
                              'Select groups')
 
     def get_page_subheading(self):
-        return pgettext_lazy('{} select_groups'.format(self.request.cradmin_app.get_devilryrole()),
+        return pgettext_lazy('assignment_group_multiselect_list_filter_view page_subheading',
                              'Select the groups you want to manage the deadline for.')
 
     def get_default_paginate_by(self, queryset):
