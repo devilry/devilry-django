@@ -86,7 +86,7 @@ DEVILRY_LOWLEVEL_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend
 IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
     ievvbuildstatic.config.App(
         appname='devilry_theme3',
-        version=DEVILRY_THEME3_VERSION,
+        version=devilry.__version__,
         plugins=[
             ievvbuildstatic.bowerinstall.Plugin(
                 packages={
