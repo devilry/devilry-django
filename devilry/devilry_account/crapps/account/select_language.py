@@ -1,7 +1,10 @@
 import pycountry as pycountry
 from django.conf import settings
+from django.http import HttpResponseRedirect
 from django.utils import translation
 from django.views.generic import TemplateView
+
+from devilry.devilry_account.models import User
 
 
 class LanguageInfo(object):
@@ -26,7 +29,14 @@ class SelectLanguageView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         selected_languagecode = self.__get_selected_languagecode(data=request.POST)
-        request.session['SELECTED_LANGUAGE_CODE'] = selected_languagecode
+        if request.user.is_authenticated():
+            User.objects\
+                .filter(id=request.user.id)\
+                .update(languagecode=selected_languagecode)
+            request.session['SELECTED_LANGUAGE_CODE'] = selected_languagecode
+        else:
+            request.session['SELECTED_LANGUAGE_CODE'] = selected_languagecode
+        return HttpResponseRedirect('/account/')
 
     def __get_selected_languagecode(self, data):
         selected_languagecode = data.get('selected_language', None)

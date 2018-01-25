@@ -80,7 +80,7 @@ DEVILRY_LOWLEVEL_EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend
 # MIGRATION_MODULES = DisableMigrations()
 
 
-# LANGUAGE_CODE = 'nb'
+LANGUAGE_CODE = 'nb'
 
 
 IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
