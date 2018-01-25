@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-25 11:22+0100\n"
+"POT-Creation-Date: 2018-01-25 11:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -887,7 +887,7 @@ msgstr ""
 
 #: devilry_account/models.py:1218
 msgid ""
-"Courses can only be added to subject and department administrator permission "
+"Courses can only be added to course and department administrator permission "
 "groups."
 msgstr ""
 
