@@ -84,6 +84,7 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
   }
 
   _addRow(grade, minimumPoints) {
+    const translatedRemoveText = window.gettext('remove');
     let parser = new HtmlParser(`
       <div class="devilry-tabulardata-list__row">
         <div class="devilry-tabulardata-list__cell">
@@ -100,7 +101,7 @@ export default class GradingConfigurationCustomTableWidget extends AbstractWidge
         </div>
         <div class="devilry-tabulardata-list__cell">
           <button class="btn btn-danger" type="button">
-              remove
+              ${translatedRemoveText}
           </button>
         </div>
       </div>

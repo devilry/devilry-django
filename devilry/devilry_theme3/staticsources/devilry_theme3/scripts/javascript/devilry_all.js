@@ -6,7 +6,7 @@ import GradingConfigurationCustomTableWidget from "./widgets/GradingConfiguratio
 import LoggerSingleton from "ievv_jsbase/lib/log/LoggerSingleton";
 import LOGLEVEL from "ievv_jsbase/lib/log/loglevel";
 import WidgetRegistrySingleton from "ievv_jsbase/lib/widget/WidgetRegistrySingleton";
-
+import './utils/i18nFallbacks'
 
 const logger = new LoggerSingleton();
 logger.setDefaultLogLevel(LOGLEVEL.INFO);
