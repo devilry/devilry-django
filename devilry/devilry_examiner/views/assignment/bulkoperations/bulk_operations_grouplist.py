@@ -56,14 +56,26 @@ class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
     #: By default this is :class:`.SelectedQualificationItem`.
     selected_target_renderer = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
 
+    #: A descriptive name for the items selected.
+    descriptive_item_name = ugettext_lazy('assignment group')
+
     def get_submit_button_text(self):
-        return ugettext_lazy('Submit selected assignment group(s)')
+        return pgettext_lazy(
+            'assignment_group_target_renderer submit_button_text',
+            'Submit selected %(what)s'
+        ) % {'what': self.descriptive_item_name}
 
     def get_with_items_title(self):
-        return ugettext_lazy('Selected assignment group')
+        return pgettext_lazy(
+            'assignment_group_target_renderer with_items_title',
+            'Selected %(what)s'
+        ) % {'what': self.descriptive_item_name}
 
     def get_without_items_text(self):
-        return ugettext_lazy('No assignment group selected')
+        return pgettext_lazy(
+            'assignment_group_target_renderer without_items_text',
+            'No %(what)s selected'
+        ) % {'what': self.descriptive_item_name}
 
     def get_field_layout(self):
         return [

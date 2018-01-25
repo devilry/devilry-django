@@ -49,35 +49,31 @@ class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
     selected_target_renderer = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
 
     #: A descriptive name for the items selected.
-    # descriptive_item_name = 'assignment group'
+    descriptive_item_name = ugettext_lazy('assignment group')
 
     def get_move_deadline_text(self):
         return pgettext_lazy(
             'assignment_group_target_renderer move_dealine_text',
-            'Move deadline for selected assignment group(s)'
-        )
-        # return 'Move deadline for selected {}(s)'.format(self.descriptive_item_name)
+            'Move deadline for selected %(what)s'
+        ) % {'what': self.descriptive_item_name}
 
     def get_submit_button_text(self):
         return pgettext_lazy(
             'assignment_group_target_renderer submit_button_text',
-            'New attempt for selected assignment group(s)'
-        )
-        # return 'New attempt for selected {}(s)'.format(self.descriptive_item_name)
+            'New attempt for selected %(what)s'
+        ) % {'what': self.descriptive_item_name}
 
     def get_with_items_title(self):
         return pgettext_lazy(
             'assignment_group_target_renderer with_items_title',
-            'Selected assignment group'
-        )
-        # return 'Selected {}'.format(self.descriptive_item_name)
+            'Selected %(what)s'
+        ) % {'what': self.descriptive_item_name}
 
     def get_without_items_text(self):
         return pgettext_lazy(
             'assignment_group_target_renderer without_items_text',
-            'No assignment group selected'
-        )
-        # return 'No {} selected'.format(self.descriptive_item_name)
+            'No %(what)s selected'
+        ) % {'what': self.descriptive_item_name}
 
     def get_hidden_fields(self):
         return [
