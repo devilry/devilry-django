@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-24 17:18+0100\n"
-"PO-Revision-Date: 2018-01-24 17:19+0100\n"
+"POT-Creation-Date: 2018-01-25 10:58+0100\n"
+"PO-Revision-Date: 2018-01-25 10:59+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -47,6 +47,7 @@ msgid "assignment"
 msgstr "oppgave"
 
 #: apps/core/models/assignment.py:317
+#: devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:96
 msgid "assignments"
 msgstr "oppgaver"
 
@@ -660,6 +661,27 @@ msgctxt "core assignmentgroup"
 msgid "no examiner(s)"
 msgstr "ingen retter(e)"
 
+#: apps/core/templates/devilry_core/templatetags/relatedexaminers-on-period-tag.django.html:7
+msgid "NO EXAMINERS"
+msgstr "INGEN RETTERE"
+
+#: apps/core/templates/devilry_core/templatetags/relatedexaminers-on-period-tag.django.html:11
+#: devilry_admin/templates/devilry_admin/assignment/include/main.django.html:49
+#: devilry_admin/templates/devilry_admin/listbuilder/assignmentgroup_listbuilder/value.django.html:33
+#: devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/assignmentgroup/include/groupdetails.django.html:7
+msgid "Examiners"
+msgstr "Rettere"
+
+#: apps/core/templates/devilry_core/templatetags/relatedstudents-on-period-tag.django.html:7
+msgid "NO STUDENTS"
+msgstr "INGEN STUDENTER"
+
+#: apps/core/templates/devilry_core/templatetags/relatedstudents-on-period-tag.django.html:11
+#: devilry_admin/templates/devilry_admin/assignment/include/main.django.html:39
+#: devilry_admin/views/period/qualifiedforfinalexams.py:36
+msgid "Students"
+msgstr "Studenter"
+
 #: apps/core/templates/devilry_core/templatetags/single-candidate-long-displayname.django.html:11
 msgid "Inactive"
 msgstr "Inaktiv"
@@ -1061,6 +1083,26 @@ msgctxt "period tag show hidden radio filter"
 msgid "Show tags"
 msgstr "Vis stikkord"
 
+#: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:59
+msgid "show all tags"
+msgstr "vis alle stikkord"
+
+#: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:60
+msgid "hidden tags only"
+msgstr "kun skjulte stikkord"
+
+#: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:61
+msgid "visible tags only"
+msgstr "kun synlige stikkord"
+
+#: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:62
+msgid "custom tags only"
+msgstr "kun tilpassede stikkord"
+
+#: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:63
+msgid "imported tags only"
+msgstr "kun importerte stikkord"
+
 #: devilry_admin/cradminextensions/multiselect2/multiselect2_relatedstudent.py:23
 msgctxt "admin multiselect2_relatedstudent"
 msgid "Selected students"
@@ -1344,7 +1386,7 @@ msgstr "Sett opp A-F eksempel"
 #: devilry_cradmin/templates/devilry_cradmin/viewhelpers/devilry_updateview_with_backlink.django.html:14
 #: devilry_deadlinemanagement/templates/devilry_deadlinemanagement/manage-deadline.django.html:20
 #: devilry_group/templates/devilry_group/feedbackfeed_admin/feedbackfeed_admin_base.django.html:10
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:20
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:24
 msgid "Back"
 msgstr "Tilbake"
 
@@ -1447,20 +1489,9 @@ msgstr "Ingen rettere er konfigurert."
 msgid "%(examiners_count)s examiners configured."
 msgstr "%(examiners_count)s rettere konfigurert."
 
-#: devilry_admin/templates/devilry_admin/assignment/include/main.django.html:39
-#: devilry_admin/views/period/qualifiedforfinalexams.py:36
-msgid "Students"
-msgstr "Studenter"
-
 #: devilry_admin/templates/devilry_admin/assignment/include/main.django.html:43
 msgid "View, edit or add students for this assignment"
 msgstr "Se, rediger eller legg til studenter for denne oppgaven"
-
-#: devilry_admin/templates/devilry_admin/assignment/include/main.django.html:49
-#: devilry_admin/templates/devilry_admin/listbuilder/assignmentgroup_listbuilder/value.django.html:33
-#: devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/assignmentgroup/include/groupdetails.django.html:7
-msgid "Examiners"
-msgstr "Rettere"
 
 #: devilry_admin/templates/devilry_admin/assignment/include/main.django.html:54
 msgid "View, edit or organize examiners for this assignment"
@@ -2154,7 +2185,7 @@ msgstr ""
 "        "
 
 #: devilry_admin/templates/devilry_admin/period/manage_tags/relatedusers/select-method.django.html:34
-#: devilry_admin/views/period/manage_tags/manage_tags.py:171
+#: devilry_admin/views/period/manage_tags/manage_tags.py:179
 msgid "Add tags"
 msgstr "Legg til stikkord"
 
@@ -2295,10 +2326,12 @@ msgid "Overview of all results"
 msgstr "Oversikt av alle resultater"
 
 #: devilry_admin/templates/devilry_admin/period/overview.django.html:103
+#: devilry_qualifiesforexam/tablebuilder/tablebuilder.py:33
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/includes/qualification_table.django.html:9
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:25
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:10
 msgid "Qualified for final exams"
-msgstr "Kan gå opp til avsluttende eksamen"
+msgstr "Kvalifisert til avsluttende eksamen"
 
 #: devilry_admin/templates/devilry_admin/period/students/add.django.html:7
 #: devilry_admin/templates/devilry_admin/period/students/add.django.html:25
@@ -2581,7 +2614,7 @@ msgstr "Rediger karakter konfigurasjon"
 #: devilry_admin/views/common/bulkimport_users_common.py:16
 #: devilry_cradmin/devilry_listbuilder/assignmentgroup.py:293
 #: devilry_gradingsystem/templates/devilry_gradingsystem/editfeedbackbuttonbar_savedraftonly.django.html:6
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:23
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:27
 msgid "Save"
 msgstr "Lagre"
 
@@ -2881,7 +2914,7 @@ msgid ""
 "%(period)s? You can re-add a removed administrator at any time."
 msgstr ""
 "Er du sikker på at du vil fjerne %(user)s as semester administrator for "
-"%(period)s? "
+"%(period)s? Du kan når som helst legge til igjen en fjernet administrator."
 
 #: devilry_admin/views/period/admins.py:244
 #, python-format
@@ -3002,63 +3035,149 @@ msgid "%(count)s users was already examiner on %(period)s."
 msgstr "%(count)s brukere var allerede rettere for %(period)s."
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:79
-msgid "Tags on {}"
-msgstr "Stikkord for {}"
+#, python-format
+msgid "Tags on %(what)s"
+msgstr "Stikkord tilhørende %(what)s"
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:129
+#: devilry_admin/views/period/manage_tags/manage_tags.py:107
+msgctxt "TagListBuilderListView get_no_items_message"
+msgid "No period tags"
+msgstr "Ingen stikkord for perioden"
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:116
+msgid "Tags"
+msgstr "Stikkord"
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:118
+msgid ""
+"Enter tags here. Tags must be in a comma separated format, e.g: tag1, tag2, "
+"tag3. Each tag may be up to 15 characters long."
+msgstr ""
+"Skriv stikkord her. Stikkordene må være adskilt med komma, f.eks: stikkord1, "
+"stikkord2, stikkord3. Hvert stikkord kan ha en lengde på 15 tegn."
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:137
 msgid "Tag field is empty."
 msgstr "Stikkordfelt er tomt."
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:134
+#: devilry_admin/views/period/manage_tags/manage_tags.py:142
 msgid "Wrong format. Example: tag1, tag2, tag3"
 msgstr "Feil format. Eksempel: stikkord1, stikkord2, stikkord3"
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:139
+#: devilry_admin/views/period/manage_tags/manage_tags.py:147
 msgid "One or more tags exceed the limit of 15 characters."
 msgstr "En eller flere stikkord er lengre en grensen på 15 tegn."
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:143
-msgid "\"{}\" occurs more than once in the form."
-msgstr "\"{}\" forekommer fler enn en gang i skjemaet."
+#: devilry_admin/views/period/manage_tags/manage_tags.py:151
+#, python-format
+msgid "\"%(what)s\" occurs more than once in the form."
+msgstr "\"%(what)s\" forekommer fler enn en gang i skjemaet."
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:248
+#: devilry_admin/views/period/manage_tags/manage_tags.py:209
+msgid "The tag(s) you wanted to add already exists."
+msgstr "Stikkordet(a) du ønsket å legge til eksisterer allerede."
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:214
+#, python-format
+msgid "%(created)d tag(s) added"
+msgstr "%(created)d stikkord lagt til"
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:217
+#, python-format
+msgid ", %(excluded)d tag(s) already existed and were ignored."
+msgstr ", %(excluded)d stikkord eksisterer allerede og ble ignorert."
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:251
+msgid "Tag name"
+msgstr "Navn på stikkord"
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:253
+msgid ""
+"Rename the tag here. Up to 15 characters. Can contain any character except "
+"comma(,)"
+msgstr ""
+"Her gir du nytt navn til stikkord. Opp til 15 tegn. Kan inneholde hvilket "
+"som helst tegn unntatt komma(,)"
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:261
 msgid "Tag cannot be empty."
 msgstr "Stikkord kan ikke være tomt."
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:253
-msgid "{} already exists"
-msgstr "{} eksisterer allerede"
+#: devilry_admin/views/period/manage_tags/manage_tags.py:266
+#, python-format
+msgid "%(what)s already exists"
+msgstr "%(what)s eksisterer allerede"
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:256
+#: devilry_admin/views/period/manage_tags/manage_tags.py:269
 msgid "Tag contains a comma(,)."
 msgstr "Stikkord inneholder komma(,)."
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:293
+#: devilry_admin/views/period/manage_tags/manage_tags.py:306
 #, python-format
 msgid "Edit %(what)s"
 msgstr "Rediger %(what)s"
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:308
+#: devilry_admin/views/period/manage_tags/manage_tags.py:321
 msgid "Tag successfully edited."
 msgstr "Vellykket redigering av stikkord."
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:361
+#: devilry_admin/views/period/manage_tags/manage_tags.py:352
+msgid ""
+"Invalid user was selected. This may happen if someone else added or removed "
+"one or more of the available users while you were selecting. Please try "
+"again."
+msgstr ""
+"Ugyldig bruker ble valgt. Dette kan skje hvis noen andre la til eller fjerne "
+"en eller flere tilgjengelige brukere samtidig som du gjorde dine valg. "
+"Vennligst prøv igjen."
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:376
+#, python-format
 msgctxt "admin multiselect2_relateduser"
-msgid "Selected {}s"
-msgstr "Valgte {}er"
+msgid "Selected %(what)s"
+msgstr "Valgte %(what)s"
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:365
+#: devilry_admin/views/period/manage_tags/manage_tags.py:380
+#, python-format
 msgctxt "admin multiselect2_relateduser"
-msgid "No {}s selected"
-msgstr "Ingen {}er valgt"
+msgid "No %(what)s selected"
+msgstr "Ingen %(what)s valgt"
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:454
-msgid "Add {}s to {}"
-msgstr "Legg {}er til {}"
+#: devilry_admin/views/period/manage_tags/manage_tags.py:470
+#, python-format
+msgid "Add %(user)s to %(tag)s"
+msgstr "Legg %(user)s til %(tag)s"
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:480
-msgid "Remove {}s from {}"
-msgstr "Fjern {}er fra {}"
+#: devilry_admin/views/period/manage_tags/manage_tags.py:491
+#, python-format
+msgid "%(number_users)d %(user_string)s added successfully."
+msgstr "%(number_users)d %(user_string)s lagt til med suksess."
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:507
+#, python-format
+msgid "Remove %(user)s from %(tag)s"
+msgstr "Fjern %(user)s fra %(tag)s"
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:529
+#, python-format
+msgid "%(number_users)d %(user_string)s removed successfully"
+msgstr "%(number_users)d %(user_string)s fjernet med suksess"
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:539
+msgid "Invalid examiner was selected."
+msgstr "Ugyldig retter ble valgt."
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:543
+msgid "Invalid student was selected."
+msgstr "Ugyldig student ble valgt."
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:548
+msgid "examiner"
+msgstr "retter"
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:554
+msgid "student"
+msgstr "student"
 
 #: devilry_admin/views/period/overview_all_results.py:146
 msgid "All students results"
@@ -3720,37 +3839,48 @@ msgstr ""
 "Noe gikk galt. Dette kan skje hvis noen andre utførte en ligende operasjon "
 "mens du valgte. Last siden inn på nytt og prøv igjen."
 
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:52
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:60
+msgid "assignment group"
+msgstr "oppgavegruppe"
+
 #: devilry_deadlinemanagement/views/multiselect_groups_view.py:57
+#, python-format
 msgctxt "assignment_group_target_renderer move_dealine_text"
-msgid "Move deadline for selected assignment group(s)"
-msgstr "Flytt innleveringsfrist for valgt(e) oppgavegruppe(r)"
+msgid "Move deadline for selected %(what)s"
+msgstr "Flytt innleveringsfrist for valgt %(what)s"
 
-#: devilry_deadlinemanagement/views/multiselect_groups_view.py:64
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:63
+#, python-format
 msgctxt "assignment_group_target_renderer submit_button_text"
-msgid "New attempt for selected assignment group(s)"
-msgstr "Nytt forsøkt for valgt(e) oppgavegruppe(r)"
+msgid "New attempt for selected %(what)s"
+msgstr "Nytt forsøkt for valgt %(what)s"
 
-#: devilry_deadlinemanagement/views/multiselect_groups_view.py:71
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:69
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:71
+#, python-format
 msgctxt "assignment_group_target_renderer with_items_title"
-msgid "Selected assignment group"
-msgstr "Valgt oppgavegruppe"
+msgid "Selected %(what)s"
+msgstr "Valgte %(what)s"
 
-#: devilry_deadlinemanagement/views/multiselect_groups_view.py:78
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:75
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:77
+#, python-format
 msgctxt "assignment_group_target_renderer without_items_text"
-msgid "No assignment group selected"
-msgstr "Ingen oppgavegruppe er valgt"
+msgid "No %(what)s selected"
+msgstr "Ingen %(what)s valgt"
 
-#: devilry_deadlinemanagement/views/multiselect_groups_view.py:103
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:99
 msgctxt "assignment_group_multiselect_list_filter_view pagetitle"
 msgid "Select groups"
 msgstr "Velg grupper"
 
-#: devilry_deadlinemanagement/views/multiselect_groups_view.py:107
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:103
 msgctxt "assignment_group_multiselect_list_filter_view pageheading"
 msgid "Select groups"
 msgstr "Velg grupper"
 
-#: devilry_deadlinemanagement/views/multiselect_groups_view.py:111
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:107
 msgctxt "assignment_group_multiselect_list_filter_view page_subheading"
 msgid "Select the groups you want to manage the deadline for."
 msgstr "Velg grupper hvor du vil redigere innleveringsfristen."
@@ -4028,17 +4158,11 @@ msgstr "Denne oppgaven er korrigert."
 msgid "Feedback comment text"
 msgstr "Tilbakemeldingstekst"
 
-#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:60
-msgid "Submit selected assignment group(s)"
-msgstr "Send inn valgt(e) oppgavegruppe(r)"
-
-#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:63
-msgid "Selected assignment group"
-msgstr "Valgt oppgavegruppe"
-
-#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:66
-msgid "No assignment group selected"
-msgstr "Ingen oppgavegruppe er valgt"
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:65
+#, python-format
+msgctxt "assignment_group_target_renderer submit_button_text"
+msgid "Submit selected %(what)s"
+msgstr "Send inn valgte %(what)s"
 
 #: devilry_examiner/views/dashboard/assignmentlist.py:23
 #, python-format
@@ -5029,6 +5153,7 @@ msgid "Language"
 msgstr "Språk"
 
 #: devilry_header/templates/devilry_header/header2include.django.html:74
+#: devilry_qualifiesforexam/tablebuilder/tablebuilder.py:32
 #: devilry_student/templates/devilry_student/include/group_breadcrumb.django.html:4
 msgid "Student"
 msgstr "Student"
@@ -5089,6 +5214,16 @@ msgstr "Kvalifisert til å se status for slutteksamener"
 msgid "Back to mainpage"
 msgstr "Tilbake til hovedside"
 
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/includes/qualification_table.django.html:21
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/tablebuilder/qualificationstatus_valueitem.django.html:6
+msgid "YES"
+msgstr "JA"
+
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/includes/qualification_table.django.html:25
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/tablebuilder/qualificationstatus_valueitem.django.html:8
+msgid "NO"
+msgstr "NEI"
+
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/list_statuses.django.html:21
 msgid "Create new status"
 msgstr "Opprett ny status"
@@ -5110,6 +5245,22 @@ msgstr "skriv ut"
 msgid "NOT qualified for final exams"
 msgstr "Kan IKKE gå opp til avsluttende eksamen"
 
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:10
+msgid "Students on"
+msgstr "Studenter i"
+
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:13
+msgid "Preview and confirm"
+msgstr "Forhåndsvis og bekreft"
+
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:15
+msgid "This table shows the result of your choices"
+msgstr "Denne tabellen viser resultat av dine valg"
+
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:14
+msgid "Ready for export "
+msgstr "Klar for eksportering"
+
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:15
 msgid "Saved"
 msgstr "Lagret"
@@ -5117,6 +5268,10 @@ msgstr "Lagret"
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:15
 msgid "by"
 msgstr "av"
+
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:18
+msgid "Not ready for export"
+msgstr "Ikke klar for eksportering"
 
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:20
 msgid "students qualify for final exam"
@@ -5130,13 +5285,101 @@ msgstr "Status årsak for tilbaketrekking"
 msgid "Retract"
 msgstr "Trekk tilbake"
 
-#: devilry_qualifiesforexam/views/qualification_preview_view.py:280
+#: devilry_qualifiesforexam/views/list_statuses_view.py:51
+msgid "Status (ready)"
+msgstr "Status (klar)"
+
+#: devilry_qualifiesforexam/views/list_statuses_view.py:55
+msgid "Status (not ready)"
+msgstr "Stauts (ikke klar)"
+
+#: devilry_qualifiesforexam/views/list_statuses_view.py:93
+msgid "No status has been created for this period yet."
+msgstr "Det er ennå ikke opprettet noen status for denne perioden."
+
+#: devilry_qualifiesforexam/views/list_statuses_view.py:97
+#, python-format
+msgid "Status overview for %(what)s"
+msgstr "Status oversikt for %(what)s"
+
+#: devilry_qualifiesforexam/views/list_statuses_view.py:99
+msgid ""
+"You can either choose a plugin to create a new status, or you can select a "
+"retracted status."
+msgstr ""
+"Du kan enten velge en plugin for å lage en ny status, eller du kan velge en "
+"tilbaketrukket status."
+
+#: devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:30
+msgid "Invalid qualification items was selected."
+msgstr "Ugyldige kvalifiserings-elementer ble valgt."
+
+#: devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:103
+#, python-format
+msgid "Submit selected %(what)s"
+msgstr "Send inn valgte %(what)s"
+
+#: devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:110
+#, python-format
+msgid "Selected %(what)s"
+msgstr "Valgte %(what)s"
+
+#: devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:117
+#, python-format
+msgid "No %(what)s selected"
+msgstr "Ingen %(what)s valgt"
+
+#: devilry_qualifiesforexam/views/pluginselection_view.py:61
+msgid "How do students qualify for final exams?"
+msgstr "Hvordan kvalifiserer studenter til avsluttende eksamen?"
+
+#: devilry_qualifiesforexam/views/pluginselection_view.py:63
+msgid ""
+"Select one of the options from the list. Each option starts a wizard that "
+"ends with a preview of the results before you get the option to save"
+msgstr ""
+"Velg et av alternativene fra listen. Hvert alternativ starter som slutter "
+"med en forhåndsvisning av resultatene, før du får muligheten til å lagre."
+
+#: devilry_qualifiesforexam/views/qualification_preview_view.py:258
+msgid "Provide a message as to why the Status needs to be retracted."
+msgstr "Gi en beskjed om hvorfor Statusen må trekkes tilbake."
+
+#: devilry_qualifiesforexam/views/qualification_preview_view.py:264
+msgid "Message"
+msgstr "Beskjed"
+
+#: devilry_qualifiesforexam/views/qualification_preview_view.py:281
 msgid "Why is the status retracted?"
 msgstr "Hvorfor er denne statusen trukket tilbake?"
 
-#: devilry_qualifiesforexam/views/qualification_preview_view.py:323
+#: devilry_qualifiesforexam/views/qualification_preview_view.py:324
 msgid "Cannot retract status without a message."
 msgstr "Kan ikke trekke tilbake en status uten en beskjed."
+
+#: devilry_qualifiesforexam_plugin_approved/plugin.py:13
+msgid "Select assignments that must be approved"
+msgstr "Velg oppgaver som må godkjennes"
+
+#: devilry_qualifiesforexam_plugin_approved/plugin.py:15
+msgid ""
+"Choose this option if you require your students to get a passing grade on "
+"the assignments you select. All assignments are selected by default."
+msgstr ""
+"Velg dette alternativet hvis du krever at dine studenter får bestått på de "
+"oppgavene du velger. All oppgaver er valgt som standard."
+
+#: devilry_qualifiesforexam_plugin_points/plugin.py:13
+msgid "Points to achieve on selected assignments"
+msgstr "Poeng som kan oppnås for de valgte oppgavene"
+
+#: devilry_qualifiesforexam_plugin_points/plugin.py:15
+msgid ""
+"Choose the total sum of points that needs to be achieved for the selected "
+"assignments. All assignments are selected by default."
+msgstr ""
+"Velg den totale nødvendige poengsummen som må oppnås for de valgte "
+"oppgavene. Alle oppgaver er valgt som standard."
 
 #: devilry_qualifiesforexam_plugin_points/views/select_assignment_and_points.py:25
 msgid ""
@@ -5145,6 +5388,14 @@ msgid ""
 msgstr ""
 "Hvis det ikke oppgis antall poeng blir summen nødvendig for å kvalifisere "
 "seg, summen av minimum poengene for alle kvalifiserende oppgaver."
+
+#: devilry_qualifiesforexam_plugin_students/plugin.py:12
+msgid "Manually select students"
+msgstr "Velg studenter manuelt"
+
+#: devilry_qualifiesforexam_plugin_students/plugin.py:13
+msgid "Manually select the students that qualifies for exam."
+msgstr "Manuelt velg studenter som kvalifiserer for eksamen."
 
 #: devilry_student/cradminextensions/columntypes.py:13
 #: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:8
@@ -5469,12 +5720,61 @@ msgstr "Engelsk"
 msgid "Norwegian Bokmal"
 msgstr "Norsk bokmål"
 
+#~ msgid "Tags on {}"
+#~ msgstr "Stikkord for {}"
+
+#~ msgctxt "admin multiselect2_relateduser"
+#~ msgid "Selected {}s"
+#~ msgstr "Valgte {}er"
+
+#~ msgctxt "admin multiselect2_relateduser"
+#~ msgid "No {}s selected"
+#~ msgstr "Ingen {}er valgt"
+
+#~ msgid "Add {}s to {}"
+#~ msgstr "Legg {}er til {}"
+
+#~ msgid "Remove {}s from {}"
+#~ msgstr "Fjern {}er fra {}"
+
+#~ msgid "No assignment group selected"
+#~ msgstr "Ingen oppgavegruppe er valgt"
+
+#~ msgctxt "assignment_group_target_renderer with_items_title"
+#~ msgid "Selected assignment group"
+#~ msgstr "Valgt oppgavegruppe"
+
+#~ msgctxt "assignment_group_target_renderer without_items_text"
+#~ msgid "No assignment group selected"
+#~ msgstr "Ingen oppgavegruppe er valgt"
+
+#~ msgctxt "selected_items_target"
+#~ msgid "No"
+#~ msgstr "Ingen"
+
+#~ msgctxt "selected_items_target"
+#~ msgid "selected"
+#~ msgstr "valgt"
+
+#~ msgctxt "selected_items_target"
+#~ msgid "related"
+#~ msgstr "relatert"
+
+#~ msgctxt "add_related_user_to_tag"
+#~ msgid "Add"
+#~ msgstr "Legg"
+
+#~ msgctxt "add_related_user_to_tag"
+#~ msgid "to"
+#~ msgstr "til"
+
+#~ msgctxt "SelectedItemsTarget"
+#~ msgid "No"
+#~ msgstr "Ingen"
+
 #~ msgctxt "{} select_groups"
 #~ msgid "Select groups"
 #~ msgstr "Velg grupper"
-
-#~ msgid "assignment group"
-#~ msgstr "oppgavegruppe"
 
 #~ msgid "Selected {}"
 #~ msgstr "Valgte {}"
@@ -5482,17 +5782,8 @@ msgstr "Norsk bokmål"
 #~ msgid "No {} selected"
 #~ msgstr "Ingen {} valgt"
 
-#~ msgid "Selected "
-#~ msgstr "Valgte "
-
 #~ msgid "admin"
 #~ msgstr "administrator"
-
-#~ msgid "examiner"
-#~ msgstr "retter"
-
-#~ msgid "student"
-#~ msgstr "student"
 
 #~ msgid ""
 #~ "On anonymous assignments, examiners and students can NOT see each other "
@@ -5935,13 +6226,6 @@ msgstr "Norsk bokmål"
 #~ msgid "Qualifies for final exams"
 #~ msgstr "Kan gå opp til avsluttende eksamen"
 
-#~ msgid ""
-#~ "Choose this option if you require your students to get a passing grade on "
-#~ "all their assignments to qualify for final exams."
-#~ msgstr ""
-#~ "Velg dette valget hvis du krever at studentene dine får bestått på alle "
-#~ "sine oppgaver for å kunne gå opp til avsluttende eksamen."
-
 #~ msgid "Students must pass a set of assignments selected by you"
 #~ msgstr "Studentene må bestå et sett av oppgaver som du velger"
 
@@ -5995,9 +6279,6 @@ msgstr "Norsk bokmål"
 #~ msgstr ""
 #~ "Studentene markert som kvalifisert til å gå opp til avsluttende eksamen i "
 #~ "tabellen nedenfor ble valgt manuelt."
-
-#~ msgid "Select students that qualifies for final exams - Devilry"
-#~ msgstr "Velg studentene som kan gå opp til avsluttende eksamen - Devilry"
 
 #~ msgid "Content where you are student"
 #~ msgstr "Innhold hvor du er student"

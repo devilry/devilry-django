@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-24 17:18+0100\n"
+"POT-Creation-Date: 2018-01-25 10:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,6 +43,7 @@ msgid "assignment"
 msgstr ""
 
 #: apps/core/models/assignment.py:317
+#: devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:96
 msgid "assignments"
 msgstr ""
 
@@ -581,6 +582,27 @@ msgctxt "core assignmentgroup"
 msgid "no examiner(s)"
 msgstr ""
 
+#: apps/core/templates/devilry_core/templatetags/relatedexaminers-on-period-tag.django.html:7
+msgid "NO EXAMINERS"
+msgstr ""
+
+#: apps/core/templates/devilry_core/templatetags/relatedexaminers-on-period-tag.django.html:11
+#: devilry_admin/templates/devilry_admin/assignment/include/main.django.html:49
+#: devilry_admin/templates/devilry_admin/listbuilder/assignmentgroup_listbuilder/value.django.html:33
+#: devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/assignmentgroup/include/groupdetails.django.html:7
+msgid "Examiners"
+msgstr ""
+
+#: apps/core/templates/devilry_core/templatetags/relatedstudents-on-period-tag.django.html:7
+msgid "NO STUDENTS"
+msgstr ""
+
+#: apps/core/templates/devilry_core/templatetags/relatedstudents-on-period-tag.django.html:11
+#: devilry_admin/templates/devilry_admin/assignment/include/main.django.html:39
+#: devilry_admin/views/period/qualifiedforfinalexams.py:36
+msgid "Students"
+msgstr ""
+
 #: apps/core/templates/devilry_core/templatetags/single-candidate-long-displayname.django.html:11
 msgid "Inactive"
 msgstr ""
@@ -959,6 +981,26 @@ msgctxt "period tag show hidden radio filter"
 msgid "Show tags"
 msgstr ""
 
+#: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:59
+msgid "show all tags"
+msgstr ""
+
+#: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:60
+msgid "hidden tags only"
+msgstr ""
+
+#: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:61
+msgid "visible tags only"
+msgstr ""
+
+#: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:62
+msgid "custom tags only"
+msgstr ""
+
+#: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:63
+msgid "imported tags only"
+msgstr ""
+
 #: devilry_admin/cradminextensions/multiselect2/multiselect2_relatedstudent.py:23
 msgctxt "admin multiselect2_relatedstudent"
 msgid "Selected students"
@@ -1217,7 +1259,7 @@ msgstr ""
 #: devilry_cradmin/templates/devilry_cradmin/viewhelpers/devilry_updateview_with_backlink.django.html:14
 #: devilry_deadlinemanagement/templates/devilry_deadlinemanagement/manage-deadline.django.html:20
 #: devilry_group/templates/devilry_group/feedbackfeed_admin/feedbackfeed_admin_base.django.html:10
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:20
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:24
 msgid "Back"
 msgstr ""
 
@@ -1315,19 +1357,8 @@ msgstr ""
 msgid "%(examiners_count)s examiners configured."
 msgstr ""
 
-#: devilry_admin/templates/devilry_admin/assignment/include/main.django.html:39
-#: devilry_admin/views/period/qualifiedforfinalexams.py:36
-msgid "Students"
-msgstr ""
-
 #: devilry_admin/templates/devilry_admin/assignment/include/main.django.html:43
 msgid "View, edit or add students for this assignment"
-msgstr ""
-
-#: devilry_admin/templates/devilry_admin/assignment/include/main.django.html:49
-#: devilry_admin/templates/devilry_admin/listbuilder/assignmentgroup_listbuilder/value.django.html:33
-#: devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/assignmentgroup/include/groupdetails.django.html:7
-msgid "Examiners"
 msgstr ""
 
 #: devilry_admin/templates/devilry_admin/assignment/include/main.django.html:54
@@ -1953,7 +1984,7 @@ msgid ""
 msgstr ""
 
 #: devilry_admin/templates/devilry_admin/period/manage_tags/relatedusers/select-method.django.html:34
-#: devilry_admin/views/period/manage_tags/manage_tags.py:171
+#: devilry_admin/views/period/manage_tags/manage_tags.py:179
 msgid "Add tags"
 msgstr ""
 
@@ -2074,6 +2105,8 @@ msgid "Overview of all results"
 msgstr ""
 
 #: devilry_admin/templates/devilry_admin/period/overview.django.html:103
+#: devilry_qualifiesforexam/tablebuilder/tablebuilder.py:33
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/includes/qualification_table.django.html:9
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:25
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:10
 msgid "Qualified for final exams"
@@ -2337,7 +2370,7 @@ msgstr ""
 #: devilry_admin/views/common/bulkimport_users_common.py:16
 #: devilry_cradmin/devilry_listbuilder/assignmentgroup.py:293
 #: devilry_gradingsystem/templates/devilry_gradingsystem/editfeedbackbuttonbar_savedraftonly.django.html:6
-#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:23
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:27
 msgid "Save"
 msgstr ""
 
@@ -2721,62 +2754,141 @@ msgid "%(count)s users was already examiner on %(period)s."
 msgstr ""
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:79
-msgid "Tags on {}"
+#, python-format
+msgid "Tags on %(what)s"
 msgstr ""
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:129
+#: devilry_admin/views/period/manage_tags/manage_tags.py:107
+msgctxt "TagListBuilderListView get_no_items_message"
+msgid "No period tags"
+msgstr ""
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:116
+msgid "Tags"
+msgstr ""
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:118
+msgid ""
+"Enter tags here. Tags must be in a comma separated format, e.g: tag1, tag2, "
+"tag3. Each tag may be up to 15 characters long."
+msgstr ""
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:137
 msgid "Tag field is empty."
 msgstr ""
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:134
+#: devilry_admin/views/period/manage_tags/manage_tags.py:142
 msgid "Wrong format. Example: tag1, tag2, tag3"
 msgstr ""
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:139
+#: devilry_admin/views/period/manage_tags/manage_tags.py:147
 msgid "One or more tags exceed the limit of 15 characters."
 msgstr ""
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:143
-msgid "\"{}\" occurs more than once in the form."
+#: devilry_admin/views/period/manage_tags/manage_tags.py:151
+#, python-format
+msgid "\"%(what)s\" occurs more than once in the form."
 msgstr ""
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:248
-msgid "Tag cannot be empty."
+#: devilry_admin/views/period/manage_tags/manage_tags.py:209
+msgid "The tag(s) you wanted to add already exists."
+msgstr ""
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:214
+#, python-format
+msgid "%(created)d tag(s) added"
+msgstr ""
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:217
+#, python-format
+msgid ", %(excluded)d tag(s) already existed and were ignored."
+msgstr ""
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:251
+msgid "Tag name"
 msgstr ""
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:253
-msgid "{} already exists"
+msgid ""
+"Rename the tag here. Up to 15 characters. Can contain any character except "
+"comma(,)"
 msgstr ""
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:256
+#: devilry_admin/views/period/manage_tags/manage_tags.py:261
+msgid "Tag cannot be empty."
+msgstr ""
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:266
+#, python-format
+msgid "%(what)s already exists"
+msgstr ""
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:269
 msgid "Tag contains a comma(,)."
 msgstr ""
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:293
+#: devilry_admin/views/period/manage_tags/manage_tags.py:306
 #, python-format
 msgid "Edit %(what)s"
 msgstr ""
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:308
+#: devilry_admin/views/period/manage_tags/manage_tags.py:321
 msgid "Tag successfully edited."
 msgstr ""
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:361
+#: devilry_admin/views/period/manage_tags/manage_tags.py:352
+msgid ""
+"Invalid user was selected. This may happen if someone else added or removed "
+"one or more of the available users while you were selecting. Please try "
+"again."
+msgstr ""
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:376
+#, python-format
 msgctxt "admin multiselect2_relateduser"
-msgid "Selected {}s"
+msgid "Selected %(what)s"
 msgstr ""
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:365
+#: devilry_admin/views/period/manage_tags/manage_tags.py:380
+#, python-format
 msgctxt "admin multiselect2_relateduser"
-msgid "No {}s selected"
+msgid "No %(what)s selected"
 msgstr ""
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:454
-msgid "Add {}s to {}"
+#: devilry_admin/views/period/manage_tags/manage_tags.py:470
+#, python-format
+msgid "Add %(user)s to %(tag)s"
 msgstr ""
 
-#: devilry_admin/views/period/manage_tags/manage_tags.py:480
-msgid "Remove {}s from {}"
+#: devilry_admin/views/period/manage_tags/manage_tags.py:491
+#, python-format
+msgid "%(number_users)d %(user_string)s added successfully."
+msgstr ""
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:507
+#, python-format
+msgid "Remove %(user)s from %(tag)s"
+msgstr ""
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:529
+#, python-format
+msgid "%(number_users)d %(user_string)s removed successfully"
+msgstr ""
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:539
+msgid "Invalid examiner was selected."
+msgstr ""
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:543
+msgid "Invalid student was selected."
+msgstr ""
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:548
+msgid "examiner"
+msgstr ""
+
+#: devilry_admin/views/period/manage_tags/manage_tags.py:554
+msgid "student"
 msgstr ""
 
 #: devilry_admin/views/period/overview_all_results.py:146
@@ -3416,37 +3528,48 @@ msgid ""
 "operation while you where selecting. Refresh the page and try again"
 msgstr ""
 
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:52
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:60
+msgid "assignment group"
+msgstr ""
+
 #: devilry_deadlinemanagement/views/multiselect_groups_view.py:57
+#, python-format
 msgctxt "assignment_group_target_renderer move_dealine_text"
-msgid "Move deadline for selected assignment group(s)"
+msgid "Move deadline for selected %(what)s"
 msgstr ""
 
-#: devilry_deadlinemanagement/views/multiselect_groups_view.py:64
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:63
+#, python-format
 msgctxt "assignment_group_target_renderer submit_button_text"
-msgid "New attempt for selected assignment group(s)"
+msgid "New attempt for selected %(what)s"
 msgstr ""
 
-#: devilry_deadlinemanagement/views/multiselect_groups_view.py:71
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:69
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:71
+#, python-format
 msgctxt "assignment_group_target_renderer with_items_title"
-msgid "Selected assignment group"
+msgid "Selected %(what)s"
 msgstr ""
 
-#: devilry_deadlinemanagement/views/multiselect_groups_view.py:78
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:75
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:77
+#, python-format
 msgctxt "assignment_group_target_renderer without_items_text"
-msgid "No assignment group selected"
+msgid "No %(what)s selected"
 msgstr ""
 
-#: devilry_deadlinemanagement/views/multiselect_groups_view.py:103
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:99
 msgctxt "assignment_group_multiselect_list_filter_view pagetitle"
 msgid "Select groups"
 msgstr ""
 
-#: devilry_deadlinemanagement/views/multiselect_groups_view.py:107
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:103
 msgctxt "assignment_group_multiselect_list_filter_view pageheading"
 msgid "Select groups"
 msgstr ""
 
-#: devilry_deadlinemanagement/views/multiselect_groups_view.py:111
+#: devilry_deadlinemanagement/views/multiselect_groups_view.py:107
 msgctxt "assignment_group_multiselect_list_filter_view page_subheading"
 msgid "Select the groups you want to manage the deadline for."
 msgstr ""
@@ -3704,16 +3827,10 @@ msgstr ""
 msgid "Feedback comment text"
 msgstr ""
 
-#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:60
-msgid "Submit selected assignment group(s)"
-msgstr ""
-
-#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:63
-msgid "Selected assignment group"
-msgstr ""
-
-#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:66
-msgid "No assignment group selected"
+#: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:65
+#, python-format
+msgctxt "assignment_group_target_renderer submit_button_text"
+msgid "Submit selected %(what)s"
 msgstr ""
 
 #: devilry_examiner/views/dashboard/assignmentlist.py:23
@@ -4608,6 +4725,7 @@ msgid "Language"
 msgstr ""
 
 #: devilry_header/templates/devilry_header/header2include.django.html:74
+#: devilry_qualifiesforexam/tablebuilder/tablebuilder.py:32
 #: devilry_student/templates/devilry_student/include/group_breadcrumb.django.html:4
 msgid "Student"
 msgstr ""
@@ -4668,6 +4786,16 @@ msgstr ""
 msgid "Back to mainpage"
 msgstr ""
 
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/includes/qualification_table.django.html:21
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/tablebuilder/qualificationstatus_valueitem.django.html:6
+msgid "YES"
+msgstr ""
+
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/includes/qualification_table.django.html:25
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/tablebuilder/qualificationstatus_valueitem.django.html:8
+msgid "NO"
+msgstr ""
+
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/list_statuses.django.html:21
 msgid "Create new status"
 msgstr ""
@@ -4689,12 +4817,32 @@ msgstr ""
 msgid "NOT qualified for final exams"
 msgstr ""
 
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:10
+msgid "Students on"
+msgstr ""
+
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:13
+msgid "Preview and confirm"
+msgstr ""
+
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:15
+msgid "This table shows the result of your choices"
+msgstr ""
+
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:14
+msgid "Ready for export "
+msgstr ""
+
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:15
 msgid "Saved"
 msgstr ""
 
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:15
 msgid "by"
+msgstr ""
+
+#: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:18
+msgid "Not ready for export"
 msgstr ""
 
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:20
@@ -4709,18 +4857,106 @@ msgstr ""
 msgid "Retract"
 msgstr ""
 
-#: devilry_qualifiesforexam/views/qualification_preview_view.py:280
+#: devilry_qualifiesforexam/views/list_statuses_view.py:51
+msgid "Status (ready)"
+msgstr ""
+
+#: devilry_qualifiesforexam/views/list_statuses_view.py:55
+msgid "Status (not ready)"
+msgstr ""
+
+#: devilry_qualifiesforexam/views/list_statuses_view.py:93
+msgid "No status has been created for this period yet."
+msgstr ""
+
+#: devilry_qualifiesforexam/views/list_statuses_view.py:97
+#, python-format
+msgid "Status overview for %(what)s"
+msgstr ""
+
+#: devilry_qualifiesforexam/views/list_statuses_view.py:99
+msgid ""
+"You can either choose a plugin to create a new status, or you can select a "
+"retracted status."
+msgstr ""
+
+#: devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:30
+msgid "Invalid qualification items was selected."
+msgstr ""
+
+#: devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:103
+#, python-format
+msgid "Submit selected %(what)s"
+msgstr ""
+
+#: devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:110
+#, python-format
+msgid "Selected %(what)s"
+msgstr ""
+
+#: devilry_qualifiesforexam/views/plugin_base_views/base_multiselect_view.py:117
+#, python-format
+msgid "No %(what)s selected"
+msgstr ""
+
+#: devilry_qualifiesforexam/views/pluginselection_view.py:61
+msgid "How do students qualify for final exams?"
+msgstr ""
+
+#: devilry_qualifiesforexam/views/pluginselection_view.py:63
+msgid ""
+"Select one of the options from the list. Each option starts a wizard that "
+"ends with a preview of the results before you get the option to save"
+msgstr ""
+
+#: devilry_qualifiesforexam/views/qualification_preview_view.py:258
+msgid "Provide a message as to why the Status needs to be retracted."
+msgstr ""
+
+#: devilry_qualifiesforexam/views/qualification_preview_view.py:264
+msgid "Message"
+msgstr ""
+
+#: devilry_qualifiesforexam/views/qualification_preview_view.py:281
 msgid "Why is the status retracted?"
 msgstr ""
 
-#: devilry_qualifiesforexam/views/qualification_preview_view.py:323
+#: devilry_qualifiesforexam/views/qualification_preview_view.py:324
 msgid "Cannot retract status without a message."
+msgstr ""
+
+#: devilry_qualifiesforexam_plugin_approved/plugin.py:13
+msgid "Select assignments that must be approved"
+msgstr ""
+
+#: devilry_qualifiesforexam_plugin_approved/plugin.py:15
+msgid ""
+"Choose this option if you require your students to get a passing grade on "
+"the assignments you select. All assignments are selected by default."
+msgstr ""
+
+#: devilry_qualifiesforexam_plugin_points/plugin.py:13
+msgid "Points to achieve on selected assignments"
+msgstr ""
+
+#: devilry_qualifiesforexam_plugin_points/plugin.py:15
+msgid ""
+"Choose the total sum of points that needs to be achieved for the selected "
+"assignments. All assignments are selected by default."
 msgstr ""
 
 #: devilry_qualifiesforexam_plugin_points/views/select_assignment_and_points.py:25
 msgid ""
 "If no points are given, the sum of all the qualifying assignments minimum "
 "points is needed to qualify."
+msgstr ""
+
+#: devilry_qualifiesforexam_plugin_students/plugin.py:12
+msgid "Manually select students"
+msgstr ""
+
+#: devilry_qualifiesforexam_plugin_students/plugin.py:13
+msgid "Manually select the students that qualifies for exam."
 msgstr ""
 
 #: devilry_student/cradminextensions/columntypes.py:13
