@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-25 10:58+0100\n"
+"POT-Creation-Date: 2018-01-25 11:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2502,8 +2502,9 @@ msgstr ""
 msgid "Create project group"
 msgstr ""
 
-#: devilry_admin/views/assignment/students/merge_groups.py:85
-msgid "A group with {} has been created!"
+#: devilry_admin/views/assignment/students/merge_groups.py:86
+#, python-format
+msgid "A group with %(what)s has been created!"
 msgstr ""
 
 #: devilry_admin/views/assignment/students/replace_groups.py:13

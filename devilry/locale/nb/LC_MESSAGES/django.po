@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-25 10:58+0100\n"
-"PO-Revision-Date: 2018-01-25 11:07+0100\n"
+"POT-Creation-Date: 2018-01-25 11:22+0100\n"
+"PO-Revision-Date: 2018-01-25 11:26+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -2756,9 +2756,10 @@ msgstr ""
 msgid "Create project group"
 msgstr "Opprett prosjektgruppe"
 
-#: devilry_admin/views/assignment/students/merge_groups.py:85
-msgid "A group with {} has been created!"
-msgstr "En gruppe med {} har blitt opprettet!"
+#: devilry_admin/views/assignment/students/merge_groups.py:86
+#, python-format
+msgid "A group with %(what)s has been created!"
+msgstr "En gruppe med %(what)s har blitt opprettet!"
 
 #: devilry_admin/views/assignment/students/replace_groups.py:13
 msgctxt "admin replace_groups"

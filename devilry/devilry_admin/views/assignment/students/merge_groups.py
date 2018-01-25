@@ -80,11 +80,10 @@ class MergeGroupsView(groupview_base.BaseMultiselectView):
                 self.request,
                 ugettext_lazy(str(e.message)))
         else:
+            candidates_short_name = self.__get_merged_candidates_short_name(self.target_group)
             messages.success(
                 self.request,
-                ugettext_lazy("A group with {} has been created!".format(
-                    self.__get_merged_candidates_short_name(self.target_group))
-                )
+                ugettext_lazy("A group with %(what)s has been created!") % {'what': candidates_short_name}
             )
         return super(MergeGroupsView, self).form_valid(form)
 
