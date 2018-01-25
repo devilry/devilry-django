@@ -76,7 +76,7 @@ class TagListBuilderListView(listbuilderview.FilterListMixin, listbuilderview.Vi
     paginate_by = 10
 
     def get_pagetitle(self):
-        return ugettext_lazy('Tags on {}'.format(self.request.cradmin_role.parentnode))
+        return ugettext_lazy('Tags on %(what)s') % {'what': self.request.cradmin_role.parentnode}
 
     def add_filterlist_items(self, filterlist):
         filterlist.append(listfilter_tags.Search())
@@ -148,7 +148,7 @@ class CreatePeriodTagForm(forms.Form):
                 )
             if tags_list.count(tag) > 1:
                 raise ValidationError(
-                    {'tag_text': ugettext_lazy('"{}" occurs more than once in the form.'.format(tag))}
+                    {'tag_text': ugettext_lazy('"%(what)s" occurs more than once in the form.') % {'what': tag}}
                 )
 
 
@@ -211,10 +211,13 @@ class AddTagsView(formbase.FormView):
 
         # Add success message.
         num_tags_created = self.__create_tags(tags_string_list, excluded_tags)
-        message = ugettext_lazy('{} tag(s) added')
+        message = ugettext_lazy('%(created)d tag(s) added') % {'created': num_tags_created}
         if excluded_tags.count() > 0:
-            message += ugettext_lazy(', {} tag(s) already existed and were ignored.')
-        self.add_success_message(message.format(num_tags_created, excluded_tags.count()))
+            message += ugettext_lazy(
+                ', %(excluded)d tag(s) already existed and were ignored.') % {
+                'excluded': excluded_tags.count()
+            }
+        self.add_success_message(message)
         return super(AddTagsView, self).form_valid(form=form)
 
     def add_success_message(self, message):
@@ -245,9 +248,11 @@ class EditPeriodTagForm(forms.ModelForm):
         self.period = kwargs.pop('period')
         self.tagobject = kwargs.pop('tagobject')
         super(EditPeriodTagForm, self).__init__(*args, **kwargs)
-        self.fields['tag'].label = 'Tag name'
-        self.fields['tag'].help_text = 'Rename the tag here. Up to 15 characters. ' \
-                                       'Can contain any character except comma(,)'
+        self.fields['tag'].label = ugettext_lazy('Tag name')
+        self.fields['tag'].help_text = ugettext_lazy(
+            'Rename the tag here. Up to 15 characters. '
+            'Can contain any character except comma(,)'
+        )
     
     def clean(self):
         cleaned_data = super(EditPeriodTagForm, self).clean()
@@ -258,7 +263,7 @@ class EditPeriodTagForm(forms.ModelForm):
         tag = cleaned_data['tag']
         if PeriodTag.objects.filter(period=self.period, tag=tag).exists():
             if tag != self.tagobject.tag:
-                raise ValidationError(ugettext_lazy('{} already exists'.format(tag)))
+                raise ValidationError(ugettext_lazy('%(what)s already exists') % {'what': tag})
         if ',' in tag:
             raise ValidationError(
                 {'tag': ugettext_lazy('Tag contains a comma(,).')}
@@ -343,9 +348,11 @@ class DeleteTagView(EditDeleteViewMixin, delete.DeleteView):
 
 
 class SelectedRelatedUsersForm(forms.Form):
-    invalid_item_selected_message = 'Invalid user was selected. This may happen if someone else added or ' \
-                                    'removed one or more of the available users while you were selecting. ' \
-                                    'Please try again.'
+    invalid_item_selected_message = ugettext_lazy(
+        'Invalid user was selected. This may happen if someone else added or '
+        'removed one or more of the available users while you were selecting. '
+        'Please try again.'
+    )
     selected_items = forms.ModelMultipleChoiceField(
         queryset=None,
         error_messages={
@@ -366,11 +373,11 @@ class SelectedItemsTarget(multiselect2.target_renderer.Target):
 
     def get_with_items_title(self):
         return pgettext_lazy('admin multiselect2_relateduser',
-                             'Selected {}s'.format(self.relateduser_type))
+                             'Selected %(what)s') % {'what': self.relateduser_type}
 
     def get_without_items_text(self):
         return pgettext_lazy('admin multiselect2_relateduser',
-                             'No {}s selected'.format(self.relateduser_type))
+                             'No %(what)s selected') % {'what': self.relateduser_type}
 
 
 class SelectedRelatedUserItem(multiselect2.selected_item_renderer.SelectedItem):
@@ -459,7 +466,11 @@ class AddRelatedUserToTagMultiSelectView(BaseRelatedUserMultiSelectView):
     Add related users to a :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
     """
     def get_pagetitle(self):
-        return ugettext_lazy('Add {}s to {}'.format(self.relateduser_string, self.tag_name))
+        return ugettext_lazy(
+            'Add %(user)s to %(tag)s') % {
+            'user': self.relateduser_string,
+            'tag': self.tag_name
+        }
 
     def get_queryset_for_role(self, role):
         return super(AddRelatedUserToTagMultiSelectView, self)\
@@ -475,8 +486,15 @@ class AddRelatedUserToTagMultiSelectView(BaseRelatedUserMultiSelectView):
         period_tag = self.get_period_tag()
         related_users = form.cleaned_data['selected_items']
         self.add_related_users(period_tag=period_tag, related_users=related_users)
-        self.add_success_message(message='{} {}(s) added successfully.'.format(len(related_users),
-                                                                              self.relateduser_string))
+        self.add_success_message(
+            message=ugettext_lazy(
+                '%(number_users)d %(user_string)s added successfully.'
+            ) % {
+                'number_users': len(related_users),
+                'user_string': self.relateduser_string,
+            }
+        )
+
         return super(AddRelatedUserToTagMultiSelectView, self).form_valid(form=form)
 
 
@@ -485,7 +503,12 @@ class RemoveRelatedUserFromTagMultiSelectView(BaseRelatedUserMultiSelectView):
     Remove related users from a :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
     """
     def get_pagetitle(self):
-        return ugettext_lazy('Remove {}s from {}'.format(self.relateduser_string, self.tag_name))
+        return ugettext_lazy(
+            'Remove %(user)s from %(tag)s'
+        ) % {
+            'user': self.relateduser_string,
+            'tag': self.tag_name
+        }
 
     def get_queryset_for_role(self, role):
         return super(RemoveRelatedUserFromTagMultiSelectView, self)\
@@ -502,27 +525,33 @@ class RemoveRelatedUserFromTagMultiSelectView(BaseRelatedUserMultiSelectView):
         related_users = form.cleaned_data['selected_items']
         self.remove_related_users(period_tag=period_tag, related_users=related_users)
         self.add_success_message(
-            message='{} {}(s) removed successfully.'.format(len(related_users), self.relateduser_string))
+            message=ugettext_lazy(
+                '%(number_users)d %(user_string)s removed successfully'
+            ) % {
+                'number_users': len(related_users),
+                'user_string': self.relateduser_string
+            }
+        )
         return super(RemoveRelatedUserFromTagMultiSelectView, self).form_valid(form=form)
 
 
 class SelectedRelatedExaminerForm(SelectedRelatedUsersForm):
-    invalid_item_selected_message = 'Invalid examiner was selected.'
+    invalid_item_selected_message = ugettext_lazy('Invalid examiner was selected.')
 
 
 class SelectedRelatedStudentForm(SelectedRelatedUsersForm):
-    invalid_item_selected_message = 'Invalid student was selected.'
+    invalid_item_selected_message = ugettext_lazy('Invalid student was selected.')
 
 
 class ExaminerMultiSelectViewMixin(object):
     model = RelatedExaminer
-    relateduser_string = 'examiner'
+    relateduser_string = ugettext_lazy('examiner')
     form_class = SelectedRelatedExaminerForm
 
 
 class StudentMultiSelectViewMixin(object):
     model = RelatedStudent
-    relateduser_string = 'student'
+    relateduser_string = ugettext_lazy('student')
     form_class = SelectedRelatedStudentForm
 
 
