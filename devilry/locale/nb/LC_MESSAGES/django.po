@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-25 11:35+0100\n"
-"PO-Revision-Date: 2018-01-25 11:36+0100\n"
+"POT-Creation-Date: 2018-01-25 13:32+0100\n"
+"PO-Revision-Date: 2018-01-25 13:33+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -2825,9 +2825,10 @@ msgid "Cannot split student if there is less than 2 students in project group."
 msgstr ""
 "Kan ikke dele studenter hvis det er færre en 2 studenter i en prosjektgruppe."
 
-#: devilry_admin/views/assignment/students/split_group.py:88
-msgid "{} was removed from the project group"
-msgstr "{} ble fjernet fra prosjektgruppen"
+#: devilry_admin/views/assignment/students/split_group.py:89
+#, python-format
+msgid "%(what)s was removed from the project group"
+msgstr "%(what)s ble fjernet fra prosjektgruppen"
 
 #: devilry_admin/views/common/bulkimport_users_common.py:43
 msgid ""

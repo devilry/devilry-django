@@ -85,8 +85,9 @@ class SplitGroupView(QuerysetForRoleMixin, SingleObjectMixin, formbase.FormView)
         else:
             messages.success(
                 self.request,
-                ugettext_lazy('{} was removed from the project group'
-                              .format(candidate.relatedstudent.user.get_displayname()))
+                ugettext_lazy(
+                    '%(what)s was removed from the project group'
+                ) % {'what': candidate.relatedstudent.user.get_displayname()}
             )
         return redirect(self.get_success_url())
 

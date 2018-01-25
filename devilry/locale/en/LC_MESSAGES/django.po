@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-25 11:34+0100\n"
+"POT-Creation-Date: 2018-01-25 13:32+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2561,8 +2561,9 @@ msgstr ""
 msgid "Cannot split student if there is less than 2 students in project group."
 msgstr ""
 
-#: devilry_admin/views/assignment/students/split_group.py:88
-msgid "{} was removed from the project group"
+#: devilry_admin/views/assignment/students/split_group.py:89
+#, python-format
+msgid "%(what)s was removed from the project group"
 msgstr ""
 
 #: devilry_admin/views/common/bulkimport_users_common.py:43
