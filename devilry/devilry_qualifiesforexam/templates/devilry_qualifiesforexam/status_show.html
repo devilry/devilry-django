@@ -11,11 +11,11 @@
             </h1>
             {% if status.status == 'ready' %}
                 <p class="text-muted">
-                    Status: <span class="label label-success">Ready for export</span>
+                    Status: <span class="label label-success">{% trans 'Ready for export '%}</span>
                     ({% trans "Saved" %} {{ status.createtime }} {% trans "by" %} {{ status.user }})
                 </p>
             {% else %}
-                <span class="label label-warning">Not ready for export</span>
+                <span class="label label-warning">{% trans 'Not ready for export' %}</span>
             {% endif %}
             <h5>{{ num_students_qualify }}/{{ num_students }} {% trans "students qualify for final exam" %}</h5>
         </div>

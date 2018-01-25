@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 # Devilry imports
+from django.utils.translation import ugettext_lazy
+
 from devilry.devilry_cradmin.devilry_tablebuilder import base as tablebuilderbase
 
 
@@ -27,8 +29,8 @@ class QualifiesTableBuilderTable(tablebuilderbase.Table):
         """
         header_row = QualificationRowRenderer()
         header_row.extend([
-            QualificationHeaderRenderer(value='Student'),
-            QualificationHeaderRenderer(value='Qualified for final exams')
+            QualificationHeaderRenderer(value=ugettext_lazy('Student')),
+            QualificationHeaderRenderer(value=ugettext_lazy('Qualified for final exams'))
         ])
         tablebuilder_table = cls(table_headers=header_row)
         for row_items in row_items_list:

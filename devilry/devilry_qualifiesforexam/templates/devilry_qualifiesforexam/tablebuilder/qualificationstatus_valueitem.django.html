@@ -1,9 +1,10 @@
 {% extends "devilry_cradmin/devilry_tablebuilder/itemvalue.django.html" %}
+{% load i18n %}
 
 {% block content %}
     {% if me.result == 'yes' %}
-        <h2><span class="label label-success">YES</span></h2>
+        <h2><span class="label label-success">{% trans 'YES' %}</span></h2>
     {% else %}
-        <h2><span class="label label-warning">NO</span></h2>
+        <h2><span class="label label-warning">{% trans 'NO' %}</span></h2>
     {% endif %}
 {% endblock %}

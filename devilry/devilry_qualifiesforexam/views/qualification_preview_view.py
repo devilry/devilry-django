@@ -255,12 +255,13 @@ class RetractStatusForm(forms.ModelForm):
         fields = ['message']
         model = status_models.Status
         help_texts = {
-            'message': 'Provide a message as to why the Status needs to be retracted.'
+            'message': ugettext_lazy('Provide a message as to why the Status needs to be retracted.')
         }
 
     def __init__(self, *args, **kwargs):
         super(RetractStatusForm, self).__init__(*args, **kwargs)
         self.fields['message'].required = True
+        self.fields['message'].label = ugettext_lazy('Message')
 
     @classmethod
     def get_field_layout(cls):

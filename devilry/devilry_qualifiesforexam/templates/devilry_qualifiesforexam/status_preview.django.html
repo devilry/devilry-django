@@ -6,9 +6,13 @@
 {% block content %}
     <div class="container">
         <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
-            <h1>Students on {{ period }}</h1>
-            <h2>Preview and confirm</h2>
-            <p> This table shows the result of your choices</p>
+            <h1>
+                {% trans 'Students on' %} {{ period }}
+            </h1>
+            <h2>
+                {% trans 'Preview and confirm' %}
+            </h2>
+            <p> {% trans 'This table shows the result of your choices' %}</p>
         </div>
 
         <p class="devilry-buttonbar">
