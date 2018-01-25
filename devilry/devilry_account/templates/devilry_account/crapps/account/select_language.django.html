@@ -1,0 +1,29 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div class="container">
+        <div class="devilry-dashboard-container">
+            <form id="id_select-language-form" method="POST">
+                {% csrf_token %}
+                {% for language_info in languages %}
+                    {% if forloop.first %}
+                        <h2>{% trans 'Active language' %}</h2>
+                        <input type="hidden" name="selected_language" value="{{ language_info.language }}" />
+                        <a class="button button_default">
+                            {{ language_info.language }} {{ language_info.languagecode }}
+                        </a>
+                    {% else %}
+                        {% if forloop.counter == 2 %}
+                            <h2>{% trans 'Other languages' %}</h2>
+                        {% endif %}
+                        <input type="hidden" name="selected_language" value="{{ language_info.language }}" />
+                        <a class="button button_default">
+                            {{ language_info.language }} {{ language_info.languagecode }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </form>
+        </div>
+    </div>
+{% endblock content %}
