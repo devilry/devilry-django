@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-25 10:58+0100\n"
-"PO-Revision-Date: 2018-01-25 10:59+0100\n"
+"PO-Revision-Date: 2018-01-25 11:07+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -400,7 +400,7 @@ msgstr "Navn"
 
 #: apps/core/models/deadline.py:201
 msgid "Unknown."
-msgstr "Ukjent"
+msgstr "Ukjent."
 
 #: apps/core/models/deadline.py:202
 msgid "Examiner gave the student another chance."
@@ -476,12 +476,12 @@ msgstr "Invitasjonen har tidligere blitt avvist."
 #: apps/core/models/groupinvite.py:222
 #, python-brace-format
 msgid "{user} accepted your project group invite"
-msgstr "{user} aksepterte invitasjonen til din prosjektgruppe."
+msgstr "{user} aksepterte invitasjonen til din prosjektgruppe"
 
 #: apps/core/models/groupinvite.py:225
 #, python-brace-format
 msgid "{user} rejected your project group invite"
-msgstr "{user} avslo invitasjonen til din prosjektgruppe."
+msgstr "{user} avslo invitasjonen til din prosjektgruppe"
 
 #: apps/core/models/groupinvite.py:251
 msgid "Can not send notification for an accepted GroupInvite."
@@ -609,7 +609,7 @@ msgstr[1] "%(filecount)s filer fra student."
 #, python-format
 msgid "%(commentcount)s comment from examiner."
 msgid_plural "%(commentcount)s comments from examiner."
-msgstr[0] "%(commentcount)s kommentar fra retter"
+msgstr[0] "%(commentcount)s kommentar fra retter."
 msgstr[1] "%(commentcount)s kommentarer fra retter."
 
 #: apps/core/templates/devilry_core/templatetags/comment-summary.django.html:27
@@ -1054,7 +1054,7 @@ msgstr "Sorter"
 #: devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:58
 msgctxt "listfilter relateduser"
 msgid "Is active?"
-msgstr "er aktiv?"
+msgstr "Er aktiv?"
 
 #: devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:76
 #: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:28
@@ -1076,7 +1076,7 @@ msgstr "Har stikkord"
 #: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:37
 msgctxt "period tag show hidden filter"
 msgid "Show hidden tags?"
-msgstr "Vis skjulte stikkord"
+msgstr "Vis skjulte stikkord?"
 
 #: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:55
 msgctxt "period tag show hidden radio filter"
@@ -1241,7 +1241,7 @@ msgstr "Tilbake til oversikt for retter"
 msgid ""
 "Select students and randomly assign two or more examiners to those students"
 msgstr ""
-"Velg studenter og tildel tilfeldig to eller flere rettere til de studentene."
+"Velg studenter og tildel tilfeldig to eller flere rettere til de studentene"
 
 #: devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/select_method.django.html:63
 msgid "Select students and add examiners to those students"
@@ -1454,14 +1454,14 @@ msgid ""
 "There are still students who are on the semester, but not on the assignment"
 msgstr ""
 "Det er fortsatt studenter som er tilknyttet semesteret, men som ikke er "
-"tilknyttet oppgaven."
+"tilknyttet oppgaven"
 
 #: devilry_admin/templates/devilry_admin/assignment/include/info-box.django.html:69
 msgid ""
 "There are still examiners who are on the semester, but not on the assignment"
 msgstr ""
 "Det er fortsatt rettere som er tilknyttet semesteret, men som ikke er "
-"tilknyttet oppgaven."
+"tilknyttet oppgaven"
 
 #: devilry_admin/templates/devilry_admin/assignment/include/main.django.html:7
 #: devilry_admin/templates/devilry_admin/period/overview.django.html:48
@@ -1802,7 +1802,7 @@ msgstr "Håndter innleveringsfrister"
 
 #: devilry_admin/templates/devilry_admin/assignment/students/split_groups.django.html:14
 msgid "Back to project group overview"
-msgstr "Tilbake til oversikt for prosjektgruppe."
+msgstr "Tilbake til oversikt for prosjektgruppe"
 
 #: devilry_admin/templates/devilry_admin/assignment/students/split_groups.django.html:19
 #: devilry_admin/views/assignment/students/split_group.py:53
@@ -1937,7 +1937,7 @@ msgid ""
 "course and semester administrators can add extra administrators."
 msgstr ""
 "Hvert semester har nøyaktig en spesiell tillatelsesgruppe hvor avdelings-, "
-"kurs- og semesteradministratorer kan legge til ekstra administratorer"
+"kurs- og semesteradministratorer kan legge til ekstra administratorer."
 
 #: devilry_admin/templates/devilry_admin/common/admins-explained.django.html:87
 msgid ""
@@ -2492,7 +2492,7 @@ msgstr "Velg minimum to rettere:"
 
 #: devilry_admin/views/assignment/examiners/bulk_organize.py:202
 msgid "Select at least two students:"
-msgstr "Velg minimum to studenter"
+msgstr "Velg minimum to studenter:"
 
 #: devilry_admin/views/assignment/examiners/bulk_organize.py:205
 msgid "Randomly assign selected students to selected examiners"
@@ -3534,7 +3534,7 @@ msgstr "Antall rettere"
 #: devilry_cradmin/devilry_listfilter/assignmentgroup.py:460
 msgctxt "group student filter"
 msgid "Number of students"
-msgstr "antall studenter"
+msgstr "Antall studenter"
 
 #: devilry_cradmin/devilry_listfilter/assignmentgroup.py:507
 msgctxt "group activity"
@@ -3837,7 +3837,7 @@ msgid ""
 "operation while you where selecting. Refresh the page and try again"
 msgstr ""
 "Noe gikk galt. Dette kan skje hvis noen andre utførte en ligende operasjon "
-"mens du valgte. Last siden inn på nytt og prøv igjen."
+"mens du valgte. Last siden inn på nytt og prøv igjen"
 
 #: devilry_deadlinemanagement/views/multiselect_groups_view.py:52
 #: devilry_examiner/views/assignment/bulkoperations/bulk_operations_grouplist.py:60
@@ -4346,7 +4346,7 @@ msgid ""
 msgstr ""
 "Velg hvordan du vil gi tilbakemelding til studentene fra listen nedenfor. Du "
 "må fortsette stegene videre i konfigurasjonen som må gjøres komplett før "
-"noen oppgaver kan bli rettet på denne oppgaven"
+"noen oppgaver kan bli rettet på denne oppgaven."
 
 #: devilry_gradingsystem/templates/devilry_gradingsystem/admin/selectplugin.django.html:28
 #: devilry_gradingsystem/templates/devilry_gradingsystem/admin/use-this-button.django.html:6
@@ -4416,7 +4416,7 @@ msgid ""
 "handle vastly diverging methods of providing feedback to students."
 msgstr ""
 "Devilry inkluderer en plugin-arkitektur for karaktersetting. Dette gjør det "
-"enkelt å håndtere alle ulike måter å definere karakterer på"
+"enkelt å håndtere alle ulike måter å definere karakterer på."
 
 #: devilry_gradingsystem/templates/devilry_gradingsystem/admin/summary.django.html:23
 msgid ""
@@ -4424,7 +4424,7 @@ msgid ""
 "using Devilry 1.3.6 or older."
 msgstr ""
 "Det er ikke konfigurert noe karaktersystem. Årsåken kan være at oppgaven var "
-"opprettet i Devilry versjon 1.3.6 eller eldre"
+"opprettet i Devilry versjon 1.3.6 eller eldre."
 
 #: devilry_gradingsystem/templates/devilry_gradingsystem/admin/summary.django.html:25
 msgid ""
@@ -4476,7 +4476,7 @@ msgid ""
 "at least one examiner has saved a feedback draft."
 msgstr ""
 "Du kan rekonfigurere karaktersystemet for denne oppgaven, men vær obs på at "
-"minst en retter har lagret et utkast til tilbakemelding"
+"minst en retter har lagret et utkast til tilbakemelding."
 
 #: devilry_gradingsystem/templates/devilry_gradingsystem/admin/summary.django.html:66
 msgid ""
@@ -4557,7 +4557,7 @@ msgid ""
 msgstr ""
 "En mer utfyllende tekstene studentene kan se. Dette er vanligvis den "
 "detaljerte tilbakemeldingen. Dette feltet autogeneres av enkelte plugins "
-"basert på informasjon fra retterne. Her er mulighetene mange"
+"basert på informasjon fra retterne. Her er mulighetene mange."
 
 #: devilry_gradingsystem/templates/devilry_gradingsystem/admin/summary.django.html:89
 msgid ""
@@ -4569,7 +4569,7 @@ msgstr ""
 "Dine rettere kan gi denne informasjonen videre på mange forskjellige måter: "
 "Ved å spesifisere en numerisk verdi, ved å velge godkjent, ved å besvare et "
 "sett spørsmål og mer til. Hver av disse måtene virkeliggjøres gjennom et "
-"plugin til Devilry"
+"plugin til Devilry."
 
 #: devilry_gradingsystem/templates/devilry_gradingsystem/admin/summary.django.html:91
 #, python-format
@@ -4703,7 +4703,7 @@ msgstr "Velg karakteren som er nødvendig for å bestå oppgaven"
 
 #: devilry_gradingsystem/views/feedbackbulkeditorbase.py:37
 msgid "One or more of the selected groups has no deliveries."
-msgstr "En eller flere av de valgte gruppene har ingen innleveringer"
+msgstr "En eller flere av de valgte gruppene har ingen innleveringer."
 
 #: devilry_gradingsystem/views/feedbackbulkeditorbase.py:50
 msgid "Feedback text"
@@ -5138,7 +5138,7 @@ msgstr ""
 
 #: devilry_header/templates/devilry_header/about_me.django.html:13
 msgid " information is wrong"
-msgstr "informasjonen er feilaktig"
+msgstr " informasjonen er feilaktig"
 
 #: devilry_header/templates/devilry_header/about_me.django.html:24
 msgid "Email Address"
@@ -5259,7 +5259,7 @@ msgstr "Denne tabellen viser resultat av dine valg"
 
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:14
 msgid "Ready for export "
-msgstr "Klar for eksportering"
+msgstr "Klar for eksportering "
 
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_show.html:15
 msgid "Saved"
@@ -5339,7 +5339,7 @@ msgid ""
 "ends with a preview of the results before you get the option to save"
 msgstr ""
 "Velg et av alternativene fra listen. Hvert alternativ starter som slutter "
-"med en forhåndsvisning av resultatene, før du får muligheten til å lagre."
+"med en forhåndsvisning av resultatene, før du får muligheten til å lagre"
 
 #: devilry_qualifiesforexam/views/qualification_preview_view.py:258
 msgid "Provide a message as to why the Status needs to be retracted."
@@ -5635,7 +5635,7 @@ msgstr "Se igjennom alle oppgaver og kurs"
 
 #: devilry_student/templatetags/devilry_student_tags.py:32
 msgid "Waiting for deliveries or for deadline to expire"
-msgstr "Venter på innleveringer eller på at innleveringsfristen skal utgå."
+msgstr "Venter på innleveringer eller på at innleveringsfristen skal utgå"
 
 #: devilry_student/views/dashboard/allperiods.py:36
 msgctxt "student allperiods"
