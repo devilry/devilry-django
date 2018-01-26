@@ -4,7 +4,6 @@ from mock import mock
 from model_mommy import mommy
 
 from devilry.devilry_account.crapps.account import select_language
-from devilry.devilry_account.models import User
 
 
 class TestSelectLanguagePostView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -15,11 +14,11 @@ class TestSelectLanguagePostView(test.TestCase, cradmin_testhelpers.TestCaseMixi
         mockrequest.session = self.client.session
         return mockrequest
 
-    def test_get_rendered_languages(self):
-        mockresponse = self.mock_http200_getrequest_htmls()
-        buttons_text = [element.alltext_normalized for element in mockresponse.selector.list('.button')]
-        self.assertIn('English (en)', buttons_text)
-        self.assertIn('Norwegian Bokmal (nb)', buttons_text)
+    def test_language_options_sanity(self):
+        user = mommy.make('devilry_account.User', languagecode='en')
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=user)
+        self.assertEqual(mockresponse.selector.one('.test-current-language').alltext_normalized, 'English (en)')
+        self.assertEqual(mockresponse.selector.one('.test-change-language').alltext_normalized, 'Norwegian Bokmal (nb)')
 
     def test_no_selected_language(self):
         mockrequest = self.__make_mock_request()

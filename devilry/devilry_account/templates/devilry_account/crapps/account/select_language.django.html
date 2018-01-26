@@ -2,6 +2,14 @@
 {% load i18n %}
 {% load cradmin_tags %}
 
+{% block title %}
+    {% trans 'Language options' %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>{% trans 'Language options' %}</h1>
+{% endblock pageheader-inner %}
+
 {% block content %}
     <div class="container">
         <div class="devilry-dashboard-container">
@@ -10,16 +18,16 @@
                 {% for language_info in languages %}
                     {% if forloop.first %}
                         <h2>{% trans 'Current language' %}</h2>
-                        <input type="hidden" name="selected_language" value="{{ language_info.language }}" />
-                        <a class="button button_default" onclick="document.getElementById('id_select-language-form').submit()" disabled="disabled">
+                        <input type="hidden" name="selected_language" value="{{ language_info.languagecode }}" />
+                        <p class="test-current-language">
                             {{ language_info.language }} ({{ language_info.languagecode }})
-                        </a>
+                        </p>
                     {% else %}
                         {% if forloop.counter == 2 %}
-                            <h2>{% trans 'Other languages' %}</h2>
+                            <h2>{% trans 'Change language' %}</h2>
                         {% endif %}
-                        <input type="hidden" name="selected_language" value="{{ language_info.language }}" />
-                        <a class="button button_default" onclick="document.getElementById('id_select-language-form').submit()">
+                        <input type="hidden" name="selected_language" value="{{ language_info.languagecode }}" />
+                        <a class="button button_default test-change-language" onclick="document.getElementById('id_select-language-form').submit()">
                             {{ language_info.language }} ({{ language_info.languagecode }})
                         </a>
                     {% endif %}
