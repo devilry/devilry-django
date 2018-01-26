@@ -1027,7 +1027,7 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
                 'tag': testperiodtag.tag
             }
         )
-        self.assertEquals('Add examiners to a',
+        self.assertEquals('Add examiner to a',
                           mockresponse.selector.one('title').alltext_normalized)
 
     def test_get_relatedusers(self):
@@ -1105,7 +1105,7 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
                 'tag': testperiodtag.tag
             }
         )
-        self.assertEquals('Remove examiners from a',
+        self.assertEquals('Remove examiner from a',
                           mockresponse.selector.one('title').alltext_normalized)
 
     def test_get_relatedusers(self):
