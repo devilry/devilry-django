@@ -84,31 +84,23 @@ class CreateForm(forms.ModelForm):
     def __compare_deadline_and_publishing_time(self, period, publishing_time, first_deadline):
         if first_deadline < publishing_time:
             if period.start_time > timezone.now():
-                publishing_time_naturaltime = naturaltime(period.start_time() + timedelta(
-                        minutes=settings.DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES,
-                        # We add some seconds to make the naturaltime show the correct amount of
-                        # hours/minutes because at least a small fraction of time will pass between
-                        # creating the datetime and the formatting in the naturaltime function.
-                        seconds=10))
-                raise ValidationError({
-                    # Translators: The "delay" is formatted as "X hours/minutes from now"
-                    'first_deadline': _('First deadline must be at least %(delay)s.') % {
-                        'delay': publishing_time_naturaltime
-                    }
-                })
+                self.__raise_validation_error(start_time=period.start_time)
             else:
-                publishing_time_naturaltime = naturaltime(timezone.now() + timedelta(
-                        minutes=settings.DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES,
-                        # We add some seconds to make the naturaltime show the correct amount of
-                        # hours/minutes because at least a small fraction of time will pass between
-                        # creating the datetime and the formatting in the naturaltime function.
-                        seconds=10))
-                raise ValidationError({
-                    # Translators: The "delay" is formatted as "X hours/minutes from now"
-                    'first_deadline': _('First deadline must be at least %(delay)s.') % {
-                        'delay': publishing_time_naturaltime
-                    }
-                })
+                self.__raise_validation_error(start_time=timezone.now())
+
+    def __raise_validation_error(self, start_time):
+        publishing_time_naturaltime = naturaltime(start_time + timedelta(
+            minutes=settings.DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES,
+            # We add some seconds to make the naturaltime show the correct amount of
+            # hours/minutes because at least a small fraction of time will pass between
+            # creating the datetime and the formatting in the naturaltime function.
+            seconds=10))
+        raise ValidationError({
+            # Translators: The "delay" is formatted as "X hours/minutes from now"
+            'first_deadline': _('First deadline must be at least %(delay)s.') % {
+                'delay': publishing_time_naturaltime
+            }
+        })
 
 
 
