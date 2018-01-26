@@ -66,23 +66,50 @@ class CreateForm(forms.ModelForm):
         first_deadline = cleaned_data.get('first_deadline', None)
         cleaned_data['parentnode'] = self.period
         if first_deadline:
-            publishing_time = timezone.now() + timedelta(
-                minutes=settings.DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES)
-            if first_deadline < publishing_time:
-                publishing_time_naturaltime = naturaltime(timezone.now() + timedelta(
-                    minutes=settings.DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES,
-                    # We add some seconds to make the naturaltime show the correct amount of
-                    # hours/minutes because at least a small fraction of time will pass between
-                    # creating the datetime and the formatting in the naturaltime function.
-                    seconds=10))
+            if self.period.start_time > timezone.now():
+                publishing_time = self.period.start_time + timedelta(
+                    minutes=settings.DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES)
+                self.__compare_deadline_and_publishing_time(
+                    period=self.period, publishing_time=publishing_time, first_deadline=first_deadline
+                )
+            else:
+                publishing_time = timezone.now() + timedelta(
+                    minutes=settings.DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES)
+                self.__compare_deadline_and_publishing_time(
+                    period=self.period, publishing_time=publishing_time, first_deadline=first_deadline
+                )
+            cleaned_data['publishing_time'] = publishing_time
+        return cleaned_data
+
+    def __compare_deadline_and_publishing_time(self, period, publishing_time, first_deadline):
+        if first_deadline < publishing_time:
+            if period.start_time > timezone.now():
+                publishing_time_naturaltime = naturaltime(period.start_time() + timedelta(
+                        minutes=settings.DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES,
+                        # We add some seconds to make the naturaltime show the correct amount of
+                        # hours/minutes because at least a small fraction of time will pass between
+                        # creating the datetime and the formatting in the naturaltime function.
+                        seconds=10))
                 raise ValidationError({
                     # Translators: The "delay" is formatted as "X hours/minutes from now"
                     'first_deadline': _('First deadline must be at least %(delay)s.') % {
                         'delay': publishing_time_naturaltime
                     }
                 })
-            cleaned_data['publishing_time'] = publishing_time
-        return cleaned_data
+            else:
+                publishing_time_naturaltime = naturaltime(timezone.now() + timedelta(
+                        minutes=settings.DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES,
+                        # We add some seconds to make the naturaltime show the correct amount of
+                        # hours/minutes because at least a small fraction of time will pass between
+                        # creating the datetime and the formatting in the naturaltime function.
+                        seconds=10))
+                raise ValidationError({
+                    # Translators: The "delay" is formatted as "X hours/minutes from now"
+                    'first_deadline': _('First deadline must be at least %(delay)s.') % {
+                        'delay': publishing_time_naturaltime
+                    }
+                })
+
 
 
 class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
