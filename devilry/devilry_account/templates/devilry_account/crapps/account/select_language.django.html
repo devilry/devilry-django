@@ -5,7 +5,7 @@
 {% block content %}
     <div class="container">
         <div class="devilry-dashboard-container">
-            <form id="id_select-language-form" action="{% cradmin_appurl 'select_language' %}" method="POST">
+            <form id="id_select-language-form" action="{% cradmin_appurl viewname='select_language' %}" method="POST">
                 {% csrf_token %}
                 {% for language_info in languages %}
                     {% if forloop.first %}

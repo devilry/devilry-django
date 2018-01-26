@@ -18,8 +18,8 @@ class TestSelectLanguagePostView(test.TestCase, cradmin_testhelpers.TestCaseMixi
     def test_get_rendered_languages(self):
         mockresponse = self.mock_http200_getrequest_htmls()
         buttons_text = [element.alltext_normalized for element in mockresponse.selector.list('.button')]
-        self.assertIn('English en', buttons_text)
-        self.assertIn('Norwegian Bokmal nb', buttons_text)
+        self.assertIn('English (en)', buttons_text)
+        self.assertIn('Norwegian Bokmal (nb)', buttons_text)
 
     def test_no_selected_language(self):
         mockrequest = self.__make_mock_request()
@@ -69,7 +69,7 @@ class TestSelectLanguagePostView(test.TestCase, cradmin_testhelpers.TestCaseMixi
                 }
             },
         )
-        user = User.objects.get(id=user.id)
+        user.refresh_from_db()
         self.assertEqual(user.languagecode, 'nb')
 
     def test_selected_language_user_authenticated(self):
