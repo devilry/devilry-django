@@ -11,12 +11,15 @@
 
 
 {% block content %}
+    <div class="container">
+        <h2>{% trans 'Your assignments' %}</h2>
+    </div>
     {{ block.super }}
     <div class="container">
         <a href="{% cradmin_instance_url appname='allperiods' viewname='INDEX' %}"
                 id="devilry_student_dashboard_allperiods_link"
                 class="btn btn-default">
-            {% trans "Browse all assignments and courses" context "student dashboard" %}
+            {% trans "Your courses" context "student dashboard" %}
         </a>
     </div>
 {% endblock content %}
