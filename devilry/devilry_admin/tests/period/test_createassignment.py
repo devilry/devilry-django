@@ -9,7 +9,8 @@ from django_cradmin import crinstance
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment, Candidate, Examiner
-from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START, OLD_PERIOD_START, FUTURE_PERIOD_END
+from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START, OLD_PERIOD_START, FUTURE_PERIOD_END, \
+    ASSIGNMENT_FUTUREPERIOD_START_FIRST_DEADLINE
 from devilry.devilry_admin.views.period import createassignment
 from devilry.utils import datetimeutils
 from devilry.utils.datetimeutils import default_timezone_datetime
@@ -329,6 +330,21 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             created_assignment.publishing_time <
             (timezone.now() + timedelta(minutes=61))
         )
+
+    def test_post_future_period_sanity(self):
+        self.assertEqual(Assignment.objects.count(), 0)
+        period = mommy.make_recipe('devilry.apps.core.period_future')
+        self.__valid_post_request(period=period, first_deadline=ASSIGNMENT_FUTUREPERIOD_START_FIRST_DEADLINE)
+        self.assertEqual(Assignment.objects.count(), 1)
+
+    def test_post_future_publishing_time(self):
+        period = mommy.make_recipe('devilry.apps.core.period_future')
+        created_assignment, mockresponse = self.__valid_post_request(
+            period=period,
+            first_deadline=ASSIGNMENT_FUTUREPERIOD_START_FIRST_DEADLINE,
+            publishing_time_delay_minutes=60
+        )
+        self.assertEqual(created_assignment.publishing_time, (period.start_time + timedelta(minutes=60)))
 
     def test_post_first_assignment_adds_relatedstudents(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
