@@ -4,6 +4,7 @@ import json
 
 from crispy_forms import layout
 from django import forms
+from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.template.loader import render_to_string
@@ -190,6 +191,10 @@ class AssignmentGradingConfigurationUpdateView(OnlySaveButtonMixin, formbase.For
         with transaction.atomic():
             assignment.save()
             self.__create_point_to_grade_map(form=form, assignment=assignment)
+            messages.success(
+                request=self.request,
+                message=ugettext_lazy('Saved Grading configuration for assignment')
+            )
         return super(AssignmentGradingConfigurationUpdateView, self).form_valid(form)
 
     def get_backlink_url(self):

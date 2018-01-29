@@ -1,1 +1,9 @@
 {% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
+{% load i18n %}
+
+{% block pageheader-inner %}
+    {{ block.super }}
+    <p class="devilry-page-subheader">
+        {% trans 'Choose a course below to see its assignments' context 'student_all_periods' %}
+    </p>
+{% endblock pageheader-inner %}
