@@ -10,5 +10,5 @@ How to release a new Devilry version
 6. Tag these changes with ``git tag <version>``.
 7. Make source dist: ``python setup.py sdist``
 8. Release to pypi: ``twine upload dist/devilry-<version>.tar.gz``
-9. Push the changes to the ``production`` branch.
-10. Merge the changes in the ``production`` branch into the ``master`` branch, and push the master branch.
+9. Push the changes to the remote ``production`` branch.
+10. Merge the changes in the ``production`` branch into the ``master`` branch, and push to the remote master branch.
