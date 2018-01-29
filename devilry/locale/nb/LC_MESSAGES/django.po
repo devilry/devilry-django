@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-25 13:32+0100\n"
-"PO-Revision-Date: 2018-01-25 13:33+0100\n"
+"POT-Creation-Date: 2018-01-29 14:42+0100\n"
+"PO-Revision-Date: 2018-01-29 14:46+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.0.4\n"
 
 #: apps/core/admin.py:39
 msgid "Admins"
@@ -178,7 +178,7 @@ msgstr ""
 #: apps/core/models/assignment.py:481
 msgctxt "assignment points-to-grade mapper"
 msgid "Passed or failed"
-msgstr ""
+msgstr "Bestått eller ikke bestått"
 
 #: apps/core/models/assignment.py:486
 msgctxt "assignment points-to-grade mapper"
@@ -193,7 +193,7 @@ msgstr "Du definerer en tabell for oppslag (A-F eller andre karaktersystemer)"
 #: apps/core/models/assignment.py:516
 msgctxt "assignment grading plugin"
 msgid "PASSED/FAILED. The examiner selects passed or failed."
-msgstr ""
+msgstr "BESTÅTT/IKKE BESTÅTT. Retteren velger bestått eller ikke bestått."
 
 #: apps/core/models/assignment.py:522
 msgctxt "assignment grading plugin"
@@ -266,12 +266,12 @@ msgstr ""
 #: apps/core/models/assignment.py:869
 msgctxt "assignment grade passed-or-failed"
 msgid "failed"
-msgstr ""
+msgstr "ikke bestått"
 
 #: apps/core/models/assignment.py:873
 msgctxt "assignment grade passed-or-failed"
 msgid "passed"
-msgstr ""
+msgstr "bestått"
 
 #: apps/core/models/assignment.py:910
 #, python-format
@@ -371,7 +371,7 @@ msgid "Candidate ID missing"
 msgstr "Mangler kandidat ID"
 
 #: apps/core/models/custom_db_fields.py:20
-#: devilry_account/templates/devilry_account/crapps/account/index.django.html:25
+#: devilry_account/templates/devilry_account/crapps/account/index.django.html:26
 #: devilry_admin/views/dashboard/overview.py:116
 msgid "Short name"
 msgstr "Kort navn"
@@ -389,7 +389,7 @@ msgid "Can only contain numbers, lowercase letters, '_' and '-'. "
 msgstr "Kan kun bestå av nummer, små bokstaver, '_' og '-'. "
 
 #: apps/core/models/custom_db_fields.py:40 devilry_account/models.py:876
-#: devilry_account/templates/devilry_account/crapps/account/index.django.html:16
+#: devilry_account/templates/devilry_account/crapps/account/index.django.html:17
 #: devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:21
 #: devilry_cradmin/devilry_listfilter/assignment.py:16
 #: devilry_cradmin/devilry_listfilter/assignment.py:54
@@ -624,7 +624,7 @@ msgstr[1] "%(commentcount)s upubliserte kommentarer fra deg."
 #: apps/core/templatetags/devilry_core_tags.py:39
 #: devilry_examiner/templatetags/devilry_examiner_tags.py:28
 msgid "passed"
-msgstr ""
+msgstr "bestått"
 
 #: apps/core/templates/devilry_core/templatetags/grade-full-plain.django.html:12
 #: apps/core/templates/devilry_core/templatetags/grade-full.django.html:12
@@ -710,7 +710,7 @@ msgid "Devilry account"
 msgstr "Devilry konto"
 
 #: devilry_account/cradminextensions/devilry_crmenu_account.py:10
-#: devilry_account/templates/devilry_account/crapps/account/index.django.html:5
+#: devilry_account/templates/devilry_account/crapps/account/index.django.html:6
 msgid "Account"
 msgstr "Konto"
 
@@ -778,12 +778,12 @@ msgid "Short name is required."
 msgstr "Kort navn er påkrevd."
 
 #: devilry_account/models.py:636
-#: devilry_account/templates/devilry_account/crapps/account/index.django.html:58
+#: devilry_account/templates/devilry_account/crapps/account/index.django.html:59
 msgid "Email address"
 msgstr "E-postadresse"
 
 #: devilry_account/models.py:637
-#: devilry_account/templates/devilry_account/crapps/account/index.django.html:56
+#: devilry_account/templates/devilry_account/crapps/account/index.django.html:57
 msgid "Email addresses"
 msgstr "E-postadresser"
 
@@ -824,14 +824,14 @@ msgid "%(email)s - User%(userid)s"
 msgstr "%(email)s - Bruker%(userid)s"
 
 #: devilry_account/models.py:699 devilry_account/models.py:708
-#: devilry_account/templates/devilry_account/crapps/account/index.django.html:42
+#: devilry_account/templates/devilry_account/crapps/account/index.django.html:43
 #: devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:14
 #: devilry_header/templates/devilry_header/about_me.django.html:29
 msgid "Username"
 msgstr "Brukernavn"
 
 #: devilry_account/models.py:700
-#: devilry_account/templates/devilry_account/crapps/account/index.django.html:40
+#: devilry_account/templates/devilry_account/crapps/account/index.django.html:41
 msgid "Usernames"
 msgstr "Brukernavn"
 
@@ -997,31 +997,50 @@ msgstr ""
 msgid "Only a single editable permission group is allowed for a course."
 msgstr "Kun en redigerbar tillatelsesgruppe er tillat for et kurs."
 
-#: devilry_account/templates/devilry_account/crapps/account/index.django.html:9
+#: devilry_account/templates/devilry_account/crapps/account/index.django.html:10
 msgid "Account overview"
 msgstr "Kontooversikt"
 
-#: devilry_account/templates/devilry_account/crapps/account/index.django.html:21
+#: devilry_account/templates/devilry_account/crapps/account/index.django.html:22
 msgid "Name not registered for account"
 msgstr "Navn er ikke registrert for kontoen"
 
-#: devilry_account/templates/devilry_account/crapps/account/index.django.html:27
+#: devilry_account/templates/devilry_account/crapps/account/index.django.html:28
 msgid "Shown instead of your name some places in the UI"
 msgstr "Vises i stedet for ditt navn noen steder i UI"
 
-#: devilry_account/templates/devilry_account/crapps/account/index.django.html:32
+#: devilry_account/templates/devilry_account/crapps/account/index.django.html:33
 #: devilry_header/templates/devilry_header/about_me.django.html:48
 msgid "Last login"
 msgstr "Sist innlogget"
 
-#: devilry_account/templates/devilry_account/crapps/account/index.django.html:67
+#: devilry_account/templates/devilry_account/crapps/account/index.django.html:68
 msgid "use for notifications"
 msgstr "bruk for meldinger"
 
-#: devilry_account/templates/devilry_account/crapps/account/index.django.html:78
+#: devilry_account/templates/devilry_account/crapps/account/index.django.html:75
+#: devilry_header/templates/devilry_header/about_me.django.html:42
+msgid "Language"
+msgstr "Språk"
+
+#: devilry_account/templates/devilry_account/crapps/account/index.django.html:77
+#: devilry_account/templates/devilry_account/crapps/account/select_language.django.html:27
+msgid "Change language"
+msgstr "Endre språk"
+
+#: devilry_account/templates/devilry_account/crapps/account/index.django.html:84
 #: devilry_header/templates/devilry_header/header2include.django.html:102
 msgid "Sign out"
 msgstr "Logg ut"
+
+#: devilry_account/templates/devilry_account/crapps/account/select_language.django.html:6
+#: devilry_account/templates/devilry_account/crapps/account/select_language.django.html:10
+msgid "Language options"
+msgstr "Språkvalg"
+
+#: devilry_account/templates/devilry_account/crapps/account/select_language.django.html:20
+msgid "Current language"
+msgstr "Nåværende språk"
 
 #: devilry_admin/cradminextensions/devilry_crmenu_admin.py:15
 msgctxt "breadcrumb"
@@ -1404,7 +1423,6 @@ msgstr "Studenter ser"
 
 #: devilry_admin/templates/devilry_admin/assignment/include/gradingconfiguration.django.html:18
 #: devilry_admin/templates/devilry_admin/period/createassignment/suggested_deadlines.django.html:12
-#: devilry_deadlinemanagement/templates/devilry_deadlinemanagement/suggested-deadlines.django.html:12
 msgid "or"
 msgstr "eller"
 
@@ -2081,7 +2099,7 @@ msgstr ""
 "Det korte navnet benyttes steder hvor det fulle navnet tar for mye plass."
 
 #: devilry_admin/templates/devilry_admin/period/createassignment/suggested_deadlines.django.html:21
-#: devilry_deadlinemanagement/templates/devilry_deadlinemanagement/suggested-deadlines.django.html:21
+#: devilry_deadlinemanagement/templates/devilry_deadlinemanagement/suggested-deadlines.django.html:16
 msgid "Select a suggested deadline"
 msgstr "Velg en foreslått innleveringsfrist"
 
@@ -2266,7 +2284,7 @@ msgid "Edit"
 msgstr "Rediger"
 
 #: devilry_admin/templates/devilry_admin/period/overview.django.html:36
-#: devilry_admin/views/period/createassignment.py:107
+#: devilry_admin/views/period/createassignment.py:126
 msgid "Create new assignment"
 msgstr "Opprett ny oppgave"
 
@@ -2555,7 +2573,7 @@ msgstr[0] ""
 msgstr[1] ""
 "Fjernet %(groupcount)s prosjektgrupper med %(studentcount)s studenter."
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:22
+#: devilry_admin/views/assignment/gradingconfiguration.py:23
 msgid ""
 "The grade to points table must have at least 2 rows. The first row must have "
 "0 as points."
@@ -2563,7 +2581,7 @@ msgstr ""
 "Tabellen med poeng for karaktersetting må minst ha 2 rader. Den første raden "
 "må ha 0 som poeng."
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:26
+#: devilry_admin/views/assignment/gradingconfiguration.py:27
 msgid ""
 "The grade to points table has points that is larger than the maximum number "
 "of points."
@@ -2571,52 +2589,56 @@ msgstr ""
 "Tabellen med poeng for karaktersetting har poeng som er høyere enn maksimalt "
 "antall poeng."
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:30
+#: devilry_admin/views/assignment/gradingconfiguration.py:31
 msgid "Must be larger than the minimum number of points required to pass."
 msgstr "Må være større enn minimum antall poeng som kreves for å bestå."
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:39
+#: devilry_admin/views/assignment/gradingconfiguration.py:40
 msgctxt "assignment config"
 msgid "Examiner chooses"
 msgstr "Retter velger"
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:46
+#: devilry_admin/views/assignment/gradingconfiguration.py:47
 msgctxt "assignment config"
 msgid "Students see"
 msgstr "Studenter se"
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:53
+#: devilry_admin/views/assignment/gradingconfiguration.py:54
 msgctxt "assignment config"
 msgid "Minimum number of points required to pass"
 msgstr "Minimum antall poeng nødvendig for å bestå"
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:113
+#: devilry_admin/views/assignment/gradingconfiguration.py:114
 msgctxt "assignment config"
 msgid "Points awarded for passing grade"
-msgstr ""
+msgstr "Poeng gitt for bestått karakter"
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:118
+#: devilry_admin/views/assignment/gradingconfiguration.py:119
 msgctxt "assignment config"
 msgid "Maximum number of points"
 msgstr "Maksimalt antall poeng"
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:121
+#: devilry_admin/views/assignment/gradingconfiguration.py:122
 msgctxt "assignment config"
 msgid "The maximum number of points possible for this assignment."
 msgstr "Maksimalt antall poeng for denne oppgaven."
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:128
+#: devilry_admin/views/assignment/gradingconfiguration.py:129
 msgctxt "assignment config"
 msgid "Edit grading configuration"
 msgstr "Rediger karakter konfigurasjon"
 
-#: devilry_admin/views/assignment/gradingconfiguration.py:171
+#: devilry_admin/views/assignment/gradingconfiguration.py:172
 #: devilry_admin/views/common/bulkimport_users_common.py:16
 #: devilry_cradmin/devilry_listbuilder/assignmentgroup.py:293
 #: devilry_gradingsystem/templates/devilry_gradingsystem/editfeedbackbuttonbar_savedraftonly.django.html:6
 #: devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:27
 msgid "Save"
 msgstr "Lagre"
+
+#: devilry_admin/views/assignment/gradingconfiguration.py:196
+msgid "Saved Grading configuration for assignment"
+msgstr "Lagret karakter konfigurasjon for oppgave"
 
 #: devilry_admin/views/assignment/passed_previous_period.py:54
 msgid "Select the earliest semester you want to approve for"
@@ -2948,16 +2970,16 @@ msgstr ""
 "studentene på denne oppgaven."
 
 #. Translators: The "delay" is formatted as "X hours/minutes from now"
-#: devilry_admin/views/period/createassignment.py:80
+#: devilry_admin/views/period/createassignment.py:100
 #, python-format
 msgid "First deadline must be at least %(delay)s."
 msgstr "Første innleveringsfrist må minst være %(delay)s."
 
-#: devilry_admin/views/period/createassignment.py:154
+#: devilry_admin/views/period/createassignment.py:173
 msgid "Example: Assignment 1"
 msgstr "Eksempel: Oppgave 1"
 
-#: devilry_admin/views/period/createassignment.py:156
+#: devilry_admin/views/period/createassignment.py:175
 msgid "Example: assignment1"
 msgstr "Eksempel: oppgave1"
 
@@ -4019,7 +4041,7 @@ msgstr "nedlasting er klar"
 #: devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:4
 #: devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:11
 msgid "Passed"
-msgstr ""
+msgstr "Bestått"
 
 #: devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/grade_cell_value.django.html:9
 #: devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:6
@@ -4100,13 +4122,13 @@ msgstr "Vis tilbakemelding"
 #: devilry_group/views/examiner/feedbackfeed_examiner.py:354
 msgctxt "grading"
 msgid "Passed?"
-msgstr ""
+msgstr "Bestått?"
 
 #: devilry_examiner/views/assignment/bulkoperations/bulk_feedback.py:53
 #: devilry_group/views/examiner/feedbackfeed_examiner.py:355
 msgctxt "grading"
 msgid "Check to provide a passing grade."
-msgstr ""
+msgstr "Huk av for å gi en bestått karakter."
 
 #: devilry_examiner/views/assignment/bulkoperations/bulk_feedback.py:97
 msgid "Bulk create feedback"
@@ -5150,10 +5172,6 @@ msgstr "E-postadresse"
 msgid "Reset password"
 msgstr "Tilbakestill passord"
 
-#: devilry_header/templates/devilry_header/about_me.django.html:42
-msgid "Language"
-msgstr "Språk"
-
 #: devilry_header/templates/devilry_header/header2include.django.html:74
 #: devilry_qualifiesforexam/tablebuilder/tablebuilder.py:32
 #: devilry_student/templates/devilry_student/include/group_breadcrumb.django.html:4
@@ -5613,6 +5631,11 @@ msgstr "Prosjektgruppemedlemmer"
 msgid "Assignments"
 msgstr "Oppgaver"
 
+#: devilry_student/templates/devilry_student/cradmin_student/allperiods/allperiods.django.html:7
+msgctxt "student_all_periods"
+msgid "Choose a course below to see its assignments"
+msgstr "Velg et kurs nedenfor for å se oppgavene på kurset"
+
 #: devilry_student/templates/devilry_student/cradmin_student/waitingfordeliveriesapp/waiting-for-deliveries-list.django.html:13
 msgid ""
 "The table below shows all assignments where you can add deliveries. Click "
@@ -5630,10 +5653,14 @@ msgstr ""
 "Velkommen! Vennligst velg en av oppgavene under for å legge til "
 "innleveringer, se tilbakemeldinger eller for kommunikasjon med din retter."
 
-#: devilry_student/templates/devilry_student/dashboard/dashboard.django.html:19
+#: devilry_student/templates/devilry_student/dashboard/dashboard.django.html:15
+msgid "Your assignments"
+msgstr "Dine oppgaver"
+
+#: devilry_student/templates/devilry_student/dashboard/dashboard.django.html:22
 msgctxt "student dashboard"
-msgid "Browse all assignments and courses"
-msgstr "Se igjennom alle oppgaver og kurs"
+msgid "Your courses"
+msgstr "Dine kurs"
 
 #: devilry_student/templatetags/devilry_student_tags.py:32
 msgid "Waiting for deliveries or for deadline to expire"
@@ -5714,13 +5741,17 @@ msgctxt "student period overview"
 msgid "No assignments."
 msgstr "Ingen oppgaver."
 
-#: project/common/settings.py:165
+#: project/common/settings.py:168
 msgid "English"
 msgstr "Engelsk"
 
-#: project/common/settings.py:166
+#: project/common/settings.py:169
 msgid "Norwegian Bokmal"
 msgstr "Norsk bokmål"
+
+#~ msgctxt "student dashboard"
+#~ msgid "Browse all assignments and courses"
+#~ msgstr "Se igjennom alle oppgaver og kurs"
 
 #~ msgid "Tags on {}"
 #~ msgstr "Stikkord for {}"
