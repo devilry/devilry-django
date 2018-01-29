@@ -30,7 +30,7 @@
             <strong>
                 {% trans 'Current result' %}:
             </strong>
-            {% devilry_grade_full assignment=feedbackset.group.assignment points=feedbackset.grading_points devilryrole=devilryrole %}
+            {% devilry_grade_full assignment=assignment points=feedbackset.grading_points devilryrole=devilryrole %}
         </p>
     </div>
 {% endblock pre_form %}

@@ -18,7 +18,7 @@ from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
 from django_cradmin.viewhelpers import update, delete
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
-from devilry.apps.core.models import RelatedStudent, Examiner
+from devilry.apps.core.models import RelatedStudent, Examiner, Assignment
 from devilry.utils.devilry_email import send_templated_message
 from devilry.apps.core import models as core_models
 from devilry.devilry_cradmin import devilry_acemarkdown
@@ -416,10 +416,17 @@ class ExaminerEditGradeView(update.UpdateView):
             )
         ]
 
+    def _get_assignment(self):
+        return Assignment.objects\
+            .filter(id=self.feedbackset.group.assignment.id)\
+            .prefetch_point_to_grade_map()\
+            .get()
+
     def get_context_data(self, **kwargs):
         context_data = super(ExaminerEditGradeView, self).get_context_data(**kwargs)
         context_data['feedbackset'] = self.feedbackset
         context_data['devilryrole'] = 'examiner'
+        context_data['assignment'] = self._get_assignment()
         return context_data
 
 
