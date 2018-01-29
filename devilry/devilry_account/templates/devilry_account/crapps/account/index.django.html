@@ -1,5 +1,6 @@
 {% extends "django_cradmin/base.django.html" %}
 {% load i18n %}
+{% load cradmin_tags %}
 
 {% block title %}
     {{ request.user.get_displayname }} - {% trans "Account" %}
@@ -70,6 +71,11 @@
                     </li>
                 {% endfor %}
             </ul>
+
+            <h3>{% trans 'Language' %}</h3>
+                <a class="btn btn-default" href="{% cradmin_appurl 'select_language' %}">
+                    {% trans 'Change language' %}
+                </a>
         </div>
 
         <form method="POST" action="{% url 'account_logout' %}">

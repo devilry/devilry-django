@@ -132,12 +132,15 @@ TEMPLATES = [
 ]
 
 
-MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
-                      'django.contrib.sessions.middleware.SessionMiddleware',
-                      'django.contrib.auth.middleware.AuthenticationMiddleware',
-                      'devilry.devilry_i18n.middleware.LocaleMiddleware',
-                      'django.contrib.messages.middleware.MessageMiddleware',
-                      'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware']
+MIDDLEWARE_CLASSES = [
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'devilry.devilry_i18n.middleware.LocaleMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware',
+    'devilry.devilry_account.middleware.LocalMiddleware',
+]
 
 ##################################################################################
 # Django Cradmin settings (Auth backend, forgotten password and sitename)
