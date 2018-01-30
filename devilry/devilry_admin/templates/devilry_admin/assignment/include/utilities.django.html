@@ -5,15 +5,19 @@
 {#    <div class="col-sm-6">#}
         <div id="devilry_admin_assignment_overview_utilities_passed_previous">
             <h3>
-                <a href="{% cradmin_instance_appindex_url 'passed_previous_period' %}">
-                    {% trans "Passed previous semester" %}
-                </a>
+                {% trans "Passed previous semester" %}
             </h3>
             <p>
-                {% blocktrans trimmed context "passed previous semester description" %}
+                {% blocktrans trimmed with context="passed previous semester description" %}
                     Mark students that have passed this assignment previously.
                 {% endblocktrans %}
             </p>
+            <div id="devilry_admin_assignment_overview_utilities_passed_previous_buttons">
+                <a href="{% cradmin_instance_appindex_url 'passed_previous_period' %}" type="button"
+                   class="btn btn-default btn-sm">
+                    {% trans 'Edit passed previous semester' %}
+                </a>
+            </div>
         </div>
 {#    </div>#}
 
