@@ -112,8 +112,20 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             'Step 1 of 3: select the earliest semester you want to approve for',
             mockresponse.selector.one('h1').alltext_normalized)
 
-    def test_submit_button_text(self):
-        testassignment = mommy.make('core.Assignment')
+    def test_submit_button_text_sanity(self):
+        period = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            short_name='cool',
+            parentnode__short_name='s16',
+            parentnode__long_name='spring16'
+        ).parentnode
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='cool',
+            parentnode__short_name='s17',
+            parentnode__long_name='spring17',
+            parentnode__parentnode=period.parentnode
+        )
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
@@ -121,6 +133,25 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIn(
             'Next',
             mockresponse.selector.one('#submit-id-next').alltext_normalized)
+
+    def test_no_previous_period_sanity(self):
+        testassignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
+        )
+        self.assertTrue(mockresponse.selector.one('.test-no-previos-period'))
+
+    def test_no_previous_period_message(self):
+        testassignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
+        )
+        self.assertEqual(
+            mockresponse.selector.one('.test-no-previos-period').alltext_normalized,
+            'There are no prior semesters connected to this assignment.'
+        )
 
     def test_select_previous_period_simple(self):
         period = mommy.make_recipe(
@@ -141,7 +172,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
         selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('.controls  > .radio')]
-        self.assertEqual(2, len(selectlist))
+        self.assertEqual(1, len(selectlist))
         self.assertNotIn(
             '{} - {}'.format(testassignment.parentnode.short_name, testassignment.parentnode.long_name),
             selectlist
@@ -184,7 +215,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
         selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('.controls  > .radio')]
-        self.assertEqual(4, len(selectlist))
+        self.assertEqual(3, len(selectlist))
         self.assertNotIn(
             '{} - {}'.format(testassignment.parentnode.short_name, testassignment.parentnode.long_name),
             selectlist
@@ -234,7 +265,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
         selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('.controls  > .radio')]
-        self.assertEqual(2, len(selectlist))
+        self.assertEqual(1, len(selectlist))
         self.assertNotIn(
             '{} - {}'.format(testassignment.parentnode.short_name, testassignment.parentnode.long_name),
             selectlist
@@ -286,7 +317,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
         selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('.controls  > .radio')]
-        self.assertEqual(2, len(selectlist))
+        self.assertEqual(1, len(selectlist))
         self.assertNotIn(
             '{} - {}'.format(testassignment.parentnode.short_name, testassignment.parentnode.long_name),
             selectlist

@@ -23,7 +23,8 @@ from devilry.utils.passed_in_previous_period import PassedInPreviousPeriod, Some
 class SelectPeriodForm(forms.Form):
     semester = forms.ModelChoiceField(
         widget=forms.RadioSelect(),
-        queryset=Period.objects.none()
+        queryset=Period.objects.none(),
+        empty_label=None,
     )
 
     def __init__(self, *args, **kwargs):
@@ -40,6 +41,10 @@ class SelectPeriodForm(forms.Form):
 class SelectPeriodView(formbase.FormView):
     form_class = SelectPeriodForm
     template_name = 'devilry_admin/assignment/passed_previous_period/select-period-view.django.html'
+
+    def __init__(self, **kwargs):
+        super(SelectPeriodView, self).__init__(**kwargs)
+        self.no_past_period = False
 
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
@@ -78,10 +83,15 @@ class SelectPeriodView(formbase.FormView):
     def get_form_kwargs(self):
         kwargs = super(SelectPeriodView, self).get_form_kwargs()
         kwargs['period_queryset'] = self.__get_period_queryset()
+        if len(kwargs['period_queryset']) <= 0:
+            self.no_past_period = True
         return kwargs
     
     def get_context_data(self, **kwargs):
-        return super(SelectPeriodView, self).get_context_data(**kwargs)
+        context = super(SelectPeriodView, self).get_context_data(**kwargs)
+        if self.no_past_period:
+            context['no_past_period'] = True
+        return context
 
     def get_redirect_url(self, period):
         return self.request.cradmin_app.reverse_appurl(
