@@ -35,6 +35,13 @@ class NoCandidatesPassed(PassedInPreviousPeriodError):
     """
 
 
+class MismatchOfNewAndOldCandidateId(PassedInPreviousPeriodError):
+    """
+    Will be raised when the user connected to the new and old candidate does not
+    have the same ID.
+    """
+
+
 class PassedInPreviousPeriod(object):
 
     #: Supported grading plugins is passfailed and points
@@ -205,7 +212,7 @@ class PassedInPreviousPeriod(object):
             published_by: will be published by this user
         """
         if new_candidate.relatedstudent.user_id != old_candidate.relatedstudent.user_id:
-            raise
+            raise MismatchOfNewAndOldCandidateId
         self.__create_feedbackset_passed_previous_period(old_candidate, new_candidate)
         self.__publish_grading_on_current_assignment(old_candidate, new_candidate, published_by)
 
