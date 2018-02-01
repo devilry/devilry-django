@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-29 14:42+0100\n"
-"PO-Revision-Date: 2018-01-29 14:46+0100\n"
+"POT-Creation-Date: 2018-02-01 09:56+0100\n"
+"PO-Revision-Date: 2018-02-01 09:57+0100\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: apps/core/admin.py:39
 msgid "Admins"
@@ -1090,37 +1090,37 @@ msgstr "Søk"
 #: devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:93
 msgctxt "tag"
 msgid "Has tag"
-msgstr "Har stikkord"
+msgstr "Har tag"
 
 #: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:37
 msgctxt "period tag show hidden filter"
 msgid "Show hidden tags?"
-msgstr "Vis skjulte stikkord?"
+msgstr "Vis skjulte tags?"
 
 #: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:55
 msgctxt "period tag show hidden radio filter"
 msgid "Show tags"
-msgstr "Vis stikkord"
+msgstr "Vis tags"
 
 #: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:59
 msgid "show all tags"
-msgstr "vis alle stikkord"
+msgstr "vis alle tags"
 
 #: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:60
 msgid "hidden tags only"
-msgstr "kun skjulte stikkord"
+msgstr "kun skjulte tags"
 
 #: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:61
 msgid "visible tags only"
-msgstr "kun synlige stikkord"
+msgstr "kun synlige tags"
 
 #: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:62
 msgid "custom tags only"
-msgstr "kun tilpassede stikkord"
+msgstr "kun tilpassede tags"
 
 #: devilry_admin/cradminextensions/listfilter/listfilter_tags.py:63
 msgid "imported tags only"
-msgstr "kun importerte stikkord"
+msgstr "kun importerte tags"
 
 #: devilry_admin/cradminextensions/multiselect2/multiselect2_relatedstudent.py:23
 msgctxt "admin multiselect2_relatedstudent"
@@ -1208,25 +1208,25 @@ msgid ""
 "No tags registered on the semester. If you add tags, you can organize "
 "examiners and students based on the tags."
 msgstr ""
-"Ingen stikkord lagt til for semesteret. Hivs du legger til stikkorda, kan du "
-"organisere rettere og studenter etter stikkordene."
+"Ingen tags lagt til for semesteret. Hvis du legger til tags, kan du "
+"organisere rettere og studenter etter disse."
 
 #: devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/organize-by-tag.django.html:40
 msgid "Add semester tags"
-msgstr "Legg til semesterstikkord"
+msgstr "Legg til tags for semesteret"
 
 #: devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/organize-by-tag.django.html:48
 msgid ""
 "Tags exist for the semester, but is missing either examiners, students or "
 "both."
 msgstr ""
-"Stikkord eksisterer for semesteret, men mangler enten retter, student eller "
+"Tags eksisterer for semesteret, men mangler enten retter, student eller "
 "begge."
 
 #: devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/organize-by-tag.django.html:52
 #: devilry_admin/templates/devilry_admin/period/overview.django.html:78
 msgid "Manage tags"
-msgstr "Administrer stikkord"
+msgstr "Administrer tags"
 
 #: devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/organize-by-tag.django.html:58
 msgid "Organize"
@@ -2162,7 +2162,7 @@ msgstr "Du har ingen rettere. Bruk knappen nedenfor for å legge til rettere."
 
 #: devilry_admin/templates/devilry_admin/period/manage_tags/add-tag.django.html:16
 msgid "Back to manage tags overview"
-msgstr "Tilbake til oversikt for håndtering av stikkord"
+msgstr "Tilbake til oversikt for håndtering av tags"
 
 #: devilry_admin/templates/devilry_admin/period/manage_tags/add-tag.django.html:21
 msgid ""
@@ -2171,23 +2171,23 @@ msgid ""
 "        "
 msgstr ""
 "\n"
-"            Legg stikkord til semesteret\n"
+"            Legg tags til semesteret\n"
 "        "
 
 #: devilry_admin/templates/devilry_admin/period/manage_tags/add-tag.django.html:31
 #: devilry_admin/templates/devilry_admin/period/manage_tags/crud.django.html:26
 msgid "Existing tags"
-msgstr "Eksisterende stikkord"
+msgstr "Eksisterende tags"
 
 #: devilry_admin/templates/devilry_admin/period/manage_tags/base-multiselect-view.django.html:15
 #: devilry_admin/templates/devilry_admin/period/manage_tags/crud.django.html:15
 #: devilry_admin/templates/devilry_admin/period/manage_tags/delete.django.html:16
 msgid "Back to period tags overview"
-msgstr "Tilbake til oversikt for periodens stikkord"
+msgstr "Tilbake til oversikt for periodens tags"
 
 #: devilry_admin/templates/devilry_admin/period/manage_tags/manage-tags-list-view.django.html:34
 msgid "Add tag"
-msgstr "Legg til stikkord"
+msgstr "Legg til tag"
 
 #: devilry_admin/templates/devilry_admin/period/manage_tags/relatedusers/select-method.django.html:20
 #, python-format
@@ -2198,14 +2198,13 @@ msgid ""
 "        "
 msgstr ""
 "\n"
-"            Hvordan vil du bulk-håndtere stikkord for "
-"%(relateduser_type)ss?\n"
+"            Hvordan vil du bulk-håndtere tags for %(relateduser_type)ss?\n"
 "        "
 
 #: devilry_admin/templates/devilry_admin/period/manage_tags/relatedusers/select-method.django.html:34
 #: devilry_admin/views/period/manage_tags/manage_tags.py:179
 msgid "Add tags"
-msgstr "Legg til stikkord"
+msgstr "Legg til tags"
 
 #: devilry_admin/templates/devilry_admin/period/manage_tags/relatedusers/select-method.django.html:37
 #, python-format
@@ -2217,12 +2216,12 @@ msgid ""
 msgstr ""
 "\n"
 "                                        Velg %(relateduser_type)s(s) og legg "
-"til stikkord\n"
+"til tags\n"
 "                                    "
 
 #: devilry_admin/templates/devilry_admin/period/manage_tags/relatedusers/select-method.django.html:48
 msgid "Replace tag"
-msgstr "Erstatt stikkord"
+msgstr "Erstatt tag"
 
 #: devilry_admin/templates/devilry_admin/period/manage_tags/relatedusers/select-method.django.html:51
 #, python-format
@@ -2234,12 +2233,12 @@ msgid ""
 msgstr ""
 "\n"
 "                                        Velg %(relateduser_type)s(er) og "
-"erstatt stikkord\n"
+"erstatt tag\n"
 "                                    "
 
 #: devilry_admin/templates/devilry_admin/period/manage_tags/relatedusers/select-method.django.html:62
 msgid "Remove tag"
-msgstr "Fjern stikkord"
+msgstr "Fjern tag"
 
 #: devilry_admin/templates/devilry_admin/period/manage_tags/relatedusers/select-method.django.html:65
 #, python-format
@@ -2251,7 +2250,7 @@ msgid ""
 msgstr ""
 "\n"
 "                                        Velg %(relateduser_type)s(er) of "
-"fjern stikkord\n"
+"fjern tags\n"
 "                                    "
 
 #: devilry_admin/templates/devilry_admin/period/manage_tags/tag-item-value.django.html:26
@@ -2273,7 +2272,7 @@ msgstr "Fjern rettere"
 
 #: devilry_admin/templates/devilry_admin/period/manage_tags/tag-item-value.django.html:79
 msgid "Hidden tag - not visible anywhere except in this list."
-msgstr "Skjulte stikkord - ikke synlig noe annet sted enn i denne listen."
+msgstr "Skjult tag - ikke synlig noe annet sted enn i denne listen."
 
 #: devilry_admin/templates/devilry_admin/period/overview.django.html:24
 #: devilry_admin/templates/devilry_admin/subject/overview.django.html:21
@@ -2306,16 +2305,15 @@ msgstr "Legg til/rediger rettere"
 
 #: devilry_admin/templates/devilry_admin/period/overview.django.html:66
 msgid "Semester tags"
-msgstr "Stikkord for semester"
+msgstr "Tags for semester"
 
 #: devilry_admin/templates/devilry_admin/period/overview.django.html:69
 msgid ""
 "Create, edit and delete tags within this semester. Add and remove students/"
 "examiners from tags. Tags can be used to accociate examiners with students."
 msgstr ""
-"Lag, rediger og slett stikkord innenfor semesteret. Legg til og fjern "
-"studenter/rettere for stikkordene. Stikkord kan brukes til å assosiere "
-"rettere med studenter."
+"Lag, rediger og slett tags innenfor semesteret. Legg til og fjern studenter/"
+"rettere for tags. Tags kan brukes til å assosiere rettere med studenter."
 
 #: devilry_admin/templates/devilry_admin/period/overview.django.html:83
 msgid "Semester administrators"
@@ -2498,7 +2496,7 @@ msgstr[1] ""
 
 #: devilry_admin/views/assignment/examiners/bulk_organize.py:60
 msgid "Organize examiners on tags"
-msgstr "Organiser rettere etter stikkord"
+msgstr "Organiser rettere etter tags"
 
 #: devilry_admin/views/assignment/examiners/bulk_organize.py:171
 msgid "You must select at least two examiners."
@@ -3061,36 +3059,36 @@ msgstr "%(count)s brukere var allerede rettere for %(period)s."
 #: devilry_admin/views/period/manage_tags/manage_tags.py:79
 #, python-format
 msgid "Tags on %(what)s"
-msgstr "Stikkord tilhørende %(what)s"
+msgstr "Tags tilhørende %(what)s"
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:107
 msgctxt "TagListBuilderListView get_no_items_message"
 msgid "No period tags"
-msgstr "Ingen stikkord for perioden"
+msgstr "Ingen tags for perioden"
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:116
 msgid "Tags"
-msgstr "Stikkord"
+msgstr "Tags"
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:118
 msgid ""
 "Enter tags here. Tags must be in a comma separated format, e.g: tag1, tag2, "
 "tag3. Each tag may be up to 15 characters long."
 msgstr ""
-"Skriv stikkord her. Stikkordene må være adskilt med komma, f.eks: stikkord1, "
-"stikkord2, stikkord3. Hvert stikkord kan ha en lengde på 15 tegn."
+"Skriv tags her. Tags må være adskilt med komma, f.eks: tag1, tag2, tag3. "
+"Hver tag kan ha en lengde på 15 tegn."
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:137
 msgid "Tag field is empty."
-msgstr "Stikkordfelt er tomt."
+msgstr "Tag-felt er tomt."
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:142
 msgid "Wrong format. Example: tag1, tag2, tag3"
-msgstr "Feil format. Eksempel: stikkord1, stikkord2, stikkord3"
+msgstr "Feil format. Eksempel: tag1, tag2, tag3"
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:147
 msgid "One or more tags exceed the limit of 15 characters."
-msgstr "En eller flere stikkord er lengre en grensen på 15 tegn."
+msgstr "En eller flere tags er lengre en grensen på 15 tegn."
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:151
 #, python-format
@@ -3099,33 +3097,33 @@ msgstr "\"%(what)s\" forekommer fler enn en gang i skjemaet."
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:209
 msgid "The tag(s) you wanted to add already exists."
-msgstr "Stikkordet(a) du ønsket å legge til eksisterer allerede."
+msgstr "Tag(s) du ønsket å legge til eksisterer allerede."
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:214
 #, python-format
 msgid "%(created)d tag(s) added"
-msgstr "%(created)d stikkord lagt til"
+msgstr "%(created)d tag(s) lagt til"
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:217
 #, python-format
 msgid ", %(excluded)d tag(s) already existed and were ignored."
-msgstr ", %(excluded)d stikkord eksisterer allerede og ble ignorert."
+msgstr ", %(excluded)d tag(s) eksisterer allerede og ble ignorert."
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:251
 msgid "Tag name"
-msgstr "Navn på stikkord"
+msgstr "Navn på tag"
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:253
 msgid ""
 "Rename the tag here. Up to 15 characters. Can contain any character except "
 "comma(,)"
 msgstr ""
-"Her gir du nytt navn til stikkord. Opp til 15 tegn. Kan inneholde hvilket "
-"som helst tegn unntatt komma(,)"
+"Her gir du nytt navn til tag. Opp til 15 tegn. Kan inneholde hvilket som "
+"helst tegn unntatt komma(,)"
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:261
 msgid "Tag cannot be empty."
-msgstr "Stikkord kan ikke være tomt."
+msgstr "Tag kan ikke være tomt."
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:266
 #, python-format
@@ -3134,7 +3132,7 @@ msgstr "%(what)s eksisterer allerede"
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:269
 msgid "Tag contains a comma(,)."
-msgstr "Stikkord inneholder komma(,)."
+msgstr "Tag inneholder komma(,)."
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:306
 #, python-format
@@ -3143,7 +3141,7 @@ msgstr "Rediger %(what)s"
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:321
 msgid "Tag successfully edited."
-msgstr "Vellykket redigering av stikkord."
+msgstr "Vellykket redigering av tag."
 
 #: devilry_admin/views/period/manage_tags/manage_tags.py:352
 msgid ""
@@ -5130,16 +5128,16 @@ msgstr ""
 msgid "Check the box to give a passing grade"
 msgstr "Velg denne for å gi bestått karakter"
 
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:477
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:484
 msgid "Groupcomment"
 msgstr "Gruppekommentar"
 
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:511
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:514
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:518
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:521
 msgid "Edit group comment"
 msgstr "Rediger gruppekommentar"
 
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:559
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:566
 msgid "GroupComment updated!"
 msgstr "Gruppekommentar oppdatert!"
 
