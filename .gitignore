@@ -42,6 +42,7 @@ node_modules/
 /ghostdriver.log
 
 .idea/dataSources.ids
+.idea/dataSources.xml
 .idea/dataSources.local.xml
 
 /libs/django_cradmin
