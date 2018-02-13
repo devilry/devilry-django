@@ -239,20 +239,23 @@ class AbstractAssignmentGroupMultiSelectListFilterView(multiselect2view.Listbuil
             .values_list('cached_data__last_feedbackset_id', flat=True)
         return list(feedback_set_ids)
 
-    def get_group_anonymous_displaynames(self, form):
+    def get_group_displaynames(self, form):
         """
-        Build a list of anonymized displaynames for the groups that where corrected.
+        Build a list of short displaynames for the groups that where corrected.
+
+        Notes:
+            Display names are anonymous if the
+            :attr:`~.devilry.apps.core.models.assignemnt.Assignment.anonymizationmode` is not ``ANONYMIZATIONMODE_OFF``.
 
         Args:
             form: posted form
 
         Returns:
-            (list): list of anonymized displaynames for the groups
+            (list): list of short displaynames for the groups
         """
         groups = form.cleaned_data['selected_items']
-        anonymous_display_names = [unicode(group.get_anonymous_displayname(assignment=self.request.cradmin_role))
-                                   for group in groups]
-        return anonymous_display_names
+        display_names = [group.short_displayname for group in groups]
+        return display_names
 
     def get_success_url(self):
         """

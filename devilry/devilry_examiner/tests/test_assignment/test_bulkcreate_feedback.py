@@ -692,9 +692,48 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
             },
             messagesmock=messagemock
         )
+
         messagemock.add.assert_called_once_with(
             messages.SUCCESS,
-            'Bulk added feedback for {}'.format(testgroup1.get_anonymous_displayname(assignment=testassignment)),
+            'Bulk added feedback for {}'.format(testgroup1.short_displayname),
+            '')
+
+    def test_success_message_assignment_is_anonymous(self):
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+
+        # create assignment group
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+
+        # create examiner for group
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=examiner_user)
+
+        mommy.make('core.Candidate', assignment_group=testgroup1,
+                   relatedstudent__user__fullname='Candidate',
+                   relatedstudent__user__shortname='candidate')
+
+        # create FeedbackSets for the AssignmentGroups
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1)
+
+        messagemock = mock.MagicMock()
+        self.mock_postrequest(
+            cradmin_role=testassignment,
+            requestuser=examiner_user,
+            requestkwargs={
+                'data': {
+                    'passed': True,
+                    'feedback_comment_text': 'feedback comment',
+                    'selected_items': [testgroup1.id]
+                }
+            },
+            messagesmock=messagemock
+        )
+
+        messagemock.add.assert_called_once_with(
+            messages.SUCCESS,
+            'Bulk added feedback for Anonymous ID missing'.format(testgroup1.short_displayname),
             '')
 
     def test_only_bulk_create_passed_group_ids(self):
