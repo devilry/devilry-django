@@ -429,7 +429,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    assignment_group=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
-                'Browse all assignments and courses',
+                'Your courses',
                 mockresponse.selector.one('#devilry_student_dashboard_allperiods_link').alltext_normalized)
 
     def test_link_urls(self):

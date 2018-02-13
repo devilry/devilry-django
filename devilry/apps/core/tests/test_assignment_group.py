@@ -1064,7 +1064,9 @@ class TestAssignmentGroupGetCurrentState(TestCase):
         examiner2 = core_mommy.examiner(group=testgroup).relatedexaminer.user.id
         examiner3 = core_mommy.examiner(group=testgroup).relatedexaminer.user.id
         state = testgroup.get_current_state()
-        self.assertListEqual(state['examiners'], [examiner1, examiner2, examiner3])
+        self.assertIn(examiner1, state['examiners'])
+        self.assertIn(examiner2, state['examiners'])
+        self.assertIn(examiner3, state['examiners'])
 
     def test_tags(self):
         test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
