@@ -26,7 +26,7 @@ class TestAddRelatedExaminersToTag(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': 'a'
+                'tag_id': testperiodtag.id
             },
             requestkwargs={
                 'data': {
@@ -56,7 +56,7 @@ class TestAddRelatedExaminersToTag(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': 'a'
+                'tag_id': testperiodtag.id
             },
             requestkwargs={
                 'data': {
@@ -84,7 +84,7 @@ class TestAddRelatedExaminersToTag(test.TestCase, cradmin_testhelpers.TestCaseMi
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': 'a'
+                'tag_id': testperiodtag.id
             },
             requestkwargs={
                 'data': {
@@ -115,7 +115,7 @@ class TestRemoveRelatedExaminersFromTag(test.TestCase, cradmin_testhelpers.TestC
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': 'a'
+                'tag_id': testperiodtag.id
             },
             requestkwargs={
                 'data': {
@@ -144,7 +144,7 @@ class TestRemoveRelatedExaminersFromTag(test.TestCase, cradmin_testhelpers.TestC
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': 'a'
+                'tag_id': testperiodtag.id
             },
             requestkwargs={
                 'data': {
@@ -177,7 +177,7 @@ class TestRemoveRelatedExaminersFromTag(test.TestCase, cradmin_testhelpers.TestC
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': 'a'
+                'tag_id': testperiodtag.id
             },
             requestkwargs={
                 'data': {
@@ -207,7 +207,7 @@ class TestAddRelatedStudentsToTag(test.TestCase, cradmin_testhelpers.TestCaseMix
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': 'a'
+                'tag_id': testperiodtag.id
             },
             requestkwargs={
                 'data': {
@@ -237,7 +237,7 @@ class TestAddRelatedStudentsToTag(test.TestCase, cradmin_testhelpers.TestCaseMix
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': 'a'
+                'tag_id': testperiodtag.id
             },
             requestkwargs={
                 'data': {
@@ -265,7 +265,7 @@ class TestAddRelatedStudentsToTag(test.TestCase, cradmin_testhelpers.TestCaseMix
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': 'a'
+                'tag_id': testperiodtag.id
             },
             requestkwargs={
                 'data': {
@@ -296,7 +296,7 @@ class TestRemoveRelatedStudentsFromTag(test.TestCase, cradmin_testhelpers.TestCa
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': 'a'
+                'tag_id': testperiodtag.id
             },
             requestkwargs={
                 'data': {
@@ -325,7 +325,7 @@ class TestRemoveRelatedStudentsFromTag(test.TestCase, cradmin_testhelpers.TestCa
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': 'a'
+                'tag_id': testperiodtag.id
             },
             requestkwargs={
                 'data': {
@@ -358,7 +358,7 @@ class TestRemoveRelatedStudentsFromTag(test.TestCase, cradmin_testhelpers.TestCa
         self.mock_http302_postrequest(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': 'a'
+                'tag_id': testperiodtag.id
             },
             requestkwargs={
                 'data': {

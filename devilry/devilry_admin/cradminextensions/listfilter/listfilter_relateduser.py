@@ -4,6 +4,8 @@ from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin.viewhelpers import listfilter
 from django_cradmin.viewhelpers.listfilter.basefilters.single import abstractselect
 
+from devilry.devilry_admin.cradminextensions.listfilter import listfilter_tags
+
 
 class OrderRelatedStudentsFilter(listfilter.django.single.select.AbstractOrderBy):
     def get_ordering_options(self):
@@ -76,37 +78,9 @@ class Search(listfilter.django.single.textinput.Search):
         return ugettext_lazy('Search')
 
 
-class TagSelectFilter(abstractselect.AbstractSelectFilter):
-    def __init__(self, **kwargs):
-        self.tags = kwargs.pop('tags', None)
-        super(TagSelectFilter, self).__init__(**kwargs)
-
-    def get_slug(self):
-        return 'tag'
-
-    def copy(self):
-        copy = super(TagSelectFilter, self).copy()
-        copy.tags = self.tags
-        return copy
-
-    def get_label(self):
-        return pgettext_lazy('tag', 'Has tag')
-
-    def __get_choices(self):
-        choices = [
-            ('', ''),
-        ]
-        for tag in self.tags:
-            choices.append((tag, tag))
-        return choices
-
-    def get_choices(self):
-        if not hasattr(self, '_choices'):
-            self._choices = self.__get_choices()
-        return self._choices
-
+class TagSelectFilter(listfilter_tags.AbstractTagSelectFilter):
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value() or ''
         if cleaned_value != '':
-            queryobject = queryobject.filter(periodtag__tag=cleaned_value)
+            queryobject = queryobject.filter(periodtag__id=cleaned_value)
         return queryobject

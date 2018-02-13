@@ -17,6 +17,7 @@ from django_cradmin.viewhelpers import listbuilder
 from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Examiner, RelatedExaminer
 from devilry.apps.core.models import RelatedStudent
+from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser, listfilter_assignmentgroup
 from devilry.devilry_admin.views.assignment.students import groupview_base
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.apps.core.models import period_tag
@@ -312,6 +313,12 @@ class ManualAddOrReplaceTargetRenderer(devilry_listbuilder.assignmentgroup.Group
 class BaseManualAddOrReplaceView(groupview_base.BaseMultiselectView):
     def get_form_class(self):
         return ManualAddOrReplaceExaminersForm
+
+    def add_filterlist_items(self, filterlist):
+        super(BaseManualAddOrReplaceView, self).add_filterlist_items(filterlist=filterlist)
+        if period_tag.PeriodTag.objects.filter(period=self.get_period()).exists():
+            filterlist.append(listfilter_assignmentgroup.AssignmentGroupRelatedStudentTagSelectFilter(
+                period=self.get_period()))
 
     def __get_relatedexaminerqueryset(self):
         assignment = self.request.cradmin_role

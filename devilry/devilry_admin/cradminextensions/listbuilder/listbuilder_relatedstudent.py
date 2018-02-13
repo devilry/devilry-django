@@ -15,9 +15,9 @@ class AddFilterListItemsMixin(object):
     def add_filterlist_items(self, filterlist):
         filterlist.append(listfilter_relateduser.Search())
         filterlist.append(listfilter_relateduser.OrderRelatedStudentsFilter())
-        tags = period_tag.PeriodTag.objects.tags_string_list_on_period(period=self.get_period())
-        if tags:
-            filterlist.append(listfilter_relateduser.TagSelectFilter(tags=tags))
+        period = self.get_period()
+        if period_tag.PeriodTag.objects.filter(period=self.get_period()).exists():
+            filterlist.append(listfilter_relateduser.TagSelectFilter(period=period))
 
 
 class ListViewBase(AddFilterListItemsMixin, listbuilderview.FilterListMixin, listbuilderview.View):

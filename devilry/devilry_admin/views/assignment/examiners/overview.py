@@ -33,6 +33,9 @@ class Overview(listbuilder_relatedexaminer.ListViewBase):
     frame_renderer_class = ExaminerDetailPageLinkFrame
     model = RelatedExaminer
 
+    def get_period(self):
+        return self.assignment.parentnode
+
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
         devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()

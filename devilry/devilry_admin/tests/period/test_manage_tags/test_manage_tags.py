@@ -533,60 +533,43 @@ class TestHideShowPeriodTag(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def test_period_tag_empty_prefix_raises_404(self):
+    def test_period_missing_tag_id_parameter_raises_404(self):
         testperiod = mommy.make('core.Period')
-        with self.assertRaisesMessage(Http404, 'Empty prefix or tag.'):
+        with self.assertRaisesMessage(Http404, 'Missing parameters.'):
+            self.mock_getrequest(
+                cradmin_role=testperiod,
+                requestkwargs={
+                    'data': {}})
+
+    def test_period_tag_does_not_exist(self):
+        testperiod = mommy.make('core.Period')
+        with self.assertRaisesMessage(Http404, 'Tag does not exist.'):
             self.mock_getrequest(
                 cradmin_role=testperiod,
                 requestkwargs={
                     'data': {
-                        'prefix': '',
-                        'tag': 'a'
+                        'tag_id': 1
                     }})
 
-    def test_period_tag_empty_tag_raises_404(self):
+    def test_period_tag_is_hidden_toggled_true(self):
         testperiod = mommy.make('core.Period')
-        with self.assertRaisesMessage(Http404, 'Empty prefix or tag.'):
-            self.mock_getrequest(
-                cradmin_role=testperiod,
-                requestkwargs={
-                    'data': {
-                        'prefix': 'a',
-                        'tag': ''
-                    }})
-
-    def test_period_tag_does_not_exist_raises_404(self):
-        testperiod = mommy.make('core.Period')
-        with self.assertRaisesMessage(Http404, 'Tag error.'):
-            self.mock_getrequest(
-                cradmin_role=testperiod,
-                requestkwargs={
-                    'data': {
-                        'prefix': 'a',
-                        'tag': 'b'
-                    }})
-
-    def test_period_tag_is_hidden_false_becomes_true(self):
-        testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, prefix='a', tag='b')
+        testperiodtag = mommy.make('core.PeriodTag', period=testperiod)
         self.mock_getrequest(
             cradmin_role=testperiod,
             requestkwargs={
                 'data': {
-                    'prefix': testperiodtag.prefix,
-                    'tag': testperiodtag.tag
+                    'tag_id': testperiodtag.id
                 }})
         self.assertTrue(PeriodTag.objects.get(id=testperiodtag.id).is_hidden)
 
-    def test_period_tag_is_hidden_true_becomes_false(self):
+    def test_period_tag_is_hidden_toggled_false(self):
         testperiod = mommy.make('core.Period')
-        testperiodtag = mommy.make('core.PeriodTag', period=testperiod, prefix='a', tag='b', is_hidden=True)
+        testperiodtag = mommy.make('core.PeriodTag', is_hidden=True)
         self.mock_getrequest(
             cradmin_role=testperiod,
             requestkwargs={
                 'data': {
-                    'prefix': testperiodtag.prefix,
-                    'tag': testperiodtag.tag
+                    'tag_id': testperiodtag.id
                 }})
         self.assertFalse(PeriodTag.objects.get(id=testperiodtag.id).is_hidden)
 
@@ -1024,7 +1007,7 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': testperiodtag.tag
+                'tag_id': testperiodtag.id
             }
         )
         self.assertEquals('Add examiner to a',
@@ -1038,7 +1021,7 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': testperiodtag.tag
+                'tag_id': testperiodtag.id
             }
         )
         self.assertEquals(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
@@ -1048,14 +1031,14 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
     def test_only_users_on_period_are_listed(self):
         testperiod1 = mommy.make('core.Period')
         testperiod2 = mommy.make('core.Period')
-        mommy.make('core.PeriodTag', period=testperiod1, tag='a')
-        mommy.make('core.PeriodTag', period=testperiod2, tag='a')
+        period1_tag = mommy.make('core.PeriodTag', period=testperiod1, tag='a')
+        period2_tag = mommy.make('core.PeriodTag', period=testperiod2, tag='a')
         mommy.make('core.RelatedExaminer', period=testperiod1, user__shortname='shortname_user_testperiod1')
         mommy.make('core.RelatedExaminer', period=testperiod2, user__shortname='shortname_user_testperiod2')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod1,
             viewkwargs={
-                'tag': 'a'
+                'tag_id': period1_tag.id
             }
         )
         self.assertEquals(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
@@ -1073,7 +1056,7 @@ class TestMultiSelectAddRelatedUserView(test.TestCase, cradmin_testhelpers.TestC
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': testperiodtag.tag
+                'tag_id': testperiodtag.id
             }
         )
         self.assertEquals(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
@@ -1102,7 +1085,7 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': testperiodtag.tag
+                'tag_id': testperiodtag.id
             }
         )
         self.assertEquals('Remove examiner from a',
@@ -1118,7 +1101,7 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': testperiodtag.tag
+                'tag_id': testperiodtag.id
             }
         )
         self.assertEquals(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
@@ -1141,7 +1124,7 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod1,
             viewkwargs={
-                'tag': testperiodtag1.tag
+                'tag_id': testperiodtag1.id
             }
         )
         self.assertEquals(1, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))
@@ -1159,7 +1142,7 @@ class TestMultiSelectRemoveRelatedUserView(test.TestCase, cradmin_testhelpers.Te
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testperiod,
             viewkwargs={
-                'tag': testperiodtag.tag
+                'tag_id': testperiodtag.id
             }
         )
         self.assertEquals(2, mockresponse.selector.count('.django-cradmin-multiselect2-itemvalue'))

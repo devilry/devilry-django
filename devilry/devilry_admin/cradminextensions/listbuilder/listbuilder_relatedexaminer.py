@@ -3,15 +3,22 @@ from django_cradmin.viewhelpers import listbuilderview
 
 from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser
+from devilry.apps.core.models import period_tag
 
 
 class ListViewBase(listbuilderview.FilterListMixin, listbuilderview.View):
     model = RelatedExaminer
     paginate_by = 200
 
+    def get_period(self):
+        raise NotImplementedError()
+
     def add_filterlist_items(self, filterlist):
         filterlist.append(listfilter_relateduser.Search())
         filterlist.append(listfilter_relateduser.OrderRelatedStudentsFilter())
+        period = self.get_period()
+        if period_tag.PeriodTag.objects.filter(period=self.get_period()).exists():
+            filterlist.append(listfilter_relateduser.TagSelectFilter(period=period))
 
 
 class VerticalFilterListView(ListViewBase):
