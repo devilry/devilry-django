@@ -314,12 +314,6 @@ class BaseManualAddOrReplaceView(groupview_base.BaseMultiselectView):
     def get_form_class(self):
         return ManualAddOrReplaceExaminersForm
 
-    def add_filterlist_items(self, filterlist):
-        super(BaseManualAddOrReplaceView, self).add_filterlist_items(filterlist=filterlist)
-        if period_tag.PeriodTag.objects.filter(period=self.get_period()).exists():
-            filterlist.append(listfilter_assignmentgroup.AssignmentGroupRelatedStudentTagSelectFilter(
-                period=self.get_period()))
-
     def __get_relatedexaminerqueryset(self):
         assignment = self.request.cradmin_role
         period = assignment.period

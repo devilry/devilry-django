@@ -15,7 +15,7 @@ from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
 import devilry.apps.core.models.period_tag as period_tag
-from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser
+from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser, listfilter_assignmentgroup
 
 
 class GroupViewMixin(object):
@@ -44,6 +44,10 @@ class GroupViewMixin(object):
         filterlist.append(devilry_listfilter.assignmentgroup.ExaminerCountFilter(view=self))
         filterlist.append(devilry_listfilter.assignmentgroup.CandidateCountFilter(view=self))
         filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
+        period = self.get_period()
+        if period_tag.PeriodTag.objects.filter(period=period).exists():
+            filterlist.append(listfilter_assignmentgroup.AssignmentGroupRelatedStudentTagSelectFilter(period=period))
+            filterlist.append(listfilter_assignmentgroup.AssignmentGroupRelatedExaminerTagSelectFilter(period=period))
 
     def get_unfiltered_queryset_for_role(self, role):
         candidatequeryset = Candidate.objects\
