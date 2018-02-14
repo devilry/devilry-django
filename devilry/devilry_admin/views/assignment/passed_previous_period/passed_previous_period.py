@@ -195,7 +195,7 @@ class ApprovePreviousAssignments(formbase.FormView):
         self.period = Period.objects.get(id=kwargs.pop('period_id'))
         self.assignment = self.request.cradmin_role
         self.devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()
-        self.util_class = PassedInPreviousPeriod(self.assignment, self.period)
+        self.util_class = PassedInPreviousPeriod(self.assignment, self.period, self.request.user)
         if self.assignment.is_fully_anonymous and self.devilryrole != 'departmentadmin':
             raise Http404()
         if self.assignment.is_semi_anonymous and self.devilryrole == 'periodadmin':
@@ -271,11 +271,3 @@ class ApprovePreviousAssignments(formbase.FormView):
 
     def get_success_url(self):
         return self.request.cradmin_instance.reverse_url(appname="overview", viewname=crapp.INDEXVIEW_NAME)
-
-
-class App(crapp.App):
-    appurls = [
-        crapp.Url(r'^$', SelectPeriodView.as_view(), name=crapp.INDEXVIEW_NAME),
-        crapp.Url(r'^assignment/(?P<period_id>\d+)$', PassedPreviousAssignmentView.as_view(), name='assignments'),
-        crapp.Url(r'^confirm/(?P<period_id>\d+)$', ApprovePreviousAssignments.as_view(), name='confirm')
-    ]

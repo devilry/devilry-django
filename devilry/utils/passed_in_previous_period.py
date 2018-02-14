@@ -50,15 +50,17 @@ class PassedInPreviousPeriod(object):
         Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS
     ]
 
-    def __init__(self, assignment, from_period):
+    def __init__(self, assignment, from_period, requestuser):
         """
         Initialize with assignment and the earliest period we will approve for.
         Args:
             assignment: :class:`core.Assignment`
             from_period: :class:`core.Period`
+            requestuser: The user that passed the request.
         """
         self.assignment = assignment
         self.from_period = from_period
+        self.requestuser = requestuser
 
     def get_queryset(self):
         """
@@ -176,6 +178,7 @@ class PassedInPreviousPeriod(object):
 
         FeedbacksetPassedPreviousPeriod(
             feedbackset=new_candidate.assignment_group.cached_data.first_feedbackset,
+            passed_previous_period_type=FeedbacksetPassedPreviousPeriod.PASSED_PREVIOUS_SEMESTER_TYPES.AUTO.value,
             assignment_short_name=old_assignment.short_name,
             assignment_long_name=old_assignment.long_name,
             assignment_max_points=old_assignment.max_points,
@@ -186,7 +189,8 @@ class PassedInPreviousPeriod(object):
             period_end_time=old_period.end_time,
             grading_points=old_feedbackset.grading_points,
             grading_published_by=old_feedbackset.grading_published_by,
-            grading_published_datetime=old_feedbackset.grading_published_datetime
+            grading_published_datetime=old_feedbackset.grading_published_datetime,
+            created_by=self.requestuser
         ).save()
 
     def __publish_grading_on_current_assignment(self, old_candidate, new_candidate, published_by):

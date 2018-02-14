@@ -7,9 +7,10 @@ from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.apps.core.models import Assignment
-from devilry.devilry_admin.views.assignment import passed_previous_period
+from devilry.devilry_admin.views.assignment.passed_previous_period import passed_previous_period
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group.models import FeedbacksetPassedPreviousPeriod
 
 
 class TestSelectPeriodViewAnonymization(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -960,6 +961,7 @@ class TestApprovePreviousPostView(TestCase, cradmin_testhelpers.TestCaseMixin):
             },
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
+        self.assertFalse(FeedbacksetPassedPreviousPeriod.objects.all().exists())
         messagesmock.add.assert_called_once_with(
             messages.WARNING,
             'No students are qualified to get approved for this assignment from a previous assignment.',
@@ -1000,6 +1002,9 @@ class TestApprovePreviousPostView(TestCase, cradmin_testhelpers.TestCaseMixin):
             },
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
+        feedbackset_passed_previous_period = FeedbacksetPassedPreviousPeriod.objects.get()
+        self.assertEqual(feedbackset_passed_previous_period.passed_previous_period_type,
+                         FeedbacksetPassedPreviousPeriod.PASSED_PREVIOUS_SEMESTER_TYPES.AUTO.value)
         messagesmock.add.assert_called_once_with(
             messages.SUCCESS,
             '{} was marked as approved for this assignment.'.format(candidate1.relatedstudent.user.get_displayname()),
