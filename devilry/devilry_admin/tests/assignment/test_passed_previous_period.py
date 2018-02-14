@@ -445,7 +445,7 @@ class TestPassedPreviousAssignmentView(TestCase, cradmin_testhelpers.TestCaseMix
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
         self.assertIn(
-            'Confirm assignmnets',
+            'Confirm assignments',
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
