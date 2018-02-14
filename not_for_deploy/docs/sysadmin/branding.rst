@@ -119,6 +119,14 @@ speaking, you should mostly use this to add css classes that
 you use in custom templates, such as the footer documented above.
 
 
+****************************
+Available template variables
+****************************
+Template variables you can use in your branding templates:
+
+- ``DEVILRY_VERSION``: Gives the devilry version (Example: ``3.0.0``)
+
+
 *****************
 Advanced branding
 *****************

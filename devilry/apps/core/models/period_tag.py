@@ -141,6 +141,18 @@ class PeriodTagQuerySet(models.QuerySet):
         tags = self.filter(period=period)
         return [tag.displayname for tag in tags]
 
+    def tags_and_ids_tuple_list(self, period):
+        """
+        Get a list of tuples that map the tag to the tag id.
+
+        Args:
+            period: :class:`~.devilry.apps.core.models.period.Period` instance.
+
+        Returns:
+            (list): List of tuples that map tags and ids.
+         """
+        return [(str(tag.id), tag.displayname) for tag in self.filter(period=period)]
+
     def annotate_with_relatedexaminers_count(self):
         """
         Annotate with the number of :class:`~.devilry.apps.core.models.relateduser.RelatedExaminer`s

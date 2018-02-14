@@ -310,6 +310,26 @@ class AssignmentGroupQuerySet(models.QuerySet, BulkCreateQuerySetMixin):
                 ]
             )
 
+    def filter_periodtag_for_students(self, periodtag_id):
+        """
+        Filter :class:`.AssignmentGroup` by :class:`~.devilry.apps.core.models.period_tag.PeriodTag` for
+        tags:class:`~.devilry.apps.core.models.relateduser.RelatedStudent`s.
+
+        Args:
+            periodtag_id: ID of a :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
+        """
+        return self.filter(candidates__relatedstudent__periodtag__id=periodtag_id)
+
+    def filter_periodtag_for_examiners(self, periodtag_id):
+        """
+        Filter :class:`.AssignmentGroup` by :class:`~.devilry.apps.core.models.period_tag.PeriodTag` for
+        tags:class:`~.devilry.apps.core.models.relateduser.RelatedExaminers`s.
+
+        Args:
+            periodtag_id: ID of a :class:`~.devilry.apps.core.models.period_tag.PeriodTag`.
+        """
+        return self.filter(examiners__relatedexaminer__periodtag__id=periodtag_id)
+
     def annotate_with_number_of_published_feedbacksets(self):
         """
         Annotate the queryset with ``number_of_published_feedbacksets`` -

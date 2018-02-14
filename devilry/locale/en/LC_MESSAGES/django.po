@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-29 14:42+0100\n"
+"POT-Creation-Date: 2018-02-01 09:56+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4704,16 +4704,16 @@ msgstr ""
 msgid "Check the box to give a passing grade"
 msgstr ""
 
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:477
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:484
 msgid "Groupcomment"
 msgstr ""
 
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:511
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:514
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:518
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:521
 msgid "Edit group comment"
 msgstr ""
 
-#: devilry_group/views/examiner/feedbackfeed_examiner.py:559
+#: devilry_group/views/examiner/feedbackfeed_examiner.py:566
 msgid "GroupComment updated!"
 msgstr ""
 

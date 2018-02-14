@@ -6,6 +6,8 @@ from django.utils.translation import pgettext_lazy
 from django_cradmin.viewhelpers import listfilter
 from django_cradmin.viewhelpers.listfilter.basefilters.single import abstractselect, abstractradio
 
+from devilry.apps.core.models import PeriodTag
+
 
 class Search(listfilter.django.single.textinput.Search):
     def get_modelfields(self):
@@ -76,3 +78,50 @@ class IsHiddenRadioFilter(abstractradio.AbstractRadioFilter):
         elif cleaned_value == 'show-imported-tags-only':
             queryobject = queryobject.exclude(prefix='')
         return queryobject
+
+
+class AbstractTagSelectFilter(abstractselect.AbstractSelectFilter):
+    """
+    Abstract class for supporting tag selection.
+
+    Override the :method:`.AbstractTagSelectFilter.filter` method to
+    handle filtering for period tags.
+    """
+    def __init__(self, **kwargs):
+        self.period = kwargs.pop('period', None)
+        super(AbstractTagSelectFilter, self).__init__(**kwargs)
+
+    def get_slug(self):
+        return 'tag'
+
+    def copy(self):
+        copy = super(AbstractTagSelectFilter, self).copy()
+        copy.period = self.period
+        return copy
+
+    def get_label(self):
+        return pgettext_lazy('tag', 'Has tag')
+
+    def __get_choices(self):
+        choices = [
+            ('', ''),
+        ]
+        choices.extend(PeriodTag.objects.tags_and_ids_tuple_list(period=self.period))
+        return choices
+
+    def get_choices(self):
+        if not hasattr(self, '_choices'):
+            self._choices = self.__get_choices()
+        return self._choices
+
+    def filter(self, queryobject):
+        """
+        Override this to filter period tags.
+
+        Args:
+            queryobject: A ``QuerySet``.
+
+        Returns:
+            (QuerySet): Returns a ``QuerySet``.
+        """
+        raise NotImplementedError()
