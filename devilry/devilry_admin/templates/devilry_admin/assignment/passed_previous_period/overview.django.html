@@ -1,0 +1,41 @@
+{% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
+{% load devilry_account_tags %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block title %}
+    {% trans "Passed previous semester" %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>{% trans 'Passed previous semester' %}</h1>
+    <p class="devilry-page-subheader">
+        {% blocktrans trimmed %}
+            Select how you want to pass student in the context that they have passed this assignment on a previous
+            semester. We recommend that you do this before examiners starts to correct deliveries. Select one of the
+            modes below.
+        {% endblocktrans %}
+    </p>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    {{ block.super }}
+
+    <div class="container">
+        {% if unsupported_grading_plugin %}
+            <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin
+                        devilry-passed-previous-semester-unsupported-plugin-message">
+                <h3>
+                    {% trans "Unsupported grading plugin" %}
+                </h3>
+                {% blocktrans %}
+                    The grading plugin for this assignment is currently not supported. This will only work for assignments
+                    that uses the passed/failed plugin.
+                {% endblocktrans %}
+            </div>
+        {% else %}
+            {% cradmin_render_renderable mode_listbuilder_list %}
+        {% endif %}
+    </div>
+{% endblock content %}
