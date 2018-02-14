@@ -138,7 +138,7 @@ class PassedPreviousAssignmentView(listbuilderview.View):
         ).select_related('parentnode__parentnode')
 
     def get_pagetitle(self):
-        return ugettext_lazy('Confirm assignmnets')
+        return ugettext_lazy('Confirm assignments')
 
     def get_context_data(self, **kwargs):
         context = super(PassedPreviousAssignmentView, self).get_context_data(**kwargs)
