@@ -160,9 +160,9 @@ devilry_periodsetrelatedexaminers
     $ venv/bin/manage.py devilry_periodsetrelatedexaminers <subject short name> <period short name>
 
 Set related examiners on a period. Users are read from stdin, as a JSON encoded array of arguments to the RelatedExaminer model. 
-See `relatedexaminers.json`_ for an example. 
+See `relatedexaminers.json`_ for an example.
 
-.. _relatedexaminers.json: https://github.com/devilry/devilry-django/blob/master/src/devilry/devilry/apps/superadmin/examples/relatedexaminers.json
+.. _relatedexaminers.json: https://github.com/devilry/devilry-django/blob/master/devilry/devilry_superadmin/examples/relatedexaminers.json
 
 --clearall
     Clear all related examiners before adding
@@ -178,7 +178,7 @@ devilry_periodsetrelatedstudents
 Set related students on a period. Users are read from stdin, as a JSON encoded array of arguments to the RelatedStudent model. 
 See `relatedstudents.json`_ for an example.
 
-.. _relatedstudents.json: https://github.com/devilry/devilry-django/blob/master/src/devilry/devilry/apps/superadmin/examples/relatedstudents.json
+.. _relatedstudents.json: https://github.com/devilry/devilry-django/blob/master/devilry/devilry_superadmin/examples/relatedstudents.json
 
 --clearall
     Clear all related students before adding
