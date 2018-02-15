@@ -7,7 +7,7 @@
 Database models, APIs and UI for qualifying students for final exams.
 
 
-.. _qualifiesforexam-uiworkflow:
+.. _qualifiesforexam-uiworkflow2:
 
 
 ***********
@@ -39,10 +39,10 @@ assignments that needs to be approved for a student to qualify for the final exa
 
 A plugin can do whatever fits its purpose, just remember to follow the workflow above.
 
-1. In you app create a view or views for the plugin. Using a multiselect view which lists all the assignments, and makes
-   it possible to either select or deselect each assignment.
-   You must create a form to be used, and the actual view to use by extending the needed classes provided in
-   ``devilry.devilry_qualifiesforexam.views.plugin_base_views.base_multiselect_view``.
+1: In you app create a view or views for the plugin. Using a multiselect view which lists all the assignments, and makes
+it possible to either select or deselect each assignment.
+You must create a form to be used, and the actual view to use by extending the needed classes provided in
+``devilry.devilry_qualifiesforexam.views.plugin_base_views.base_multiselect_view``.
 
 .. code-block:: python
 
@@ -59,7 +59,7 @@ A plugin can do whatever fits its purpose, just remember to follow the workflow 
             return resultscollector.PeriodResultSetCollector
 
 
-2. As you can see, we have defined a function `get_period_result_collector_class` in the class defined in step 1.
+2: As you can see, we have defined a function `get_period_result_collector_class` in the class defined in step 1.
 If you need to base the qualification status of a student on the achievements on assignments, you will need to
 create a class for your plugin that extends ``devilry.devilry_qualifiesforexam.pluginhelpers.PeriodResultSet``
 (as we need to do in this example).
@@ -85,9 +85,9 @@ create a class for your plugin that extends ``devilry.devilry_qualifiesforexam.p
             return True
 
 
-3. In your app, create a plugin.py file.
+3: In your app, create a plugin.py file.
 Inside the `plugin.py` create a class that extends
-   ``devilry.devilry_qualifiesforexam.plugintyperegistry.PluginType``.
+``devilry.devilry_qualifiesforexam.plugintyperegistry.PluginType``.
 This defines the plugin you just created the view logic for in step 1.
 
 .. code-block:: python
@@ -104,8 +104,8 @@ This defines the plugin you just created the view logic for in step 1.
            return select_assignment.PluginSelectAssignmentsView
 
 
-4. Register the plugin with the devilry_qualifiesforexam app by creating an apps.py file and load the plugin to the
-   registry when the app is loaded.
+4: Register the plugin with the devilry_qualifiesforexam app by creating an apps.py file and load the plugin to the
+registry when the app is loaded.
 
 .. code-block:: python
 

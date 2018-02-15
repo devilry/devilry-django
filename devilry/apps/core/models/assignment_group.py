@@ -911,7 +911,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     .. attribute:: parentnode
 
         A django.db.models.ForeignKey_ that points to the parent node,
-        which is always an `Assignment`_.
+        which is always an Assignment.
 
     .. attribute:: name
 
@@ -941,11 +941,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         A django ``RelatedManager`` that holds the :class:`tags <devilry.apps.core.models.AssignmentGroupTag>`
         on this group.
-
-    .. attribute:: feedback
-
-       The last `StaticFeedback`_ (by save timestamp) on this assignmentgroup.
-
 
     .. attribute:: last_deadline
 

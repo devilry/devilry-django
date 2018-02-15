@@ -97,12 +97,6 @@ class SubjectQuerySet(models.QuerySet):
 
 class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """
-
-    .. attribute:: admins
-
-        A django.db.models.ManyToManyField_ that holds all the admins of the
-        `Node`_.
-
     .. attribute:: short_name
 
         A django.db.models.SlugField_ with max 20 characters. Only numbers,

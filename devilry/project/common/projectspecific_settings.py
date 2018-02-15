@@ -60,8 +60,8 @@ DEVILRY_RQ_EMAIL_BACKEND_QUEUENAME = 'email'
 #: is ``False``, users will be assigned
 #: ``<username><DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX>`` as their primary email
 #: address when they are created.
-# DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX = 'example.com'
 DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX = None
+# DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX = 'example.com'
 
 
 # DEVILRY_QUALIFIESFOREXAM_PLUGINS = [
@@ -71,10 +71,6 @@ DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX = None
 #     'devilry_qualifiesforexam_select',
 # ]
 
-#: Deadline handling method:
-#:
-#:    0: Soft deadlines
-#:    1: Hard deadlines
 DEFAULT_DEADLINE_HANDLING_METHOD = 0
 
 

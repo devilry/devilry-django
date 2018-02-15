@@ -2,8 +2,9 @@
 How to release a new Devilry version
 ====================================
 
-- Merge all changes into the ``production`` branch. Normally from ``master`` into ``production``.
 - Add a migration guide to ``not_for_deploy/docs/sysadmin/migrationguides/``.
+- Add a changelog to ``not_for_deploy/docs/user/changelog/``.
+- Merge all changes into the ``production`` branch. Normally from ``master`` into ``production``.
 - Update ``devilry/version.json``.
 - ``git rm -r devilry/devilry_theme3/static/devilry_theme3/``
 - Production build the javascript: ``ievv buildstatic --production``
