@@ -71,4 +71,34 @@ DROP TRIGGER IF EXISTS devilry__on_feedbackset_deadline_update_trigger
 CREATE TRIGGER devilry__on_feedbackset_deadline_update_trigger
     AFTER UPDATE ON devilry_group_feedbackset
     FOR EACH ROW
-        EXECUTE PROCEDURE devilry__on_feedbackset_deadline_update()
+        EXECUTE PROCEDURE devilry__on_feedbackset_deadline_update();
+
+
+CREATE OR REPLACE FUNCTION devilry__on_feedbackset_grading_update() RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'UPDATE' AND NEW.grading_points <> OLD.grading_points THEN
+        INSERT INTO devilry_group_feedbacksetgradingupdatehistory (
+            feedback_set_id,
+            updated_by_id,
+            updated_datetime,
+            old_grading_points,
+            old_grading_published_by_id,
+            old_grading_published_datetime)
+        VALUES (
+            NEW.id,
+            NEW.grading_published_by_id,
+            now(),
+            OLD.grading_points,
+            OLD.grading_published_by_id,
+            OLD.grading_published_datetime);
+    END IF;
+    RETURN NEW;
+END
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS devilry__on_feedbackset_grading_update_trigger
+    ON devilry_group_feedbackset;
+CREATE TRIGGER devilry__on_feedbackset_grading_update_trigger
+    AFTER UPDATE ON devilry_group_feedbackset
+    FOR EACH ROW
+        EXECUTE PROCEDURE devilry__on_feedbackset_grading_update()

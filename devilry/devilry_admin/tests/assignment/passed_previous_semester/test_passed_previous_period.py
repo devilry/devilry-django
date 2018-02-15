@@ -7,9 +7,10 @@ from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.apps.core.models import Assignment
-from devilry.devilry_admin.views.assignment import passed_previous_period
+from devilry.devilry_admin.views.assignment.passed_previous_period import passed_previous_period
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+from devilry.devilry_group.models import FeedbacksetPassedPreviousPeriod
 
 
 class TestSelectPeriodViewAnonymization(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -112,8 +113,20 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             'Step 1 of 3: select the earliest semester you want to approve for',
             mockresponse.selector.one('h1').alltext_normalized)
 
-    def test_submit_button_text(self):
-        testassignment = mommy.make('core.Assignment')
+    def test_submit_button_text_sanity(self):
+        period = mommy.make_recipe(
+            'devilry.apps.core.assignment_oldperiod_start',
+            short_name='cool',
+            parentnode__short_name='s16',
+            parentnode__long_name='spring16'
+        ).parentnode
+        testassignment = mommy.make_recipe(
+            'devilry.apps.core.assignment_activeperiod_start',
+            short_name='cool',
+            parentnode__short_name='s17',
+            parentnode__long_name='spring17',
+            parentnode__parentnode=period.parentnode
+        )
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
@@ -121,6 +134,25 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIn(
             'Next',
             mockresponse.selector.one('#submit-id-next').alltext_normalized)
+
+    def test_no_previous_period_sanity(self):
+        testassignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
+        )
+        self.assertTrue(mockresponse.selector.one('.test-no-previos-period'))
+
+    def test_no_previous_period_message(self):
+        testassignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
+        )
+        self.assertEqual(
+            mockresponse.selector.one('.test-no-previos-period').alltext_normalized,
+            'There are no prior semesters connected to this assignment.'
+        )
 
     def test_select_previous_period_simple(self):
         period = mommy.make_recipe(
@@ -141,7 +173,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
         selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('.controls  > .radio')]
-        self.assertEqual(2, len(selectlist))
+        self.assertEqual(1, len(selectlist))
         self.assertNotIn(
             '{} - {}'.format(testassignment.parentnode.short_name, testassignment.parentnode.long_name),
             selectlist
@@ -184,7 +216,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
         selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('.controls  > .radio')]
-        self.assertEqual(4, len(selectlist))
+        self.assertEqual(3, len(selectlist))
         self.assertNotIn(
             '{} - {}'.format(testassignment.parentnode.short_name, testassignment.parentnode.long_name),
             selectlist
@@ -234,7 +266,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
         selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('.controls  > .radio')]
-        self.assertEqual(2, len(selectlist))
+        self.assertEqual(1, len(selectlist))
         self.assertNotIn(
             '{} - {}'.format(testassignment.parentnode.short_name, testassignment.parentnode.long_name),
             selectlist
@@ -286,7 +318,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
         selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('.controls  > .radio')]
-        self.assertEqual(2, len(selectlist))
+        self.assertEqual(1, len(selectlist))
         self.assertNotIn(
             '{} - {}'.format(testassignment.parentnode.short_name, testassignment.parentnode.long_name),
             selectlist
@@ -414,7 +446,7 @@ class TestPassedPreviousAssignmentView(TestCase, cradmin_testhelpers.TestCaseMix
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
         self.assertIn(
-            'Confirm assignmnets',
+            'Confirm assignments',
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
@@ -929,6 +961,7 @@ class TestApprovePreviousPostView(TestCase, cradmin_testhelpers.TestCaseMixin):
             },
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
+        self.assertFalse(FeedbacksetPassedPreviousPeriod.objects.all().exists())
         messagesmock.add.assert_called_once_with(
             messages.WARNING,
             'No students are qualified to get approved for this assignment from a previous assignment.',
@@ -969,6 +1002,9 @@ class TestApprovePreviousPostView(TestCase, cradmin_testhelpers.TestCaseMixin):
             },
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
+        feedbackset_passed_previous_period = FeedbacksetPassedPreviousPeriod.objects.get()
+        self.assertEqual(feedbackset_passed_previous_period.passed_previous_period_type,
+                         FeedbacksetPassedPreviousPeriod.PASSED_PREVIOUS_SEMESTER_TYPES.AUTO.value)
         messagesmock.add.assert_called_once_with(
             messages.SUCCESS,
             '{} was marked as approved for this assignment.'.format(candidate1.relatedstudent.user.get_displayname()),

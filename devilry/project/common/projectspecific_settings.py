@@ -45,6 +45,10 @@ DEVILRY_SYNCSYSTEM = 'YOUR SYNC SYSTEM HERE'
 # numbers and ``_``.
 DEVILRY_SYNCSYSTEM_SHORTNAME = 'x'
 
+#: The default tag prefix used when importing tags from
+#: from an external system.
+DEVILRY_IMPORTED_PERIOD_TAG_DEFAULT_PREFIX = 'x'
+
 #: Disable tests that require RQ to run.
 DEVILRY_SKIP_RQ_TESTS = os.environ.get('DEVILRY_SKIP_RQ_TESTS', 'False') == 'True'
 

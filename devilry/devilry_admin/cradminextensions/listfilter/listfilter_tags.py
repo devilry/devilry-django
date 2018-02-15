@@ -29,6 +29,9 @@ class Search(listfilter.django.single.textinput.Search):
     def get_label(self):
         return ugettext_lazy('Search')
 
+    def get_placeholder(self):
+        return ugettext_lazy('Search listed objects ...')
+
 
 class IsHiddenFilter(abstractselect.AbstractBoolean):
     def get_slug(self):

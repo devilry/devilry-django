@@ -10,6 +10,7 @@ from django.db import models
 from django.db.models.functions import Coalesce
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy
+from ievv_opensource.utils import choices_with_meta
 
 from devilry.apps.core.models import assignment_group
 from devilry.apps.core.models.custom_db_fields import ShortNameField, LongNameField
@@ -519,49 +520,150 @@ class FeedbacksetPassedPreviousPeriod(models.Model):
     Therefore we need to save some old data about the :class:`core.Assignment`, :class:`devilry_group.FeedbackSet`
     and :class:`core.Period` from previous period.
     """
+    PASSED_PREVIOUS_SEMESTER_TYPES = choices_with_meta.ChoicesWithMeta(
+        choices_with_meta.Choice(
+            value='manual'
+        ),
+        choices_with_meta.Choice(
+            value='auto'
+        )
+    )
 
     #: Foreign key to class:`devilry_group.FeedbackSet` in current period.
-    feedbackset = models.ForeignKey(FeedbackSet, null=True, blank=True,
-                                    on_delete=models.SET_NULL)
+    feedbackset = models.OneToOneField(
+        to=FeedbackSet,
+        null=True, blank=True,
+        on_delete=models.CASCADE)
+
+    #: The type of this entry. How it was generated.
+    passed_previous_period_type = models.CharField(
+        max_length=255,
+        null=False, blank=False,
+        choices=PASSED_PREVIOUS_SEMESTER_TYPES.iter_as_django_choices_short()
+    )
 
     #: Old :attr:`core.Assignment.short_name`.
-    assignment_short_name = ShortNameField()
+    assignment_short_name = ShortNameField(
+        blank=True, default=''
+    )
 
     #: Old :attr:`core.Assignment.long_name`.
-    assignment_long_name = LongNameField()
+    assignment_long_name = LongNameField(
+        blank=True, default=''
+    )
 
     # Old :attr:`core.Assignment.max_points`.
-    assignment_max_points = models.PositiveIntegerField(default=0)
+    assignment_max_points = models.PositiveIntegerField(
+        default=0, null=True, blank=True
+    )
 
     # Old :attr:`core.Assignment.passing_grade_min_points`
-    assignment_passing_grade_min_points = models.PositiveIntegerField(default=0)
+    assignment_passing_grade_min_points = models.PositiveIntegerField(
+        default=0, null=True, blank=True
+    )
 
     # Old :attr:`core.Period.short_name`.
-    period_short_name = ShortNameField()
+    period_short_name = ShortNameField(
+        blank=True, default=''
+    )
 
     # Old :attr:`core.Period.long_name`
-    period_long_name = LongNameField()
+    period_long_name = LongNameField(
+        blank=True, default=''
+    )
 
     # Old :attr:`core.Period.start_time`
-    period_start_time = models.DateTimeField()
+    period_start_time = models.DateTimeField(
+        null=True, default=None
+    )
 
     # Old :attr:`core.Period.end_time`
-    period_end_time = models.DateTimeField()
+    period_end_time = models.DateTimeField(
+        null=True, default=None
+    )
 
     # Old :attr:`FeedbackSet.grading_points`.
-    grading_points = models.PositiveIntegerField(default=0)
+    grading_points = models.PositiveIntegerField(
+        default=0, null=True, blank=True
+    )
 
     # Old :attr:`FeedbackSet.grading_published_by`
     grading_published_by = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
-        null=True, blank=True
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name='passed_previous_period_published_by'
     )
 
     # Old :attr:`FeedbackSet.
     grading_published_datetime = models.DateTimeField(
-        null=True,
-        blank=True
+        null=True, default=None
     )
+
+    #: When this entry was created.
+    created_datetime = models.DateTimeField(
+        default=timezone.now
+    )
+
+    #: Who this entry was created by.
+    created_by = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name='passed_previous_period_created_by'
+    )
+
+
+class FeedbackSetGradingUpdateHistory(models.Model):
+    """
+    Logs changes on the grading for a feedbackset.
+
+    If we have this history, there will be no problem changing the grades on an already corrected feedback set, as we
+    can display the history, just as with FeedbackSetDeadlineHistory.
+    """
+    #: The :class:`~.FeedbackSet` the update is for.
+    feedback_set = models.ForeignKey(
+        to=FeedbackSet,
+        on_delete=models.CASCADE,
+        related_name='grading_update_histories'
+    )
+
+    #: The user that updated the feedback set.
+    updated_by = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+
+    #: When the update was made.
+    updated_datetime = models.DateTimeField(
+        default=timezone.now
+    )
+
+    #: The score before update
+    old_grading_points = models.PositiveIntegerField(
+        null=False, blank=False
+    )
+
+    #: Who published the feedbackset before the update.
+    old_grading_published_by = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+
+    #: Grading publishing datetime before update
+    old_grading_published_datetime = models.DateTimeField(
+        null=False, blank=False
+    )
+
+    def __str__(self):
+        return 'FeedbackSet id: {} - points: {} - updated_datetime: {}'.format(
+            self.feedback_set.id, self.old_grading_points, self.updated_datetime)
 
 
 class FeedbackSetDeadlineHistory(models.Model):

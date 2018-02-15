@@ -328,6 +328,16 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                         '#devilry_admin_assignment_overview_utilities_passed_previous p').alltext_normalized,
                 "Mark students that have passed this assignment previously.")
 
+    def test_utilities_button_passed_previous_period_text(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+            mockresponse.selector.one(
+                '#devilry_admin_assignment_overview_utilities_passed_previous_buttons'
+            ).alltext_normalized,
+            'Edit passed previous semester'
+        )
+
     # def test_utilities_row_detektor(self):
     #     assignment = mommy.make('core.Assignment')
     #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
