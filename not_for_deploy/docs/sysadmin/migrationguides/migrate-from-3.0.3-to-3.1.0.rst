@@ -40,3 +40,9 @@ say you add the setting for the first time now as::
 You will then need to run::
 
     $ venv/bin/python manage.py devilry_rename_periodtag_prefix x fs
+
+
+Add changelog to your branding templates
+########################################
+We now have ``DEVILRY_CHANGELOG_URL`` variable available in branding templates.
+See https://github.com/devilry/devilry-django/issues/954.
