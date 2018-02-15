@@ -72,7 +72,8 @@ class TestFeedbacksetPassedPreviousPeriod(TestCase):
         self.assertEqual(self.feedbackset_passed_previous.grading_published_datetime,
                          self.previous_feedbackset.grading_published_datetime)
 
-    def test_foreign_key_is_set_to_none_when_feedbackset_is_deleted(self):
+    def test_feedbackset_passed_previous_period_cascades_on_feedbackset_delete(self):
         self.published_feedbackset.delete()
-        self.assertIsNone(
-            FeedbacksetPassedPreviousPeriod.objects.get(id=self.feedbackset_passed_previous.id).feedbackset)
+        self.assertFalse(
+            FeedbacksetPassedPreviousPeriod.objects.filter(id=self.feedbackset_passed_previous.id).exists()
+        )

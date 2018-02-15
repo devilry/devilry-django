@@ -23,7 +23,8 @@ from devilry.utils.passed_in_previous_period import PassedInPreviousPeriod, Some
 class SelectPeriodForm(forms.Form):
     semester = forms.ModelChoiceField(
         widget=forms.RadioSelect(),
-        queryset=Period.objects.none()
+        queryset=Period.objects.none(),
+        empty_label=None,
     )
 
     def __init__(self, *args, **kwargs):
@@ -40,6 +41,10 @@ class SelectPeriodForm(forms.Form):
 class SelectPeriodView(formbase.FormView):
     form_class = SelectPeriodForm
     template_name = 'devilry_admin/assignment/passed_previous_period/select-period-view.django.html'
+
+    def __init__(self, **kwargs):
+        super(SelectPeriodView, self).__init__(**kwargs)
+        self.no_past_period = False
 
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
@@ -78,10 +83,15 @@ class SelectPeriodView(formbase.FormView):
     def get_form_kwargs(self):
         kwargs = super(SelectPeriodView, self).get_form_kwargs()
         kwargs['period_queryset'] = self.__get_period_queryset()
+        if len(kwargs['period_queryset']) <= 0:
+            self.no_past_period = True
         return kwargs
     
     def get_context_data(self, **kwargs):
-        return super(SelectPeriodView, self).get_context_data(**kwargs)
+        context = super(SelectPeriodView, self).get_context_data(**kwargs)
+        if self.no_past_period:
+            context['no_past_period'] = True
+        return context
 
     def get_redirect_url(self, period):
         return self.request.cradmin_app.reverse_appurl(
@@ -128,7 +138,7 @@ class PassedPreviousAssignmentView(listbuilderview.View):
         ).select_related('parentnode__parentnode')
 
     def get_pagetitle(self):
-        return ugettext_lazy('Confirm assignmnets')
+        return ugettext_lazy('Confirm assignments')
 
     def get_context_data(self, **kwargs):
         context = super(PassedPreviousAssignmentView, self).get_context_data(**kwargs)
@@ -185,7 +195,7 @@ class ApprovePreviousAssignments(formbase.FormView):
         self.period = Period.objects.get(id=kwargs.pop('period_id'))
         self.assignment = self.request.cradmin_role
         self.devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()
-        self.util_class = PassedInPreviousPeriod(self.assignment, self.period)
+        self.util_class = PassedInPreviousPeriod(self.assignment, self.period, self.request.user)
         if self.assignment.is_fully_anonymous and self.devilryrole != 'departmentadmin':
             raise Http404()
         if self.assignment.is_semi_anonymous and self.devilryrole == 'periodadmin':
@@ -261,11 +271,3 @@ class ApprovePreviousAssignments(formbase.FormView):
 
     def get_success_url(self):
         return self.request.cradmin_instance.reverse_url(appname="overview", viewname=crapp.INDEXVIEW_NAME)
-
-
-class App(crapp.App):
-    appurls = [
-        crapp.Url(r'^$', SelectPeriodView.as_view(), name=crapp.INDEXVIEW_NAME),
-        crapp.Url(r'^assignment/(?P<period_id>\d+)$', PassedPreviousAssignmentView.as_view(), name='assignments'),
-        crapp.Url(r'^confirm/(?P<period_id>\d+)$', ApprovePreviousAssignments.as_view(), name='confirm')
-    ]

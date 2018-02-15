@@ -1,14 +1,16 @@
 import unittest
 
 from django import test
+from django.conf import settings
 from django.db import IntegrityError
 from django.utils import timezone
 from model_mommy import mommy
 
-from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import AssignmentGroup, Assignment
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group.models import FeedbackSet
 from devilry.devilry_group.models import FeedbackSetDeadlineHistory
+from devilry.devilry_group.models import FeedbackSetGradingUpdateHistory
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 
 
@@ -218,3 +220,80 @@ class TestFeedbackSetTriggers(test.TestCase):
         self.assertIsNotNone(deadline_history[2].changed_datetime)
         self.assertEquals(deadline_history[2].deadline_old, deadline_second_change)
         self.assertEquals(deadline_history[2].deadline_new, deadline_third_change)
+
+
+class TestFeedbackSetGradingUpdateTrigger(test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_feedbackset_grading_points_updated_sanity(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=0)
+        self.assertEqual(FeedbackSetGradingUpdateHistory.objects.count(), 0)
+        test_feedbackset.publish(published_by=testuser, grading_points=1)
+        self.assertEqual(FeedbackSetGradingUpdateHistory.objects.count(), 1)
+
+    def test_feedbackset_grading_points_results_simple(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        first_publish_datetime = timezone.now() - timezone.timedelta(days=10)
+        test_feedbackset = group_mommy.feedbackset_first_attempt_published(
+            group=testgroup, grading_points=0, grading_published_datetime=first_publish_datetime)
+        old_published_by = test_feedbackset.grading_published_by
+
+        self.assertEqual(FeedbackSetGradingUpdateHistory.objects.count(), 0)
+        test_feedbackset.publish(published_by=testuser, grading_points=1)
+
+        update_history = FeedbackSetGradingUpdateHistory.objects.get()
+        self.assertEqual(update_history.feedback_set, test_feedbackset)
+        self.assertEqual(update_history.updated_by, testuser)
+        self.assertTrue(update_history.updated_datetime > first_publish_datetime)
+        self.assertEqual(update_history.old_grading_points, 0)
+        self.assertEqual(update_history.old_grading_published_by, old_published_by)
+        self.assertEqual(update_history.old_grading_published_datetime, first_publish_datetime)
+
+    def test_feedbackset_grading_points_results_multiple(self):
+        testassignment = mommy.make('core.Assignment', max_points=10,
+                                    grading_system_plugin_id=Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        first_publish_datetime = timezone.now() - timezone.timedelta(days=10)
+        test_feedbackset = group_mommy.feedbackset_first_attempt_published(
+            group=testgroup, grading_points=0, grading_published_datetime=first_publish_datetime)
+        first_update_published_by = test_feedbackset.grading_published_by
+        self.assertEqual(FeedbackSetGradingUpdateHistory.objects.count(), 0)
+
+        testuser1 = mommy.make(settings.AUTH_USER_MODEL)
+        testuser2 = mommy.make(settings.AUTH_USER_MODEL)
+        testuser3 = mommy.make(settings.AUTH_USER_MODEL)
+
+        test_feedbackset.publish(published_by=testuser1, grading_points=3)
+        test_feedbackset.publish(published_by=testuser2, grading_points=6)
+        test_feedbackset.publish(published_by=testuser3, grading_points=10)
+
+        self.assertEqual(FeedbackSetGradingUpdateHistory.objects.count(), 3)
+
+        grading_history_queryset = FeedbackSetGradingUpdateHistory.objects.order_by('updated_datetime')
+        grading_history1 = grading_history_queryset[0]
+        grading_history2 = grading_history_queryset[1]
+        grading_history3 = grading_history_queryset[2]
+
+        # Test history entry for the first update
+        self.assertEqual(grading_history1.feedback_set, test_feedbackset)
+        self.assertEqual(grading_history1.old_grading_points, 0)
+        self.assertEqual(grading_history1.old_grading_published_by, first_update_published_by)
+
+        # Test history entry for the second update
+        self.assertEqual(grading_history2.feedback_set, test_feedbackset)
+        self.assertEqual(grading_history2.old_grading_points, 3)
+        self.assertEqual(grading_history2.old_grading_published_by, testuser1)
+
+        # Test history entry for the third update
+        self.assertEqual(grading_history3.feedback_set, test_feedbackset)
+        self.assertEqual(grading_history3.old_grading_points, 6)
+        self.assertEqual(grading_history3.old_grading_published_by, testuser2)
+
+        # Test final result on the feedbackset
+        test_feedbackset = FeedbackSet.objects.get(id=test_feedbackset.id)
+        self.assertEqual(test_feedbackset.grading_points, 10)
+        self.assertEqual(test_feedbackset.grading_published_by, testuser3)
