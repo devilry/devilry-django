@@ -1,5 +1,5 @@
 =============================
-Migrating from 3.0.3 to 3.0.4
+Migrating from 3.0.3 to 3.1.0
 =============================
 
 Backup database and files
@@ -7,10 +7,10 @@ Backup database and files
 BACKUP. YOUR. DATABASE. AND. FILES.
 
 
-Update devilry to 3.0.4
+Update devilry to 3.1.0
 #######################
 
-Update the devilry version to ``3.0.4`` as described in :doc:`../update`.
+Update the devilry version to ``3.1.0`` as described in :doc:`../update`.
 
 
 After update, you have to run
@@ -25,7 +25,7 @@ Fix your tag-prefixes
 #####################
 You can change the default tag prefix used with ``devilry_periodsetrelatedexaminers``
 and ``devilry_periodsetrelatedstudents`` with the ``DEVILRY_IMPORTED_PERIOD_TAG_DEFAULT_PREFIX``
-setting (see :doc:`devilry_settings`).
+setting (see :ref:`devilry_settings`).
 
 If you change the ``DEVILRY_IMPORTED_PERIOD_TAG_DEFAULT_PREFIX``, you will want to
 update the existing tags to use this new prefix. To do that, we now provide::

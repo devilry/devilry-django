@@ -140,7 +140,7 @@ def devilry_single_examiner_long_displayname(assignment, examiner, devilryrole):
 @register.inclusion_tag('devilry_core/templatetags/single-examiner-long-displayname-plain.django.html')
 def devilry_single_examiner_long_displayname_plain(assignment, examiner, devilryrole):
     """
-    Same as :method:`.devilry_single_examiner_long_displayname` but returns the examiner without styling.
+    Same as :meth:`.devilry_single_examiner_long_displayname` but returns the examiner without styling.
     """
     return {
         'examiner': examiner,

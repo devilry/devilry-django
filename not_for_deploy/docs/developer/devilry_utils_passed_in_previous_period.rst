@@ -1,7 +1,6 @@
-################################################################################################################
-:mod:`devilry.utils.passed_in_previous_period.PassedInPreviousPeriod` --- Passed In Previous Period
-:mod:`devilry.devilry_group.models.FeedbacksetPassedPreviousPeriod` --- Feedbackset Passed Previous Period Model
-################################################################################################################
+#########################
+Passed In Previous Period
+#########################
 
 .. _passed_in_previous_period:
 

@@ -129,7 +129,8 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
     subclass this and override :meth:`~.get_period_result_collector_class`.
 
     Examples:
-        Here's an example of a plugin view that uses ``Assignment`` as listing values and nothing else::
+
+        Here is an example of a plugin view that uses ``Assignment`` as listing values and nothing else::
 
             from devilry.devilry_qualifiesforexam.views.plugin_base_views import base_multiselect_view
             from devilry.devilry_qualifiesforexam.views import plugin_mixin
@@ -141,7 +142,7 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
                 def get_period_result_collector_class(self):
                     return some_result_collector_for_the_plugin
 
-        Here's an example that uses ``Assignment`` as selectable items but an extra field is added, to
+        Here is an example that uses ``Assignment`` as selectable items but an extra field is added, to
         achieve this, the base form and target renderer must be subclassed::
 
             from devilry.devilry_qualifiesforexam.views.plugin_base_views import base_multiselect_view

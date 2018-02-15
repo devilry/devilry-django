@@ -17,7 +17,9 @@ DEVILRY_GROUP_ZIPFILE_DIRECTORY = None
 DEVILRY_STATIC_URL = '/static'  # Must not end in / (this means that '' is the server root)
 DEVILRY_MATHJAX_URL = 'https://cdn.mathjax.org/mathjax/latest/MathJax.js'
 DEVILRY_LOGOUT_URL = '/authenticate/logout'
-DEVILRY_HELP_URL = 'https://devilry-userdoc.readthedocs.org'
+DEVILRY_HELP_URL = 'https://devilry.readthedocs.io/en/latest/user/'
+DEVILRY_CHANGELOG_URL = 'https://devilry.readthedocs.io/en/latest/user/changelog_overview.html'
+
 
 # Set max file size to 5MB. Files greater than this size are split into chunks of this size.
 DEVILRY_MAX_ARCHIVE_CHUNK_SIZE = 5000000
@@ -60,8 +62,8 @@ DEVILRY_RQ_EMAIL_BACKEND_QUEUENAME = 'email'
 #: is ``False``, users will be assigned
 #: ``<username><DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX>`` as their primary email
 #: address when they are created.
-# DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX = 'example.com'
 DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX = None
+# DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX = 'example.com'
 
 
 # DEVILRY_QUALIFIESFOREXAM_PLUGINS = [
@@ -71,10 +73,6 @@ DEVILRY_DEFAULT_EMAIL_USERNAME_SUFFIX = None
 #     'devilry_qualifiesforexam_select',
 # ]
 
-#: Deadline handling method:
-#:
-#:    0: Soft deadlines
-#:    1: Hard deadlines
 DEFAULT_DEADLINE_HANDLING_METHOD = 0
 
 
