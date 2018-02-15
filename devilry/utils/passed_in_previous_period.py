@@ -50,7 +50,7 @@ class PassedInPreviousPeriod(object):
         Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS
     ]
 
-    def __init__(self, assignment, from_period, requestuser):
+    def __init__(self, assignment, from_period, requestuser=None):
         """
         Initialize with assignment and the earliest period we will approve for.
         Args:
