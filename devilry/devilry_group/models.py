@@ -614,6 +614,29 @@ class FeedbacksetPassedPreviousPeriod(models.Model):
     )
 
 
+class FeedbackSetGradingUpdateHistory(models.Model):
+    """
+    Logs changes on the grading for a feedbackset if the grading is edited.
+
+    If we have this history, there will be no problem changing the grades on an already corrected feedback set, as we
+    can display the history, just as with FeedbackSetDeadlineHistory.
+    """
+    #: The :class:`~.FeedbackSet` the update is for.
+    feedback_set = models.ForeignKey(FeedbackSet)
+
+    #: The user that updated the feedback set.
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True
+    )
+
+    #: When the update was made.
+    updated_datetime = models.DateTimeField(
+        default=timezone.now
+    )
+
+
 class FeedbackSetDeadlineHistory(models.Model):
     """
     Logs change in deadline for a FeedbackSet.
