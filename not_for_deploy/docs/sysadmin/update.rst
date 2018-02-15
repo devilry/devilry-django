@@ -23,9 +23,14 @@ Update Devilry
     $ cd ~/devilrydeploy
     $ venv/bin/pip install -r requirements.txt
 
-4. Collect static files::
+4. Apply database migrations (does nothing if there are no changes)::
+
+    $ cd ~/devilrydeploy
+    $ venv/bin/python manage.py migrate
+
+5. Collect static files::
 
     $ cd ~/devilrydeploy
     $ venv/bin/python manage.py collectstatic
 
-5. Start Supervisord.
+6. Start Supervisord.
