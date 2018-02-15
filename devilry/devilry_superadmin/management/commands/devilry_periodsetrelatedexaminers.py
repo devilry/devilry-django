@@ -18,11 +18,12 @@ class RelatedBaseCommand(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--clearall',
-            action='store_true',
-            dest='clearall',
-            default=False,
-            help='Alias for for --deactivate-missing for devilry 2.x compatibility.'
+            'subject_short_name',
+            help='Positional argument for short name of the subject.'
+        )
+        parser.add_argument(
+            'period_short_name',
+            help='Positional argument for short name of the period.'
         )
         parser.add_argument(
             '--deactivate-missing',
@@ -54,10 +55,11 @@ class RelatedBaseCommand(BaseCommand):
     def get_subject_and_period(self):
         """ Get the subject and period from args """
         from devilry.apps.core.models import Subject, Period
-        if len(self.args) != 2:
+        if 'subject_short_name' not in self.options or 'period_short_name' not in self.options:
             raise CommandError('Subject and period is required. See --help.')
-        subject_short_name = self.args[0]
-        period_short_name = self.args[1]
+        subject_short_name = self.options.get('subject_short_name')
+        period_short_name = self.options.get('period_short_name')
+
         # Get the subject and period
         try:
             self.subject = Subject.objects.get(short_name=subject_short_name)
@@ -161,7 +163,8 @@ class RelatedBaseCommand(BaseCommand):
         self.options = options
         self.verbosity = int(options.get('verbosity', '1'))
         self.tag_prefix = options.get('tag_prefix')
-        self.deactivate_missing = options.get('deactivate_missing') or options.get('clearall')
+        self.deactivate_missing = options.get('deactivate_missing')
+        print(options)
         jsondata = sys.stdin.read()
         self.input_data = json.loads(jsondata)
 
