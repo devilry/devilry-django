@@ -38,10 +38,10 @@ class RelatedBaseCommand(BaseCommand):
         parser.add_argument(
             '--tag-prefix',
             dest='tag_prefix',
-            default=settings.DEVILRY_SYNCSYSTEM_SHORTNAME,
+            default=settings.DEVILRY_IMPORTED_PERIOD_TAG_DEFAULT_PREFIX,
             help='The prefix to use for imported tags. Defaults '
-                 'to the value of the DEVILRY_SYNCSYSTEM_SHORTNAME setting '
-                 '(which is {!r}).'.format(settings.DEVILRY_SYNCSYSTEM_SHORTNAME)
+                 'to the value of the DEVILRY_IMPORTED_PERIOD_TAG_DEFAULT_PREFIX setting '
+                 '(which is {!r}).'.format(settings.DEVILRY_IMPORTED_PERIOD_TAG_DEFAULT_PREFIX)
         )
 
     @property
@@ -164,7 +164,6 @@ class RelatedBaseCommand(BaseCommand):
         self.verbosity = int(options.get('verbosity', '1'))
         self.tag_prefix = options.get('tag_prefix')
         self.deactivate_missing = options.get('deactivate_missing')
-        print(options)
         jsondata = sys.stdin.read()
         self.input_data = json.loads(jsondata)
 
