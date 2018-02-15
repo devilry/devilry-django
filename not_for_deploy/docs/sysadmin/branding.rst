@@ -124,7 +124,8 @@ Available template variables
 ****************************
 Template variables you can use in your branding templates:
 
-- ``DEVILRY_VERSION``: Gives the devilry version (Example: ``3.0.0``)
+- ``DEVILRY_VERSION``: The devilry version (Example: ``3.0.0``)
+- ``DEVILRY_CHANGELOG_URL``: The URL for the user friendly changelog.
 
 
 *****************
