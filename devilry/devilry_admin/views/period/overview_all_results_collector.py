@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 
 from django.db import models
+from django.utils import timezone
 
 from devilry.apps.core import models as core_models
 
@@ -54,6 +55,29 @@ class RelatedStudentResults(object):
                              'student_is_registered_on_assignment(assignment_id=) first?')
         cached_data = self.cached_data_dict[assignment_id]
         if cached_data.last_published_feedbackset_is_last_feedbackset:
+            return False
+        return True
+
+    def is_waiting_for_deliveries(self, assignment_id):
+        """
+        Check if the student still can deliver on the assignment.
+
+        The student is waiting for deliveries if registered on the ``Assignment``, but the deadline of last
+        ``FeedBackSet`` is greater than or equal to current time
+
+        Returns:
+            (bool): True if the student still can deliver to the assignment, else False
+
+        Raises:
+            (ValueError): If the student is not registered on the ``Assignment``
+
+        """
+        if not self.student_is_registered_on_assignment(assignment_id=assignment_id):
+            raise ValueError('You are checking if the student is waiting for deliveries when the student is not '
+                             'registered on the assignment. Maybe you should call '
+                             'student_is_registered_on_assignment(assignment_id=) first?')
+        cached_data = self.cached_data_dict[assignment_id]
+        if cached_data.last_feedbackset_deadline_datetime < timezone.now():
             return False
         return True
 

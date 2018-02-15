@@ -1,7 +1,10 @@
 from __future__ import unicode_literals
 
+from datetime import timedelta
+
 from django import test
 from django.conf import settings
+from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.devilry_admin.views.period.overview_all_results_collector import PeriodAllResultsCollector
@@ -121,6 +124,57 @@ class TestAllResultsCollector(test.TestCase):
         )
         with self.assertRaises(ValueError):
             collector.results[relatedstudent.id].is_waiting_for_feedback(testassignment.id)
+
+    def test_is_waiting_for_deliveries(self):
+        testperiod = mommy.make('core.Period')
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        user = mommy.make(settings.AUTH_USER_MODEL)
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=user)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent=relatedstudent)
+        group_factory.feedbackset_first_attempt_published(
+            group=testgroup,
+            grading_points=10,
+            deadline_datetime=timezone.now() + timedelta(days=4),
+        )
+        # Run collector
+        collector = PeriodAllResultsCollector(
+            period=testperiod,
+            related_student_ids=[relatedstudent.id]
+        )
+        self.assertTrue(collector.results[relatedstudent.id].is_waiting_for_deliveries(testassignment.id))
+
+    def test_is_not_waiting_for_deliveries(self):
+        testperiod = mommy.make('core.Period')
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        user = mommy.make(settings.AUTH_USER_MODEL)
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=user)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent=relatedstudent)
+        group_factory.feedbackset_first_attempt_published(
+            group=testgroup,
+            grading_points=10,
+            deadline_datetime=timezone.now() - timedelta(days=4),
+        )
+        # Run collector
+        collector = PeriodAllResultsCollector(
+            period=testperiod,
+            related_student_ids=[relatedstudent.id]
+        )
+        self.assertFalse(collector.results[relatedstudent.id].is_waiting_for_deliveries(testassignment.id))
+
+    def test_raises_value_error_is_waiting_for_deliveries_not_registered_on_assignment(self):
+        testperiod = mommy.make('core.Period')
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        user = mommy.make(settings.AUTH_USER_MODEL)
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=user)
+        # Run collector
+        collector = PeriodAllResultsCollector(
+            period=testperiod,
+            related_student_ids=[relatedstudent.id]
+        )
+        with self.assertRaises(ValueError):
+            collector.results[relatedstudent.id].is_waiting_for_deliveries(testassignment.id)
 
     def test_student_is_registered_on_assignment(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
