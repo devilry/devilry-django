@@ -10,6 +10,9 @@ class Search(listfilter.django.single.textinput.Search):
             label_is_screenreader_only=label_is_screenreader_only
         )
 
+    def get_placeholder(self):
+        return ugettext_lazy('Search listed objects ...')
+
     def get_modelfields(self):
         return [
             'fullname',

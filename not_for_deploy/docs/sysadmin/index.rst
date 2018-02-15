@@ -17,6 +17,7 @@ Devilry sysadmin docs
    managementcommands
    dataporten_setup
    branding
+   devilry_settings
 
 
 Migration guides
