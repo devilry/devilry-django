@@ -15,6 +15,7 @@ htmls==1.0.0
 
 # Required by sphinx (to build the docs)
 Sphinx==1.7.0
+sphinx_rtd_theme==0.2.4
 sphinxcontrib-napoleon==0.6.1
 
 # For test/CI automation
