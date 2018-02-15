@@ -19,7 +19,7 @@ class AbstractSearch(listfilter.django.single.textinput.Search):
         return super(AbstractSearch, self).filter(queryobject=queryobject)
 
     def get_placeholder(self):
-        return ugettext_lazy('Filter listed objects ...')
+        return ugettext_lazy('Search listed objects ...')
 
 
 class SearchNotAnonymous(AbstractSearch):
