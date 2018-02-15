@@ -144,7 +144,7 @@ class AbstractBulkFeedbackListView(bulk_operations_grouplist.AbstractAssignmentG
         text = form.cleaned_data['feedback_comment_text']
 
         # Cache anonymous display names before transaction. Needed for django messages.
-        anonymous_displaynames = self.get_group_anonymous_displaynames(form=form)
+        displaynames = self.get_group_displaynames(form=form)
 
         now_without_microseconds = timezone.now().replace(microsecond=0)
         with transaction.atomic():
@@ -162,7 +162,7 @@ class AbstractBulkFeedbackListView(bulk_operations_grouplist.AbstractAssignmentG
             bulk_send_email(feedbackset_id_list=feedback_set_ids,
                             domain_url_start=self.request.build_absolute_uri('/'))
 
-        self.add_success_message(anonymous_displaynames)
+        self.add_success_message(displaynames)
         return super(AbstractBulkFeedbackListView, self).form_valid(form=form)
 
     def add_success_message(self, anonymous_display_names):

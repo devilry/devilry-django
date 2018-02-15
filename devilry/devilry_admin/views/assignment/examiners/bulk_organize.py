@@ -17,6 +17,7 @@ from django_cradmin.viewhelpers import listbuilder
 from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Examiner, RelatedExaminer
 from devilry.apps.core.models import RelatedStudent
+from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser, listfilter_assignmentgroup
 from devilry.devilry_admin.views.assignment.students import groupview_base
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.apps.core.models import period_tag

@@ -121,7 +121,7 @@ class TestAddGroupsToExaminerView(test.TestCase, cradmin_testhelpers.TestCaseMix
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=testassignment.period)
         mommy.make('core.AssignmentGroup', parentnode=testassignment, _quantity=10)
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(10):
             self.mock_getrequest(
                 cradmin_role=testassignment,
                 viewkwargs={'relatedexaminer_id': relatedexaminer.id},

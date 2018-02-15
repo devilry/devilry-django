@@ -33,6 +33,9 @@ class Overview(listbuilder_relatedexaminer.VerticalFilterListView):
     value_renderer_class = OverviewItemValue
     template_name = 'devilry_admin/period/examiners/overview.django.html'
 
+    def get_period(self):
+        return self.request.cradmin_role
+
     def add_filterlist_items(self, filterlist):
         super(Overview, self).add_filterlist_items(filterlist=filterlist)
         filterlist.append(listfilter_relateduser.IsActiveFilter())

@@ -21,12 +21,12 @@
         {% else %}
             <div class="devilry-heading-with-buttons__buttons">
                 {% if me.value.is_hidden == True %}
-                    <a href="{% cradmin_instance_url appname='manage_tags' viewname='toggle_visibility' %}?prefix={{ me.value.prefix }}&tag={{ me.value.tag }}"
+                    <a href="{% cradmin_instance_url appname='manage_tags' viewname='toggle_visibility' %}?tag_id={{ me.value.id }}"
                        class="btn btn-default btn-sm devilry-admin-manage-tags-imported-tag-show-button">
                         {% trans 'Show' %}
                     </a>
                 {% else %}
-                    <a href="{% cradmin_instance_url appname='manage_tags' viewname='toggle_visibility'%}?prefix={{ me.value.prefix }}&tag={{ me.value.tag }}"
+                    <a href="{% cradmin_instance_url appname='manage_tags' viewname='toggle_visibility'%}?tag_id={{ me.value.id }}"
                         class="btn btn-default btn-sm devilry-admin-manage-tags-imported-tag-hide-button">
                         {% trans 'Hide' %}
                     </a>
@@ -46,12 +46,12 @@
     {% if me.value.prefix == '' %}
         <div class="devilry-dashboard-container-withtopmargin">
             <p class="paragraph paragraph--nomargin">
-                <a href="{% cradmin_instance_url appname='manage_tags' viewname='add_students' tag=me.value.tag %}"
+                <a href="{% cradmin_instance_url appname='manage_tags' viewname='add_students' tag_id=me.value.id %}"
                         id="devilry_admin_period_manage_tags_add_students_{{ me.value.tag }}"
                         class="btn btn--fixedwidth btn--fixedwidth-wide btn-default btn-sm">
                     {% trans 'Add students' %}
                 </a>
-                <a href="{% cradmin_instance_url appname='manage_tags' viewname='add_examiners' tag=me.value.tag %}"
+                <a href="{% cradmin_instance_url appname='manage_tags' viewname='add_examiners' tag_id=me.value.id %}"
                         id="devilry_admin_period_manage_tags_add_examiners_{{ me.value.tag }}"
                         class="btn btn--fixedwidth btn--fixedwidth-wide btn-default btn-sm">
                     {% trans 'Add examiners' %}
@@ -59,14 +59,14 @@
             </p>
             <p class="paragraph paragraph--nomargin">
                 {% if me.value.relatedstudents.count > 0 %}
-                    <a href="{% cradmin_instance_url appname='manage_tags' viewname='remove_students' tag=me.value.tag %}"
+                    <a href="{% cradmin_instance_url appname='manage_tags' viewname='remove_students' tag_id=me.value.id %}"
                             id="devilry_admin_period_manage_tags_remove_students_{{ me.value.tag }}"
                             class="btn btn--fixedwidth btn--fixedwidth-wide btn--danger-muted btn-sm">
                         {% trans 'Remove students' %}
                     </a>
                 {% endif %}
                 {% if me.value.relatedexaminers.count > 0 %}
-                    <a href="{% cradmin_instance_url appname='manage_tags' viewname='remove_examiners' tag=me.value.tag %}"
+                    <a href="{% cradmin_instance_url appname='manage_tags' viewname='remove_examiners' tag_id=me.value.id %}"
                             id="devilry_admin_period_manage_tags_remove_examiners_{{ me.value.tag }}"
                             class="btn btn--fixedwidth btn--fixedwidth-wide btn--danger-muted btn-sm">
                         {% trans 'Remove examiners' %}
