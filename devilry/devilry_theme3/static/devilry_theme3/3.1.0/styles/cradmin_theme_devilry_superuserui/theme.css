@@ -1,5 +1,4 @@
 /*! normalize.css v3.0.0 | MIT License | git.io/normalize */
-@import url('https://fonts.googleapis.com/css?family=Quicksand:400,700');
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
@@ -4567,6 +4566,18 @@ button.close {
   .hidden-print {
     display: none !important;
   }
+}
+@font-face {
+  font-family: 'Quicksand';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Quicksand Regular'), local('Quicksand-Regular'), url(https://fonts.gstatic.com/s/quicksand/v7/6xKtdSZaM9iE8KbpRA_hK1QI.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Quicksand';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Quicksand Bold'), local('Quicksand-Bold'), url(https://fonts.gstatic.com/s/quicksand/v7/6xKodSZaM9iE8KbpRA_pkHEYT8L6.ttf) format('truetype');
 }
 #django_cradmin_bodycontentwrapper {
   width: 100%;
