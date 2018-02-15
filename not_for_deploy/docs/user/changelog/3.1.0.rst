@@ -7,6 +7,8 @@ New for examiners
 *****************
 
 - Bugfix with success message when adding bulk feedback. https://github.com/devilry/devilry-django/issues/955.
+- Remove restrictions that require deadlines to be N minutes in the future.
+  https://github.com/devilry/devilry-django/issues/956.
 
 
 ******************************
@@ -24,4 +26,14 @@ New for course/semester admins
   where the filter has now been added.
 - *Semester overview of all results* - fix bug with status messages
   (https://github.com/devilry/devilry-django/issues/952).
+- Remove restrictions that require deadlines to be N minutes in the future.
+  https://github.com/devilry/devilry-django/issues/956.
 
+
+
+*****************
+New for sysadmins
+*****************
+
+- Fix argument parsing errors in the ``devilry_periodsetrelatedexaminers``
+  and ``devilry_periodsetrelatedstudents`` scripts.
