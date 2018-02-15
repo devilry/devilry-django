@@ -45,3 +45,25 @@ class FeedbackSetPassedPreviousPeriodAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.FeedbacksetPassedPreviousPeriod, FeedbackSetPassedPreviousPeriodAdmin)
+
+
+class FeedbackSetGradingUpdateHistoryAdmin(admin.ModelAdmin):
+    readonly_fields = [
+        'feedback_set',
+        'updated_by',
+        'updated_datetime',
+        'old_grading_points',
+        'old_grading_published_by',
+        'old_grading_published_datetime'
+    ]
+    search_fields = [
+        'feedbackset_id',
+        'updated_by_id',
+        'old_grading_published_by_id'
+    ]
+    list_display = [
+        'feedback_set',
+        'updated_by'
+    ]
+
+admin.site.register(models.FeedbackSetGradingUpdateHistory, FeedbackSetGradingUpdateHistoryAdmin)

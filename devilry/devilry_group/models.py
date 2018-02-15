@@ -616,25 +616,54 @@ class FeedbacksetPassedPreviousPeriod(models.Model):
 
 class FeedbackSetGradingUpdateHistory(models.Model):
     """
-    Logs changes on the grading for a feedbackset if the grading is edited.
+    Logs changes on the grading for a feedbackset.
 
     If we have this history, there will be no problem changing the grades on an already corrected feedback set, as we
     can display the history, just as with FeedbackSetDeadlineHistory.
     """
     #: The :class:`~.FeedbackSet` the update is for.
-    feedback_set = models.ForeignKey(FeedbackSet)
+    feedback_set = models.ForeignKey(
+        to=FeedbackSet,
+        on_delete=models.CASCADE,
+        related_name='grading_update_histories'
+    )
 
     #: The user that updated the feedback set.
     updated_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        to=settings.AUTH_USER_MODEL,
         null=True,
-        blank=True
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
     )
 
     #: When the update was made.
     updated_datetime = models.DateTimeField(
         default=timezone.now
     )
+
+    #: The score before update
+    old_grading_points = models.PositiveIntegerField(
+        null=False, blank=False
+    )
+
+    #: Who published the feedbackset before the update.
+    old_grading_published_by = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+
+    #: Grading publishing datetime before update
+    old_grading_published_datetime = models.DateTimeField(
+        null=False, blank=False
+    )
+
+    def __str__(self):
+        return 'FeedbackSet id: {} - points: {} - updated_datetime: {}'.format(
+            self.feedback_set.id, self.old_grading_points, self.updated_datetime)
 
 
 class FeedbackSetDeadlineHistory(models.Model):
