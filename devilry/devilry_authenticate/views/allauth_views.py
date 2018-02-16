@@ -1,5 +1,6 @@
 from allauth.account.views import LoginView, LogoutView
 from allauth.socialaccount import providers
+from allauth.socialaccount.models import SocialApp
 from allauth.socialaccount.providers.dataporten.provider import DataportenProvider
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -36,4 +37,12 @@ class AllauthLogoutView(LogoutView):
     def get_redirect_url(self):
         if self.allauth_provider == DataportenProvider.id:
             return settings.DATAPORTEN_LOGOUT_URL
+
+        #: TODO: Remove this after a while.
+        #: Workaround to make sure users are logged out of Dataporten without having to log in, log out, log in and the logout
+        #: again.
+        if settings.AUTHENTICATION_BACKENDS == ['allauth.account.auth_backends.AuthenticationBackend',]:
+            if SocialApp.objects.count() == 1:
+                if SocialApp.objects.first().provider == DataportenProvider.id:
+                    return settings.DATAPORTEN_LOGOUT_URL
         return super(AllauthLogoutView, self).get_redirect_url()
