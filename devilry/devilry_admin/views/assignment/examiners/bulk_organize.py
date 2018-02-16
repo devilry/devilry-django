@@ -244,20 +244,18 @@ class RandomView(groupview_base.BaseMultiselectView):
         Examiner.objects.filter(assignmentgroup__in=groupqueryset).delete()
 
     def __random_organize_examiners(self, groupqueryset, relatedexaminerqueryset):
-        relatedexaminers = list(relatedexaminerqueryset)
-        groups = list(groupqueryset)
-        max_per_examiner = int(math.ceil(len(groups) / len(relatedexaminers)))
-        relatedexaminer_to_count_map = {}
+        relatedexaminer_ids = list(relatedexaminerqueryset.values_list('id', flat=True))
+        group_ids = list(groupqueryset.values_list('id', flat=True))
+        random.shuffle(relatedexaminer_ids)
+        random.shuffle(group_ids)
         examiners_to_create = []
-        for group in groupqueryset:
-            relatedexaminer = random.choice(relatedexaminers)
-            if relatedexaminer.id not in relatedexaminer_to_count_map:
-                relatedexaminer_to_count_map[relatedexaminer.id] = 0
-            relatedexaminer_to_count_map[relatedexaminer.id] += 1
-            if relatedexaminer_to_count_map[relatedexaminer.id] > max_per_examiner:
-                relatedexaminers.remove(relatedexaminer)
-            examiner_to_create = Examiner(relatedexaminer=relatedexaminer, assignmentgroup=group)
-            examiners_to_create.append(examiner_to_create)
+        while group_ids:
+            for relatedexaminer in relatedexaminer_ids:
+                if not group_ids:
+                    break
+                examiners_to_create.append(
+                    Examiner(relatedexaminer_id=relatedexaminer, assignmentgroup_id=group_ids.pop(0))
+                )
         Examiner.objects.bulk_create(examiners_to_create)
 
     def form_invalid_add_global_errormessages(self, form):
@@ -270,9 +268,11 @@ class RandomView(groupview_base.BaseMultiselectView):
         groupqueryset = form.cleaned_data['selected_items']
         relatedexaminerqueryset = form.cleaned_data['selected_relatedexaminers']
         self.__clear_examiners(groupqueryset=groupqueryset)
-        self.__random_organize_examiners(groupqueryset=groupqueryset,
-                                         relatedexaminerqueryset=relatedexaminerqueryset)
-        # messages.success(self.request, self.get_success_message(candidatecount=candidatecount))
+        self.__random_organize_examiners(
+            groupqueryset=groupqueryset,
+            relatedexaminerqueryset=relatedexaminerqueryset
+        )
+        messages.success(self.request, ugettext_lazy('Randomly organized students to examiners.'))
         return redirect(self.get_success_url())
 
 

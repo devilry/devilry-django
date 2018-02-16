@@ -326,6 +326,92 @@ class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 (count_examiner1 == 3 and count_examiner2 == 3 and count_examiner3 == 2)
             )
 
+    def test_post_evenly_distributed_symmetrical(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer1 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        relatedexaminer2 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        relatedexaminer3 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup5 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup6 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup7 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup8 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup9 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        for index in range(30):
+            self.mock_http302_postrequest(
+                cradmin_role=testassignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+                requestkwargs={
+                    'data': {
+                        'selected_items': [str(testgroup1.id), str(testgroup2.id),
+                                           str(testgroup3.id), str(testgroup4.id),
+                                           str(testgroup5.id), str(testgroup5.id),
+                                           str(testgroup6.id), str(testgroup7.id),
+                                           str(testgroup8.id), str(testgroup9.id)],
+                        'selected_relatedexaminers': [str(relatedexaminer1.id),
+                                                      str(relatedexaminer2.id),
+                                                      str(relatedexaminer3.id)],
+                    }
+                })
+            self.assertEqual(relatedexaminer1.examiner_set.count(), 3)
+            self.assertEqual(relatedexaminer2.examiner_set.count(), 3)
+            self.assertEqual(relatedexaminer3.examiner_set.count(), 3)
+
+    def test_post_evenly_distributed_more_groups_than_examiners(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        relatedexaminer1 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        relatedexaminer2 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        relatedexaminer3 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        relatedexaminer4 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        relatedexaminer5 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        relatedexaminer6 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        relatedexaminer7 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        relatedexaminer8 = mommy.make('core.RelatedExaminer', period=testassignment.period)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        for index in range(30):
+            self.mock_http302_postrequest(
+                cradmin_role=testassignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
+                requestkwargs={
+                    'data': {
+                        'selected_items': [str(testgroup1.id), str(testgroup2.id),
+                                           str(testgroup3.id)],
+                        'selected_relatedexaminers': [str(relatedexaminer1.id),
+                                                      str(relatedexaminer2.id),
+                                                      str(relatedexaminer3.id),
+                                                      str(relatedexaminer4.id),
+                                                      str(relatedexaminer5.id),
+                                                      str(relatedexaminer6.id),
+                                                      str(relatedexaminer7.id),
+                                                      str(relatedexaminer8.id)],
+                    }
+                })
+            count_examiner1 = relatedexaminer1.examiner_set.count()
+            count_examiner2 = relatedexaminer2.examiner_set.count()
+            count_examiner3 = relatedexaminer3.examiner_set.count()
+            count_examiner4 = relatedexaminer3.examiner_set.count()
+            count_examiner5 = relatedexaminer3.examiner_set.count()
+            count_examiner6 = relatedexaminer3.examiner_set.count()
+            count_examiner7 = relatedexaminer3.examiner_set.count()
+            count_examiner8 = relatedexaminer3.examiner_set.count()
+            self.assertTrue(
+                (count_examiner1 == 0 or count_examiner1 == 1) and
+                (count_examiner2 == 0 or count_examiner2 == 1) and
+                (count_examiner3 == 0 or count_examiner3 == 1) and
+                (count_examiner4 == 0 or count_examiner4 == 1) and
+                (count_examiner5 == 0 or count_examiner5 == 1) and
+                (count_examiner6 == 0 or count_examiner6 == 1) and
+                (count_examiner7 == 0 or count_examiner7 == 1) and
+                (count_examiner8 == 0 or count_examiner8 == 1)
+            )
+
+
+
     def test_post_less_than_two_examiners(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         relatedexaminer1 = mommy.make('core.RelatedExaminer', period=testassignment.period)
