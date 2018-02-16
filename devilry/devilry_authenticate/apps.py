@@ -32,7 +32,12 @@ class AuthenticateAppConfig(AppConfig):
     def _on_user_logged_in(self, request, user, **kwargs):
         self._sync_allauth_account_with_devilry_user(user=user)
 
+    def _pre_social_login(self, request, sociallogin, **kwargs):
+        request.session['allauth_provider'] = sociallogin.account.provider
+
     def ready(self):
         from allauth.account import signals as account_signals
+        from allauth.socialaccount import signals as socialaccount_signals
         account_signals.user_signed_up.connect(self._on_user_signed_up)
         account_signals.user_logged_in.connect(self._on_user_logged_in)
+        socialaccount_signals.pre_social_login.connect(self._pre_social_login)
