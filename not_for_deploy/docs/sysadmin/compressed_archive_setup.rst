@@ -76,8 +76,8 @@ Recommendations
       $ venv/bin/python manage.py devilry_delete_compressed_archives --days 14
 
   on a daily basis should be a good starting point. The exact number of days will
-  depend on how your courses use devilry, and how much your users complain about having
-  to wait to re-build the zip files.
+  depend on how your courses use devilry, how much storage space you want use,
+  and how much your users complain about having to wait to re-build the zip files.
 - The disk size and performance requirements will depend a lot on the type of
   courses/assignments your devilry install has. We recommend monitoring the disk
   where the ``DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY`` directory resides, to
