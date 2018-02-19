@@ -1,0 +1,9 @@
+############################
+What is new in Devilry 3.1.1
+############################
+
+*****************
+New for all users
+*****************
+Fixes for dataporten logout. Django-allout, which Devilry uses for external authentication servers,
+did not logout users from auth.dataporten.no, only from Devilry.
