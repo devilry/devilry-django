@@ -37,7 +37,7 @@ Deleting compressed archives older than X days
 Delete all compressed archives older than a given number of days::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/python manage.py devilry_delete_compressed_archives --days 5
+    $ venv/bin/python manage.py devilry_delete_compressed_archives --days 14
 
 
 ******************************
@@ -63,3 +63,23 @@ Delete all compressed archives::
     are missing.
 
     A compressed archive will be generated again when a user tries to download the files in bulk.
+
+
+***************
+Recommendations
+***************
+
+- We generally recommend keeping the files at least for a couple of weeks, to avoid
+  that examiners and admins need to recreate the ZIP file while the files are still
+  relevant. This means that a cron-task running::
+
+      $ venv/bin/python manage.py devilry_delete_compressed_archives --days 14
+
+  on a daily basis should be a good starting point. The exact number of days will
+  depend on how your courses use devilry, and how much your users complain about having
+  to wait to re-build the zip files.
+- The disk size and performance requirements will depend a lot on the type of
+  courses/assignments your devilry install has. We recommend monitoring the disk
+  where the ``DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY`` directory resides, to
+  be able to react by deleting files (using ``devilry_delete_compressed_archives``)
+  or increasing the disk size when needed.
