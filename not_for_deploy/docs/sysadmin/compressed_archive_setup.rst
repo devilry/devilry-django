@@ -11,8 +11,9 @@ everyone that has access to the feed or the assignment(for examiners). The archi
 user tries to download it until a change has occured (new files are added or deleted).
 
 
+**************************
 Setup environment variable
-==========================
+**************************
 Add the following to ``~/devilrydeploy/devilry_settings.py``::
 
     #: The directory where compressed archives are stored. Archives are compressed when examiners or students
@@ -20,8 +21,9 @@ Add the following to ``~/devilrydeploy/devilry_settings.py``::
     DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = '/path/to/directory/for/compressedarchives/'
 
 
+****************************
 Deleting compressed archives
-============================
+****************************
 
 Compressed archives has a database table that defines some meta about the actual compressed archive on disk, such
 as the path to the file, size etc. A compressed archive file should not be directly deleted, so a management command
@@ -30,9 +32,8 @@ manually.
 
 This will remove entries in database table, as well as the actual files on disk.
 
-**********************************************
 Deleting compressed archives older than X days
-**********************************************
+==============================================
 
 Delete all compressed archives older than a given number of days::
 
@@ -40,9 +41,8 @@ Delete all compressed archives older than a given number of days::
     $ venv/bin/python manage.py devilry_delete_compressed_archives --days 14
 
 
-******************************
 Delete all compressed archives
-******************************
+==============================
 
 Delete all compressed archives::
 
