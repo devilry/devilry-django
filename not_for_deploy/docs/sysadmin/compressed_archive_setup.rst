@@ -50,21 +50,6 @@ Delete all compressed archives::
     $ venv/bin/python manage.py devilry_delete_compressed_archives --all
 
 
-.. note::
-
-    What if I deleted the compressed archive files on the disk?
-
-    The compressed archives contains copies of the uploaded files, so you can just use::
-
-        $ venv/bin/python manage.py devilry_delete_compressed_archives --all
-
-    to make sure the database is cleaned up correctly. The ``devilry_delete_compressed_archives``
-    handles files missing on disk, and just removes the corresponding database objects if the files
-    are missing.
-
-    A compressed archive will be generated again when a user tries to download the files in bulk.
-
-
 ***************
 Recommendations
 ***************
@@ -83,3 +68,37 @@ Recommendations
   where the ``DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY`` directory resides, to
   be able to react by deleting files (using ``devilry_delete_compressed_archives``)
   or increasing the disk size when needed.
+
+
+********************************
+What if I mess up with deletion?
+********************************
+
+
+What if I deleted the compressed archive files on the disk?
+===========================================================
+
+Just run::
+
+    $ venv/bin/python manage.py devilry_delete_compressed_archives --all
+
+to make sure the database is cleaned up correctly. The ``devilry_delete_compressed_archives``
+handles files missing on disk, so for those files the corresponding database objects will
+just be removed without any problems.
+
+A compressed archive will be generated again when a user tries to download the files in bulk.
+
+
+What if I deleted the content compressed archive database table?
+================================================================
+**... or if the information in the table does not match the files on disk?**
+
+First, remove all the files in the ``DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY`` directory.
+
+Then run::
+
+    $ venv/bin/python manage.py devilry_delete_compressed_archives --all
+
+to make sure the database is cleaned up correctly.
+
+A compressed archive will be generated again when a user tries to download the files in bulk.
