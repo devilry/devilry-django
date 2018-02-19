@@ -18,8 +18,8 @@ DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = None
 DEVILRY_STATIC_URL = '/static'  # Must not end in / (this means that '' is the server root)
 DEVILRY_MATHJAX_URL = 'https://cdn.mathjax.org/mathjax/latest/MathJax.js'
 DEVILRY_LOGOUT_URL = '/authenticate/logout'
-DEVILRY_HELP_URL = 'https://devilry.readthedocs.io/en/latest/user/'
-DEVILRY_CHANGELOG_URL = 'https://devilry.readthedocs.io/en/latest/user/changelog_overview.html'
+DEVILRY_HELP_URL = 'https://devilry.readthedocs.io/en/master/user/'
+DEVILRY_CHANGELOG_URL = 'https://devilry.readthedocs.io/en/master/user/changelog_overview.html'
 
 
 # Set max file size to 5MB. Files greater than this size are split into chunks of this size.
