@@ -60,7 +60,7 @@ class SelectedQualificationItem(multiselect2.selected_item_renderer.SelectedItem
         Get the title of an item.
 
         Returns:
-            str: :obj:`.SelectedQualificationItem.value`s string representation.
+            str: :obj:`.SelectedQualificationItem.value` string representation.
         """
         return self.value
 
@@ -203,7 +203,7 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
 
     def get_queryset_for_role(self, role):
         """
-        Get a queryset of all the objects for :obj:`.QualificationItemListView.model`
+        Get a queryset of all the objects for the :obj:`.QualificationItemListView.model` .
 
         This can be be customized with a call to super, and the
         filtering needed.
@@ -234,7 +234,7 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
 
     def get_form_class(self):
         """
-        Get a subclass of :class:`.SelectedQualificationForm'.
+        Get a subclass of :class:`.SelectedQualificationForm`.
 
         Must be implemented in subclass.
 
@@ -248,7 +248,7 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
         Must be implemented by subclass if needed.
 
         Returns:
-            A subclass of :class:`~.devilry.devilry_qualifiesforexam.pluginshelper.PeriodResultsCollector`
+            A subclass of :class:`devilry.devilry_qualifiesforexam.pluginshelper.PeriodResultsCollector`
 
         Raises:
             NotImplementedError
@@ -263,7 +263,7 @@ class QualificationItemListView(multiselect2view.ListbuilderView, QualifiedForEx
             posted_form: The posted form containing the items selected.
 
         Returns:
-            List of ``self.model.id``s that were selected.
+            List of ``self.model.id`` that were selected.
         """
         return [item.id for item in posted_form.cleaned_data['selected_items']]
 

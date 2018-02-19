@@ -409,7 +409,7 @@ def devilry_period_tags_on_period(period, period_tags):
 @register.inclusion_tag('devilry_core/templatetags/relatedexaminers-on-period-tag.django.html')
 def devilry_relatedexaminers_on_period_tag(period_tag):
     """
-    Renders the :class:`~.devilry.apps.core.models.relateduser.RelatedExaminers`s in a comma separated format if there
+    Renders the :class:`devilry.apps.core.models.relateduser.RelatedExaminer` in a comma separated format if there
     are any examiners, else it renders ``NO EXAMINERS``.
 
     Args:
@@ -424,11 +424,11 @@ def devilry_relatedexaminers_on_period_tag(period_tag):
 @register.inclusion_tag('devilry_core/templatetags/relatedstudents-on-period-tag.django.html')
 def devilry_relatedstudents_on_period_tag(period_tag):
     """
-    Renders the :class:`~.devilry.apps.core.models.relateduser.RelatedStudents`s in a comma separated format if there
+    Renders the :class:`devilry.apps.core.models.relateduser.RelatedStudent` in a comma separated format if there
     are any students, else it renders ``NO STUDENTS``.
 
     Args:
-        period_tag: a :class:`~.devilry.apps.core.models.period_tag.PeriodTag` instance.
+        period_tag: a :class:`~.devilry.apps.core.models.period_tag.PeriodTag` object.
     """
     return {
         'relatedstudents': period_tag.relatedstudents.all(),
@@ -439,13 +439,13 @@ def devilry_relatedstudents_on_period_tag(period_tag):
 @register.inclusion_tag('devilry_core/templatetags/relatedusers-on-period-tag.django.html')
 def devilry_relatedusers_on_period_tag(period_tag):
     """
-    Renders the :class:`~.devilry.apps.core.models.relateduser.RelatedExaminer`s and
-    :class:`~.devilry.apps.core.models.relateduser.RelatedStudents`s comma separated.
+    Renders the :class:`devilry.apps.core.models.RelatedExaminer` and :class:`devilry.apps.core.models.RelatedStudent`
+    comma separated.
 
     Uses tags :func:`.devilry_relatedexaminers_on_period_tag` and :func:`.devilry_relatedstudents_on_period_tag`.
 
     Args:
-        period_tag: a :class:`~.devilry.apps.core.models.period_tag.PeriodTag` instance.
+        period_tag: a :class:`devilry.apps.core.models.period_tag.PeriodTag` object.
     """
     return {
         'period_tag': period_tag

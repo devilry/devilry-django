@@ -147,7 +147,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
     def dispatch(self, request, *args, **kwargs):
         """
         Checks if the last FeedbackSet in the group is published. If it's published, a redirect response to
-        :class:`~.ExaminerFeedbackCreateFeedbackSetView is returned.
+        :class:`.ExaminerFeedbackCreateFeedbackSetView` is returned.
 
         Args:
             request: request object.
@@ -156,7 +156,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
             HttpResponse: The HTTP response.
         """
         group = self.request.cradmin_role
-        # # NOTE: :func:`~devilry.apps.core.models.AssignmentGroup.last_feedbackset_is_published` performs a query.
+        # NOTE: `devilry.apps.core.models.AssignmentGroup.last_feedbackset_is_published` performs a query.
         if group.last_feedbackset_is_published:
             raise Http404
         return super(ExaminerFeedbackView, self).dispatch(request, *args, **kwargs)
@@ -166,7 +166,7 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
         Get the correct form based on what grade plugin that is used.
 
         Returns:
-            A :class:`devilry.devilry_group.views.cradmin_feedbackfeed_base.GroupCommentForm`
+            A :class:`.devilry.devilry_group.views.cradmin_feedbackfeed_base.GroupCommentForm`
         """
         assignment = self.request.cradmin_role.assignment
         if assignment.grading_system_plugin_id == core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED:
@@ -190,14 +190,14 @@ class ExaminerFeedbackView(ExaminerBaseFeedbackFeedView):
 
     def _add_feedback_draft(self, form, group_comment):
         """
-        Sets ``GroupComment.visibility`` to ``private`` and
-        ``GroupComment.part_of_grading`` to ``True``.
+        Sets :obj:`devilry.devilry_group.models.GroupComment.visibility` to ``private`` and
+        :obj:`devilry.devilry_group.models.GroupComment.part_of_grading` to ``True``.
 
         Args:
-            group_comment (:obj:`~.devilry.devilry_group.models.GroupComment`): instance.
+            group_comment: :class:`.devilry.devilry_group.models.GroupComment` object.
 
         Returns:
-            (GroupComment): The update ``GroupComment``
+            (:class:`.devilry.devilry_group.models.GroupComment`): The updated object.
         """
         if form.cleaned_data['temporary_file_collection_id'] or len(group_comment.text) > 0:
             group_comment.visibility = group_models.GroupComment.VISIBILITY_PRIVATE
@@ -441,14 +441,14 @@ class GroupCommentEditDeleteMixin(object):
 
     def get_queryset_for_role(self, role):
         """
-        Filter out :obj:`~devilry.devilry_group.models.GroupComment`s based on the role of role of the
+        Filter out :obj:`devilry.devilry_group.models.GroupComment` based on the role of role of the
         crinstance and the primarykey of the comment since in this case only a single comment should be fetched.
 
         Args:
             role (GroupComment): The roleclass for the crinstance.
 
         Returns:
-            QuerySet: Set containing one :obj:`~devilry.devilry_group.models.GroupComment`.
+            QuerySet: QuerySet containing a single :class:`devilry.devilry_group.models.GroupComment`.
         """
         return group_models.GroupComment.objects.filter(
                 feedback_set__group=role,
