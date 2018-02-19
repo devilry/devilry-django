@@ -54,7 +54,12 @@ Delete all compressed archives::
 
     What if I deleted the compressed archive files on the disk?
 
-    The compressed archives are copies of the uploaded files, so you can just use the command above with the
-    `--all` argument to make sure the database is cleaned up correctly.
+    The compressed archives contains copies of the uploaded files, so you can just use::
+
+        $ venv/bin/python manage.py devilry_delete_compressed_archives --all
+
+    to make sure the database is cleaned up correctly. The ``devilry_delete_compressed_archives``
+    handles files missing on disk, and just removes the corresponding database objects if the files
+    are missing.
 
     A compressed archive will be generated again when a user tries to download the files in bulk.
