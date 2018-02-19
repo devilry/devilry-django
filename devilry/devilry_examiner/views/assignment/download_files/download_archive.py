@@ -27,6 +27,8 @@ class CompressedAssignmentFileDownloadView(generic.TemplateView):
                     content_type=ContentType.objects.get_for_model(model=assignment),
                     deleted_datetime=None)\
             .order_by('-created_datetime').first()
+        if not archive_meta:
+            raise Http404()
         return download_response.download_response(
                 content_path=archive_meta.archive_path,
                 content_name=archive_meta.archive_name,

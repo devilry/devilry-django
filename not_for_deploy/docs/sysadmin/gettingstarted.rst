@@ -120,6 +120,11 @@ Start by copying the following into ``~/devilrydeploy/devilry_settings.py``::
     #: This directory should be backed up.
     MEDIA_ROOT = '/path/to/directory/for/uploadedfiles/'
 
+    #: The directory where compressed archives are stored. Archives are compressed when examiners or students
+    #: downloads files from an assignment or a feedbackset.
+    #: See the ``Compressed archives for filedownload`` guide.
+    DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = '/path/to/directory/for/compressedarchives/'
+
     #: Url where users are directed when they do not have the permissions they believe they should have.
     DEVILRY_LACKING_PERMISSIONS_URL = None
 
@@ -158,6 +163,7 @@ Start by copying the following into ``~/devilrydeploy/devilry_settings.py``::
         db=0,
         password='secret'
     )
+
 
 If you have a ``devilry_prod_settings.py`` file from an older version of Devilry, you should be
 able to copy over most of these settings.

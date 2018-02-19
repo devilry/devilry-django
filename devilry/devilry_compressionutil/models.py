@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy
 
 from devilry.devilry_compressionutil import backend_registry
@@ -31,7 +32,7 @@ class GenericMeta(models.Model):
         # unique_together = ('content_type', 'content_object_id')
 
 
-class CompressedArchiveMetaManager(models.Manager):
+class CompressedArchiveMetaQueryset(models.QuerySet):
     """
     Manager for class :class:`.CompressedArchiveMeta`.
     """
@@ -57,12 +58,27 @@ class CompressedArchiveMetaManager(models.Manager):
         archive_meta.save()
         return archive_meta
 
+    def delete_compressed_archive(self, older_than_days):
+        """
+        Delete compressed archive meta entries older than a specified number of days.
+        This will also delete the compressed archive files.
+
+        Args:
+            older_than_days: Delete everything older than this.
+        """
+        if older_than_days < 1:
+            self.all().delete()
+        else:
+            older_than_datetime = timezone.now() - timezone.timedelta(days=older_than_days)
+            self.filter(created_datetime__lte=older_than_datetime).delete()
+
+
 
 class CompressedArchiveMeta(GenericMeta):
     """
     Metadata about a compressed archive. Name of the archive, path to it and it's size.
     """
-    objects = CompressedArchiveMetaManager()
+    objects = CompressedArchiveMetaQueryset.as_manager()
 
     #: When the archive was created.
     created_datetime = models.DateTimeField(auto_now_add=True)

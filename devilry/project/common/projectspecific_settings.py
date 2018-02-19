@@ -11,8 +11,9 @@ DEVILRY_URLPATH_PREFIX = ''
 # The default grade-plugin:
 DEVILRY_DEFAULT_GRADEEDITOR = 'approved'
 
-#: Where to store zipfiles for filedownloads
-DEVILRY_GROUP_ZIPFILE_DIRECTORY = None
+#: The directory where compressed archives are stored. Archives are compressed when examiners or students
+#: downloads files from an assignment or a feedbackset.
+DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = None
 
 DEVILRY_STATIC_URL = '/static'  # Must not end in / (this means that '' is the server root)
 DEVILRY_MATHJAX_URL = 'https://cdn.mathjax.org/mathjax/latest/MathJax.js'

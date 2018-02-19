@@ -18,6 +18,7 @@ Devilry sysadmin docs
    dataporten_setup
    branding
    devilry_settings
+   compressed_archive_setup
 
 
 Migration guides

@@ -5,7 +5,9 @@ from .base import *
 # MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.project.develop.middleware.FakeLoginMiddleware']
 
 #: Where to store compressed archives for filedownloads
-DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(developfilesdir, 'devilry_compressed_archives', '')
+DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(developfilesdir, 'devilry_compressed_archives')
+
+
 
 # The if's below is just to make it easy to toggle these settings on and off during development
 profiler_middleware = False

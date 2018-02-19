@@ -21,8 +21,6 @@ if not exists(logdir):
     os.mkdir(logdir)
 MEDIA_ROOT = join(developfilesdir, "filestore")
 DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(developfilesdir, 'deliverystorehier')
-DEVILRY_GROUP_ZIPFILE_DIRECTORY = os.path.join(developfilesdir, 'devilry_zip/')
-
 
 # DATABASES = {
 #     "default": {
