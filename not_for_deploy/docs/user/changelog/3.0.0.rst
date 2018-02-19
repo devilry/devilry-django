@@ -37,20 +37,30 @@ New for administrators
 - Unified admin UI for all administrators. The only difference is that
   higher permission levels gain you a few extra views.
 - New group based permission system.
-- Node is removed - replaced by a tag system.
+- Node is removed - replaced by a tag system and permission groups.
 
 Department administrator:
 -------------------------
+New role in 3.x which replaces the old *Node administrator* role.
 
 - Can add new courses.
-- Much shorter path to most common operations.
+- Shorter path to most common operations.
 
 Semester within a course:
 -------------------------
 
-- Can add (import) students that does not have a devilry user.
+- Can add (import) students that does not have a devilry user. Exactly how this
+  works depends on how devilry is configured.
 - Automatically add new students added to the semester to all assignments
   (can be disabled)
+- More powerful tag management.
+- Ability to deactivate students and examiners instead of removing them.
+  This makes it much safer to sync Devilry with external systems since
+  the worst case is that someone temporarily looses their permissions
+  until they are re-enabled or the sync script is fixed. It also makes it
+  easy to manually enable/disable users while waiting for updates to
+  some external data integration system.
+
 
 Assigment:
 ----------
@@ -58,17 +68,9 @@ Assigment:
 - No assignment administrator - this is changed so that a typical TA can be a semester
   administrator, but not gain access to certain assignments (based on anonymizationmode).
 - Automatically setup assignments like the previous assignment.
-- Can add (import) students that does not have a devilry user.
-- Can invite students via share URL.
 - Much easier to re-organize students.
-- Assign students to examiners by tags --> copy from another
-  assignment + ability to filter on sync system tag. You setup one
-  assignment, and use that as a template for other assignments.
-  If you have the same setup for the entire semester, new assignments
-  will automatically be configured with this setup.
 - Much more streamlined assignment configuration and setup.
-- Huge performance optimizations (show some numbers from Heroku).
-- New anonymizationmode - fully anonymized - for exams.
+- Huge performance optimizations.
 - Separation of student and examiner administration pages:
     - Provides a much more user friendly experience when setting
       up students and examiners.
