@@ -37,13 +37,13 @@ class TestFeedbackSetTriggers(test.TestCase):
         feedback_set = group.feedbackset_set.first()
         feedback_set.deadline_datetime = timezone.now() + timezone.timedelta(days=1)
         feedback_set.save()
-        self.assertEquals(1, AssignmentGroup.objects.count())
-        self.assertEquals(1, FeedbackSet.objects.count())
-        self.assertEquals(1, FeedbackSetDeadlineHistory.objects.count())
+        self.assertEqual(1, AssignmentGroup.objects.count())
+        self.assertEqual(1, FeedbackSet.objects.count())
+        self.assertEqual(1, FeedbackSetDeadlineHistory.objects.count())
         group.delete()
-        self.assertEquals(0, AssignmentGroup.objects.count())
-        self.assertEquals(0, FeedbackSet.objects.count())
-        self.assertEquals(0, FeedbackSetDeadlineHistory.objects.count())
+        self.assertEqual(0, AssignmentGroup.objects.count())
+        self.assertEqual(0, FeedbackSet.objects.count())
+        self.assertEqual(0, FeedbackSetDeadlineHistory.objects.count())
 
     @unittest.skip('Fix feedbackset validation')
     def test_first_feedbackset_must_have_deadline_datetime_none(self):
@@ -69,7 +69,7 @@ class TestFeedbackSetTriggers(test.TestCase):
         assignment = mommy.make('core.Assignment')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         first_feedbackset = group.feedbackset_set.first()
-        self.assertEquals(first_feedbackset.deadline_datetime,
+        self.assertEqual(first_feedbackset.deadline_datetime,
                           assignment.first_deadline)
 
     def test_first_feedbackset_is_updated_on_assignment_first_deadline_change(self):
@@ -82,7 +82,7 @@ class TestFeedbackSetTriggers(test.TestCase):
         assignment.first_deadline = new_first_deadline
         assignment.save()
         first_feedbackset = group.feedbackset_set.first()
-        self.assertEquals(first_feedbackset.deadline_datetime, new_first_deadline)
+        self.assertEqual(first_feedbackset.deadline_datetime, new_first_deadline)
 
     def test_all_first_feedbacksets_updated_on_assignment_first_deadline_change(self):
         old_first_deadline = timezone.now()
@@ -98,11 +98,11 @@ class TestFeedbackSetTriggers(test.TestCase):
         assignment.first_deadline = new_first_deadline
         assignment.save()
 
-        self.assertEquals(group1.feedbackset_set.first().deadline_datetime, new_first_deadline)
-        self.assertEquals(group2.feedbackset_set.first().deadline_datetime, new_first_deadline)
-        self.assertEquals(group3.feedbackset_set.first().deadline_datetime, new_first_deadline)
-        self.assertEquals(group4.feedbackset_set.first().deadline_datetime, new_first_deadline)
-        self.assertEquals(group5.feedbackset_set.first().deadline_datetime, new_first_deadline)
+        self.assertEqual(group1.feedbackset_set.first().deadline_datetime, new_first_deadline)
+        self.assertEqual(group2.feedbackset_set.first().deadline_datetime, new_first_deadline)
+        self.assertEqual(group3.feedbackset_set.first().deadline_datetime, new_first_deadline)
+        self.assertEqual(group4.feedbackset_set.first().deadline_datetime, new_first_deadline)
+        self.assertEqual(group5.feedbackset_set.first().deadline_datetime, new_first_deadline)
 
     def test_first_feedbackset_deadline_datetime_not_same_as_assignment_first_deadline_is_not_updated(self):
         # The usecase where the deadline_datetime of a FeedbackSet is changed individually.
@@ -119,13 +119,13 @@ class TestFeedbackSetTriggers(test.TestCase):
         new_assignment_first_deadline = timezone.now() + timezone.timedelta(days=1)
         assignment.first_deadline = new_assignment_first_deadline
         assignment.save()
-        self.assertEquals(group1.feedbackset_set.first().deadline_datetime, new_assignment_first_deadline)
+        self.assertEqual(group1.feedbackset_set.first().deadline_datetime, new_assignment_first_deadline)
         self.assertNotEquals(feedbackset2.deadline_datetime, assignment.first_deadline)
 
     def test_on_create_feedbackset_no_deadline_history_created(self):
         assignment = mommy.make('core.Assignment')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        self.assertEquals(0, FeedbackSetDeadlineHistory.objects.filter(feedback_set__group_id=group.id).count())
+        self.assertEqual(0, FeedbackSetDeadlineHistory.objects.filter(feedback_set__group_id=group.id).count())
 
     def test_on_feedbackset_new_attempt_no_deadline_history_created(self):
         assignment = mommy.make('core.Assignment')
@@ -134,7 +134,7 @@ class TestFeedbackSetTriggers(test.TestCase):
         group_mommy.feedbackset_new_attempt_unpublished(
             group=group,
             deadline_datetime=timezone.now() + timezone.timedelta(days=1))
-        self.assertEquals(0, FeedbackSetDeadlineHistory.objects.count())
+        self.assertEqual(0, FeedbackSetDeadlineHistory.objects.count())
 
     def test_history_assignment_first_deadline_update(self):
         old_first_deadline = timezone.now()
@@ -145,11 +145,25 @@ class TestFeedbackSetTriggers(test.TestCase):
         assignment.first_deadline = new_first_deadline
         assignment.save()
         feedback_set = group.feedbackset_set.first()
-        self.assertEquals(feedback_set.deadline_datetime, new_first_deadline)
+        self.assertEqual(feedback_set.deadline_datetime, new_first_deadline)
         deadline_history = FeedbackSetDeadlineHistory.objects.get(feedback_set_id=feedback_set.id)
         self.assertIsNotNone(deadline_history.changed_datetime)
-        self.assertEquals(deadline_history.deadline_old, old_first_deadline)
-        self.assertEquals(deadline_history.deadline_new, new_first_deadline)
+        self.assertEqual(deadline_history.deadline_old, old_first_deadline)
+        self.assertEqual(deadline_history.deadline_new, new_first_deadline)
+
+    def test_history_feedbackset_first_attempt_deadline_change_changed_by_user_is_set(self):
+        assignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        user = mommy.make(settings.AUTH_USER_MODEL)
+        feedback_set = group.feedbackset_set.first()
+        new_feedbackset_deadline = timezone.now() + timezone.timedelta(days=1)
+        feedback_set.deadline_datetime = new_feedbackset_deadline
+        feedback_set.last_updated_by = user
+        feedback_set.save()
+
+        updated_feedback_set = FeedbackSet.objects.get(id=feedback_set.id)
+        deadline_history = FeedbackSetDeadlineHistory.objects.get(feedback_set_id=updated_feedback_set.id)
+        self.assertEqual(deadline_history.changed_by, user)
 
     def test_history_feedbackset_first_attempt_deadline_change(self):
         assignment = mommy.make('core.Assignment')
@@ -161,10 +175,31 @@ class TestFeedbackSetTriggers(test.TestCase):
 
         updated_feedback_set = FeedbackSet.objects.get(id=feedback_set.id)
         deadline_history = FeedbackSetDeadlineHistory.objects.get(feedback_set_id=updated_feedback_set.id)
-        self.assertEquals(updated_feedback_set.feedbackset_type, FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
+        self.assertEqual(updated_feedback_set.feedbackset_type, FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT)
         self.assertIsNotNone(deadline_history.changed_datetime)
-        self.assertEquals(deadline_history.deadline_old, assignment.first_deadline)
-        self.assertEquals(deadline_history.deadline_new, updated_feedback_set.deadline_datetime)
+        self.assertEqual(deadline_history.deadline_old, assignment.first_deadline)
+        self.assertEqual(deadline_history.deadline_new, updated_feedback_set.deadline_datetime)
+
+    def test_history_feedbackset_new_attempt_deadline_change_changed_by_user_is_set(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        group_mommy.feedbackset_first_attempt_published(group=group)
+        new_attempt_deadline = timezone.localtime(timezone.now() + timezone.timedelta(days=1))
+        new_attempt_deadline = new_attempt_deadline.replace(microsecond=0)
+        user = mommy.make(settings.AUTH_USER_MODEL)
+        feedback_set_new_attempt = group_mommy.feedbackset_new_attempt_unpublished(
+            group=group,
+            deadline_datetime=new_attempt_deadline,
+            last_updated_by=user)
+        self.assertEqual(0, FeedbackSetDeadlineHistory.objects.filter(feedback_set__group_id=group.id).count())
+
+        new_attempt_updated_deadline = new_attempt_deadline + timezone.timedelta(days=1)
+        feedback_set_new_attempt.deadline_datetime = new_attempt_updated_deadline
+        feedback_set_new_attempt.save()
+
+        updated_feedback_set = FeedbackSet.objects.get(id=feedback_set_new_attempt.id)
+        deadline_history = FeedbackSetDeadlineHistory.objects.get(feedback_set_id=updated_feedback_set.id)
+        self.assertEqual(deadline_history.changed_by, user)
 
     def test_history_feedbackset_new_attempt_deadline_change(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -175,7 +210,7 @@ class TestFeedbackSetTriggers(test.TestCase):
         feedback_set_new_attempt = group_mommy.feedbackset_new_attempt_unpublished(
             group=group,
             deadline_datetime=new_attempt_deadline)
-        self.assertEquals(0, FeedbackSetDeadlineHistory.objects.filter(feedback_set__group_id=group.id).count())
+        self.assertEqual(0, FeedbackSetDeadlineHistory.objects.filter(feedback_set__group_id=group.id).count())
 
         new_attempt_updated_deadline = new_attempt_deadline + timezone.timedelta(days=1)
         feedback_set_new_attempt.deadline_datetime = new_attempt_updated_deadline
@@ -184,8 +219,8 @@ class TestFeedbackSetTriggers(test.TestCase):
         updated_feedback_set = FeedbackSet.objects.get(id=feedback_set_new_attempt.id)
         deadline_history = FeedbackSetDeadlineHistory.objects.get(feedback_set_id=updated_feedback_set.id)
         self.assertIsNotNone(deadline_history.changed_datetime)
-        self.assertEquals(new_attempt_deadline, deadline_history.deadline_old)
-        self.assertEquals(new_attempt_updated_deadline, deadline_history.deadline_new)
+        self.assertEqual(new_attempt_deadline, deadline_history.deadline_old)
+        self.assertEqual(new_attempt_updated_deadline, deadline_history.deadline_new)
 
     def test_history_feedbackset_deadline_datetime_multiple_changes(self):
         assignment = mommy.make('core.Assignment')
@@ -207,19 +242,19 @@ class TestFeedbackSetTriggers(test.TestCase):
         deadline_history = FeedbackSetDeadlineHistory.objects\
             .filter(feedback_set_id=feedback_set.id)\
             .order_by('-changed_datetime')
-        self.assertEquals(3, deadline_history.count())
+        self.assertEqual(3, deadline_history.count())
 
         self.assertIsNotNone(deadline_history[0].changed_datetime)
-        self.assertEquals(deadline_history[0].deadline_old, assignment.first_deadline)
-        self.assertEquals(deadline_history[0].deadline_new, deadline_first_change)
+        self.assertEqual(deadline_history[0].deadline_old, assignment.first_deadline)
+        self.assertEqual(deadline_history[0].deadline_new, deadline_first_change)
 
         self.assertIsNotNone(deadline_history[1].changed_datetime)
-        self.assertEquals(deadline_history[1].deadline_old, deadline_first_change)
-        self.assertEquals(deadline_history[1].deadline_new, deadline_second_change)
+        self.assertEqual(deadline_history[1].deadline_old, deadline_first_change)
+        self.assertEqual(deadline_history[1].deadline_new, deadline_second_change)
 
         self.assertIsNotNone(deadline_history[2].changed_datetime)
-        self.assertEquals(deadline_history[2].deadline_old, deadline_second_change)
-        self.assertEquals(deadline_history[2].deadline_new, deadline_third_change)
+        self.assertEqual(deadline_history[2].deadline_old, deadline_second_change)
+        self.assertEqual(deadline_history[2].deadline_new, deadline_third_change)
 
 
 class TestFeedbackSetGradingUpdateTrigger(test.TestCase):

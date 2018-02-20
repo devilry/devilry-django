@@ -54,11 +54,13 @@ BEGIN
         INSERT INTO devilry_group_feedbacksetdeadlinehistory (
             feedback_set_id,
             changed_datetime,
+            changed_by_id,
             deadline_old,
             deadline_new)
         VALUES (
             NEW.id,
             now(),
+            NEW.last_updated_by_id,
             OLD.deadline_datetime,
             NEW.deadline_datetime);
     END IF;
