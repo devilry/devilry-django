@@ -2,4 +2,5 @@
 What is new in Devilry 3.1.2
 ############################
 
-This version has no new features for normal users, only improvements for sysadmins.
+Because of an error in the release process, this release did not
+change anything other than documentation.

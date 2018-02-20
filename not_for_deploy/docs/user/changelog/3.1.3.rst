@@ -1,5 +1,15 @@
 ############################
-What is new in Devilry 3.1.2
+What is new in Devilry 3.1.3
 ############################
 
-This version has no new features for normal users, only improvements for sysadmins.
+*****************
+New for all users
+*****************
+Workound for dataporten logout. Django-allout, which Devilry uses for external authentication servers,
+did not logout users from auth.dataporten.no, only from Devilry.
+
+
+*****************
+New for sysadmins
+*****************
+Better tools for working with cached bulk download archives.
