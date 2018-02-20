@@ -9,6 +9,7 @@ Table of contents
 .. toctree::
     :maxdepth: 1
 
+    devilry3_user/index
     user/index
     sysadmin/index
     developer/index
