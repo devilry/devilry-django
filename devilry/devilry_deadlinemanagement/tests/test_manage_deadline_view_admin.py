@@ -426,6 +426,8 @@ class TestManageDeadlineNewAttemptFromPreviousView(AdminTestCaseMixin):
         last_feedbackset_group2 = AssignmentGroupCachedData.objects.get(group_id=testgroup2.id).last_feedbackset
         self.assertEquals(last_feedbackset_group1.deadline_datetime, new_deadline)
         self.assertEquals(last_feedbackset_group2.deadline_datetime, new_deadline)
+        self.assertEqual(last_feedbackset_group1.last_updated_by, testuser)
+        self.assertEqual(last_feedbackset_group2.last_updated_by, testuser)
         self.assertEquals('You have been given a new attempt.', group_comments[0].text)
         self.assertEquals('You have been given a new attempt.', group_comments[1].text)
 
@@ -542,6 +544,8 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(AdminTestCaseMixin):
         last_feedbackset_group2 = AssignmentGroupCachedData.objects.get(group_id=testgroup2.id).last_feedbackset
         self.assertEquals(last_feedbackset_group1.deadline_datetime, new_deadline)
         self.assertEquals(last_feedbackset_group2.deadline_datetime, new_deadline)
+        self.assertEqual(last_feedbackset_group1.last_updated_by, testuser)
+        self.assertEqual(last_feedbackset_group2.last_updated_by, testuser)
         self.assertEquals('You have been given a new attempt.', group_comments[0].text)
         self.assertEquals('You have been given a new attempt.', group_comments[1].text)
 

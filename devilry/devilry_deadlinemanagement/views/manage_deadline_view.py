@@ -286,6 +286,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
             group_id=group_id,
             deadline_datetime=deadline,
             created_by=self.request.user,
+            last_updated_by=self.request.user,
             created_datetime=created_datetime
         )
         return feedbackset.id
@@ -323,6 +324,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
             group_models.FeedbackSet.objects\
                 .filter(id__in=feedback_set_ids)\
                 .update(
+                    last_updated_by=self.request.user,
                     deadline_datetime=deadline)
             for feedback_set_id in feedback_set_ids:
                 self.__create_groupcomment(
