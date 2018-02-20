@@ -67,3 +67,23 @@ class FeedbackSetGradingUpdateHistoryAdmin(admin.ModelAdmin):
     ]
 
 admin.site.register(models.FeedbackSetGradingUpdateHistory, FeedbackSetGradingUpdateHistoryAdmin)
+
+
+class FeedbackSetDeadlineHistoryAdmin(admin.ModelAdmin):
+    readonly_fields = [
+        'feedback_set',
+        'changed_by',
+        'changed_datetime',
+        'deadline_old',
+        'deadline_new'
+    ]
+    search_fields = [
+        'feedback_set_id',
+        'changed_by_id'
+    ]
+    list_display = [
+        'feedback_set',
+        'changed_datetime'
+    ]
+
+admin.site.register(models.FeedbackSetDeadlineHistory, FeedbackSetDeadlineHistoryAdmin)
