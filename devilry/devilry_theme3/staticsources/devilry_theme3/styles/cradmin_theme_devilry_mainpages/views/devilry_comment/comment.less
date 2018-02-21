@@ -89,7 +89,19 @@
         .devilry-group-comment-text{
             font-size: ceil(@font-size-base + 4px);
             margin-bottom: @devilry-vertical-rythm--medium;
+
+            /* we need all these to support browsers that DOES NOT support break-word... edge -_- */
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+
+            -ms-word-break: break-all;
             word-break: break-all;
+            word-break: break-word;
+            -ms-hyphens: auto;
+            -moz-hyphens: auto;
+            -webkit-hyphens: auto;
+            hyphens: auto;
+
             &:last-child {
                 margin-bottom: 0;
             }
