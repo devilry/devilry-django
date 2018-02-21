@@ -98,7 +98,7 @@ class FeedbackFeedBaseView(create.CreateView):
     def get_devilryrole(self):
         """
         Get the devilryrole of a user.
-        This function must be implemnted by a subclass.
+        This function must be implemented by a subclass.
 
         Raises:
             NotImplementedError: Raised if not implemented by subclass.
@@ -192,8 +192,6 @@ class FeedbackFeedBaseView(create.CreateView):
             assignment=assignment
         )
         context['students_can_create_groups'] = assignment.students_can_create_groups_now
-        print(context['num_students_in_group'])
-        print(context['students_can_create_groups'])
 
         # Build the sidebar using the fetched data from timelinebuilder
         if self.get_available_commentfile_count_for_user() > 0:

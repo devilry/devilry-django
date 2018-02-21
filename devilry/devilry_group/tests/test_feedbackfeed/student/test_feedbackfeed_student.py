@@ -548,6 +548,32 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertIn(student2_email.email, recipient_list)
         self.assertNotIn(candidate_email.email, recipient_list)
 
+    def test_get_feedbackset_deadline_history_semi_anonymous_username_not_rendered(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='test@example.com', fullname='Test User')
+        mommy.make('devilry_group.FeedbackSetDeadlineHistory', feedback_set=testgroup.cached_data.first_feedbackset,
+                   changed_by=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message__user_display_name'))
+
+    def test_get_feedbackset_deadline_history_fully_anonymous_username_not_rendered(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='test@example.com', fullname='Test User')
+        mommy.make('devilry_group.FeedbackSetDeadlineHistory', feedback_set=testgroup.cached_data.first_feedbackset,
+                   changed_by=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message__user_display_name'))
+
     #####
     # Tests making sure that event buttons are not rendered for
     # students(edit grade, new attempt, move deadlin etc.)

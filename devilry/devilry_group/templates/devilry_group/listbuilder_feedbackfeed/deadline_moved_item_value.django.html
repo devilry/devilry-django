@@ -1,13 +1,23 @@
 {% extends 'devilry_group/listbuilder_feedbackfeed/base_event_item_value.django.html' %}
 
+{% load devilry_account_tags %}
+{% load devilry_group_tags %}
+{% load devilry_core_tags %}
 {% load cradmin_tags %}
 {% load i18n %}
 
 {% block content %}
     <p class="muted deadline-move-info">
-        {% trans 'Deadline moved from ' %}
+        {{ me.value.changed_datetime|date:'SHORT_DATETIME_FORMAT' }}:
+        {% trans 'Deadline moved from' context 'deadline_move' %}
         <strong>{{ me.value.deadline_old }}</strong>
-        {% trans ' to ' %}
+        {% trans 'to'  context 'deadline_move' %}
         <strong>{{ me.value.deadline_new }}</strong>
+        {% if me.show_changed_by_user %}
+            {% trans 'by' context 'deadline_move' %}
+            <span class="devilry-group-feedbackfeed-event-message__user_display_name">
+                <strong>{% devilry_user_verbose_inline me.value.changed_by %}</strong>
+            </span>
+        {% endif %}
     </p>
 {% endblock content %}

@@ -27,7 +27,8 @@ class TimeLineListBuilderList(listbuilder.base.List):
 
 
 class FeedbackSetTimelineListBuilderList(listbuilder.base.List):
-    """A list of all events for a specific :obj:`~devilry.devilry_group.models.FeedbackSet`.
+    """
+    A list of all events for a specific :obj:`~devilry.devilry_group.models.FeedbackSet`.
     """
 
     @classmethod
@@ -135,7 +136,8 @@ class FeedbackSetContentList(listbuilder.base.List):
 
 
 class BaseItemValue(listbuilder.base.ItemValueRenderer):
-    """Base class for all items in the list.
+    """
+    Base class for all items in the list.
     """
     def __init__(self, *args, **kwargs):
         self.devilryrole = kwargs.get('devilry_viewrole')
@@ -158,11 +160,16 @@ class BaseItemValue(listbuilder.base.ItemValueRenderer):
 
 
 class BaseEventItemValue(BaseItemValue):
-    """Base class for all events.
+    """
+    Base class for all events.
 
     Superclass for all events that occur in the timeline such as ``deadline created``, ``deadline expired``,
     ``grading passed`` and ``grading failed``.
     """
+
+    @property
+    def group(self):
+        return self.kwargs['group']
 
     def get_timeline_datetime(self):
         """
@@ -178,6 +185,37 @@ class BaseEventItemValue(BaseItemValue):
 
     def get_base_css_classes_list(self):
         return ['devilry-group-feedbackfeed-event-message']
+
+    @property
+    def changed_by_user_id(self):
+        """
+        ID of the user that made the change.
+
+        This must be implemented in each subclass as this dependent on the model-obj set as self.value.
+
+        Returns:
+            int: A user ID.
+        """
+        raise NotImplementedError()
+
+    @property
+    def show_changed_by_user(self):
+        """
+        If the user should be rendered, based on the the role of the requestuser and
+        if the assignment is anonymized.
+
+        Returns:
+            bool: True
+        """
+        if self.changed_by_user_id is None:
+            return False
+        assignment = self.group.parentnode
+        if not assignment.is_anonymous:
+            return True
+
+        # Handle anonymous assignment
+        # TODO: When we add ANONYMIZATIONMODE_FULLY_ANONYMOUS, we need something more here
+        return self.devilry_viewrole not in ('student', 'examiner', 'periodadmin')
 
 
 class FeedbackSetCreatedItemValue(BaseItemValue):
@@ -209,7 +247,8 @@ class FeedbackSetCreatedItemValue(BaseItemValue):
 
 
 class BaseGroupCommentItemValue(BaseItemValue):
-    """Base class for a GroupComment item.
+    """
+    Base class for a GroupComment item.
 
     Superclass for the different types of comments(student-comment, examiner-comment and admin-comment).
     """
@@ -233,7 +272,8 @@ class BaseGroupCommentItemValue(BaseItemValue):
 
 
 class StudentGroupCommentItemValue(BaseGroupCommentItemValue):
-    """Student :class:`~devilry.devilry_group.models.GroupComment`.
+    """
+    Student :class:`~devilry.devilry_group.models.GroupComment`.
     """
     valuealias = 'group_comment'
     template_name = 'devilry_group/listbuilder_feedbackfeed/student_groupcomment_item_value.django.html'
@@ -248,7 +288,8 @@ class StudentGroupCommentItemValue(BaseGroupCommentItemValue):
 
 
 class ExaminerGroupCommentItemValue(BaseGroupCommentItemValue):
-    """Examiner :class:`~devilry.devilry_group.models.GroupComment`.
+    """
+    Examiner :class:`~devilry.devilry_group.models.GroupComment`.
     """
     valuealias = 'group_comment'
     template_name = 'devilry_group/listbuilder_feedbackfeed/examiner_groupcomment_item_value.django.html'
@@ -262,7 +303,8 @@ class ExaminerGroupCommentItemValue(BaseGroupCommentItemValue):
 
 
 class AdminGroupCommentItemValue(BaseGroupCommentItemValue):
-    """Admin :class:`~devilry.devilry_group.models.GroupComment`.
+    """
+    Admin :class:`~devilry.devilry_group.models.GroupComment`.
     """
     valuealias = 'group_comment'
     template_name = 'devilry_group/listbuilder_feedbackfeed/admin_groupcomment_item_value.django.html'
@@ -276,17 +318,14 @@ class AdminGroupCommentItemValue(BaseGroupCommentItemValue):
 
 
 class AbstractDeadlineEventItemValue(BaseEventItemValue):
-    """Abstract class for deadline events.
+    """
+    Abstract class for deadline events.
     """
     valuealias = 'deadline_datetime'
 
     def __init__(self, *args, **kwargs):
         self.feedbackset = kwargs.pop('feedbackset')
         super(AbstractDeadlineEventItemValue, self).__init__(*args, **kwargs)
-
-    @property
-    def group(self):
-        return self.kwargs['group']
 
     @property
     def deadline_as_string(self):
@@ -297,7 +336,8 @@ class AbstractDeadlineEventItemValue(BaseEventItemValue):
 
 
 class DeadlineMovedItemValue(AbstractDeadlineEventItemValue):
-    """Deadline moved event.
+    """
+    Deadline moved event.
     """
     valuealias = 'feedbackset_history_obj'
     template_name = 'devilry_group/listbuilder_feedbackfeed/deadline_moved_item_value.django.html'
@@ -309,6 +349,10 @@ class DeadlineMovedItemValue(AbstractDeadlineEventItemValue):
     def get_timeline_datetime(self):
         return self.value.changed_datetime
 
+    @property
+    def changed_by_user_id(self):
+        return self.feedbackset_history_obj.changed_by_id
+
     def get_extra_css_classes_list(self):
         css_classes_list = super(DeadlineMovedItemValue, self).get_extra_css_classes_list()
         css_classes_list.append('devilry-group-feedbackfeed-event-message__deadline-moved')
@@ -316,7 +360,8 @@ class DeadlineMovedItemValue(AbstractDeadlineEventItemValue):
 
 
 class DeadlineExpiredItemValue(AbstractDeadlineEventItemValue):
-    """Deadline expired event.
+    """
+    Deadline expired event.
     """
     valuealias = 'deadline_datetime'
     template_name = 'devilry_group/listbuilder_feedbackfeed/deadline_expired_item_value.django.html'
@@ -328,7 +373,8 @@ class DeadlineExpiredItemValue(AbstractDeadlineEventItemValue):
 
 
 class GradeItemValue(BaseEventItemValue):
-    """Grading event.
+    """
+    Grading event.
     """
     valuealias = 'feedbackset'
     template_name = 'devilry_group/listbuilder_feedbackfeed/grading_item_value.django.html'
