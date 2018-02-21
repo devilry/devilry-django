@@ -118,6 +118,20 @@ class AbstractBatchCompressionAPIView(View):
         """
         raise NotImplementedError('must be implemented by subclass')
 
+    def should_filter_by_created_by_user(self):
+        """
+        When checking if a compressed archive is created for the content object, should we filter on the
+        user that created it?
+
+        Why do we need this?
+        We only take into account the assignment the compressed folder was made from, so if examiner_1 creates a
+        compressed archive, examiner_2 will be served that compressed archive, and not the one with examiner_2s groups.
+
+        Returns:
+            bool: If we care about who created it.
+        """
+        return True
+
     def get_ready_for_download_status(self, content_object_id=None):
         """
         Override this to add the url for the download view.
@@ -155,11 +169,13 @@ class AbstractBatchCompressionAPIView(View):
         Returns:
             (:class:`~.devilry.devilry_compressionutil.models.CompressedArchiveMeta`): instance or ``None``.
         """
-        return compression_models.CompressedArchiveMeta.objects\
+        queryset = compression_models.CompressedArchiveMeta.objects \
             .filter(content_object_id=content_object_id,
                     content_type=ContentType.objects.get_for_model(model=self.content_object),
-                    deleted_datetime=None)\
-            .order_by('-created_datetime').first()
+                    deleted_datetime=None)
+        if self.should_filter_by_created_by_user():
+            queryset = queryset.filter(created_by=self.request.user)
+        return queryset.order_by('-created_datetime').first()
 
     def get_status_dict(self, context_object_id):
         """
@@ -174,18 +190,19 @@ class AbstractBatchCompressionAPIView(View):
         Returns:
             (dict): A JSON-serializable dictionary.
         """
-        batchoperation = BatchOperation.objects\
+        queryset = BatchOperation.objects\
             .filter(context_object_id=context_object_id,
                     context_content_type=ContentType.objects.get_for_model(model=self.content_object),
                     operationtype=self.batchoperation_type)\
             .exclude(status=BatchOperation.STATUS_FINISHED)\
-            .order_by('-created_datetime')\
-            .first()
+            .order_by('-created_datetime')
+        if self.should_filter_by_created_by_user():
+            queryset = queryset.filter(started_by=self.request.user)
+        batchoperation = queryset.first()
         if not batchoperation:
             return {'status': 'not-created'}
 
         # The ``BatchOperation`` exists. Check the status.
-        # print('Batchoperation: ', batchoperation)
         if batchoperation.status == BatchOperation.STATUS_UNPROCESSED:
             return {'status': 'not-started'}
         return {'status': 'running'}
@@ -220,11 +237,8 @@ class AbstractBatchCompressionAPIView(View):
         Returns:
             (JsonResponse): Status of the compression.
         """
-        # print('::AbstractBatchCompressionAPIView GET::')
         content_object_id = kwargs.get('content_object_id')
         compressed_archive_meta = self._compressed_archive_created(content_object_id=content_object_id)
-        # print('content_object_id: ', content_object_id)
-        # print('Compressed archive meta: ', compressed_archive_meta)
         if compressed_archive_meta and \
                 not self.new_file_is_added(latest_compressed_datetime=compressed_archive_meta.created_datetime):
             return JsonResponse(self.get_ready_for_download_status(content_object_id=content_object_id))
@@ -291,6 +305,9 @@ class BatchCompressionAPIFeedbackSetView(AbstractBatchCompressionAPIView):
                 'feedbackset_id': content_object_id
             })
         return status_dict
+
+    def should_filter_by_created_by_user(self):
+        return False
 
     def start_compression_task(self, content_object_id):
         batchregistry.Registry.get_instance().run(

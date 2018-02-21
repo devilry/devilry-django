@@ -84,6 +84,7 @@ class FeedbackSetCompressAction(AbstractBaseBatchAction, FeedbackSetBatchMixin):
 
     def execute(self):
         feedback_set = self.kwargs.get('context_object')
+        started_by_user = self.kwargs.get('started_by')
 
         # Create the name for the actual archive.
         from django.utils import timezone
@@ -109,6 +110,7 @@ class FeedbackSetCompressAction(AbstractBaseBatchAction, FeedbackSetBatchMixin):
         # create archive meta entry
         from devilry.devilry_compressionutil.models import CompressedArchiveMeta
         CompressedArchiveMeta.objects.create_meta(
-                instance=feedback_set,
-                zipfile_backend=zipfile_backend
+            instance=feedback_set,
+            zipfile_backend=zipfile_backend,
+            user=started_by_user
         )
