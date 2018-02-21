@@ -1,4 +1,5 @@
 # Django imports
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
@@ -36,7 +37,7 @@ class CompressedArchiveMetaQueryset(models.QuerySet):
     """
     Manager for class :class:`.CompressedArchiveMeta`.
     """
-    def create_meta(self, instance, zipfile_backend):
+    def create_meta(self, instance, zipfile_backend, user):
         """
         Manager provides a way to create a meta entry for a archive.
         See :class:`~devilry.devilry_ziputil.models.CompressedArchiveMeta`.
@@ -52,26 +53,38 @@ class CompressedArchiveMetaQueryset(models.QuerySet):
                 archive_name=zipfile_backend.archive_name,
                 archive_path=zipfile_backend.archive_path,
                 archive_size=zipfile_backend.archive_size(),
-                backend_id=zipfile_backend.backend_id
+                backend_id=zipfile_backend.backend_id,
+                created_by=user
         )
         archive_meta.clean()
         archive_meta.save()
         return archive_meta
 
-    def delete_compressed_archive(self, older_than_days):
+    def __delete_compressed_archive(self, **timedelta_kwargs):
         """
-        Delete compressed archive meta entries older than a specified number of days.
-        This will also delete the compressed archive files.
+        Expects timedelta kwars (days, seconds, microseconds, etc..)
+        """
+        older_than_datetime = timezone.now() - timezone.timedelta(**timedelta_kwargs)
+        self.filter(created_datetime__lte=older_than_datetime).delete()
+
+    def delete_compressed_archives_older_than(self, days=None, seconds=None):
+        """
+        Delete compressed archive meta entries older than a specified number of days or seconds.
 
         Args:
-            older_than_days: Delete everything older than this.
+            older_than_days (int): Delete everything older than this.
+            older_than_seconds (int): Delete everything older than this.
         """
-        if older_than_days < 1:
-            self.all().delete()
-        else:
-            older_than_datetime = timezone.now() - timezone.timedelta(days=older_than_days)
-            self.filter(created_datetime__lte=older_than_datetime).delete()
+        if days:
+            self.__delete_compressed_archive(days=days)
+        elif seconds:
+            self.__delete_compressed_archive(seconds=seconds)
 
+    def delete_compressed_archives_marked_as_deleted(self):
+        """
+        Delete all compressed archives marked as deleted.
+        """
+        self.filter(deleted_datetime__isnull=False).delete()
 
 
 class CompressedArchiveMeta(GenericMeta):
@@ -79,6 +92,13 @@ class CompressedArchiveMeta(GenericMeta):
     Metadata about a compressed archive. Name of the archive, path to it and it's size.
     """
     objects = CompressedArchiveMetaQueryset.as_manager()
+
+    #: Who created the archive.
+    created_by = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        null=True, blank=True, default=None,
+        on_delete=models.SET_NULL
+    )
 
     #: When the archive was created.
     created_datetime = models.DateTimeField(auto_now_add=True)
