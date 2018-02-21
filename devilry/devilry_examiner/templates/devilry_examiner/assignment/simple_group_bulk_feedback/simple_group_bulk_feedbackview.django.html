@@ -24,7 +24,7 @@
     {% if listbuilder_list.has_items %}
         <div class="devilry-dashboard-container">
             <p class="text-muted">
-                {% blocktrans %}
+                {% blocktrans trimmed %}
                     Here you can set a grade for each group and add a comment that will be created when the feedback is
                     published.
                     <br>
@@ -37,7 +37,7 @@
             {% cradmin_render_renderable listbuilder_list %}
             <div class="devilry-dashboard-container">
                 <input type="submit" value="{% trans 'Publish feedbacks' %}" class="btn btn-primary">
-                {% blocktrans %}
+                {% blocktrans trimmed %}
                     When submitted, the operation cannot be undone.
                 {% endblocktrans %}
             </div>

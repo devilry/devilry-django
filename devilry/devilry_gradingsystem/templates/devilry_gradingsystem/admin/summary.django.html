@@ -88,7 +88,7 @@
 
         <p>{% trans "Your examiners/correctors may provide this information in many ways; by specifying a numeric value, by selecting approved, by answering a set of questions, and so on. Each of these different ways of providing feedback is a plugin to the grading system in Devilry." %}</p>
         <p>
-            {% blocktrans with websitelink='<a href="http://devilry.org">http://devilry.org</a>' %}
+            {% blocktrans trimmed with websitelink='<a href="http://devilry.org">http://devilry.org</a>' %}
                 If none of the plugins shown in the first page of the <em>Reconfigure the grading system</em> wizard fit your needs, please contact your local devilry system administrators, or contact the developers of the Devilry open source project directly at {{ websitelink }}.
             {% endblocktrans %}
         </p>

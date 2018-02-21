@@ -17,7 +17,7 @@
         <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
     </a>
     <h1>
-        {% blocktrans %}
+        {% blocktrans trimmed %}
             How would you like to bulk-manage tags for {{ relateduser_type }}s?
         {% endblocktrans %}
     </h1>
@@ -34,7 +34,7 @@
                             <strong>{% trans "Add tags" %}</strong>
                             <small>
                                 <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
-                                    {% blocktrans %}
+                                    {% blocktrans trimmed %}
                                         Select {{ relateduser_type }}(s) and add tags
                                     {% endblocktrans %}
                                 <span class="sr-only">)</span>
@@ -48,7 +48,7 @@
                             <strong>{% trans "Replace tag" %}</strong>
                             <small>
                                 <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
-                                    {% blocktrans %}
+                                    {% blocktrans trimmed %}
                                         Select {{ relateduser_type }}(s) and replace tag
                                     {% endblocktrans %}
                                 <span class="sr-only">)</span>
@@ -62,7 +62,7 @@
                             <strong>{% trans "Remove tag" %}</strong>
                             <small>
                                 <span class="sr-only">(</span>  {# Paranthesis around on screenreaders for better reading experience #}
-                                    {% blocktrans %}
+                                    {% blocktrans trimmed %}
                                         Select {{ relateduser_type }}(s) and remove tags
                                     {% endblocktrans %}
                                 <span class="sr-only">)</span>
