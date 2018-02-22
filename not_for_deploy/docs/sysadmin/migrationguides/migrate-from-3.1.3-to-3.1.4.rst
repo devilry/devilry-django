@@ -12,6 +12,10 @@ Update devilry to 3.1.4
 
 Update the devilry version to ``3.1.4`` as described in :doc:`../update`.
 
+After updating, you need to run::
+
+    $ venv/bin/python manage.py devilry_delete_compressed_archives --all
+
 
 What is new for sysadmins
 #########################
