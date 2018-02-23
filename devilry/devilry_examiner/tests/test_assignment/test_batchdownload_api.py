@@ -35,7 +35,7 @@ class TestHelper(object):
         batchoperation.status = status
         batchoperation.save()
 
-    def _register_and_run_actiongroup(self, actiongroup_name, task, context_object):
+    def _register_and_run_actiongroup(self, actiongroup_name, task, context_object, user=None):
         # helper function
         # Shortcut for registering and starting an ActionGroup
         # as this will need to be set up frequently.
@@ -49,7 +49,8 @@ class TestHelper(object):
         batchregistry.Registry.get_instance()\
             .run(actiongroup_name=actiongroup_name,
                  context_object=context_object,
-                 test='test')
+                 test='test',
+                 started_by=user)
 
 
 @unittest.skipIf(skip_rq_tests.should_skip_tests_that_require_rq_async(),
@@ -98,7 +99,8 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         self._register_and_run_actiongroup(
             actiongroup_name='batchframework_compress_assignment',
             task=tasks.AssignmentCompressAction,
-            context_object=testassignment
+            context_object=testassignment,
+            user=testexaminer.relatedexaminer.user
         )
         self._mock_batchoperation_status(context_object_id=testassignment.id)
         mockresponse = self.mock_getrequest(
@@ -223,7 +225,8 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         self._register_and_run_actiongroup(
             actiongroup_name='batchframework_compress_assignment',
             task=tasks.AssignmentCompressAction,
-            context_object=testassignment
+            context_object=testassignment,
+            user=testexaminer.relatedexaminer.user
         )
         self._mock_batchoperation_status(context_object_id=testassignment.id, status=BatchOperation.STATUS_RUNNING)
         mockresponse = self.mock_getrequest(
@@ -247,7 +250,8 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
                                  user__shortname='testuser@example.com')
         commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-        mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testassignment)
+        mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testassignment,
+                   created_by=testexaminer.relatedexaminer.user)
         mock_cradmin_app = mock.MagicMock()
         mock_cradmin_app.reverse_appurl.return_value = 'url-to-downloadview'
         mockresponse = self.mock_getrequest(
@@ -270,7 +274,8 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
                                  user_role='student',
                                  user__shortname='testuser@example.com')
         compressed_archive_meta = mommy.make('devilry_compressionutil.CompressedArchiveMeta',
-                                             content_object=testassignment)
+                                             content_object=testassignment,
+                                             created_by=testexaminer.relatedexaminer.user)
         commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
         self.mock_postrequest(
@@ -296,7 +301,8 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         self._register_and_run_actiongroup(
             actiongroup_name='batchframework_compress_assignment',
             task=tasks.AssignmentCompressAction,
-            context_object=testassignment
+            context_object=testassignment,
+            user=testexaminer.relatedexaminer.user
         )
         self._mock_batchoperation_status(context_object_id=testassignment.id)
         mockresponse = self.mock_postrequest(
@@ -319,7 +325,8 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
                                  user__shortname='testuser@example.com')
         commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-        mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testassignment)
+        mommy.make('devilry_compressionutil.CompressedArchiveMeta',
+                   content_object=testassignment, created_by=testexaminer.relatedexaminer.user)
 
         # mock return value for reverse_appurl
         mock_cradmin_app = mock.MagicMock()

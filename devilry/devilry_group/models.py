@@ -313,6 +313,15 @@ class FeedbackSet(models.Model):
     #: The datetime when this FeedbackSet was created.
     created_datetime = models.DateTimeField(default=timezone.now)
 
+    #: Last updated by.
+    #: The user that was the last to make any changes on the :obj:`.FeedbackSet`.
+    last_updated_by = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name='updated_feedbacksets'
+    )
+
     #: The datetime of the deadline.
     #: The first feedbackset in an AssignmentGroup
     #: (ordered by :obj:`~.FeedbackSet.created_datetime`) does not

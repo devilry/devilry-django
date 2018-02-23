@@ -1,0 +1,14 @@
+############################
+What is new in Devilry 3.1.4
+############################
+
+*****************
+New for examiners
+*****************
+- Bugfix for https://github.com/devilry/devilry-django/issues/977
+
+
+*****************
+New for sysadmins
+*****************
+- The ``devilry_delete_compressed_archives`` command now supports ``--seconds``.

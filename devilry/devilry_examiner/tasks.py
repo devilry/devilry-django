@@ -55,5 +55,6 @@ class AssignmentCompressAction(AbstractBaseBatchAction, AssignmentBatchMixin, Fe
         from devilry.devilry_compressionutil.models import CompressedArchiveMeta
         CompressedArchiveMeta.objects.create_meta(
             instance=assignment,
-            zipfile_backend=zipfile_backend
+            zipfile_backend=zipfile_backend,
+            user=started_by_user
         )

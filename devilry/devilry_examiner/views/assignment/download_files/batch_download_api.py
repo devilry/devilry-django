@@ -44,6 +44,9 @@ class BatchCompressionAPIAssignmentView(AbstractBatchCompressionAPIView):
             })
         return status_dict
 
+    def should_filter_by_created_by_user(self):
+        return True
+
     def start_compression_task(self, content_object_id):
         batchregistry.Registry.get_instance().run(
             actiongroup_name=self.batchoperation_type,

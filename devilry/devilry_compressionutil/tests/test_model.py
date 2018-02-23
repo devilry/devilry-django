@@ -3,6 +3,7 @@ import shutil
 import StringIO
 
 import mock
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.db import IntegrityError
@@ -65,7 +66,8 @@ class TestCompressedFileMeta(TestCase):
                 mock_backend.archive_size = mock.MagicMock(return_value=1)
                 CompressedArchiveMeta.objects.create_meta(
                     instance=testcomment,
-                    zipfile_backend=mock_backend)
+                    zipfile_backend=mock_backend,
+                    user=mommy.make(settings.AUTH_USER_MODEL))
                 archive_meta = CompressedArchiveMeta.objects.get(content_object_id=testcomment.id)
                 self.assertEquals(archive_meta.archive_path, os.path.join(self.backend_path, archivepath))
 
@@ -101,43 +103,6 @@ class TestCompressedFileMeta(TestCase):
         with self.assertRaisesMessage(ValidationError, 'backend_id must refer to a valid backend'):
             archive_meta.full_clean()
 
-    def test_compressed_archive_meta_delete_all(self):
-        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-            with mock.patch('devilry.devilry_compressionutil.models.backend_registry.Registry._instance',
-                            self.mock_registry):
-                archivepath1 = 'test1.zip'
-                archivepath2 = 'test2.zip'
-
-                # Create a testfile
-                testfile_name = 'testfile.txt'
-                testfile = self.__create_testfile()
-
-                # Set up mock backend
-                mock_backend1 = self.__setup_mock_backend(archive_path=archivepath1, file_size=testfile.tell())
-                mock_backend2 = self.__setup_mock_backend(archive_path=archivepath2, file_size=testfile.tell())
-
-                # Create archive meta
-                compressed_archive_meta1 = CompressedArchiveMeta.objects.create_meta(
-                    instance=mommy.make('devilry_group.GroupComment'),
-                    zipfile_backend=mock_backend1)
-                compressed_archive_meta2 = CompressedArchiveMeta.objects.create_meta(
-                    instance=mommy.make('devilry_group.GroupComment'),
-                    zipfile_backend=mock_backend2)
-
-                # Write to backend
-                self.__write_to_backend(backend=mock_backend1, filename='{}'.format(testfile_name), file=testfile)
-                self.__write_to_backend(backend=mock_backend2, filename='{}'.format(testfile_name), file=testfile)
-
-                compressed_archive_path1 = compressed_archive_meta1.archive_path
-                compressed_archive_path2 = compressed_archive_meta2.archive_path
-                self.assertTrue(os.path.exists(compressed_archive_path1))
-                self.assertTrue(os.path.exists(compressed_archive_path2))
-
-                CompressedArchiveMeta.objects.delete_compressed_archive(older_than_days=0)
-                self.assertEqual(CompressedArchiveMeta.objects.count(), 0)
-                self.assertFalse(os.path.exists(compressed_archive_path1))
-                self.assertFalse(os.path.exists(compressed_archive_path2))
-
     def test_compressed_archive_meta_delete_older_than_num_days(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             with mock.patch('devilry.devilry_compressionutil.models.backend_registry.Registry._instance',
@@ -156,10 +121,12 @@ class TestCompressedFileMeta(TestCase):
                 # Create archive meta
                 compressed_archive_meta1 = CompressedArchiveMeta.objects.create_meta(
                     instance=mommy.make('devilry_group.GroupComment'),
-                    zipfile_backend=mock_backend1)
+                    zipfile_backend=mock_backend1,
+                    user=mommy.make(settings.AUTH_USER_MODEL))
                 compressed_archive_meta2 = CompressedArchiveMeta.objects.create_meta(
                     instance=mommy.make('devilry_group.GroupComment'),
-                    zipfile_backend=mock_backend2)
+                    zipfile_backend=mock_backend2,
+                    user=mommy.make(settings.AUTH_USER_MODEL))
 
                 compressed_archive_meta1.created_datetime = timezone.now()
                 compressed_archive_meta2.created_datetime = timezone.now() - timezone.timedelta(days=10)
@@ -175,7 +142,96 @@ class TestCompressedFileMeta(TestCase):
                 self.assertTrue(os.path.exists(compressed_archive_path1))
                 self.assertTrue(os.path.exists(compressed_archive_path2))
 
-                CompressedArchiveMeta.objects.delete_compressed_archive(older_than_days=5)
+                CompressedArchiveMeta.objects.delete_compressed_archives_older_than(days=5)
+                self.assertEqual(CompressedArchiveMeta.objects.count(), 1)
+                self.assertTrue(os.path.exists(compressed_archive_path1))
+                self.assertFalse(os.path.exists(compressed_archive_path2))
+
+    def test_compressed_archive_meta_delete_older_than_num_seconds(self):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
+            with mock.patch('devilry.devilry_compressionutil.models.backend_registry.Registry._instance',
+                            self.mock_registry):
+                archivepath1 = 'test1.zip'
+                archivepath2 = 'test2.zip'
+
+                # Create a testfile
+                testfile_name = 'testfile.txt'
+                testfile = self.__create_testfile()
+
+                # Set up mock backend
+                mock_backend1 = self.__setup_mock_backend(archive_path=archivepath1, file_size=testfile.tell())
+                mock_backend2 = self.__setup_mock_backend(archive_path=archivepath2, file_size=testfile.tell())
+
+                # Create archive meta
+                compressed_archive_meta1 = CompressedArchiveMeta.objects.create_meta(
+                    instance=mommy.make('devilry_group.GroupComment'),
+                    zipfile_backend=mock_backend1,
+                    user=mommy.make(settings.AUTH_USER_MODEL))
+                compressed_archive_meta2 = CompressedArchiveMeta.objects.create_meta(
+                    instance=mommy.make('devilry_group.GroupComment'),
+                    zipfile_backend=mock_backend2,
+                    user=mommy.make(settings.AUTH_USER_MODEL))
+
+                compressed_archive_meta1.created_datetime = timezone.now()
+                compressed_archive_meta2.created_datetime = timezone.now() - timezone.timedelta(seconds=10)
+                compressed_archive_meta1.save()
+                compressed_archive_meta2.save()
+
+                # Write to backend
+                self.__write_to_backend(backend=mock_backend1, filename='{}'.format(testfile_name), file=testfile)
+                self.__write_to_backend(backend=mock_backend2, filename='{}'.format(testfile_name), file=testfile)
+
+                compressed_archive_path1 = compressed_archive_meta1.archive_path
+                compressed_archive_path2 = compressed_archive_meta2.archive_path
+                self.assertTrue(os.path.exists(compressed_archive_path1))
+                self.assertTrue(os.path.exists(compressed_archive_path2))
+
+                CompressedArchiveMeta.objects.delete_compressed_archives_older_than(seconds=5)
+                self.assertEqual(CompressedArchiveMeta.objects.count(), 1)
+                self.assertTrue(os.path.exists(compressed_archive_path1))
+                self.assertFalse(os.path.exists(compressed_archive_path2))
+
+    def test_compressed_archive_meta_delete_archives_marked_as_deleted(self):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
+            with mock.patch('devilry.devilry_compressionutil.models.backend_registry.Registry._instance',
+                            self.mock_registry):
+                archivepath1 = 'test1.zip'
+                archivepath2 = 'test2.zip'
+
+                # Create a testfile
+                testfile_name = 'testfile.txt'
+                testfile = self.__create_testfile()
+
+                # Set up mock backend
+                mock_backend1 = self.__setup_mock_backend(archive_path=archivepath1, file_size=testfile.tell())
+                mock_backend2 = self.__setup_mock_backend(archive_path=archivepath2, file_size=testfile.tell())
+
+                # Create archive meta
+                compressed_archive_meta1 = CompressedArchiveMeta.objects.create_meta(
+                    instance=mommy.make('devilry_group.GroupComment'),
+                    zipfile_backend=mock_backend1,
+                    user=mommy.make(settings.AUTH_USER_MODEL))
+                compressed_archive_meta2 = CompressedArchiveMeta.objects.create_meta(
+                    instance=mommy.make('devilry_group.GroupComment'),
+                    zipfile_backend=mock_backend2,
+                    user=mommy.make(settings.AUTH_USER_MODEL))
+
+                compressed_archive_meta1.created_datetime = timezone.now()
+                compressed_archive_meta2.created_datetime = timezone.now()
+                compressed_archive_meta2.deleted_datetime = timezone.now()
+                compressed_archive_meta1.save()
+                compressed_archive_meta2.save()
+
+                # Write to backend
+                self.__write_to_backend(backend=mock_backend1, filename='{}'.format(testfile_name), file=testfile)
+                self.__write_to_backend(backend=mock_backend2, filename='{}'.format(testfile_name), file=testfile)
+
+                compressed_archive_path1 = compressed_archive_meta1.archive_path
+                compressed_archive_path2 = compressed_archive_meta2.archive_path
+                self.assertTrue(os.path.exists(compressed_archive_path1))
+                self.assertTrue(os.path.exists(compressed_archive_path2))
+
+                CompressedArchiveMeta.objects.delete_compressed_archives_marked_as_deleted()
                 self.assertEqual(CompressedArchiveMeta.objects.count(), 1)
                 self.assertTrue(os.path.exists(compressed_archive_path1))
                 self.assertFalse(os.path.exists(compressed_archive_path2))

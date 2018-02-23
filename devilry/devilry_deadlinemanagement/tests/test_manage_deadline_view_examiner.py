@@ -220,11 +220,11 @@ class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
             }
         )
         feedbacksets = group_models.FeedbackSet.objects.all()
-        self.assertEquals(3, feedbacksets.count())
+        self.assertEqual(3, feedbacksets.count())
         group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id)
         group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id)
-        self.assertEquals(new_deadline, group1.cached_data.last_feedbackset.deadline_datetime)
-        self.assertNotEquals(new_deadline, group2.cached_data.last_feedbackset.deadline_datetime)
+        self.assertEqual(new_deadline, group1.cached_data.last_feedbackset.deadline_datetime)
+        self.assertNotEqual(new_deadline, group2.cached_data.last_feedbackset.deadline_datetime)
 
     def test_post_groups_unpublished_raises_error(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -255,7 +255,7 @@ class TestManageDeadlineNewAttemptAllGroupsView(ExaminerTestCaseMixin):
                     }
                 }
             )
-        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.FeedbackSet.objects.count())
 
 
 class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
@@ -436,12 +436,12 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
             }
         )
         feedbacksets = group_models.FeedbackSet.objects.all()
-        self.assertEquals(2, feedbacksets.count())
+        self.assertEqual(2, feedbacksets.count())
         group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id)
         group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id)
-        self.assertEquals(group1.cached_data.last_feedbackset, group1.cached_data.first_feedbackset)
-        self.assertEquals(new_deadline, group1.cached_data.last_feedbackset.deadline_datetime)
-        self.assertNotEquals(new_deadline, group2.cached_data.last_feedbackset.deadline_datetime)
+        self.assertEqual(group1.cached_data.last_feedbackset, group1.cached_data.first_feedbackset)
+        self.assertEqual(new_deadline, group1.cached_data.last_feedbackset.deadline_datetime)
+        self.assertNotEqual(new_deadline, group2.cached_data.last_feedbackset.deadline_datetime)
 
     def test_post_groups_published_raises_error(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -472,7 +472,7 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
                     }
                 }
             )
-        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.FeedbackSet.objects.count())
 
     def test_post_only_moves_deadline_for_feedbacksets_that_are_last(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -505,13 +505,15 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
                 }
             }
         )
-        self.assertEquals(4, group_models.FeedbackSet.objects.count())
+        self.assertEqual(4, group_models.FeedbackSet.objects.count())
         cached_data_group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id).cached_data
         cached_data_group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id).cached_data
-        self.assertEquals(cached_data_group1.first_feedbackset.deadline_datetime, testassignment.first_deadline)
-        self.assertEquals(cached_data_group2.first_feedbackset.deadline_datetime, testassignment.first_deadline)
-        self.assertEquals(cached_data_group2.last_feedbackset.deadline_datetime, new_deadline)
-        self.assertEquals(cached_data_group2.last_feedbackset.deadline_datetime, new_deadline)
+        self.assertEqual(cached_data_group1.first_feedbackset.deadline_datetime, testassignment.first_deadline)
+        self.assertEqual(cached_data_group2.first_feedbackset.deadline_datetime, testassignment.first_deadline)
+        self.assertEqual(cached_data_group2.last_feedbackset.deadline_datetime, new_deadline)
+        self.assertEqual(cached_data_group2.last_feedbackset.deadline_datetime, new_deadline)
+        self.assertEqual(cached_data_group2.last_feedbackset.last_updated_by, testuser)
+        self.assertEqual(cached_data_group2.last_feedbackset.last_updated_by, testuser)
 
     def test_post_only_moves_deadline_for_feedbacksets_that_are_last_first_attempt_and_new_attempt(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -543,12 +545,12 @@ class TestManageDeadlineMoveDeadlineAllGroupsView(ExaminerTestCaseMixin):
                 }
             }
         )
-        self.assertEquals(3, group_models.FeedbackSet.objects.count())
+        self.assertEqual(3, group_models.FeedbackSet.objects.count())
         cached_data_group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id).cached_data
         cached_data_group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id).cached_data
-        self.assertEquals(cached_data_group1.last_feedbackset.deadline_datetime, new_deadline)
-        self.assertEquals(cached_data_group2.first_feedbackset.deadline_datetime, testassignment.first_deadline)
-        self.assertEquals(cached_data_group2.last_feedbackset.deadline_datetime, new_deadline)
+        self.assertEqual(cached_data_group1.last_feedbackset.deadline_datetime, new_deadline)
+        self.assertEqual(cached_data_group1.last_feedbackset.last_updated_by, testuser)
+        self.assertEqual(cached_data_group2.first_feedbackset.deadline_datetime, testassignment.first_deadline)
 
 
 class TestManageDeadlineNewAttemptFromPreviousView(ExaminerTestCaseMixin):
@@ -707,15 +709,17 @@ class TestManageDeadlineNewAttemptFromPreviousView(ExaminerTestCaseMixin):
                 }
             }
         )
-        self.assertEquals(4, group_models.FeedbackSet.objects.count())
-        self.assertEquals(2, group_models.GroupComment.objects.count())
+        self.assertEqual(4, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.GroupComment.objects.count())
         group_comments = group_models.GroupComment.objects.all()
         last_feedbackset_group1 = AssignmentGroupCachedData.objects.get(group_id=testgroup1.id).last_feedbackset
         last_feedbackset_group2 = AssignmentGroupCachedData.objects.get(group_id=testgroup2.id).last_feedbackset
-        self.assertEquals(last_feedbackset_group1.deadline_datetime, new_deadline)
-        self.assertEquals(last_feedbackset_group2.deadline_datetime, new_deadline)
-        self.assertEquals('You have been given a new attempt.', group_comments[0].text)
-        self.assertEquals('You have been given a new attempt.', group_comments[1].text)
+        self.assertEqual(last_feedbackset_group1.deadline_datetime, new_deadline)
+        self.assertEqual(last_feedbackset_group2.deadline_datetime, new_deadline)
+        self.assertEqual(last_feedbackset_group1.last_updated_by, testuser)
+        self.assertEqual(last_feedbackset_group2.last_updated_by, testuser)
+        self.assertEqual('You have been given a new attempt.', group_comments[0].text)
+        self.assertEqual('You have been given a new attempt.', group_comments[1].text)
 
     def test_post_groups_published_raises_error(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -746,7 +750,7 @@ class TestManageDeadlineNewAttemptFromPreviousView(ExaminerTestCaseMixin):
                     }
                 }
             )
-        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.FeedbackSet.objects.count())
 
 
 class TestManageDeadlineMoveDeadlineFromPreviousView(ExaminerTestCaseMixin):
@@ -902,15 +906,17 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(ExaminerTestCaseMixin):
                 }
             }
         )
-        self.assertEquals(4, group_models.FeedbackSet.objects.count())
-        self.assertEquals(2, group_models.GroupComment.objects.count())
+        self.assertEqual(4, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.GroupComment.objects.count())
         group_comments = group_models.GroupComment.objects.all()
         last_feedbackset_group1 = AssignmentGroupCachedData.objects.get(group_id=testgroup1.id).last_feedbackset
         last_feedbackset_group2 = AssignmentGroupCachedData.objects.get(group_id=testgroup2.id).last_feedbackset
-        self.assertEquals(last_feedbackset_group1.deadline_datetime, new_deadline)
-        self.assertEquals(last_feedbackset_group2.deadline_datetime, new_deadline)
-        self.assertEquals('You have been given a new attempt.', group_comments[0].text)
-        self.assertEquals('You have been given a new attempt.', group_comments[1].text)
+        self.assertEqual(last_feedbackset_group1.deadline_datetime, new_deadline)
+        self.assertEqual(last_feedbackset_group2.deadline_datetime, new_deadline)
+        self.assertEqual(last_feedbackset_group1.last_updated_by, testuser)
+        self.assertEqual(last_feedbackset_group2.last_updated_by, testuser)
+        self.assertEqual('You have been given a new attempt.', group_comments[0].text)
+        self.assertEqual('You have been given a new attempt.', group_comments[1].text)
 
     def test_post_groups_published_raises_error(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -941,7 +947,7 @@ class TestManageDeadlineMoveDeadlineFromPreviousView(ExaminerTestCaseMixin):
                     }
                 }
             )
-        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.FeedbackSet.objects.count())
 
 
 class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
@@ -1021,10 +1027,11 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
                     }
             }
         )
-        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.FeedbackSet.objects.count())
         cached_data_group = core_models.AssignmentGroup.objects.get(id=testgroup.id).cached_data
-        self.assertEquals(cached_data_group.first_feedbackset.deadline_datetime, testassignment.first_deadline)
-        self.assertEquals(cached_data_group.last_feedbackset.deadline_datetime, new_deadline)
+        self.assertEqual(cached_data_group.first_feedbackset.deadline_datetime, testassignment.first_deadline)
+        self.assertEqual(cached_data_group.last_feedbackset.deadline_datetime, new_deadline)
+        self.assertEqual(cached_data_group.last_feedbackset.last_updated_by, testuser)
 
     def test_post_multiple_groups_raises_error(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -1056,11 +1063,11 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
                     }
                 }
             )
-        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.FeedbackSet.objects.count())
         cached_data_group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id).cached_data
         cached_data_group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id).cached_data
-        self.assertNotEquals(cached_data_group1.last_feedbackset.deadline_datetime, new_deadline)
-        self.assertNotEquals(cached_data_group2.last_feedbackset.deadline_datetime, new_deadline)
+        self.assertNotEqual(cached_data_group1.last_feedbackset.deadline_datetime, new_deadline)
+        self.assertNotEqual(cached_data_group2.last_feedbackset.deadline_datetime, new_deadline)
 
     def test_get_earliest_possible_deadline_last_deadline_in_past(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -1108,7 +1115,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         added_days = 7
         for element in mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline'):
             suggested_date = from_isoformat_noseconds(element.get('django-cradmin-setfieldvalue'))
-            self.assertEquals(suggested_date, testfeedbackset.deadline_datetime + timedelta(days=added_days))
+            self.assertEqual(suggested_date, testfeedbackset.deadline_datetime + timedelta(days=added_days))
             added_days += 7
 
     def test_get_earliest_possible_deadline_last_deadline_in_future(self):
@@ -1135,7 +1142,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0] \
             .get('django-cradmin-setfieldvalue')
         converted_datetime = from_isoformat_noseconds(earliest_date)
-        self.assertEquals(testfeedbackset.deadline_datetime + timezone.timedelta(days=7), converted_datetime)
+        self.assertEqual(testfeedbackset.deadline_datetime + timezone.timedelta(days=7), converted_datetime)
 
     def test_get_earliest_possible_deadline_uses_multiple_feedbacksets(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -1163,7 +1170,7 @@ class TestManageDeadlineNewAttemptSingleGroup(ExaminerTestCaseMixin):
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0] \
             .get('django-cradmin-setfieldvalue')
         converted_datetime = from_isoformat_noseconds(earliest_date)
-        self.assertEquals(testfeedbackset_last.deadline_datetime + timezone.timedelta(days=7),
+        self.assertEqual(testfeedbackset_last.deadline_datetime + timezone.timedelta(days=7),
                           converted_datetime)
 
 
@@ -1244,10 +1251,11 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
                 }
             }
         )
-        self.assertEquals(1, group_models.FeedbackSet.objects.count())
+        self.assertEqual(1, group_models.FeedbackSet.objects.count())
         cached_data_group = core_models.AssignmentGroup.objects.get(id=testgroup.id).cached_data
-        self.assertEquals(cached_data_group.last_feedbackset, cached_data_group.first_feedbackset)
-        self.assertEquals(cached_data_group.last_feedbackset.deadline_datetime, new_deadline)
+        self.assertEqual(cached_data_group.last_feedbackset, cached_data_group.first_feedbackset)
+        self.assertEqual(cached_data_group.last_feedbackset.deadline_datetime, new_deadline)
+        self.assertEqual(cached_data_group.last_feedbackset.last_updated_by, testuser)
 
     def test_post_multiple_groups_raises_error(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -1279,11 +1287,11 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
                     }
                 }
             )
-        self.assertEquals(2, group_models.FeedbackSet.objects.count())
+        self.assertEqual(2, group_models.FeedbackSet.objects.count())
         cached_data_group1 = core_models.AssignmentGroup.objects.get(id=testgroup1.id).cached_data
         cached_data_group2 = core_models.AssignmentGroup.objects.get(id=testgroup2.id).cached_data
-        self.assertNotEquals(cached_data_group1.last_feedbackset.deadline_datetime, new_deadline)
-        self.assertNotEquals(cached_data_group2.last_feedbackset.deadline_datetime, new_deadline)
+        self.assertNotEqual(cached_data_group1.last_feedbackset.deadline_datetime, new_deadline)
+        self.assertNotEqual(cached_data_group2.last_feedbackset.deadline_datetime, new_deadline)
 
     def test_get_earliest_suggested_deadline_count(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -1304,7 +1312,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
                 'group_id': testgroup.id
             }
         )
-        self.assertEquals(mockresponse.selector.count('.devilry-deadlinemanagement-suggested-deadline'), 4)
+        self.assertEqual(mockresponse.selector.count('.devilry-deadlinemanagement-suggested-deadline'), 4)
 
     def test_get_earliest_suggested_deadline_last_deadline_in_past(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -1328,7 +1336,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         converted_datetime = from_isoformat_noseconds(earliest_date)
         now_with_same_time_as_deadline = datetimeutils.datetime_with_same_time(
             testfeedbackset.deadline_datetime, timezone.now())
-        self.assertEquals(now_with_same_time_as_deadline + timedelta(days=7), converted_datetime)
+        self.assertEqual(now_with_same_time_as_deadline + timedelta(days=7), converted_datetime)
 
     def test_get_all_suggested_deadlines_deadline_in_future(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -1352,7 +1360,7 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         added_days = 7
         for element in mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline'):
             suggested_date = from_isoformat_noseconds(element.get('django-cradmin-setfieldvalue'))
-            self.assertEquals(suggested_date, testfeedbackset.deadline_datetime + timedelta(days=added_days))
+            self.assertEqual(suggested_date, testfeedbackset.deadline_datetime + timedelta(days=added_days))
             added_days += 7
 
     def test_get_earliest_possible_deadline_last_deadline_in_future(self):
@@ -1389,5 +1397,5 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0]\
             .get('django-cradmin-setfieldvalue')
         converted_datetime = from_isoformat_noseconds(earliest_date)
-        self.assertEquals(testfeedbackset1.deadline_datetime + timezone.timedelta(days=7),
+        self.assertEqual(testfeedbackset1.deadline_datetime + timezone.timedelta(days=7),
                           converted_datetime)

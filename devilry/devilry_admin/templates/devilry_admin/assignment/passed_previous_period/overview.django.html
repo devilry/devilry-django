@@ -12,7 +12,7 @@
     <h1>{% trans 'Passed previous semester' %}</h1>
     <p class="devilry-page-subheader">
         {% blocktrans trimmed %}
-            Select how you want to pass student in the context that they have passed this assignment on a previous
+            Select how you want to pass students in the context that they have passed this assignment on a previous
             semester. We recommend that you do this before examiners starts to correct deliveries. Select one of the
             modes below.
         {% endblocktrans %}
@@ -27,9 +27,9 @@
             <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin
                         devilry-passed-previous-semester-unsupported-plugin-message">
                 <h3>
-                    {% trans "Unsupported grading plugin" %}
+                    {% trans "Unsupported grading plugin" context 'passed previous semester'%}
                 </h3>
-                {% blocktrans %}
+                {% blocktrans trimmed %}
                     The grading plugin for this assignment is currently not supported. This will only work for assignments
                     that uses the passed/failed plugin.
                 {% endblocktrans %}

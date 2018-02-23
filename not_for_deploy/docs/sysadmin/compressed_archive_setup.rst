@@ -41,6 +41,26 @@ Delete all compressed archives older than a given number of days::
     $ venv/bin/python manage.py devilry_delete_compressed_archives --days 14
 
 
+Deleting compressed archives older than X seconds
+=================================================
+
+Delete all compressed archives older than a given number of seconds::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/python manage.py devilry_delete_compressed_archives --seconds 60
+
+
+Deleting compressed archives marked as deleted
+==============================================
+
+Compressed archives will become marked as deleted if a new file is added.
+
+Delete all compressed archives marked as deleted::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/python manage.py devilry_delete_compressed_archives --deleted
+
+
 Delete all compressed archives
 ==============================
 

@@ -8130,6 +8130,16 @@ body.django-cradmin-formview-page .django-cradmin-page-header-outer {
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text {
   font-size: 20px;
   margin-bottom: 21px;
+  /* we need all these to support browsers that DOES NOT support break-word... edge -_- */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
 }
 .devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-text:last-child {
   margin-bottom: 0;
@@ -9714,7 +9724,7 @@ fieldset[disabled] .button_student {
   margin-left: 54px;
   margin-bottom: 33px;
   margin-top: 33px;
-  font-size: 16px;
+  font-size: 14px;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message__deadline-moved .deadline-move-info {
   color: #747474;

@@ -1,6 +1,7 @@
 import unittest
 
 import mock
+from django.conf import settings
 
 from django.utils import formats
 from django.utils import timezone
@@ -313,3 +314,19 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
                           'Attempt 1')
         self.assertEquals(mockresponse.selector.list('.header-attempt-number')[1].alltext_normalized,
                           'Attempt 2')
+
+    def test_get_feedbackset_deadline_history_username_rendered(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='test@example.com', fullname='Test User')
+        mommy.make('devilry_group.FeedbackSetDeadlineHistory', feedback_set=testgroup.cached_data.first_feedbackset,
+                   changed_by=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        self.assertEqual(
+            mockresponse.selector.one('.devilry-group-feedbackfeed-event-message__user_display_name')
+                .alltext_normalized,
+            'Test User(test@example.com)'
+        )
