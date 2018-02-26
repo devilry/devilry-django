@@ -204,7 +204,7 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         mockresponse = self.mock_getrequest(
             cradmin_app=self.__mock_cradmin_app(),
             viewkwargs={
-                'content_object_id': testassignment.id
+                'content_object_id': testfeedbackset.id
             })
         self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
 
@@ -227,7 +227,7 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         mockresponse = self.mock_getrequest(
             cradmin_app=self.__mock_cradmin_app(),
             viewkwargs={
-                'content_object_id': testassignment.id
+                'content_object_id': testfeedbackset.id
             })
         self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
 
