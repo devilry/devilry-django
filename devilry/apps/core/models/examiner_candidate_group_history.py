@@ -33,7 +33,7 @@ class AbstractExaminerCandidateAssignmentGroupHistory(models.Model):
         null=False, blank=False, default=timezone.now
     )
 
-    #: This defines the kind of operation this entry was created from, either a ``insert`` or ``delete``
+    #: This defines the kind of operation this entry was created from, either a ``insert``, ``update`` or ``delete``
     #: database operation.
     #:
     #: If ``True``, the user was added to an ``AssignmentGroup``.
