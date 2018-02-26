@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from ievv_opensource.ievv_batchframework import batchregistry
 
 from devilry.apps.core import models as core_models
+from devilry.apps.core.models import ExaminerAssignmentGroupHistory, CandidateAssignmentGroupHistory
 from devilry.devilry_group.models import GroupComment
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group.views.download_files.batch_download_api import AbstractBatchCompressionAPIView
@@ -15,6 +16,13 @@ class BatchCompressionAPIAssignmentView(AbstractBatchCompressionAPIView):
     """
     model_class = core_models.Assignment
     batchoperation_type = 'batchframework_compress_assignment'
+
+    def _get_assignment_group_ids(self):
+        assignment_group_ids = core_models.AssignmentGroup.objects \
+            .filter(parentnode=self.content_object) \
+            .filter_examiner_has_access(user=self.request.user) \
+            .values_list('id', flat=True)
+        return assignment_group_ids
 
     def _get_comment_file_queryset(self):
         assignment_group_ids = core_models.AssignmentGroup.objects \
@@ -31,6 +39,15 @@ class BatchCompressionAPIAssignmentView(AbstractBatchCompressionAPIView):
         return self._get_comment_file_queryset().count() == 0
 
     def new_file_is_added(self, latest_compressed_datetime):
+        assignment_group_ids = self._get_assignment_group_ids()
+        if ExaminerAssignmentGroupHistory.objects.filter(
+                assignment_group_id__in=assignment_group_ids,
+                created_datetime__gt=latest_compressed_datetime).exists():
+            return True
+        if CandidateAssignmentGroupHistory.objects.filter(
+                assignment_group_id__in=assignment_group_ids,
+                created_datetime__gt=latest_compressed_datetime).exists():
+            return True
         return self._get_comment_file_queryset()\
             .filter(created_datetime__gt=latest_compressed_datetime)\
             .exists()

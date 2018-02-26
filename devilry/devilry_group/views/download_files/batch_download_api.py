@@ -9,6 +9,7 @@ from ievv_opensource.ievv_batchframework import batchregistry
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 
 from devilry.apps.core import models as core_models
+from devilry.apps.core.models import ExaminerAssignmentGroupHistory, CandidateAssignmentGroupHistory
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_compressionutil import models as compression_models
 from devilry.devilry_group import models as group_models
@@ -290,6 +291,14 @@ class BatchCompressionAPIFeedbackSetView(AbstractBatchCompressionAPIView):
         return CommentFile.objects.filter(comment_id__in=group_comment_id).count() == 0
 
     def new_file_is_added(self, latest_compressed_datetime):
+        if ExaminerAssignmentGroupHistory.objects.filter(
+                assignment_group_id__in=[self.content_object.group.id],
+                created_datetime__gt=latest_compressed_datetime).exists():
+            return True
+        if CandidateAssignmentGroupHistory.objects.filter(
+                assignment_group_id__in=[self.content_object.group.id],
+                created_datetime__gt=latest_compressed_datetime).exists():
+            return True
         group_comment_ids = GroupComment.objects\
             .filter(feedback_set=self.content_object).values_list('id', flat=True)
         return CommentFile.objects\
