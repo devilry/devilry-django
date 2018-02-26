@@ -1,5 +1,6 @@
 from django.contrib import admin
-from devilry.apps.core.models import AssignmentGroup, Subject, Period, Assignment, PeriodTag
+from devilry.apps.core.models import AssignmentGroup, Subject, Period, Assignment, PeriodTag, \
+    CandidateAssignmentGroupHistory, ExaminerAssignmentGroupHistory
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -152,7 +153,7 @@ class AssignmentGroupAdmin(admin.ModelAdmin):
         return super(AssignmentGroupAdmin, self).get_queryset(request) \
             .select_related('parentnode',
                             'parentnode__parentnode',
-                            'parentnode__parentnode__parentnode')\
+                            'parentnode__parentnode__parentnode')
 
 
 admin.site.register(AssignmentGroup, AssignmentGroupAdmin)
@@ -177,4 +178,54 @@ class PeriodTagAdmin(admin.ModelAdmin):
         'prefix'
     ]
 
+
 admin.site.register(PeriodTag, PeriodTagAdmin)
+
+
+class CandidateAssignmentGroupHistoryAdmin(admin.ModelAdmin):
+    raw_id_fields = [
+        'assignment_group',
+        'user'
+    ]
+
+    list_display = [
+        'assignment_group',
+        'user',
+        'is_add',
+        'created_datetime'
+    ]
+
+    readonly_fields = [
+        'assignment_group',
+        'user',
+        'is_add',
+        'created_datetime'
+    ]
+
+
+admin.site.register(CandidateAssignmentGroupHistory, CandidateAssignmentGroupHistoryAdmin)
+
+
+class ExaminerAssignmentGroupHistoryAdmin(admin.ModelAdmin):
+    raw_id_fields = [
+        'assignment_group',
+        'user'
+    ]
+
+    list_display = [
+        'assignment_group',
+        'user',
+        'is_add',
+        'created_datetime'
+    ]
+
+    readonly_fields = [
+        'assignment_group',
+        'user',
+        'is_add',
+        'created_datetime'
+    ]
+
+
+admin.site.register(ExaminerAssignmentGroupHistory, ExaminerAssignmentGroupHistoryAdmin)
+
