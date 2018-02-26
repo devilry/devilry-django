@@ -121,11 +121,15 @@ class TestExaminerTriggers(test.TestCase):
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
         examiner.assignmentgroup = testgroup_updated_to
         examiner.save()
-        self.assertEqual(ExaminerAssignmentGroupHistory.objects.count(), 2)
+        self.assertEqual(ExaminerAssignmentGroupHistory.objects.count(), 3)
 
-        history_entry = ExaminerAssignmentGroupHistory.objects.get(assignment_group_id=testgroup_updated_to.id)
-        self.assertEqual(history_entry.user, testuser)
-        self.assertTrue(history_entry.is_add)
+        history_entry_from_group = ExaminerAssignmentGroupHistory.objects.get(
+            assignment_group_id=testgroup.id, is_add=False)
+        self.assertEqual(history_entry_from_group.user, testuser)
+
+        history_entry_to_group = ExaminerAssignmentGroupHistory.objects.get(
+            assignment_group_id=testgroup_updated_to.id, is_add=True)
+        self.assertEqual(history_entry_to_group.user, testuser)
 
     def test_update_examiner_assignment_group_multiple_changes(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
@@ -140,7 +144,7 @@ class TestExaminerTriggers(test.TestCase):
         examiner.save()
         examiner.assignmentgroup = testgroup4
         examiner.save()
-        self.assertEqual(ExaminerAssignmentGroupHistory.objects.count(), 4)
+        self.assertEqual(ExaminerAssignmentGroupHistory.objects.count(), 7)
 
     def test_assignment_group_is_deleted_ok(self):
         testgroup = mommy.make('core.AssignmentGroup')

@@ -78,6 +78,8 @@ BEGIN
         FROM core_relatedexaminer
         WHERE id = NEW.relatedexaminer_id
         INTO var_user_id;
+
+        -- We create a history entry for the group the user was added to.
         INSERT INTO core_examinerassignmentgrouphistory (
             assignment_group_id,
             user_id,
@@ -88,6 +90,18 @@ BEGIN
             var_user_id,
             now(),
             TRUE);
+
+        -- And we create a history entry for the group the user was removed from.
+        INSERT INTO core_examinerassignmentgrouphistory (
+            assignment_group_id,
+            user_id,
+            created_datetime,
+            is_add)
+        VALUES (
+            OLD.assignmentgroup_id,
+            var_user_id,
+            now(),
+            FALSE);
     END IF;
     RETURN NEW;
 END

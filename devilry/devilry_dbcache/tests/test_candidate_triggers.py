@@ -121,11 +121,15 @@ class TestCandidateTriggers(test.TestCase):
         candidate = mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
         candidate.assignment_group = testgroup_updated_to
         candidate.save()
-        self.assertEqual(CandidateAssignmentGroupHistory.objects.count(), 2)
+        self.assertEqual(CandidateAssignmentGroupHistory.objects.count(), 3)
 
-        history_entry = CandidateAssignmentGroupHistory.objects.get(assignment_group_id=testgroup_updated_to.id)
-        self.assertEqual(history_entry.user, testuser)
-        self.assertTrue(history_entry.is_add)
+        history_entry_from_group = CandidateAssignmentGroupHistory.objects.get(
+            assignment_group_id=testgroup.id, is_add=False)
+        self.assertEqual(history_entry_from_group.user, testuser)
+
+        history_entry_to_group = CandidateAssignmentGroupHistory.objects.get(
+            assignment_group_id=testgroup_updated_to.id, is_add=True)
+        self.assertEqual(history_entry_to_group.user, testuser)
 
     def test_update_candidate_assignment_group_multiple_changes(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
@@ -140,7 +144,7 @@ class TestCandidateTriggers(test.TestCase):
         candidate.save()
         candidate.assignment_group = testgroup4
         candidate.save()
-        self.assertEqual(CandidateAssignmentGroupHistory.objects.count(), 4)
+        self.assertEqual(CandidateAssignmentGroupHistory.objects.count(), 7)
 
     def test_assignment_group_is_deleted_ok(self):
         testgroup = mommy.make('core.AssignmentGroup')
