@@ -91,7 +91,10 @@ class TestNewAttemptBulkEmail(test.TestCase):
         for mail_item in mail.outbox:
             self.assertEqual(len(mail_item.recipients()), 1)
             recipient_list.append(mail_item.recipients()[0])
-        self.assertListEqual(['student1@example.com', 'student2@example.com', 'student3@example.com'], recipient_list)
+        self.assertIn('student1@example.com', recipient_list)
+        self.assertIn('student2@example.com', recipient_list)
+        self.assertIn('student3@example.com', recipient_list)
+
 
 
 class TestDeadlineMovedEmail(test.TestCase):
@@ -173,4 +176,6 @@ class TestDeadlineMovedBulkEmail(test.TestCase):
         for mail_item in mail.outbox:
             self.assertEqual(len(mail_item.recipients()), 1)
             recipient_list.append(mail_item.recipients()[0])
-        self.assertListEqual(['student1@example.com', 'student2@example.com', 'student3@example.com'], recipient_list)
+        self.assertIn('student1@example.com', recipient_list)
+        self.assertIn('student2@example.com', recipient_list)
+        self.assertIn('student3@example.com', recipient_list)
