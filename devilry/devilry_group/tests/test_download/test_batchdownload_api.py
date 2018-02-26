@@ -35,9 +35,8 @@ class TestHelper(object):
         """
         batchoperation = BatchOperation(
             operationtype=BatchCompressionAPIFeedbackSetView.batchoperation_type,
-            context_object=context_object)
-        batchoperation.operationtype = BatchCompressionAPIFeedbackSetView.batchoperation_type
-        batchoperation.status = status
+            context_object=context_object,
+            status=status)
         batchoperation.save()
 
     def _mock_batchoperation_status(self, context_object_id, status=BatchOperation.STATUS_UNPROCESSED):
