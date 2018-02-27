@@ -231,6 +231,53 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
             })
         self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
 
+    def test_get_status_not_created_when_new_feedbackset_is_created_after_last_compressed_archive(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        # testexaminer = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup, grading_points=1)
+        mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testfeedbackset,
+                   created_datetime=timezone.now())
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=testfeedbackset,
+                                 user_role='student',
+                                 user__shortname='testuser@example.com')
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+
+        # Create new feedbackset.
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(group=testgroup)
+
+        mockresponse = self.mock_getrequest(
+            cradmin_app=self.__mock_cradmin_app(),
+            viewkwargs={
+                'content_object_id': testfeedbackset.id
+            })
+        self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
+
+    def test_get_status_not_created_when_feedbackset_deadline_is_moved(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup, grading_points=1)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=testfeedbackset,
+                                 user_role='student',
+                                 user__shortname='testuser@example.com')
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+        mommy.make('devilry_compressionutil.CompressedArchiveMeta',
+                   content_object=testfeedbackset,
+                   created_datetime=timezone.now())
+        mommy.make('devilry_group.FeedbackSetDeadlineHistory', feedback_set=testfeedbackset)
+        mockresponse = self.mock_getrequest(
+            cradmin_app=self.__mock_cradmin_app(),
+            viewkwargs={
+                'content_object_id': testfeedbackset.id
+            })
+        self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
+
     def test_get_status_running(self):
         testgroup = mommy.make('core.AssignmentGroup')
         testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
@@ -333,7 +380,7 @@ class TestFeedbackSetBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
                           json.loads(mockresponse.response.content))
 
         # mock return value for reverse_appurl
-        with self.assertNumQueries(8):
+        with self.assertNumQueries(10):
             mockresponse = self.mock_postrequest(
                 cradmin_app=mock_cradmin_app,
                 viewkwargs={

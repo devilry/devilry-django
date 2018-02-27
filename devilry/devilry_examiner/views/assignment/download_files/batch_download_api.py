@@ -17,38 +17,25 @@ class BatchCompressionAPIAssignmentView(AbstractBatchCompressionAPIView):
     model_class = core_models.Assignment
     batchoperation_type = 'batchframework_compress_assignment'
 
-    def _get_assignment_group_ids(self):
+    def get_assignment_group_ids(self):
         assignment_group_ids = core_models.AssignmentGroup.objects \
             .filter(parentnode=self.content_object) \
             .filter_examiner_has_access(user=self.request.user) \
             .values_list('id', flat=True)
         return assignment_group_ids
 
-    def _get_comment_file_queryset(self):
-        assignment_group_ids = core_models.AssignmentGroup.objects \
-            .filter(parentnode=self.content_object) \
-            .filter_examiner_has_access(user=self.request.user) \
-            .values_list('id', flat=True)
+    def __get_comment_file_queryset(self):
         group_comment_ids = GroupComment.objects \
-            .filter(feedback_set__group_id__in=assignment_group_ids) \
+            .filter(feedback_set__group_id__in=self.get_assignment_group_ids()) \
             .values_list('id', flat=True)
         return CommentFile.objects \
             .filter(comment_id__in=group_comment_ids)
 
     def has_no_files(self):
-        return self._get_comment_file_queryset().count() == 0
+        return self.__get_comment_file_queryset().count() == 0
 
-    def new_file_is_added(self, latest_compressed_datetime):
-        assignment_group_ids = self._get_assignment_group_ids()
-        if ExaminerAssignmentGroupHistory.objects.filter(
-                assignment_group_id__in=assignment_group_ids,
-                created_datetime__gt=latest_compressed_datetime).exists():
-            return True
-        if CandidateAssignmentGroupHistory.objects.filter(
-                assignment_group_id__in=assignment_group_ids,
-                created_datetime__gt=latest_compressed_datetime).exists():
-            return True
-        return self._get_comment_file_queryset()\
+    def new_files_added(self, latest_compressed_datetime):
+        return self.__get_comment_file_queryset()\
             .filter(created_datetime__gt=latest_compressed_datetime)\
             .exists()
 
