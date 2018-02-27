@@ -184,9 +184,9 @@ class TestGroupInviteQueryset(TestCase):
         mommy.make('core.GroupInvite', accepted=False, id=11)
         mommy.make('core.GroupInvite', accepted=True, id=100)
         mommy.make('core.GroupInvite', accepted=True, id=101)
-        self.assertListEqual(
-            [invite.id for invite in GroupInvite.objects.filter_accepted()],
-            [100, 101]
+        self.assertEqual(
+            set(invite.id for invite in GroupInvite.objects.filter_accepted()),
+            {100, 101}
         )
 
     def test_filter_no_response(self):
@@ -194,9 +194,9 @@ class TestGroupInviteQueryset(TestCase):
         mommy.make('core.GroupInvite', accepted=None, id=11)
         mommy.make('core.GroupInvite', accepted=True, id=100)
         mommy.make('core.GroupInvite', accepted=False, id=101)
-        self.assertListEqual(
-            [invite.id for invite in GroupInvite.objects.filter_no_response()],
-            [10, 11]
+        self.assertEqual(
+            set(invite.id for invite in GroupInvite.objects.filter_no_response()),
+            {10, 11}
         )
 
     def test_filter_rejected(self):
@@ -204,9 +204,9 @@ class TestGroupInviteQueryset(TestCase):
         mommy.make('core.GroupInvite', accepted=False, id=11)
         mommy.make('core.GroupInvite', accepted=True, id=100)
         mommy.make('core.GroupInvite', accepted=None, id=101)
-        self.assertListEqual(
-            [invite.id for invite in GroupInvite.objects.filter_rejected()],
-            [10, 11]
+        self.assertEqual(
+            set(invite.id for invite in GroupInvite.objects.filter_rejected()),
+            {10, 11}
         )
 
     def test_filter_unanswered_received_invites(self):
@@ -217,9 +217,10 @@ class TestGroupInviteQueryset(TestCase):
         mommy.make('core.GroupInvite', sent_by=sent_by, sent_to=sent_to, accepted=None, id=11)
         mommy.make('core.GroupInvite', sent_by=sent_by, sent_to=sent_to, accepted=True, id=100)
         mommy.make('core.GroupInvite', sent_by=sent_by, sent_to=sent_to, accepted=None, id=101)
-        self.assertListEqual(
-            [invite.id for invite in GroupInvite.objects.filter_unanswered_received_invites(sent_to)],
-            [11, 101]
+
+        self.assertEqual(
+            set(invite.id for invite in GroupInvite.objects.filter_unanswered_received_invites(sent_to)),
+            {11, 101}
         )
 
     def test_filter_unanswered_sent_invites(self):
@@ -228,9 +229,9 @@ class TestGroupInviteQueryset(TestCase):
         mommy.make('core.GroupInvite', group=group, accepted=None, id=11)
         mommy.make('core.GroupInvite', group=group, accepted=True, id=100)
         mommy.make('core.GroupInvite', group=group, accepted=None, id=101)
-        self.assertListEqual(
-            [invite.id for invite in GroupInvite.objects.filter_unanswered_sent_invites(group)],
-            [11, 101]
+        self.assertEqual(
+            set(invite.id for invite in GroupInvite.objects.filter_unanswered_sent_invites(group)),
+            {11, 101}
         )
 
     def test_filter_allowed_to_create_groups(self):
@@ -256,9 +257,9 @@ class TestGroupInviteQueryset(TestCase):
         mommy.make('core.GroupInvite', group=group2, id=11)
         mommy.make('core.GroupInvite', group=group3, id=100)
         mommy.make('core.GroupInvite', group=group4, id=101)
-        self.assertListEqual(
-            [invite.id for invite in GroupInvite.objects.filter_allowed_to_create_groups()],
-            [11, 101]
+        self.assertEqual(
+            set(invite.id for invite in GroupInvite.objects.filter_allowed_to_create_groups()),
+            {11, 101}
         )
 
 
@@ -415,9 +416,9 @@ class GroupInviteRespond(TestCase):
         candidate5 = core_mommy.candidate(group=group4, fullname="Dewey", shortname="dewey")
         candidates = GroupInvite.send_invite_to_choices_queryset(group1)
         self.assertEqual(candidates.count(), 2)
-        self.assertListEqual(
-            [candidate for candidate in candidates],
-            [candidate4, candidate5]
+        self.assertEqual(
+            set(candidate.id for candidate in candidates),
+            {candidate4.id, candidate5.id}
         )
 
     def test_send_invite_to_choices_queryset_pending_is_excluded(self):
@@ -438,9 +439,9 @@ class GroupInviteRespond(TestCase):
         )
         candidates = GroupInvite.send_invite_to_choices_queryset(group1)
         self.assertEqual(candidates.count(), 1)
-        self.assertListEqual(
-            [candidate for candidate in candidates],
-            [candidate5]
+        self.assertEqual(
+            set(candidate.id for candidate in candidates),
+            {candidate5.id}
         )
 
     def test_validate_user_id_send_to(self):
