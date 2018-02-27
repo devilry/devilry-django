@@ -21,3 +21,4 @@ Changes
 #######
 
 - Fixes for file compression.
+- Added more checks to determine if a compressed archive should be generated.
