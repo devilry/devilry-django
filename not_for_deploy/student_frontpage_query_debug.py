@@ -50,13 +50,6 @@ if __name__ == '__main__':  # Wrap it in main to be absolutely sure that this is
             .annotate_with_last_deadline_datetime() \
             .extra(order_by=['last_deadline_datetime'])
         for group in groups:
-            print '*' * 70
-            print '{} - {} - {}'.format(
-                group.subject.long_name,
-                group.period.long_name,
-                group.assignment.long_name
-            ).encode('utf-8')
-            print '  Deadline:', group.last_deadline_datetime
-            print '  Deadline is expired:', group.last_deadline_datetime > datetime.now()
+            print_frontpage_group_info(group=group)
 
     print_frontpage_query_results(user=get_user_model().objects.get(username=username))
