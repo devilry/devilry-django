@@ -40,7 +40,7 @@ if __name__ == '__main__':  # Wrap it in main to be absolutely sure that this is
             group.assignment.long_name
         ).encode('utf-8')
         print '  Deadline:', group.last_deadline_datetime
-        print '  Deadline is expired:', group.last_deadline_datetime > datetime.now()
+        print '  Deadline is expired:', group.last_deadline_datetime < datetime.now()
 
 
     def print_frontpage_query_results(user):
