@@ -2,6 +2,21 @@ from __future__ import unicode_literals
 import os
 from datetime import datetime
 
+"""
+How to use this script
+======================
+
+Put this on the server. Recommented location:
+
+    <directory that contains manage.py>/custom_debugging_scripts/student_frontpage_query_debug.py
+
+Update DJANGO_SETTINGS_MODULE and username variables below.
+
+Run it with:
+
+    $ venv/bin/python custom_debugging_scripts/student_frontpage_query_debug.py
+"""
+
 
 if __name__ == '__main__':  # Wrap it in main to be absolutely sure that this is not auto-executed by an import somehow
 
