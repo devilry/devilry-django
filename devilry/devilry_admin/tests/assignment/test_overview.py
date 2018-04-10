@@ -41,7 +41,10 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_assignment_meta_has_two_students(self):
         assignment = mommy.make('core.Assignment')
-        mommy.make('core.AssignmentGroup', parentnode=assignment, _quantity=2)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        mommy.make('core.Candidate', assignment_group=group1)
+        mommy.make('core.Candidate', assignment_group=group2)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertTrue(
                 mockresponse.selector.one('#devilry_admin_assignment_meta p').alltext_normalized.startswith(
