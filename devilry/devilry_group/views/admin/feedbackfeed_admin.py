@@ -39,12 +39,8 @@ class AdminBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     def get_backlink_url(self):
         return crinstance.reverse_cradmin_url(
             instanceid='devilry_admin_assignmentadmin',
-            appname='groupdetails',
-            roleid=self.request.cradmin_role.parentnode.id,
-            viewname='groupdetails',
-            kwargs={
-                'pk': self.request.cradmin_role.id
-            }
+            appname='studentoverview',
+            roleid=self.request.cradmin_role.parentnode.id
         )
 
     def get_context_data(self, **kwargs):

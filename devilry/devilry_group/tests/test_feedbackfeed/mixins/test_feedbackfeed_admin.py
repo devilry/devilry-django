@@ -243,7 +243,8 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
             cradmin_instance=mock_cradmininstance,
             requestuser=testuser
         )
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar'))
+        self.assertTrue(
+            'Download:' in mockresponse.selector.one('.devilry-group-feedbackfeed-buttonbar').alltext_normalized)
 
     def test_get_feedbackfeed_download_not_visible_private_commentfile_exist(self):
         testassignment = mommy.make('core.Assignment')
@@ -261,7 +262,8 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
             cradmin_instance=mock_cradmininstance,
             requestuser=testuser
         )
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar'))
+        self.assertFalse(
+            'Download:' in mockresponse.selector.one('.devilry-group-feedbackfeed-buttonbar').alltext_normalized)
 
     def test_get_feedbackfeed_download_not_visible_part_of_grading_not_published(self):
         testassignment = mommy.make('core.Assignment')
@@ -282,7 +284,8 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
             cradmin_instance=mock_cradmininstance,
             requestuser=testuser
         )
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar'))
+        self.assertFalse(
+            'Download:' in mockresponse.selector.one('.devilry-group-feedbackfeed-buttonbar').alltext_normalized)
 
     def test_get_num_queries(self):
         period = mommy.make('core.Period')

@@ -50,7 +50,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             cradmin_role=testgroup,
             requestuser=testuser
         )
-        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-project-group-button'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-student-projectgroup-detauils-link'))
 
     def test_feedbackfeed_project_group_button_visible_if_student_can_create_groups_and_before_datetime(self):
         testassignment = mommy.make('core.Assignment', students_can_create_groups=True,
@@ -63,7 +63,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             cradmin_role=testgroup,
             requestuser=testuser
         )
-        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-project-group-button'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-student-projectgroup-detauils-link'))
 
     def test_feedbackfeed_project_group_button_not_visible_if_student_can_create_groups_and_after_datetime(self):
         testassignment = mommy.make('core.Assignment', students_can_create_groups=True,
@@ -88,7 +88,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             cradmin_role=testgroup,
             requestuser=testuser
         )
-        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-project-group-button'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-student-projectgroup-detauils-link'))
 
     def test_feedbackfeed_project_group_button_not_visible_with_only_one_student(self):
         testassignment = mommy.make('core.Assignment')
@@ -146,7 +146,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         testassignment = mommy.make('core.Assignment')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar__title'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-buttonbar__title'))
 
     def test_get_feedbackfeed_download_visible_public_commentfiles_exist(self):
         testassignment = mommy.make('core.Assignment')
@@ -162,7 +162,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             cradmin_role=testgroup,
             requestuser=testuser
         )
-        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-buttonbar'))
 
     def test_get_feedbackfeed_download_not_visible_private_commentfile_exist(self):
         testassignment = mommy.make('core.Assignment')
@@ -177,7 +177,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             cradmin_role=testgroup,
             requestuser=testuser
         )
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar__title'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-buttonbar__title'))
 
     def test_get_feedbackfeed_download_not_visible_part_of_grading_not_published(self):
         testassignment = mommy.make('core.Assignment')
@@ -192,7 +192,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             cradmin_role=testgroup,
             requestuser=testuser
         )
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar__title'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-buttonbar__title'))
 
     def test_get_feedbackfeed_download_not_visible_comment_visible_to_examiners_and_admins(self):
         testassignment = mommy.make('core.Assignment')
@@ -207,7 +207,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             cradmin_role=testgroup,
             requestuser=testuser
         )
-        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-sidebar__title'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-buttonbar__title'))
 
     def test_get_feedbackfeed_student_cannot_see_feedback_or_discuss_in_header(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')

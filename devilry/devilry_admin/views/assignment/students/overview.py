@@ -12,11 +12,9 @@ class NonAnonymousGroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFra
 
     def get_url(self):
         return reverse_cradmin_url(
-            instanceid='devilry_admin_assignmentadmin',
-            appname='groupdetails',
-            roleid=self.kwargs['assignment'].id,
-            viewname='groupdetails',
-            kwargs={'pk': self.group.id}
+            instanceid='devilry_group_admin',
+            roleid=self.group.id,
+            appname='feedbackfeed'
         )
 
     def get_extra_css_classes_list(self):

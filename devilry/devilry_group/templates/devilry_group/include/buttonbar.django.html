@@ -1,0 +1,26 @@
+{% load devilry_group_tags %}
+{% load cradmin_tags %}
+{% load i18n %}
+
+{% if devilry_ui_role == 'student' %}
+    <div class="devilry-group-feedbackfeed-buttonbar">
+        {% if sidebarbuilder_list != None %}
+            <h2 class="devilry-group-feedbackfeed-buttonbar__title">{% trans "Download" %}:</h2>
+            {% cradmin_render_renderable sidebarbuilder_list %}
+        {% endif %}
+    </div>
+{% else %}
+    {# This is for examiners and admins.  #}
+    <div class="devilry-group-feedbackfeed-buttonbar">
+        {% if devilry_ui_role == 'departmentadmin' or devilry_ui_role == 'subjectadmin' or devilry_ui_role == 'periodadmin' %}
+            <h2 class="devilry-group-feedbackfeed-buttonbar__title">{% trans "Actions" %}:</h2>
+            <a href="{% cradmin_url instanceid='devilry_admin_assignmentadmin' appname='split_group' viewname='INDEX' roleid=assignment.id pk=group.id %}" class="btn btn-default">
+                {% trans "Split group" %}
+            </a>
+        {% endif %}
+        {% if sidebarbuilder_list != None %}
+            <h2 class="devilry-group-feedbackfeed-buttonbar__title">{% trans "Download" %}:</h2>
+            {% cradmin_render_renderable sidebarbuilder_list %}
+        {% endif %}
+    </div>
+{% endif %}

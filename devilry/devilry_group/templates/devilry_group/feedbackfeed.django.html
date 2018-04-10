@@ -13,7 +13,7 @@
     <div class="container">
         <div class="row">
             <div class="devilry-group-feedbackfeed-header">
-                <div class="col-sm-12 text-left">
+                <div class="col-sm-10 text-left">
                     {% block feedbackfeed-header-content %}
                         <h1 class="devilry-group-feedbackfeed-header-assignment">
                             {{ assignment.long_name }}
@@ -26,6 +26,16 @@
                                 {{ period.long_name }}
                             </p>
                         </div>
+                        {% if devilry_ui_role == 'student' %}
+                            {% if num_students_in_group > 1 or students_can_create_groups %}
+                                <p>
+                                    <a href="{% cradmin_instance_appindex_url 'projectgroup' %}"
+                                       class="devilry-feedbackfeed-student-projectgroup-detauils-link">
+                                        {% trans "Project group details" %}
+                                    </a>
+                                </p>
+                            {% endif %}
+                        {% endif %}
                     {% endblock feedbackfeed-header-content %}
                 </div>
             </div>
@@ -36,7 +46,7 @@
 {% block content %}
     {% block downloadbar %}
         <div class="container">
-            {% include "devilry_group/include/sidebar.django.html" %}
+            {% include "devilry_group/include/buttonbar.django.html" %}
         </div>
     {% endblock downloadbar %}
 
