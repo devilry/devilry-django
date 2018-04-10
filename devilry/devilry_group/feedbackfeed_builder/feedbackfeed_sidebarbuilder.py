@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 # Devilry imports
+from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group.feedbackfeed_builder import builder_base
 from devilry.devilry_group import models as group_models
 
@@ -22,7 +23,7 @@ class FeedbackFeedSidebarBuilder(builder_base.FeedbackFeedBuilderBase):
         for feedbackset in self.feedbacksets:
             self.feedbackset_dict[feedbackset.created_datetime] = {
                 'feedbackset_num': 0,
-                'feedbackset': feedbackset,
+                'feedbackset': feedbackset
             }
         self.feedbackset_dict = self.sort_dict(self.feedbackset_dict)
 
