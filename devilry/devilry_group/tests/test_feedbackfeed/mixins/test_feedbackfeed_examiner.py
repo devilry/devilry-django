@@ -28,7 +28,8 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
         candidate = mommy.make('core.Candidate',
                                assignment_group=group,
                                relatedstudent__automatic_anonymous_id='AnonymousStudent',
-                               relatedstudent__user__shortname='teststudent')
+                               relatedstudent__user__shortname='teststudent',
+                               relatedstudent__period=testassignment.parentnode)
         mommy.make('devilry_group.GroupComment',
                    user_role='student',
                    user=candidate.relatedstudent.user,
@@ -46,7 +47,8 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
         candidate = mommy.make('core.Candidate',
                                assignment_group=group,
                                relatedstudent__automatic_anonymous_id='AnonymousStudent',
-                               relatedstudent__user__shortname='teststudent')
+                               relatedstudent__user__shortname='teststudent',
+                               relatedstudent__period=testassignment.parentnode)
         mommy.make('devilry_group.GroupComment',
                    user_role='student',
                    user=candidate.relatedstudent.user,

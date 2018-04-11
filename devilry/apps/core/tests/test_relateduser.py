@@ -18,7 +18,7 @@ class TestRelatedStudentModel(TestCase):
 
     def test_get_anonymous_name_missing_both_anonymous_id_and_candidate_id(self):
         relatedstudent = mommy.make('core.RelatedStudent')
-        self.assertEqual('Anonymous ID missing', relatedstudent.get_anonymous_name())
+        self.assertEqual('Automatic anonymous ID missing', relatedstudent.get_anonymous_name())
 
     def test_get_anonymous_name_has_anonymous_id_but_not_candidate_id(self):
         relatedstudent = mommy.make('core.RelatedStudent',
@@ -47,7 +47,7 @@ class TestRelatedExaminerModel(TestCase):
 
     def test_get_anonymous_name_missing_anonymous_id(self):
         relatedexaminer = mommy.make('core.RelatedExaminer')
-        self.assertEqual('Anonymous ID missing', relatedexaminer.get_anonymous_name())
+        self.assertEqual('Automatic anonymous ID missing', relatedexaminer.get_anonymous_name())
 
     def test_get_anonymous_name_has_anonymous_id(self):
         relatedexaminer = mommy.make('core.RelatedExaminer',

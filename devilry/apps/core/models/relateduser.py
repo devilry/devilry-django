@@ -342,7 +342,7 @@ class RelatedExaminer(RelatedUserBase):
         if self.automatic_anonymous_id:
             return self.automatic_anonymous_id
         else:
-            return ugettext_lazy('Anonymous ID missing')
+            return ugettext_lazy('Automatic anonymous ID missing')
 
     @property
     def relatedusertag_set(self):
@@ -409,10 +409,18 @@ class RelatedStudent(RelatedUserBase):
         """
         if self.candidate_id:
             return self.candidate_id
-        elif self.automatic_anonymous_id:
+        return self.get_automatic_anonymous_id_with_fallback()
+
+    def get_automatic_anonymous_id_with_fallback(self):
+        """
+
+        Returns:
+            str: A unicode string with the anonymous name.
+        """
+        if self.automatic_anonymous_id:
             return self.automatic_anonymous_id
         else:
-            return ugettext_lazy('Anonymous ID missing')
+            return ugettext_lazy('Automatic anonymous ID missing')
 
     @property
     def relatedusertag_set(self):

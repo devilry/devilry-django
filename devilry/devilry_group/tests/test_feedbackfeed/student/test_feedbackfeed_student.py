@@ -110,7 +110,8 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         candidate = mommy.make('core.Examiner',
                                assignmentgroup=testgroup,
                                relatedexaminer__automatic_anonymous_id='AnonymousExaminer',
-                               relatedexaminer__user__shortname='testexaminer')
+                               relatedexaminer__user__shortname='testexaminer',
+                               relatedexaminer__period=testassignment.parentnode)
         mommy.make('devilry_group.GroupComment',
                    user_role='examiner',
                    user=candidate.relatedexaminer.user,
@@ -130,7 +131,8 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=testgroup,
                               relatedexaminer__automatic_anonymous_id='AnonymousExaminer',
-                              relatedexaminer__user__shortname='testexaminer')
+                              relatedexaminer__user__shortname='testexaminer',
+                              relatedexaminer__period=testassignment.parentnode)
         mommy.make('devilry_group.GroupComment',
                    user_role='examiner',
                    user=examiner.relatedexaminer.user,

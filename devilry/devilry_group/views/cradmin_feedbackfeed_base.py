@@ -189,7 +189,8 @@ class FeedbackFeedBaseView(create.CreateView):
             built_timeline,
             group=self.request.cradmin_role,
             devilryrole=self.get_devilryrole(),
-            assignment=assignment
+            assignment=assignment,
+            requestuser=self.request.user
         )
         context['students_can_create_groups'] = assignment.students_can_create_groups_now
 

@@ -1,5 +1,7 @@
 # Devilry/cradmin imports
 from django_cradmin.viewhelpers import listbuilder
+
+from devilry.apps.core.group_user_lookup import GroupUserLookup
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_group.models import GroupComment, FeedbackSet
 from devilry.utils import datetimeutils
@@ -58,11 +60,16 @@ class FeedbackSetTimelineListBuilderList(listbuilder.base.List):
         )
         return listbuilder_list
 
-    def __init__(self, feedbackset, group, assignment, devilryrole):
+    def __init__(self, feedbackset, group, assignment, requestuser, devilryrole):
         self.feedbackset = feedbackset
         self.assignment = assignment
         self.devilryrole = devilryrole
         self.group = group
+        self.group_user_lookup = GroupUserLookup(
+            group=group,
+            assignment=assignment,
+            requestuser=requestuser,
+            requestuser_devilryrole=devilryrole)
         super(FeedbackSetTimelineListBuilderList, self).__init__()
 
     def get_item_value(self, event_dict):
@@ -93,16 +100,19 @@ class FeedbackSetTimelineListBuilderList(listbuilder.base.List):
                 return StudentGroupCommentItemValue(value=group_comment,
                                                     devilry_viewrole=self.devilryrole,
                                                     user_obj=event_dict.get('candidate'),
-                                                    assignment=self.assignment)
+                                                    assignment=self.assignment,
+                                                    group_user_lookup=self.group_user_lookup)
             elif group_comment.user_role == comment_models.Comment.USER_ROLE_EXAMINER:
                 return ExaminerGroupCommentItemValue(value=group_comment,
                                                      devilry_viewrole=self.devilryrole,
                                                      user_obj=event_dict.get('examiner'),
-                                                     assignment=self.assignment)
+                                                     assignment=self.assignment,
+                                                     group_user_lookup=self.group_user_lookup)
             elif group_comment.user_role == comment_models.Comment.USER_ROLE_ADMIN:
                 return AdminGroupCommentItemValue(value=group_comment,
                                                   devilry_viewrole=self.devilryrole,
-                                                  assignment=self.assignment)
+                                                  assignment=self.assignment,
+                                                  group_user_lookup=self.group_user_lookup)
         elif event_dict['type'] == 'deadline_expired':
             return DeadlineExpiredItemValue(value=event_dict['deadline_datetime'], devilry_viewrole=self.devilryrole,
                                             feedbackset=event_dict['feedbackset'], group=self.group)
@@ -264,11 +274,21 @@ class BaseGroupCommentItemValue(BaseItemValue):
         super(BaseGroupCommentItemValue, self).__init__(*args, **kwargs)
         self.user_obj = kwargs.get('user_obj')
         self.assignment = kwargs.get('assignment')
+        self.group_user_lookup = kwargs.get('group_user_lookup')
+
+    def get_display_name_for_comment_user(self):
+        raise NotImplementedError()
 
     def _should_add_with_badge_css_class(self):
         return (
             self.group_comment.part_of_grading or
             self.group_comment.visibility == GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+
+    def get_display_name_html(self):
+        return self.group_user_lookup.get_long_name_from_user(
+            user=self.group_comment.user,
+            user_role=self.group_comment.user_role, html=True
+        )
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(BaseGroupCommentItemValue, self).get_extra_css_classes_list()

@@ -17,6 +17,7 @@ def _get_by_path_kw(pathlist):
         key = 'parentnode__' + key
     return kw
 
+
 def get_by_path(path):
     """ Get a node by path.
 
