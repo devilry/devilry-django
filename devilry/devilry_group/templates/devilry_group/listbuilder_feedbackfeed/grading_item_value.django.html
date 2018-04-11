@@ -9,6 +9,6 @@
         <strong>
             {% trans "This delivery was corrected, and given" context 'devilry_group feedbackfeed' %}:
         </strong>
-        {% devilry_grade_full assignment=me.assignment points=me.feedbackset.grading_points devilryrole=me.devilryrole %}
+        {% devilry_grade_full assignment=me.assignment points=me.grade_points devilryrole=me.devilryrole %}
     </span>
 {% endblock details %}

@@ -1,7 +1,14 @@
 from django.contrib import admin
 from devilry.apps.core.models import AssignmentGroup, Subject, Period, Assignment, PeriodTag, \
-    CandidateAssignmentGroupHistory, ExaminerAssignmentGroupHistory
+    CandidateAssignmentGroupHistory, ExaminerAssignmentGroupHistory, Examiner
 from django.utils.translation import ugettext_lazy as _
+
+
+class ExaminerAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(Examiner, ExaminerAdmin)
 
 
 class BaseNodeAdmin(admin.ModelAdmin):

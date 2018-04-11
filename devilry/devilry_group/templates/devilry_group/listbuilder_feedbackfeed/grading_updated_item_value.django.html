@@ -1,0 +1,21 @@
+{% extends 'devilry_group/listbuilder_feedbackfeed/base_event_item_value.django.html' %}
+
+{% load cradmin_tags %}
+{% load devilry_core_tags %}
+{% load devilry_account_tags %}
+{% load i18n %}
+
+{% block details %}
+    <span class="devilry-group-event__grading_updated">
+        {% trans "The grade was changed from" context 'devilry_group feedbackfeed grading updated from' %}
+        {% devilry_grade_full assignment=me.assignment points=me.grading_updated.old_grading_points devilryrole=me.devilryrole %}
+            {% trans "to" context 'devilry_group feedbackfeed grading updated to' %}
+        {% devilry_grade_full assignment=me.assignment points=me.next_grading_points devilryrole=me.devilryrole %}
+        {% if me.show_changed_by_user %}
+            {% trans "by" context 'devilry_group feedbackfeed grading updated by' %}
+            <span class="devilry-group-feedbackfeed-event-message__user_display_name">
+                <strong>{% devilry_user_verbose_inline me.grading_updated.updated_by %}</strong>
+            </span>
+        {% endif %}
+    </span>
+{% endblock details %}

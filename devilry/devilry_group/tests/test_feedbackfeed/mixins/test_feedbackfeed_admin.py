@@ -315,7 +315,7 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
                    _quantity=20)
         mock_cradmininstance = mock.MagicMock()
         mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
-        with self.assertNumQueries(19):
+        with self.assertNumQueries(20):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=admin,
                                                cradmin_instance=mock_cradmininstance)
@@ -360,7 +360,7 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
                    _quantity=20)
         mock_cradmininstance = mock.MagicMock()
         mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'periodadmin'
-        with self.assertNumQueries(22):
+        with self.assertNumQueries(23):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=admin,
                                                cradmin_instance=mock_cradmininstance)

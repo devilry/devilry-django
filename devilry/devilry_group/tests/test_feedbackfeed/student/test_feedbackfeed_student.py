@@ -574,6 +574,31 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         )
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message__user_display_name'))
 
+    def test_get_feedbackset_grading_updated_multiple_events_rendered(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='test@example.com', fullname='Test User')
+        test_feedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=1,
+                   updated_by=testuser)
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=0,
+                   updated_by=testuser)
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=1,
+                   updated_by=testuser)
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=0,
+                   updated_by=testuser)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        event_text_list = [element.alltext_normalized for element in
+                           mockresponse.selector.list('.devilry-group-event__grading_updated')]
+        self.assertEqual(len(event_text_list), 4)
+        self.assertIn('The grade was changed from passed to failed by Test User(test@example.com)', event_text_list[0])
+        self.assertIn('The grade was changed from failed to passed by Test User(test@example.com)', event_text_list[1])
+        self.assertIn('The grade was changed from passed to failed by Test User(test@example.com)', event_text_list[2])
+        self.assertIn('The grade was changed from failed to passed by Test User(test@example.com)', event_text_list[3])
+
     #####
     # Tests making sure that event buttons are not rendered for
     # students(edit grade, new attempt, move deadlin etc.)
@@ -1166,7 +1191,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
                    _quantity=20)
         mock_cradmininstance = mock.MagicMock()
         mock_cradmininstance.get_devilryrole_for_requestuser.return_value = 'student'
-        with self.assertNumQueries(19):
+        with self.assertNumQueries(20):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=candidate.relatedstudent.user,
                                                cradmin_instance=mock_cradmininstance)
@@ -1201,7 +1226,7 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
                    filename='test2.py',
                    comment=comment2,
                    _quantity=20)
-        with self.assertNumQueries(22):
+        with self.assertNumQueries(23):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=candidate.relatedstudent.user)
         self.assertEquals(1, group_models.FeedbackSet.objects.count())

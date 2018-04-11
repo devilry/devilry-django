@@ -60,6 +60,13 @@ def get_feedbackfeed_builder_queryset(group, requestuser, devilryrole):
                 'feedbacksetdeadlinehistory_set',
                 queryset=feedbackset_deadline_history_queryset)
         )\
+        .prefetch_related(
+            models.Prefetch(
+                'grading_update_histories',
+                queryset=group_models.FeedbackSetGradingUpdateHistory.objects.all(),
+                to_attr='grading_updates'
+            )
+        )\
         .order_by('created_datetime')
 
 

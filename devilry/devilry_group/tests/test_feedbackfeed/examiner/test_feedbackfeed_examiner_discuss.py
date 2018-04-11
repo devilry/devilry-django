@@ -197,6 +197,31 @@ class TestFeedbackfeedExaminerDiscussMixin(test_feedbackfeed_examiner.TestFeedba
             mockresponse.selector.one('.devilry-group-event__grade-last-new-attempt-button').alltext_normalized,
             'Give new attempt')
 
+    def test_get_feedbackset_grading_updated_multiple_events_rendered(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='test@example.com', fullname='Test User')
+        test_feedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=1,
+                   updated_by=testuser)
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=0,
+                   updated_by=testuser)
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=1,
+                   updated_by=testuser)
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=0,
+                   updated_by=testuser)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        event_text_list = [element.alltext_normalized for element in
+                           mockresponse.selector.list('.devilry-group-event__grading_updated')]
+        self.assertEqual(len(event_text_list), 4)
+        self.assertIn('The grade was changed from passed (1/1) to failed (0/1) by Test User(test@example.com)', event_text_list[0])
+        self.assertIn('The grade was changed from failed (0/1) to passed (1/1) by Test User(test@example.com)', event_text_list[1])
+        self.assertIn('The grade was changed from passed (1/1) to failed (0/1) by Test User(test@example.com)', event_text_list[2])
+        self.assertIn('The grade was changed from failed (0/1) to passed (1/1) by Test User(test@example.com)', event_text_list[3])
+
 
 class TestFeedbackfeedExaminerPublicDiscuss(TestCase, TestFeedbackfeedExaminerDiscussMixin):
     viewclass = feedbackfeed_examiner.ExaminerPublicDiscussView

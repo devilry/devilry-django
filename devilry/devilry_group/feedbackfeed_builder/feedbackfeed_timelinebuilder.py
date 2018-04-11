@@ -141,11 +141,15 @@ class FeedbackSetEventTimeLine(AbstractTimelineBuilder):
         Add a grade event when the :obj:`devilry.devilry_group.models.FeedbackSet.grading_published_datetime` is set for
         ``feedbackset``.
         """
+        grade_points = self.feedback_set.grading_points
+        if len(self.feedback_set.grading_updates) > 0:
+            grade_points = self.feedback_set.grading_updates[0].old_grading_points
         self._add_event_item_to_timeline(
             datetime_obj=self.feedback_set.grading_published_datetime,
             event_dict={
-                "type": "grade",
-                "feedbackset": self.feedback_set,
+                'type': 'grade',
+                'feedbackset': self.feedback_set,
+                'grade_points': grade_points,
                 'assignment': self.assignment
             }
         )
@@ -203,9 +207,30 @@ class FeedbackSetEventTimeLine(AbstractTimelineBuilder):
                 }
             )
 
+    def __add_grading_updated_event(self):
+        """
+        Add event for updated grading on a :class:`~.devilry.devilry_group.models.FeedbackSet`.
+        """
+        grading_updates_length = len(self.feedback_set.grading_updates)
+        for index, grading_updated in enumerate(self.feedback_set.grading_updates):
+            if index+1 == grading_updates_length:
+                next_grading_points = self.feedback_set.grading_points
+            else:
+                next_grading_points = self.feedback_set.grading_updates[index+1].old_grading_points
+            self._add_event_item_to_timeline(
+                datetime_obj=grading_updated.updated_datetime,
+                event_dict={
+                    'type': 'grading_updated',
+                    'obj': grading_updated,
+                    'next_grading_points': next_grading_points,
+                    'feedbackset': self.feedback_set
+                }
+            )
+
     def build(self):
         self.__add_deadline_moved_event()
         self.__add_deadline_expired_if_needed()
         self.__add_grade_to_timeline_if_published()
         self.__add_comments_to_timeline()
+        self.__add_grading_updated_event()
         self.time_line = self.sort_dict(self.time_line)

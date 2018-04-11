@@ -330,3 +330,41 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
                 .alltext_normalized,
             'Test User(test@example.com)'
         )
+
+    def test_get_feedbackset_grading_updated_one_event_rendered(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='test@example.com', fullname='Test User')
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=1,
+                   updated_by=testuser)
+
+        # We add an unpublished new attempt, because the feedback view for examiners requires that the last feedbackset
+        # is not published.
+        group_mommy.feedbackset_new_attempt_unpublished(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        self.assertEqual(mockresponse.selector.count('.devilry-group-event__grading_updated'), 1)
+
+    def test_get_feedbackset_grading_updated_multiple_events_rendered(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='test@example.com', fullname='Test User')
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=1,
+                   updated_by=testuser)
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=0,
+                   updated_by=testuser)
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=1,
+                   updated_by=testuser)
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=0,
+                   updated_by=testuser)
+
+        # We add an unpublished new attempt, because the feedback view for examiners requires that the last feedbackset
+        # is not published.
+        group_mommy.feedbackset_new_attempt_unpublished(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        self.assertEqual(mockresponse.selector.count('.devilry-group-event__grading_updated'), 4)

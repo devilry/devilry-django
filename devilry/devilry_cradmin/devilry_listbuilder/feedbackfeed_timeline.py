@@ -108,11 +108,16 @@ class FeedbackSetTimelineListBuilderList(listbuilder.base.List):
                                             feedbackset=event_dict['feedbackset'], group=self.group)
         elif event_dict['type'] == 'grade':
             return GradeItemValue(value=event_dict['feedbackset'], assignment=self.assignment,
-                                  devilry_viewrole=self.devilryrole, group=self.group)
+                                  devilry_viewrole=self.devilryrole, grade_points=event_dict['grade_points'],
+                                  group=self.group)
         elif event_dict['type'] == 'deadline_moved':
             return DeadlineMovedItemValue(value=event_dict['obj'], is_last=event_dict['is_last'],
                                           devilry_viewrole=self.devilryrole, feedbackset=event_dict['feedbackset'],
                                           group=self.group)
+        elif event_dict['type'] == 'grading_updated':
+            return GradingUpdatedItemValue(value=event_dict['obj'], devilry_viewrole=self.devilryrole,
+                                           assignment=self.assignment, feedbackset=event_dict['feedbackset'],
+                                           next_grading_points=event_dict['next_grading_points'], group=self.group)
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(FeedbackSetTimelineListBuilderList, self).get_extra_css_classes_list()
@@ -381,6 +386,7 @@ class GradeItemValue(BaseEventItemValue):
 
     def __init__(self, *args, **kwargs):
         self.assignment = kwargs['assignment']
+        self.grade_points = kwargs['grade_points']
         super(GradeItemValue, self).__init__(*args, **kwargs)
 
     @property
@@ -396,5 +402,32 @@ class GradeItemValue(BaseEventItemValue):
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(GradeItemValue, self).get_extra_css_classes_list()
+        css_classes_list.append('devilry-group-feedbackfeed-event-message__grade')
+        return css_classes_list
+
+
+class GradingUpdatedItemValue(BaseEventItemValue):
+    valuealias = 'grading_updated'
+    template_name = 'devilry_group/listbuilder_feedbackfeed/grading_updated_item_value.django.html'
+
+    def __init__(self, *args, **kwargs):
+        self.assignment = kwargs['assignment']
+        self.feedbackset = kwargs['feedbackset']
+        self.next_grading_points = kwargs['next_grading_points']
+        super(GradingUpdatedItemValue, self).__init__(*args, **kwargs)
+
+    @property
+    def group(self):
+        return self.kwargs['group']
+
+    @property
+    def changed_by_user_id(self):
+        return self.grading_updated.updated_by_id
+
+    def get_timeline_datetime(self):
+        return self.value.updated_datetime
+
+    def get_extra_css_classes_list(self):
+        css_classes_list = super(GradingUpdatedItemValue, self).get_extra_css_classes_list()
         css_classes_list.append('devilry-group-feedbackfeed-event-message__grade')
         return css_classes_list
