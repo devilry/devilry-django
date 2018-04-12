@@ -1,0 +1,38 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load devilry_core_tags %}
+{% load cradmin_icon_tags %}
+
+{% block title-content %}
+    {{ me.assignment.long_name }}
+{% endblock title-content %}
+
+{% block below-description %}
+    <div class="devilry-admin-groupitem-deadline">
+        {% trans 'Deadline' context 'devilry admin studentfeedbackfeed wizard' %}:
+        <strong>{{ me.group.cached_data.last_feedbackset.deadline_datetime|date:"DATETIME_FORMAT" }}</strong>
+    </div>
+    <div class="devilry-admin-groupitem-by-assignment-periodname">
+        {% trans 'Semester' context 'devilry admin studentfeedbackfeed wizard' %}: <strong>{{ me.period.long_name }}</strong>
+        {% if not me.period.is_active %}
+            <strong class="text-warning">[{% trans 'Inactive' context 'devilry admin studentfeedbackfeed wizard' %}]</strong>
+        {% endif %}
+    </div>
+    <div class="devilry-admin-groupitem-by-assignment-subjectname">
+        {% trans 'Subject' context 'devilry admin studentfeedbackfeed wizard' %}:
+        <strong>{{ me.subject.long_name }}</strong>
+    </div>
+    {% if me.group.is_corrected %}
+        <p class="devilry-cradmin-groupitemvalue-grade">
+            <span class="sr-only">{% trans "Grade" context "group grade" %}:</span>
+            {% devilry_grade_full me.assignment me.group.published_grading_points me.get_devilryrole %}
+        </p>
+    {% else %}
+        <p class="devilry-cradmin-groupitemvalue-status">
+            <span class="devilry-cradmin-groupitemvalue-status-title sr-only">
+                {% trans "Status" context "group status" %}:
+            </span>
+            {% devilry_groupstatus me.group %}
+        </p>
+    {% endif %}
+{% endblock below-description %}

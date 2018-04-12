@@ -1,0 +1,39 @@
+{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
+
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block title %}
+    {{ pagetitle }}
+{% endblock title %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock pageheader-outer-extraclasses %}
+
+{% block pageheader-inner %}
+    {{ block.super }}
+    <a href="{% cradmin_instanceindex_url appname='overview' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        <div class="devilry-dashboard-container">
+            <p class="text-muted">
+                {% blocktrans trimmed %}
+                    Search for the user you wish to see the feedbackfeed for. When you find the user you are
+                    looking for, click on the user wich will take you to the next step. In the next step you will be
+                    able to search in all the active assignments for the student.
+                {% endblocktrans %}
+            </p>
+        </div>
+    </div>
+    {{ block.super }}
+{% endblock content %}

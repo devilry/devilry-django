@@ -26,4 +26,22 @@
         </div>
     {% endif %}
     {{ block.super }}
+    <div class="container">
+        <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
+            <h2>{% trans "Student feedbackfeed wizard" %}</h2>
+            <p class="text-muted">
+                {% blocktrans trimmed %}
+                    You can easily find the feedbackfeed of a student by going through this wizard. You will be able to
+                    search for a student and choose between all active assignments for that student and proceed to the
+                    feedbackfeed for that student.
+                {% endblocktrans %}
+            </p>
+            <p>
+                <a href="{% cradmin_instance_appindex_url appname='studentfeedbackfeedwizard' %}"
+                        class="btn btn-default btn-sm">
+                    {% trans "Start" %}
+                </a>
+            </p>
+        </div>
+    </div>
 {% endblock content %}
