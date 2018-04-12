@@ -49,7 +49,7 @@ class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
     selected_target_renderer = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
 
     #: A descriptive name for the items selected.
-    descriptive_item_name = ugettext_lazy('assignment group')
+    descriptive_item_name = ugettext_lazy('groups')
 
     def get_move_deadline_text(self):
         return pgettext_lazy(
@@ -60,7 +60,7 @@ class AssignmentGroupTargetRenderer(multiselect2.target_renderer.Target):
     def get_submit_button_text(self):
         return pgettext_lazy(
             'assignment_group_target_renderer submit_button_text',
-            'New attempt for selected %(what)s'
+            'Continue with selected %(what)s'
         ) % {'what': self.descriptive_item_name}
 
     def get_with_items_title(self):
