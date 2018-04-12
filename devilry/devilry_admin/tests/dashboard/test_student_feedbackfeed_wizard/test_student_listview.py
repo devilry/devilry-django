@@ -13,7 +13,7 @@ class TestStudentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_title(self):
         mockresponse = self.mock_http200_getrequest_htmls()
-        self.assertEqual(mockresponse.selector.one('title').alltext_normalized, 'Users')
+        self.assertEqual(mockresponse.selector.one('title').alltext_normalized, 'Select a student')
 
     def test_list_users(self):
         mommy.make(settings.AUTH_USER_MODEL, shortname='a', fullname='A')
@@ -24,7 +24,7 @@ class TestStudentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
         shortname_list = [element.alltext_normalized for element in mockresponse.selector.list(
             '.django-cradmin-listbuilder-itemvalue-titledescription-description')]
-        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 3)
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 4)
         self.assertIn('A', fullname_list)
         self.assertIn('B', fullname_list)
         self.assertIn('C', fullname_list)
@@ -60,9 +60,3 @@ class TestStudentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mock.call(appname='overview', args=(), kwargs={}, viewname='INDEX'),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
         )
-
-    def test_user_frame_link(self):
-        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='shortnamea', fullname='FullnameA')
-        mockresponse = self.mock_http200_getrequest_htmls()
-        self.assertEqual(mockresponse.selector.one('.django-cradmin-listbuilder-itemframe-link')['href'],
-                         '/devilry_admin/studentfeedbackfeedwizard/groups/{}'.format(testuser.id))

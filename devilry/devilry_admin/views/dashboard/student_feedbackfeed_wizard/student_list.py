@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.utils.translation import ugettext_lazy
 
 from django_cradmin.crinstance import reverse_cradmin_url
 from django_cradmin.viewhelpers import listbuilderview
@@ -29,6 +30,9 @@ class UserListView(listbuilderview.FilterListMixin, listbuilderview.View):
     filterview_name = 'user_filter'
     value_renderer_class = user.ItemValue
 
+    def get_pagetitle(self):
+        return ugettext_lazy('Select a student')
+
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
             self.filterview_name,
@@ -38,5 +42,4 @@ class UserListView(listbuilderview.FilterListMixin, listbuilderview.View):
         filterlist.append(filters.UserSearchExtension())
 
     def get_unfiltered_queryset_for_role(self, role):
-        return get_user_model().objects\
-            .exclude(id=self.request.user.id)
+        return get_user_model().objects.all()

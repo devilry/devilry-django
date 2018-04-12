@@ -27,7 +27,7 @@
         {% endif %}
     </div>
 
-    {% if me.devilry_viewrole == 'examiner' %}
+    {% if me.devilry_viewrole == 'examiner' or 'admin' in me.devilry_viewrole %}
         {% if me.feedbackset.group.cached_data.last_feedbackset == me.feedbackset %}
             <div class="header-buttons">
                 {% if me.feedbackset.group.cached_data.last_published_feedbackset_is_last_feedbackset and me.feedbackset.group.cached_data.last_published_feedbackset == me.feedbackset %}
