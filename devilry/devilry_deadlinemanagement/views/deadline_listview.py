@@ -31,6 +31,12 @@ class SelectDeadlineItemValue(listbuilder.itemvalue.TitleDescription):
                 count += 1
         return count
 
+    def get_cradmin_instance_id_for_feedbackfeed(self):
+        from devilry.devilry_group.cradmin_instances import crinstance_admin, crinstance_examiner
+        if self.devilryrole.endswith('admin'):
+            return crinstance_admin.AdminCrInstance.id
+        return crinstance_examiner.ExaminerCrInstance.id
+
     def get_title(self):
         formatted_deadline = defaultfilters.date(timezone.localtime(self.value), 'DATETIME_FORMAT')
         if self.value == self.assignment.first_deadline:
