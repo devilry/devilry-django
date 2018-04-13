@@ -440,8 +440,9 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                 }
             })
         cached_group = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
-        feedback_comments = group_models.GroupComment.objects.all().filter(
-                feedback_set_id=cached_group.last_published_feedbackset.id)
+        feedback_comments = group_models.GroupComment.objects.all()\
+            .filter(feedback_set_id=cached_group.last_published_feedbackset.id)\
+            .order_by('published_datetime')
         self.assertEqual(2, len(feedback_comments))
         self.assertEqual(feedback_comments[0].text, 'part of grading')
         self.assertEqual(feedback_comments[1].text, 'post comment')
