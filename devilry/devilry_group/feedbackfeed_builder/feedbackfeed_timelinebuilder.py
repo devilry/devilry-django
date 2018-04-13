@@ -93,9 +93,7 @@ class FeedbackFeedTimelineBuilder(AbstractTimelineBuilder, builder_base.Feedback
         for feedback_set in self.feedbacksets:
             feedback_set_event = FeedbackSetEventTimeLine(
                 feedback_set=feedback_set,
-                assignment=self.assignment,
-                candidate_map=self._candidate_map,
-                examiner_map=self._examiner_map)
+                assignment=self.assignment)
             feedback_set_event.build()
             self._add_event_item_to_timeline(
                 datetime_obj=feedback_set.created_datetime,
@@ -110,11 +108,9 @@ class FeedbackFeedTimelineBuilder(AbstractTimelineBuilder, builder_base.Feedback
 class FeedbackSetEventTimeLine(AbstractTimelineBuilder):
     """
     """
-    def __init__(self, feedback_set, assignment, candidate_map, examiner_map):
+    def __init__(self, feedback_set, assignment):
         super(FeedbackSetEventTimeLine, self).__init__()
         self.feedback_set = feedback_set
-        self.examiner_map = examiner_map
-        self.candidate_map = candidate_map
         self.assignment = assignment
         self.time_line = {}
 
@@ -166,11 +162,6 @@ class FeedbackSetEventTimeLine(AbstractTimelineBuilder):
             "obj": group_comment,
             "related_deadline": self.feedback_set.current_deadline(assignment=self.assignment),
         }
-        user_id = group_comment.user.id if group_comment.user else None
-        if group_comment.user_role == Comment.USER_ROLE_STUDENT:
-            event_dict['candidate'] = self.candidate_map.get(user_id, None)
-        elif group_comment.user_role == Comment.USER_ROLE_EXAMINER:
-            event_dict['examiner'] = self.examiner_map.get(user_id, None)
         self._add_event_item_to_timeline(
             datetime_obj=group_comment.published_datetime,
             event_dict=event_dict

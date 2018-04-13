@@ -99,13 +99,11 @@ class FeedbackSetTimelineListBuilderList(listbuilder.base.List):
             if group_comment.user_role == comment_models.Comment.USER_ROLE_STUDENT:
                 return StudentGroupCommentItemValue(value=group_comment,
                                                     devilry_viewrole=self.devilryrole,
-                                                    user_obj=event_dict.get('candidate'),
                                                     assignment=self.assignment,
                                                     group_user_lookup=self.group_user_lookup)
             elif group_comment.user_role == comment_models.Comment.USER_ROLE_EXAMINER:
                 return ExaminerGroupCommentItemValue(value=group_comment,
                                                      devilry_viewrole=self.devilryrole,
-                                                     user_obj=event_dict.get('examiner'),
                                                      assignment=self.assignment,
                                                      group_user_lookup=self.group_user_lookup)
             elif group_comment.user_role == comment_models.Comment.USER_ROLE_ADMIN:
@@ -272,7 +270,6 @@ class BaseGroupCommentItemValue(BaseItemValue):
 
     def __init__(self, *args, **kwargs):
         super(BaseGroupCommentItemValue, self).__init__(*args, **kwargs)
-        self.user_obj = kwargs.get('user_obj')
         self.assignment = kwargs.get('assignment')
         self.group_user_lookup = kwargs.get('group_user_lookup')
 
