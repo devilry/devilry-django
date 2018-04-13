@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import collections
+
 from django.template import defaultfilters
 from django.utils import timezone
 from django.utils.translation import pgettext_lazy, ugettext_lazy
@@ -90,7 +92,7 @@ class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
             (OrderedDict): Ordered dictionary of deadlines(keys) and list of groups(values).
         """
         queryset = self.get_queryset_for_role(role=self.assignment)
-        deadlines_dict = {}
+        deadlines_dict = collections.OrderedDict()
         for group in queryset:
             deadline = group.cached_data.last_feedbackset.deadline_datetime
             if deadline not in deadlines_dict:
