@@ -444,7 +444,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                 feedback_set=cached_group.last_published_feedbackset)
 
         self.assertEquals(2, len(feedback_comments))
-        self.assertEquals(feedback_comments[0], comment2)
+        self.assertEquals(feedback_comments[0].id, comment2.id)
         self.assertEquals(feedback_comments[1].text, 'post comment')
         self.assertEquals(cached_group.last_published_feedbackset, feedbackset_last)
 
