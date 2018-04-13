@@ -413,21 +413,21 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=testgroup,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
-        student = mommy.make('core.Candidate',
-                             assignment_group=testgroup,
-                             relatedstudent=mommy.make('core.RelatedStudent'))
-        mommy.make('devilry_group.GroupComment',
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent=mommy.make('core.RelatedStudent'))
+        comment1 = mommy.make('devilry_group.GroupComment',
                    text='test text 1',
                    user=examiner.relatedexaminer.user,
                    user_role='examiner',
                    part_of_grading=True,
                    feedback_set=feedbackset_first)
-        comment2 = mommy.make('devilry_group.GroupComment',
-                              text='test text 2',
-                              user=examiner.relatedexaminer.user,
-                              user_role='examiner',
-                              part_of_grading=True,
-                              feedback_set=feedbackset_last)
+        feedback_comment = mommy.make('devilry_group.GroupComment',
+                                      text='part of grading',
+                                      user=examiner.relatedexaminer.user,
+                                      user_role='examiner',
+                                      part_of_grading=True,
+                                      feedback_set=feedbackset_last)
         self.mock_http302_postrequest(
             cradmin_role=testgroup,
             requestuser=examiner.relatedexaminer.user,
@@ -441,12 +441,11 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
             })
         cached_group = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
         feedback_comments = group_models.GroupComment.objects.all().filter(
-                feedback_set=cached_group.last_published_feedbackset)
-
-        self.assertEquals(2, len(feedback_comments))
-        self.assertEquals(feedback_comments[0].id, comment2.id)
-        self.assertEquals(feedback_comments[1].text, 'post comment')
-        self.assertEquals(cached_group.last_published_feedbackset, feedbackset_last)
+                feedback_set_id=cached_group.last_published_feedbackset.id)
+        self.assertEqual(2, len(feedback_comments))
+        self.assertEqual(feedback_comments[0].text, 'part of grading')
+        self.assertEqual(feedback_comments[1].text, 'post comment')
+        self.assertEqual(cached_group.last_published_feedbackset, feedbackset_last)
 
     def test_post_publish_feedbackset_after_deadline_test_publish_drafts_part_of_grading(self):
         assignment = mommy.make_recipe(
