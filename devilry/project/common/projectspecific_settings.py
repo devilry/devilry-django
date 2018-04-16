@@ -150,3 +150,7 @@ DEVILRY_RESTRICT_NUMBER_OF_FILES_PER_DIRECTORY = False
 #: later change this setting to ``test2.com``, the peter from test2.com will gain
 #: access to the Devilry account for the peter from test1.com!
 DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX = None
+
+
+#: If this is set to a value, we will use this as the favicon.
+DEVILRY_BRANDING_FAV_ICON_PATH = None
