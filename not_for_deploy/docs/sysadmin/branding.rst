@@ -99,10 +99,10 @@ The format is exactly the same as for ``footer.django.html`` (see :ref:`branding
 
 Add a custom favicon
 ====================
-You can set your own favicon by adding the path to the png-file in your ``~/devilrydeploy/devilry_settings.py``
+You can set your own favicon by adding the url to the png-file in your ``~/devilrydeploy/devilry_settings.py``
 file::
 
-    DEVILRY_BRANDING_FAV_ICON_PATH = 'path/to/favicon.png'
+    DEVILRY_BRANDING_FAV_ICON_PATH = 'url/to/favicon.png'
 
 
 
