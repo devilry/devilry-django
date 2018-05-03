@@ -1,4 +1,4 @@
-from allauth.socialaccount.providers.dataporten.provider import DataportenProvider
+from devilry.devilry_dataporten_allauth.provider import DevilryDataportenProvider
 from django.conf import settings
 
 
@@ -67,7 +67,7 @@ class DataPortenUserUpdater(AbstractUserUpdater):
 
 
 socialaccount_updaters = {
-    DataportenProvider.id: DataPortenUserUpdater
+    DevilryDataportenProvider.id: DataPortenUserUpdater
 }
 
 
