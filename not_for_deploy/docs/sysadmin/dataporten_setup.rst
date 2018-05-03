@@ -12,7 +12,7 @@ Make sure your ``AUTHENTICATION_BACKENDS`` setting includes
 Example::
 
     INSTALLED_APPS += [
-        'allauth.socialaccount.providers.dataporten',
+        'devilry.devilry_dataporten_allauth',
     ]
 
     AUTHENTICATION_BACKENDS = [
