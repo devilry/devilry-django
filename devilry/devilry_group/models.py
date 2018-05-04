@@ -17,6 +17,28 @@ from devilry.apps.core.models.custom_db_fields import ShortNameField, LongNameFi
 from devilry.devilry_comment import models as comment_models
 
 
+class HardDeadlineExpiredException(Exception):
+    """
+    Should be raised regarding GroupComments
+    if the deadline handling is hard, and the deadline has expired.
+    """
+    def __init__(self, message, *args, **kwargs):
+        if not message:
+            raise ValueError('Message required. HardDeadlineExpiredException(message="Some message")')
+        self.message = message
+
+
+class PeriodExpiredException(Exception):
+    """
+    Should be raised regarding GroupComments if the
+    period(semester) has expired.
+    """
+    def __init__(self, message, *args, **kwargs):
+        if not message:
+            raise ValueError('Message required. PeriodExpiredException(message="Some message")')
+        self.message = message
+
+
 class AbstractGroupCommentQuerySet(models.QuerySet):
     """
     Base class for QuerySets for :class:`.AbstractGroupComment`.
@@ -438,6 +460,42 @@ class FeedbackSet(models.Model):
             user=user
         ).order_by('created_datetime')
 
+    def can_add_comment(self, comment_user_role, assignment=None):
+        """
+        Check if comments and uploads should be disabled for this feedback set
+        for the role of the comment.
+
+        This method raises a custom exception based on what why comments and uploads are not allowed:
+
+        Raises :class:`~.HardDeadlineExpiredException` if the assignment for this feedback set has deadline
+        handling set to hard, students can not upload or add comments.
+
+        Raises :class:`~.PeriodExpiredException` if the period has expired, no one can upload or
+        add comments.
+
+        A message will be provided with the exceptions.
+
+        Args:
+            comment_user_role: One of the choices for :class:`~devilry.devilry_comment.models.Comment.user_role`.
+                ``Comment.USER_ROLE_STUDENT``, ``Comment.USER_ROLE_EXAMINER`` or ``Comment.USER_ROLE_ADMIN``.
+            assignment: The assignment for this feedback set.
+        """
+        if not assignment:
+            assignment = self.group.assignment
+        period = assignment.period
+        now = timezone.now()
+        if period.start_time > now or period.end_time < now:
+            raise PeriodExpiredException(
+                message=ugettext_lazy('This assignment is on an inactive semester. '
+                                      'File upload and commenting is disabled.')
+            )
+        if assignment.deadline_handling_is_hard() and self.deadline_datetime < now:
+            if comment_user_role == comment_models.Comment.USER_ROLE_STUDENT:
+                raise HardDeadlineExpiredException(
+                    message=ugettext_lazy('Hard deadlines are enabled for this assignment. '
+                                          'File upload and commenting is disabled.')
+                )
+
     def publish(self, published_by, grading_points, gradeform_data_json=''):
         """
         Publishes this FeedbackSet and comments that belongs to this it and that are
@@ -720,6 +778,15 @@ class GroupComment(AbstractGroupComment):
 
     def __unicode__(self):
         return u"{} - {} - {}".format(self.feedback_set, self.user_role, self.user)
+
+    def clean(self):
+        try:
+            self.feedback_set.can_add_comment(
+                comment_user_role=self.user_role,
+                assignment=self.feedback_set.group.parentnode)
+        except (HardDeadlineExpiredException, PeriodExpiredException) as e:
+            raise ValidationError(message=e.message)
+        super(GroupComment, self).clean()
 
 
 class ImageAnnotationCommentQuerySet(AbstractGroupCommentQuerySet):
