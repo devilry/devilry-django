@@ -36,7 +36,7 @@ class AssignmentDeadlineHandlingUpdateView(OnlySaveButtonMixin, UpdateView):
             (
                 Assignment.DEADLINEHANDLING_HARD,
                 pgettext_lazy('deadline handling update hard choice',
-                              'HARD. Students can not comment or add delivieries after the deadline has expired.')
+                              'HARD. Students can not add deliveries or comment after the deadline has expired.')
             ),
         ]
 

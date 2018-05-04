@@ -121,7 +121,7 @@ class App(crapp.App):
                   AssignmentAnonymizationmodeUpdateView.as_view(),
                   name="update_anonymizationmode"),
 
-        # crapp.Url(r'^update_deadlinehandling/(?P<pk>\d+)',
-        #           AssignmentDeadlineHandlingUpdateView.as_view(),
-        #           name='update_deadline_handling')
+        crapp.Url(r'^update_deadlinehandling/(?P<pk>\d+)',
+                  AssignmentDeadlineHandlingUpdateView.as_view(),
+                  name='update_deadline_handling')
     ]
