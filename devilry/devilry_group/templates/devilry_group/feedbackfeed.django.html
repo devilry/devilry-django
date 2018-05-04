@@ -55,10 +55,14 @@
             {% cradmin_render_renderable listbuilder_list %}
             {% block pre_form %}{% endblock pre_form %}
             {% block navigation %}{% endblock %}
-            {% block form %}
-                {% crispy form formhelper %}
-                {{ form.media }}
-            {% endblock form %}
+            {% if comment_form_disabled %}
+                {% include "devilry_group/include/comments_disabled.django.html" %}
+            {% else %}
+                {% block form %}
+                    {% crispy form formhelper %}
+                    {{ form.media }}
+                {% endblock form %}
+            {% endif %}
             {% block post_form %}{% endblock post_form %}
         {% endblock feed %}
     </div>

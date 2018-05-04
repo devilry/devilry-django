@@ -2,6 +2,7 @@ import unittest
 
 import mock
 from django.conf import settings
+from django.contrib import messages
 
 from django.utils import formats
 from django.utils import timezone
@@ -217,6 +218,53 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
         self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
                          group.assignment.get_path())
+
+    def test_semester_expired_comment_form_not_rendered(self):
+        # Test comment/upload form is not rendered if the semester has expired.
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_old'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-form-wrapper'))
+
+    def test_semester_expired_comment_form_not_rendered_message_box(self):
+        # Test comment/upload form is not rendered if the semester has expired.
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_old'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-form-wrapper'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-form-disabled'))
+        self.assertEqual(mockresponse.selector.one('.devilry-feedbackfeed-form-disabled').alltext_normalized,
+                         'File uploads and comments disabled This assignment is on an inactive semester. '
+                         'File upload and commenting is disabled.')
+
+    def test_semester_expired_post_django_message(self):
+        # Test comment/upload form post django message if the semester has expired.
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_old'))
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            viewkwargs={'pk': test_feedbackset.group.id},
+            messagesmock=messagesmock,
+            requestkwargs={
+                'data': {
+                    'text': 'test',
+                    'student_add_comment': 'unused value',
+                }
+            })
+        messagesmock.add.assert_called_once_with(
+            messages.WARNING, 'This assignment is on an inactive semester. File upload and commenting is disabled.', '')
+        self.assertEqual(group_models.GroupComment.objects.count(), 0)
 
     def test_get_event_without_any_deadlines_expired(self):
         # tests that when a feedbackset has been created and no first deadlines given, either on Assignment

@@ -59,7 +59,8 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-discuss-button'))
 
     def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choice_add_comment_for_examiners_and_admins_button(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group,
@@ -67,7 +68,8 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
         self.assertTrue(mockresponse.selector.exists('#submit-id-examiner_publish_feedback'))
 
     def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choice_add_comment_to_feedbackdraft_button(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group,
@@ -164,7 +166,8 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
                                                requestuser=examiner.relatedexaminer.user)
 
     def test_post_feedbackdraft_comment_with_text(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=testgroup,

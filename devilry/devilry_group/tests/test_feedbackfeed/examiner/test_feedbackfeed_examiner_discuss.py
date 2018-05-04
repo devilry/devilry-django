@@ -230,7 +230,8 @@ class TestFeedbackfeedExaminerPublicDiscuss(TestCase, TestFeedbackfeedExaminerDi
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_examiner_add_comment_button(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup,
@@ -243,7 +244,8 @@ class TestFeedbackfeedExaminerPublicDiscuss(TestCase, TestFeedbackfeedExaminerDi
         )
 
     def test_get_examiner_form_heading(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup,
@@ -257,7 +259,8 @@ class TestFeedbackfeedExaminerPublicDiscuss(TestCase, TestFeedbackfeedExaminerDi
         )
 
     def test_post_comment_mail_sent_to_everyone_in_group_sanity(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         examiner_email = mommy.make('devilry_account.UserEmail', user=examiner.relatedexaminer.user,
@@ -304,7 +307,8 @@ class TestFeedbackfeedExaminerPublicDiscuss(TestCase, TestFeedbackfeedExaminerDi
 
 
     def test_post_first_attempt_unpublished_comment_with_text(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         self.mock_http302_postrequest(
@@ -323,7 +327,8 @@ class TestFeedbackfeedExaminerPublicDiscuss(TestCase, TestFeedbackfeedExaminerDi
         self.assertEquals('This is a comment', posted_comment.text)
 
     def test_post_first_attempt_published_comment_with_text(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         group_mommy.feedbackset_first_attempt_published(group=testgroup)
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         self.mock_http302_postrequest(
@@ -342,7 +347,8 @@ class TestFeedbackfeedExaminerPublicDiscuss(TestCase, TestFeedbackfeedExaminerDi
         self.assertEquals('This is a comment', posted_comment.text)
 
     def test_post_new_attempt_unpublished_comment_with_text(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testfeedbackset = group_mommy.feedbackset_new_attempt_unpublished(group=testgroup)
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         self.mock_http302_postrequest(
@@ -364,7 +370,8 @@ class TestFeedbackfeedExaminerPublicDiscuss(TestCase, TestFeedbackfeedExaminerDi
         self.assertEquals('This is a comment', posted_comment.text)
 
     def test_post_new_attempt_published_comment_with_text(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testfeedbackset = group_mommy.feedbackset_new_attempt_published(group=testgroup)
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         self.mock_http302_postrequest(
@@ -393,7 +400,8 @@ class TestFeedbackfeedExaminerWithAdminDiscuss(TestCase, TestFeedbackfeedExamine
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_examiner_add_comment_button(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup,
@@ -406,7 +414,8 @@ class TestFeedbackfeedExaminerWithAdminDiscuss(TestCase, TestFeedbackfeedExamine
         )
 
     def test_get_examiner_form_heading(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup,
@@ -420,7 +429,8 @@ class TestFeedbackfeedExaminerWithAdminDiscuss(TestCase, TestFeedbackfeedExamine
         )
 
     def test_post_comment_mail_only_sent_to_examiners(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         examiner_email = mommy.make('devilry_account.UserEmail', user=examiner.relatedexaminer.user,
@@ -463,7 +473,8 @@ class TestFeedbackfeedExaminerWithAdminDiscuss(TestCase, TestFeedbackfeedExamine
         self.assertNotIn(examiner_email.email, recipient_list)
 
     def test_post_first_attempt_unpublished_comment_with_text(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         self.mock_http302_postrequest(
@@ -482,7 +493,8 @@ class TestFeedbackfeedExaminerWithAdminDiscuss(TestCase, TestFeedbackfeedExamine
         self.assertEquals('This is a comment', posted_comment.text)
 
     def test_post_first_attempt_published_comment_with_text(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         group_mommy.feedbackset_first_attempt_published(group=testgroup)
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         self.mock_http302_postrequest(
@@ -501,7 +513,8 @@ class TestFeedbackfeedExaminerWithAdminDiscuss(TestCase, TestFeedbackfeedExamine
         self.assertEquals('This is a comment', posted_comment.text)
 
     def test_post_new_attempt_unpublished_comment_with_text(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testfeedbackset = group_mommy.feedbackset_new_attempt_unpublished(group=testgroup)
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         self.mock_http302_postrequest(
@@ -523,7 +536,8 @@ class TestFeedbackfeedExaminerWithAdminDiscuss(TestCase, TestFeedbackfeedExamine
         self.assertEquals('This is a comment', posted_comment.text)
 
     def test_post_new_attempt_published_comment_with_text(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testfeedbackset = group_mommy.feedbackset_new_attempt_published(group=testgroup)
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         self.mock_http302_postrequest(
@@ -555,7 +569,8 @@ class TestFeedbackfeedPublicDiscussFileUploadExaminer(TestCase,
     def test_comment_without_text_or_file_visibility_everyone(self):
         # Tests that error message pops up if trying to post a comment without either text or file.
         # Posting comment with visibility visible to everyone
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testexaminer = mommy.make('core.Examiner', assignmentgroup=testfeedbackset.group)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testexaminer.assignmentgroup,
@@ -575,7 +590,8 @@ class TestFeedbackfeedPublicDiscussFileUploadExaminer(TestCase,
     def test_upload_single_file_visibility_everyone(self):
         # Test that a CommentFile is created on upload.
         # Posting comment with visibility visible to everyone
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfile(
             user=testexaminer.relatedexaminer.user)
@@ -595,7 +611,8 @@ class TestFeedbackfeedPublicDiscussFileUploadExaminer(TestCase,
     def test_upload_single_file_content_visibility_everyone(self):
         # Test the content of a CommentFile after upload.
         # Posting comment with visibility visible to everyone
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[
@@ -625,7 +642,8 @@ class TestFeedbackfeedPublicDiscussFileUploadExaminer(TestCase,
     def test_upload_multiple_files_visibility_everyone(self):
         # Test the content of CommentFiles after upload.
         # Posting comment with visibility visible to everyone
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[
@@ -652,7 +670,8 @@ class TestFeedbackfeedPublicDiscussFileUploadExaminer(TestCase,
 
     def test_upload_multiple_files_contents_visibility_everyone(self):
         # Test the content of a CommentFile after upload.
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[
@@ -700,7 +719,8 @@ class TestFeedbackfeedPublicDiscussFileUploadExaminer(TestCase,
 
     def test_upload_files_and_comment_text(self):
         # Test the content of a CommentFile after upload.
-        testfeedbackset = group_mommy.feedbackset_first_attempt_published()
+        testfeedbackset = group_mommy.feedbackset_first_attempt_published(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[
@@ -735,7 +755,8 @@ class TestFeedbackfeedExaminerWithAdminDiscussFileUpload(TestCase,
     def test_comment_without_text_or_file_visibility_examiners_and_admins(self):
         # Tests that error message pops up if trying to post a comment without either text or file.
         # Posting comment with visibility for examiners and admins only
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=testexaminer.assignmentgroup,
@@ -754,7 +775,8 @@ class TestFeedbackfeedExaminerWithAdminDiscussFileUpload(TestCase,
     def test_upload_single_file_visibility_examiners_and_admins(self):
         # Test that a CommentFile is created on upload.
         # Posting comment with visibility visible to examiners and admins
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfile(
             user=testexaminer.relatedexaminer.user)
@@ -776,7 +798,8 @@ class TestFeedbackfeedExaminerWithAdminDiscussFileUpload(TestCase,
     def test_upload_single_file_content_visibility_examiners_and_admins(self):
         # Test the content of a CommentFile after upload.
         # Posting comment with visibility visible to examiners and admins
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[
@@ -807,7 +830,8 @@ class TestFeedbackfeedExaminerWithAdminDiscussFileUpload(TestCase,
     def test_upload_multiple_files_visibility_examiners_and_admins(self):
         # Test the content of CommentFiles after upload.
         # Posting comment with visibility visible to everyone
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[
@@ -835,7 +859,8 @@ class TestFeedbackfeedExaminerWithAdminDiscussFileUpload(TestCase,
 
     def test_upload_multiple_files_contents_visibility_examiners_and_admins(self):
         # Test the content of a CommentFile after upload.
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testexaminer = mommy.make('core.examiner', assignmentgroup=testfeedbackset.group)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[

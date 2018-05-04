@@ -1,3 +1,5 @@
+import mock
+from django.conf import settings
 from model_mommy import mommy
 
 from django.utils import timezone
@@ -14,12 +16,33 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
 
     Add tests for functionality and ui that all examiner views share.
     """
+    def __mock_cradmin_instance(self):
+        mockinstance = mock.MagicMock()
+        mockinstance.get_devilryrole_for_requestuser.return_value = 'examiner'
+        return mockinstance
+
     def test_get(self):
         examiner = mommy.make('core.Examiner')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
                                                           requestuser=examiner.relatedexaminer.user)
         self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
                           examiner.assignmentgroup.assignment.get_path())
+
+    def test_assignment_deadline_hard_expired_comment_form_rendered(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        deadline_datetime = timezone.now() - timezone.timedelta(days=1)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      deadline_datetime=deadline_datetime,
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD,
+                                      group__parentnode__parentnode=mommy.make_recipe(
+                                          'devilry.apps.core.period_active'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertTrue(mockresponse.selector.exists('.django-cradmin-form-wrapper'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-feedbackfeed-form-disabled'))
 
     def test_get_feedbackfeed_anonymous_student_semi(self):
         testassignment = mommy.make('core.Assignment',

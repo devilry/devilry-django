@@ -6,6 +6,7 @@ import mock
 from django import http
 from django.conf import settings
 from django.http import Http404
+from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
@@ -25,6 +26,11 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
     """
     viewclass = None
 
+    def __mock_cradmin_instance(self):
+        mockinstance = mock.MagicMock()
+        mockinstance.get_devilryrole_for_requestuser.return_value = 'admin'
+        return mockinstance
+
     def test_get(self):
         candidate = mommy.make('core.Candidate',
                                relatedstudent=mommy.make('core.RelatedStudent'))
@@ -32,6 +38,22 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
                                                           requestuser=candidate.relatedstudent.user)
         self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
                           candidate.assignment_group.assignment.get_path())
+
+    def test_assignment_deadline_hard_expired_comment_form_rendered(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        deadline_datetime = timezone.now() - timezone.timedelta(days=1)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      deadline_datetime=deadline_datetime,
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD,
+                                      group__parentnode__parentnode=mommy.make_recipe(
+                                          'devilry.apps.core.period_active'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertTrue(mockresponse.selector.exists('.django-cradmin-form-wrapper'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-feedbackfeed-form-disabled'))
 
     def test_get_examiner_discuss_tab_buttons(self):
         testgroup = mommy.make('core.AssignmentGroup')

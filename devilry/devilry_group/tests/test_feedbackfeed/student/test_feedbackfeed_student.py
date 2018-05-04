@@ -2,6 +2,7 @@ from datetime import timedelta
 
 import mock
 from django.conf import settings
+from django.contrib import messages
 from django.core import mail
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -31,6 +32,11 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
+    def __mock_cradmin_instance(self):
+        mockinstance = mock.MagicMock()
+        mockinstance.get_devilryrole_for_requestuser.return_value = 'student'
+        return mockinstance
+
     def test_get(self):
         candidate = mommy.make('core.Candidate',
                                relatedstudent=mommy.make('core.RelatedStudent'))
@@ -39,6 +45,67 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
                           candidate.assignment_group.assignment.get_path())
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
+
+    def test_assignment_deadline_hard_comment_form_not_rendered(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        deadline_datetime = timezone.now() - timezone.timedelta(days=1)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      deadline_datetime=deadline_datetime,
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD,
+                                      group__parentnode__parentnode=mommy.make_recipe(
+                                          'devilry.apps.core.period_active'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-form-wrapper'))
+
+    def test_assignment_deadline_hard_info_box(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        deadline_datetime = timezone.now() - timezone.timedelta(days=1)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      deadline_datetime=deadline_datetime,
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD,
+                                      group__parentnode__parentnode=mommy.make_recipe(
+                                          'devilry.apps.core.period_active'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-form-wrapper'))
+        self.assertEqual(mockresponse.selector.one('.devilry-feedbackfeed-form-disabled').alltext_normalized,
+                         'File uploads and comments disabled Hard deadlines are enabled for this assignment. '
+                         'File upload and commenting is disabled.')
+
+    def test_post_student_assignment_deadline_hard_expired_django_message(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        deadline_datetime = timezone.now() - timezone.timedelta(days=1)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      deadline_datetime=deadline_datetime,
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD,
+                                      group__parentnode__parentnode=mommy.make_recipe(
+                                          'devilry.apps.core.period_active'))
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            viewkwargs={'pk': test_feedbackset.group.id},
+            cradmin_instance=self.__mock_cradmin_instance(),
+            messagesmock=messagesmock,
+            requestkwargs={
+                'data': {
+                    'text': 'test',
+                    'student_add_comment': 'unused value',
+                }
+            })
+        messagesmock.add.assert_called_once_with(
+            messages.WARNING,
+            'Hard deadlines are enabled for this assignment. File upload and commenting is disabled.',
+            ''
+        )
+        self.assertEqual(group_models.GroupComment.objects.count(), 0)
 
     def test_feedbackfeed_project_group_button_visible_if_only_one_student_student_can_create_group(self):
         testassignment = mommy.make('core.Assignment', students_can_create_groups=True)
@@ -449,7 +516,8 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_post_feedbackset_comment_with_text(self):
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group,
                                # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
                                relatedstudent=mommy.make('core.RelatedStudent'))
@@ -467,7 +535,8 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_post_feedbackset_comment_with_text_published_datetime_is_set(self):
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group,
                                # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
                                relatedstudent=mommy.make('core.RelatedStudent'))
@@ -487,7 +556,8 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertEqual('test', group_models.GroupComment.objects.all()[0].text)
 
     def test_post_feedbackset_post_comment_without_text(self):
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=candidate.assignment_group,
@@ -506,7 +576,8 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
 
     def test_post_feedbackset_comment_email_sent_sanity(self):
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
 
         # Create two examiners with mails
         examiner1 = mommy.make('core.Examiner', assignmentgroup=feedbackset.group)
@@ -823,7 +894,8 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
 
     def test_add_comment_without_text_or_file(self):
         # Tests that error message pops up if trying to post a comment without either text or file.
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=candidate.assignment_group,
@@ -843,7 +915,8 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
     def test_upload_file_with_existing_archive_meta_for_feedbackset(self):
         # Tests that FeedbackFeedBaseViews _set_archive_meta_ready_for_delete function
         # marks the existing CompressedArchiveMeta for the FeedbackSet as ready for delete.
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         candidate = mommy.make('core.Candidate', assignment_group=testfeedbackset.group)
         testcomment = mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset)
         commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
@@ -881,7 +954,8 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
 
     def test_upload_single_file(self):
         # Test that a CommentFile is created on upload.
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfile(
             user=candidate.relatedstudent.user)
@@ -901,7 +975,8 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
 
     def test_upload_single_file_content(self):
         # Test the content of a CommentFile after upload.
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[
@@ -929,7 +1004,8 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
 
     def test_upload_multiple_files(self):
         # Test the content of a CommentFile after upload.
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[
@@ -954,7 +1030,8 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
 
     def test_upload_multiple_files_contents(self):
         # Test the content of a CommentFile after upload.
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[
@@ -997,7 +1074,8 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
 
     def test_upload_files_with_comment_text(self):
         # Test the content of a CommentFile after upload.
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[
@@ -1022,7 +1100,8 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
         self.assertEquals('Test comment', group_models.GroupComment.objects.all()[0].text)
 
     def test_comment_only_with_text(self):
-        feedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group,
                                # NOTE: The line below can be removed when relatedstudent field is migrated to null=False
                                relatedstudent=mommy.make('core.RelatedStudent'))

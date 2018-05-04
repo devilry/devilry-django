@@ -6,8 +6,10 @@ from xml.sax.saxutils import quoteattr
 
 from crispy_forms import layout
 from django import forms
+from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy
@@ -54,7 +56,9 @@ class GroupCommentForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.group = kwargs.pop('group')
+        self.feedback_set = kwargs.pop('feedback_set')
         super(GroupCommentForm, self).__init__(*args, **kwargs)
+        self.instance.feedback_set = self.feedback_set
 
     @classmethod
     def get_field_layout(cls):
@@ -89,11 +93,37 @@ class FeedbackFeedBaseView(create.CreateView):
         'django-cradmin-bulkfileupload-form': '',
         'django-cradmin-bulkfileupload-form-prevent-window-dragdrop': 'true'
     }
-
     submit_use_label = _('Post comment')
 
     class Meta:
         abstract = True
+
+    def __should_disable_comment_form(self, request):
+        """
+        Check if the file upload and comment form should be disabled.
+
+        Returns a message string or None.
+        """
+        group = request.cradmin_role
+        user_role = request.cradmin_instance.get_devilryrole_for_requestuser()
+        if user_role.endswith('admin'):
+            user_role = group_models.GroupComment.USER_ROLE_ADMIN
+        try:
+            group.cached_data.last_feedbackset.can_add_comment(assignment=group.parentnode, comment_user_role=user_role)
+        except (group_models.HardDeadlineExpiredException, group_models.PeriodExpiredException) as e:
+            return e.message
+        return None
+
+    def post(self, request, *args, **kwargs):
+        disable_comment_form_message = self.__should_disable_comment_form(request=request)
+        if disable_comment_form_message:
+            messages.warning(request=request, message=disable_comment_form_message)
+            return HttpResponseRedirect(request.path_info)
+        return super(FeedbackFeedBaseView, self).post(request=request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        self.form_disabled_message = self.__should_disable_comment_form(request=request)
+        return super(FeedbackFeedBaseView, self).get(request=request, *args, **kwargs)
 
     def get_devilryrole(self):
         """
@@ -112,6 +142,7 @@ class FeedbackFeedBaseView(create.CreateView):
         kwargs = super(FeedbackFeedBaseView, self).get_form_kwargs()
         group = self.request.cradmin_role
         kwargs['group'] = group
+        kwargs['feedback_set'] = group.cached_data.last_feedbackset
         return kwargs
 
     def __build_timeline(self, assignment, feedbackset_queryset):
@@ -153,6 +184,28 @@ class FeedbackFeedBaseView(create.CreateView):
             .filter(id=self.request.cradmin_role.assignment.id)\
             .prefetch_point_to_grade_map().first()
 
+    def __get_form_disabled(self):
+        """
+        Helper function.
+
+        Attribute ``form_disabled_message`` is set when method ``get`` is called and
+        the form should be disabled.
+        """
+        if hasattr(self, 'form_disabled_message'):
+            return self.form_disabled_message is not None
+        return False
+
+    def __get_form_disabled_message(self):
+        """
+        Helper function.
+
+        Attribute ``form_disabled_message`` is set when method ``get`` is called and
+        the form should be disabled.
+        """
+        if hasattr(self, 'form_disabled_message'):
+            return self.form_disabled_message
+        return None
+
     def get_context_data(self, **kwargs):
         """
         Sets the context data needed to render elements in the template.
@@ -166,6 +219,7 @@ class FeedbackFeedBaseView(create.CreateView):
         context = super(FeedbackFeedBaseView, self).get_context_data(**kwargs)
         assignment = self.__get_assignment()
         group = self.request.cradmin_role
+
         # Build the timeline for the feedbackfeed
         builder_queryset = builder_base.get_feedbackfeed_builder_queryset(
                 group,
@@ -193,6 +247,8 @@ class FeedbackFeedBaseView(create.CreateView):
             requestuser=self.request.user
         )
         context['students_can_create_groups'] = assignment.students_can_create_groups_now
+        context['comment_form_disabled'] = self.__get_form_disabled()
+        context['comment_form_disabled_message'] = self.__get_form_disabled_message()
 
         # Build the sidebar using the fetched data from timelinebuilder
         if self.get_available_commentfile_count_for_user() > 0:
