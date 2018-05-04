@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-13 11:45+0200\n"
-"PO-Revision-Date: 2018-04-13 12:09+0200\n"
+"POT-Creation-Date: 2018-05-04 17:32+0200\n"
+"PO-Revision-Date: 2018-05-04 17:36+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -146,6 +146,7 @@ msgstr ""
 "for oppgaven. Se dokumentasjonen til Delivery for mer informasjon."
 
 #: devilry/apps/core/models/assignment.py:440
+#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:48
 msgid "Deadline handling"
 msgstr "Håndtering av innleveringsfrister"
 
@@ -1620,6 +1621,30 @@ msgstr "Anonymisering"
 msgid "Edit anonymization mode"
 msgstr "Rediger anonymiseringsmodus"
 
+#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:52
+msgid ""
+"SOFT. Students can add deliveries after the deadline has expired, but these "
+"might not be considered when an examiner is correcting deliveries."
+msgstr ""
+"Den aktive innleveringsfristen har utgått, men denne oppgaven har myke "
+"frister så du kan fremdeles legge til innleveringer."
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:57
+msgid ""
+"HARD. Students can not add deliveries or comment after the deadline has "
+"expired."
+msgstr ""
+"Jeg vil legge til en innlevering etter at innleveringsfristen har utgått."
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:67
+msgid "Edit deadline handling"
+msgstr "Rediger håndtering av innleveringsfrister"
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:71
+msgctxt "admin assignment overview"
+msgid "You do not have access to change this setting."
+msgstr "Du har ikke tilgang til å endre denne innstillingen."
+
 #: devilry/devilry_admin/templates/devilry_admin/assignment/include/utilities.django.html:8
 #: devilry/devilry_admin/templates/devilry_admin/assignment/passed_previous_period/overview.django.html:8
 #: devilry/devilry_admin/templates/devilry_admin/assignment/passed_previous_period/overview.django.html:12
@@ -2636,10 +2661,11 @@ msgstr ""
 #: devilry/devilry_admin/views/assignment/deadline_handling.py:39
 msgctxt "deadline handling update hard choice"
 msgid ""
-"HARD. Students can not comment or add delivieries after the deadline has "
+"HARD. Students can not add deliveries or comment after the deadline has "
 "expired."
 msgstr ""
-"Jeg vil legge til en innlevering etter at innleveringsfristen har utgått."
+"HARD. Studenter kan ikke legge til innleveringer eller kommentarer etter at "
+"fristen har gått ut."
 
 #: devilry/devilry_admin/views/assignment/deadline_handling.py:50
 msgctxt "assignment config"
@@ -4044,43 +4070,43 @@ msgstr "Rettede grupper ble ekskludert."
 msgid "Groups that have not yet been corrected was excluded."
 msgstr "Grupper som ennå ikke er rettet ble ekskludert."
 
-#: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:30
-#: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:47
+#: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:33
+#: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:50
 #: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:247
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:36
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:48
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:50
 msgid "Move deadline"
 msgstr "Flytt innleveringsfrist"
 
-#: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:36
-#: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:53
+#: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:39
+#: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:56
 msgid "New attempt"
 msgstr "Nytt forsøk"
 
-#: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:39
+#: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:42
 msgid "for all groups"
 msgstr "til alle grupper"
 
-#: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:56
+#: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:59
 msgid "for some groups"
 msgstr "til noen grupper"
 
-#: devilry/devilry_deadlinemanagement/views/deadline_listview.py:37
+#: devilry/devilry_deadlinemanagement/views/deadline_listview.py:45
 #, python-format
 msgid "%(deadline)s (Assignment first deadline)"
 msgstr "%(deadline)s (Oppgavens første innleveringsfrist)"
 
-#: devilry/devilry_deadlinemanagement/views/deadline_listview.py:48
+#: devilry/devilry_deadlinemanagement/views/deadline_listview.py:56
 msgctxt "deadline_list_view select_deadline"
 msgid "Select deadline to manage"
 msgstr "Velg innleveringsfrist som skal administreres"
 
-#: devilry/devilry_deadlinemanagement/views/deadline_listview.py:52
+#: devilry/devilry_deadlinemanagement/views/deadline_listview.py:60
 msgctxt "deadline_list_view select_deadline"
 msgid "Select deadline"
 msgstr "Velg innleveringsfrist"
 
-#: devilry/devilry_deadlinemanagement/views/deadline_listview.py:56
+#: devilry/devilry_deadlinemanagement/views/deadline_listview.py:64
 msgctxt "deadline_list_view select_deadline"
 msgid "Please choose how you would like to manage the deadline."
 msgstr "Vennligst velg hvordan du vil administrere innleveringsfristen."
@@ -4117,7 +4143,7 @@ msgid "test placeholder"
 msgstr "test placeholder"
 
 #: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:248
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:44
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:46
 msgid "Give new attempt"
 msgstr "Gi et nytt forsøk"
 
@@ -5018,51 +5044,51 @@ msgstr ""
 msgid "Number between 0 and {max_points}."
 msgstr "Tall mellom 0 og {max_points}."
 
-#: devilry/devilry_group/models.py:138
+#: devilry/devilry_group/models.py:160
 msgid "A student comment is always visible to everyone"
 msgstr "En kommentar fra en student er alltid synlig for alle"
 
-#: devilry/devilry_group/models.py:143
+#: devilry/devilry_group/models.py:165
 msgid "A examiner comment can only be private if part of grading."
 msgstr ""
 "En kommentar fra en retter kan kun være privat hvis den tilhører "
 "karaktersetting."
 
-#: devilry/devilry_group/models.py:277
+#: devilry/devilry_group/models.py:299
 msgid "first attempt"
 msgstr "første forsøk"
 
-#: devilry/devilry_group/models.py:278
+#: devilry/devilry_group/models.py:300
 msgid "new attempt"
 msgstr "nytt forsøk"
 
-#: devilry/devilry_group/models.py:279
+#: devilry/devilry_group/models.py:301
 msgid "re edit"
 msgstr "re-rediger"
 
-#: devilry/devilry_group/models.py:280
+#: devilry/devilry_group/models.py:302
 msgid "merge first attempt"
 msgstr "flett første forsøk"
 
-#: devilry/devilry_group/models.py:281
+#: devilry/devilry_group/models.py:303
 msgid "merge new attempt"
 msgstr "flett nytt forsøk"
 
-#: devilry/devilry_group/models.py:282
+#: devilry/devilry_group/models.py:304
 msgid "merge re edit"
 msgstr "flett re-rediger"
 
-#: devilry/devilry_group/models.py:398
+#: devilry/devilry_group/models.py:420
 msgid "FeedbackSet can not be ignored without a reason"
 msgstr "Tilbakemeldingssett kan ikke ignoreres uten en årsak"
 
-#: devilry/devilry_group/models.py:402
+#: devilry/devilry_group/models.py:424
 msgid "FeedbackSet can not have a ignored reason without being set to ignored."
 msgstr ""
 "Tilbakemeldingssett må være innstilt til ignorer når en årsak for ignorering "
 "blir oppgitt."
 
-#: devilry/devilry_group/models.py:407
+#: devilry/devilry_group/models.py:429
 msgid ""
 "Ignored FeedbackSet can not have grading_published_datetime, grading_points "
 "or grading_published_by set."
@@ -5070,15 +5096,31 @@ msgstr ""
 "Ignorer Tilbakemeldingssett kan ikke ha grading_published_datetime, "
 "grading_points eller grading_published_by set."
 
-#: devilry/devilry_group/models.py:413
+#: devilry/devilry_group/models.py:435
 msgid "A FeedbackSet can not be published without being published by someone."
 msgstr ""
 "Et sett av tilbakemeldinger må publiseres av noen før det kan publiseres."
 
-#: devilry/devilry_group/models.py:418
+#: devilry/devilry_group/models.py:440
 msgid "A FeedbackSet can not be published without providing \"points\"."
 msgstr ""
 "Et sett av tilbakemeldinger can ikke publiseres uten å sette \"poeng\"."
+
+#: devilry/devilry_group/models.py:489
+msgid ""
+"This assignment is on an inactive semester. File upload and commenting is "
+"disabled."
+msgstr ""
+"Denne oppgaven er på et inaktivt semester. Filopplasting og kommentering er "
+"ikke tilgjengelig."
+
+#: devilry/devilry_group/models.py:495
+msgid ""
+"Hard deadlines are enabled for this assignment. File upload and commenting "
+"is disabled."
+msgstr ""
+"Denne oppgaven bruker harde frister. Filopplasting og kommentering er ikke "
+"tilgjengelig."
 
 #: devilry/devilry_group/templates/devilry_group/feedbackfeed.django.html:34
 msgid "Project group details"
@@ -5112,7 +5154,7 @@ msgid "Back to feed"
 msgstr "Tilbake til feed"
 
 #: devilry/devilry_group/templates/devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_edit_grade.django.html:21
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:40
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:41
 #: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:391
 msgid "Edit grade"
 msgstr "Rediger karakter"
@@ -5154,6 +5196,10 @@ msgstr "Last ned"
 #: devilry/devilry_group/templates/devilry_group/include/buttonbar.django.html:16
 msgid "Actions"
 msgstr "Valg"
+
+#: devilry/devilry_group/templates/devilry_group/include/comments_disabled.django.html:5
+msgid "File uploads and comments disabled"
+msgstr "Filopplasting og kommentering er ikke tilgjengelig"
 
 #: devilry/devilry_group/templates/devilry_group/include/examiner.editlastdelivery.django.html:25
 msgid "Edit last delivery"
@@ -5325,7 +5371,7 @@ msgstr "BRUKER SLETTET"
 msgid "Add note"
 msgstr "Legg til notat"
 
-#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:74
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:78
 msgid ""
 "A comment must have either text or a file attached, or both. An empty "
 "comment is not allowed."
@@ -5333,11 +5379,11 @@ msgstr ""
 "En kommentar må enten innehold tekst, vedlegg eller begge. Tomme kommentarer "
 "er ikke tillatt."
 
-#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:93
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:96
 msgid "Post comment"
 msgstr "Post kommentar"
 
-#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:391
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:447
 msgid "Comment added!"
 msgstr "Lagt til kommentar!"
 
