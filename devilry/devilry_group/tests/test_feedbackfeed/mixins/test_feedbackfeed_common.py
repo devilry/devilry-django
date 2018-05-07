@@ -348,7 +348,17 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup,
         )
-        self.assertEquals(mockresponse.selector.one('.header-grading-info').alltext_normalized, 'Waiting for feedback')
+        self.assertEquals(mockresponse.selector.one('.header-grading-info').alltext_normalized, 'waiting for feedback')
+
+    def test_get_feedbackset_header_grading_info_waiting_for_deliveries_for_feedback(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+        )
+        self.assertEquals(mockresponse.selector.one('.header-grading-info').alltext_normalized,
+                          'waiting for deliveries')
 
     def test_get_feedbackset_header_two_attempts(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')

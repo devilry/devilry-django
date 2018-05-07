@@ -16,7 +16,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.viewhelpers import create
 
-from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import Assignment, AssignmentGroup
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
@@ -104,7 +104,7 @@ class FeedbackFeedBaseView(create.CreateView):
 
         Returns a message string or None.
         """
-        group = request.cradmin_role
+        group = self.assignment_group
         user_role = request.cradmin_instance.get_devilryrole_for_requestuser()
         if user_role.endswith('admin'):
             user_role = group_models.GroupComment.USER_ROLE_ADMIN
@@ -125,6 +125,10 @@ class FeedbackFeedBaseView(create.CreateView):
         self.form_disabled_message = self.__should_disable_comment_form(request=request)
         return super(FeedbackFeedBaseView, self).get(request=request, *args, **kwargs)
 
+    @property
+    def assignment_group(self):
+        return self.request.cradmin_role
+
     def get_devilryrole(self):
         """
         Get the devilryrole of a user.
@@ -140,7 +144,7 @@ class FeedbackFeedBaseView(create.CreateView):
 
     def get_form_kwargs(self):
         kwargs = super(FeedbackFeedBaseView, self).get_form_kwargs()
-        group = self.request.cradmin_role
+        group = self.assignment_group
         kwargs['group'] = group
         kwargs['feedback_set'] = group.cached_data.last_feedbackset
         return kwargs
@@ -157,7 +161,7 @@ class FeedbackFeedBaseView(create.CreateView):
         timeline_builder = feedbackfeed_timelinebuilder.FeedbackFeedTimelineBuilder(
                 assignment=assignment,
                 feedbacksets=feedbackset_queryset,
-                group=self.request.cradmin_role)
+                group=self.assignment_group)
         timeline_builder.build()
         return timeline_builder
 
@@ -172,16 +176,17 @@ class FeedbackFeedBaseView(create.CreateView):
         sidebar_builder = feedbackfeed_sidebarbuilder.FeedbackFeedSidebarBuilder(
             assignment=assignment,
             feedbacksets=feedbackset_queryset,
-            group=self.request.cradmin_role)
+            group=self.assignment_group)
         sidebar_builder.build()
         return sidebar_builder
 
     def __get_assignment(self):
+        group = self.assignment_group
         return Assignment.objects\
             .prefetch_related(
                 'assignmentgroups'
             )\
-            .filter(id=self.request.cradmin_role.assignment.id)\
+            .filter(id=group.assignment.id)\
             .prefetch_point_to_grade_map().first()
 
     def __get_form_disabled(self):
@@ -222,7 +227,7 @@ class FeedbackFeedBaseView(create.CreateView):
         """
         context = super(FeedbackFeedBaseView, self).get_context_data(**kwargs)
         assignment = self.__get_assignment()
-        group = self.request.cradmin_role
+        group = self.assignment_group
 
         # Build the timeline for the feedbackfeed
         builder_queryset = builder_base.get_feedbackfeed_builder_queryset(
@@ -245,7 +250,7 @@ class FeedbackFeedBaseView(create.CreateView):
             .datetime_to_url_string(last_feedbackset.deadline_datetime)
         context['listbuilder_list'] = feedbackfeed_timeline.TimeLineListBuilderList.from_built_timeline(
             built_timeline,
-            group=self.request.cradmin_role,
+            group=group,
             devilryrole=self.get_devilryrole(),
             assignment=assignment,
             requestuser=self.request.user
@@ -259,7 +264,7 @@ class FeedbackFeedBaseView(create.CreateView):
             built_sidebar = self.__build_sidebar(assignment, builder_queryset)
             context['sidebarbuilder_list'] = feedbackfeed_sidebar.SidebarListBuilderList.from_built_sidebar(
                 built_sidebar,
-                group=self.request.cradmin_role,
+                group=group,
                 devilryrole=self.get_devilryrole(),
                 assignment=context['assignment']
             )
@@ -275,8 +280,9 @@ class FeedbackFeedBaseView(create.CreateView):
         Returns:
             (int): Count of CommentFiles available for the user.
         """
+        group = self.assignment_group
         group_comment_queryset = group_models.GroupComment.objects\
-            .filter(feedback_set__group=self.request.cradmin_role)\
+            .filter(feedback_set__group=group)\
             .exclude_private_comments_from_other_users(user=self.request.user)\
             .exclude_is_part_of_grading_feedbackset_unpublished()
 

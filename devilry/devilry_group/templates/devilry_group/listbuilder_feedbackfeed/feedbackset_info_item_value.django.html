@@ -23,7 +23,7 @@
         {% if me.is_graded %}
             {% devilry_grade_full assignment=me.assignment points=me.feedbackset.grading_points devilryrole=me.devilryrole %}
         {% else %}
-            {% trans "Waiting for feedback" %}
+            {% devilry_groupstatus me.feedbackset.group %}
         {% endif %}
     </div>
 
