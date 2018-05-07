@@ -1,5 +1,6 @@
 import mock
 from django.conf import settings
+from django.test import override_settings
 from model_mommy import mommy
 
 from django.utils import timezone
@@ -27,6 +28,44 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
                                                           requestuser=examiner.relatedexaminer.user)
         self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
                           examiner.assignmentgroup.assignment.get_path())
+
+    def test_assignment_soft_deadline_info_box_not_rendered(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_SOFT)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-feedbackfeed-hard-deadline-info-box'))
+
+    def test_assignment_hard_deadline_info_box_rendered(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-hard-deadline-info-box'))
+
+    @override_settings(DEVILRY_HARD_DEADLINE_INFO_FOR_EXAMINERS_AND_ADMINS={
+            '__default': 'Hard deadline info'
+    })
+    def test_assignment_hard_deadline_info_box_rendered_info_text_default(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertEqual(
+            mockresponse.selector.one('.devilry-feedbackfeed-hard-deadline-info-box').alltext_normalized,
+            'Hard deadline info')
 
     def test_assignment_deadline_hard_expired_comment_form_rendered(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

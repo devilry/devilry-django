@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.core import mail
 from model_mommy import mommy
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -22,6 +22,41 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
 
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_assignment_soft_deadline_info_box_not_rendered(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_SOFT)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-feedbackfeed-hard-deadline-info-box'))
+
+    def test_assignment_hard_deadline_info_box_rendered(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-hard-deadline-info-box'))
+
+    @override_settings(DEVILRY_HARD_DEADLINE_INFO_FOR_EXAMINERS_AND_ADMINS={
+            '__default': 'Hard deadline info'
+    })
+    def test_assignment_hard_deadline_info_box_rendered_info_text_default(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser
+        )
+        self.assertEqual(
+            mockresponse.selector.one('.devilry-feedbackfeed-hard-deadline-info-box').alltext_normalized,
+            'Hard deadline info')
 
     def test_get_admin_form_heading(self):
         testgroup = mommy.make('core.AssignmentGroup',

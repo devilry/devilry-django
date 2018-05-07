@@ -44,6 +44,16 @@
 {% endblock pageheader %}
 
 {% block content %}
+    {% block hard_deadline_info_box %}
+        {% if assignment_uses_hard_deadlines %}
+            <div class="container">
+                <div class="alert alert-info devilry-feedbackfeed-hard-deadline-info-box">
+                    <p>{{ assignment_uses_hard_deadlines_info_text }}</p>
+                </div>
+            </div>
+        {% endif %}
+    {% endblock hard_deadline_info_box %}
+
     {% block downloadbar %}
         <div class="container">
             {% include "devilry_group/include/buttonbar.django.html" %}

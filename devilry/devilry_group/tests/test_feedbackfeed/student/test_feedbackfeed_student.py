@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.core import mail
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
@@ -45,6 +45,50 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
                           candidate.assignment_group.assignment.get_path())
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
+
+    def test_assignment_soft_deadline_info_box_not_rendered(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        deadline_datetime = timezone.now() - timezone.timedelta(days=1)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      deadline_datetime=deadline_datetime,
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_SOFT)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-feedbackfeed-hard-deadline-info-box'))
+
+    def test_assignment_hard_deadline_info_box_rendered(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        deadline_datetime = timezone.now() - timezone.timedelta(days=1)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      deadline_datetime=deadline_datetime,
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-hard-deadline-info-box'))
+
+    @override_settings(DEVILRY_HARD_DEADLINE_INFO_FOR_STUDENTS={
+            '__default': 'Hard deadline info'
+    })
+    def test_assignment_hard_deadline_info_box_rendered_info_text_default(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        deadline_datetime = timezone.now() - timezone.timedelta(days=1)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      deadline_datetime=deadline_datetime,
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            cradmin_instance=self.__mock_cradmin_instance()
+        )
+        self.assertEqual(
+            mockresponse.selector.one('.devilry-feedbackfeed-hard-deadline-info-box').alltext_normalized,
+            'Hard deadline info')
 
     def test_assignment_deadline_hard_comment_form_not_rendered(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

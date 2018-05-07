@@ -16,7 +16,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.viewhelpers import create
 
-from devilry.apps.core.models import Assignment, AssignmentGroup
+from devilry.apps.core.models import Assignment
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_cradmin.devilry_listbuilder import feedbackfeed_sidebar
@@ -215,6 +215,17 @@ class FeedbackFeedBaseView(create.CreateView):
             return self.form_disabled_message
         return None
 
+    def get_hard_deadline_info_text(self):
+        """
+        Get hard deadline info text. Must be implemented in subclasses.
+
+        Uses function ``get_devilry_hard_deadline_info_text``.
+
+        Returns:
+            str: info text.
+        """
+        raise NotImplementedError()
+
     def get_context_data(self, **kwargs):
         """
         Sets the context data needed to render elements in the template.
@@ -255,6 +266,8 @@ class FeedbackFeedBaseView(create.CreateView):
             assignment=assignment,
             requestuser=self.request.user
         )
+        context['assignment_uses_hard_deadlines'] = assignment.deadline_handling_is_hard()
+        context['assignment_uses_hard_deadlines_info_text'] = self.get_hard_deadline_info_text()
         context['students_can_create_groups'] = assignment.students_can_create_groups_now
         context['comment_form_disabled'] = self.__get_form_disabled()
         context['comment_form_disabled_message'] = self.__get_form_disabled_message()

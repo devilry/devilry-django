@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 from crispy_forms import layout
 from django import forms
 from django.contrib import messages
-from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.http import HttpResponseRedirect
@@ -18,14 +17,14 @@ from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
 from django_cradmin.viewhelpers import update, delete
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
-from devilry.apps.core.models import RelatedStudent, Examiner, Assignment
-from devilry.utils.devilry_email import send_templated_message
+from devilry.apps.core.models import Assignment
 from devilry.apps.core import models as core_models
 from devilry.devilry_cradmin import devilry_acemarkdown
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_email.feedback_email import feedback_email
 from devilry.devilry_email.comment_email import comment_email
+from devilry.utils import setting_utils
 
 
 class AbstractFeedbackForm(cradmin_feedbackfeed_base.GroupCommentForm):
@@ -116,6 +115,10 @@ class ExaminerBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseVie
     """
     Base view for examiner.
     """
+    def get_hard_deadline_info_text(self):
+        return setting_utils.get_devilry_hard_deadline_info_text(
+            setting_name='DEVILRY_HARD_DEADLINE_INFO_FOR_EXAMINERS_AND_ADMINS')
+
     def get_devilryrole(self):
         """
         Get the devilryrole for the view.

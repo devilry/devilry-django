@@ -9,6 +9,7 @@ from django_cradmin.crispylayouts import PrimarySubmit
 
 from devilry.devilry_email.comment_email import comment_email
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
+from devilry.utils import setting_utils
 
 
 class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
@@ -19,6 +20,10 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     """
     def get_form_heading_text_template_name(self):
         return 'devilry_group/include/student_commentform_headingtext.django.html'
+
+    def get_hard_deadline_info_text(self):
+        return setting_utils.get_devilry_hard_deadline_info_text(
+            setting_name='DEVILRY_HARD_DEADLINE_INFO_FOR_STUDENTS')
 
     def get_devilryrole(self):
         """

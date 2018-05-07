@@ -154,3 +154,39 @@ DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX = None
 
 #: If this is set to a value, we will use this as the favicon.
 DEVILRY_BRANDING_FAV_ICON_PATH = None
+
+
+############################################################################
+#
+# Hard deadlines info box message for feed.
+#
+# This is a info message that will appear in the top of the feed if hard
+# deadlines are enabled for an assignment. You can add different translations
+# of this message by adding a ISO 639-1 code mapped to a message.
+#
+# Example:
+# DEVILRY_HARD_DEADLINE_INFO_FOR_STUDENTS = {
+#   ...,
+#   'en': 'This assignment uses hard deadlines...'
+# }
+#
+# Note:
+#   The '__default' is in english and is marked for translation.
+#   You may override this, but it should be in a language that all the users
+#   understand.
+#
+#############################################################################
+gettext_noop = lambda s: s
+
+
+#: Hard deadline info texts for students.
+DEVILRY_HARD_DEADLINE_INFO_FOR_STUDENTS = {
+    '__default': gettext_noop('This assignment uses hard deadlines. You will not be able to write comments '
+                              'or upload files after the deadline has expired.')
+}
+
+#: Hard deadline info texts for examiners and admins
+DEVILRY_HARD_DEADLINE_INFO_FOR_EXAMINERS_AND_ADMINS = {
+    '__default': gettext_noop('This assignment uses hard deadlines. Students will not be able to write comments '
+                              'or upload files after the deadline has expired.')
+}
