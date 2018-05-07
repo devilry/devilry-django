@@ -1,8 +1,8 @@
 .. _editable_ui_messages:
 
-##############################################################
-Editable UI messages for Devilry
-##############################################################
+====================
+Editable UI messages
+====================
 
 Devilry provides some messages that will appear in the UI with some information that might be useful when a user
 navigates pages, such as important information related to a specific setting used that is relevant for the page the user
@@ -27,21 +27,21 @@ Here are the default settings defined which you can add to your ``devilry_settin
     #: Hard deadline info texts for students directed towards students.
     #: This is what students see.
     DEVILRY_HARD_DEADLINE_INFO_FOR_STUDENTS = {
-       '__default': gettext_noop('This assignment uses hard deadlines. You will not be able to write comments '
-               'or upload files after the deadline has expired.')
+       '__default': 'This assignment uses hard deadlines. You will not be able to write comments '
+                    'or upload files after the deadline has expired.'
     }
 
     #: Hard deadline info texts directed towards examiners and admins.
     #: This is what examiners and admins see.
     DEVILRY_HARD_DEADLINE_INFO_FOR_EXAMINERS_AND_ADMINS = {
-    '__default': gettext_noop('This assignment uses hard deadlines. Students will not be able to write comments '
-                              'or upload files after the deadline has expired.')
+    '__default': 'This assignment uses hard deadlines. Students will not be able to write comments '
+                 'or upload files after the deadline has expired.'
     }
 
 
 .. note::
 
-    The '__default' is in english and is marked for translation. You may change this text but to not removed it! The default
+    The ``'__default'`` is in english and is marked for translation. You may change this text but to not removed it! The default
     text should also be in a language that all users of the system understands.
 
 

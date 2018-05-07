@@ -96,6 +96,7 @@ To add a footer to the login page, you need to create
 The format is exactly the same as for ``footer.django.html`` (see :ref:`branding_footer`).
 
 
+.. _custom_favicon:
 
 Add a custom favicon
 ====================
