@@ -190,6 +190,8 @@ class FeedbackFeedBaseView(create.CreateView):
 
         Attribute ``form_disabled_message`` is set when method ``get`` is called and
         the form should be disabled.
+
+        Returns ``True`` or ``False``
         """
         if hasattr(self, 'form_disabled_message'):
             return self.form_disabled_message is not None
@@ -201,6 +203,8 @@ class FeedbackFeedBaseView(create.CreateView):
 
         Attribute ``form_disabled_message`` is set when method ``get`` is called and
         the form should be disabled.
+
+        Returns message string or ``None``.
         """
         if hasattr(self, 'form_disabled_message'):
             return self.form_disabled_message
