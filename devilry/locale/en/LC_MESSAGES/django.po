@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-04 17:32+0200\n"
+"POT-Creation-Date: 2018-05-07 14:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2071,7 +2071,6 @@ msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/period/all_results_overview/result_cell_value.django.html:13
 #: devilry/devilry_examiner/templatetags/devilry_examiner_tags.py:13
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:26
 #: devilry/devilry_student/templatetags/devilry_student_tags.py:30
 msgid "Waiting for feedback"
 msgstr ""
@@ -4058,13 +4057,13 @@ msgid "Show feedback"
 msgstr ""
 
 #: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback.py:52
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:354
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:357
 msgctxt "grading"
 msgid "Passed?"
 msgstr ""
 
 #: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback.py:53
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:355
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:358
 msgctxt "grading"
 msgid "Check to provide a passing grade."
 msgstr ""
@@ -4083,8 +4082,8 @@ msgid "Students in groups"
 msgstr ""
 
 #: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:83
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:336
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:359
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:339
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:362
 msgid "Grading"
 msgstr ""
 
@@ -4192,8 +4191,8 @@ msgid "Superuser UI"
 msgstr ""
 
 #: devilry/devilry_gradeform/views/setup_gradeform.py:66
-#: devilry/devilry_group/views/admin/feedbackfeed_admin.py:68
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:255
+#: devilry/devilry_group/views/admin/feedbackfeed_admin.py:73
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:258
 msgid "Add comment"
 msgstr ""
 
@@ -4433,7 +4432,7 @@ msgstr ""
 #: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/admin/summary.django.html:81
 #: devilry/devilry_gradingsystemplugin_points/apps.py:11
 #: devilry/devilry_gradingsystemplugin_points/views/feedbackeditor.py:25
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:73
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:72
 msgid "Points"
 msgstr ""
 
@@ -4746,7 +4745,7 @@ msgstr ""
 
 #: devilry/devilry_group/templates/devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_edit_grade.django.html:21
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:41
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:391
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:394
 msgid "Edit grade"
 msgstr ""
 
@@ -4942,8 +4941,8 @@ msgstr ""
 msgid "USER DELETED"
 msgstr ""
 
-#: devilry/devilry_group/views/admin/feedbackfeed_admin.py:108
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:295
+#: devilry/devilry_group/views/admin/feedbackfeed_admin.py:113
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:298
 msgid "Add note"
 msgstr ""
 
@@ -4957,62 +4956,62 @@ msgstr ""
 msgid "Post comment"
 msgstr ""
 
-#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:447
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:470
 msgid "Comment added!"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:47
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:46
 msgctxt "grading"
 msgid "Grade"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:48
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:47
 msgctxt "grading"
 msgid "Choose grade"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:78
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:77
 #, python-format
 msgctxt "grading"
 msgid "Number between 0 and %(max_points)s."
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:183
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:186
 msgid "Save draft and preview"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:186
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:189
 msgid "Publish feedback"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:224
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:227
 msgid "Feedback is already published!"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:339
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:342
 msgid ""
 "Give a score between {} to {} where {} is the minimum amount of points "
 "needed to pass."
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:360
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:363
 msgid "Check the box to give a passing grade"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:484
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:487
 msgid "Groupcomment"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:518
 #: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:521
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:524
 msgid "Edit group comment"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:566
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:569
 msgid "GroupComment updated!"
 msgstr ""
 
-#: devilry/devilry_group/views/student/feedbackfeed_student.py:37
+#: devilry/devilry_group/views/student/feedbackfeed_student.py:42
 msgid "Add delivery or question"
 msgstr ""
 
@@ -5585,6 +5584,18 @@ msgstr ""
 #: devilry/devilry_student/views/period/overview.py:91
 msgctxt "student period overview"
 msgid "No assignments."
+msgstr ""
+
+#: devilry/project/common/projectspecific_settings.py:184
+msgid ""
+"This assignment uses hard deadlines. You will not be able to write comments "
+"or upload files after the deadline has expired."
+msgstr ""
+
+#: devilry/project/common/projectspecific_settings.py:190
+msgid ""
+"This assignment uses hard deadlines. Students will not be able to write "
+"comments or upload files after the deadline has expired."
 msgstr ""
 
 #: devilry/project/common/settings.py:168
