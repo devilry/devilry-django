@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from crispy_forms import layout
 from django import forms
 from django.http import Http404
 from django.utils.translation import pgettext_lazy, ugettext_lazy
@@ -30,13 +31,18 @@ class AssignmentDeadlineHandlingUpdateView(OnlySaveButtonMixin, UpdateView):
             (
                 Assignment.DEADLINEHANDLING_SOFT,
                 pgettext_lazy('deadline handling update hard choice',
-                              'SOFT. Students can add deliveries after the deadline has expired, but these might not '
-                              'be considered when an examiner is correcting deliveries.')
+                              'SOFT. Students will be able to add upload deliveries and comment after '
+                              'the deadline has expired, but this will be clearly highlighted. Deliveries made after '
+                              'the deadline has expired might not be considered when an examiner is correcting '
+                              'deliveries.')
             ),
             (
                 Assignment.DEADLINEHANDLING_HARD,
                 pgettext_lazy('deadline handling update hard choice',
-                              'HARD. Students can not add deliveries or comment after the deadline has expired.')
+                              'HARD. Students will not be able to upload deliveries or comment after the deadline has '
+                              'expired. This can only be reverted by setting the deadline handling to soft, extending '
+                              'the deadline or give a new attempt. A highlighted box will appear in the top of the '
+                              'delivery feed informing the user that the assignment uses hard deadlines.')
             ),
         ]
 
@@ -44,6 +50,7 @@ class AssignmentDeadlineHandlingUpdateView(OnlySaveButtonMixin, UpdateView):
         form = super(AssignmentDeadlineHandlingUpdateView, self).get_form()
         form.fields['deadline_handling'].widget = forms.RadioSelect()
         form.fields['deadline_handling'].choices = self.__get_deadline_handling_choices()
+        form.fields['deadline_handling'].help_text = None
         return form
 
     def get_pagetitle(self):

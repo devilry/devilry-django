@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-07 14:57+0200\n"
+"POT-Creation-Date: 2018-05-07 15:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1486,21 +1486,20 @@ msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:52
 msgid ""
-"SOFT. Students can add deliveries after the deadline has expired, but these "
-"might not be considered when an examiner is correcting deliveries."
+"SOFT. Students can add deliveries and comment after the deadline has expired."
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:57
+#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:56
 msgid ""
 "HARD. Students can not add deliveries or comment after the deadline has "
 "expired."
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:67
+#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:66
 msgid "Edit deadline handling"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:71
+#: devilry/devilry_admin/templates/devilry_admin/assignment/include/settings.django.html:70
 msgctxt "admin assignment overview"
 msgid "You do not have access to change this setting."
 msgstr ""
@@ -2412,36 +2411,41 @@ msgid ""
 "\"%(new_anonymizationmode)s\"."
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/deadline_handling.py:33
+#: devilry/devilry_admin/views/assignment/deadline_handling.py:34
 msgctxt "deadline handling update hard choice"
 msgid ""
-"SOFT. Students can add deliveries after the deadline has expired, but these "
-"might not be considered when an examiner is correcting deliveries."
+"SOFT. Students will be able to add upload deliveries and comment after the "
+"deadline has expired, but this will be clearly highlighted. Deliveries made "
+"after the deadline has expired might not be considered when an examiner is "
+"correcting deliveries."
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/deadline_handling.py:39
+#: devilry/devilry_admin/views/assignment/deadline_handling.py:42
 msgctxt "deadline handling update hard choice"
 msgid ""
-"HARD. Students can not add deliveries or comment after the deadline has "
-"expired."
+"HARD. Students will not be able to upload deliveries or comment after the "
+"deadline has expired. This can only be reverted by setting the deadline "
+"handling to soft, extending the deadline or give a new attempt. A "
+"highlighted box will appear in the top of the delivery feed informing the "
+"user that the assignment uses hard deadlines."
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/deadline_handling.py:50
+#: devilry/devilry_admin/views/assignment/deadline_handling.py:57
 msgctxt "assignment config"
 msgid "Edit deadline handling"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/deadline_handling.py:60
+#: devilry/devilry_admin/views/assignment/deadline_handling.py:67
 msgctxt "deadline update view deadline soft text"
 msgid "SOFT"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/deadline_handling.py:63
+#: devilry/devilry_admin/views/assignment/deadline_handling.py:70
 msgctxt "deadline update view deadline hard text"
 msgid "HARD"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/deadline_handling.py:80
+#: devilry/devilry_admin/views/assignment/deadline_handling.py:87
 #, python-format
 msgctxt "assignment config"
 msgid ""

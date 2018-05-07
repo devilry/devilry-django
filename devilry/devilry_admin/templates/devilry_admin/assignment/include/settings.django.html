@@ -50,10 +50,9 @@
 
             {% if assignment.deadline_handling == 0 %}
                 {% blocktrans trimmed %}
-                    SOFT. Students can add deliveries after the deadline has expired, but these might not
-                    be considered when an examiner is correcting deliveries.
+                    SOFT. Students can add deliveries and comment after the deadline has expired.
                 {% endblocktrans %}
-            {% elif assignment.deadline_handling == 1%}
+            {% elif assignment.deadline_handling == 1 %}
                 {% blocktrans trimmed %}
                     HARD. Students can not add deliveries or comment after the deadline has expired.
                 {% endblocktrans %}
