@@ -1,16 +1,16 @@
-=============================
-Migrating from 3.1.6 to 3.1.7
-=============================
+===========================
+Migrating from 3.1.6 to 3.2
+===========================
 
 Backup database and files
 #########################
 BACKUP. YOUR. DATABASE. AND. FILES.
 
 
-Update devilry to 3.1.7
-#######################
+Update devilry to 3.2
+#####################
 
-Update the devilry version to ``3.1.7`` as described in :doc:`../update`.
+Update the devilry version to ``3.2`` as described in :doc:`../update`.
 
 
 Bug fixes
