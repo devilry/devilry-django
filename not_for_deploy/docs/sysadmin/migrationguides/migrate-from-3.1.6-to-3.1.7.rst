@@ -37,7 +37,7 @@ What is new for admins
 - Admins can toggle between hard and soft deadlines. Students can not upload files or comment if
   assignment deadline handling is HARD.
 - Added feature to administrator dashboard where admins can now search for students and go directly to their
-  delivery feed. Here they can easily access deadline management for that single student, see deliveries etc.
+  delivery feed. Here they can easily access deadline management for that student/group, see deliveries etc.
 - Removed unnecessary step to get to a students feedbackfeed.
 - Admins can move deadlines and give new attempts directly in the feed(same as examiners).
 
