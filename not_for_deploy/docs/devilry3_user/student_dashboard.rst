@@ -1,27 +1,97 @@
-##########################
-Student dashboard overview
-##########################
+###########################
+Student dashboards overview
+###########################
+
+Let's look at how the student will go around finding the courses they have access to,
+assignments and the delivery feed.
 
 
-The student dashboard
-=====================
+Role select overview
+====================
+When a student logs into Devilry, they will greeted by the roleselect view. A user might have multiple roles such as
+student, examiner and/or admin. These will be displayed here, and the user selects the desired role.
 
-The student dashboard will show all assignments the student has access to including some
-information about each assignment. Each assignment is a link to the feedbackfeed.
-You can read more about that **fix link to feedbackfeed doc**.
+.. image:: images/student/student-roleselect-overview.png
+
+Selecting the student role will take the user to the :ref:`devilry3_student_assignments_overview`.
+
+
+.. _devilry3_student_assignments_overview:
+
+Assignment overview
+===================
+The student will see a list of all the assignments they currently have access to across courses.
 
 .. image:: images/student/student-assignment-overview.png
 
+Here the student will be able to search the assignments by the name of the assignment, course or semester, giving the
+student a shortcut to finding their assignment effectively. Optionally the student can also head to the
+:ref:`devilry3_student_courses_overview` to select a specific course clicking the button labeled ``Your courses``.
 
-You can search through your assignments using the search input field in the top right corner.
+Clicking on an assignment will the the user to the :ref:`devilry3_student_delivery_feed`.
 
 
-The courses overview
-====================
+.. _devilry3_student_courses_overview:
 
-As you can see, there is a button labeled ``Your courses`` below the list of assignments.
-This a overview with nothing more than a list of courses you have access to. Each course link
-will take you to a simple assignment overview for that specific course.
-
+Courses overview
+================
+The student will see a list over the courses they currently have access to. For each course, the number of assignments
+are displayed.
 
 .. image:: images/student/student-courses-overview.png
+
+Here the student will be able to search for courses by course or semester. Clicking on a course will take the student
+to a overview over assignments for that specific course (see :ref:`devilry3_student_assignments_overview`).
+
+
+.. _devilry3_student_delivery_feed:
+
+Assignment delivery feed
+========================
+Clicking on an assignment from the :ref:`devilry3_student_assignments_overview` will take the student to the delivery
+feed for that assignment.
+
+The delivery feed is where students delivers assignments and communicates with other students in their group,
+examiners and admins.
+
+Here's an overview of common elements in the delivery feed, containing deliveries, correcting the delivery, expired
+and moved deadlines, new attempt etc.
+
+.. image:: images/student/student-delivery-feed.png
+
+
+**1. Compressed archives**: Uploaded files for each attempt(deadline). Clicking the button will start a background task compressing the contents making a compressed archive available.
+
+**2. First attempt overview**: An overview of the first deadline and the result.
+
+**3. Comment**: Student delivery with file attached.
+
+**4. Comment**: Examiner comment about moving the deadline.
+
+**5. Event**: Examiner moved the deadline.
+
+**6. Event**: Deadline expired.
+
+**7. Comment (grading)**: Examiner provides textual feedback.
+
+**8. Event (grading)**: An event showing the given grade failed.
+
+**9. Second attempt overview**: An overview of the second deadline and the result(this differ based on whether the deadline has expired, the delivery is corrected etc).
+
+**10. Comment**: Examiner writes to the student.
+
+**11. Comment**: Student answers.
+
+**12. Comment**: Student delivery with file attached.
+
+**13. Event**: Deadline expired.
+
+**14. Comment (grading)**: Examiner provides textual feedback.
+
+**15. Event (grading)**: An event showing the given grade passed.
+
+**16. Input field**: Markdown supported input field
+
+**17. File upload section**: Drag-and-drop file/files.
+
+**18. Submit button**: Submit the comment.

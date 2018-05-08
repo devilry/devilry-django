@@ -12,7 +12,7 @@ Special terms and concepts
 **************************
 Devilry has some special terms and concepts. The most important (that cause most confusion) is:
 
-- **Term**: A range of time. Typically a semester or a year.
+- **Period**: A range of time. Typically a semester or a year.
 - **Examiner**: Someone that provides feedback.
 - **Group**: Students are always in a (project) group even when they work alone on an assignment.
 
@@ -35,17 +35,17 @@ organize administrators in Devilry.
 
 Subject (course)
 ================
-A subject is, as far as Devilry is concerned, a container of :ref:`Terms
-<term>`. In a typical Devilry setup, a Subject is the same as a Course, and
-each :ref:`devilry3_user_term` within the Subject is a semester or year.
+A subject is, as far as Devilry is concerned, a container of :ref:`Periods
+<period>`. In a typical Devilry setup, a Subject is the same as a Course, and
+each :ref:`devilry3_user_period` within the Subject is a semester or year.
 
 
-.. _devilry3_user_term:
+.. _devilry3_user_period:
 
-Term (semester, year, ...)
-==========================
-A term is a limited span of time (I.E: *january to july 2011*) that you give a
-name (I.E.: *Spring 2011*). You register assignments on a term, and register
+Period (semester, year, ...)
+============================
+A period is a limited span of time (I.E: *january to july 2011*) that you give a
+name (I.E.: *Spring 2011*). You register assignments on a period, and register
 students and examiners on each assignment.
 
 
@@ -65,21 +65,13 @@ on anonymous assignments like exams.
 .. seealso:: :ref:`The Student role <role_student>`.
 
 
-.. _devilry3_user_deadline:
-
-Deadline
-========
-Deadlines are individual for each group. They are organized *below* a Group in
-the Devilry hierarchy. In other words: Each Group has one or more deadlines.
-
-
 .. _devilry3_user_examiner:
 
 Examiner
 ========
 Examiner is someone that writes feedback. Examiners are often one of these:
 
-- A teacher that corrects their own students. They are usually Term or
+- A teacher that corrects their own students. They are usually Period or
   Subject administrator in addition to Examiner.
 - A teaching assistant.
 - Someone giving anonymous feedback on an exam.
@@ -90,31 +82,60 @@ A user becomes examiner when they are assigned as examiner for a group (See
 .. seealso:: :ref:`The Examiner role <role_examiner>`.
 
 
+.. _devilry3_user_feedbackset:
+
+FeedbackSet
+===========
+FeedbackSets are where comments and deliveries are organized. A FeedbackSet has a deadline(a datetime field) associated
+with it, and comments and files belongs to a FeedbackSet. You can see the FeedbackSets as attempts on specific
+assignment for a group. The FeedbackSet is not registered directly on an assignment, but on a group which is
+registered on the assignment (:ref:`devilry3_user_group_candidate_student`).
+
+
+.. _devilry3_user_groupcomments:
+
+GroupComment
+============
+GroupComments are the actual deliveries in Devilry. A comment is connected to a FeedbackSet
+(see :ref:`devilry3_user_feedbackset`) and a you can add files to a GroupComment which is considered a delivery.
+Technically, a file is a file object associated with what we call a CommentFile, wich again is associated with a
+GroupComment.
+
+Note that GroupComments are a way of making deliveries and communicating with other students in your group or the
+examiners. Usually, the last comment, or a comment with a file will be considered the delivery.
+
+
 Special terms in context --- a typical Devilry hierarchy
 ========================================================
 
 The tree below is an example of a typical Devilry hierarchy for a university named *Duckburgh University* with
 the special terms in brackets.
 
+
 - Duckburgh University [:ref:`devilry3_user_node`]
     - Department of Physics [:ref:`devilry3_user_node`]
         - PHYS 101 --- Introduction to physics [:ref:`devilry3_user_subject`]
-            - Spring 2011 [:ref:`devilry3_user_term`]
+            - Spring 2011 [:ref:`devilry3_user_period`]
                 - Assignment one
                     - Peter Pan and Wendy [:ref:`devilry3_user_group_candidate_student`]
-                        - Deadline feb. 27 2012 19:30 [:ref:`devilry3_user_deadline`]
-                            - Delivery 1
+                        - FeedbackSet first attempt (deadline feb. 27 2012 19:30) [:ref:`devilry3_user_feedbackset`]
+                            - Delivery 1 [:ref:`devilry3_user_groupcomments`]
+                                - Delivery file
                     - Captain Hook [:ref:`devilry3_user_group_candidate_student`]
-                        - Deadline mar. 12 2012 11:45 [:ref:`devilry3_user_deadline`]
-                            - Delivery 3
-                        - Deadline feb. 28 2012 12:30 [:ref:`devilry3_user_deadline`]
-                            - Delivery 2
-                            - Delivery 1
+                        - FeedbackSet second attempt (deadline mar. 12 2012 11:45) [:ref:`devilry3_user_feedbackset`]
+                            - Delivery 3 [:ref:`devilry3_user_groupcomments`]
+                                - Delivery file
+                        - FeedbackSet first attempt (deadline feb. 28 2012 12:30) [:ref:`devilry3_user_feedbackset`]
+                            - Delivery 2 [:ref:`devilry3_user_groupcomments`]
+                                - Delivery file
+                            - Delivery 1 [:ref:`devilry3_user_groupcomments`]
+                                - Delivery file
                     - John Doe [:ref:`devilry3_user_group_candidate_student`]
-                        - Deadline feb. 25 2012 23:35 [:ref:`devilry3_user_deadline`]
-                            - Delivery 1
-            - Spring 2012 [:ref:`devilry3_user_term`]
-            - Spring 2013 [:ref:`devilry3_user_term`]
+                        - FeedbackSet (deadline feb. 25 2012 23:35) [:ref:`devilry3_user_feedbackset`]
+                            - Delivery 1 [:ref:`devilry3_user_groupcomments`]
+                                - Delivery file
+            - Spring 2012 [:ref:`devilry3_user_period`]
+            - Spring 2013 [:ref:`devilry3_user_period`]
         - PHYS 302 --- Advanced physics [:ref:`devilry3_user_subject`]
         - ...
     - Department of Informatics [:ref:`devilry3_user_node`]
@@ -122,4 +143,20 @@ the special terms in brackets.
         - INF 102 --- Objectoriented programming [:ref:`devilry3_user_subject`]
         - ...
     - ...
+
+
+Simple visual representation of the delivery workflow
+=====================================================
+Here's a simple workflow represented visually from the students standpoint. This does not differ that much from
+examiners and admins standpoints when on the delivery feed page.
+
+1. Student asks the examiner a question
+2. Examiner answers
+3. Student submits their delivery
+4. The deadline expires
+5. Examiner corrects the assignment
+
+
+.. image:: images/simple_delivery_workflow.png
+
 
