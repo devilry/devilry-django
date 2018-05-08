@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from smtplib import SMTPException
 import logging
 from django.core.mail import send_mail
@@ -35,9 +38,9 @@ def send_message(subject, message, *user_objects_to_send_to):
     else:
         if settings.DEBUG:
             logger.debug('Email sent to: {emails}\nSubject: {subject}\n'
-                         'Body:\n{message}'.format(emails = ','.join(emails),
-                                                   subject = subject,
-                                                   message = message))
+                         'Body:\n{message}'.format(emails=','.join(emails),
+                                                   subject=subject,
+                                                   message=message))
 
 
 def send_templated_message(subject, template_name, template_dictionary, *user_objects_to_send_to):
