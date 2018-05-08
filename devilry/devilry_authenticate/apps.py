@@ -15,7 +15,6 @@ class AuthenticateAppConfig(AppConfig):
         from allauth.socialaccount.models import SocialAccount
         found_supported_socialaccount = False
         for socialaccount in SocialAccount.objects.filter(user=user):
-            logger.warning('No SocialAccount found for')
             provider_id = socialaccount.provider
             updater = socialaccount_user_updaters.get_updater(provider_id=provider_id)
             if updater:

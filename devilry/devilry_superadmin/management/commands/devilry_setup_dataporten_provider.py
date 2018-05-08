@@ -1,7 +1,7 @@
 from getpass import getpass
 
 from allauth.socialaccount.models import SocialApp
-from allauth.socialaccount.providers.dataporten.provider import DataportenProvider
+from devilry.devilry_dataporten_allauth.provider import DevilryDataportenProvider
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.management.base import BaseCommand
@@ -29,10 +29,10 @@ class Command(BaseCommand):
             self.stderr.write('Secret is required')
             raise SystemExit()
         try:
-            socialapp = SocialApp.objects.get(provider=DataportenProvider.id)
+            socialapp = SocialApp.objects.get(provider=DevilryDataportenProvider.id)
         except SocialApp.DoesNotExist:
-            socialapp = SocialApp(provider=DataportenProvider.id)
-        socialapp.name = 'Dataporten'
+            socialapp = SocialApp(provider=DevilryDataportenProvider.id)
+        socialapp.name = 'Devilry Dataporten'
         socialapp.client_id = client_id
         socialapp.secret = secret
         socialapp.full_clean()

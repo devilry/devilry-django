@@ -13,7 +13,7 @@
     <div class="container">
         <div class="row">
             <div class="devilry-group-feedbackfeed-header">
-                <div class="col-sm-12 text-left">
+                <div class="col-sm-10 text-left">
                     {% block feedbackfeed-header-content %}
                         <h1 class="devilry-group-feedbackfeed-header-assignment">
                             {{ assignment.long_name }}
@@ -26,6 +26,16 @@
                                 {{ period.long_name }}
                             </p>
                         </div>
+                        {% if devilry_ui_role == 'student' %}
+                            {% if num_students_in_group > 1 or students_can_create_groups %}
+                                <p>
+                                    <a href="{% cradmin_instance_appindex_url 'projectgroup' %}"
+                                       class="devilry-feedbackfeed-student-projectgroup-detauils-link">
+                                        {% trans "Project group details" %}
+                                    </a>
+                                </p>
+                            {% endif %}
+                        {% endif %}
                     {% endblock feedbackfeed-header-content %}
                 </div>
             </div>
@@ -34,9 +44,19 @@
 {% endblock pageheader %}
 
 {% block content %}
+    {% block hard_deadline_info_box %}
+        {% if assignment_uses_hard_deadlines %}
+            <div class="container">
+                <div class="alert alert-info devilry-feedbackfeed-hard-deadline-info-box">
+                    <p>{{ assignment_uses_hard_deadlines_info_text }}</p>
+                </div>
+            </div>
+        {% endif %}
+    {% endblock hard_deadline_info_box %}
+
     {% block downloadbar %}
         <div class="container">
-            {% include "devilry_group/include/sidebar.django.html" %}
+            {% include "devilry_group/include/buttonbar.django.html" %}
         </div>
     {% endblock downloadbar %}
 
@@ -45,10 +65,14 @@
             {% cradmin_render_renderable listbuilder_list %}
             {% block pre_form %}{% endblock pre_form %}
             {% block navigation %}{% endblock %}
-            {% block form %}
-                {% crispy form formhelper %}
-                {{ form.media }}
-            {% endblock form %}
+            {% if comment_form_disabled %}
+                {% include "devilry_group/include/comments_disabled.django.html" %}
+            {% else %}
+                {% block form %}
+                    {% crispy form formhelper %}
+                    {{ form.media }}
+                {% endblock form %}
+            {% endif %}
             {% block post_form %}{% endblock post_form %}
         {% endblock feed %}
     </div>

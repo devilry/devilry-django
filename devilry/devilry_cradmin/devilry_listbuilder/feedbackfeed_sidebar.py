@@ -6,6 +6,8 @@ from devilry.devilry_group import models as group_models
 class SidebarListBuilderList(listbuilder.base.List):
     """Builds an overview of CommentFiles for each GroupComment and the FeedbackSet they belong to.
     """
+    template_name = 'devilry_group/listbuilder_sidebar/sidebar_list.django.html'
+
     @classmethod
     def from_built_sidebar(cls, built_sidebar, **kwargs):
         """Creates a instance of this class and builds a renderable list from a dictionary.
@@ -41,14 +43,9 @@ class SidebarListBuilderList(listbuilder.base.List):
         """
         self.append(renderable=FeedbackSetItemValue(value=feedbackset_dict['feedbackset'],
                                                     feedbackset_num=feedbackset_dict['feedbackset_num']))
-        # valuerenderer = GroupCommentListBuilderList.from_groupcomments(
-        #         comment_list=feedbackset_dict['comments'],
-        #         assignment=self.assignment,
-        #         devilryrole=self.devilryrole)
-        # self.append(renderable=valuerenderer)
 
     def get_base_css_classes_list(self):
-        return ['devilry-group-feedbackfeed-sidebar__list']
+        return ['devilry-group-feedbackfeed-buttonbar__list']
 
 
 class GroupCommentListBuilderList(listbuilder.base.List):
@@ -135,7 +132,7 @@ class FeedbackSetItemValue(listbuilder.base.ItemValueRenderer):
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(FeedbackSetItemValue, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-group-feedbackfeed-sidebar-deadlines')
+        css_classes_list.append('devilry-group-feedbackfeed-buttonbar-deadlines')
         return css_classes_list
 
 
@@ -153,7 +150,7 @@ class GroupCommentItemValue(listbuilder.base.ItemValueRenderer):
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(GroupCommentItemValue, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-group-feedbackfeed-sidebar-groupcomment')
+        css_classes_list.append('devilry-group-feedbackfeed-buttonbar-groupcomment')
         return css_classes_list
 
 
@@ -168,5 +165,5 @@ class FileItemValue(listbuilder.base.ItemValueRenderer):
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(FileItemValue, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-group-feedbackfeed-sidebar-files')
+        css_classes_list.append('devilry-group-feedbackfeed-buttonbar-files')
         return css_classes_list

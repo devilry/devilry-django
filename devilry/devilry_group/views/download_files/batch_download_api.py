@@ -8,16 +8,15 @@ from django.views.generic import View
 from ievv_opensource.ievv_batchframework import batchregistry
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 
-from devilry.apps.core import models as core_models
+from devilry.apps.core.models import ExaminerAssignmentGroupHistory, CandidateAssignmentGroupHistory
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_compressionutil import models as compression_models
 from devilry.devilry_group import models as group_models
-from devilry.devilry_group.models import FeedbackSet, GroupComment
 
 
 class AbstractBatchCompressionAPIView(View):
     """
-    Defines API for checking the status of compressed archives.
+    Defines an API for checking the status of compressed archives.
 
     Returns a JsonReponse containing the status for the batchoperations that compresses archives for download,
     whether the batchoperation is not created all, created but not started, running and finished.
@@ -50,9 +49,6 @@ class AbstractBatchCompressionAPIView(View):
     """
     model_class = None
     batchoperation_type = None
-
-    class Meta:
-        abstract = True
 
     def __get_content_object(self, content_object_id):
         """
@@ -91,20 +87,62 @@ class AbstractBatchCompressionAPIView(View):
         """
         raise NotImplementedError()
 
-    def new_file_is_added(self, latest_compressed_datetime):
+    def new_files_added(self, latest_compressed_datetime):
         """
-        Check if a file is uploaded after the latest ``CompressedArchiveMeta`` is created.
+        Check if any new files are added after the last compressed archive was created.
+
+        Args:
+            latest_compressed_datetime: Last compressed archive created datetime.
+
+        Returns:
+            bool: ``True`` if new files are added, else ``False``.
+        """
+        raise NotImplementedError()
+
+    def _should_reproduce_archive(self, latest_compressed_datetime):
+        """
+        Check if any changes are made after the last time an compressed archive was created
+        that should trigger a new compression of the files.
+
+        Notes::
+            Override this if other checks needs to be performed. Remember to return super call.
 
         Args:
             latest_compressed_datetime: created datetime of the latest ``CompressedArchiveMeta``.
 
         Returns:
-            (bool): ``True`` a new file exist or ``False``
-
-        Raises:
-            NotImplementedError: must be implemented by subclass.
+            (bool): ``True`` if changes are made, else ``False``.
         """
-        raise NotImplementedError()
+        assignment_group_ids = self.get_assignment_group_ids()
+
+        # Check if any changes has been made in context to examiners on the groups.
+        if ExaminerAssignmentGroupHistory.objects.filter(
+                assignment_group_id__in=assignment_group_ids,
+                created_datetime__gt=latest_compressed_datetime).exists():
+            return True
+
+        # Check if any changes has been made in context to candidates on the groups.
+        if CandidateAssignmentGroupHistory.objects.filter(
+                assignment_group_id__in=assignment_group_ids,
+                created_datetime__gt=latest_compressed_datetime).exists():
+            return True
+
+        # Check if a new feedbackset has been created for any of the groups.
+        if group_models.FeedbackSet.objects.filter(
+                group_id__in=assignment_group_ids,
+                created_datetime__gt=latest_compressed_datetime).exists():
+            return True
+
+        # Check if a deadline has been moved for any of the groups.
+        if group_models.FeedbackSetDeadlineHistory.objects.filter(
+                feedback_set__group_id__in=assignment_group_ids,
+                changed_datetime__gt=latest_compressed_datetime).exists():
+            return True
+
+        # Check if any new files are added. Implemented in subclass.
+        if self.new_files_added(latest_compressed_datetime=latest_compressed_datetime):
+            return True
+        return False
 
     def start_compression_task(self, content_object_id):
         """
@@ -116,7 +154,7 @@ class AbstractBatchCompressionAPIView(View):
         Raises:
             NotImplementedError: must be implemented by subclass.
         """
-        raise NotImplementedError('must be implemented by subclass')
+        raise NotImplementedError()
 
     def should_filter_by_created_by_user(self):
         """
@@ -128,7 +166,7 @@ class AbstractBatchCompressionAPIView(View):
         compressed archive, examiner_2 will be served that compressed archive, and not the one with examiner_2s groups.
 
         Returns:
-            bool: If we care about who created it.
+            bool: ``True``, if we care about who created it. ``True`` is returned by default.
         """
         return True
 
@@ -177,6 +215,24 @@ class AbstractBatchCompressionAPIView(View):
             queryset = queryset.filter(created_by=self.request.user)
         return queryset.order_by('-created_datetime').first()
 
+    def _get_batchoperation(self):
+        """
+        Get the ``ievv_opensource.batchframework.BatchOperation`` object for
+        the compression task. Excludes all finished ``BatchOperation``s.
+
+        Returns:
+            ``BatchOperation`` or ``None``.
+        """
+        queryset = BatchOperation.objects \
+            .filter(context_object_id=self.content_object.id,
+                    context_content_type=ContentType.objects.get_for_model(model=self.content_object),
+                    operationtype=self.batchoperation_type) \
+            .exclude(status=BatchOperation.STATUS_FINISHED) \
+            .order_by('-created_datetime')
+        if self.should_filter_by_created_by_user():
+            queryset = queryset.filter(started_by=self.request.user)
+        return queryset.first()
+
     def get_status_dict(self, context_object_id):
         """
         Checks if there exists a ``BatchOperation`` for the requested object.
@@ -190,19 +246,10 @@ class AbstractBatchCompressionAPIView(View):
         Returns:
             (dict): A JSON-serializable dictionary.
         """
-        queryset = BatchOperation.objects\
-            .filter(context_object_id=context_object_id,
-                    context_content_type=ContentType.objects.get_for_model(model=self.content_object),
-                    operationtype=self.batchoperation_type)\
-            .exclude(status=BatchOperation.STATUS_FINISHED)\
-            .order_by('-created_datetime')
-        if self.should_filter_by_created_by_user():
-            queryset = queryset.filter(started_by=self.request.user)
-        batchoperation = queryset.first()
+        batchoperation = self._get_batchoperation()
         if not batchoperation:
             return {'status': 'not-created'}
 
-        # The ``BatchOperation`` exists. Check the status.
         if batchoperation.status == BatchOperation.STATUS_UNPROCESSED:
             return {'status': 'not-started'}
         return {'status': 'running'}
@@ -230,6 +277,14 @@ class AbstractBatchCompressionAPIView(View):
         compressed_archive_meta.deleted_datetime = timezone.now()
         compressed_archive_meta.save()
 
+    def get_assignment_group_ids(self):
+        """
+        Return a list of :class:`devilry.core.apps.models.assignment_group.AssignmentGroup` ids.
+        Returns:
+            list: ``AssignmentGroup`` ids.
+        """
+        raise NotImplementedError()
+
     def get(self, request, *args, **kwargs):
         """
         Expects a id of the element to download as url argument with name ``content_object_id``.
@@ -240,7 +295,7 @@ class AbstractBatchCompressionAPIView(View):
         content_object_id = kwargs.get('content_object_id')
         compressed_archive_meta = self._compressed_archive_created(content_object_id=content_object_id)
         if compressed_archive_meta and \
-                not self.new_file_is_added(latest_compressed_datetime=compressed_archive_meta.created_datetime):
+                not self._should_reproduce_archive(latest_compressed_datetime=compressed_archive_meta.created_datetime):
             return JsonResponse(self.get_ready_for_download_status(content_object_id=content_object_id))
         return JsonResponse(self.get_status_dict(context_object_id=content_object_id))
 
@@ -265,7 +320,7 @@ class AbstractBatchCompressionAPIView(View):
         # start task or return status.
         compressed_archive_meta = self._compressed_archive_created(content_object_id=content_object_id)
         if compressed_archive_meta:
-            if self.new_file_is_added(latest_compressed_datetime=compressed_archive_meta.created_datetime):
+            if self._should_reproduce_archive(latest_compressed_datetime=compressed_archive_meta.created_datetime):
                 self._set_archive_meta_ready_for_delete(compressed_archive_meta=compressed_archive_meta)
                 self.start_compression_task(content_object_id=content_object_id)
                 return JsonResponse(self.get_status_dict(context_object_id=content_object_id))
@@ -285,17 +340,20 @@ class BatchCompressionAPIFeedbackSetView(AbstractBatchCompressionAPIView):
     batchoperation_type = 'batchframework_compress_feedbackset'
 
     def has_no_files(self):
-        group_comment_id = GroupComment.objects\
+        group_comment_ids = group_models.GroupComment.objects\
             .filter(feedback_set=self.content_object).values_list('id', flat=True)
-        return CommentFile.objects.filter(comment_id__in=group_comment_id).count() == 0
+        return CommentFile.objects.filter(comment_id__in=group_comment_ids).count() == 0
 
-    def new_file_is_added(self, latest_compressed_datetime):
-        group_comment_ids = GroupComment.objects\
+    def get_assignment_group_ids(self):
+        return [self.content_object.group.id]
+
+    def new_files_added(self, latest_compressed_datetime):
+        group_comment_ids = group_models.GroupComment.objects \
             .filter(feedback_set=self.content_object).values_list('id', flat=True)
-        return CommentFile.objects\
-            .filter(comment_id__in=group_comment_ids,
-                    created_datetime__gt=latest_compressed_datetime)\
-            .exists()
+        if CommentFile.objects.filter(
+                comment_id__in=group_comment_ids, created_datetime__gt=latest_compressed_datetime
+        ).exists():
+            return True
 
     def get_ready_for_download_status(self, content_object_id=None):
         status_dict = super(BatchCompressionAPIFeedbackSetView, self).get_ready_for_download_status()

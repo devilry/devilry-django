@@ -93,7 +93,7 @@ class Candidate(models.Model):
             if self.candidate_id:
                 return self.candidate_id
             else:
-                return ugettext_lazy('Candidate ID missing')
+                return self.relatedstudent.get_automatic_anonymous_id_with_fallback()
         else:
             return self.relatedstudent.get_anonymous_name()
 

@@ -26,4 +26,23 @@
         </div>
     {% endif %}
     {{ block.super }}
+    <div class="container">
+        <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
+            <h2>{% trans "Find a student" %}</h2>
+            <p class="text-muted">
+                {% blocktrans trimmed %}
+                    Click the button below to search for a student and find all
+                    their assignments. When you find an assignment, you can
+                    move their deadlines, communicate with the student, and view
+                    details about their deliveries and feedback.
+                {% endblocktrans %}
+            </p>
+            <p>
+                <a href="{% cradmin_instance_appindex_url appname='studentfeedbackfeedwizard' %}"
+                        class="btn btn-default btn-sm">
+                    {% trans "Find a student" %}
+                </a>
+            </p>
+        </div>
+    </div>
 {% endblock content %}

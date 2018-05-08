@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 
 import deliverytypes
-from devilry.apps.core.models import Subject
+from devilry.apps.core.models import Subject, Period
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_dbcache.bulk_create_queryset_mixin import BulkCreateQuerySetMixin

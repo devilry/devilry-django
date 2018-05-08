@@ -4,6 +4,7 @@ from devilry.devilry_admin.views.dashboard import createsubject
 from devilry.devilry_cradmin import devilry_crinstance
 from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
 from devilry.devilry_admin.views.dashboard import overview
+from devilry.devilry_admin.views.dashboard import student_feedbackfeed_wizard
 
 
 class Menu(devilry_crmenu_admin.Menu):
@@ -17,6 +18,7 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
     apps = [
         ('overview', overview.App),
         ('createsubject', createsubject.App),
+        ('studentfeedbackfeedwizard', student_feedbackfeed_wizard.App)
     ]
     id = 'devilry_admin'
     rolefrontpage_appname = 'overview'

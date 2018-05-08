@@ -9,6 +9,7 @@ from model_mommy import mommy
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
+from devilry.apps.core import models as core_models
 
 
 class TestFeedbackSetModel(TestCase):
@@ -86,7 +87,9 @@ class TestFeedbackSetModel(TestCase):
 
     def test_feedback_set_publish_multiple_feedbackcomments_order(self):
         examiner = mommy.make('core.Examiner')
-        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active')
+        )
         mommy.make('devilry_group.GroupComment',
                    user_role='examiner',
                    user=examiner.relatedexaminer.user,
@@ -193,3 +196,71 @@ class TestFeedbackSetModel(TestCase):
         with self.assertRaisesMessage(ValidationError,
                                       'A FeedbackSet can not be published without providing "points".'):
             testfeedbackset.clean()
+
+    def __make_assignment(self, first_deadline, deadline_handling=core_models.Assignment.DEADLINEHANDLING_SOFT):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        test_assignment.first_deadline = first_deadline
+        test_assignment.deadline_handling = deadline_handling
+        return test_assignment
+
+    def test_can_add_comment_student_assignment_deadline_hard_expired(self):
+        test_assignment = self.__make_assignment(
+            first_deadline=timezone.now() - timezone.timedelta(days=1),
+            deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode=test_assignment)
+        with self.assertRaises(group_models.HardDeadlineExpiredException):
+            test_feedbackset.can_add_comment(
+                assignment=test_assignment,
+                comment_user_role=group_models.GroupComment.USER_ROLE_STUDENT)
+
+    def test_can_add_comment_student_assignment_deadline_soft_expired(self):
+        test_assignment = self.__make_assignment(
+            first_deadline=timezone.now() - timezone.timedelta(days=1),
+            deadline_handling=core_models.Assignment.DEADLINEHANDLING_SOFT)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode=test_assignment)
+        test_feedbackset.can_add_comment(
+            assignment=test_assignment,
+            comment_user_role=group_models.GroupComment.USER_ROLE_STUDENT)
+
+    def test_can_add_comment_examiner_assignment_deadline_hard_expired_exception_not_raised(self):
+        test_assignment = self.__make_assignment(
+            first_deadline=timezone.now() - timezone.timedelta(days=1),
+            deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode=test_assignment)
+        test_feedbackset.can_add_comment(
+            assignment=test_assignment,
+            comment_user_role=group_models.GroupComment.USER_ROLE_EXAMINER)
+
+    def test_can_add_comment_admin_assignment_deadline_hard_expired_exception_not_raised(self):
+        test_assignment = self.__make_assignment(
+            first_deadline=timezone.now() - timezone.timedelta(days=1),
+            deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode=test_assignment)
+        test_feedbackset.can_add_comment(
+            assignment=test_assignment,
+            comment_user_role=group_models.GroupComment.USER_ROLE_ADMIN)
+
+    def test_can_add_comment_student_assignment_period_expired(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_oldperiod_end')
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode=test_assignment)
+        with self.assertRaises(group_models.PeriodExpiredException):
+            test_feedbackset.can_add_comment(
+                assignment=test_assignment,
+                comment_user_role=group_models.GroupComment.USER_ROLE_STUDENT)
+
+    def test_can_add_comment_examiner_assignment_period_expired(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_oldperiod_end')
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode=test_assignment)
+        with self.assertRaises(group_models.PeriodExpiredException):
+            test_feedbackset.can_add_comment(
+                assignment=test_assignment,
+                comment_user_role=group_models.GroupComment.USER_ROLE_EXAMINER)
+
+    def test_can_add_comment_admin_assignment_period_expired(self):
+        test_assignment = mommy.make_recipe('devilry.apps.core.assignment_oldperiod_end')
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode=test_assignment)
+        with self.assertRaises(group_models.PeriodExpiredException):
+            test_feedbackset.can_add_comment(
+                assignment=test_assignment,
+                comment_user_role=group_models.GroupComment.USER_ROLE_ADMIN)
+

@@ -75,18 +75,6 @@ class TestSplitGroup(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertIn(candidate2.relatedstudent.user.get_displayname(), selectlist)
         self.assertIn(candidate3.relatedstudent.user.get_displayname(), selectlist)
 
-    def test_links(self):
-        testgroup = mommy.make('core.AssignmentGroup')
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testgroup.assignment,
-            cradmin_instance=self.__mockinstance_with_devilryrole('subjectadmin'),
-            viewkwargs={'pk': testgroup.id})
-        self.assertEquals(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
-        self.assertEqual(
-            mock.call(appname='groupdetails', args=(), viewname='groupdetails', kwargs={'pk': testgroup.id}),
-            mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
-        )
-
     def test_cannot_pop_candidate_if_there_is_only_one(self):
         testgroup = mommy.make('core.AssignmentGroup')
         candidate = core_mommy.candidate(group=testgroup)

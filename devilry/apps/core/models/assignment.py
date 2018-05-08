@@ -187,6 +187,10 @@ class AssignmentQuerySet(models.QuerySet):
                                 to_attr='prefetched_point_to_grade_map'))
 
 
+def get_deadline_handling_default():
+    return settings.DEFAULT_DEADLINE_HANDLING_METHOD
+
+
 class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
     """
     Data model for an assignment.
@@ -429,10 +433,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         default=deliverytypes.ELECTRONIC,
         choices=deliverytypes.as_choices_tuple(),
         help_text=_('This option controls what types of deliveries this '
-                   'assignment accepts. See the Delivery documentation '
-                   'for more info.'))
+                    'assignment accepts. See the Delivery documentation '
+                    'for more info.'))
     deadline_handling = models.PositiveIntegerField(
-        default=settings.DEFAULT_DEADLINE_HANDLING_METHOD,
+        default=get_deadline_handling_default,
         verbose_name=_('Deadline handling'),
         choices=(
             (DEADLINEHANDLING_SOFT, _('Soft deadlines')),

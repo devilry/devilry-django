@@ -9,9 +9,9 @@
 {% endblock %}
 
 {% block pageheader-inner %}
-    <a href="{% cradmin_instance_url 'groupdetails' 'groupdetails' pk=group.id %}" class="devilry-page-header-backlink">
+    <a href="{% cradmin_url instanceid='devilry_group_admin' viewname='INDEX' appname='feedbackfeed' roleid=group.id %}" class="devilry-page-header-backlink">
         <span class="sr-only">
-            {% trans "Back to project group overview" %}
+            {% trans "Back to feedback feed" %}
         </span>
         <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
     </a>

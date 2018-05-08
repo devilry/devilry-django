@@ -3,7 +3,7 @@
 {% load cradmin_tags %}
 
 <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-4">
         <div id="devilry_admin_assignment_overview_settings_projectgroups">
             <h3>
                 {% trans "Project groups" %}
@@ -27,7 +27,7 @@
         </div>
     </div>
 
-    <div class="col-sm-6">
+    <div class="col-sm-4">
         <div id="devilry_admin_assignment_overview_settings_anonymization">
             <h3>
                 {% trans "Anonymization" %}
@@ -39,6 +39,37 @@
                 <a href="{% cradmin_appurl "update_anonymizationmode" assignment.id %}" type="button"
                    class="btn btn-default btn-sm">{% trans "Edit anonymization mode" %}</a>
             </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <div id="devilry_admin_assignment_overview_settings_deadline_handling">
+            <h3>
+                {% trans "Deadline handling" %}
+            </h3>
+
+            {% if assignment.deadline_handling == 0 %}
+                {% blocktrans trimmed %}
+                    SOFT. Students can add deliveries and comment after the deadline has expired.
+                {% endblocktrans %}
+            {% elif assignment.deadline_handling == 1 %}
+                {% blocktrans trimmed %}
+                    HARD. Students can not add deliveries or comment after the deadline has expired.
+                {% endblocktrans %}
+            {% endif %}
+            <p>
+
+            </p>
+            {% if user_is_subjectadmin_or_higher %}
+                <div id="devilry_admin_assignment_deadline_handling_buttons">
+                    <a href="{% cradmin_appurl "update_deadline_handling" assignment.id %}" type="button"
+                       class="btn btn-default btn-sm">{% trans "Edit deadline handling" %}</a>
+                </div>
+            {% else %}
+                <p class="text-warning devilry_admin_assignment_overview_settings_deadline_handling_warning_message">
+                    {% trans 'You do not have access to change this setting.' context 'admin assignment overview' %}
+                </p>
+            {% endif %}
         </div>
     </div>
 </div>

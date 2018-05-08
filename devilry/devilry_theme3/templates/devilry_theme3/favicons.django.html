@@ -1,5 +1,7 @@
 {% load static %}
-<link rel="apple-touch-icon"
-      href="{{ DEVILRY_THEME3_DIST_PATH }}media/images/favicons/apple-touch-icon.png">
-<link rel="shortcut icon"
-      href="{{ DEVILRY_THEME3_DIST_PATH }}media/images/favicons/favicon.ico">
+
+{% if DEVILRY_BRANDING_FAV_ICON_PATH %}
+    <link rel="icon"
+          href="{{ DEVILRY_BRANDING_FAV_ICON_PATH }}"
+          type="image/png">
+{% endif %}

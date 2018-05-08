@@ -12,6 +12,7 @@ from devilry.apps.core import models as core_models
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_email.comment_email import comment_email
+from devilry.utils import setting_utils
 
 
 class AdminBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
@@ -29,6 +30,10 @@ class AdminBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
                     raise http.Http404
         return super(AdminBaseFeedbackFeedView, self).dispatch(request, *args, **kwargs)
 
+    def get_hard_deadline_info_text(self):
+        return setting_utils.get_devilry_hard_deadline_info_text(
+            setting_name='DEVILRY_HARD_DEADLINE_INFO_FOR_EXAMINERS_AND_ADMINS')
+
     def get_devilryrole(self):
         return self.request.cradmin_instance.get_devilryrole_for_requestuser()
 
@@ -39,12 +44,8 @@ class AdminBaseFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     def get_backlink_url(self):
         return crinstance.reverse_cradmin_url(
             instanceid='devilry_admin_assignmentadmin',
-            appname='groupdetails',
-            roleid=self.request.cradmin_role.parentnode.id,
-            viewname='groupdetails',
-            kwargs={
-                'pk': self.request.cradmin_role.id
-            }
+            appname='studentoverview',
+            roleid=self.request.cradmin_role.parentnode.id
         )
 
     def get_context_data(self, **kwargs):

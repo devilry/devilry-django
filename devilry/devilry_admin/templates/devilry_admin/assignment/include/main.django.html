@@ -11,7 +11,7 @@
                 {{ assignmentgroups_count }} {% trans "students" context "Text after number of students on assignment" %}.
             {% else %}
                 {% blocktrans trimmed with num_groups=assignmentgroups_count num_candidates=candidates_count context="Text after number of students and project groups" %}
-                    {{ num_groups }} students organized in {{ num_candidates }} project groups
+                    {{ num_candidates }} students organized in {{ num_groups }} project groups
                 {% endblocktrans %}
             {% endif %}
 

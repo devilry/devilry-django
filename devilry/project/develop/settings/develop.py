@@ -30,7 +30,7 @@ if profiler_middleware:
 #
 #######################################################
 INSTALLED_APPS += [
-    'allauth.socialaccount.providers.dataporten',
+    'devilry.devilry_dataporten_allauth'
 ]
 
 AUTHENTICATION_BACKENDS += [

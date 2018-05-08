@@ -16,7 +16,7 @@ Update Devilry
 
 1. Update the version of the ``devilry`` library in your ``~/devilrydeploy/requirements.txt``.
 
-2. Stop Supervisord (or all your init script services etc. that run any ``venv/bin/manage.py`` commands).
+2. Stop Supervisord (or all your init script services etc. that run gunicorn or any ``venv/bin/manage.py`` commands).
 
 3. Update Devilry using PIP::
 

@@ -169,3 +169,11 @@ def codeship_test():
 @task
 def remove_pyc_files():
     os.system('find . -name "*.pyc" -exec rm {} \;')
+
+
+@task
+def make_source_dist():
+    local('git rm -r devilry/devilry_theme3/static/devilry_theme3/')
+    local('ievv buildstatic --production')
+    local('git add devilry/devilry_theme3/static/devilry_theme3/')
+    local('python setup.py sdist')

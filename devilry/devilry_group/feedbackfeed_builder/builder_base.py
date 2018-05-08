@@ -60,6 +60,13 @@ def get_feedbackfeed_builder_queryset(group, requestuser, devilryrole):
                 'feedbacksetdeadlinehistory_set',
                 queryset=feedbackset_deadline_history_queryset)
         )\
+        .prefetch_related(
+            models.Prefetch(
+                'grading_update_histories',
+                queryset=group_models.FeedbackSetGradingUpdateHistory.objects.all(),
+                to_attr='grading_updates'
+            )
+        )\
         .order_by('created_datetime')
 
 
@@ -69,85 +76,7 @@ class FeedbackFeedBuilderBase(object):
     def __init__(self, assignment, group, feedbacksets):
         super(FeedbackFeedBuilderBase, self).__init__()
         self.assignment = assignment
-        self.group = self._prefetch_candidates_and_examiners_for_group(group)
         self.feedbacksets = list(feedbacksets)
-        self._candidate_map = self._make_candidate_map()
-        self._examiner_map = self._make_examiner_map()
-
-    def _prefetch_candidates_and_examiners_for_group(self, group):
-        return AssignmentGroup.objects\
-            .prefetch_related(
-                models.Prefetch('candidates', queryset=self._get_candidatequeryset()))\
-            .prefetch_related(
-                models.Prefetch('examiners', queryset=self._get_examinerqueryset()))\
-            .get(id=group.id)
-
-    def _get_candidatequeryset(self):
-        """Get candidates.
-
-        Returns:
-            QuerySet: A queryset of :class:`~devilry.apps.core.models.Candidate`s.
-        """
-        return Candidate.objects \
-            .select_related('relatedstudent', 'relatedstudent__period', 'relatedstudent__user')
-
-    def _get_examinerqueryset(self):
-        """Get examiners.
-
-        Returns:
-            QuerySet: A queryset of :class:`~devilry.apps.core.models.Examiner`s.
-        """
-        return Examiner.objects \
-            .select_related('relatedexaminer', 'relatedexaminer__period', 'relatedexaminer__user')
-
-    def _make_candidate_map(self):
-        """
-        Create a map of :class:`devilry.apps.core.models.Candidate` objects with user id as key.
-
-        Returns:
-            dict: Map of candidates.
-        """
-        candidatemap = {}
-        for candidate in self.group.candidates.all():
-            candidatemap[candidate.relatedstudent.user_id] = candidate
-        return candidatemap
-
-    def _make_examiner_map(self):
-        """
-        Create a map of :class:`devilry.apps.core.models.Examiner` objects with user id as key.
-
-        Returns:
-             dict: Map of examiners.
-        """
-        examinermap = {}
-        for examiner in self.group.examiners.all():
-            examinermap[examiner.relatedexaminer.user_id] = examiner
-        return examinermap
-
-    def _get_candidate_from_user(self, user):
-        """
-        Get the :class:`devilry.apps.core.models.Candidate` object based on the user from the
-        candidate map.
-
-        Args:
-            user: A class:`devilry.devilry_account.models.User` object.
-
-        Returns:
-             :class:`devilry.apps.core.models.Candidate`: A candidate or None.
-        """
-        return self._candidate_map.get(user.id)
-
-    def _get_examiner_from_user(self, user):
-        """
-        Get the :class:`devilry.apps.core.models.Candidate` object based on the user from the
-        examiner map.
-
-        Args:
-            user: A :class:`devilry.devilry_account.models.User` object.
-        Returns:
-             :class:`devilry.apps.core.models.Examiner`: An examiner or None.
-        """
-        return self._examiner_map.get(user.id)
 
     def sort_dict(self, dictionary):
         """

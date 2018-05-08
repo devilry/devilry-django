@@ -55,16 +55,18 @@
 }
 
 // Sidebar
-.devilry-group-feedbackfeed-sidebar {
+.devilry-group-feedbackfeed-buttonbar {
   background: @cradmin-focus-bg;
-  padding: 5px 15px 0 15px;
+  padding: 5px 15px 5px 15px;
   margin-bottom: @devilry-vertical-rythm--medium;
 
   &__title {
-    margin-top: 0;
+    margin-top: 5px;
     margin-bottom: 5px;
-    font-size: @font-size-h4;
-    display: inline-block;
+    font-size: ceil((@font-size-base * 0.7));;
+    text-transform: uppercase;
+    color: @text-muted;
+    display: block;
   }
 
   &__list {
@@ -76,6 +78,10 @@
       margin: 0;
       display: inline-block;
       padding: 0;
+
+      .btn {
+        margin-bottom: 5px;
+      }
     }
   }
 }

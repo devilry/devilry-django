@@ -114,7 +114,7 @@ class TestCandidateModel(test.TestCase):
     def test_get_anonymous_name_uses_custom_candidate_ids_true_no_candidate_id(self):
         candidate = mommy.make('core.Candidate',
                                assignment_group__parentnode__uses_custom_candidate_ids=True)
-        self.assertEqual('Candidate ID missing', candidate.get_anonymous_name())
+        self.assertEqual('Automatic anonymous ID missing', candidate.get_anonymous_name())
 
     def test_get_anonymous_name_assignment_argument(self):
         candidate = mommy.make('core.Candidate')
@@ -153,4 +153,4 @@ class TestCandidateModel(test.TestCase):
         candidate = mommy.make('core.Candidate',
                                assignment_group__parentnode__uses_custom_candidate_ids=False,
                                relatedstudent__automatic_anonymous_id='')
-        self.assertEqual('Anonymous ID missing', candidate.get_anonymous_name())
+        self.assertEqual('Automatic anonymous ID missing', candidate.get_anonymous_name())

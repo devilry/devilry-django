@@ -2,6 +2,7 @@ import logging
 
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.contrib.auth import get_user_model
+from django.http import HttpResponseRedirect
 
 from devilry.devilry_authenticate import socialaccount_user_updaters
 

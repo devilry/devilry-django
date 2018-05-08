@@ -23,11 +23,11 @@
         {% if me.is_graded %}
             {% devilry_grade_full assignment=me.assignment points=me.feedbackset.grading_points devilryrole=me.devilryrole %}
         {% else %}
-            {% trans "Waiting for feedback" %}
+            {% devilry_groupstatus me.feedbackset.group %}
         {% endif %}
     </div>
 
-    {% if me.devilry_viewrole == 'examiner' %}
+    {% if me.devilry_viewrole == 'examiner' or 'admin' in me.devilry_viewrole %}
         {% if me.feedbackset.group.cached_data.last_feedbackset == me.feedbackset %}
             <div class="header-buttons">
                 {% if me.feedbackset.group.cached_data.last_published_feedbackset_is_last_feedbackset and me.feedbackset.group.cached_data.last_published_feedbackset == me.feedbackset %}
@@ -35,10 +35,12 @@
                         class="btn btn-default devilry-group-event__grade-move-deadline-button">
                         {% trans "Move deadline" %}
                     </a>
-                    <a href="{% cradmin_appurl 'edit' pk=me.feedbackset.id %}"
-                       class="btn btn-default devilry-group-event__grade-last-edit-button">
-                        {% trans "Edit grade" %}
-                    </a>
+                    {% if me.devilry_viewrole == 'examiner' %}
+                        <a href="{% cradmin_appurl 'edit' pk=me.feedbackset.id %}"
+                           class="btn btn-default devilry-group-event__grade-last-edit-button">
+                            {% trans "Edit grade" %}
+                        </a>
+                    {% endif %}
                     <a href="{% cradmin_instance_url appname="manage-deadline" viewname="manage-deadline-single-group" handle_deadline="new-attempt" deadline=me.deadline_as_string group_id=me.feedbackset.group.id %}"
                         class="btn btn-primary devilry-group-event__grade-last-new-attempt-button">
                         {% trans "Give new attempt" %}

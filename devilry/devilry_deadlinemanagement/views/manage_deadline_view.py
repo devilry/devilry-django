@@ -259,11 +259,15 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
         Returns:
             (int): ID of the created ``GroupComment``.
         """
+        if self.request.cradmin_instance.get_devilryrole_for_requestuser().endswith('admin'):
+            user_role = group_models.GroupComment.USER_ROLE_ADMIN
+        else:
+            user_role = group_models.GroupComment.USER_ROLE_EXAMINER
         group_comment = group_models.GroupComment.objects.create(
             feedback_set_id=feedback_set_id,
             visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
             user=self.request.user,
-            user_role=group_models.GroupComment.USER_ROLE_EXAMINER,
+            user_role=user_role,
             text=text,
             comment_type=group_models.GroupComment.COMMENT_TYPE_GROUPCOMMENT,
             published_datetime=publishing_time

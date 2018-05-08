@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.core import mail
 from model_mommy import mommy
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -23,8 +23,44 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
+    def test_assignment_soft_deadline_info_box_not_rendered(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_SOFT)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser
+        )
+        self.assertFalse(mockresponse.selector.exists('.devilry-feedbackfeed-hard-deadline-info-box'))
+
+    def test_assignment_hard_deadline_info_box_rendered(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-hard-deadline-info-box'))
+
+    @override_settings(DEVILRY_HARD_DEADLINE_INFO_FOR_EXAMINERS_AND_ADMINS={
+            '__default': 'Hard deadline info'
+    })
+    def test_assignment_hard_deadline_info_box_rendered_info_text_default(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                      group__parentnode__deadline_handling=core_models.Assignment.DEADLINEHANDLING_HARD)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser
+        )
+        self.assertEqual(
+            mockresponse.selector.one('.devilry-feedbackfeed-hard-deadline-info-box').alltext_normalized,
+            'Hard deadline info')
+
     def test_get_admin_form_heading(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-form-heading'))
         self.assertEquals(
@@ -34,7 +70,8 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
         )
 
     def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choice_add_comment_public_button(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
         self.assertTrue(mockresponse.selector.exists('#submit-id-admin_add_public_comment'))
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
@@ -106,7 +143,8 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
     def test_upload_single_file_visibility_everyone(self):
         # Test that a CommentFile is created on upload.
         # Posting comment with visibility visible to everyone
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfile(
             user=testuser)
@@ -126,7 +164,8 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
     def test_upload_single_file_content_visibility_everyone(self):
         # Test the content of a CommentFile after upload.
         # Posting comment with visibility visible to everyone
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[
@@ -156,7 +195,8 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
     def test_upload_multiple_files_visibility_everyone(self):
         # Test the content of CommentFiles after upload.
         # Posting comment with visibility visible to everyone
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[
@@ -183,7 +223,8 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
 
     def test_upload_multiple_files_contents_visibility_everyone(self):
         # Test the content of a CommentFile after upload.
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[
@@ -231,7 +272,8 @@ class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixi
 
     def test_upload_files_and_comment_text(self):
         # Test the content of a CommentFile after upload.
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[
@@ -263,7 +305,8 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
         AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_admin_form_heading(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-form-heading'))
         self.assertEquals(
@@ -273,7 +316,8 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
         )
 
     def test_get_feedbackfeed_admin_wysiwyg_get_comment_choice_add_comment_for_examiners_and_admins_button(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup)
         self.assertTrue(mockresponse.selector.exists('#submit-id-admin_add_comment_for_examiners_and_admins'))
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
@@ -345,7 +389,8 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
     def test_upload_single_file_visibility_examiners_and_admins(self):
         # Test that a CommentFile is created on upload.
         # Posting comment with visibility visible to examiners and admins
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfile(
             user=testuser)
@@ -367,7 +412,8 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
     def test_upload_single_file_content_visibility_examiners_and_admins(self):
         # Test the content of a CommentFile after upload.
         # Posting comment with visibility visible to examiners and admins
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[
@@ -398,7 +444,8 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
     def test_upload_multiple_files_visibility_examiners_and_admins(self):
         # Test the content of CommentFiles after upload.
         # Posting comment with visibility visible to everyone
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[
@@ -425,7 +472,8 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
 
     def test_upload_multiple_files_contents_visibility_examiners_and_admins(self):
         # Test the content of a CommentFile after upload.
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
             file_list=[

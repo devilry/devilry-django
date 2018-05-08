@@ -7,11 +7,11 @@
 {% load i18n %}
 
 {% block content %}
-    <h4 class="devilry-group-feedbackfeed-sidebar__comment-title">
-        <small class="devilry-group-feedbackfeed-sidebar__comment-title-meta">
+    <h4 class="devilry-group-feedbackfeed-buttonbar__comment-title">
+        <small class="devilry-group-feedbackfeed-buttonbar__comment-title-meta">
             {{ me.groupcomment.published_datetime }}
         </small>
-        <span class="devilry-group-feedbackfeed-sidebar-groupcomment-user">
+        <span class="devilry-group-feedbackfeed-buttonbar-groupcomment-user">
             {% if me.groupcomment.user_role == 'student'%}
                 {% devilry_single_candidate_short_displayname me.assignment me.user_obj me.devilryrole %}
             {% elif me.groupcomment.user_role == 'examiner' %}

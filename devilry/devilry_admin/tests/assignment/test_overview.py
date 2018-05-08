@@ -1,6 +1,8 @@
+import unittest
 from datetime import datetime, timedelta
 
 import mock
+from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
@@ -9,6 +11,7 @@ from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.apps.core.models import Assignment
+from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_admin.views.assignment import overview
 from devilry.utils.datetimeutils import default_timezone_datetime
 
@@ -41,7 +44,10 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_assignment_meta_has_two_students(self):
         assignment = mommy.make('core.Assignment')
-        mommy.make('core.AssignmentGroup', parentnode=assignment, _quantity=2)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        mommy.make('core.Candidate', assignment_group=group1)
+        mommy.make('core.Candidate', assignment_group=group2)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertTrue(
                 mockresponse.selector.one('#devilry_admin_assignment_meta p').alltext_normalized.startswith(
@@ -459,7 +465,7 @@ class TestOverviewInfoBox(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         self.assertTrue(mockresponse.selector.exists('#devilry_admin_assignment_published_publishnow_form_info_box'))
 
-    def test_still_students_who_are_on_the_semester_but_not_on_the_assignemnt(self):
+    def test_still_students_who_are_on_the_semester_but_not_on_the_assignment(self):
         assignment = mommy.make('core.Assignment')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         relatedstudent = mommy.make('core.RelatedStudent', period=assignment.period)
@@ -513,4 +519,65 @@ class TestOverviewInfoBox(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertFalse(
             mockresponse.selector.exists('#devilry_admin_assignment_overview_info_box')
+        )
+
+    @unittest.skip('Add when issue 978 is resolved')
+    def test_settings_deadline_handling_button_not_visible_to_periodadmin(self):
+        testassignment = mommy.make('core.Assignment')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=mommy.make('devilry_account.PeriodPermissionGroup',
+                                              period=testassignment.parentnode).permissiongroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertFalse(
+            mockresponse.selector.exists('#devilry_admin_assignment_deadline_handling_buttons')
+        )
+
+    @unittest.skip('Add when issue 978 is resolved')
+    def test_settings_deadline_handling_warning_message_for_periodadmin(self):
+        testassignment = mommy.make('core.Assignment')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=mommy.make('devilry_account.PeriodPermissionGroup',
+                                              period=testassignment.parentnode).permissiongroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertEquals(
+            mockresponse.selector.one('.devilry_admin_assignment_overview_settings_deadline_handling_warning_message')
+                .alltext_normalized,
+            'You do not have access to change this setting.'
+        )
+
+    @unittest.skip('Add when issue 978 is resolved')
+    def test_settings_deadline_handling_subjectadmin_can_see_button(self):
+        testassignment = mommy.make('core.Assignment')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=mommy.make('devilry_account.SubjectPermissionGroup',
+                                              permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                                              subject=testassignment.parentnode.parentnode).permissiongroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertTrue(
+            mockresponse.selector.exists('#devilry_admin_assignment_deadline_handling_buttons')
+        )
+
+    @unittest.skip('Add when issue 978 is resolved')
+    def test_settings_deadline_handling_departmentadmin_can_see_button(self):
+        testassignment = mommy.make('core.Assignment')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser', user=testuser,
+                   permissiongroup=mommy.make('devilry_account.SubjectPermissionGroup',
+                                              permissiongroup__grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN,
+                                              subject=testassignment.parentnode.parentnode).permissiongroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertTrue(
+            mockresponse.selector.exists('#devilry_admin_assignment_deadline_handling_buttons')
+        )
+
+    @unittest.skip('Add when issue 978 is resolved')
+    def test_settings_deadline_handling_superuser_can_see_button(self):
+        testassignment = mommy.make('core.Assignment')
+        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
+        self.assertTrue(
+            mockresponse.selector.exists('#devilry_admin_assignment_deadline_handling_buttons')
         )

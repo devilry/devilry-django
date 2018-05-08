@@ -96,7 +96,7 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
             requestuser=user,
             cradmin_role=testassignment
         )
-        self.assertEquals('Anonymous ID missing',
+        self.assertEquals('Automatic anonymous ID missing',
                           mockresponse.selector.one('.devilry-core-candidate-anonymous-name').alltext_normalized)
 
     def test_group_anonymization_semi_multiple_candidates(self):
@@ -116,7 +116,7 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
                            for elem in mockresponse.selector.list('.devilry-core-candidate-anonymous-name')]
         self.assertEquals(3, len(candidate_names))
         for name in candidate_names:
-            self.assertEquals(name, 'Anonymous ID missing')
+            self.assertEquals(name, 'Automatic anonymous ID missing')
 
     def test_group_anonymization_fully_single_candidate(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -129,7 +129,7 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
             requestuser=user,
             cradmin_role=testassignment
         )
-        self.assertEquals('Anonymous ID missing',
+        self.assertEquals('Automatic anonymous ID missing',
                           mockresponse.selector.one('.devilry-core-candidate-anonymous-name').alltext_normalized)
 
     def test_group_anonymization_fully_multiple_candidates(self):
@@ -149,7 +149,7 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
                            for elem in mockresponse.selector.list('.devilry-core-candidate-anonymous-name')]
         self.assertEquals(3, len(candidate_names))
         for name in candidate_names:
-            self.assertEquals(name, 'Anonymous ID missing')
+            self.assertEquals(name, 'Automatic anonymous ID missing')
 
     def test_post_comment_attributes(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')

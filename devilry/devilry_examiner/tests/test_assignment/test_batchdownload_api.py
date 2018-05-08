@@ -4,6 +4,7 @@ import unittest
 
 import mock
 from django import test
+from django.conf import settings
 from django.core.files.base import ContentFile
 from django.http import Http404
 from django.test import override_settings
@@ -26,6 +27,19 @@ class TestHelper(object):
     """
     Testhelper class for tests.
     """
+    def _mock_batchoperation(self, context_object, status, user):
+        """
+        Create a batchoperation for the context object passed as argument.
+        This way we can easlily set the batchoperation status without running the actual task since the
+        api checks the batchoperation status to determine the response data.
+        """
+        batchoperation = BatchOperation(
+            operationtype=BatchCompressionAPIAssignmentView.batchoperation_type,
+            context_object=context_object,
+            status=status,
+            started_by=user)
+        batchoperation.save()
+
     def _mock_batchoperation_status(self, context_object_id, status=BatchOperation.STATUS_UNPROCESSED):
         # helper function
         # Set the BatchOperation.status to the desired status for testing.
@@ -66,6 +80,11 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         shutil.rmtree('devilry_testfiles/devilry_compressed_archives/', ignore_errors=True)
         shutil.rmtree('devilry_testfiles/filestore/', ignore_errors=True)
 
+    def __mock_cradmin_app(self):
+        mock_app = mock.MagicMock()
+        mock_app.reverse_appurl.return_value = ''
+        return mock_app
+
     def test_get_404_without_content_object_id(self):
         with self.assertRaises(Http404):
             self.mock_getrequest()
@@ -84,7 +103,6 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         )
         self.assertEquals('{"status": "no-files"}', mockresponse.response.content)
 
-    @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_get_status_not_started_unprocessed(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -96,14 +114,11 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
                                  user__shortname='testuser@example.com')
         commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-        self._register_and_run_actiongroup(
-            actiongroup_name='batchframework_compress_assignment',
-            task=tasks.AssignmentCompressAction,
-            context_object=testassignment,
-            user=testexaminer.relatedexaminer.user
-        )
-        self._mock_batchoperation_status(context_object_id=testassignment.id)
+        self._mock_batchoperation(context_object=testassignment,
+                                  status=BatchOperation.STATUS_UNPROCESSED,
+                                  user=testexaminer.relatedexaminer.user)
         mockresponse = self.mock_getrequest(
+            cradmin_app=self.__mock_cradmin_app(),
             requestuser=testexaminer.relatedexaminer.user,
             viewkwargs={
                 'content_object_id': testassignment.id
@@ -133,6 +148,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         )
         self._mock_batchoperation_status(context_object_id=testassignment.id, status=BatchOperation.STATUS_FINISHED)
         mockresponse = self.mock_getrequest(
+            cradmin_app=self.__mock_cradmin_app(),
             requestuser=testexaminer.relatedexaminer.user,
             viewkwargs={
                 'content_object_id': testassignment.id
@@ -160,6 +176,110 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         )
         self._mock_batchoperation_status(context_object_id=testassignment.id, status=BatchOperation.STATUS_FINISHED)
         mockresponse = self.mock_getrequest(
+            cradmin_app=self.__mock_cradmin_app(),
+            requestuser=testexaminer.relatedexaminer.user,
+            viewkwargs={
+                'content_object_id': testassignment.id
+            })
+        self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
+
+    def test_get_status_not_created_when_examiner_history_with_datetime_greater_than_last_compressed_archive(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testexaminer = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testassignment,
+                   created_by=testexaminer.relatedexaminer.user,
+                   created_datetime=timezone.now() - timezone.timedelta(hours=1))
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=testfeedbackset,
+                                 user_role='student',
+                                 user__shortname='testuser@example.com')
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+        mommy.make('core.ExaminerAssignmentGroupHistory',
+                   assignment_group=testgroup,
+                   user=mommy.make(settings.AUTH_USER_MODEL),
+                   created_datetime=timezone.now())
+        mockresponse = self.mock_getrequest(
+            cradmin_app=self.__mock_cradmin_app(),
+            requestuser=testexaminer.relatedexaminer.user,
+            viewkwargs={
+                'content_object_id': testassignment.id
+            })
+        self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
+
+    def test_get_status_not_created_when_candidate_history_with_datetime_greater_than_last_compressed_archive(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testexaminer = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup)
+        mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testassignment,
+                   created_by=testexaminer.relatedexaminer.user,
+                   created_datetime=timezone.now() - timezone.timedelta(hours=1))
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=testfeedbackset,
+                                 user_role='student',
+                                 user__shortname='testuser@example.com')
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+        mommy.make('core.CandidateAssignmentGroupHistory',
+                   assignment_group=testgroup,
+                   user=mommy.make(settings.AUTH_USER_MODEL),
+                   created_datetime=timezone.now())
+        mockresponse = self.mock_getrequest(
+            cradmin_app=self.__mock_cradmin_app(),
+            requestuser=testexaminer.relatedexaminer.user,
+            viewkwargs={
+                'content_object_id': testassignment.id
+            })
+        self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
+
+    def test_get_status_not_created_when_new_feedbackset_is_created_after_last_compressed_archive(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testexaminer = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup, grading_points=1)
+        mommy.make('devilry_compressionutil.CompressedArchiveMeta', content_object=testassignment,
+                   created_by=testexaminer.relatedexaminer.user,
+                   created_datetime=timezone.now())
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=testfeedbackset,
+                                 user_role='student',
+                                 user__shortname='testuser@example.com')
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+
+        # Create new feedbackset
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(group=testgroup)
+        mockresponse = self.mock_getrequest(
+            cradmin_app=self.__mock_cradmin_app(),
+            requestuser=testexaminer.relatedexaminer.user,
+            viewkwargs={
+                'content_object_id': testassignment.id
+            })
+        self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
+
+    def test_get_status_not_created_when_feedbackset_deadline_is_moved(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testexaminer = mommy.make('core.Examiner', assignmentgroup=testgroup)
+        testfeedbackset = devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=testgroup, grading_points=1)
+        testcomment = mommy.make('devilry_group.GroupComment',
+                                 feedback_set=testfeedbackset,
+                                 user_role='student',
+                                 user__shortname='testuser@example.com')
+        commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
+        commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+        mommy.make('devilry_compressionutil.CompressedArchiveMeta',
+                   content_object=testassignment,
+                   created_by=testexaminer.relatedexaminer.user,
+                   created_datetime=timezone.now())
+        mommy.make('devilry_group.FeedbackSetDeadlineHistory', feedback_set=testfeedbackset)
+        mockresponse = self.mock_getrequest(
+            cradmin_app=self.__mock_cradmin_app(),
             requestuser=testexaminer.relatedexaminer.user,
             viewkwargs={
                 'content_object_id': testassignment.id
@@ -204,13 +324,13 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         )
         self._mock_batchoperation_status(context_object_id=testassignment.id, status=BatchOperation.STATUS_FINISHED)
         mockresponse = self.mock_getrequest(
+            cradmin_app=self.__mock_cradmin_app(),
             requestuser=relatedexaminer.user,
             viewkwargs={
                 'content_object_id': testassignment.id
             })
         self.assertEquals(mockresponse.response.content, '{"status": "not-created"}')
 
-    @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_get_status_running(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -222,14 +342,11 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
                                  user__shortname='testuser@example.com')
         commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-        self._register_and_run_actiongroup(
-            actiongroup_name='batchframework_compress_assignment',
-            task=tasks.AssignmentCompressAction,
-            context_object=testassignment,
-            user=testexaminer.relatedexaminer.user
-        )
-        self._mock_batchoperation_status(context_object_id=testassignment.id, status=BatchOperation.STATUS_RUNNING)
+        self._mock_batchoperation(context_object=testassignment,
+                                  status=BatchOperation.STATUS_RUNNING,
+                                  user=testexaminer.relatedexaminer.user)
         mockresponse = self.mock_getrequest(
+            cradmin_app=self.__mock_cradmin_app(),
             requestuser=testexaminer.relatedexaminer.user,
             viewkwargs={
                 'content_object_id': testassignment.id
@@ -279,6 +396,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
         self.mock_postrequest(
+            cradmin_app=self.__mock_cradmin_app(),
             requestuser=testexaminer.relatedexaminer.user,
             viewkwargs={
                 'content_object_id': testassignment.id
@@ -286,7 +404,6 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         )
         self.assertIsNotNone(CompressedArchiveMeta.objects.get(id=compressed_archive_meta.id).deleted_datetime)
 
-    @override_settings(IEVV_BATCHFRAMEWORK_ALWAYS_SYNCRONOUS=False)
     def test_post_batchoperation_not_started(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -298,14 +415,11 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
                                  user__shortname='testuser@example.com')
         commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
-        self._register_and_run_actiongroup(
-            actiongroup_name='batchframework_compress_assignment',
-            task=tasks.AssignmentCompressAction,
-            context_object=testassignment,
-            user=testexaminer.relatedexaminer.user
-        )
-        self._mock_batchoperation_status(context_object_id=testassignment.id)
+        self._mock_batchoperation(context_object=testassignment,
+                                  status=BatchOperation.STATUS_UNPROCESSED,
+                                  user=testexaminer.relatedexaminer.user)
         mockresponse = self.mock_postrequest(
+            cradmin_app=self.__mock_cradmin_app(),
             requestuser=testexaminer.relatedexaminer.user,
             viewkwargs={
                 'content_object_id': testassignment.id
@@ -343,7 +457,7 @@ class TestAssignmentBatchDownloadApi(test.TestCase, TestHelper, TestCaseMixin):
         # mock return value for reverse_appurl
         mock_cradmin_app = mock.MagicMock()
         mock_cradmin_app.reverse_appurl.return_value = 'url-to-downloadview'
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(8):
             mockresponse = self.mock_postrequest(
                 cradmin_app=mock_cradmin_app,
                 requestuser=testexaminer.relatedexaminer.user,

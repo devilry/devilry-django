@@ -733,7 +733,7 @@ class TestPassedFailedBulkCreateFeedback(test.TestCase, cradmin_testhelpers.Test
 
         messagemock.add.assert_called_once_with(
             messages.SUCCESS,
-            'Bulk added feedback for Anonymous ID missing'.format(testgroup1.short_displayname),
+            'Bulk added feedback for Automatic anonymous ID missing'.format(testgroup1.short_displayname),
             '')
 
     def test_only_bulk_create_passed_group_ids(self):

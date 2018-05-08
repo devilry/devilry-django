@@ -1,0 +1,5 @@
+############################
+What is new in Devilry 3.1.6
+############################
+
+This release only fixes an devilry upgrade issue from the 3.1.5 release when a certain setting was overridden.

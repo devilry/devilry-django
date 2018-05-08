@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import collections
+
 from django.template import defaultfilters
 from django.utils import timezone
 from django.utils.translation import pgettext_lazy, ugettext_lazy
@@ -30,6 +32,12 @@ class SelectDeadlineItemValue(listbuilder.itemvalue.TitleDescription):
             if group.cached_data.last_published_feedbackset_is_last_feedbackset:
                 count += 1
         return count
+
+    def get_cradmin_instance_id_for_feedbackfeed(self):
+        from devilry.devilry_group.cradmin_instances import crinstance_admin, crinstance_examiner
+        if self.devilryrole.endswith('admin'):
+            return crinstance_admin.AdminCrInstance.id
+        return crinstance_examiner.ExaminerCrInstance.id
 
     def get_title(self):
         formatted_deadline = defaultfilters.date(timezone.localtime(self.value), 'DATETIME_FORMAT')
@@ -84,7 +92,7 @@ class DeadlineListView(viewutils.DeadlineManagementMixin, TemplateView):
             (OrderedDict): Ordered dictionary of deadlines(keys) and list of groups(values).
         """
         queryset = self.get_queryset_for_role(role=self.assignment)
-        deadlines_dict = {}
+        deadlines_dict = collections.OrderedDict()
         for group in queryset:
             deadline = group.cached_data.last_feedbackset.deadline_datetime
             if deadline not in deadlines_dict:

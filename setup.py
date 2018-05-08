@@ -51,7 +51,7 @@ setup(
         'detektor==1.1.0-beta.012',
 
         # For django-allauth
-        'django-allauth==0.34.0',
+        'django-allauth==0.36.0',
         'certifi==2017.11.5',
         'chardet==3.0.4',
         'idna==2.6',

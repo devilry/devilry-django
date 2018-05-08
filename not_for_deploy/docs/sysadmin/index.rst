@@ -19,6 +19,7 @@ Devilry sysadmin docs
    branding
    devilry_settings
    compressed_archive_setup
+   editable_ui_messages
 
 
 Migration guides

@@ -16,7 +16,8 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
 
     def test_edit_comment_draft_save(self):
         # Test that the GroupComment is updated after default save
-        group = mommy.make('core.AssignmentGroup')
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=group,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
@@ -44,7 +45,8 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
 
     def test_edit_comment_draft_save_continue_edit(self):
         # Test that the GroupComment is updated after 'Save and continue editing'
-        group = mommy.make('core.AssignmentGroup')
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=group,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))

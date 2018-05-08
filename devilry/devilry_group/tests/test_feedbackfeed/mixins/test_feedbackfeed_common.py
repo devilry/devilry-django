@@ -2,6 +2,7 @@ import unittest
 
 import mock
 from django.conf import settings
+from django.contrib import messages
 
 from django.utils import formats
 from django.utils import timezone
@@ -218,6 +219,53 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
         self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
                          group.assignment.get_path())
 
+    def test_semester_expired_comment_form_not_rendered(self):
+        # Test comment/upload form is not rendered if the semester has expired.
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_old'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-form-wrapper'))
+
+    def test_semester_expired_comment_form_not_rendered_message_box(self):
+        # Test comment/upload form is not rendered if the semester has expired.
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_old'))
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-form-wrapper'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-form-disabled'))
+        self.assertEqual(mockresponse.selector.one('.devilry-feedbackfeed-form-disabled').alltext_normalized,
+                         'File uploads and comments disabled This assignment is on an inactive semester. '
+                         'File upload and commenting is disabled.')
+
+    def test_semester_expired_post_django_message(self):
+        # Test comment/upload form post django message if the semester has expired.
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_old'))
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=test_feedbackset.group,
+            requestuser=testuser,
+            viewkwargs={'pk': test_feedbackset.group.id},
+            messagesmock=messagesmock,
+            requestkwargs={
+                'data': {
+                    'text': 'test',
+                    'student_add_comment': 'unused value',
+                }
+            })
+        messagesmock.add.assert_called_once_with(
+            messages.WARNING, 'This assignment is on an inactive semester. File upload and commenting is disabled.', '')
+        self.assertEqual(group_models.GroupComment.objects.count(), 0)
+
     def test_get_event_without_any_deadlines_expired(self):
         # tests that when a feedbackset has been created and no first deadlines given, either on Assignment
         # or FeedbackSet, no 'expired event' is rendered
@@ -300,7 +348,17 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testgroup,
         )
-        self.assertEquals(mockresponse.selector.one('.header-grading-info').alltext_normalized, 'Waiting for feedback')
+        self.assertEquals(mockresponse.selector.one('.header-grading-info').alltext_normalized, 'waiting for feedback')
+
+    def test_get_feedbackset_header_grading_info_waiting_for_deliveries_for_feedback(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+        )
+        self.assertEquals(mockresponse.selector.one('.header-grading-info').alltext_normalized,
+                          'waiting for deliveries')
 
     def test_get_feedbackset_header_two_attempts(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -330,3 +388,41 @@ class TestFeedbackFeedMixin(TestFeedbackFeedHeaderMixin, TestFeedbackFeedGroupCo
                 .alltext_normalized,
             'Test User(test@example.com)'
         )
+
+    def test_get_feedbackset_grading_updated_one_event_rendered(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='test@example.com', fullname='Test User')
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=1,
+                   updated_by=testuser)
+
+        # We add an unpublished new attempt, because the feedback view for examiners requires that the last feedbackset
+        # is not published.
+        group_mommy.feedbackset_new_attempt_unpublished(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        self.assertEqual(mockresponse.selector.count('.devilry-group-event__grading_updated'), 1)
+
+    def test_get_feedbackset_grading_updated_multiple_events_rendered(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='test@example.com', fullname='Test User')
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=1,
+                   updated_by=testuser)
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=0,
+                   updated_by=testuser)
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=1,
+                   updated_by=testuser)
+        mommy.make('devilry_group.FeedbackSetGradingUpdateHistory', feedback_set=test_feedbackset, old_grading_points=0,
+                   updated_by=testuser)
+
+        # We add an unpublished new attempt, because the feedback view for examiners requires that the last feedbackset
+        # is not published.
+        group_mommy.feedbackset_new_attempt_unpublished(group=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup
+        )
+        self.assertEqual(mockresponse.selector.count('.devilry-group-event__grading_updated'), 4)

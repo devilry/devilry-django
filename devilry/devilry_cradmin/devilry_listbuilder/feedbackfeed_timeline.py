@@ -1,5 +1,7 @@
 # Devilry/cradmin imports
 from django_cradmin.viewhelpers import listbuilder
+
+from devilry.apps.core.group_user_lookup import GroupUserLookup
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_group.models import GroupComment, FeedbackSet
 from devilry.utils import datetimeutils
@@ -58,11 +60,16 @@ class FeedbackSetTimelineListBuilderList(listbuilder.base.List):
         )
         return listbuilder_list
 
-    def __init__(self, feedbackset, group, assignment, devilryrole):
+    def __init__(self, feedbackset, group, assignment, requestuser, devilryrole):
         self.feedbackset = feedbackset
         self.assignment = assignment
         self.devilryrole = devilryrole
         self.group = group
+        self.group_user_lookup = GroupUserLookup(
+            group=group,
+            assignment=assignment,
+            requestuser=requestuser,
+            requestuser_devilryrole=devilryrole)
         super(FeedbackSetTimelineListBuilderList, self).__init__()
 
     def get_item_value(self, event_dict):
@@ -92,27 +99,33 @@ class FeedbackSetTimelineListBuilderList(listbuilder.base.List):
             if group_comment.user_role == comment_models.Comment.USER_ROLE_STUDENT:
                 return StudentGroupCommentItemValue(value=group_comment,
                                                     devilry_viewrole=self.devilryrole,
-                                                    user_obj=event_dict.get('candidate'),
-                                                    assignment=self.assignment)
+                                                    assignment=self.assignment,
+                                                    group_user_lookup=self.group_user_lookup)
             elif group_comment.user_role == comment_models.Comment.USER_ROLE_EXAMINER:
                 return ExaminerGroupCommentItemValue(value=group_comment,
                                                      devilry_viewrole=self.devilryrole,
-                                                     user_obj=event_dict.get('examiner'),
-                                                     assignment=self.assignment)
+                                                     assignment=self.assignment,
+                                                     group_user_lookup=self.group_user_lookup)
             elif group_comment.user_role == comment_models.Comment.USER_ROLE_ADMIN:
                 return AdminGroupCommentItemValue(value=group_comment,
                                                   devilry_viewrole=self.devilryrole,
-                                                  assignment=self.assignment)
+                                                  assignment=self.assignment,
+                                                  group_user_lookup=self.group_user_lookup)
         elif event_dict['type'] == 'deadline_expired':
             return DeadlineExpiredItemValue(value=event_dict['deadline_datetime'], devilry_viewrole=self.devilryrole,
                                             feedbackset=event_dict['feedbackset'], group=self.group)
         elif event_dict['type'] == 'grade':
             return GradeItemValue(value=event_dict['feedbackset'], assignment=self.assignment,
-                                  devilry_viewrole=self.devilryrole, group=self.group)
+                                  devilry_viewrole=self.devilryrole, grade_points=event_dict['grade_points'],
+                                  group=self.group)
         elif event_dict['type'] == 'deadline_moved':
             return DeadlineMovedItemValue(value=event_dict['obj'], is_last=event_dict['is_last'],
                                           devilry_viewrole=self.devilryrole, feedbackset=event_dict['feedbackset'],
                                           group=self.group)
+        elif event_dict['type'] == 'grading_updated':
+            return GradingUpdatedItemValue(value=event_dict['obj'], devilry_viewrole=self.devilryrole,
+                                           assignment=self.assignment, feedbackset=event_dict['feedbackset'],
+                                           next_grading_points=event_dict['next_grading_points'], group=self.group)
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(FeedbackSetTimelineListBuilderList, self).get_extra_css_classes_list()
@@ -257,13 +270,22 @@ class BaseGroupCommentItemValue(BaseItemValue):
 
     def __init__(self, *args, **kwargs):
         super(BaseGroupCommentItemValue, self).__init__(*args, **kwargs)
-        self.user_obj = kwargs.get('user_obj')
         self.assignment = kwargs.get('assignment')
+        self.group_user_lookup = kwargs.get('group_user_lookup')
+
+    def get_display_name_for_comment_user(self):
+        raise NotImplementedError()
 
     def _should_add_with_badge_css_class(self):
         return (
             self.group_comment.part_of_grading or
             self.group_comment.visibility == GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+
+    def get_display_name_html(self):
+        return self.group_user_lookup.get_long_name_from_user(
+            user=self.group_comment.user,
+            user_role=self.group_comment.user_role, html=True
+        )
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(BaseGroupCommentItemValue, self).get_extra_css_classes_list()
@@ -381,6 +403,7 @@ class GradeItemValue(BaseEventItemValue):
 
     def __init__(self, *args, **kwargs):
         self.assignment = kwargs['assignment']
+        self.grade_points = kwargs['grade_points']
         super(GradeItemValue, self).__init__(*args, **kwargs)
 
     @property
@@ -396,5 +419,32 @@ class GradeItemValue(BaseEventItemValue):
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(GradeItemValue, self).get_extra_css_classes_list()
+        css_classes_list.append('devilry-group-feedbackfeed-event-message__grade')
+        return css_classes_list
+
+
+class GradingUpdatedItemValue(BaseEventItemValue):
+    valuealias = 'grading_updated'
+    template_name = 'devilry_group/listbuilder_feedbackfeed/grading_updated_item_value.django.html'
+
+    def __init__(self, *args, **kwargs):
+        self.assignment = kwargs['assignment']
+        self.feedbackset = kwargs['feedbackset']
+        self.next_grading_points = kwargs['next_grading_points']
+        super(GradingUpdatedItemValue, self).__init__(*args, **kwargs)
+
+    @property
+    def group(self):
+        return self.kwargs['group']
+
+    @property
+    def changed_by_user_id(self):
+        return self.grading_updated.updated_by_id
+
+    def get_timeline_datetime(self):
+        return self.value.updated_datetime
+
+    def get_extra_css_classes_list(self):
+        css_classes_list = super(GradingUpdatedItemValue, self).get_extra_css_classes_list()
         css_classes_list.append('devilry-group-feedbackfeed-event-message__grade')
         return css_classes_list

@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models.functions import Lower, Concat
 
 from devilry.apps.core.models import Examiner, Candidate, AssignmentGroup
+from devilry.devilry_dbcache.models import AssignmentGroupCachedData
 
 
 class DevilryGroupCrInstanceMixin(object):
@@ -22,13 +23,19 @@ class DevilryGroupCrInstanceMixin(object):
 
         """
         return AssignmentGroup.objects \
+            .annotate_with_is_waiting_for_feedback_count() \
+            .annotate_with_is_waiting_for_deliveries_count() \
+            .annotate_with_is_corrected_count() \
             .select_related('parentnode__parentnode__parentnode') \
             .prefetch_related(
                 models.Prefetch('candidates',
                                 queryset=self._get_candidatequeryset())) \
             .prefetch_related(
                 models.Prefetch('examiners',
-                                queryset=self._get_examinerqueryset()))
+                                queryset=self._get_examinerqueryset())) \
+            .prefetch_related(
+                models.Prefetch('cached_data',
+                                queryset=self._get_assignment_group_cacheddata_queryset()))
 
     def _get_candidatequeryset(self):
         """Get candidates.
@@ -53,6 +60,14 @@ class DevilryGroupCrInstanceMixin(object):
             .order_by(
                 Lower(Concat('relatedexaminer__user__fullname',
                              'relatedexaminer__user__shortname')))
+
+    def _get_assignment_group_cacheddata_queryset(self):
+        return AssignmentGroupCachedData.objects\
+            .select_related(
+                'group',
+                'first_feedbackset',
+                'last_feedbackset',
+                'last_published_feedbackset')
 
     def get_titletext_for_role(self, role):
         """String representation for the role.

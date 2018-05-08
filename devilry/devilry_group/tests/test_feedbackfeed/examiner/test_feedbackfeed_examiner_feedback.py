@@ -59,7 +59,8 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-discuss-button'))
 
     def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choice_add_comment_for_examiners_and_admins_button(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group,
@@ -67,7 +68,8 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
         self.assertTrue(mockresponse.selector.exists('#submit-id-examiner_publish_feedback'))
 
     def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choice_add_comment_to_feedbackdraft_button(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         examiner = mommy.make('core.Examiner', assignmentgroup=testgroup)
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group,
@@ -116,7 +118,7 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
                    user_role='student',
                    feedback_set=testfeedbackset,
                    _quantity=20)
-        with self.assertNumQueries(21):
+        with self.assertNumQueries(19):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=examiner.relatedexaminer.user)
 
@@ -159,12 +161,13 @@ class TestFeedbackfeedExaminerFeedback(TestCase, test_feedbackfeed_examiner.Test
                    filename='test2.py',
                    comment=comment2,
                    _quantity=20)
-        with self.assertNumQueries(24):
+        with self.assertNumQueries(19):
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=examiner.relatedexaminer.user)
 
     def test_post_feedbackdraft_comment_with_text(self):
-        testgroup = mommy.make('core.AssignmentGroup')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=testgroup,
@@ -413,21 +416,21 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=testgroup,
                               relatedexaminer=mommy.make('core.RelatedExaminer'))
-        student = mommy.make('core.Candidate',
-                             assignment_group=testgroup,
-                             relatedstudent=mommy.make('core.RelatedStudent'))
-        mommy.make('devilry_group.GroupComment',
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup,
+                   relatedstudent=mommy.make('core.RelatedStudent'))
+        comment1 = mommy.make('devilry_group.GroupComment',
                    text='test text 1',
                    user=examiner.relatedexaminer.user,
                    user_role='examiner',
                    part_of_grading=True,
                    feedback_set=feedbackset_first)
-        comment2 = mommy.make('devilry_group.GroupComment',
-                              text='test text 2',
-                              user=examiner.relatedexaminer.user,
-                              user_role='examiner',
-                              part_of_grading=True,
-                              feedback_set=feedbackset_last)
+        feedback_comment = mommy.make('devilry_group.GroupComment',
+                                      text='part of grading',
+                                      user=examiner.relatedexaminer.user,
+                                      user_role='examiner',
+                                      part_of_grading=True,
+                                      feedback_set=feedbackset_last)
         self.mock_http302_postrequest(
             cradmin_role=testgroup,
             requestuser=examiner.relatedexaminer.user,
@@ -440,13 +443,13 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                 }
             })
         cached_group = cache_models.AssignmentGroupCachedData.objects.get(group=testgroup)
-        feedback_comments = group_models.GroupComment.objects.all().filter(
-                feedback_set=cached_group.last_published_feedbackset)
-
-        self.assertEquals(2, len(feedback_comments))
-        self.assertEquals(feedback_comments[0], comment2)
-        self.assertEquals(feedback_comments[1].text, 'post comment')
-        self.assertEquals(cached_group.last_published_feedbackset, feedbackset_last)
+        feedback_comments = group_models.GroupComment.objects.all()\
+            .filter(feedback_set_id=cached_group.last_published_feedbackset.id)\
+            .order_by('published_datetime')
+        self.assertEqual(2, len(feedback_comments))
+        self.assertEqual(feedback_comments[0].text, 'part of grading')
+        self.assertEqual(feedback_comments[1].text, 'post comment')
+        self.assertEqual(cached_group.last_published_feedbackset, feedbackset_last)
 
     def test_post_publish_feedbackset_after_deadline_test_publish_drafts_part_of_grading(self):
         assignment = mommy.make_recipe(
