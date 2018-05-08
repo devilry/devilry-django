@@ -37,6 +37,9 @@ Examiner/Corrector
 .. toctree::
    :maxdepth: 1
 
+   examiner/examiner
+   examiner/examiner_guide
+
 
 Subject/Course administrator
 ----------------------------
