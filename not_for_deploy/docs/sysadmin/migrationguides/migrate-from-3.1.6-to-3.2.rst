@@ -2,6 +2,9 @@
 Migrating from 3.1.6 to 3.2
 ===========================
 
+.. note::
+    NOT RELEASED YET
+
 Backup database and files
 #########################
 BACKUP. YOUR. DATABASE. AND. FILES.
@@ -35,7 +38,7 @@ What is new for admins
 ######################
 
 - Admins can toggle between hard and soft deadlines. Students can not upload files or comment if
-  assignment deadline handling is HARD.
+  assignment deadline handling is HARD and has expired.
 - Added feature to administrator dashboard where admins can now search for students and go directly to their
   delivery feed. Here they can easily access deadline management for that student/group, see deliveries etc.
 - Removed unnecessary step to get to a students feedbackfeed.

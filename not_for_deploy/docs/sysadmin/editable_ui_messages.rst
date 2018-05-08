@@ -24,7 +24,7 @@ to the dictionary as the ISO 639-1 language code to use (see :ref:`customize_inf
 
 Here are the default settings defined which you can add to your ``devilry_settings.py`` file and edit::
 
-    #: Hard deadline info texts for students directed towards students.
+    #: Hard deadline info texts directed towards students.
     #: This is what students see.
     DEVILRY_HARD_DEADLINE_INFO_FOR_STUDENTS = {
        '__default': 'This assignment uses hard deadlines. You will not be able to write comments '
@@ -41,7 +41,7 @@ Here are the default settings defined which you can add to your ``devilry_settin
 
 .. note::
 
-    The ``'__default'`` is in english and is marked for translation. You may change this text but to not removed it! The default
+    The ``'__default'`` is in english and is marked for translation. You may change this text but do not remove it! The default
     text should also be in a language that all users of the system understands.
 
 
