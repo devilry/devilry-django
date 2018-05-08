@@ -11,7 +11,7 @@ Role select overview
 When a student logs into Devilry, they will greeted by the roleselect view. A user might have multiple roles such as
 student, examiner and/or admin. These will be displayed here, and the user selects the desired role.
 
-.. image:: images/student/student-roleselect-overview.png
+.. image:: images/student-roleselect-overview.png
 
 Selecting the student role will take the user to the :ref:`devilry3_student_assignments_overview`.
 
@@ -22,7 +22,7 @@ Assignment overview
 ===================
 The student will see a list of all the assignments they currently have access to across courses.
 
-.. image:: images/student/student-assignment-overview.png
+.. image:: images/student-assignment-overview.png
 
 Here the student will be able to search the assignments by the name of the assignment, course or semester, giving the
 student a shortcut to finding their assignment effectively. Optionally the student can also head to the
@@ -38,7 +38,7 @@ Courses overview
 The student will see a list over the courses they currently have access to. For each course, the number of assignments
 are displayed.
 
-.. image:: images/student/student-courses-overview.png
+.. image:: images/student-courses-overview.png
 
 Here the student will be able to search for courses by course or semester. Clicking on a course will take the student
 to a overview over assignments for that specific course (see :ref:`devilry3_student_assignments_overview`).
@@ -57,7 +57,7 @@ examiners and admins.
 Here's an overview of common elements in the delivery feed, containing deliveries, correcting the delivery, expired
 and moved deadlines, new attempt etc.
 
-.. image:: images/student/student-delivery-feed.png
+.. image:: images/student-delivery-feed.png
 
 
 **1. Compressed archives**: Uploaded files for each attempt(deadline). Clicking the button will start a background task compressing the contents making a compressed archive available.

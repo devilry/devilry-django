@@ -27,8 +27,8 @@ Student
 .. toctree::
    :maxdepth: 1
 
-   student
-   student_dashboard
+   student/student
+   student/student_dashboard
 
 
 Examiner/Corrector
