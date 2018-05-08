@@ -42,7 +42,10 @@ class PassedFailedFeedbackForm(AbstractFeedbackForm):
 
     #: Set delivery as passed or failed.
     passed = forms.ChoiceField(
-        choices=(('Passed', 'Passed'), ('Failed', 'Failed')),
+        choices=(
+            ('Passed', ugettext_lazy('Passed')),
+            ('Failed', ugettext_lazy('Failed'))
+        ),
         label=pgettext_lazy('grading', 'Grade'),
         help_text=pgettext_lazy('grading', 'Choose grade'),
         required=True,
@@ -54,6 +57,7 @@ class PassedFailedFeedbackForm(AbstractFeedbackForm):
         return ['passed']
 
     def get_grading_points(self):
+        print(self.cleaned_data)
         if self.cleaned_data['passed'] == 'Passed':
             return self.group.assignment.max_points
         else:
