@@ -25,6 +25,9 @@ class AssignmentFirstDeadlineForm(forms.ModelForm):
 class AssignmentFirstDeadlineUpdateView(OnlySaveButtonMixin, UpdateView):
     model = coremodels.Assignment
     template_name = 'devilry_cradmin/viewhelpers/devilry_updateview_with_backlink.django.html'
+    fields = [
+        'first_deadline'
+    ]
 
     def get_form_class(self):
         return AssignmentFirstDeadlineForm
