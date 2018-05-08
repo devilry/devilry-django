@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-05-07 15:47+0200\n"
-"PO-Revision-Date: 2018-05-07 15:48+0200\n"
+"PO-Revision-Date: 2018-05-08 10:12+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -1519,7 +1519,7 @@ msgstr ""
 #: devilry/devilry_admin/templates/devilry_admin/assignment/include/main.django.html:7
 #: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:48
 msgid "Students and examiners"
-msgstr "Studenter or rettere"
+msgstr "Studenter og rettere"
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/include/main.django.html:11
 msgctxt "Text after number of students on assignment"
