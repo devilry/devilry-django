@@ -47,6 +47,7 @@ class DevilryUserAdmin(UserAdmin):
         'primary_email',
         'primary_username',
         'is_superuser',
+        'is_active',
         'suspended_datetime',
     ]
     search_fields = [
