@@ -1,5 +1,8 @@
 from django import template
 import os.path
+
+from django.utils.translation import ugettext_lazy
+
 from devilry.devilry_markup import parse_markdown
 
 register = template.Library()
@@ -57,36 +60,23 @@ def devilry_verbosenumber(value, number):
         str: Verbose version of number.
     """
     numbers = {
-        1: 'first', 2: 'second', 3: 'third', 4: 'fourth', 5: 'fifth',
-        6: 'sixth', 7: 'seventh', 8: 'eighth', 9: 'ninth', 10: 'tenth'
+        1: ugettext_lazy('first'),
+        2: ugettext_lazy('second'),
+        3: ugettext_lazy('third'),
+        4: ugettext_lazy('fourth'),
+        5: ugettext_lazy('fifth'),
+        6: ugettext_lazy('sixth'),
+        7: ugettext_lazy('seventh'),
+        8: ugettext_lazy('eighth'),
+        9: ugettext_lazy('ninth'),
+        10: ugettext_lazy('tenth')
     }
-
-    def last_digit(num):
-        # returns the last or two last numbers.
-        n = str(num)
-        if n[len(n)-2] is '1':
-            # return the last two digits if number is
-            # from 11 to 19 to get th-ending.
-            return int(n[len(n)-1]+n[len(n)-2])
-        return int(n[len(n)-1])
 
     if number <= 10:
         # use numbers dictionary
         # to get verbose result
         return numbers[number]
-    elif number <= 19:
-        # all numbers between 10 and 20 ends with th.
-        return str(number)+'th'
-    else:
-        # handle numbers over 19
-        n = last_digit(number)
-        if n > 3 or n == 0:
-            return str(number)+'th'
-        return {
-            1: str(number)+'st',
-            2: str(number)+'nd',
-            3: str(number)+'rd',
-        }[n]
+    return '{}.'.format(number)
 
 
 @register.filter("devilry_group_comment_published")

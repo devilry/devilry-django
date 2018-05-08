@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-07 15:47+0200\n"
-"PO-Revision-Date: 2018-05-08 10:12+0200\n"
+"POT-Creation-Date: 2018-05-08 10:25+0200\n"
+"PO-Revision-Date: 2018-05-08 10:27+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -1572,6 +1572,7 @@ msgid "Edit publishing time"
 msgstr "Rediger publiseringstidspunkt"
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/include/published.django.html:40
+#: devilry/devilry_admin/views/assignment/first_deadline.py:22
 #: devilry/devilry_cradmin/templates/devilry_cradmin/devilry_listbuilder/assignment/description.django.html:2
 msgid "First deadline"
 msgstr "Første innleveringsfrist"
@@ -1588,7 +1589,7 @@ msgstr ""
 "innleveringsfrist."
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/include/published.django.html:50
-#: devilry/devilry_admin/views/assignment/first_deadline.py:17
+#: devilry/devilry_admin/views/assignment/first_deadline.py:36
 msgid "Edit first deadline"
 msgstr "Rediger første innleveringsfrist"
 
@@ -5372,6 +5373,46 @@ msgstr "Sent inn av retter"
 #: devilry/devilry_group/templates/devilry_group/template_tags/devilry_group_comment_user_is_none.django.html:4
 msgid "USER DELETED"
 msgstr "BRUKER SLETTET"
+
+#: devilry/devilry_group/templatetags/devilry_group_tags.py:63
+msgid "first"
+msgstr "første"
+
+#: devilry/devilry_group/templatetags/devilry_group_tags.py:64
+msgid "second"
+msgstr "andre"
+
+#: devilry/devilry_group/templatetags/devilry_group_tags.py:65
+msgid "third"
+msgstr "tredje"
+
+#: devilry/devilry_group/templatetags/devilry_group_tags.py:66
+msgid "fourth"
+msgstr "fjerde"
+
+#: devilry/devilry_group/templatetags/devilry_group_tags.py:67
+msgid "fifth"
+msgstr "femte"
+
+#: devilry/devilry_group/templatetags/devilry_group_tags.py:68
+msgid "sixth"
+msgstr "sjette"
+
+#: devilry/devilry_group/templatetags/devilry_group_tags.py:69
+msgid "seventh"
+msgstr "syvende"
+
+#: devilry/devilry_group/templatetags/devilry_group_tags.py:70
+msgid "eighth"
+msgstr "åttende"
+
+#: devilry/devilry_group/templatetags/devilry_group_tags.py:71
+msgid "ninth"
+msgstr "niende"
+
+#: devilry/devilry_group/templatetags/devilry_group_tags.py:72
+msgid "tenth"
+msgstr "tiende"
 
 #: devilry/devilry_group/views/admin/feedbackfeed_admin.py:113
 #: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:298

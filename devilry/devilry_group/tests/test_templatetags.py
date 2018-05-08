@@ -56,24 +56,8 @@ class TestDevilryGroupTemplateTags(TestCase):
         self.assertEqual('ninth', devilry_verbosenumber('', 9))
         self.assertEqual('tenth', devilry_verbosenumber('', 10))
 
-    def test_verbose_number_ending_with_zero(self):
-        self.assertEqual('20th', devilry_verbosenumber('', 20))
-        self.assertEqual('2220th', devilry_verbosenumber('', 2220))
-
-    def test_verbose_number_ending_th(self):
-        self.assertEqual('14th', devilry_verbosenumber('', 14))
-        self.assertEqual('111th', devilry_verbosenumber('', 111))
-        self.assertEqual('114th', devilry_verbosenumber('', 114))
-        self.assertEqual('65535th', devilry_verbosenumber('', 65535))
-
-    def test_verbose_number_ending_st(self):
-        self.assertEqual('31st', devilry_verbosenumber('', 31))
-        self.assertEqual('87121st', devilry_verbosenumber('', 87121))
-
-    def test_verbose_number_ending_nd(self):
-        self.assertEqual('42nd', devilry_verbosenumber('', 42))
-        self.assertEqual('41262nd', devilry_verbosenumber('', 41262))
-
-    def test_verbose_number_ending_rd(self):
-        self.assertEqual('733rd', devilry_verbosenumber('', 733))
-        self.assertEqual('628353rd', devilry_verbosenumber('', 628353))
+    def test_numbers_over_ten_added_as_number_dottet(self):
+        self.assertEqual('11.', devilry_verbosenumber('', 11))
+        self.assertEqual('25.', devilry_verbosenumber('', 25))
+        self.assertEqual('733.', devilry_verbosenumber('', 733))
+        self.assertEqual('628353.', devilry_verbosenumber('', 628353))
