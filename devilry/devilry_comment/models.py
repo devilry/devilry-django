@@ -32,7 +32,7 @@ class Comment(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True)
 
     #: when was the comment created
-    created_datetime = models.DateTimeField(auto_now_add=True)
+    created_datetime = models.DateTimeField(null=False, blank=False, default=timezone.now)
 
     #: when was the comment published.
     published_datetime = models.DateTimeField(null=False, blank=False, default=timezone.now)
