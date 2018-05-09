@@ -1,21 +1,44 @@
 from django.contrib import admin
 from devilry.apps.core.models import AssignmentGroup, Subject, Period, Assignment, PeriodTag, \
-    CandidateAssignmentGroupHistory, ExaminerAssignmentGroupHistory, Examiner, RelatedExaminer
+    CandidateAssignmentGroupHistory, ExaminerAssignmentGroupHistory, Examiner, RelatedExaminer, Candidate, \
+    RelatedStudent
 from django.utils.translation import ugettext_lazy as _
 
 
 class ExaminerAdmin(admin.ModelAdmin):
-    pass
+    list_display = [
+        'id'
+    ]
 
 
 admin.site.register(Examiner, ExaminerAdmin)
 
 
 class RelatedExaminerAdmin(admin.ModelAdmin):
-    pass
+    list_display = [
+        'id'
+    ]
 
 
 admin.site.register(RelatedExaminer, RelatedExaminerAdmin)
+
+
+class CandidateAdmin(admin.ModelAdmin):
+    list_display = [
+        'id'
+    ]
+
+
+admin.site.register(Candidate, CandidateAdmin)
+
+
+class RelatedStudentAdmin(admin.ModelAdmin):
+    list_display = [
+        'id'
+    ]
+
+
+admin.site.register(RelatedStudent, RelatedStudentAdmin)
 
 
 class BaseNodeAdmin(admin.ModelAdmin):

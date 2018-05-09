@@ -498,7 +498,7 @@ class FeedbackSet(models.Model):
 
     def publish(self, published_by, grading_points, gradeform_data_json=''):
         """
-        Publishes this FeedbackSet and comments that belongs to this it and that are
+        Publishes this FeedbackSet and comments that belongs to this and that are
         part of the grading.
 
         :param published_by: Who published the feedbackset.
