@@ -39,6 +39,7 @@ Examiner/Corrector
 
    examiner/examiner
    examiner/examiner_guide
+   examiner/examiner_delivery_feed
 
 
 Subject/Course administrator

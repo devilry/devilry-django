@@ -20,6 +20,7 @@ Getting started
    :maxdepth: 1
 
    examiner_guide
+   examiner_delivery_feed
 
 
 Other examiner guides

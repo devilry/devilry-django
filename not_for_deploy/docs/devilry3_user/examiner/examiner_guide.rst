@@ -81,4 +81,23 @@ Activity
     comments from admins. Can also filter by missing comments and files.
 
 
+The delivery feed
+=================
+When selecting an assignment group to correct (see :ref:`devilry3_examiner_group_overview`) you will be
+taken to the delivery feed. This is where students deliver their assignments, and this is where communication between
+students, examiner and admins is happening.
+
+As an examiner this is also where you correct deliveries from students, and some extra features will also be
+available such as moving a deadline or giving the student/students new attempts. All happens through the feed, but, we
+also provide the option to correct deliveries in bulk seen above the groups in the
+:ref:`devilry3_examiner_group_overview` section, which we'll discuss **here MISSING LINK TO BULK CORRECT GUIDE**
+
+Here's a quick example of how the feed will look after a students has delivered an assignment, an examiner
+failed the delivery and gave a new attempt, which the examiner corrected again and passed:
+
+.. image:: images/examiner-feed-overview.png
+
+This is just a short introduction to the delivery feed, and we'll go more into detail in
+:ref:`devilry3_examiner_delivery_feed`.
+
 
