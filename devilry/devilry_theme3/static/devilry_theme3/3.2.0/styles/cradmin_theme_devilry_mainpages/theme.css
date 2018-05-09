@@ -9576,27 +9576,32 @@ fieldset[disabled] .button_student {
   font-weight: bold;
   color: #971009;
 }
-.devilry-group-feedbackfeed-sidebar {
+.devilry-group-feedbackfeed-buttonbar {
   background: #fff;
-  padding: 5px 15px 0 15px;
+  padding: 5px 15px 5px 15px;
   margin-bottom: 21px;
 }
-.devilry-group-feedbackfeed-sidebar__title {
-  margin-top: 0;
+.devilry-group-feedbackfeed-buttonbar__title {
+  margin-top: 5px;
   margin-bottom: 5px;
-  font-size: 20px;
-  display: inline-block;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #747474;
+  display: block;
 }
-.devilry-group-feedbackfeed-sidebar__list {
+.devilry-group-feedbackfeed-buttonbar__list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: inline-block;
 }
-.devilry-group-feedbackfeed-sidebar__list li {
+.devilry-group-feedbackfeed-buttonbar__list li {
   margin: 0;
   display: inline-block;
   padding: 0;
+}
+.devilry-group-feedbackfeed-buttonbar__list li .btn {
+  margin-bottom: 5px;
 }
 .devilry-group-feedbackfeed-feed {
   border-left: 3px solid #dadada;
