@@ -110,37 +110,34 @@ The tree below is an example of a typical Devilry hierarchy for a university nam
 the special terms in brackets.
 
 
-- Duckburgh University [:ref:`user_node`]
-    - Department of Physics [:ref:`user_node`]
-        - PHYS 101 --- Introduction to physics [:ref:`user_subject`]
-            - Spring 2011 [:ref:`user_period`]
-                - Assignment one
-                    - Peter Pan and Wendy [:ref:`user_group_candidate_student`]
-                        - FeedbackSet first attempt (deadline feb. 27 2012 19:30) [:ref:`user_feedbackset`]
-                            - Delivery 1 [:ref:`user_groupcomments`]
-                                - Delivery file
-                    - Captain Hook [:ref:`user_group_candidate_student`]
-                        - FeedbackSet second attempt (deadline mar. 12 2012 11:45) [:ref:`user_feedbackset`]
-                            - Delivery 3 [:ref:`user_groupcomments`]
-                                - Delivery file
-                        - FeedbackSet first attempt (deadline feb. 28 2012 12:30) [:ref:`user_feedbackset`]
-                            - Delivery 2 [:ref:`user_groupcomments`]
-                                - Delivery file
-                            - Delivery 1 [:ref:`user_groupcomments`]
-                                - Delivery file
-                    - John Doe [:ref:`user_group_candidate_student`]
-                        - FeedbackSet (deadline feb. 25 2012 23:35) [:ref:`user_feedbackset`]
-                            - Delivery 1 [:ref:`user_groupcomments`]
-                                - Delivery file
-            - Spring 2012 [:ref:`user_period`]
-            - Spring 2013 [:ref:`user_period`]
-        - PHYS 302 --- Advanced physics [:ref:`user_subject`]
+    - PHYS 101 --- Introduction to physics [:ref:`user_subject`]
+        - Spring 2011 [:ref:`user_period`]
+            - Assignment one
+                - Peter Pan and Wendy [:ref:`user_group_candidate_student`]
+                    - FeedbackSet first attempt (deadline feb. 27 2012 19:30) [:ref:`user_feedbackset`]
+                        - Delivery 1 [:ref:`user_groupcomments`]
+                            - Delivery file
+                - Captain Hook [:ref:`user_group_candidate_student`]
+                    - FeedbackSet first attempt (deadline feb. 28 2012 12:30) [:ref:`user_feedbackset`]
+                        - Delivery 1 [:ref:`user_groupcomments`]
+                            - Delivery file
+                        - Delivery 2 [:ref:`user_groupcomments`]
+                            - Delivery file
+                    - FeedbackSet second attempt (deadline mar. 12 2012 11:45) [:ref:`user_feedbackset`]
+                        - Delivery 3 [:ref:`user_groupcomments`]
+                            - Delivery file
+                - John Doe [:ref:`user_group_candidate_student`]
+                    - FeedbackSet (deadline feb. 25 2012 23:35) [:ref:`user_feedbackset`]
+                        - Delivery 1 [:ref:`user_groupcomments`]
+                            - Delivery file
+        - Spring 2012 [:ref:`user_period`]
+        - Spring 2013 [:ref:`user_period`]
+    - PHYS 302 --- Advanced physics [:ref:`user_subject`]
         - ...
-    - Department of Informatics [:ref:`user_node`]
-        - INF 101 --- Introduction to programming [:ref:`user_subject`]
-        - INF 102 --- Objectoriented programming [:ref:`user_subject`]
+    - INF 101 --- Introduction to programming [:ref:`user_subject`]
         - ...
-    - ...
+    - INF 102 --- Objectoriented programming [:ref:`user_subject`]
+        - ...
 
 
 Simple visual representation of the delivery workflow

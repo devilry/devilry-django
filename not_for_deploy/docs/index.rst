@@ -10,6 +10,7 @@ Table of contents
     :maxdepth: 1
 
     user/index
+    sysadmin/index
     developer/index
     create_docs_how_to
 

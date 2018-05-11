@@ -19,6 +19,7 @@ Common for all roles
 
    commonconcepts
    user_role_overview
+   changelog_overview
 
 
 Student
@@ -46,7 +47,7 @@ Examiner/Corrector
 Subject/Course administrator
 ----------------------------
 .. note::
-    For users managing one or more courses.
+    For users managing one or more courses. NOT STARTED.
 
 .. toctree::
    :maxdepth: 1
@@ -55,7 +56,7 @@ Subject/Course administrator
 Node/Department admin
 ---------------------
 .. note::
-    For users managing a Node containing multiple courses.
+    For users managing a Node containing multiple courses. NOT STARTED.
 
 .. toctree::
    :maxdepth: 1
