@@ -21,7 +21,6 @@ Getting started
 
    examiner_guide
    examiner_delivery_feed
-   examiner_delivery_feed_actions
 
 
 Other examiner guides
@@ -29,6 +28,11 @@ Other examiner guides
 
 .. toctree::
    :maxdepth: 1
+
+   examiner_feed_move_deadline
+   examiner_feed_edit_grade
+   examiner_feed_new_attempt
+
 
 Frequently asked questions
 ==========================
@@ -42,14 +46,14 @@ Frequently asked questions
 What can an examiner do?
 ========================
 Examiners can basically do anything non-destructive with groups (see
-:ref:`devilry3_user_group_candidate_student`) that they have been assigned to:
+:ref:`user_group_candidate_student`) that they have been assigned to:
 
 - View all feedback for the groups.
 - Add new deadlines to their groups.
 - Give feedback.
 - Move deadlines.
 - Give new attempts.
-- Change feedback.
+- Edit last grading.
 
 Examiners can not:
 

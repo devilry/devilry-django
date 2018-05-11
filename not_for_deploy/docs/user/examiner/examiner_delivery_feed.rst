@@ -69,13 +69,13 @@ feedback handling such as moving the deadline, editing the given grade and givin
 
 Move deadline
     You can move the deadline for this group.
-    Read more about this here: :ref:`devilry3_examiner_delivery_feed_move_deadline`.
+    Read more about this here: :ref:`examiner_delivery_feed_move_deadline`.
 
 Edit grade
     You can edit the given grade.
-    Read more about how this works here: :ref:`devilry3_examiner_delivery_feed_edit_grade`.
+    Read more about how this works here: :ref:`examiner_delivery_feed_edit_grade`.
 
 Give new attempt
     Give the student a new attempt that has to be corrected.
-    Read more about that here: :ref:`devilry3_examiner_delivery_feed_new_attempt`.
+    Read more about that here: :ref:`examiner_delivery_feed_new_attempt`.
 

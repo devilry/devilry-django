@@ -39,9 +39,6 @@ Examiner/Corrector
    :maxdepth: 1
 
    examiner/examiner
-   examiner/examiner_guide
-   examiner/examiner_delivery_feed
-   examiner/examiner_delivery_feed_actions
 
 
 Subject/Course administrator
