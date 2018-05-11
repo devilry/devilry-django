@@ -128,6 +128,3 @@ an example of the user `index.rst` file looks like::
 
 
 One can simply add a new `.rst` file, and reference it below one the sections, or create a new section.
-Here's an example of the user doc folder:
-
-.. image:: images/user-docs-folder.png

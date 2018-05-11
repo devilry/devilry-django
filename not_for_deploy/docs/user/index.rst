@@ -5,7 +5,7 @@ Devilry user documentation
 
 Getting started
 ---------------
-We recommend that you start with a quick look at :ref:`commonconcepts`.
+We recommend that you start with a quick look at :ref:`user_commonconcepts` .
 This avoids confusion with a few special terms that Devilry uses to allow
 it to be used in many different settings. When you have skimmed over the concepts,
 you can continue with the other Topic guides below.
@@ -18,8 +18,7 @@ Common for all roles
    :maxdepth: 1
 
    commonconcepts
-   email
-   changelog_overview
+   user_role_overview
 
 
 Student
@@ -28,8 +27,8 @@ Student
 .. toctree::
    :maxdepth: 1
 
-   student
-   student_groups
+   student/student
+   student/student_dashboard
 
 
 Examiner/Corrector
@@ -38,7 +37,10 @@ Examiner/Corrector
 .. toctree::
    :maxdepth: 1
 
-   examiner
+   examiner/examiner
+   examiner/examiner_guide
+   examiner/examiner_delivery_feed
+   examiner/examiner_delivery_feed_actions
 
 
 Subject/Course administrator
@@ -49,12 +51,6 @@ Subject/Course administrator
 .. toctree::
    :maxdepth: 1
 
-   subjectadmin
-   subjectadmindeadlines
-   subjectadmin_groups
-   subjectadmin_examiner
-   subjectadmin_qualifiesforexam
-
 
 Node/Department admin
 ---------------------
@@ -63,7 +59,3 @@ Node/Department admin
 
 .. toctree::
    :maxdepth: 1
-
-   nodeadmin
-   nodeadmin-finditems
-   nodeadmin_qualifiesforexam
