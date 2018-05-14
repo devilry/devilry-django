@@ -32,6 +32,7 @@ Other examiner guides
    examiner_feed_move_deadline
    examiner_feed_edit_grade
    examiner_feed_new_attempt
+   examiner_bulk_operations
 
 
 Frequently asked questions

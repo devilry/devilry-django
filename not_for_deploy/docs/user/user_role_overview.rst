@@ -9,19 +9,19 @@ you are logged in as. You will only be able to see the roles you have access to.
 
 
 Student
-================
+=======
 Will be able to access courses and assignments the user is registered as a student on,
-see deliveries and communicate with examiners. See :ref:`devilry3_user_group_candidate_student`
+see deliveries and communicate with examiners. See :ref:`user_group_candidate_student`
 
 
 Examiner
-================
+========
 Will be able to access courses and assignments the user is registered as an examiner on,
 give feedback to students and discuss with other examiners and students on the assignments.
-See :ref:`devilry3_user_examiner`
+See :ref:`user_examiner`
 
 
 Admin
-================
+=====
 Will be able to manage departments, courses semesters and assignments, as well as
 communicate with students and examiners.
