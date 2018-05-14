@@ -20,13 +20,8 @@ class ExaminerDeadlineListView(deadline_listview.DeadlineListView):
 
 
 class ExaminerManageDeadlineFromPreviousView(manage_deadline_view.ManageDeadlineFromPreviousView):
-    def get_success_url(self):
-        return reverse_cradmin_url(
-            instanceid='devilry_examiner_assignment',
-            appname='grouplist',
-            roleid=self.request.cradmin_role.id,
-            viewname=crapp.INDEXVIEW_NAME
-        )
+    """
+    """
 
 
 class App(ExaminerDeadlineManagementApp):
