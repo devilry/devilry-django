@@ -5,7 +5,7 @@ Getting started guide for examiners
 .. note::
 
     To avoid confusion when reading this guide, please read
-    :ref:`commonconcepts`, at least the :ref:`group_candidate_student` section.
+    :ref:`user_commonconcepts`, at least the :ref:`user_group_candidate_student` section.
 
 .. note::
 
@@ -42,7 +42,7 @@ You can easily search for the assignment you are looking for, or order them by:
 
 Select the group to correct
 ===========================
-When selecting an assignment (see :ref:`devilry3_examiner_assignment_overview`) you are redirected to a view
+When selecting an assignment (see :ref:`examiner_assignment_overview`) you are redirected to a view
 that lists all assignment groups where you are an examiner.
 
 .. image:: images/examiner-group-overview.png
@@ -83,14 +83,14 @@ Activity
 
 The delivery feed
 =================
-When selecting an assignment group to correct (see :ref:`devilry3_examiner_group_overview`) you will be
+When selecting an assignment group to correct (see :ref:`examiner_group_overview`) you will be
 taken to the delivery feed. This is where students deliver their assignments, and this is where communication between
 students, examiner and admins is happening.
 
 As an examiner this is also where you correct deliveries from students, and some extra features will also be
 available such as moving a deadline or giving the student/students new attempts. All happens through the feed, but, we
 also provide the option to correct deliveries in bulk seen above the groups in the
-:ref:`devilry3_examiner_group_overview` section, which we'll discuss **here MISSING LINK TO BULK CORRECT GUIDE**
+:ref:`examiner_group_overview` section, which we'll discuss **here MISSING LINK TO BULK CORRECT GUIDE**
 
 Here's a quick example of how the feed will look after a students has delivered an assignment, an examiner
 failed the delivery and gave a new attempt, which the examiner corrected again and passed:
@@ -98,6 +98,6 @@ failed the delivery and gave a new attempt, which the examiner corrected again a
 .. image:: images/examiner-feed-overview.png
 
 This is just a short introduction to the delivery feed, and we'll go more into detail in
-:ref:`devilry3_examiner_delivery_feed`.
+:ref:`examiner_delivery_feed`.
 
 

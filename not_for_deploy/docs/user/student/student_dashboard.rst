@@ -13,7 +13,7 @@ student, examiner and/or admin. These will be displayed here, and the user selec
 
 .. image:: images/student-roleselect-overview.png
 
-Selecting the student role will take the user to the :ref:`devilry3_student_assignments_overview`.
+Selecting the student role will take the user to the :ref:`student_assignments_overview`.
 
 
 .. _student_assignments_overview:
@@ -26,9 +26,9 @@ The student will see a list of all the assignments they currently have access to
 
 Here the student will be able to search the assignments by the name of the assignment, course or semester, giving the
 student a shortcut to finding their assignment effectively. Optionally the student can also head to the
-:ref:`devilry3_student_courses_overview` to select a specific course clicking the button labeled ``Your courses``.
+:ref:`student_courses_overview` to select a specific course clicking the button labeled ``Your courses``.
 
-Clicking on an assignment will the the user to the :ref:`devilry3_student_delivery_feed`.
+Clicking on an assignment will the the user to the :ref:`student_delivery_feed`.
 
 
 .. _student_courses_overview:
@@ -41,14 +41,14 @@ are displayed.
 .. image:: images/student-courses-overview.png
 
 Here the student will be able to search for courses by course or semester. Clicking on a course will take the student
-to a overview over assignments for that specific course (see :ref:`devilry3_student_assignments_overview`).
+to a overview over assignments for that specific course (see :ref:`student_assignments_overview`).
 
 
 .. _student_delivery_feed:
 
 Assignment delivery feed
 ========================
-Clicking on an assignment from the :ref:`devilry3_student_assignments_overview` will take the student to the delivery
+Clicking on an assignment from the :ref:`student_assignments_overview` will take the student to the delivery
 feed for that assignment.
 
 The delivery feed is where students delivers assignments and communicates with other students in their group,
