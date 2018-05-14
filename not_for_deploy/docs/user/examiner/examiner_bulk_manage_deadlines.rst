@@ -47,17 +47,17 @@ to be given a second attempt should they fail their delivery. Simply give all or
 Let's use the manual select view for giving new attempts. Click the grey `New attempt` button. This will take you to a
 page where you can select each group manually.
 
-.. image:: images/examiner-bulk-manage-deadlines-new-attempt-select.png
+.. image:: images/examiner-bulk-manage-deadlines-select.png
 
 As you can see at the top, all groups that have not yet been corrected are excluded. Which makes only corrected groups
 available for selection. Hit the `select` button on both groups and press the `Continue with selected groups` button.
 
-.. image:: images/examiner-bulk-manage-deadlines-new-attempt-selected-groups.png
+.. image:: images/examiner-bulk-manage-deadlines-selected-groups.png
 
 This will take you to the page where you set the new deadline for the new attempt and comment that will added to
 the delivery feed.
 
-.. image:: images/examiner-bulk-manage-deadlines-new-attempt-post-view.png
+.. image:: images/examiner-bulk-manage-deadlines-post-view.png
 
 Clicking the `GIVE NEW ATTEMPT` button give all selected groups a new attempt, and the comment will be added to their
 delivery feed.
