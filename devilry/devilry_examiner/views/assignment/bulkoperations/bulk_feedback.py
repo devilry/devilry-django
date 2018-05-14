@@ -177,7 +177,7 @@ class BulkFeedbackPointsView(AbstractBulkFeedbackListView):
     """
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
-            'bulk-feedback-points-filter', kwargs={'filters_string', filters_string})
+            'bulk-feedback-points-filter', kwargs={'filters_string': filters_string})
 
     def get_target_renderer_class(self):
         return PointsTargetRenderer
