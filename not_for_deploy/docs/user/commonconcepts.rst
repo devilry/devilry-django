@@ -19,18 +19,6 @@ Devilry has some special terms and concepts. The most important (that cause most
 More details about these and more terms and concepts follows below.
 
 
-.. _user_node:
-
-Node
-====
-A Node is a place to organise top-level administrators (I.E.: administrators
-responsible for more than one :ref:`user_subject`). Nodes are organised in a tree.
-This is very flexible, and can be used to emulate most administrative
-hierarchies. A node is often a department, or some other organizational unit,
-but the exact use in your local Devilry instance depends on how you choose to
-organize administrators in Devilry.
-
-
 .. _user_subject:
 
 Subject (course)

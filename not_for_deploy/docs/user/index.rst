@@ -44,16 +44,18 @@ Examiner/Corrector
 Subject/Course administrator
 ----------------------------
 .. note::
-    For users managing one or more courses. NOT STARTED.
+    For users managing one or more courses
 
 .. toctree::
    :maxdepth: 1
 
+   admin/subjectadmin
 
-Node/Department admin
----------------------
+
+Department admin
+----------------
 .. note::
-    For users managing a Node containing multiple courses. NOT STARTED.
+    For users managing all courses for a department. NOT STARTED.
 
 .. toctree::
    :maxdepth: 1
