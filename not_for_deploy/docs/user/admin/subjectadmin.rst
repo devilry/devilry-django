@@ -13,6 +13,7 @@ A subject is, as explained in the common concepts guide, typically a course.
 This means that this guide is for administrators managing a course or a term
 (semester) within a course. If you have *orange* background color in your
 header, you are using the user interface for an admin role.
+We'll use the term *course* for a subject from now on
 
 
 The responsibilities of a Subjectadmin
@@ -30,38 +31,43 @@ Commmon tasks
 The Subjectadmin frontpage
 ==========================
 The Subjectadmin frontpage is the page that you navigate to when you select the
-Subject administrator role (may be something like *Course administrator* in your
+Subjectadmin role (may be something like *Course administrator* in your
 local dialect), from the Devilry frontpage.
 
 .. image:: images/subjectadmin-frontpage.png
 
-This page will display a list of all subjects you are an administrator for. Clicking a subject will take you to the
-period/semester overview. Read more about that here *NOT YET WRITTEN*
+This page will display a list of all subjects you are an administrator for. Clicking a course will take you to the
+semester overview. See :ref:`admin_period_overview`
 
 You can also find the delivery feed of a student quickly by using the `Find a student` functionality. You will be able
-to search for a student across the subjects you have access to, and find the correct assignment delivery feed you want
+to search for a student across the courses you have access to, and find the correct assignment delivery feed you want
 to see. That's where you can communicate with the student, view details about their deliveries and feedback etc.
 Read more about that here: :ref:`admin_wizard_find_student`
 
+.. _admin_period_overview:
 
-Create an assignment (IN PROGRESS PENDING WORKFLOW UPDATE)
-====================
-We provide an interractive guide to help you create assignments. Simply select the subject, which takes you to an
-overview of the periods/semesters for this subject.
+Period/semester overview
+========================
+When you click on a course from :ref:`findsubjectadminfrontpage`, you will be redirected to page with an overview of
+all semesters for that course.
 
 .. image:: images/admin-subject-period-overview.png
 
-Select the period/semester. Now you will be taken to the assignment overview for that period/semester. Read more about
-how to create an assignment here: :ref:`admin_create_assignment`.
+As a course administrator, you also have the rights to add and remove other course administrators.
 
 
-Get an overview over all your students (NOT YET WRITTEN)
-======================================
-Select an active :ref:`user_period` from the Subjectadmin frontpage (see
-:ref:`findsubjectadminfrontpage`), or an old/expired :ref:`user_period` via
-the link further down on the frontpage.
+Period/semester page
+====================
+The semester page is where you do most of the setup for a specific period. Creating a new assignment, adding students
+and examiners, creating tags, manage semester administrators and view student results are amongst the things you can do
+here.
 
-Under the *Edit and view related information* heading, you will find links to
-your *Students*, and a link to an *Overview of all results*. You can export
-(download) the overview as MS Excel, CSV, and a couple of other formats. The
-export-links is in the toolbar right below the page heading.
+.. image:: images/admin-subject-period-page.png
+
+You can read more about each of the tools available to you here:
+
+.. toctree::
+   :maxdepth: 1
+
+   admin_create_assignment
+   admin_add_students_examiners_to_period
