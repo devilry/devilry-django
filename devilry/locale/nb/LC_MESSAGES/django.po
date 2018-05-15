@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-08 10:25+0200\n"
-"PO-Revision-Date: 2018-05-08 10:27+0200\n"
+"POT-Creation-Date: 2018-05-15 12:44+0200\n"
+"PO-Revision-Date: 2018-05-15 12:46+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -717,7 +717,7 @@ msgstr ""
 "men du kan endre passordet ved å gå til <a href=\"password/\">dette "
 "skjemaet</a>."
 
-#: devilry/devilry_account/admin.py:138 devilry/devilry_account/models.py:461
+#: devilry/devilry_account/admin.py:139 devilry/devilry_account/models.py:461
 msgid "Users"
 msgstr "Brukere"
 
@@ -1259,7 +1259,7 @@ msgstr ""
 "begge."
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/organize-by-tag.django.html:52
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:78
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:77
 msgid "Manage tags"
 msgstr "Administrer tags"
 
@@ -2486,17 +2486,19 @@ msgstr "Tags for semester"
 
 #: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:69
 msgid ""
-"Create, edit and delete tags within this semester. Add and remove students/"
-"examiners from tags. Tags can be used to accociate examiners with students."
+"Create semester tags that can be used as filtering options later on. These "
+"tags will be available as filters when e.g organizing examiners and students "
+"when configuring an assignment."
 msgstr ""
-"Lag, rediger og slett tags innenfor semesteret. Legg til og fjern studenter/"
-"rettere for tags. Tags kan brukes til å assosiere rettere med studenter."
+"Lag semester tagger som kan bli brukt som filtreringsvalg senere. Disse "
+"taggene vil være tilgjengelige når man f.eks organiserer rettere og "
+"studenter under konfigurering av oppgaver."
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:83
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:82
 msgid "Semester administrators"
 msgstr "Semesteradministratorer"
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:85
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:84
 msgid ""
 "You can add semester administrators. Semester administrators have mostly the "
 "same permissions as course administrators except that they do not have "
@@ -2506,19 +2508,19 @@ msgstr ""
 "sett de samme tillatelsene som kursadministratorer, med unntak av tilgang "
 "til anonyme oppgaver."
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:90
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:89
 msgid "Add/edit semester administrators"
 msgstr "Legg til/rediger semesteradministratorere"
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:95
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:94
 msgid "Utilities"
 msgstr "Verktøy"
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:99
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:98
 msgid "Overview of all results"
 msgstr "Oversikt av alle resultater"
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:103
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:102
 #: devilry/devilry_qualifiesforexam/tablebuilder/tablebuilder.py:33
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/includes/qualification_table.django.html:9
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:25
@@ -4342,12 +4344,14 @@ msgid "download is ready"
 msgstr "nedlasting er klar"
 
 #: devilry/devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/grade_cell_value.django.html:8
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:46
 #: devilry/devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:4
 #: devilry/devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:11
 msgid "Passed"
 msgstr "Bestått"
 
 #: devilry/devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/grade_cell_value.django.html:9
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:47
 #: devilry/devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:6
 #: devilry/devilry_student/templates/devilry_student/devilry_student_shortgrade_tag.django.html:13
 msgid "Failed"
@@ -4403,13 +4407,13 @@ msgid "Show feedback"
 msgstr "Vis tilbakemelding"
 
 #: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback.py:52
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:357
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:361
 msgctxt "grading"
 msgid "Passed?"
 msgstr "Bestått?"
 
 #: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback.py:53
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:358
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:362
 msgctxt "grading"
 msgid "Check to provide a passing grade."
 msgstr "Huk av for å gi en bestått karakter."
@@ -4428,8 +4432,8 @@ msgid "Students in groups"
 msgstr "Studenter i grupper"
 
 #: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:83
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:339
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:362
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:343
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:366
 msgid "Grading"
 msgstr "Karaktersetting"
 
@@ -4540,7 +4544,7 @@ msgstr "Superbruker UI"
 
 #: devilry/devilry_gradeform/views/setup_gradeform.py:66
 #: devilry/devilry_group/views/admin/feedbackfeed_admin.py:73
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:258
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:262
 msgid "Add comment"
 msgstr "Legg til kommentar"
 
@@ -4820,7 +4824,7 @@ msgstr ""
 #: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/admin/summary.django.html:81
 #: devilry/devilry_gradingsystemplugin_points/apps.py:11
 #: devilry/devilry_gradingsystemplugin_points/views/feedbackeditor.py:25
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:72
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:76
 msgid "Points"
 msgstr "Poeng"
 
@@ -5163,7 +5167,7 @@ msgstr "Tilbake til feed"
 
 #: devilry/devilry_group/templates/devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_edit_grade.django.html:21
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:41
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:394
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:398
 msgid "Edit grade"
 msgstr "Rediger karakter"
 
@@ -5415,7 +5419,7 @@ msgid "tenth"
 msgstr "tiende"
 
 #: devilry/devilry_group/views/admin/feedbackfeed_admin.py:113
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:298
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:302
 msgid "Add note"
 msgstr "Legg til notat"
 
@@ -5435,35 +5439,35 @@ msgstr "Post kommentar"
 msgid "Comment added!"
 msgstr "Lagt til kommentar!"
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:46
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:49
 msgctxt "grading"
 msgid "Grade"
 msgstr "Karakter"
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:47
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:50
 msgctxt "grading"
 msgid "Choose grade"
 msgstr "Velg karakter"
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:77
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:81
 #, python-format
 msgctxt "grading"
 msgid "Number between 0 and %(max_points)s."
 msgstr "Tall mellom 0 og %(max_points)s."
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:186
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:190
 msgid "Save draft and preview"
 msgstr "Lagre utkast og forhåndsvis"
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:189
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:193
 msgid "Publish feedback"
 msgstr "Publiser tilbakemelding"
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:227
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:231
 msgid "Feedback is already published!"
 msgstr "Tilbakemelding er allerede publisert!"
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:342
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:346
 msgid ""
 "Give a score between {} to {} where {} is the minimum amount of points "
 "needed to pass."
@@ -5471,20 +5475,20 @@ msgstr ""
 "Sett en poengsum mellom {} og {}, hvor {} er minimum antall poeng som kreves "
 "for å bestå."
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:363
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:367
 msgid "Check the box to give a passing grade"
 msgstr "Velg denne for å gi bestått karakter"
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:487
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:491
 msgid "Groupcomment"
 msgstr "Gruppekommentar"
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:521
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:524
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:525
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:528
 msgid "Edit group comment"
 msgstr "Rediger gruppekommentar"
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:569
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:573
 msgid "GroupComment updated!"
 msgstr "Gruppekommentar oppdatert!"
 
@@ -6114,6 +6118,15 @@ msgstr "Engelsk"
 #: devilry/project/common/settings.py:169
 msgid "Norwegian Bokmal"
 msgstr "Norsk bokmål"
+
+#~ msgid ""
+#~ "Create, edit and delete tags within this semester. Add and remove "
+#~ "students/examiners from tags. Tags can be used to accociate examiners "
+#~ "with students."
+#~ msgstr ""
+#~ "Lag, rediger og slett tags innenfor semesteret. Legg til og fjern "
+#~ "studenter/rettere for tags. Tags kan brukes til å assosiere rettere med "
+#~ "studenter."
 
 #, fuzzy
 #~| msgid ""
