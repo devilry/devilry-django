@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-15 12:44+0200\n"
+"POT-Creation-Date: 2018-05-15 14:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -961,6 +961,10 @@ msgctxt "breadcrumb"
 msgid "Administrator"
 msgstr ""
 
+#: devilry/devilry_admin/cradminextensions/listbuilder/listbuilder_relatedexaminer.py:25
+msgid "No examiners found matching your filters/search."
+msgstr ""
+
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_assignmentgroup.py:14
 msgctxt "tag"
 msgid "Student(s) has tag"
@@ -1048,7 +1052,7 @@ msgstr ""
 msgid "imported tags only"
 msgstr ""
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:106
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:107
 msgctxt "tag"
 msgid "Has tag"
 msgstr ""
@@ -1246,22 +1250,7 @@ msgid ""
 "examiner to manually organize students for each examiner."
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/overview.django.html:42
-msgid "Bulk-organize examiners"
-msgstr ""
-
-#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/overview.django.html:63
-#, python-format
-msgid ""
-"Only users registered as examiner for %(period)s is available as examiners "
-"for assignments."
-msgstr ""
-
-#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/overview.django.html:67
-msgid "Add more examiners"
-msgstr ""
-
-#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/overview.django.html:95
+#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/overview.django.html:40
 #, python-format
 msgid ""
 "You have no users registered as examiner for %(period)s. You need to add "
@@ -1269,13 +1258,28 @@ msgid ""
 "them as examiners for assignments."
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/overview.django.html:103
+#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/overview.django.html:48
 #: devilry/devilry_admin/templates/devilry_admin/assignment/include/info-box.django.html:33
 #: devilry/devilry_admin/templates/devilry_admin/assignment/include/info-box.django.html:42
 #: devilry/devilry_admin/templates/devilry_admin/assignment/include/info-box.django.html:73
 #: devilry/devilry_admin/templates/devilry_admin/period/examiners/overview.django.html:39
 #: devilry/devilry_admin/templates/devilry_admin/period/manage_tags/tag-item-value.django.html:57
 msgid "Add examiners"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/overview.django.html:59
+msgid "Bulk-organize examiners"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/overview.django.html:70
+#, python-format
+msgid ""
+"Only users registered as examiner for %(period)s is available as examiners "
+"for assignments."
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/overview.django.html:74
+msgid "Add more examiners"
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/remove_groups_from_examiner.django.html:7

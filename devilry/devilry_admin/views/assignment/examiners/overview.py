@@ -69,6 +69,10 @@ class Overview(listbuilder_relatedexaminer.ListViewBase):
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
         context['assignment'] = self.assignment
+        context['examiner_count'] = RelatedExaminer.objects\
+            .filter(period=self.request.cradmin_role.period)\
+            .exclude(active=False)\
+            .count()
         return context
 
 
