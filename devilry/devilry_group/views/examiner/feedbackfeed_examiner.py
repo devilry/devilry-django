@@ -57,7 +57,6 @@ class PassedFailedFeedbackForm(AbstractFeedbackForm):
         return ['passed']
 
     def get_grading_points(self):
-        print(self.cleaned_data)
         if self.cleaned_data['passed'] == 'Passed':
             return self.group.assignment.max_points
         else:

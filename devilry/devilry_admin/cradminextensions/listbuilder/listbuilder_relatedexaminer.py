@@ -1,3 +1,4 @@
+from django.utils.translation import ugettext_lazy
 from django_cradmin.viewhelpers import listbuilder
 from django_cradmin.viewhelpers import listbuilderview
 
@@ -19,6 +20,9 @@ class ListViewBase(listbuilderview.FilterListMixin, listbuilderview.View):
         period = self.get_period()
         if period_tag.PeriodTag.objects.filter(period=self.get_period()).exists():
             filterlist.append(listfilter_relateduser.TagSelectFilter(period=period))
+
+    def get_no_items_message(self):
+        return ugettext_lazy('No examiners found matching your filters/search.')
 
 
 class VerticalFilterListView(ListViewBase):
