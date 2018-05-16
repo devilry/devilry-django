@@ -47,6 +47,11 @@
             <h2>
                 {% trans "Students and examiners" %}
             </h2>
+            <p id="id_devilry-num-relatedusers-on-period" class="paragraph paragraph--tight">
+                {% blocktrans trimmed with num_students=relatedstudent_count num_examiners=relatedexaminer_count context="num studens and examiners on period" %}
+                    {{ num_students }} student(s) and {{ num_examiners }} examiner(s) on the semester
+                {% endblocktrans %}
+            </p>
             <p class="text-muted">
                 {% trans "Only students registered for this semester can be added to assignments within the semester." %}
             </p>

@@ -1,11 +1,12 @@
 from __future__ import unicode_literals
 
+from django.utils.translation import pgettext_lazy
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import listfilter
 
-from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import Assignment, RelatedStudent, RelatedExaminer
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
 
@@ -51,6 +52,24 @@ class Overview(listbuilderview.FilterListMixin, listbuilderview.View):
         period = self.request.cradmin_role
         return Assignment.objects.filter(parentnode=period)\
             .order_by('-first_deadline', '-publishing_time')
+
+    def __get_relatedstudent_count(self):
+        period = self.request.cradmin_role
+        return RelatedStudent.objects\
+            .filter(period=period)\
+            .count()
+
+    def __get_relatedexaminer_count(self):
+        period = self.request.cradmin_role
+        return RelatedExaminer.objects\
+            .filter(period=period)\
+            .count()
+
+    def get_context_data(self, **kwargs):
+        context = super(Overview, self).get_context_data(**kwargs)
+        context['relatedstudent_count'] = self.__get_relatedstudent_count()
+        context['relatedexaminer_count'] = self.__get_relatedexaminer_count()
+        return context
 
 
 class App(crapp.App):
