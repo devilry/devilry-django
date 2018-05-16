@@ -1,0 +1,70 @@
+{% load i18n %}
+{% load cradmin_tags %}
+
+<div id="devilry_assignment_examiners">
+    <h3>{% trans "Examiners" %}</h3>
+    <div id="devilry_admin_assignment_examiners_meta">
+        <p>
+            {% if examiners_count == 0 %}
+                <span class="devilry-admin-assignment-examiners-does-not-exist">
+                    {% trans "No examiners configured" context "No examiners configured message" %}
+                </span>
+            {% else %}
+                <span class="devilry-admin-assignment-examiners-exists">
+                    {% blocktrans trimmed with examiners_count=examiners_count context="Number examiners configured message" %}
+                        {{ examiners_count }} examiners configured
+                    {% endblocktrans %}
+                </span>
+            {% endif %}
+        </p>
+    </div>
+    <div class="devilry_admin_assignment_examiners_warnings">
+        {% if relatedexaminers_count == 0 %}
+            <div class="alert alert-info">
+                <p>
+                    <strong>{% trans 'There are no examiners on the semester' %}</strong>
+                </p>
+                <p>
+                    <a href="{% cradmin_url instanceid='devilry_admin_periodadmin' appname='examiners' roleid=assignment.period.id viewname='add' %}" class="btn btn-default">
+                        {% trans 'Add examiners' %}
+                    </a>
+                </p>
+            </div>
+        {% elif examiners_count == 0 %}
+            <div class="alert alert-info">
+                <p>
+                    <strong>{% trans 'There are no examiners on the assignment' %}</strong>
+                </p>
+                <p>
+                    <a href="{% cradmin_instance_url 'examineroverview' 'INDEX' %}" class="btn btn-default">
+                        {% trans 'Add examiners' %}
+                    </a>
+                </p>
+            </div>
+        {% elif relatedexaminers_count > examiners_count %}
+            <div class="alert alert-info">
+                <p>
+                    <strong>{% trans 'There are still examiners who are on the semester, but not on the assignment' %}</strong>
+                </p>
+                <p>
+                    <a href="{% cradmin_instance_url 'examineroverview' 'INDEX' %}" class="btn btn-default">
+                        {% trans 'Add examiners' %}
+                    </a>
+                </p>
+            </div>
+        {% endif %}
+    </div>
+    <p id="devilry_admin_assignment_examiners_overview_buttonbar"
+            class="devilry-buttonbar">
+        <a id="devilry_admin_assignment_examiners_overview_button_bulk_organize_examiners"
+                class="btn btn-primary"
+                href="{% cradmin_instance_appindex_url 'examineroverview' %}">
+            {% trans "Browse examiners" %}
+        </a>
+        <a id="devilry_admin_assignment_examiners_overview_button_bulk_organize_examiners"
+                class="btn btn-default"
+                href="{% cradmin_instance_appindex_url 'bulk_organize_examiners' %}">
+            {% trans "Bulk-organize examiners" %}
+        </a>
+    </p>
+</div>

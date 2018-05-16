@@ -1,0 +1,18 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block below-description %}
+    <p>
+        <a href="#"
+                id="devilry_admin_delete_groups_choosemethod_relatedstudents_link"
+                class="btn btn-primary">
+            {% trans "All students" %}
+        </a>
+        <a href="{% cradmin_appurl 'manual_select' %}"
+                id="devilry_admin_delete_groups_choosemethod_manualselect_link"
+                class="btn btn-default">
+            {% trans "Select manually" context "admin create_groups" %}
+        </a>
+    </p>
+{% endblock below-description %}

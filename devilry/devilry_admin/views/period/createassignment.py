@@ -189,17 +189,13 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
     def get_success_url(self):
         return crinstance.reverse_cradmin_url(
             instanceid='devilry_admin_assignmentadmin',
-            appname='overview',
+            appname='delete_groups',
             roleid=self.created_assignment.id
         )
 
     def form_saved(self, object):
         self.created_assignment = object
-        if self.previous_assignment:
-            self.created_assignment.copy_groups_from_another_assignment(self.previous_assignment)
-        else:
-            self.created_assignment.create_groups_from_relatedstudents_on_period()
-            self.created_assignment.setup_examiners_by_relateduser_syncsystem_tags()
+        self.created_assignment.create_groups_from_relatedstudents_on_period()
 
     def get_backlink_url(self):
         return crinstance.reverse_cradmin_url(

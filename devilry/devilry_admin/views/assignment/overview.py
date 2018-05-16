@@ -47,13 +47,11 @@ class Overview(DetailRoleView):
 
     def show_info_box(self, assignment, candidates_count, examiners_count,
                       relatedstudents_count, relatedexaminers_count):
-        return (candidates_count == 0 or
-                examiners_count == 0 or
-                not assignment.is_published or
-                relatedstudents_count > candidates_count or
-                relatedexaminers_count > examiners_count or
-                relatedexaminers_count == 0 or
-                relatedstudents_count == 0)
+        return (candidates_count > 0 and
+                relatedstudents_count > 0 and
+                examiners_count > 0 and
+                relatedexaminers_count > 0 and
+                not assignment.is_published)
 
     @property
     def assignment(self):
@@ -84,6 +82,7 @@ class Overview(DetailRoleView):
             context['examiners_count'],
             context['relatedstudents_count'],
             context['relatedexaminers_count'])
+        print(context['show_info_box'])
         return context
 
 

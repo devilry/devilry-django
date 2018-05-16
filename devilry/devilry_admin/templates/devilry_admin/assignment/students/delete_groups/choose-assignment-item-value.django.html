@@ -1,0 +1,19 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block below-description %}
+    <p id="devilry_admin_delete_groups_choosemethod_assignment_{{ me.assignment.id }}"
+            class="devilry-admin-delete-groups-choosemethod-assignment">
+        <a href="#"
+                id="devilry_admin_delete_groups_choosemethod_assignment_{{ me.assignment.id }}_all_link"
+                class="btn btn-primary">
+            {% trans "All students" %}
+        </a>
+        <a href="#"
+                id="devilry_admin_delete_groups_choosemethod_assignment_{{ me.assignment.id }}_failed_link"
+                class="btn btn-default">
+            {% trans "Students without passing grade" %}
+        </a>
+    </p>
+{% endblock below-description %}
