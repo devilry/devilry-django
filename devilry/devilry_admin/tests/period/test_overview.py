@@ -29,6 +29,24 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(u'Test Period \u2014 Test Subject',
                          mockresponse.selector.one('h1').alltext_normalized)
 
+    def test_no_students_and_examiners_on_semester_meta(self):
+        testperiod = mommy.make('core.Period',
+                                parentnode__long_name='Test Subject',
+                                long_name='Test Period')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(mockresponse.selector.one('#id_devilry-num-relatedusers-on-period').alltext_normalized,
+                         '0 student(s) and 0 examiner(s) on the semester')
+
+    def test_num_students_and_examiners_on_semester_meta(self):
+        testperiod = mommy.make('core.Period',
+                                parentnode__long_name='Test Subject',
+                                long_name='Test Period')
+        mommy.make('core.RelatedStudent', period=testperiod, _quantity=8)
+        mommy.make('core.RelatedExaminer', period=testperiod, _quantity=4)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        self.assertEqual(mockresponse.selector.one('#id_devilry-num-relatedusers-on-period').alltext_normalized,
+                         '8 student(s) and 4 examiner(s) on the semester')
+
     def test_createassignment_link_text(self):
         testperiod = mommy.make('core.Period')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
