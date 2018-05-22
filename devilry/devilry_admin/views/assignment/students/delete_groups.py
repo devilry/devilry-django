@@ -1,12 +1,17 @@
 from __future__ import unicode_literals
 
+from crispy_forms import layout
+from django import forms
 from django.contrib import messages
+from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django.views.generic import TemplateView
 from django_cradmin import crapp, crinstance
+from django_cradmin.crispylayouts import CradminFormHelper, PrimarySubmit
 
-from devilry.apps.core.models import Candidate
+from devilry.apps.core.models import Candidate, Assignment, AssignmentGroup
+from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_assignmentgroup
 from devilry.devilry_admin.views.assignment.students import groupview_base
 from django_cradmin.viewhelpers import listbuilder
 from devilry.devilry_cradmin import devilry_listbuilder
@@ -40,7 +45,7 @@ class ChooseAssignmentItemValue(listbuilder.itemvalue.TitleDescription):
 
     def get_description(self):
         return pgettext_lazy('admin delete_groups',
-                             'You can remove all students, or those who did not pass, from this assignment')
+                             'Remove students that did not pass this assignment')
 
 
 class ChooseMethod(TemplateView):
@@ -156,8 +161,154 @@ class DeleteGroupsView(groupview_base.BaseMultiselectView):
             groupqueryset=groupqueryset)
         groupqueryset.delete()
         messages.success(self.request, self.get_success_message(candidatecount=candidatecount))
-        # return redirect(self.request.get_full_path())
         return super(DeleteGroupsView, self).form_valid(form=form)
+
+
+class SelectAssignmentGroupForm(forms.Form):
+    selected_items = forms.ModelMultipleChoiceField(
+        widget=forms.MultipleHiddenInput,
+        queryset=AssignmentGroup.objects.none())
+
+    def __init__(self, *args, **kwargs):
+        assignmentgroup_queryset = kwargs.pop('assignmentgroup_queryset')
+        super(SelectAssignmentGroupForm, self).__init__(*args, **kwargs)
+        self.fields['selected_items'].queryset = assignmentgroup_queryset
+
+
+class DeleteGroupsViewMixin(object):
+    form_invalid_message = pgettext_lazy(
+        'admin delete_groups',
+        'Oups! Something went wrong. This may happen if someone edited '
+        'students on the assignment or the semester while you were making '
+        'your selection. Please try again.')
+
+    def dispatch(self, request, *args, **kwargs):
+        self.assignment = request.cradmin_role
+        self.period = self.assignment.parentnode
+        return super(DeleteGroupsViewMixin, self).dispatch(request, *args, **kwargs)
+
+    def get_unfiltered_queryset_for_role(self, role):
+        return AssignmentGroup.objects.none()
+
+    def get_form_class(self):
+        return SelectAssignmentGroupForm
+
+    def get_form(self):
+        form_class = self.get_form_class()
+        return form_class(**self.get_form_kwargs())
+
+    def get_form_kwargs(self):
+        kwargs = {
+            'assignmentgroup_queryset': self.get_unfiltered_queryset_for_role(role=self.request.cradmin_role)
+        }
+        if self.request.method == 'POST':
+            kwargs['data'] = self.request.POST
+        return kwargs
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def get_success_url(self):
+        return self.request.cradmin_instance.appindex_url('studentoverview')
+
+    def form_valid(self, form):
+        selected_assignment_groups = form.cleaned_data['selected_items']
+        selected_assignment_groups.delete()
+        return redirect(self.get_success_url())
+
+    def get_error_url(self):
+        return self.request.get_full_path()
+
+    def form_invalid(self, form):
+        print(form.errors)
+        messages.error(self.request, self.form_invalid_message)
+        return redirect(self.get_error_url())
+
+
+class ConfirmView(DeleteGroupsViewMixin,
+                  listbuilder_assignmentgroup.VerticalFilterListView):
+    value_renderer_class = listbuilder_assignmentgroup.AssignmentGroupItemValueTitleDescription
+
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            self.from_assignment = Assignment.objects.get(id=kwargs.get('from_assignment_id'))
+        except Assignment.DoesNotExist:
+            raise Http404()
+        return super(ConfirmView, self).dispatch(request, *args, **kwargs)
+
+    def get_pagetitle(self):
+        return pgettext_lazy(
+            'admin delete_groups',
+            'Confirm that you want to remove students(groups) that failed %(from_assignment_name)s') % {
+                   'from_assignment_name': self.from_assignment.long_name
+               }
+
+    def get_pageheading(self):
+        return pgettext_lazy(
+            'admin delete_groups',
+            'Confirm that you want to remove students(groups) that failed %(from_assignment_name)s') % {
+                'from_assignment_name': self.from_assignment.long_name
+            }
+
+    def get_period(self):
+        return self.assignment.period
+
+    def get_filterlist_template_name(self):
+        return 'devilry_admin/assignment/students/delete_groups/confirm.django.html'
+
+    def get_filterlist_url(self, filters_string):
+        return self.request.cradmin_app.reverse_appurl(
+            viewname='confirm_delete',
+            kwargs={
+                'from_assignment_id': self.from_assignment.id,
+                'filters_string': filters_string
+            })
+
+    def __failed_group_queryset(self):
+        return AssignmentGroup.objects\
+            .filter(parentnode=self.from_assignment)\
+            .filter(cached_data__last_feedbackset__grading_published_datetime__isnull=False)\
+            .filter(cached_data__last_feedbackset__grading_points__lt=self.from_assignment.passing_grade_min_points)
+
+    def get_unfiltered_queryset_for_role(self, role):
+        failed_group_queryset = self.__failed_group_queryset()
+        relatedstudent_ids = list(failed_group_queryset.values_list('candidates__relatedstudent_id', flat=True))
+        return AssignmentGroup.objects\
+            .filter(parentnode_id=role.id)\
+            .filter(candidates__relatedstudent_id__in=relatedstudent_ids)
+
+    def get_form_kwargs(self):
+        kwargs = super(ConfirmView, self).get_form_kwargs()
+        if self.request.method == 'GET':
+            assignmentgroup_queryset = kwargs['assignmentgroup_queryset']
+            kwargs['initial'] = {
+                'selected_items': assignmentgroup_queryset.values_list('id', flat=True),
+            }
+        return kwargs
+
+    def __get_formhelper(self):
+        helper = CradminFormHelper()
+        helper.form_class = 'django-cradmin-form-wrapper devilry-django-cradmin-form-wrapper-top-bottom-spacing'
+        helper.form_id = 'devilry_admin_delete_groups_confirm_form'
+        helper.layout = layout.Layout(
+            'selected_items',
+            PrimarySubmit('delete_students', pgettext_lazy('admin delete_groups', 'Remove students'))
+        )
+        helper.form_action = self.request.get_full_path()
+        return helper
+
+    def get_context_data(self, **kwargs):
+        context = super(ConfirmView, self).get_context_data(**kwargs)
+        context['no_groups_found'] = not self.get_unfiltered_queryset_for_role(
+            role=self.request.cradmin_role).exists()
+        context['formhelper'] = self.__get_formhelper()
+        context['form'] = self.get_form()
+        return context
+
 
 class App(crapp.App):
     appurls = [
@@ -171,4 +322,7 @@ class App(crapp.App):
         crapp.Url(r'^manual-select/filter/(?P<filters_string>.+)?$',
                   DeleteGroupsView.as_view(),
                   name='filter'),
+        crapp.Url(r'^confirm/(?P<from_assignment_id>\d+)/(?P<filters_string>.+)?$',
+                  ConfirmView.as_view(),
+                  name='confirm_delete'),
     ]

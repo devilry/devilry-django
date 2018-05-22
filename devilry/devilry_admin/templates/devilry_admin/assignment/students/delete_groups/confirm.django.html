@@ -1,0 +1,34 @@
+{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-left.django.html" %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_appindex_url %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to add students overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    {{ block.super }}
+{% endblock pageheader-inner %}
+
+{% block content %}
+    {% if no_groups_found %}
+        <div class="container django-cradmin-container-focus django-cradmin-container-focus-warning
+                    devilry-admin-delete-groups-confirm-no-groups">
+            {% trans "No groups matching your selection found." %}
+        </div>
+    {% else %}
+        {{ block.super }}
+        <div class="container text-right">
+            {% crispy form formhelper %}
+        </div>
+    {% endif %}
+{% endblock content %}

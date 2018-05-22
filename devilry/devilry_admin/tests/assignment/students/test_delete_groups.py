@@ -3,7 +3,7 @@ from django import test
 from django.conf import settings
 from django.contrib import messages
 from django_cradmin import cradmin_testhelpers
-from model_mommy import mommy
+from model_mommy import mommy, timezone
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_admin.views.assignment.students import delete_groups
@@ -330,3 +330,102 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             messages.ERROR,
             SelectedGroupsForm.invalid_students_selected_message,
             '')
+
+
+class TestDeleteGroupsFromPreviousAssignmentConfirmView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = delete_groups.ConfirmView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def test_no_students_on_the_assignment(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment2,
+            viewkwargs={
+                'from_assignment_id': testassignment1.id
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-admin-delete-groups-confirm-no-groups'))
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+
+    def __set_grading_points_for_last_feedbackset(self, cached_data, points=0, publishing_datetime=None):
+        if not publishing_datetime:
+            publishing_datetime = timezone.now()
+        cached_data.last_feedbackset.grading_published_datetime = publishing_datetime
+        cached_data.last_feedbackset.grading_points = points
+        cached_data.last_feedbackset.save()
+
+    def test_no_students_on_assignment_with_past_failing_grade(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod)
+        related_student = mommy.make('core.RelatedStudent', period=testperiod)
+        group_assignment1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        group_assignment2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        mommy.make('core.Candidate', relatedstudent=related_student, assignment_group=group_assignment1)
+        mommy.make('core.Candidate', relatedstudent=related_student, assignment_group=group_assignment2)
+        self.__set_grading_points_for_last_feedbackset(
+            cached_data=group_assignment1.cached_data, points=testassignment1.max_points)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment2,
+            viewkwargs={
+                'from_assignment_id': testassignment1.id
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-admin-delete-groups-confirm-no-groups'))
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_student_on_assignment_with_past_failing_grade(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod)
+        related_student = mommy.make('core.RelatedStudent', period=testperiod)
+        group_assignment1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        group_assignment2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        mommy.make('core.Candidate', relatedstudent=related_student, assignment_group=group_assignment1)
+        mommy.make('core.Candidate', relatedstudent=related_student, assignment_group=group_assignment2)
+        self.__set_grading_points_for_last_feedbackset(
+            cached_data=group_assignment1.cached_data)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment2,
+            viewkwargs={
+                'from_assignment_id': testassignment1.id
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_multiple_students_on_assignment_only_one_with_past_failing_grade(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod)
+
+        assignment1_group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        assignment1_group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        assignment2_group1 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        assignment2_group2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+
+        # Relatedstudent 1 passed previous assignment
+        related_student1 = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='testuser1')
+        mommy.make('core.Candidate', relatedstudent=related_student1, assignment_group=assignment1_group1)
+        mommy.make('core.Candidate', relatedstudent=related_student1, assignment_group=assignment2_group1)
+        self.__set_grading_points_for_last_feedbackset(
+            cached_data=assignment1_group1.cached_data, points=testassignment1.max_points)
+
+        # Relatedstudent 2 did not pass previous assignment
+        related_student2 = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='testuser2')
+        mommy.make('core.Candidate', relatedstudent=related_student2, assignment_group=assignment1_group2)
+        mommy.make('core.Candidate', relatedstudent=related_student2, assignment_group=assignment2_group2)
+        self.__set_grading_points_for_last_feedbackset(
+            cached_data=assignment1_group2.cached_data)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment2,
+            viewkwargs={
+                'from_assignment_id': testassignment1.id
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertTrue(
+            mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue').alltext_normalized.startswith(related_student2.user.shortname))
