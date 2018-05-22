@@ -37,12 +37,12 @@ class Overview(DetailRoleView):
 
     def get_related_students_count(self):
         return RelatedStudent.objects\
-            .filter(period=self.assignment.period)\
+            .filter(period=self.assignment.period, active=True)\
             .distinct('user').count()
 
     def get_related_examiners_count(self):
         return RelatedExaminer.objects\
-            .filter(period=self.assignment.period)\
+            .filter(period=self.assignment.period, active=True)\
             .distinct('user').count()
 
     def show_info_box(self, assignment, candidates_count, examiners_count,
@@ -82,7 +82,6 @@ class Overview(DetailRoleView):
             context['examiners_count'],
             context['relatedstudents_count'],
             context['relatedexaminers_count'])
-        print(context['show_info_box'])
         return context
 
 
@@ -91,7 +90,6 @@ class App(crapp.App):
         crapp.Url(r'^$',
                   Overview.as_view(),
                   name=crapp.INDEXVIEW_NAME),
-
         crapp.Url(r'^update_assignment_short_and_long_name/(?P<pk>\d+)$',
                   AssignmentLongAndShortNameUpdateView.as_view(),
                   name="update_assignment_short_and_long_name"),

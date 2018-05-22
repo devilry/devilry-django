@@ -4,7 +4,7 @@
 <div id="devilry_assignment_students">
     <h3>{% trans "Students" %}</h3>
     <div id="devilry_admin_assignment_students_meta">
-        <p>
+        <p id="devilry_admin_assignment_students_meta_count_text">
             {% if assignmentgroups_count == candidates_count %}
                 {{ assignmentgroups_count }} {% trans "students" context "Text after number of students on assignment" %}
             {% else %}
@@ -51,31 +51,11 @@
         </div>
     </div>
     <p id="devilry_admin_assignment_students_overview_buttonbar"
-                class="devilry-buttonbar devilry-buttonbar-fullwidth">
+                class="devilry-buttonbar">
             <a id="devilry_admin_assignment_students_overview_button_browse_students"
                     class="btn btn-primary"
                     href="{% cradmin_instance_appindex_url 'studentoverview' %}">
-                {% trans "Browse students" %}
-            </a>
-            <a id="devilry_admin_assignment_students_overview_button_create_groups"
-                    class="btn btn-default"
-                    href="{% cradmin_instance_appindex_url 'create_groups' %}">
-                {% trans "Add students" %}
-            </a>
-            <a id="devilry_admin_assignment_students_overview_button_delete_groups"
-                    class="btn btn-default"
-                    href="{% cradmin_instance_appindex_url 'delete_groups' %}">
-                {% trans "Remove students" %}
-            </a>
-            <a id="devilry_admin_assignment_students_overview_button_merge_groups"
-                    class="btn btn-default"
-                    href="{% cradmin_instance_appindex_url 'merge_groups' %}">
-                {% trans "Organize students" %}
-            </a>
-            <a id="devilry_admin_assignment_students_overview_button_manage_deadlines"
-                    class="btn btn-default"
-                    href="{% cradmin_instance_appindex_url 'deadline_management' %}">
-                {% trans "Manage deadlines" %}
+                {% trans "Manage students" %}
             </a>
         </p>
 </div>

@@ -2,6 +2,7 @@ import unittest
 from datetime import timedelta
 
 import mock
+from django.contrib import messages
 from django.test import TestCase
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
@@ -360,6 +361,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student1').exists())
         self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student2').exists())
 
+    @unittest.skip('We do not add any examiners for now')
     def test_post_first_assignment_adds_examiners_from_syncsystem_tags(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         testperiodtag1 = mommy.make('core.PeriodTag', period=period, tag='group1')
@@ -383,6 +385,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertFalse(created_group.examiners.filter(relatedexaminer__user__shortname='examiner3').exists())
         self.assertFalse(created_group.examiners.filter(relatedexaminer__user__shortname='otherperiodexaminer').exists())
 
+    @unittest.skip('We do not add any examiners for now')
     def test_post_second_assignment_copies_setup_from_first_assignment(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         assignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',

@@ -4,7 +4,7 @@
 <div id="devilry_assignment_examiners">
     <h3>{% trans "Examiners" %}</h3>
     <div id="devilry_admin_assignment_examiners_meta">
-        <p>
+        <p id="devilry_admin_assignment_examiners_meta_count_text">
             {% if examiners_count == 0 %}
                 <span class="devilry-admin-assignment-examiners-does-not-exist">
                     {% trans "No examiners configured" context "No examiners configured message" %}
@@ -59,12 +59,7 @@
         <a id="devilry_admin_assignment_examiners_overview_button_bulk_organize_examiners"
                 class="btn btn-primary"
                 href="{% cradmin_instance_appindex_url 'examineroverview' %}">
-            {% trans "Browse examiners" %}
-        </a>
-        <a id="devilry_admin_assignment_examiners_overview_button_bulk_organize_examiners"
-                class="btn btn-default"
-                href="{% cradmin_instance_appindex_url 'bulk_organize_examiners' %}">
-            {% trans "Bulk-organize examiners" %}
+            {% trans "Manage examiners" %}
         </a>
     </p>
 </div>

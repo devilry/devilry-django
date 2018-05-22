@@ -1,0 +1,12 @@
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% blocktrans trimmed with assignment=assignment.long_name %}
+    {{ assignment }} created successfully. All active students have been added to the assignment.
+{% endblocktrans %}
+<p>
+    {% trans 'If you want to add/remove or view students' %}
+    <a href="{% cradmin_url instanceid='devilry_admin_assignmentadmin' appname='studentoverview' viewname='INDEX' roleid=assignment.id %}">
+        {% trans 'you can do so here' %}
+    </a>
+</p>

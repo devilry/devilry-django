@@ -1047,7 +1047,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
         # We iterate over relatedstudents twice, so we
         # use this to avoid multiple queries
-        relatedstudents = list(self.period.relatedstudent_set.all())
+        relatedstudents = list(self.period.relatedstudent_set.filter(active=True))
 
         # Step1: Bulk create empty groups
         groups = []

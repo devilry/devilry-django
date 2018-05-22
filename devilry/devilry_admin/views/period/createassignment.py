@@ -3,6 +3,7 @@ from datetime import timedelta
 from crispy_forms import layout
 from django import forms
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -103,12 +104,12 @@ class CreateForm(forms.ModelForm):
         })
 
 
-
 class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
     form_class = CreateForm
     model = Assignment
     suggested_deadlines_template_name = 'devilry_admin/period/createassignment/suggested_deadlines.django.html'
     helpbox_template_name = 'devilry_admin/period/createassignment/helpbox.django.html'
+    success_message_template_name = 'devilry_admin/period/createassignment/success_message.django.html'
     template_name = 'devilry_cradmin/viewhelpers/devilry_createview_with_backlink.django.html'
 
     def dispatch(self, *args, **kwargs):
@@ -189,9 +190,13 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
     def get_success_url(self):
         return crinstance.reverse_cradmin_url(
             instanceid='devilry_admin_assignmentadmin',
-            appname='delete_groups',
+            appname='overview',
             roleid=self.created_assignment.id
         )
+
+    def add_success_messages(self, object):
+        messages.success(self.request,
+                         render_to_string(self.success_message_template_name, context={'assignment': object}))
 
     def form_saved(self, object):
         self.created_assignment = object
