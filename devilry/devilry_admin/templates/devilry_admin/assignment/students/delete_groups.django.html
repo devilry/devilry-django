@@ -4,7 +4,7 @@
 {% load cradmin_icon_tags %}
 
 {% block title %}
-    {% trans "Remove students" %}
+    {% trans "Delete students" %}
 {% endblock title %}
 
 {% block pageheader-outer-extraclasses %}
@@ -15,19 +15,19 @@
 {% block pageheader-inner %}
     <a href="{% cradmin_instance_appindex_url 'delete_groups' %}" class="devilry-page-header-backlink">
         <span class="sr-only">
-            {% trans "Back to remove students overview" %}
+            {% trans "Back to delete students overview" %}
         </span>
         <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
     </a>
     <h1>
-        {% trans "Remove students" %}
+        {% trans "Delete students" %}
     </h1>
     <p>
-        {% trans 'Select one or more students, and click the "Remove students" button.' %}
+        {% trans 'Select one or more students, and click the "Delete students" button.' %}
 
         {% if not has_delete_with_content_permission %}
             <span id="devilry_admin_assignment_delete_groups_can_not_delete_content_message">
-                {% trans "You do not have permission to remove students with deliveries and/or feedback, so those students are not available in the list below." %}
+                {% trans "You do not have permission to delete students with deliveries and/or feedback, so those students are not available in the list below." %}
             </span>
         {% endif %}
     </p>
@@ -40,7 +40,7 @@
         {% if has_delete_with_content_permission %}
             <div id="devilry_admin_assignment_delete_groups_can_delete_content_warning"
                     class="alert alert-warning">
-                {% trans "You have permission to remove students with deliveries and/or feedback, so be VERY CAREFUL before you click the remove button!" %}
+                {% trans "You have permission to delete students with deliveries and/or feedback, so be VERY CAREFUL before you click the delete button!" %}
             </div>
         {% endif %}
     </div>
