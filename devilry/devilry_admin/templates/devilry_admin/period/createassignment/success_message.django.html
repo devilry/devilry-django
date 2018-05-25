@@ -1,12 +1,19 @@
 {% load i18n %}
 {% load cradmin_tags %}
 
-{% blocktrans trimmed with assignment=assignment.long_name %}
-    {{ assignment }} created successfully. All active students have been added to the assignment.
-{% endblocktrans %}
-<p>
-    {% trans 'If you want to add/remove or view students' %}
-    <a href="{% cradmin_url instanceid='devilry_admin_assignmentadmin' appname='studentoverview' viewname='INDEX' roleid=assignment.id %}">
-        {% trans 'you can do so here' %}
+{% if group_count == 0 %}
+    {% blocktrans trimmed with assignment=assignment.long_name %}
+        {{ assignment }} created successfully, but no students where added. Only active students on
+        the semester can be added to the assignment.
+    {% endblocktrans %}
+    <a href="{% cradmin_url instanceid='devilry_admin_periodadmin' appname='students' viewname='INDEX' roleid=assignment.parentnode.id %}" class="link-white">
+        {% trans 'Add/manage students on ' context 'devilry admin periodadmin' %}{{ assignment.parentnode.long_name }}
     </a>
-</p>
+{% else %}
+    {% blocktrans trimmed with assignment=assignment.long_name %}
+        {{ assignment }} created successfully. All active students on the semester have been added to the assignment.
+    {% endblocktrans %}
+    <a href="{% cradmin_url instanceid='devilry_admin_assignmentadmin' appname='studentoverview' viewname='INDEX' roleid=assignment.id %}" class="link-white">
+        {% trans 'Add/remove or view students' context 'devilry admin periodadmin' %}
+    </a>
+{% endif %}

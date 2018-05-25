@@ -40,23 +40,24 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEquals(mockresponse.selector.one('h1').alltext_normalized, 'TESTASSIGNMENT')
 
-    def test_publish_now_info_box(self):
-        assignment = mommy.make('core.Assignment', publishing_time=timezone.now() + timedelta(days=1))
-        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        core_mommy.candidate(group=group)
-        core_mommy.examiner(group=group)
-        mommy.make('core.RelatedStudent', period=assignment.period)
-        mommy.make('core.RelatedExaminer', period=assignment.period)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertIn(
-            'Ready to publish the assignment',
-            mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
-        )
-        self.assertEqual(
-            mock.call(appname='overview', args=(assignment.id, ), kwargs={}, viewname='publish_assignment_now'),
-            mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
-        )
-        self.assertTrue(mockresponse.selector.exists('#devilry_admin_assignment_published_publishnow_form_info_box'))
+    # Todo: Remove
+    # def test_publish_now_info_box(self):
+    #     assignment = mommy.make('core.Assignment', publishing_time=timezone.now() + timedelta(days=1))
+    #     group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+    #     core_mommy.candidate(group=group)
+    #     core_mommy.examiner(group=group)
+    #     mommy.make('core.RelatedStudent', period=assignment.period)
+    #     mommy.make('core.RelatedExaminer', period=assignment.period)
+    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+    #     self.assertIn(
+    #         'Ready to publish the assignment',
+    #         mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
+    #     )
+    #     self.assertEqual(
+    #         mock.call(appname='overview', args=(assignment.id, ), kwargs={}, viewname='publish_assignment_now'),
+    #         mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
+    #     )
+    #     self.assertTrue(mockresponse.selector.exists('#devilry_admin_assignment_published_publishnow_form_info_box'))
 
     def test_published_row(self):
         assignment = mommy.make('core.Assignment', publishing_time=default_timezone_datetime(2000, 1, 1))
@@ -326,276 +327,341 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
 
-class TestOverviewStudentSectionApp(TestCase, cradmin_testhelpers.TestCaseMixin):
+class TestOverviewExaminerSection(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = overview.Overview
 
-    def test_assignment_student_meta_has_two_students(self):
-        assignment = mommy.make('core.Assignment')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        mommy.make('core.Candidate', assignment_group=group1)
-        mommy.make('core.Candidate', assignment_group=group2)
+    def test_sanity_no_relatedexaminer_no_other_warnings_shown(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertTrue(
-            mockresponse.selector.one('#devilry_admin_assignment_students_meta_count_text').alltext_normalized,
-            '2 students')
 
-    def test_assignment_student_meta_has_no_students(self):
-        assignment = mommy.make('core.Assignment')
+        # Warnings rendered
+        self.assertTrue(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_examiner_empty_semester_warning'))
+
+        # Warnings not rendered
+        self.assertFalse(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_examiner_students_without_examiner_warning'))
+        self.assertFalse(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_examiner_no_examiners_on_assignment'))
+        self.assertFalse(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_examiner_on_semester_not_on_assignment'))
+
+    def test_sanity_students_without_examiners_and_no_examiners(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        mommy.make('core.RelatedExaminer', period=assignment.parentnode)
+        mommy.make('core.Candidate', assignment_group__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertTrue(
-            mockresponse.selector.one('#devilry_admin_assignment_students_meta_count_text').alltext_normalized,
-            '0 students')
 
-    def test_assignment_student_meta_has_multiple_students_in_group(self):
-        assignment = mommy.make('core.Assignment')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment)
-        mommy.make('core.Candidate', assignment_group=group1)
-        mommy.make('core.Candidate', assignment_group=group2)
-        mommy.make('core.Candidate', assignment_group=group2)
+        # Warnings rendered
+        self.assertTrue(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_examiner_students_without_examiner_warning'))
+        self.assertTrue(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_examiner_no_examiners_on_assignment'))
+
+        # Warnings not rendered
+        self.assertFalse(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_examiner_empty_semester_warning'))
+        self.assertFalse(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_examiner_on_semester_not_on_assignment'))
+
+    def test_sanity_students_without_examiners_and_more_relatedexaminer_than_examiners(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        mommy.make('core.RelatedExaminer', period=assignment.parentnode)
+        related_examiner = mommy.make('core.RelatedExaminer', period=assignment.parentnode)
+        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup__parentnode=assignment)
+        mommy.make('core.Candidate', assignment_group__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertTrue(
-            mockresponse.selector.one('#devilry_admin_assignment_students_meta_count_text').alltext_normalized,
-            '3 students organized in 2 project groups')
 
+        # Warnings rendered
+        self.assertTrue(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_examiner_students_without_examiner_warning'))
+        self.assertTrue(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_examiner_on_semester_not_on_assignment'))
 
-class TestOverviewExaminerSectionApp(TestCase, cradmin_testhelpers.TestCaseMixin):
-    viewclass = overview.Overview
+        # Warnings not rendered
+        self.assertFalse(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_examiner_empty_semester_warning'))
+        self.assertFalse(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_examiner_no_examiners_on_assignment'))
 
-    def test_assignment_meta_one_examiner_configured(self):
+    def test_assignment_meta_one_distinct_examiner_configured(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         relatedexaminer = mommy.make('core.RelatedExaminer', period=assignment.period)
         mommy.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup__parentnode=assignment)
         mommy.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertTrue(
-            mockresponse.selector.one('#devilry_admin_assignment_examiners_meta_count_text').alltext_normalized,
-            '1 examiner')
+        self.assertEqual(
+            mockresponse.selector.one('.devilry-admin-assignment-examiners-exists').alltext_normalized,
+            '1 examiner(s) configured')
+
+    def test_assignment_meta_multiple_examiners_configured(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        mommy.make('core.Examiner', assignmentgroup__parentnode=assignment)
+        mommy.make('core.Examiner', assignmentgroup__parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+            mockresponse.selector.one('#id_devilry_admin_assignment_examiners_meta_count_text').alltext_normalized,
+            '2 examiner(s) configured')
 
     def test_assignment_meta_no_examiner_configured(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-        self.assertTrue(
-            mockresponse.selector.one('#devilry_admin_assignment_examiners_meta_count_text').alltext_normalized,
+        self.assertEqual(
+            mockresponse.selector.one('.devilry-admin-assignment-examiners-does-not-exist').alltext_normalized,
             'No examiners configured')
 
-# class TestOverviewInfoBox(TestCase, cradmin_testhelpers.TestCaseMixin):
-#     viewclass = overview.Overview
-#
-#     def test_no_students_on_period(self):
-#         assignment = mommy.make('core.Assignment')
-#         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-#         self.assertIn(
-#             'There are no students on the semester',
-#             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
-#         )
-#         self.assertIn(
-#             'Add students',
-#             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box > p > a').alltext_normalized
-#         )
-#         url = reverse_cradmin_url(
-#             instanceid='devilry_admin_periodadmin',
-#             appname='students',
-#             roleid=assignment.period.id,
-#             viewname='add')
-#         self.assertEqual(
-#             url,
-#             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box > p > a').get('href')
-#         )
-#
-#     def test_no_students_on_the_assignment(self):
-#         assignment = mommy.make('core.Assignment')
-#         mommy.make('core.RelatedStudent', period=assignment.period)
-#         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-#         self.assertIn(
-#             'There are no students on the assignment',
-#             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
-#         )
-#         self.assertIn(
-#             'Add students',
-#             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box > p > a').alltext_normalized
-#         )
-#         self.assertEqual(
-#             mock.call(appname='create_groups', args=(), kwargs={}, viewname='manual-select'),
-#             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
-#         )
-#
-#     def test_no_examiners_on_period(self):
-#         assignment = mommy.make('core.Assignment')
-#         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-#         mommy.make('core.RelatedStudent', period=assignment.period)
-#         core_mommy.candidate(group=group)
-#         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-#         self.assertIn(
-#             'There are no examiners on the semester',
-#             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
-#         )
-#         self.assertIn(
-#             'Add examiners',
-#             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box > p > a').alltext_normalized
-#         )
-#         url = reverse_cradmin_url(
-#             instanceid='devilry_admin_periodadmin',
-#             appname='examiners',
-#             roleid=assignment.period.id,
-#             viewname='add')
-#         self.assertEqual(
-#             url,
-#             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box > p > a').get('href')
-#         )
-#
-#     def test_no_examiners_on_the_assignment(self):
-#         assignment = mommy.make('core.Assignment')
-#         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-#         mommy.make('core.RelatedStudent', period=assignment.period)
-#         mommy.make('core.RelatedExaminer', period=assignment.period)
-#         core_mommy.candidate(group=group)
-#         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-#         self.assertIn(
-#             'There are no examiners on the assignment',
-#             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
-#         )
-#         self.assertIn(
-#             'Add examiners',
-#             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box > p > a').alltext_normalized
-#         )
-#         self.assertEqual(
-#             mock.call(appname='examineroverview', args=(), kwargs={}, viewname='INDEX'),
-#             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
-#         )
-#
-#     def test_publish_now(self):
-#         assignment = mommy.make('core.Assignment', publishing_time=timezone.now() + timedelta(days=1))
-#         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-#         core_mommy.candidate(group=group)
-#         core_mommy.examiner(group=group)
-#         mommy.make('core.RelatedStudent', period=assignment.period)
-#         mommy.make('core.RelatedExaminer', period=assignment.period)
-#         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-#         self.assertIn(
-#             'Everything looks good, ready to publish',
-#             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
-#         )
-#         self.assertEqual(
-#             mock.call(appname='overview', args=(assignment.id, ), kwargs={}, viewname='publish_assignment_now'),
-#             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
-#         )
-#         self.assertTrue(mockresponse.selector.exists('#devilry_admin_assignment_published_publishnow_form_info_box'))
-#
-#     def test_still_students_who_are_on_the_semester_but_not_on_the_assignment(self):
-#         assignment = mommy.make('core.Assignment')
-#         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-#         relatedstudent = mommy.make('core.RelatedStudent', period=assignment.period)
-#         mommy.make('core.Candidate', assignment_group=group, relatedstudent=relatedstudent)
-#         relatedexaminer = mommy.make('core.RelatedExaminer', period=assignment.period)
-#         mommy.make('core.Examiner', assignmentgroup=group, relatedexaminer=relatedexaminer)
-#         mommy.make('core.RelatedStudent', period=assignment.period)
-#         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-#         self.assertIn(
-#             'There are still students who are on the semester, but not on the assignment',
-#             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
-#         )
-#         self.assertIn(
-#             'Add students',
-#             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box > p > a').alltext_normalized
-#         )
-#         self.assertEqual(
-#             mock.call(appname='create_groups', args=(), kwargs={}, viewname='manual-select'),
-#             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
-#         )
-#
-#     def test_still_examiners_who_are_on_the_semester_but_not_on_the_assignment(self):
-#         assignment = mommy.make('core.Assignment')
-#         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-#         relatedstudent = mommy.make('core.RelatedStudent', period=assignment.period)
-#         mommy.make('core.Candidate', assignment_group=group, relatedstudent=relatedstudent)
-#         relatedexaminer = mommy.make('core.RelatedExaminer', period=assignment.period)
-#         mommy.make('core.Examiner', assignmentgroup=group, relatedexaminer=relatedexaminer)
-#         mommy.make('core.RelatedExaminer', period=assignment.period)
-#         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-#         self.assertIn(
-#             'There are still examiners who are on the semester, but not on the assignment',
-#             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box').alltext_normalized
-#         )
-#         self.assertIn(
-#             'Add examiners',
-#             mockresponse.selector.one('#devilry_admin_assignment_overview_info_box > p > a').alltext_normalized
-#         )
-#         self.assertEqual(
-#             mock.call(appname='examineroverview', args=(), kwargs={}, viewname='INDEX'),
-#             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
-#         )
-#
-#     def test_info_box_is_not_shown(self):
-#         assignment = mommy.make('core.Assignment')
-#         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-#         core_mommy.candidate(group=group)
-#         core_mommy.examiner(group=group)
-#         mommy.make('core.RelatedStudent', period=assignment.period)
-#         mommy.make('core.RelatedExaminer', period=assignment.period)
-#         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
-#         self.assertFalse(
-#             mockresponse.selector.exists('#devilry_admin_assignment_overview_info_box')
-#         )
-#
-#     @unittest.skip('Add when issue 978 is resolved')
-#     def test_settings_deadline_handling_button_not_visible_to_periodadmin(self):
-#         testassignment = mommy.make('core.Assignment')
-#         testuser = mommy.make(settings.AUTH_USER_MODEL)
-#         mommy.make('devilry_account.PermissionGroupUser', user=testuser,
-#                    permissiongroup=mommy.make('devilry_account.PeriodPermissionGroup',
-#                                               period=testassignment.parentnode).permissiongroup)
-#         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
-#         self.assertFalse(
-#             mockresponse.selector.exists('#devilry_admin_assignment_deadline_handling_buttons')
-#         )
-#
-#     @unittest.skip('Add when issue 978 is resolved')
-#     def test_settings_deadline_handling_warning_message_for_periodadmin(self):
-#         testassignment = mommy.make('core.Assignment')
-#         testuser = mommy.make(settings.AUTH_USER_MODEL)
-#         mommy.make('devilry_account.PermissionGroupUser', user=testuser,
-#                    permissiongroup=mommy.make('devilry_account.PeriodPermissionGroup',
-#                                               period=testassignment.parentnode).permissiongroup)
-#         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
-#         self.assertEquals(
-#             mockresponse.selector.one('.devilry_admin_assignment_overview_settings_deadline_handling_warning_message')
-#                 .alltext_normalized,
-#             'You do not have access to change this setting.'
-#         )
-#
-#     @unittest.skip('Add when issue 978 is resolved')
-#     def test_settings_deadline_handling_subjectadmin_can_see_button(self):
-#         testassignment = mommy.make('core.Assignment')
-#         testuser = mommy.make(settings.AUTH_USER_MODEL)
-#         mommy.make('devilry_account.PermissionGroupUser', user=testuser,
-#                    permissiongroup=mommy.make('devilry_account.SubjectPermissionGroup',
-#                                               permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
-#                                               subject=testassignment.parentnode.parentnode).permissiongroup)
-#         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
-#         self.assertTrue(
-#             mockresponse.selector.exists('#devilry_admin_assignment_deadline_handling_buttons')
-#         )
-#
-#     @unittest.skip('Add when issue 978 is resolved')
-#     def test_settings_deadline_handling_departmentadmin_can_see_button(self):
-#         testassignment = mommy.make('core.Assignment')
-#         testuser = mommy.make(settings.AUTH_USER_MODEL)
-#         mommy.make('devilry_account.PermissionGroupUser', user=testuser,
-#                    permissiongroup=mommy.make('devilry_account.SubjectPermissionGroup',
-#                                               permissiongroup__grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN,
-#                                               subject=testassignment.parentnode.parentnode).permissiongroup)
-#         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
-#         self.assertTrue(
-#             mockresponse.selector.exists('#devilry_admin_assignment_deadline_handling_buttons')
-#         )
-#
-#     @unittest.skip('Add when issue 978 is resolved')
-#     def test_settings_deadline_handling_superuser_can_see_button(self):
-#         testassignment = mommy.make('core.Assignment')
-#         testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
-#         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment, requestuser=testuser)
-#         self.assertTrue(
-#             mockresponse.selector.exists('#devilry_admin_assignment_deadline_handling_buttons')
-#         )
+    def test_no_examiners_on_semester_warning(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+
+        # Check warning exists
+        self.assertTrue(
+            mockresponse.selector.exists('#id_devilry_admin_assignment_examiner_empty_semester_warning'))
+
+        # Check warning text
+        self.assertTrue(mockresponse.selector.one('#id_devilry_admin_assignment_examiner_empty_semester_warning')
+                        .alltext_normalized,
+                        'warning: Go to the semester page and add/activate examiners')
+
+        # Check warning link
+        url = reverse_cradmin_url(
+            instanceid='devilry_admin_periodadmin',
+            appname='overview',
+            roleid=assignment.parentnode.id,
+            viewname='INDEX'
+        )
+        self.assertEqual(
+            url,
+            mockresponse.selector.one(
+                '#id_devilry_admin_assignment_examiner_empty_semester_warning > strong > a').get('href'))
+
+    def test_students_without_examiners_exists_warning(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        mommy.make('core.RelatedExaminer', period=assignment.period)
+        mommy.make('core.Candidate', assignment_group__parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+
+        # Check warning exists
+        self.assertTrue(
+            mockresponse.selector.exists('#id_devilry_admin_assignment_examiner_students_without_examiner_warning'))
+
+        # Check warning text
+        self.assertIn(
+            'warning: There are students with no examiners assigned to them',
+            mockresponse.selector.one('#id_devilry_admin_assignment_examiner_students_without_examiner_warning')
+                .alltext_normalized)
+
+        # Check warning link
+        url = reverse_cradmin_url(
+            instanceid='devilry_admin_assignmentadmin',
+            appname='examineroverview',
+            roleid=assignment.id,
+            viewname='INDEX'
+        )
+        self.assertEqual(
+            url,
+            mockresponse.selector.one(
+                '#id_devilry_admin_assignment_examiner_students_without_examiner_warning > strong > a').get('href'))
+
+    def test_no_examiners_configured_for_assignment_groups_warning(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        mommy.make('core.RelatedExaminer', period=assignment.period)
+        mommy.make('core.Candidate', assignment_group__parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+
+        # Check warning exists
+        self.assertTrue(
+            mockresponse.selector.exists('#id_devilry_admin_assignment_examiner_no_examiners_on_assignment'))
+
+        # Check warning texts
+        self.assertIn(
+            'warning: No examiners configured',
+            mockresponse.selector.one('#id_devilry_admin_assignment_examiner_no_examiners_on_assignment')
+                .alltext_normalized)
+        self.assertIn(
+            'Only configured examiners can see and correct deliveries from students.',
+            mockresponse.selector.one('#id_devilry_admin_assignment_examiner_no_examiners_on_assignment')
+                .alltext_normalized)
+
+        # Check warning links
+        url = reverse_cradmin_url(
+            instanceid='devilry_admin_assignmentadmin',
+            appname='examineroverview',
+            viewname='INDEX',
+            roleid=assignment.id)
+        self.assertEqual(
+            url,
+            mockresponse.selector.one(
+                '#id_devilry_admin_assignment_examiner_no_examiners_on_assignment > strong > a').get('href'))
+
+    def test_fewer_examiners_than_relatedexaminers_on_semester_note(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        mommy.make('core.RelatedExaminer', period=assignment.period)
+        related_examiner = mommy.make('core.RelatedExaminer', period=assignment.period)
+        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup__parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+
+        # Check warning exists
+        self.assertTrue(
+            mockresponse.selector.exists('#id_devilry_admin_assignment_examiner_on_semester_not_on_assignment'))
+
+        # Check warning text
+        self.assertIn(
+            'note: There are examiners on the semester that are not assigned to any students',
+            mockresponse.selector.one('#id_devilry_admin_assignment_examiner_on_semester_not_on_assignment')
+                .alltext_normalized)
+
+        # Check warning link
+        url = reverse_cradmin_url(
+            instanceid='devilry_admin_assignmentadmin',
+            appname='examineroverview',
+            viewname='INDEX',
+            roleid=assignment.id)
+        self.assertEqual(
+            url,
+            mockresponse.selector.one(
+                '#id_devilry_admin_assignment_examiner_on_semester_not_on_assignment > a').get('href'))
+
+
+class TestOverviewStudentSection(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = overview.Overview
+
+    def test_sanity_no_relatedstudents_no_other_warnings_shown(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+
+        # Warnings rendered
+        self.assertTrue(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_student_no_active_students_on_semester'))
+
+        # Warnings not rendered
+        self.assertFalse(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_student_no_students_on_assignment'))
+        self.assertFalse(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_student_on_semester_not_on_assignment'))
+
+    def test_sanity_no_candidates_on_assignment(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        mommy.make('core.RelatedStudent', period=assignment.parentnode)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+
+        # Warnings rendered
+        self.assertTrue(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_student_no_students_on_assignment'))
+
+        # Warnings not rendered
+        self.assertFalse(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_student_no_active_students_on_semester'))
+        self.assertFalse(mockresponse.selector.exists(
+            '#id_devilry_admin_assignment_student_on_semester_not_on_assignment'))
+
+    def test_meta_text_has_two_candidates_and_two_assignment_groups(self):
+        assignment = mommy.make('core.Assignment')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        mommy.make('core.Candidate', assignment_group=group1)
+        mommy.make('core.Candidate', assignment_group=group2)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+            mockresponse.selector.one('#id_devilry_admin_assignment_students_meta_count_text').alltext_normalized,
+            '2 students organized in 2 project groups')
+
+    def test_meta_text_has_no_students(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+            mockresponse.selector.one('#id_devilry_admin_assignment_students_meta_count_text').alltext_normalized,
+            'No students on the assignment')
+
+    def test_meta_text_has_multiple_students_in_group(self):
+        assignment = mommy.make('core.Assignment')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        mommy.make('core.Candidate', assignment_group=group1)
+        mommy.make('core.Candidate', assignment_group=group2)
+        mommy.make('core.Candidate', assignment_group=group2)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertTrue(
+            mockresponse.selector.one('#id_devilry_admin_assignment_students_meta_count_text').alltext_normalized,
+            '3 students organized in 2 project groups')
+
+    def test_no_related_students_on_semester(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+
+        # Check warning exists
+        self.assertTrue(
+            mockresponse.selector.exists('#id_devilry_admin_assignment_student_no_active_students_on_semester'))
+
+        # Check warning text
+        self.assertIn(
+            'warning: Go to the semester page and add/activate students',
+            mockresponse.selector.one('#id_devilry_admin_assignment_student_no_active_students_on_semester')
+                .alltext_normalized)
+
+        # Check warning link
+        url = reverse_cradmin_url(
+            instanceid='devilry_admin_periodadmin',
+            appname='overview',
+            viewname='INDEX',
+            roleid=assignment.parentnode.id)
+        self.assertEqual(
+            url,
+            mockresponse.selector.one(
+                '#id_devilry_admin_assignment_student_no_active_students_on_semester > strong > a').get('href'))
+
+    def test_no_candidates_warning(self):
+        assignment = mommy.make('core.Assignment')
+        mommy.make('core.RelatedStudent', period=assignment.parentnode)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+
+        # Check warning exists
+        self.assertTrue(mockresponse.selector.exists('#id_devilry_admin_assignment_student_no_students_on_assignment'))
+
+        # Check warning texts
+        self.assertIn(
+            'warning: No students added to the assignment',
+            mockresponse.selector.one('#id_devilry_admin_assignment_student_no_students_on_assignment')
+                .alltext_normalized)
+        self.assertIn(
+            'Only students added to an assignment can see the assignment and add deliveries',
+            mockresponse.selector.one('#id_devilry_admin_assignment_student_no_students_on_assignment')
+                .alltext_normalized)
+
+        # Check warning link
+        url = reverse_cradmin_url(
+            instanceid='devilry_admin_assignmentadmin',
+            appname='create_groups',
+            viewname='INDEX',
+            roleid=assignment.id)
+        self.assertEqual(
+            url,
+            mockresponse.selector.one(
+                '#id_devilry_admin_assignment_student_no_students_on_assignment > strong > a').get('href'))
+
+    def test_students_on_the_semester_that_are_not_on_the_assignment_warning(self):
+        assignment = mommy.make('core.Assignment')
+        mommy.make('core.RelatedStudent', period=assignment.parentnode)
+        related_student = mommy.make('core.RelatedStudent', period=assignment.parentnode)
+        mommy.make('core.Candidate', relatedstudent=related_student, assignment_group__parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+
+        # Check warning exists
+        self.assertTrue(mockresponse.selector.exists('#id_devilry_admin_assignment_student_on_semester_not_on_assignment'))
+
+        # Check warning text
+        self.assertIn(
+            'note: There are students who are on the semester, but not on the assignment',
+            mockresponse.selector.one('#id_devilry_admin_assignment_student_on_semester_not_on_assignment')
+                .alltext_normalized)
+
+        # Check warning link
+        url = reverse_cradmin_url(
+            instanceid='devilry_admin_assignmentadmin',
+            appname='create_groups',
+            viewname='INDEX',
+            roleid=assignment.id)
+        self.assertEqual(
+            url,
+            mockresponse.selector.one(
+                '#id_devilry_admin_assignment_student_on_semester_not_on_assignment > a').get('href'))

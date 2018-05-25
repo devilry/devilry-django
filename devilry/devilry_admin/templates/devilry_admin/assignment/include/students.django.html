@@ -2,60 +2,69 @@
 {% load cradmin_tags %}
 
 <div id="devilry_assignment_students">
-    <h3>{% trans "Students" %}</h3>
-    <div id="devilry_admin_assignment_students_meta">
-        <p id="devilry_admin_assignment_students_meta_count_text">
-            {% if assignmentgroups_count == candidates_count %}
-                {{ assignmentgroups_count }} {% trans "students" context "Text after number of students on assignment" %}
-            {% else %}
+    <a href="{% cradmin_instance_url appname='studentoverview' viewname='INDEX' %}">
+        <h2>{% trans "Manage students" %}</h2>
+    </a>
+    <div id="id_devilry_admin_assignment_students_meta">
+        <p id="id_devilry_admin_assignment_students_meta_count_text">
+            {% if candidates_count > 0 %}
                 {% blocktrans trimmed with num_groups=assignmentgroups_count num_candidates=candidates_count context="Text after number of students and project groups" %}
                     {{ num_candidates }} students organized in {{ num_groups }} project groups
                 {% endblocktrans %}
+            {% else %}
+                {% trans 'No students on the assignment' %}
             {% endif %}
         </p>
-        <div class="devilry_admin_assignment_students_warnings">
+        <div class="devilry_admin_assignment_student_meta_warnings">
+            <!--
+            A list of warnings shows the "progress" regarding students on the assignment.
+
+            If there are no students on the semester:
+                - Shows a warning with a link to the semester overview.
+
+            OR
+
+            If there are students on the semester show warnings about:
+                - No students on the assignment
+                or
+                - There are students on the semester that are not added to the assignment.
+            -->
             {% if relatedstudents_count == 0 %}
-                <div class="alert alert-info">
-                    <p>
-                        <strong>{% trans 'There are no students on the semester' %}</strong>
-                    </p>
-                    <p>
-                        <a href="{% cradmin_instance_url 'create_groups' 'manual-select' %}" class="btn btn-default">
-                            {% trans 'Add students' %}
+                <p id="id_devilry_admin_assignment_student_no_active_students_on_semester" class="alert-paragraph alert-paragraph__warning">
+                    <span class="alert-paragraph__title alert-paragraph__title--warning">
+                        {% trans 'warning' %}:
+                    </span>
+                    <strong>
+                        <a href="{% cradmin_url instanceid='devilry_admin_periodadmin' appname='overview' viewname='INDEX' roleid=assignment.parentnode.id %}">
+                            {% trans 'Go to the semester page and add/activate students' %}
                         </a>
+                    </strong>
+                </p>
+            {% else %}
+                {% if candidates_count == 0 %}
+                    <p id="id_devilry_admin_assignment_student_no_students_on_assignment" class="alert-paragraph alert-paragraph__warning">
+                        <span class="alert-paragraph__title alert-paragraph__title--warning">
+                            {% trans 'warning' %}:
+                        </span>
+                        <strong>
+                            {% trans 'No students added to the assignment' context 'devilry admin assignment overview student' %} &mdash;
+                            <a href="{% cradmin_url instanceid='devilry_admin_assignmentadmin' appname='create_groups' viewname='INDEX' roleid=assignment.id %}">
+                                {% trans 'Add students' context 'devilry admin assignment overview student' %}
+                            </a>.
+                        </strong>
+                        {% trans 'Only students added to an assignment can see the assignment and add deliveries' context 'devilry admin assignment overview student' %}.
                     </p>
-                </div>
-            {% elif candidates_count == 0 %}
-                <div class="alert alert-info">
-                    <p>
-                        <strong>{% trans 'There are no students on the assignment' %}</strong>
+                {% elif relatedstudents_count > candidates_count %}
+                    <p id="id_devilry_admin_assignment_student_on_semester_not_on_assignment" class="alert-paragraph alert-paragraph__note">
+                        <span class="alert-paragraph__title alert-paragraph__title--note">
+                            {% trans 'note' %}:
+                        </span>
+                        {% trans 'There are students who are on the semester, but not on the assignment' context 'devilry admin assignment overview student' %} &mdash;
+                        <a href="{% cradmin_url instanceid='devilry_admin_assignmentadmin' appname='create_groups' viewname='INDEX' roleid=assignment.id %}">
+                            {% trans 'Add students' context 'devilry admin assignment overview student' %}</a>
                     </p>
-                    <p>
-                        <a href="{% cradmin_instance_url 'create_groups' 'manual-select' %}" class="btn btn-default">
-                            {% trans 'Add students' %}
-                        </a>
-                    </p>
-                </div>
-            {% elif relatedstudents_count > candidates_count %}
-                <div class="alert alert-info">
-                    <p>
-                        <strong>{% trans 'There are still students who are on the semester, but not on the assignment' %}</strong>
-                    </p>
-                    <p>
-                        <a href="{% cradmin_instance_url 'create_groups' 'manual-select' %}" class="btn btn-default">
-                            {% trans 'Add students' %}
-                        </a>
-                    </p>
-                </div>
+                {% endif %}
             {% endif %}
         </div>
     </div>
-    <p id="devilry_admin_assignment_students_overview_buttonbar"
-                class="devilry-buttonbar">
-            <a id="devilry_admin_assignment_students_overview_button_browse_students"
-                    class="btn btn-primary"
-                    href="{% cradmin_instance_appindex_url 'studentoverview' %}">
-                {% trans "Manage students" %}
-            </a>
-        </p>
 </div>

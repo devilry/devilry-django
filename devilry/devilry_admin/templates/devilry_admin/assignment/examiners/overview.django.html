@@ -32,6 +32,20 @@
 {% endblock pageheader-inner %}
 
 {% block content %}
+    {% if students_without_examiners_exists %}
+        <div class="container">
+            <div class="devilry-dashboard-container">
+                <p id="id_devilry_admin_assignment_examineroverview" class="alert-paragraph">
+                    <span class="alert-paragraph__title alert-paragraph__title--warning">
+                        {% trans 'warning' %}:
+                    </span>
+                    <strong>
+                        {% trans 'There are still students on the assignment with no examiners assigned to them' context 'devilry admin assignment examineroverview' %}
+                    </strong>
+                </p>
+            </div>
+        </div>
+    {% endif %}
     {% if examiner_count == 0 %}
         <div class="container">
             <div id="devilry_admin_assignment_examiners_overview_no_relatedexaminers"

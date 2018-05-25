@@ -195,8 +195,10 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
         )
 
     def add_success_messages(self, object):
-        messages.success(self.request,
-                         render_to_string(self.success_message_template_name, context={'assignment': object}))
+        messages_template_context = {'assignment': object, 'group_count': object.assignmentgroups.count()}
+        messages.success(
+            self.request,
+            render_to_string(self.success_message_template_name, context=messages_template_context))
 
     def form_saved(self, object):
         self.created_assignment = object

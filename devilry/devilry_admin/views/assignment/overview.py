@@ -4,7 +4,7 @@ from django_cradmin import crapp
 from django_cradmin.viewhelpers.detail import DetailRoleView
 
 from devilry.apps.core import models as coremodels
-from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import Assignment, Candidate, AssignmentGroup
 from devilry.apps.core.models import Examiner
 from devilry.apps.core.models import RelatedExaminer
 from devilry.apps.core.models import RelatedStudent
@@ -27,7 +27,11 @@ class Overview(DetailRoleView):
             .filter(assignment_group__parentnode=self.assignment)\
             .count()
 
-    def get_examiners_count(self):
+    def get_distinct_examiners_count(self):
+        """
+        Get distinct examiners otherwise the same relatedexaminer assigned to multiple groups
+        would be shown as multiple examiners.
+        """
         return Examiner.objects\
             .filter(assignmentgroup__parentnode=self.assignment)\
             .distinct('relatedexaminer__user').count()
@@ -45,14 +49,6 @@ class Overview(DetailRoleView):
             .filter(period=self.assignment.period, active=True)\
             .distinct('user').count()
 
-    def show_info_box(self, assignment, candidates_count, examiners_count,
-                      relatedstudents_count, relatedexaminers_count):
-        return (candidates_count > 0 and
-                relatedstudents_count > 0 and
-                examiners_count > 0 and
-                relatedexaminers_count > 0 and
-                not assignment.is_published)
-
     @property
     def assignment(self):
         if not hasattr(self, '_assignment'):
@@ -67,21 +63,19 @@ class Overview(DetailRoleView):
             .get_devilryrole_for_user_on_subject(
                 user=self.request.user, subject=self.assignment.parentnode.parentnode) is not None
 
+    def get_assignment_groups_without_any_examiners(self):
+        return AssignmentGroup.objects.filter(parentnode=self.request.cradmin_role, examiners__isnull=True)
+
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
         context['assignmentgroups_count'] = self.get_assignmentgroups_count()
         context['candidates_count'] = self.get_candidates_count()
-        context['examiners_count'] = self.get_examiners_count()
+        context['examiners_count'] = self.get_distinct_examiners_count()
         context['assignment'] = self.assignment
         context['relatedstudents_count'] = self.get_related_students_count()
         context['relatedexaminers_count'] = self.get_related_examiners_count()
         context['user_is_subjectadmin_or_higher'] = self.get_user_is_subjectadmin_or_higher()
-        context['show_info_box'] = self.show_info_box(
-            context['assignment'],
-            context['candidates_count'],
-            context['examiners_count'],
-            context['relatedstudents_count'],
-            context['relatedexaminers_count'])
+        context['students_without_examiners_exists'] = self.get_assignment_groups_without_any_examiners().exists()
         return context
 
 

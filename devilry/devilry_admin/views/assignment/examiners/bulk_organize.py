@@ -29,10 +29,14 @@ from django_cradmin.viewhelpers import listbuilderview
 class SelectMethodView(TemplateView):
     template_name = 'devilry_admin/assignment/examiners/bulk_organize/select_method.django.html'
 
+    def get_assignment_groups_without_any_examiners(self):
+        return AssignmentGroup.objects.filter(parentnode=self.request.cradmin_role, examiners__isnull=True)
+
     def get_context_data(self, **kwargs):
-        assignment = self.request.cradmin_role
         context_data = super(SelectMethodView, self).get_context_data(**kwargs)
+        assignment = self.request.cradmin_role
         context_data['assignment'] = assignment
+        context_data['students_without_examiners_exists'] = self.get_assignment_groups_without_any_examiners().exists()
         return context_data
 
 

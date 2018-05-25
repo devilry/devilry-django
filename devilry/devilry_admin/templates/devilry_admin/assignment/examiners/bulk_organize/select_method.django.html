@@ -26,6 +26,18 @@
 
 {% block content %}
         <div class="container">
+            {% if students_without_examiners_exists %}
+                <div class="devilry-dashboard-container">
+                    <p id="id_devilry_admin_assignment_bulk_organize_examiner" class="alert-paragraph">
+                        <span class="alert-paragraph__title alert-paragraph__title--warning">
+                            {% trans 'warning' %}:
+                        </span>
+                        <strong>
+                            {% trans 'There are still students on the assignment with no examiners assigned to them' context 'devilry admin assignment examiner bulk organize' %}
+                        </strong>
+                    </p>
+                </div>
+            {% endif %}
             <div class="row">
                 <div class="col-md-8" id="devilry_admin_assignment_examiners_bulk_organize_buttons">
 {#                    <p>#}

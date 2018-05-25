@@ -956,6 +956,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """
         Returns ``True`` if this Assignment does not contain any deliveries.
         """
+        warnings.warn("deprecated", DeprecationWarning)
         from .delivery import Delivery
         return Delivery.objects.filter(deadline__assignment_group__parentnode=self).count() == 0
 
