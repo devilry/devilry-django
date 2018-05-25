@@ -36,8 +36,8 @@
                     - There are more examiners on the assignment than are assigned to students.
             -->
             {% if relatedexaminers_count == 0 %}
-                <p id="id_devilry_admin_assignment_examiner_empty_semester_warning" class="alert-paragraph alert-paragraph__warning">
-                    <span class="alert-paragraph__title alert-paragraph__title--warning">
+                <p id="id_devilry_admin_assignment_examiner_empty_semester_warning" class="alert-paragraph alert-paragraph--warning">
+                    <span class="alert-paragraph__title">
                         {% trans 'warning' %}:
                     </span>
                     <strong>
@@ -48,8 +48,8 @@
                 </p>
             {% else %}
                 {% if students_without_examiners_exists %}
-                    <p id="id_devilry_admin_assignment_examiner_students_without_examiner_warning" class="alert-paragraph alert-paragraph__warning">
-                        <span class="alert-paragraph__title alert-paragraph__title--warning">
+                    <p id="id_devilry_admin_assignment_examiner_students_without_examiner_warning" class="alert-paragraph alert-paragraph--warning">
+                        <span class="alert-paragraph__title">
                             {% trans 'warning' %}:
                         </span>
                         <strong>
@@ -61,8 +61,8 @@
                     </p>
                 {% endif %}
                 {% if examiners_count == 0 %}
-                    <p id="id_devilry_admin_assignment_examiner_no_examiners_on_assignment" class="alert-paragraph alert-paragraph__warning">
-                        <span class="alert-paragraph__title alert-paragraph__title--warning">
+                    <p id="id_devilry_admin_assignment_examiner_no_examiners_on_assignment" class="alert-paragraph alert-paragraph--warning">
+                        <span class="alert-paragraph__title">
                             {% trans 'warning' %}:
                         </span>
                         <strong>
@@ -76,7 +76,7 @@
                         {% endblocktrans %}
                     </p>
                 {% elif relatedexaminers_count > examiners_count %}
-                    <p id="id_devilry_admin_assignment_examiner_on_semester_not_on_assignment" class="alert-paragraph alert-paragraph__note">
+                    <p id="id_devilry_admin_assignment_examiner_on_semester_not_on_assignment" class="alert-paragraph alert-paragraph--note">
                         <span class="alert-paragraph__title alert-paragraph__title--note">
                             {% trans 'note' %}:
                         </span>

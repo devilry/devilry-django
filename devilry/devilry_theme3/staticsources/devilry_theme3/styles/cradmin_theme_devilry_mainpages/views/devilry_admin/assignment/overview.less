@@ -15,15 +15,10 @@ ul.devilry-admin-assigments-students-and-examiners {
 
 
 .alert-paragraph {
-  &__warning {
-    padding: @devilry-spacing--small;
-    background-color: #fff7e0;
-  }
-
-  &__note {
-    padding: @devilry-spacing--small;
-    background-color: #eff5ff;
-  }
+  //&__note {
+  //  padding: @devilry-spacing--small;
+  //  background-color: #eff5ff;
+  //}
 
   &__title {
     text-transform: UPPERCASE;
@@ -35,6 +30,15 @@ ul.devilry-admin-assigments-students-and-examiners {
 
     &--note {
       color: #129dc1;
+    }
+  }
+
+  &--warning {
+    padding: @devilry-spacing--small;
+    background-color: #fff7e0;
+
+    .alert-paragraph__title {
+      color: #8a6d3b;
     }
   }
 }

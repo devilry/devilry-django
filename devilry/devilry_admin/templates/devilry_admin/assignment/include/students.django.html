@@ -30,8 +30,8 @@
                 - There are students on the semester that are not added to the assignment.
             -->
             {% if relatedstudents_count == 0 %}
-                <p id="id_devilry_admin_assignment_student_no_active_students_on_semester" class="alert-paragraph alert-paragraph__warning">
-                    <span class="alert-paragraph__title alert-paragraph__title--warning">
+                <p id="id_devilry_admin_assignment_student_no_active_students_on_semester" class="alert-paragraph alert-paragraph--warning">
+                    <span class="alert-paragraph__title">
                         {% trans 'warning' %}:
                     </span>
                     <strong>
@@ -42,8 +42,8 @@
                 </p>
             {% else %}
                 {% if candidates_count == 0 %}
-                    <p id="id_devilry_admin_assignment_student_no_students_on_assignment" class="alert-paragraph alert-paragraph__warning">
-                        <span class="alert-paragraph__title alert-paragraph__title--warning">
+                    <p id="id_devilry_admin_assignment_student_no_students_on_assignment" class="alert-paragraph alert-paragraph--warning">
+                        <span class="alert-paragraph__title">
                             {% trans 'warning' %}:
                         </span>
                         <strong>
@@ -55,7 +55,7 @@
                         {% trans 'Only students added to an assignment can see the assignment and add deliveries' context 'devilry admin assignment overview student' %}.
                     </p>
                 {% elif relatedstudents_count > candidates_count %}
-                    <p id="id_devilry_admin_assignment_student_on_semester_not_on_assignment" class="alert-paragraph alert-paragraph__note">
+                    <p id="id_devilry_admin_assignment_student_on_semester_not_on_assignment" class="alert-paragraph alert-paragraph--note">
                         <span class="alert-paragraph__title alert-paragraph__title--note">
                             {% trans 'note' %}:
                         </span>
