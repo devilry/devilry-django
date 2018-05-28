@@ -20,7 +20,7 @@ from allauth.utils import get_request_param
 
 class DevilryOAuth2CallbackView(OAuth2View):
     """
-    Subclassed to mitigate the issue where when a user logged in throug dataporten and used the browser back-button,
+    Subclassed to mitigate the issue where a user logged in through dataporten and used the browser back-button,
     the user was redirected to a default error view.
     """
     def dispatch(self, request, *args, **kwargs):
