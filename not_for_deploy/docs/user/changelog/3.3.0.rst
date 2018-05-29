@@ -13,3 +13,5 @@ Improvements
 Email:
     - Comment email subject better explains the context of the mail.
     - Comment email receipt is sent to the student that posted the comment.
+    - System content language in mail regarding new comments, change in deadline and feedback is now set to the
+      receiving users preferred language if supported by Devilry.
