@@ -40,17 +40,17 @@ class TestFeedbackEmail(test.TestCase):
         feedback_email.send_feedback_email(feedback_set=test_feedbackset,
                                            points=test_feedbackset.grading_points,
                                            domain_url_start='http://www.example.com/',
-                                           subject='Test subject')
+                                           feedback_type='feedback_created')
         self.assertEqual(
             mail.outbox[0].subject,
-            '[Devilry] Test subject')
+            '[Devilry] Feedback for {}'.format(test_feedbackset.group.parentnode.long_name))
 
     def test_send_feedback_email_recipients(self):
         test_feedbackset = self.__setup_feedback_set()
         feedback_email.send_feedback_email(feedback_set=test_feedbackset,
                                            points=test_feedbackset.grading_points,
                                            domain_url_start='http://www.example.com/',
-                                           subject='Test subject')
+                                           feedback_type='feedback_created')
         self.assertEqual(
             mail.outbox[0].recipients(),
             ['student@example.com'])
@@ -60,7 +60,7 @@ class TestFeedbackEmail(test.TestCase):
         feedback_email.send_feedback_email(feedback_set=test_feedbackset,
                                            points=test_feedbackset.grading_points,
                                            domain_url_start='http://www.example.com/',
-                                           subject='Test subject')
+                                           feedback_type='feedback_created')
         self.assertIn(
             'Result: 1/1 ( passed )',
             mail.outbox[0].body)
@@ -70,7 +70,7 @@ class TestFeedbackEmail(test.TestCase):
         feedback_email.send_feedback_email(feedback_set=test_feedbackset,
                                            points=test_feedbackset.grading_points,
                                            domain_url_start='http://www.example.com/',
-                                           subject='Test subject')
+                                           feedback_type='feedback_created')
         self.assertIn(
             'Corrected datetime: {}'.format(
                 defaultfilters.date(test_feedbackset.grading_published_datetime, 'DATETIME_FORMAT')),
@@ -82,7 +82,7 @@ class TestFeedbackEmail(test.TestCase):
         feedback_email.send_feedback_email(feedback_set=test_feedbackset,
                                            points=test_feedbackset.grading_points,
                                            domain_url_start='http://www.example.com/',
-                                           subject='Test subject')
+                                           feedback_type='feedback_created')
         self.assertIn(
             'Deadline datetime: {}'.format(defaultfilters.date(test_feedbackset.deadline_datetime, 'DATETIME_FORMAT')),
             mail.outbox[0].body
@@ -93,7 +93,7 @@ class TestFeedbackEmail(test.TestCase):
         feedback_email.send_feedback_email(feedback_set=test_feedbackset,
                                            points=test_feedbackset.grading_points,
                                            domain_url_start='http://www.example.com/',
-                                           subject='Test subject')
+                                           feedback_type='feedback_created')
         self.assertIn(
             'Assignment: {}'.format(test_feedbackset.group.parentnode.long_name),
             mail.outbox[0].body
@@ -104,7 +104,7 @@ class TestFeedbackEmail(test.TestCase):
         feedback_email.send_feedback_email(feedback_set=test_feedbackset,
                                            points=test_feedbackset.grading_points,
                                            domain_url_start='http://www.example.com/',
-                                           subject='Test subject')
+                                           feedback_type='feedback_created')
         self.assertIn(
             'Subject: {}'.format(test_feedbackset.group.parentnode.parentnode.long_name),
             mail.outbox[0].body
@@ -115,7 +115,7 @@ class TestFeedbackEmail(test.TestCase):
         feedback_email.send_feedback_email(feedback_set=test_feedbackset,
                                            points=test_feedbackset.grading_points,
                                            domain_url_start='http://www.example.com/',
-                                           subject='Test subject')
+                                           feedback_type='feedback_created')
         feedback_link = 'http://www.example.com/devilry_group/student/{}/feedbackfeed/'.format(
             test_feedbackset.group.id)
         self.assertIn(

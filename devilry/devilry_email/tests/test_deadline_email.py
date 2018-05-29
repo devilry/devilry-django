@@ -96,7 +96,6 @@ class TestNewAttemptBulkEmail(test.TestCase):
         self.assertIn('student3@example.com', recipient_list)
 
 
-
 class TestDeadlineMovedEmail(test.TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
