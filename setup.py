@@ -46,7 +46,7 @@ setup(
         'html5lib==0.9999999',
         'psycopg2==2.7.3.2',
         'django_cradmin==1.2.3',
-        'ievv_opensource==5.2.1',
+        'ievv_opensource==5.2.2',
         'arrow==0.12.0',
         'detektor==1.1.0-beta.012',
         'html2text==2018.1.9',
