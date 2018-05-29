@@ -651,19 +651,15 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                     'student_add_comment': 'unused value',
                 }
             })
-        self.assertEqual(len(mail.outbox), 2)
-        self.assertEqual(len(mail.outbox[0].recipients()), 2)
-        self.assertEqual(len(mail.outbox[1].recipients()), 2)
+        self.assertEqual(len(mail.outbox), 5)
         recipient_list = []
-        for email in mail.outbox[0].recipients():
-            recipient_list.append(email)
-        for email in mail.outbox[1].recipients():
-            recipient_list.append(email)
+        for outbox in mail.outbox:
+            recipient_list.append(outbox.recipients()[0])
         self.assertIn(examiner1_email.email, recipient_list)
         self.assertIn(examiner2_email.email, recipient_list)
         self.assertIn(student1_email.email, recipient_list)
         self.assertIn(student2_email.email, recipient_list)
-        self.assertNotIn(candidate_email.email, recipient_list)
+        self.assertIn(candidate_email.email, recipient_list)
 
     def test_get_feedbackset_deadline_history_semi_anonymous_username_not_rendered(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -1142,6 +1138,49 @@ class TestFeedbackfeedFileUploadStudent(TestCase, cradmin_testhelpers.TestCaseMi
         self.assertEquals(2, comment_models.CommentFile.objects.count())
         self.assertEquals(1, group_models.GroupComment.objects.count())
         self.assertEquals('Test comment', group_models.GroupComment.objects.all()[0].text)
+
+    @override_settings(DEVILRY_STUDENT_DELIVERY_FEED_FILEUPLOADS_SEND_CONFIRMATION_EMAIL=True)
+    def test_upload_file_email_confirmation_sent(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
+        candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        mommy.make('devilry_account.UserEmail', user=candidate.relatedstudent.user, email='testuser@example.com')
+        temporary_filecollection = group_mommy.temporary_file_collection_with_tempfiles(
+            file_list=[
+                SimpleUploadedFile(name='testfile1.txt', content=b'Test content1', content_type='text/txt'),
+            ],
+            user=candidate.relatedstudent.user
+        )
+        self.mock_http302_postrequest(
+            cradmin_role=candidate.assignment_group,
+            requestuser=candidate.relatedstudent.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': 'Test comment',
+                    'student_add_comment': 'unused value',
+                    'temporary_file_collection_id': temporary_filecollection.id
+                }
+            })
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].recipients(), ['testuser@example.com'])
+
+    @override_settings(DEVILRY_STUDENT_DELIVERY_FEED_FILEUPLOADS_SEND_CONFIRMATION_EMAIL=True)
+    def test_no_uploaded_files_email_confirmation_not_sent(self):
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(
+            group__parentnode__parentnode=mommy.make_recipe('devilry.apps.core.period_active'))
+        candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        self.mock_http302_postrequest(
+            cradmin_role=candidate.assignment_group,
+            requestuser=candidate.relatedstudent.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': 'Test comment',
+                    'student_add_comment': 'unused value'
+                }
+            })
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_comment_only_with_text(self):
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(

@@ -1,0 +1,6 @@
+{% load i18n %}
+
+{% blocktrans trimmed with comment_datetime=published_datetime|date:"DATETIME_FORMAT" %}
+    You added a new delivery with files {{ assignment_name }} on {{ commented_datetime }}.
+{% endblocktrans %}
+{% trans "Details" %}: {{ url }}

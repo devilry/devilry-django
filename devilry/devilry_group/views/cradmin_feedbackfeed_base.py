@@ -427,7 +427,18 @@ class FeedbackFeedBaseView(create.CreateView):
         groupcomment = super(FeedbackFeedBaseView, self,).save_object(form, commit=commit)
         if commit:
             self._convert_temporary_files_to_comment_files(form, groupcomment)
+        if commit and groupcomment.id:
+            self.perform_after_save(comment=groupcomment)
         return groupcomment
+
+    def perform_after_save(self, comment):
+        """
+        This method is called if the comment posted is saved and commit is ``True``.
+        This means that both the comment and files uploaded with it is saved in the database.
+
+        Override this function for operations that require that the comment is saved, such
+        as email sending etc.
+        """
 
     def get_collectionqueryset(self):
         """

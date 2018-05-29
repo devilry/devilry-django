@@ -1,6 +1,32 @@
 {% load i18n %}
+{% load devilry_group_tags %}
 
-{% blocktrans with comment_datetime=published_datetime|date:"DATETIME_FORMAT" %}
-New comment added in {{ assignment_name }} on {{ commented_datetime }}.
-{% endblocktrans %}
-{% trans "Details" %}: {{ url }}
+<span class="devilry_email_comment_assignment">{% trans "Assignment" context "devilry comment email" %}: {{ comment.feedback_set.group.parentnode.long_name }}</span>
+<br>
+<span class="devilry_email_comment_added_by">{% trans "Added by" context "devilry comment email" %}: {{ comment_user_name }}</span>
+<br>
+<span class="devilry_email_comment_added_datetime">{% trans "Added datetime" context "devilry comment email" %}: {{ comment.published_datetime|date:"DATETIME_FORMAT" }}</span>
+<br><br>
+
+<hr>
+<span class="devilry_email_comment_text">
+    {{ comment.text|devilry_group_markdown|safe }}
+</span>
+<hr>
+
+<br><br>
+
+<span class="devilry_email_comment_detail">
+    {% if comment.commentfile_set.exists %}
+        <span class="devilry_email_comment_detail_text">
+            {% trans "The new comment has files attached, see the delivery feed for more details" context "devilry comment email" %}:
+        </span>:
+    {% else %}
+        <span class="devilry_email_comment_detail_text">
+            {% trans "See the delivery feed for more details" context "devilry comment email" %}:
+        </span>
+    {% endif %}
+    <span class="devilry_email_comment_detail_url"><a href="{{ url }}">{{ url }}</a></span>
+</span>
+
+<br><br>

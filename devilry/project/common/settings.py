@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'ievv_opensource.ievvtasks_common',
     'ievv_opensource.ievv_batchframework',
     'ievv_opensource.ievv_customsql',
+    'ievv_opensource.ievv_developemail',
     'django_rq',
     'devilry.devilry_bulkcreate_users',
     'devilry.devilry_cradmin',

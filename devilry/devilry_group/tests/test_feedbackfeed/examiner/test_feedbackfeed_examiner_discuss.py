@@ -291,20 +291,15 @@ class TestFeedbackfeedExaminerPublicDiscuss(TestCase, TestFeedbackfeedExaminerDi
                     'text': 'This is a comment',
                 }
             })
-        self.assertEqual(len(mail.outbox), 2)
-        self.assertEqual(len(mail.outbox[0].recipients()), 2)
-        self.assertEqual(len(mail.outbox[1].recipients()), 2)
+        self.assertEqual(len(mail.outbox), 4)
         recipient_list = []
-        for email in mail.outbox[0].recipients():
-            recipient_list.append(email)
-        for email in mail.outbox[1].recipients():
-            recipient_list.append(email)
+        for outbox in mail.outbox:
+            recipient_list.append(outbox.recipients()[0])
         self.assertIn(examiner1_email.email, recipient_list)
         self.assertIn(examiner2_email.email, recipient_list)
         self.assertIn(student1_email.email, recipient_list)
         self.assertIn(student2_email.email, recipient_list)
         self.assertNotIn(examiner_email.email, recipient_list)
-
 
     def test_post_first_attempt_unpublished_comment_with_text(self):
         testgroup = mommy.make('core.AssignmentGroup',
@@ -461,11 +456,10 @@ class TestFeedbackfeedExaminerWithAdminDiscuss(TestCase, TestFeedbackfeedExamine
                     'text': 'This is a comment',
                 }
             })
-        self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(len(mail.outbox[0].recipients()), 2)
+        self.assertEqual(len(mail.outbox), 2)
         recipient_list = []
-        for email in mail.outbox[0].recipients():
-            recipient_list.append(email)
+        for outbox in mail.outbox:
+            recipient_list.append(outbox.recipients()[0])
         self.assertIn(examiner1_email.email, recipient_list)
         self.assertIn(examiner2_email.email, recipient_list)
         self.assertNotIn(student1_email.email, recipient_list)
