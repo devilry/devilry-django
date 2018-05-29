@@ -1,0 +1,15 @@
+############################
+What is new in Devilry 3.3.0
+############################
+
+
+Notes
+#####
+NOT YET RELEASED
+
+
+Improvements
+############
+Email:
+    - Comment email subject better explains the context of the mail.
+    - Comment email receipt is sent to the student that posted the comment.
