@@ -789,6 +789,48 @@ class GroupComment(AbstractGroupComment):
         super(GroupComment, self).clean()
 
 
+class GroupCommentEditHistory(models.Model):
+    """
+    Model for logging changes in a :class:`.GroupComment`.
+    """
+
+    #: The :class:`.GroupComment` the editing history is for.
+    comment = models.ForeignKey(
+        to=GroupComment,
+        on_delete=models.CASCADE
+    )
+
+    #: Who edited the comment.
+    #: This will usually be user that created the comment.
+    edited_by = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True, blank=True
+    )
+
+    #: When the comment was edited.
+    edited_datetime = models.DateTimeField(
+        defualt=timezone.now,
+        null=False, blank=False
+    )
+
+    #: The result of the edited comment text.
+    post_edit_text = models.TextField(
+        null=False, blank=True, default=''
+    )
+
+    #: The comment text before it was edited.
+    pre_edit_text = models.TextField(
+        null=False, blank=True, default=''
+    )
+
+    #: The difference between :obj:`.GroupCommentEditHistory.pre_edit_text`
+    #: and :obj:`.GroupCommentEditHistory.post_edit_text`.
+    difference_percentage = models.FloatField(
+        null=True
+    )
+
+
 class ImageAnnotationCommentQuerySet(AbstractGroupCommentQuerySet):
     """
     QuerySet for :class:`.ImageAnnotationComment`.
