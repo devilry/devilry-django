@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.templatetags.static import static
+from django.utils import translation
 
 import devilry
 
@@ -7,7 +8,7 @@ from devilry.devilry_settings.views import urlsetting_or_unsetview
 
 
 def template_variables(request):
-    return {
+    template_variables_dict = {
         'DEVILRY_VERSION': devilry.__version__,
         'DEVILRY_STATIC_URL': settings.DEVILRY_STATIC_URL,
         'DEVILRY_URLPATH_PREFIX': settings.DEVILRY_URLPATH_PREFIX,
@@ -37,3 +38,8 @@ def template_variables(request):
         'DEVILRY_THEME3_DIST_PATH': static('devilry_theme3/{}/'.format(devilry.__version__)),
         'DEVILRY_BRANDING_FAV_ICON_PATH': settings.DEVILRY_BRANDING_FAV_ICON_PATH
     }
+    language_code = translation.get_language()
+    if language_code != 'en':
+        # We don't need to set the default translatiion
+        template_variables_dict['DJANGO_CRADMIN_MOMENTJS_LOCALE'] = language_code
+    return template_variables_dict

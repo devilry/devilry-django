@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-30 14:59+0200\n"
+"POT-Creation-Date: 2018-05-30 15:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2241,7 +2241,7 @@ msgid "Edit"
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:36
-#: devilry/devilry_admin/views/period/createassignment.py:126
+#: devilry/devilry_admin/views/period/createassignment.py:127
 msgid "Create new assignment"
 msgstr ""
 
@@ -2389,7 +2389,7 @@ msgid "Back to dashboard overview"
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/subject/overview.django.html:33
-#: devilry/devilry_admin/views/subject/createperiod.py:94
+#: devilry/devilry_admin/views/subject/createperiod.py:100
 msgid "Create new semester"
 msgstr ""
 
@@ -2995,27 +2995,35 @@ msgid ""
 "\") and hyphen (\"-\")."
 msgstr ""
 
-#: devilry/devilry_admin/views/period/createassignment.py:48
+#: devilry/devilry_admin/views/period/createassignment.py:43
+#: devilry/devilry_admin/views/subject/createperiod.py:31
+#: devilry/devilry_admin/views/subject/createperiod.py:35
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:52
+msgctxt "CrAdmin datetime picker typo fix"
+msgid "Select a date/time"
+msgstr ""
+
+#: devilry/devilry_admin/views/period/createassignment.py:49
 msgid "Set first deadline"
 msgstr ""
 
-#: devilry/devilry_admin/views/period/createassignment.py:50
+#: devilry/devilry_admin/views/period/createassignment.py:51
 msgid ""
 "The first deadline for this assignment. This is shared by all the students "
 "on the assignment."
 msgstr ""
 
 #. Translators: The "delay" is formatted as "X hours/minutes from now"
-#: devilry/devilry_admin/views/period/createassignment.py:100
+#: devilry/devilry_admin/views/period/createassignment.py:101
 #, python-format
 msgid "First deadline must be at least %(delay)s."
 msgstr ""
 
-#: devilry/devilry_admin/views/period/createassignment.py:173
+#: devilry/devilry_admin/views/period/createassignment.py:174
 msgid "Example: Assignment 1"
 msgstr ""
 
-#: devilry/devilry_admin/views/period/createassignment.py:175
+#: devilry/devilry_admin/views/period/createassignment.py:176
 msgid "Example: assignment1"
 msgstr ""
 
@@ -3332,11 +3340,11 @@ msgstr ""
 msgid "Type the name of your semester."
 msgstr ""
 
-#: devilry/devilry_admin/views/subject/createperiod.py:59
+#: devilry/devilry_admin/views/subject/createperiod.py:65
 msgid "Example: Spring 2025"
 msgstr ""
 
-#: devilry/devilry_admin/views/subject/createperiod.py:61
+#: devilry/devilry_admin/views/subject/createperiod.py:67
 msgid "Example: spring2025"
 msgstr ""
 
@@ -3766,7 +3774,7 @@ msgstr ""
 
 #: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:33
 #: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:50
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:247
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:248
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:36
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:50
 msgid "Move deadline"
@@ -3817,27 +3825,27 @@ msgstr ""
 msgid "New deadline"
 msgstr ""
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:54
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:55
 msgid ""
 "Pick a date and time from the calendar, or select one of the suggested "
 "deadlines."
 msgstr ""
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:111
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:112
 #, python-format
 msgid "Manage deadline %(deadline)s"
 msgstr ""
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:227
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:228
 msgid "test placeholder"
 msgstr ""
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:248
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:249
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:46
 msgid "Give new attempt"
 msgstr ""
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:399
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:400
 #, python-format
 msgid "Deadline managed for %(group_names)s"
 msgstr ""

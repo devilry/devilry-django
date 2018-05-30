@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-30 14:59+0200\n"
-"PO-Revision-Date: 2018-05-30 15:00+0200\n"
+"POT-Creation-Date: 2018-05-30 15:50+0200\n"
+"PO-Revision-Date: 2018-05-30 15:50+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -2461,7 +2461,7 @@ msgid "Edit"
 msgstr "Rediger"
 
 #: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:36
-#: devilry/devilry_admin/views/period/createassignment.py:126
+#: devilry/devilry_admin/views/period/createassignment.py:127
 msgid "Create new assignment"
 msgstr "Opprett ny oppgave"
 
@@ -2622,7 +2622,7 @@ msgid "Back to dashboard overview"
 msgstr "Tilbake til dashordoversikt"
 
 #: devilry/devilry_admin/templates/devilry_admin/subject/overview.django.html:33
-#: devilry/devilry_admin/views/subject/createperiod.py:94
+#: devilry/devilry_admin/views/subject/createperiod.py:100
 msgid "Create new semester"
 msgstr "Opprett nytt semester"
 
@@ -3295,11 +3295,19 @@ msgstr ""
 "Opp til 20 bokstaver med engelske bokstaver (a-z), tall, understrek(\"_\") "
 "og bindestrek(\"-\")."
 
-#: devilry/devilry_admin/views/period/createassignment.py:48
+#: devilry/devilry_admin/views/period/createassignment.py:43
+#: devilry/devilry_admin/views/subject/createperiod.py:31
+#: devilry/devilry_admin/views/subject/createperiod.py:35
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:52
+msgctxt "CrAdmin datetime picker typo fix"
+msgid "Select a date/time"
+msgstr "Velg tidspunkt"
+
+#: devilry/devilry_admin/views/period/createassignment.py:49
 msgid "Set first deadline"
 msgstr "Sett første innleveringsfrist"
 
-#: devilry/devilry_admin/views/period/createassignment.py:50
+#: devilry/devilry_admin/views/period/createassignment.py:51
 msgid ""
 "The first deadline for this assignment. This is shared by all the students "
 "on the assignment."
@@ -3308,16 +3316,16 @@ msgstr ""
 "studentene på denne oppgaven."
 
 #. Translators: The "delay" is formatted as "X hours/minutes from now"
-#: devilry/devilry_admin/views/period/createassignment.py:100
+#: devilry/devilry_admin/views/period/createassignment.py:101
 #, python-format
 msgid "First deadline must be at least %(delay)s."
 msgstr "Første innleveringsfrist må minst være %(delay)s."
 
-#: devilry/devilry_admin/views/period/createassignment.py:173
+#: devilry/devilry_admin/views/period/createassignment.py:174
 msgid "Example: Assignment 1"
 msgstr "Eksempel: Oppgave 1"
 
-#: devilry/devilry_admin/views/period/createassignment.py:175
+#: devilry/devilry_admin/views/period/createassignment.py:176
 msgid "Example: assignment1"
 msgstr "Eksempel: oppgave1"
 
@@ -3653,11 +3661,11 @@ msgstr "%(user)s er ikke lengre kursadministrator for %(subject)s."
 msgid "Type the name of your semester."
 msgstr "Skriv inn navnet for ditt semester."
 
-#: devilry/devilry_admin/views/subject/createperiod.py:59
+#: devilry/devilry_admin/views/subject/createperiod.py:65
 msgid "Example: Spring 2025"
 msgstr "Eksempel: Spring 2025"
 
-#: devilry/devilry_admin/views/subject/createperiod.py:61
+#: devilry/devilry_admin/views/subject/createperiod.py:67
 msgid "Example: spring2025"
 msgstr "Eksempel: spring2025"
 
@@ -4089,7 +4097,7 @@ msgstr "Grupper som ennå ikke er rettet ble ekskludert."
 
 #: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:33
 #: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:50
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:247
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:248
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:36
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:50
 msgid "Move deadline"
@@ -4142,7 +4150,7 @@ msgstr "Kommentar tekst"
 msgid "New deadline"
 msgstr "Ny innleveringsfrist"
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:54
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:55
 msgid ""
 "Pick a date and time from the calendar, or select one of the suggested "
 "deadlines."
@@ -4150,21 +4158,21 @@ msgstr ""
 "Velg dato og tid fra kalenderen, eller en av de foreslåtte "
 "innleveringsfristene."
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:111
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:112
 #, python-format
 msgid "Manage deadline %(deadline)s"
 msgstr "Håndter innleveringsfristen %(deadline)s"
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:227
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:228
 msgid "test placeholder"
 msgstr "test placeholder"
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:248
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:249
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:46
 msgid "Give new attempt"
 msgstr "Gi et nytt forsøk"
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:399
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:400
 #, python-format
 msgid "Deadline managed for %(group_names)s"
 msgstr "Innleveringsfrist endret for %(group_names)s"

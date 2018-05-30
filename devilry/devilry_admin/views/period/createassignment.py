@@ -12,7 +12,7 @@ from django_cradmin import crapp
 from django_cradmin import crinstance
 from django_cradmin.viewhelpers import create
 from django_cradmin.viewhelpers import crudbase
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
 from devilry.apps.core.models import Assignment
@@ -40,6 +40,7 @@ class CreateForm(forms.ModelForm):
             'Up to 20 letters of lowercase english letters (a-z), '
             'numbers, underscore ("_") and hyphen ("-").')
         self.fields['first_deadline'].widget = DateTimePickerWidget(
+            buttonlabel_novalue=pgettext_lazy('CrAdmin datetime picker typo fix', 'Select a date/time'),
             required=True,
             minimum_datetime=timezone.now() + timedelta(
                 minutes=settings.DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES),

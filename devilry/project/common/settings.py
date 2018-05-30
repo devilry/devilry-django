@@ -169,6 +169,8 @@ gettext_noop = lambda s: s
 LANGUAGES = [('en', gettext_noop('English')),
              ('nb', gettext_noop('Norwegian Bokmal'))]
 
+DJANGO_CRADMIN_MOMENTJS_LOCALE = LANGUAGE_CODE
+
 
 LOCALE_PATHS = [
     os.path.join(

@@ -6,7 +6,7 @@ from django_cradmin import crapp
 from django_cradmin import crinstance
 from django_cradmin.viewhelpers import create
 from django_cradmin.viewhelpers import crudbase
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
 from devilry.apps.core.models import Period
@@ -26,8 +26,14 @@ class CreateUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CreateUpdateForm, self).__init__(*args, **kwargs)
         self.fields['long_name'].help_text = _('Type the name of your semester.')
-        self.fields['start_time'].widget = DateTimePickerWidget(required=True)
-        self.fields['end_time'].widget = DateTimePickerWidget(required=True)
+        self.fields['start_time'].widget = DateTimePickerWidget(
+            required=True,
+            buttonlabel_novalue=pgettext_lazy('CrAdmin datetime picker typo fix', 'Select a date/time')
+        )
+        self.fields['end_time'].widget = DateTimePickerWidget(
+            required=True,
+            buttonlabel_novalue=pgettext_lazy('CrAdmin datetime picker typo fix', 'Select a date/time')
+        )
 
 
 class CreateForm(CreateUpdateForm):
