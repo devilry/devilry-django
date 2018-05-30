@@ -65,16 +65,26 @@ def get_examiner_users_not_comment_poster(group, exclude_user=None):
     return queryset.exclude(id=exclude_user.id)
 
 
-def send_comment_email(comment, user_list, feedbackfeed_url, to_users_devilry_role, subject=None):
+def send_comment_email(comment, user_list, feedbackfeed_url, crinstance_id, domain_scheme,
+                       to_users_devilry_role, subject=None):
     """
     Do not use this directly. Use ``send_examiner_comment_email`` or ``send_student_comment_email``.
 
     Args:
-        group: AssignmentGroup.
-        published_datetime: Publishing datetime of the comment.
-        user_list: List of user objects.
-        feedbackfeed_url: Url to the feedback feed for the users.
+        comment: :class:`~.devilry.devilry_group.models.GroupComment`.
 
+        user_list: A list of :class:`~.devilry.devilry_account.models.User` objects.
+
+        feedbackfeed_url: Absolute url to the delivery feed.
+
+        crinstance_id: devilry_group crinstance, used for building commentfile download urls.
+
+        domain_scheme: Domain scheme, e.g: www.example.com.
+
+        to_users_devilry_role: Email targeted against ('examiner' or 'student'). Used for anonymization.
+
+        subject: Can be given a customized subject, if ``None``, a standard subject is created based on who
+            created the comment.
     """
     from devilry.apps.core.group_user_lookup import GroupUserLookup
     assignment = comment.feedback_set.group.parentnode
@@ -92,6 +102,8 @@ def send_comment_email(comment, user_list, feedbackfeed_url, to_users_devilry_ro
             'comment_user_name': group_user_lookup.get_long_name_from_user(
                 user=comment.user, user_role=comment.user_role),
             'comment': comment,
+            'domain_scheme': domain_scheme,
+            'crinstance_id': crinstance_id,
             'url': feedbackfeed_url
         }
         if not subject:
@@ -132,6 +144,8 @@ def send_examiner_comment_email(comment_id, domain_url_start):
         comment=comment,
         user_list=examiner_users,
         feedbackfeed_url=absolute_url,
+        crinstance_id='devilry_group_examiner',
+        domain_scheme=domain_url_start,
         to_users_devilry_role='examiner'
     )
 
@@ -182,6 +196,8 @@ def send_student_comment_email(comment_id, domain_url_start, from_student_poster
         comment=comment,
         user_list=student_users,
         feedbackfeed_url=absolute_url,
+        domain_scheme=domain_url_start,
+        crinstance_id='devilry_group_student',
         to_users_devilry_role='student'
     )
     activate_translation_for_user(user=comment.user)
@@ -199,6 +215,8 @@ def send_student_comment_email(comment_id, domain_url_start, from_student_poster
             comment=comment,
             feedbackfeed_url=absolute_url,
             user_list=[comment.user],
+            domain_scheme=domain_url_start,
+            crinstance_id='devilry_group_student',
             to_users_devilry_role='student',
             subject=subject_text
         )

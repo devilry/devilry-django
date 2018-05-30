@@ -22,9 +22,11 @@
         <p>
             {% trans "Uploaded files" context "devilry comment email" %}:
         </p>
-        {% for comment_file in comment.commentfile_set.all %}
+        {% for commentfile in comment.commentfile_set.all %}
             <span class="devilry-email-comment-uploaded-file-meta">
-                <strong>{{ comment_file.filename }}</strong>&nbsp;({{ comment_file.filesize|filesizeformat }})
+                <strong>
+                    {{ commentfile.filename }}
+                </strong>&nbsp;({{ commentfile.filesize|filesizeformat }})
             </span>
             {% if not forloop.last %}<br>{% endif %}
         {% endfor %}
