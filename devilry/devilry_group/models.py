@@ -810,7 +810,7 @@ class GroupCommentEditHistory(models.Model):
 
     #: When the comment was edited.
     edited_datetime = models.DateTimeField(
-        defualt=timezone.now,
+        default=timezone.now,
         null=False, blank=False
     )
 
