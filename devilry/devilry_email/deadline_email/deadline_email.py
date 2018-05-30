@@ -38,7 +38,7 @@ def send_deadline_email(feedback_set, domain_url_start, deadline_type, template_
             'deadline': feedback_set.deadline_datetime,
             'url': absolute_url
         }
-        send_templated_message(subject, template_name, template_dictionary, student_user)
+        send_templated_message(subject, template_name, template_dictionary, student_user, is_html=True)
         translation.activate(current_language)
 
 

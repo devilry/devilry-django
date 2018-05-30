@@ -40,14 +40,15 @@ def send_feedback_email(feedback_set, points, domain_url_start, feedback_type):
         current_language = translation.get_language()
         activate_translation_for_user(user=student_user)
         subject = get_subject(assignment=feedback_set.group.parentnode, feedback_type=feedback_type)
-        send_templated_message(subject, template_name, {
+        template_dictionary = {
             'assignment': feedback_set.group.parentnode,
             'devilryrole': 'student',
             'points': points,
             'deadline_datetime': feedback_set.deadline_datetime,
             'corrected_datetime': feedback_set.grading_published_datetime,
             'url': absolute_url
-        }, student_user)
+        }
+        send_templated_message(subject, template_name, template_dictionary, student_user, is_html=True)
         translation.activate(current_language)
 
 
