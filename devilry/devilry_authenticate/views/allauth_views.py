@@ -22,7 +22,10 @@ class AllauthLoginView(LoginView):
                         request=self.request,
                         process='login'))
             else:
+                print reverse('cradmin-authenticate-login')
                 return HttpResponseRedirect(reverse('cradmin-authenticate-login'))
+        print 'LOL'
+        print self.request.GET
         return super(AllauthLoginView, self).get(*args, **kwargs)
 
 
