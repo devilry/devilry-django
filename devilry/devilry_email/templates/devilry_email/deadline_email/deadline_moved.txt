@@ -1,13 +1,13 @@
 {% load i18n %}
 
 <span class="devilry_email_deadline_moved_info_text">
-    {% blocktrans trimmed with assignment_name=assignment_name %}
+    {% blocktrans trimmed with assignment_name=assignment_name context="devilry deadline moved" %}
         The deadline for {{ assignment_name }} has been moved.
     {% endblocktrans %}
 </span>
 <br><br>
 <span class="devilry_email_deadline_moved_to_info_text">
-    {% blocktrans trimmed with feedbackset_deadline=deadline|date:"DATETIME_FORMAT" %}
+    {% blocktrans trimmed with feedbackset_deadline=deadline|date:"DATETIME_FORMAT" context="devilry deadline moved" %}
         New deadline is {{ feedbackset_deadline }}
     {% endblocktrans %}
 </span

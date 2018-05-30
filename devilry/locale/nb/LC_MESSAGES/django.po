@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-29 16:08+0200\n"
-"PO-Revision-Date: 2018-05-29 16:19+0200\n"
+"POT-Creation-Date: 2018-05-30 14:59+0200\n"
+"PO-Revision-Date: 2018-05-30 15:00+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -1861,8 +1861,6 @@ msgid "Split group"
 msgstr "Del gruppe"
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/groupdetails/view.django.html:38
-#: devilry/devilry_email/templates/devilry_email/deadline_email/deadline_moved.txt:7
-#: devilry/devilry_email/templates/devilry_email/deadline_email/new_attempt.txt:6
 msgid "Details"
 msgstr "Detaljer"
 
@@ -4224,63 +4222,58 @@ msgctxt "assignment_group_multiselect_list_filter_view page_subheading"
 msgid "Select the groups you want to manage the deadline for."
 msgstr "Velg grupper hvor du vil redigere innleveringsfristen."
 
-#: devilry/devilry_email/comment_email/comment_email.py:24
+#: devilry/devilry_email/comment_email/comment_email.py:25
 #, python-format
 msgid ""
 "A student added a new comment AFTER THE DEADLINE for %(assignment_name)s"
 msgstr ""
 "En student har lagt til en ny kommentar ETTER FRISTEN på %(assignment_name)s"
 
-#: devilry/devilry_email/comment_email/comment_email.py:27
+#: devilry/devilry_email/comment_email/comment_email.py:28
 #, python-format
 msgid "A student added a new delivery/comment for %(assignment_name)s"
 msgstr ""
 "En student har lagt til en ny innlevering/kommentar på %(assignment_name)s"
 
-#: devilry/devilry_email/comment_email/comment_email.py:31
+#: devilry/devilry_email/comment_email/comment_email.py:32
 #, python-format
 msgid "An examiner added a new comment for %(assignment_name)s"
 msgstr "En retter har lagt til en ny kommentar på %(assignment_name)s"
 
-#: devilry/devilry_email/comment_email/comment_email.py:34
+#: devilry/devilry_email/comment_email/comment_email.py:35
 #, python-format
 msgid "An admin added a new comment for %(assignment_name)s"
 msgstr "En administrator har lagt til en ny kommentar på %(assignment_name)s"
 
-#: devilry/devilry_email/comment_email/comment_email.py:82
-#, python-format
-msgid "New comment in group for %(assignment_name)s"
-msgstr "Ny kommentar i gruppe for %(assignment_name)s"
-
-#: devilry/devilry_email/comment_email/comment_email.py:188
+#: devilry/devilry_email/comment_email/comment_email.py:205
 #, python-format
 msgid "You added a new comment AFTER THE DEADLINE for %(assignment_name)s"
 msgstr "Du la til en ny kommentar ETTER FRISTEN på %(assignment_name)s"
 
-#: devilry/devilry_email/comment_email/comment_email.py:192
+#: devilry/devilry_email/comment_email/comment_email.py:209
 #, python-format
 msgid "You added a new delivery/comment for %(assignment_name)s"
 msgstr "Du la til en ny innlevering/kommentar på %(assignment_name)s"
 
-#: devilry/devilry_email/deadline_email/deadline_email.py:36
+#: devilry/devilry_email/deadline_email/deadline_email.py:14
 #, python-format
 msgid "New attempt for %(assignment_name)s"
 msgstr "Nytt forsøk for %(assignment_name)s"
 
-#: devilry/devilry_email/deadline_email/deadline_email.py:46
+#: devilry/devilry_email/deadline_email/deadline_email.py:16
 #, python-format
 msgid "Deadline moved for %(assignment_name)s"
 msgstr "Tidsfrist flyttet for %(assignment_name)s"
 
-#: devilry/devilry_email/feedback_email/feedback_email.py:47
-#, python-format
-msgid "Feedback updated for %(assignment_name)s"
-msgstr "Tilbakemelding oppdatert for %(assignment_name)s"
-
-#: devilry/devilry_email/feedback_email/feedback_email.py:58
+#: devilry/devilry_email/feedback_email/feedback_email.py:14
 #, python-format
 msgid "Feedback for %(assignment_name)s"
 msgstr "Tilbakemelding for %(assignment_name)s"
+
+#: devilry/devilry_email/feedback_email/feedback_email.py:16
+#, python-format
+msgid "Feedback updated for %(assignment_name)s"
+msgstr "Tilbakemelding oppdatert for %(assignment_name)s"
 
 #: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:4
 msgctxt "devilry comment email"
@@ -4297,70 +4290,70 @@ msgctxt "devilry comment email"
 msgid "Added datetime"
 msgstr "Tidspunkt"
 
-#: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:22
+#: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:23
 msgctxt "devilry comment email"
-msgid ""
-"The new comment has files attached, see the delivery feed for more details"
-msgstr ""
-"Den nye kommentaren har filer vedlagt, se leverings oversikten for flere "
-"detaljer"
+msgid "Uploaded files"
+msgstr "Opplastede filer"
 
-#: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:26
+#: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:39
 msgctxt "devilry comment email"
 msgid "See the delivery feed for more details"
-msgstr "Se leverings oversikten for flere detaljer"
+msgstr "Se leveringsoversikten for flere detaljer"
 
-#: devilry/devilry_email/templates/devilry_email/deadline_email/deadline_moved.txt:3
+#: devilry/devilry_email/templates/devilry_email/deadline_email/deadline_moved.txt:4
+#, python-format
+msgid "The deadline for %(assignment_name)s has been moved."
+msgstr "Tidsfrist for %(assignment_name)s har blitt flyttet."
+
+#: devilry/devilry_email/templates/devilry_email/deadline_email/deadline_moved.txt:10
+#, python-format
+msgid "New deadline is %(feedbackset_deadline)s"
+msgstr "Ny innleveringsfrist er %(feedbackset_deadline)s"
+
+#: devilry/devilry_email/templates/devilry_email/deadline_email/deadline_moved.txt:18
+#: devilry/devilry_email/templates/devilry_email/deadline_email/new_attempt.txt:11
+msgctxt "devilry deadline moved"
+msgid "See the delivery feed for more details"
+msgstr "Se leveringsoversikten for flere detaljer"
+
+#: devilry/devilry_email/templates/devilry_email/deadline_email/new_attempt.txt:4
 #, python-format
 msgid ""
-"\n"
-"The deadline for %(assignment_name)s has been moved.\n"
-"New deadline is %(feedbackset_deadline)s.\n"
-msgstr ""
-"\n"
-"Flytting av tidsfrist for %(assignment_name)s.\n"
-"Ny tidsfrist er %(feedbackset_deadline)s.\n"
-
-#: devilry/devilry_email/templates/devilry_email/deadline_email/new_attempt.txt:3
-#, python-format
-msgid ""
-"\n"
 "You have been given a new attempt in %(assignment_name)s with deadline "
-"%(feedbackset_deadline)s.\n"
+"%(feedbackset_deadline)s"
 msgstr ""
-"\n"
 "Du har fått et nytt forsøk på %(assignment_name)s med tidsfrist "
-"%(feedbackset_deadline)s.\n"
+"%(feedbackset_deadline)s"
 
-#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:4
-msgctxt "devilry feedback email"
+#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:5
+msgctxt "devilry email feedback"
 msgid "Result"
 msgstr "Resultat"
 
-#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:5
-msgctxt "devilry feedback email"
+#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:10
+msgctxt "devilry email feedback"
 msgid "Corrected datetime"
 msgstr "Tidspunkt for korrigering"
 
-#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:6
-msgctxt "devilry feedback email"
+#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:15
+msgctxt "devilry email feedback"
 msgid "Deadline datetime"
 msgstr "Tidspunkt for innleveringsfrist"
 
-#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:7
-msgctxt "devilry feedback email"
+#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:20
+msgctxt "devilry email feedback"
 msgid "Assignment"
 msgstr "Oppgave"
 
-#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:8
-msgctxt "devilry feedback email"
+#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:25
+msgctxt "devilry email feedback"
 msgid "Subject"
 msgstr "Kurs"
 
-#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:9
-msgctxt "devilry feedback email"
-msgid "Details"
-msgstr "Detaljer"
+#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:30
+msgctxt "devilry email feedback"
+msgid "See the delivery feed for more details"
+msgstr "Se leveringsoversikten for flere detaljer"
 
 #: devilry/devilry_examiner/cradminextensions/devilry_crmenu_examiner.py:15
 msgctxt "breadcrumb"
@@ -6178,6 +6171,28 @@ msgstr "Engelsk"
 #: devilry/project/common/settings.py:170
 msgid "Norwegian Bokmal"
 msgstr "Norsk bokmål"
+
+#~ msgid "New comment in group for %(assignment_name)s"
+#~ msgstr "Ny kommentar i gruppe for %(assignment_name)s"
+
+#~ msgctxt "devilry comment email"
+#~ msgid ""
+#~ "The new comment has files attached, see the delivery feed for more details"
+#~ msgstr ""
+#~ "Den nye kommentaren har filer vedlagt, se leverings oversikten for flere "
+#~ "detaljer"
+
+#~ msgctxt "devilry feedback email"
+#~ msgid "Assignment"
+#~ msgstr "Oppgave"
+
+#~ msgctxt "devilry feedback email"
+#~ msgid "Subject"
+#~ msgstr "Kurs"
+
+#~ msgctxt "devilry feedback email"
+#~ msgid "Details"
+#~ msgstr "Detaljer"
 
 #~ msgid ""
 #~ "\n"
