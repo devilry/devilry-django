@@ -145,7 +145,10 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
                                        text='This is a test',
                                        user_role=Comment.USER_ROLE_STUDENT,
                                        user=comment_user)
-        mommy.make('devilry_comment.CommentFile', comment=test_groupcomment)
+        commentfile1 = mommy.make('devilry_comment.CommentFile', comment=test_groupcomment, filename='testfile1.py',
+                                  filesize=5600)
+        commentfile2 = mommy.make('devilry_comment.CommentFile', comment=test_groupcomment, filename='testfile2.py',
+                                  filesize=3600)
         mommy.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
         send_student_comment_email(
             comment_id=test_groupcomment.id,
@@ -153,14 +156,15 @@ class TestStudentCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
             from_student_poster=True)
 
         self.assertEqual(len(mail.outbox), 2)
-        self.assertEqual(
-            htmls.S(mail.outbox[0].message().as_string()).one('.devilry_email_comment_detail_text').alltext_normalized,
-            'The new comment has files attached, see the delivery feed for more details:'
-        )
-        self.assertEqual(
-            htmls.S(mail.outbox[1].message().as_string()).one('.devilry_email_comment_detail_text').alltext_normalized,
-            'The new comment has files attached, see the delivery feed for more details:'
-        )
+        for outbox in mail.outbox:
+            self.assertTrue(htmls.S(outbox.message().as_string()).exists('.devilry-email-comment-uploaded-files'))
+            self.assertEqual(
+                htmls.S(outbox.message().as_string()).one('.devilry-email-comment-uploaded-files > p')
+                    .alltext_normalized,
+                'Uploaded files:')
+            file_meta_list = [elem.alltext_normalized for elem in htmls.S(outbox.message().as_string()).list('.devilry-email-comment-uploaded-file-meta')]
+            self.assertIn('{} (5.5 KB)'.format(commentfile1.filename, commentfile1.filesize), file_meta_list)
+            self.assertIn('{} (3.5 KB)'.format(commentfile2.filename, commentfile2.filesize), file_meta_list)
 
     def test_send_student_comment_after_deadline_email_everyone_except_comment_poster_subject(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -418,6 +422,42 @@ class TestExaminerCommentEmail(TestCommentEmailForUsersMixin, test.TestCase):
                 link_url,
                 htmls.S(outbox.message().as_string()).one('.devilry_email_comment_detail_url').alltext_normalized
             )
+
+    def test_send_examiner_comment_body_comment_with_files(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           long_name='Assignment 1')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        test_feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+
+        # Another examiner in the group
+        self._make_examineruser_with_email(group=testgroup, email='examiner@example.com')
+
+        # The user that posted the comment
+        comment_user = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com')
+        mommy.make('core.Candidate', assignment_group=test_feedbackset.group, relatedstudent__user=comment_user)
+        test_groupcomment = mommy.make('devilry_group.GroupComment',
+                                       feedback_set=test_feedbackset,
+                                       text='This is a test',
+                                       user_role=Comment.USER_ROLE_STUDENT,
+                                       user=comment_user)
+        commentfile1 = mommy.make('devilry_comment.CommentFile', comment=test_groupcomment, filename='testfile1.py',
+                                  filesize=5600)
+        commentfile2 = mommy.make('devilry_comment.CommentFile', comment=test_groupcomment, filename='testfile2.py',
+                                  filesize=3600)
+        mommy.make('devilry_account.UserEmail', user=comment_user, email='testuser@example.com')
+        send_examiner_comment_email(
+            comment_id=test_groupcomment.id,
+            domain_url_start='http://www.example.com/')
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertTrue(htmls.S(mail.outbox[0].message().as_string()).exists('.devilry-email-comment-uploaded-files'))
+        self.assertEqual(
+            htmls.S(mail.outbox[0].message().as_string()).one('.devilry-email-comment-uploaded-files > p')
+                .alltext_normalized,
+            'Uploaded files:')
+        file_meta_list = [elem.alltext_normalized for elem in htmls.S(mail.outbox[0].message().as_string()).list('.devilry-email-comment-uploaded-file-meta')]
+        self.assertIn('{} (5.5 KB)'.format(commentfile1.filename, commentfile1.filesize), file_meta_list)
+        self.assertIn('{} (3.5 KB)'.format(commentfile2.filename, commentfile2.filesize), file_meta_list)
 
     def test_send_examiner_comment_subject_from_student_after_deadline(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',

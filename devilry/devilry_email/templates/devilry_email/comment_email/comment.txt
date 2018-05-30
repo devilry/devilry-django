@@ -8,24 +8,34 @@
 <span class="devilry_email_comment_added_datetime">{% trans "Added datetime" context "devilry comment email" %}: {{ comment.published_datetime|date:"DATETIME_FORMAT" }}</span>
 <br><br>
 
-<hr>
-<span class="devilry_email_comment_text">
-    {{ comment.text|devilry_group_markdown|safe }}
-</span>
-<hr>
+{% if comment.text %}
+    <hr>
+    <span class="devilry_email_comment_text">
+        {{ comment.text|devilry_group_markdown|safe }}
+    </span>
+    <hr>
+    <br><br>
+{% endif %}
+
+{% if comment.commentfile_set.exists %}
+    <span class="devilry-email-comment-uploaded-files">
+        <p>
+            {% trans "Uploaded files" context "devilry comment email" %}:
+        </p>
+        {% for comment_file in comment.commentfile_set.all %}
+            <span class="devilry-email-comment-uploaded-file-meta">
+                <strong>{{ comment_file.filename }}</strong>&nbsp;({{ comment_file.filesize|filesizeformat }})
+            </span>
+            {% if not forloop.last %}<br>{% endif %}
+        {% endfor %}
+    </span>
+{% endif %}
 
 <br><br>
-
 <span class="devilry_email_comment_detail">
-    {% if comment.commentfile_set.exists %}
-        <span class="devilry_email_comment_detail_text">
-            {% trans "The new comment has files attached, see the delivery feed for more details" context "devilry comment email" %}:
-        </span>:
-    {% else %}
-        <span class="devilry_email_comment_detail_text">
-            {% trans "See the delivery feed for more details" context "devilry comment email" %}:
-        </span>
-    {% endif %}
+    <span class="devilry_email_comment_detail_text">
+        {% trans "See the delivery feed for more details" context "devilry comment email" %}:
+    </span>
     <span class="devilry_email_comment_detail_url"><a href="{{ url }}">{{ url }}</a></span>
 </span>
 
