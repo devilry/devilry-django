@@ -789,46 +789,25 @@ class GroupComment(AbstractGroupComment):
         super(GroupComment, self).clean()
 
 
-class GroupCommentEditHistory(models.Model):
+class GroupCommentEditHistory(comment_models.CommentEditHistory):
     """
     Model for logging changes in a :class:`.GroupComment`.
     """
 
     #: The :class:`.GroupComment` the editing history is for.
-    comment = models.ForeignKey(
+    group_comment = models.ForeignKey(
         to=GroupComment,
         on_delete=models.CASCADE
     )
 
-    #: Who edited the comment.
-    #: This will usually be user that created the comment.
-    edited_by = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True, blank=True
+    #: Visibility state when log entry was created.
+    visibility = models.CharField(
+        max_length=50,
+        db_index=True
     )
 
-    #: When the comment was edited.
-    edited_datetime = models.DateTimeField(
-        default=timezone.now,
-        null=False, blank=False
-    )
-
-    #: The result of the edited comment text.
-    post_edit_text = models.TextField(
-        null=False, blank=True, default=''
-    )
-
-    #: The comment text before it was edited.
-    pre_edit_text = models.TextField(
-        null=False, blank=True, default=''
-    )
-
-    #: The difference between :obj:`.GroupCommentEditHistory.pre_edit_text`
-    #: and :obj:`.GroupCommentEditHistory.post_edit_text`.
-    difference_percentage = models.FloatField(
-        null=True
-    )
+    def __unicode__(self):
+        return 'GroupComment: {} - {}'.format(self.group_comment.user_role, self.group_comment.user)
 
 
 class ImageAnnotationCommentQuerySet(AbstractGroupCommentQuerySet):

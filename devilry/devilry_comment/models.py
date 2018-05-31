@@ -96,6 +96,45 @@ class Comment(models.Model):
         commentfile.save()
 
 
+class CommentEditHistory(models.Model):
+    """
+    Model for logging changes in a :class:`.Comment`.
+    """
+
+    #: The comment this history entry is for.
+    comment = models.ForeignKey(
+        to=Comment,
+        on_delete=models.CASCADE
+    )
+
+    #: Who edited the comment.
+    #: Currently, this will always be the user that created the comment.
+    edited_by = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True, blank=True
+    )
+
+    #: When the comment was edited.
+    edited_datetime = models.DateTimeField(
+        default=timezone.now,
+        null=False, blank=False
+    )
+
+    #: The result of the edited comment text.
+    post_edit_text = models.TextField(
+        null=False, blank=True, default=''
+    )
+
+    #: The comment text before it was edited.
+    pre_edit_text = models.TextField(
+        null=False, blank=True, default=''
+    )
+
+    def __unicode__(self):
+        return 'Comment: {} - {}'.format(self.comment.user_role, self.comment.user)
+
+
 def get_comment_directory_path_unlimited_files_per_directory(comment_id):
     return 'devilry_comment/{}'.format(comment_id)
 

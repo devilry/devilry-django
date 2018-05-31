@@ -20,6 +20,7 @@ class AssignmentGroupDbCacheCustomSql(customsql_registry.AbstractCustomSql):
         'feedbackset/triggers.sql',
         'groupcomment/triggers.sql',
         'imageannotationcomment/triggers.sql',
+        'comment/triggers.sql',
         'commentfile/triggers.sql',
         'examiner/triggers.sql',
         'candidate/triggers.sql',

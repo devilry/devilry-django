@@ -5,6 +5,7 @@ from devilry.devilry_group.cradmin_instances import crinstance_base
 from devilry.devilry_cradmin import devilry_crinstance
 from devilry.devilry_group.views.download_files import batch_download_files
 from devilry.devilry_group.views.student import feedbackfeed_student
+from devilry.devilry_group.views import cradmin_comment_history
 from devilry.devilry_student.cradminextensions import devilry_crmenu_student
 from devilry.devilry_student.views.group import projectgroupapp
 
@@ -27,6 +28,7 @@ class StudentCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_cri
     apps = [
         ('projectgroup', projectgroupapp.App),
         ('feedbackfeed', feedbackfeed_student.App),
+        ('commenthistory', cradmin_comment_history.App),
         ('download', batch_download_files.App)
     ]
     id = 'devilry_group_student'
