@@ -1,15 +1,26 @@
 {% extends 'devilry_group/listbuilder_feedbackfeed/base_groupcomment_item_value.django.html' %}
 
 {% load i18n %}
+{% load cradmin_tags %}
+
+{% block buttons %}
+    {% if me.group_comment.user == request.user %}
+        <a href="{% cradmin_instance_url appname='feedbackfeed' viewname='groupcomment-edit' pk=me.group_comment.id %}">
+            <strong>{% trans "Edit" context "devilry_group feedbackfeed edit groupcomment" %}</strong>
+        </a>
+    {% endif %}
+{% endblock buttons %}
 
 {% block details %}
-    {% if me.group_comment.published_datetime > me.group_comment.feedback_set.current_deadline %}
-        <div class="devilry-group-feedbackfeed-right-badge-field after-deadline-badge">
-            <p class="devilry-group-feedbackfeed-badge-text">
-                {% trans "Not part of delivery" context 'devilry_group feedbackfeed' %}
-                <br>
-                <small>({% trans "after deadline" %})</small>
-            </p>
-        </div>
+    {% if me.include_badge %}
+        {% if me.group_comment.published_datetime > me.group_comment.feedback_set.current_deadline %}
+            <div class="devilry-group-feedbackfeed-right-badge-field after-deadline-badge">
+                <p class="devilry-group-feedbackfeed-badge-text">
+                    {% trans "Not part of delivery" context 'devilry_group feedbackfeed' %}
+                    <br>
+                    <small>({% trans "after deadline" %})</small>
+                </p>
+            </div>
+        {% endif %}
     {% endif %}
 {% endblock details %}

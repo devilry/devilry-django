@@ -459,7 +459,8 @@ class GroupCommentEditDeleteMixin(object):
         """
         return group_models.GroupComment.objects.filter(
                 feedback_set__group=role,
-                id=self.kwargs.get('pk')).exclude_comment_is_not_draft_from_user(self.request.user)
+                user=self.request.user,
+                id=self.kwargs.get('pk'))
 
 
 class GroupCommentDeleteView(GroupCommentEditDeleteMixin, delete.DeleteView):

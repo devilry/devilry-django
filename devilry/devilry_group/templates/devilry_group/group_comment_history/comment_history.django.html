@@ -1,0 +1,28 @@
+{% extends "django_cradmin/viewhelpers/listbuilderview/default.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock pageheader-outer-extraclasses %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url appname='feedbackfeed' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% trans "Comment history" context "devilry comment history" %}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        {% cradmin_render_renderable group_comment_renderable %}
+    </div>
+    {{ block.super }}
+{% endblock content %}

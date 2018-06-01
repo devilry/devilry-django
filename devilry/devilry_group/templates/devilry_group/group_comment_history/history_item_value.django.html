@@ -1,0 +1,18 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load tz %}
+{% load devilry_group_tags %}
+
+{% block title %}
+    <i>
+        <strong>
+            {{ me.groupcomment_edit_history.edited_datetime|localtime|date:"DATETIME_FORMAT" }}
+        </strong>
+    </i>
+{% endblock title %}
+
+{% block description %}
+    {% blocktrans trimmed with text=me.groupcomment_edit_history.pre_edit_text|devilry_group_markdown|safe %}
+        {{text}}
+    {% endblocktrans %}
+{% endblock description %}

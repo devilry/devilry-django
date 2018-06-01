@@ -9,6 +9,7 @@ from django_cradmin.crispylayouts import PrimarySubmit
 
 from devilry.devilry_email.comment_email import comment_email
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
+from devilry.devilry_group.views.group_comment_edit_base import EditGroupCommentBase
 from devilry.utils import setting_utils
 
 
@@ -68,4 +69,8 @@ class App(crapp.App):
             r'^$',
             ensure_csrf_cookie(StudentFeedbackFeedView.as_view()),
             name=crapp.INDEXVIEW_NAME),
+        crapp.Url(
+            r'^groupcomment-edit/(?P<pk>\d+)$',
+            ensure_csrf_cookie(EditGroupCommentBase.as_view()),
+            name='groupcomment-edit')
     ]
