@@ -5,12 +5,11 @@
 
 {% block title %}
     <span class="devilry-comment-history-item__title">
-        <i>
-            <strong>
-                {{ me.groupcomment_edit_history.edited_datetime|localtime|date:"DATETIME_FORMAT" }}
-            </strong>
-        </i>
+        <strong>
+            {{ me.groupcomment_edit_history.edited_datetime|localtime|date:"DATETIME_FORMAT" }}
+        </strong>
     </span>
+    <strong class="text-muted">({{ me.get_visibility_text }})</strong>
 {% endblock title %}
 
 {% block description %}

@@ -21,20 +21,22 @@
 {% endblock pageheader-inner %}
 
 {% block content %}
-    <div class="container">
+        <div class="container">
             {% cradmin_render_renderable group_comment_renderable %}
+        </div>
         {% if history_available %}
             {{ block.super }}
         {% else %}
-            <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin text-warning devilry-comment-history-no-items">
-                <strong>
-                    {% blocktrans trimmed with context='devilry comment history' %}
-                        No comment-history available. This is either because the comment has not been edited, or you do
-                        not have access to see the edit-history. If you think this is an error, please contact
-                        an administrator.
-                    {% endblocktrans %}
-                </strong>
+            <div class="container">
+                <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin text-warning devilry-comment-history-no-items">
+                    <strong>
+                        {% blocktrans trimmed with context='devilry comment history' %}
+                            No comment-history available. This is either because the comment has not been edited, or you do
+                            not have access to see the edit-history. If you think this is an error, please contact
+                            an administrator.
+                        {% endblocktrans %}
+                    </strong>
+                </div>
             </div>
         {% endif %}
-    </div>
 {% endblock content %}

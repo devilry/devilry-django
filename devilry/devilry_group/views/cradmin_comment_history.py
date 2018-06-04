@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.http import Http404
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin import crapp
 from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers.listbuilder.itemvalue import TitleDescription
@@ -19,6 +19,14 @@ class GroupCommentEditHistoryValue(TitleDescription):
 
     def get_title(self):
         return self.groupcomment_edit_history.edited_datetime
+
+    def get_visibility_text(self):
+        visibility = self.groupcomment_edit_history.visibility
+        if visibility == group_models.GroupComment.VISIBILITY_PRIVATE:
+            return pgettext_lazy('comment edit history item', 'Only visible to you')
+        if visibility == group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS:
+            return pgettext_lazy('comment edit history item', 'Only visible to examiners and admins')
+        return pgettext_lazy('comment edit history item', 'Visible to everyone')
 
     def get_extra_css_classes_list(self):
         extra_css_classes_list = super(GroupCommentEditHistoryValue, self).get_extra_css_classes_list()
