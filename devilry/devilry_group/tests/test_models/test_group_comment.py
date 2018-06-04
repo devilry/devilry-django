@@ -1,10 +1,13 @@
 from django.core.exceptions import ValidationError
+from django.db import models
 from django.test import TestCase
 from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_group import models as group_models
+from devilry.devilry_comment import models as comment_models
+from devilry.devilry_group.models import GroupCommentEditHistory
 
 
 class TestGroupCommentModel(TestCase):
@@ -155,3 +158,76 @@ class TestGroupCommentModel(TestCase):
                                      user_role=group_models.GroupComment.USER_ROLE_ADMIN)
         with self.assertRaisesMessage(ValidationError, 'This assignment is on an inactive semester.'):
             test_comment.clean()
+
+
+class TestGroupCommentQueryset(TestCase):
+    def test_annotate_with_last_edited_history_has_attr(self):
+        mommy.make('devilry_group.GroupComment', text='test')
+        groupcomment = group_models.GroupComment.objects.annotate_with_last_edit_history().get()
+        self.assertTrue(hasattr(groupcomment, 'last_edithistory_datetime'))
+
+    def test_annotate_with_last_edited_history_none(self):
+        mommy.make('devilry_group.GroupComment', text='test')
+        groupcomment = group_models.GroupComment.objects.annotate_with_last_edit_history().get()
+        self.assertIsNone(groupcomment.last_edithistory_datetime)
+
+    def test_annotate_with_last_edited_history(self):
+        test_groupcomment = mommy.make('devilry_group.GroupComment', text='test')
+        groupcommenthistory_last_edited = mommy.make('devilry_group.GroupCommentEditHistory',
+                                                     group_comment=test_groupcomment,
+                                                     edited_datetime=timezone.now() - timezone.timedelta(days=1))
+        groupcommenthistory_not_last_edited = mommy.make('devilry_group.GroupCommentEditHistory',
+                                                  group_comment=test_groupcomment,
+                                                  edited_datetime=timezone.now() - timezone.timedelta(days=3))
+        groupcomment = group_models.GroupComment.objects.annotate_with_last_edit_history().get()
+        self.assertIsNotNone(groupcomment.last_edithistory_datetime)
+        self.assertNotEqual(groupcomment.last_edithistory_datetime, groupcommenthistory_not_last_edited.edited_datetime)
+        self.assertEqual(groupcomment.last_edithistory_datetime, groupcommenthistory_last_edited.edited_datetime)
+
+    def test_annotate_with_last_edited_history_multiple_edits_sanity(self):
+        test_groupcomment = mommy.make('devilry_group.GroupComment', text='test')
+        edited_datetime1 = mommy.make('devilry_group.GroupCommentEditHistory',
+                                      group_comment=test_groupcomment,
+                                      edited_datetime=timezone.now() - timezone.timedelta(days=2)).edited_datetime
+        edited_datetime2 = mommy.make('devilry_group.GroupCommentEditHistory',
+                                      group_comment=test_groupcomment,
+                                      edited_datetime=timezone.now() - timezone.timedelta(minutes=2)).edited_datetime
+        edited_datetime3 = mommy.make('devilry_group.GroupCommentEditHistory',
+                                      group_comment=test_groupcomment,
+                                      edited_datetime=timezone.now() - timezone.timedelta(days=1)).edited_datetime
+        groupcomment = group_models.GroupComment.objects.annotate_with_last_edit_history().get()
+        self.assertNotEqual(groupcomment.last_edithistory_datetime, edited_datetime1)
+        self.assertNotEqual(groupcomment.last_edithistory_datetime, edited_datetime3)
+        self.assertEqual(groupcomment.last_edithistory_datetime, edited_datetime2)
+
+    def test_annotations_not_duplicates_from_other_comments(self):
+        comment_to_edited_datetime_map = {}
+        for comment_counter in range(10):
+            test_groupcomment = mommy.make('devilry_group.GroupComment', text='test')
+            edithistory = mommy.make('devilry_group.GroupCommentEditHistory',
+                                     group_comment=test_groupcomment,
+                                     edited_datetime=timezone.now() - timezone.timedelta(days=comment_counter))
+            comment_to_edited_datetime_map[test_groupcomment.id] = edithistory
+        self.assertEqual(group_models.GroupComment.objects.count(), 10)
+        self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 10)
+
+        last_edited_datetime = None
+        for group_comment in group_models.GroupComment.objects.annotate_with_last_edit_history():
+            if last_edited_datetime:
+                self.assertNotEqual(group_comment.last_edithistory_datetime, last_edited_datetime)
+            last_edited_datetime = group_comment.last_edithistory_datetime
+
+    def test_annotate_with_last_edited_history_num_queries(self):
+        for i in range(10):
+            test_groupcomment = mommy.make('devilry_group.GroupComment', text='test')
+            mommy.make('devilry_group.GroupCommentEditHistory', group_comment=test_groupcomment,
+                       edited_datetime=timezone.now() - timezone.timedelta(days=2))
+            mommy.make('devilry_group.GroupCommentEditHistory', group_comment=test_groupcomment,
+                       edited_datetime=timezone.now() - timezone.timedelta(minutes=2))
+            mommy.make('devilry_group.GroupCommentEditHistory', group_comment=test_groupcomment,
+                       edited_datetime=timezone.now() - timezone.timedelta(days=1))
+        self.assertEqual(group_models.GroupComment.objects.count(), 10)
+        self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 30)
+        with self.assertNumQueries(1):
+            for group_comment in group_models.GroupComment.objects.annotate_with_last_edit_history():
+                self.assertIsNotNone(group_comment.last_edithistory_datetime)

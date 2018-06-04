@@ -71,19 +71,6 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
         db_comment = group_models.GroupComment.objects.get(id=comment.id)
         self.assertEquals('edited', db_comment.text)
 
-    def test_edit_comment_is_not_draft(self):
-        # Test that PermissionDenied(403) is raised when trying to edit a non-draft GroupComment.
-        testexaminer = mommy.make('core.Examiner',
-                                  relatedexaminer=mommy.make('core.RelatedExaminer'))
-        testcomment = mommy.make('devilry_group.GroupComment',
-                                 user=testexaminer.relatedexaminer.user,
-                                 user_role='examiner',
-                                 feedback_set=testexaminer.assignmentgroup.feedbackset_set.first())
-        with self.assertRaises(PermissionDenied):
-            self.mock_getrequest(cradmin_role=testexaminer.assignmentgroup,
-                                 requestuser=testexaminer.relatedexaminer.user,
-                                 viewkwargs={'pk': testcomment.id})
-
     def test_edit_comment_only_created_by_requestuser(self):
         # Test that another examiner cannot edit other examiners drafts.
         testexaminer = mommy.make('core.Examiner',
