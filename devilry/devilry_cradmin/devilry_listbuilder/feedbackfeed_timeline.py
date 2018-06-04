@@ -317,7 +317,9 @@ class BaseGroupCommentItemValue(BaseItemValue):
         return self.group_comment.get_published_datetime() != None
 
     def get_last_edited_datetime_history(self):
-        return self.group_comment.last_edithistory_datetime
+        if hasattr(self.group_comment, 'last_edithistory_datetime'):
+            return self.group_comment.last_edithistory_datetime
+        return None
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(BaseGroupCommentItemValue, self).get_extra_css_classes_list()
