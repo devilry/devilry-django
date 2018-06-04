@@ -4,15 +4,19 @@
 {% load devilry_group_tags %}
 
 {% block title %}
-    <i>
-        <strong>
-            {{ me.groupcomment_edit_history.edited_datetime|localtime|date:"DATETIME_FORMAT" }}
-        </strong>
-    </i>
+    <span class="devilry-comment-history-item__title">
+        <i>
+            <strong>
+                {{ me.groupcomment_edit_history.edited_datetime|localtime|date:"DATETIME_FORMAT" }}
+            </strong>
+        </i>
+    </span>
 {% endblock title %}
 
 {% block description %}
-    {% blocktrans trimmed with text=me.groupcomment_edit_history.pre_edit_text|devilry_group_markdown|safe %}
-        {{text}}
-    {% endblocktrans %}
+    <span class="devilry-comment-history-item__description">
+        {% blocktrans trimmed with text=me.groupcomment_edit_history.pre_edit_text|devilry_group_markdown|safe %}
+            {{ text }}
+        {% endblocktrans %}
+    </span>
 {% endblock description %}

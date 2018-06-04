@@ -30,14 +30,37 @@ def get_feedbackfeed_builder_queryset(group, requestuser, devilryrole):
     commentfile_queryset = comment_models.CommentFile.objects\
         .select_related('comment__user')\
         .order_by('filename')
-    groupcomment_queryset = group_models.GroupComment.objects\
-        .exclude_private_comments_from_other_users(user=requestuser)\
+    groupcomment_edit_history_queryset = group_models.GroupCommentEditHistory.objects\
+        .select_related('comment', 'group_comment', 'edited_by', 'commentedithistory_ptr')\
+        .order_by('edited_datetime')
+
+    # groupcomment_queryset = group_models.GroupComment.objects\
+    #     .exclude_private_comments_from_other_users(user=requestuser)\
+    #     .select_related(
+    #         'user',
+    #         'feedback_set',
+    #         'feedback_set__created_by',
+    #         'feedback_set__grading_published_by')\
+    #     .prefetch_related(
+    #         models.Prefetch(
+    #             'commentfile_set',
+    #             queryset=commentfile_queryset)) \
+    #     .prefetch_related(
+    #         models.Prefetch(
+    #             'groupcommentedithistory_set',
+    #             queryset=groupcomment_edit_history_queryset))
+    groupcomment_queryset = group_models.GroupComment.objects \
+        .exclude_private_comments_from_other_users(user=requestuser) \
+        .annotate_with_last_edit_history()\
         .select_related(
             'user',
             'feedback_set',
             'feedback_set__created_by',
-            'feedback_set__grading_published_by')\
-        .prefetch_related(models.Prefetch('commentfile_set', queryset=commentfile_queryset))
+            'feedback_set__grading_published_by') \
+        .prefetch_related(
+            models.Prefetch(
+                'commentfile_set',
+                queryset=commentfile_queryset))
     feedbackset_deadline_history_queryset = group_models.FeedbackSetDeadlineHistory.objects.all()
     if devilryrole == 'student':
         groupcomment_queryset = groupcomment_queryset\

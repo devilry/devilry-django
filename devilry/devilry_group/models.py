@@ -7,6 +7,7 @@ import json
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import OuterRef
 from django.db.models.functions import Coalesce
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy
@@ -761,6 +762,16 @@ class GroupCommentQuerySet(AbstractGroupCommentQuerySet):
     """
     QuerySet for :class:`.GroupComment`.
     """
+    def annotate_with_last_edit_history(self):
+        edit_history_query = GroupCommentEditHistory.objects\
+            .filter(group_comment_id=OuterRef('id'))\
+            .order_by('-edited_datetime')\
+            .values('edited_datetime')[:1]
+        return self.annotate(
+            last_edithistory_datetime=models.Subquery(
+                edit_history_query, output_field=models.DateTimeField()
+            )
+        )
 
 
 class GroupComment(AbstractGroupComment):
@@ -789,10 +800,26 @@ class GroupComment(AbstractGroupComment):
         super(GroupComment, self).clean()
 
 
+class GroupCommentEditHistoryQuerySet(models.QuerySet):
+    def exclude_private_comment_not_created_by_user(self, user):
+        """
+        Exclude all :class:`.GroupCommentEditHistory` entries that are private and
+        where the comment is not created by the user.
+
+        Args:
+            user: The user to check against.
+        """
+        return self.exclude(
+            models.Q(visibility=GroupComment.VISIBILITY_PRIVATE)
+            &
+            ~models.Q(group_comment__user=user))
+
+
 class GroupCommentEditHistory(comment_models.CommentEditHistory):
     """
     Model for logging changes in a :class:`.GroupComment`.
     """
+    objects = GroupCommentEditHistoryQuerySet.as_manager()
 
     #: The :class:`.GroupComment` the editing history is for.
     group_comment = models.ForeignKey(

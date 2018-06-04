@@ -28,8 +28,10 @@ class EditGroupCommentForm(forms.ModelForm):
         return ['text']
 
     def clean(self):
+        if 'hidden_initial_data' not in self.cleaned_data:
+            raise ValidationError(message='')
         if self.cleaned_data['hidden_initial_data'] == self.cleaned_data['text']:
-            raise ValidationError(message='Test')
+            raise ValidationError(message='')
 
     def __init__(self, **kwargs):
         super(EditGroupCommentForm, self).__init__(**kwargs)
@@ -68,7 +70,7 @@ class EditGroupCommentBase(update.UpdateView):
         ]
 
     def form_invalid(self, form):
-        messages.success(self.request, ugettext_lazy('Comment update: No changes'))
+        messages.success(self.request, ugettext_lazy('No changes, comment not updated'))
         return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
 
     def save_object(self, form, commit=False):

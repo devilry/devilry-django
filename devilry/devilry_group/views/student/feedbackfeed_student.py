@@ -1,6 +1,8 @@
 # Python imports
 from __future__ import unicode_literals
 
+from django.conf import settings
+from django.http import Http404
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -63,6 +65,13 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         self.__send_comment_email(comment=comment)
 
 
+class StudentEditGroupComment(EditGroupCommentBase):
+    def dispatch(self, request, *args, **kwargs):
+        if not settings.DEVILRY_COMMENT_STUDENTS_CAN_EDIT:
+            raise Http404()
+        return super(StudentEditGroupComment, self).dispatch(request, *args, **kwargs)
+
+
 class App(crapp.App):
     appurls = [
         crapp.Url(
@@ -71,6 +80,6 @@ class App(crapp.App):
             name=crapp.INDEXVIEW_NAME),
         crapp.Url(
             r'^groupcomment-edit/(?P<pk>\d+)$',
-            ensure_csrf_cookie(EditGroupCommentBase.as_view()),
+            ensure_csrf_cookie(StudentEditGroupComment.as_view()),
             name='groupcomment-edit')
     ]

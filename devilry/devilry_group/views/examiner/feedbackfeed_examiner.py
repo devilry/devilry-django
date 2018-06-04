@@ -491,6 +491,11 @@ class GroupCommentDeleteView(GroupCommentEditDeleteMixin, delete.DeleteView):
     def get_object_preview(self):
         return ugettext_lazy('Groupcomment')
 
+    def get_queryset_for_role(self, role):
+        return group_models.GroupComment.objects.filter(
+            feedback_set__group=role,
+            id=self.kwargs.get('pk')).exclude_comment_is_not_draft_from_user(self.request.user)
+
     def get_success_url(self):
         return self.request.cradmin_app.reverse_appindexurl()
 

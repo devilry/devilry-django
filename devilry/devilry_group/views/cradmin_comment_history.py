@@ -20,6 +20,11 @@ class GroupCommentEditHistoryValue(TitleDescription):
     def get_title(self):
         return self.groupcomment_edit_history.edited_datetime
 
+    def get_extra_css_classes_list(self):
+        extra_css_classes_list = super(GroupCommentEditHistoryValue, self).get_extra_css_classes_list()
+        extra_css_classes_list.append('devilry-comment-edit-history-item')
+        return extra_css_classes_list
+
 
 class CommentHistoryView(listbuilderview.View):
     template_name = 'devilry_group/group_comment_history/comment_history.django.html'
@@ -37,6 +42,11 @@ class CommentHistoryView(listbuilderview.View):
         try:
             self.group_comment = group_models.GroupComment.objects.get(id=kwargs['group_comment_id'])
         except group_models.GroupComment.DoesNotExist:
+            raise Http404()
+
+        # If the comment is private, only the user that created the comment can access the history view.
+        if self.group_comment.visibility == group_models.GroupComment.VISIBILITY_PRIVATE \
+                and self.group_comment.user != request.user:
             raise Http404()
         return super(CommentHistoryView, self).dispatch(request, *args, **kwargs)
 
@@ -77,7 +87,11 @@ class CommentHistoryView(listbuilderview.View):
             )
         )
 
+    def should_edit_history_be_rendered(self):
+        return len(self.get_queryset()) != 0
+
     def get_context_data(self, **kwargs):
         context = super(CommentHistoryView, self).get_context_data(**kwargs)
         context['group_comment_renderable'] = self.get_current_group_comment_renderable()
+        context['history_available'] = self.should_edit_history_be_rendered()
         return context

@@ -133,6 +133,11 @@ class AdminWithExaminersDiscussView(AdminBaseFeedbackFeedView):
         return self.request.cradmin_app.reverse_appurl(viewname='admin-examiner-discuss')
 
 
+class AdminEditGroupCommentView(EditGroupCommentBase):
+    """
+    """
+
+
 class App(crapp.App):
     appurls = [
         crapp.Url(
@@ -147,6 +152,6 @@ class App(crapp.App):
         ),
         crapp.Url(
             r'^groupcomment-edit/(?P<pk>\d+)$',
-            ensure_csrf_cookie(EditGroupCommentBase.as_view()),
+            ensure_csrf_cookie(AdminEditGroupCommentView.as_view()),
             name='groupcomment-edit')
     ]

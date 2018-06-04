@@ -1,4 +1,5 @@
 # Devilry/cradmin imports
+from django.conf import settings
 from django_cradmin.viewhelpers import listbuilder
 
 from devilry.apps.core.group_user_lookup import GroupUserLookup
@@ -287,26 +288,36 @@ class BaseGroupCommentItemValue(BaseItemValue):
             user_role=self.group_comment.user_role, html=True
         )
 
+    def include_edit_links(self):
+        """
+        Render links for editing `GroupComment`.
+        """
+        return True
+
     def include_badge(self):
+        """
+        Include right-hand-badge with comment-info in `GroupComment`.
+        """
         return True
 
     def include_published_last_edited_datetime(self):
+        """
+        Include the last published datetime, or edited datetime if edited, in
+        `GroupComment`.
+        """
         return True
 
     def include_files(self):
+        """
+        Render uploaded files for a `GroupComment`.
+        """
         return True
-
-    def is_minimal(self):
-        return False
 
     def is_published(self):
         return self.group_comment.get_published_datetime() != None
 
     def get_last_edited_datetime_history(self):
-        return GroupCommentEditHistory.objects\
-            .filter(group_comment_id=self.group_comment.id)\
-            .order_by('edited_datetime')\
-            .last()
+        return self.group_comment.last_edithistory_datetime
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(BaseGroupCommentItemValue, self).get_extra_css_classes_list()
@@ -320,6 +331,14 @@ class StudentGroupCommentItemValue(BaseGroupCommentItemValue):
     """
     valuealias = 'group_comment'
     template_name = 'devilry_group/listbuilder_feedbackfeed/student_groupcomment_item_value.django.html'
+
+    def include_edit_links(self):
+        """
+        Render links for editing `GroupComment`.
+        """
+        if settings.DEVILRY_COMMENT_STUDENTS_CAN_EDIT:
+            return True
+        return False
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(StudentGroupCommentItemValue, self).get_extra_css_classes_list()
@@ -339,6 +358,9 @@ class StudentGroupCommentItemValueMinimal(BaseGroupCommentItemValue):
     valuealias = 'group_comment'
     template_name = 'devilry_group/listbuilder_feedbackfeed/student_groupcomment_item_value.django.html'
 
+    def include_edit_links(self):
+        return False
+
     def include_badge(self):
         return False
 
@@ -347,9 +369,6 @@ class StudentGroupCommentItemValueMinimal(BaseGroupCommentItemValue):
 
     def include_files(self):
         return False
-
-    def is_minimal(self):
-        return True
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(StudentGroupCommentItemValueMinimal, self).get_extra_css_classes_list()
@@ -374,6 +393,9 @@ class ExaminerGroupCommentItemValue(BaseGroupCommentItemValue):
 
 
 class ExaminerGroupCommentItemValueMinimal(BaseGroupCommentItemValue):
+    def include_edit_links(self):
+        return False
+
     def include_badge(self):
         return False
 
@@ -382,9 +404,6 @@ class ExaminerGroupCommentItemValueMinimal(BaseGroupCommentItemValue):
 
     def include_files(self):
         return False
-
-    def is_minimal(self):
-        return True
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(ExaminerGroupCommentItemValueMinimal, self).get_extra_css_classes_list()
@@ -409,6 +428,9 @@ class AdminGroupCommentItemValue(BaseGroupCommentItemValue):
 
 
 class AdminGroupCommentItemValueMinimal(BaseGroupCommentItemValue):
+    def include_edit_links(self):
+        return False
+
     def include_badge(self):
         return False
 
@@ -417,9 +439,6 @@ class AdminGroupCommentItemValueMinimal(BaseGroupCommentItemValue):
 
     def include_files(self):
         return False
-
-    def is_minimal(self):
-        return True
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(AdminGroupCommentItemValueMinimal, self).get_extra_css_classes_list()
