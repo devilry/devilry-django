@@ -50,3 +50,17 @@ def build_feedbackfeed_absolute_url(domain_scheme, group_id, instance_id='devilr
     )
     return absolute_url
 
+
+def activate_translation_for_user(user):
+    """
+    Activate language for a specific user.
+
+    Activates the language if the `user.languagecode` is a valid language code.
+
+    Note::
+        Remember to always user translation.deactivate() after using this function!
+    """
+    from django.utils import translation
+    if user.languagecode:
+        if translation.check_for_language(user.languagecode):
+            translation.activate(user.languagecode)

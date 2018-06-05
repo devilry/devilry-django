@@ -561,7 +561,7 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                                        max_points=100,
                                        passing_grade_min_points=50,
                                        long_name='Assignment 1',
-                                       parentnode__long_name='Duck 1010')
+                                       parentnode__parentnode__long_name='Duck 1010')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
         feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup, deadline_datetime=timezone.now() + timezone.timedelta(days=30))
         examiner_user = mommy.make(settings.AUTH_USER_MODEL, fullname='God of thunder and Battle',
@@ -582,9 +582,9 @@ class TestFeedbackFeedExaminerPublishFeedback(TestCase, test_feedbackfeed_examin
                     'examiner_publish_feedback': 'unused value',
                 }
             })
-        mail_content = mail.outbox[0].body
+        mail_content = mail.outbox[0].message().as_string()
         self.assertIn('Assignment: {}'.format(assignment.long_name), mail_content)
-        self.assertIn('Subject: {}'.format(assignment.parentnode.long_name), mail_content)
+        self.assertIn('Subject: {}'.format(assignment.parentnode.parentnode.long_name), mail_content)
         self.assertIn('Result: 73/100 ( passed )', mail_content)
         self.assertIn('http://testserver/devilry_group/student/{}/feedbackfeed/'.format(testgroup.id), mail_content)
         self.assertEqual(mail.outbox[0].recipients(), ['student@example.com'])

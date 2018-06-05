@@ -1,0 +1,18 @@
+############################
+What is new in Devilry 3.3.0
+############################
+
+
+Notes
+#####
+NOT YET RELEASED
+
+
+Improvements
+############
+Email:
+    - Comment email subject better explains the context of the mail.
+    - Comment email receipt is sent to the student that posted the comment.
+    - Comment email lists info about uploaded files, filename and size.
+    - System content language in mail regarding new comments, deadlines and feedbacks is now set to the
+      receiving users preferred language if supported by Devilry.

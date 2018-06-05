@@ -1,6 +1,14 @@
 {% load i18n %}
 
-{% blocktrans with feedbackset_deadline=deadline|date:"DATETIME_FORMAT" %}
-You have been given a new attempt in {{ assignment_name }} with deadline {{ feedbackset_deadline }}.
-{% endblocktrans %}
-{% trans "Details" %}: {{ url }}
+<span class="devilry_email_deadline_new_attempt_info_text">
+    {% blocktrans trimmed with assignment_name=assignment_name feedbackset_deadline=deadline|date:"DATETIME_FORMAT" context="devilry deadline new attempt" %}
+        You have been given a new attempt in {{ assignment_name }} with deadline {{ feedbackset_deadline }}
+    {% endblocktrans %}
+</span>
+<br><br>
+<span class="devilry_email_deadline_new_attempt_detail">
+    <span class="devilry_email_deadline_new_attempt_detail_text">
+        {% trans "See the delivery feed for more details" context "devilry deadline moved" %}:
+    </span>
+    <span class="devilry_email_deadline_new_attempt_detail_url"><a href="{{ url }}">{{ url }}</a></span>
+</span>

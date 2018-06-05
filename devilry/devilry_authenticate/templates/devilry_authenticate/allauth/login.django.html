@@ -19,7 +19,7 @@
             {{provider.name}}
         </a>
     {% endfor %}
-    <a href="{% url 'cradmin-authenticate-login' %}" class="btn btn-default">
+    <a href="{% url 'cradmin-authenticate-login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}" class="btn btn-default">
         {% trans "Devilry login" %}
     </a>
 {% endblock content %}

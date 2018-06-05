@@ -51,15 +51,15 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
 
     def __send_comment_email(self, comment):
         comment_email.bulk_send_comment_email_to_students_and_examiners(
-            group_id=self.request.cradmin_role.id,
-            comment_user_id=comment.user.id,
-            published_datetime=comment.published_datetime,
-            domain_url_start=self.request.build_absolute_uri('/'))
+            domain_url_start=self.request.build_absolute_uri('/'),
+            comment_id=comment.id,
+            from_student_poster=True)
 
     def save_object(self, form, commit=False):
-        comment = super(StudentFeedbackFeedView, self).save_object(form=form, commit=commit)
-        self.__send_comment_email(comment=comment)
         return super(StudentFeedbackFeedView, self).save_object(form, commit=True)
+
+    def perform_after_save(self, comment):
+        self.__send_comment_email(comment=comment)
 
 
 class App(crapp.App):

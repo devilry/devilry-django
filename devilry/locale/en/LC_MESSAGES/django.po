@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-15 14:16+0200\n"
+"POT-Creation-Date: 2018-05-30 15:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1052,7 +1052,7 @@ msgstr ""
 msgid "imported tags only"
 msgstr ""
 
-#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:107
+#: devilry/devilry_admin/cradminextensions/listfilter/listfilter_tags.py:106
 msgctxt "tag"
 msgid "Has tag"
 msgstr ""
@@ -1152,7 +1152,7 @@ msgid ""
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/organize-by-tag.django.html:52
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:77
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:82
 msgid "Manage tags"
 msgstr ""
 
@@ -1707,9 +1707,6 @@ msgid "Split group"
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/groupdetails/view.django.html:38
-#: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:6
-#: devilry/devilry_email/templates/devilry_email/deadline_email/deadline_moved.txt:7
-#: devilry/devilry_email/templates/devilry_email/deadline_email/new_attempt.txt:6
 msgid "Details"
 msgstr ""
 
@@ -2244,59 +2241,65 @@ msgid "Edit"
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:36
-#: devilry/devilry_admin/views/period/createassignment.py:126
+#: devilry/devilry_admin/views/period/createassignment.py:127
 msgid "Create new assignment"
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:51
+#, python-format
+msgid ""
+"%(num_students)s student(s) and %(num_examiners)s examiner(s) on the semester"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:56
 msgid ""
 "Only students registered for this semester can be added to assignments "
 "within the semester."
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:56
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:61
 msgid "Add/edit students"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:60
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:65
 msgid "Add/edit examiners"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:66
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:71
 msgid "Semester tags"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:69
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:74
 msgid ""
 "Create semester tags that can be used as filtering options later on. These "
 "tags will be available as filters when e.g organizing examiners and students "
 "when configuring an assignment."
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:82
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:87
 msgid "Semester administrators"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:84
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:89
 msgid ""
 "You can add semester administrators. Semester administrators have mostly the "
 "same permissions as course administrators except that they do not have "
 "access to anonymous assignments."
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:89
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:94
 msgid "Add/edit semester administrators"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:94
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:99
 msgid "Utilities"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:98
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:103
 msgid "Overview of all results"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:102
+#: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:107
 #: devilry/devilry_qualifiesforexam/tablebuilder/tablebuilder.py:33
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/includes/qualification_table.django.html:9
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/print_view.html:25
@@ -2386,7 +2389,7 @@ msgid "Back to dashboard overview"
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/subject/overview.django.html:33
-#: devilry/devilry_admin/views/subject/createperiod.py:94
+#: devilry/devilry_admin/views/subject/createperiod.py:100
 msgid "Create new semester"
 msgstr ""
 
@@ -2992,27 +2995,35 @@ msgid ""
 "\") and hyphen (\"-\")."
 msgstr ""
 
-#: devilry/devilry_admin/views/period/createassignment.py:48
+#: devilry/devilry_admin/views/period/createassignment.py:43
+#: devilry/devilry_admin/views/subject/createperiod.py:31
+#: devilry/devilry_admin/views/subject/createperiod.py:35
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:52
+msgctxt "CrAdmin datetime picker typo fix"
+msgid "Select a date/time"
+msgstr ""
+
+#: devilry/devilry_admin/views/period/createassignment.py:49
 msgid "Set first deadline"
 msgstr ""
 
-#: devilry/devilry_admin/views/period/createassignment.py:50
+#: devilry/devilry_admin/views/period/createassignment.py:51
 msgid ""
 "The first deadline for this assignment. This is shared by all the students "
 "on the assignment."
 msgstr ""
 
 #. Translators: The "delay" is formatted as "X hours/minutes from now"
-#: devilry/devilry_admin/views/period/createassignment.py:100
+#: devilry/devilry_admin/views/period/createassignment.py:101
 #, python-format
 msgid "First deadline must be at least %(delay)s."
 msgstr ""
 
-#: devilry/devilry_admin/views/period/createassignment.py:173
+#: devilry/devilry_admin/views/period/createassignment.py:174
 msgid "Example: Assignment 1"
 msgstr ""
 
-#: devilry/devilry_admin/views/period/createassignment.py:175
+#: devilry/devilry_admin/views/period/createassignment.py:176
 msgid "Example: assignment1"
 msgstr ""
 
@@ -3329,11 +3340,11 @@ msgstr ""
 msgid "Type the name of your semester."
 msgstr ""
 
-#: devilry/devilry_admin/views/subject/createperiod.py:59
+#: devilry/devilry_admin/views/subject/createperiod.py:65
 msgid "Example: Spring 2025"
 msgstr ""
 
-#: devilry/devilry_admin/views/subject/createperiod.py:61
+#: devilry/devilry_admin/views/subject/createperiod.py:67
 msgid "Example: spring2025"
 msgstr ""
 
@@ -3763,7 +3774,7 @@ msgstr ""
 
 #: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:33
 #: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:50
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:247
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:248
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:36
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:50
 msgid "Move deadline"
@@ -3814,27 +3825,27 @@ msgstr ""
 msgid "New deadline"
 msgstr ""
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:54
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:55
 msgid ""
 "Pick a date and time from the calendar, or select one of the suggested "
 "deadlines."
 msgstr ""
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:111
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:112
 #, python-format
 msgid "Manage deadline %(deadline)s"
 msgstr ""
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:227
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:228
 msgid "test placeholder"
 msgstr ""
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:248
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:249
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:46
 msgid "Give new attempt"
 msgstr ""
 
-#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:399
+#: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:400
 #, python-format
 msgid "Deadline managed for %(group_names)s"
 msgstr ""
@@ -3890,82 +3901,133 @@ msgctxt "assignment_group_multiselect_list_filter_view page_subheading"
 msgid "Select the groups you want to manage the deadline for."
 msgstr ""
 
-#: devilry/devilry_email/comment_email/comment_email.py:44
+#: devilry/devilry_email/comment_email/comment_email.py:25
 #, python-format
-msgid "New comment in group for %(assignment_name)s"
+msgid ""
+"A student added a new comment AFTER THE DEADLINE for %(assignment_name)s"
 msgstr ""
 
-#: devilry/devilry_email/deadline_email/deadline_email.py:36
+#: devilry/devilry_email/comment_email/comment_email.py:28
+#, python-format
+msgid "A student added a new delivery/comment for %(assignment_name)s"
+msgstr ""
+
+#: devilry/devilry_email/comment_email/comment_email.py:32
+#, python-format
+msgid "An examiner added a new comment for %(assignment_name)s"
+msgstr ""
+
+#: devilry/devilry_email/comment_email/comment_email.py:35
+#, python-format
+msgid "An admin added a new comment for %(assignment_name)s"
+msgstr ""
+
+#: devilry/devilry_email/comment_email/comment_email.py:205
+#, python-format
+msgid "You added a new comment AFTER THE DEADLINE for %(assignment_name)s"
+msgstr ""
+
+#: devilry/devilry_email/comment_email/comment_email.py:209
+#, python-format
+msgid "You added a new delivery/comment for %(assignment_name)s"
+msgstr ""
+
+#: devilry/devilry_email/deadline_email/deadline_email.py:14
 #, python-format
 msgid "New attempt for %(assignment_name)s"
 msgstr ""
 
-#: devilry/devilry_email/deadline_email/deadline_email.py:46
+#: devilry/devilry_email/deadline_email/deadline_email.py:16
 #, python-format
 msgid "Deadline moved for %(assignment_name)s"
 msgstr ""
 
-#: devilry/devilry_email/feedback_email/feedback_email.py:47
-#, python-format
-msgid "Feedback updated for %(assignment_name)s"
-msgstr ""
-
-#: devilry/devilry_email/feedback_email/feedback_email.py:58
+#: devilry/devilry_email/feedback_email/feedback_email.py:14
 #, python-format
 msgid "Feedback for %(assignment_name)s"
 msgstr ""
 
-#: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:3
+#: devilry/devilry_email/feedback_email/feedback_email.py:16
 #, python-format
-msgid ""
-"\n"
-"New comment added in %(assignment_name)s on %(commented_datetime)s.\n"
+msgid "Feedback updated for %(assignment_name)s"
 msgstr ""
 
-#: devilry/devilry_email/templates/devilry_email/deadline_email/deadline_moved.txt:3
-#, python-format
-msgid ""
-"\n"
-"The deadline for %(assignment_name)s has been moved.\n"
-"New deadline is %(feedbackset_deadline)s.\n"
-msgstr ""
-
-#: devilry/devilry_email/templates/devilry_email/deadline_email/new_attempt.txt:3
-#, python-format
-msgid ""
-"\n"
-"You have been given a new attempt in %(assignment_name)s with deadline "
-"%(feedbackset_deadline)s.\n"
-msgstr ""
-
-#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:4
-msgctxt "devilry feedback email"
-msgid "Result"
-msgstr ""
-
-#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:5
-msgctxt "devilry feedback email"
-msgid "Corrected datetime"
-msgstr ""
-
-#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:6
-msgctxt "devilry feedback email"
-msgid "Deadline datetime"
-msgstr ""
-
-#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:7
-msgctxt "devilry feedback email"
+#: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:4
+msgctxt "devilry comment email"
 msgid "Assignment"
 msgstr ""
 
-#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:8
-msgctxt "devilry feedback email"
+#: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:6
+msgctxt "devilry comment email"
+msgid "Added by"
+msgstr ""
+
+#: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:8
+msgctxt "devilry comment email"
+msgid "Added datetime"
+msgstr ""
+
+#: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:23
+msgctxt "devilry comment email"
+msgid "Uploaded files"
+msgstr ""
+
+#: devilry/devilry_email/templates/devilry_email/comment_email/comment.txt:39
+msgctxt "devilry comment email"
+msgid "See the delivery feed for more details"
+msgstr ""
+
+#: devilry/devilry_email/templates/devilry_email/deadline_email/deadline_moved.txt:4
+#, python-format
+msgid "The deadline for %(assignment_name)s has been moved."
+msgstr ""
+
+#: devilry/devilry_email/templates/devilry_email/deadline_email/deadline_moved.txt:10
+#, python-format
+msgid "New deadline is %(feedbackset_deadline)s"
+msgstr ""
+
+#: devilry/devilry_email/templates/devilry_email/deadline_email/deadline_moved.txt:18
+#: devilry/devilry_email/templates/devilry_email/deadline_email/new_attempt.txt:11
+msgctxt "devilry deadline moved"
+msgid "See the delivery feed for more details"
+msgstr ""
+
+#: devilry/devilry_email/templates/devilry_email/deadline_email/new_attempt.txt:4
+#, python-format
+msgid ""
+"You have been given a new attempt in %(assignment_name)s with deadline "
+"%(feedbackset_deadline)s"
+msgstr ""
+
+#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:5
+msgctxt "devilry email feedback"
+msgid "Result"
+msgstr ""
+
+#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:10
+msgctxt "devilry email feedback"
+msgid "Corrected datetime"
+msgstr ""
+
+#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:15
+msgctxt "devilry email feedback"
+msgid "Deadline datetime"
+msgstr ""
+
+#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:20
+msgctxt "devilry email feedback"
+msgid "Assignment"
+msgstr ""
+
+#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:25
+msgctxt "devilry email feedback"
 msgid "Subject"
 msgstr ""
 
-#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:9
-msgctxt "devilry feedback email"
-msgid "Details"
+#: devilry/devilry_email/templates/devilry_email/feedback_email/assignment_feedback_student.txt:30
+msgctxt "devilry email feedback"
+msgid "See the delivery feed for more details"
 msgstr ""
 
 #: devilry/devilry_examiner/cradminextensions/devilry_crmenu_examiner.py:15
@@ -4204,7 +4266,7 @@ msgstr ""
 
 #: devilry/devilry_gradeform/views/setup_gradeform.py:66
 #: devilry/devilry_group/views/admin/feedbackfeed_admin.py:73
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:262
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:261
 msgid "Add comment"
 msgstr ""
 
@@ -4444,7 +4506,7 @@ msgstr ""
 #: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/admin/summary.django.html:81
 #: devilry/devilry_gradingsystemplugin_points/apps.py:11
 #: devilry/devilry_gradingsystemplugin_points/views/feedbackeditor.py:25
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:76
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:75
 msgid "Points"
 msgstr ""
 
@@ -5008,7 +5070,7 @@ msgstr ""
 msgid "Post comment"
 msgstr ""
 
-#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:470
+#: devilry/devilry_group/views/cradmin_feedbackfeed_base.py:481
 msgid "Comment added!"
 msgstr ""
 
@@ -5022,21 +5084,21 @@ msgctxt "grading"
 msgid "Choose grade"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:81
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:80
 #, python-format
 msgctxt "grading"
 msgid "Number between 0 and %(max_points)s."
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:190
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:189
 msgid "Save draft and preview"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:193
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:192
 msgid "Publish feedback"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:231
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:230
 msgid "Feedback is already published!"
 msgstr ""
 
@@ -5650,10 +5712,10 @@ msgid ""
 "comments or upload files after the deadline has expired."
 msgstr ""
 
-#: devilry/project/common/settings.py:168
+#: devilry/project/common/settings.py:169
 msgid "English"
 msgstr ""
 
-#: devilry/project/common/settings.py:169
+#: devilry/project/common/settings.py:170
 msgid "Norwegian Bokmal"
 msgstr ""

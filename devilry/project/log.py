@@ -104,6 +104,16 @@ def create_logging_config(
                 'level': sh_loglevel,
                 'propagate': False
             },
+            'MARKDOWN': {
+                'handlers': ['stderr'],
+                'level': 'INFO',
+                'propagate': False
+            },
+            'chardet.charsetprober': {
+                'handlers': ['stderr'],
+                'level': 'INFO',
+                'propagate': False
+            },
             '': {
                 'handlers': handlers,
                 'level': django_loglevel,

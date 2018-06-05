@@ -1,12 +1,22 @@
+from django.utils import translation
 from django.utils.translation import ugettext_lazy
 
 import django_rq
 from django_cradmin.crinstance import reverse_cradmin_url
 from devilry.utils.devilry_email import send_templated_message
-from devilry.devilry_email.utils import get_student_users_in_group
+from devilry.devilry_email.utils import get_student_users_in_group, activate_translation_for_user
 
 
-def send_feedback_email(feedback_set, points, domain_url_start, subject):
+def get_subject(assignment, feedback_type=None):
+    if not feedback_type:
+        raise ValueError('Missing mailtype')
+    if feedback_type == 'feedback_created':
+        return ugettext_lazy('Feedback for %(assignment_name)s') % {'assignment_name': assignment.long_name}
+    if feedback_type == 'feedback_edited':
+        return ugettext_lazy('Feedback updated for %(assignment_name)s') % {'assignment_name': assignment.long_name}
+
+
+def send_feedback_email(feedback_set, points, domain_url_start, feedback_type):
     """
     Send a feedback mail to all students in and :class:`~.devilry.apps.core.models.AssignmentGroup` for
     a :class:`~.devilry.devilry_group.models.FeedbackSet`.
@@ -17,8 +27,6 @@ def send_feedback_email(feedback_set, points, domain_url_start, subject):
         user: The user that corrected the ``FeedbackSet``.
         subject: The email subject.
     """
-    # assignment = feedback_set.group.parentnode
-    # subject = ugettext_lazy('Feedback for %(assignment_name)s') % {'assignment_name': assignment.long_name}
     template_name = 'devilry_email/feedback_email/assignment_feedback_student.txt'
 
     # Build absolute url
@@ -28,23 +36,28 @@ def send_feedback_email(feedback_set, points, domain_url_start, subject):
         reverse_cradmin_url(instanceid='devilry_group_student', appname='feedbackfeed', roleid=feedback_set.group_id)
     )
     student_users = list(get_student_users_in_group(feedback_set.group))
-    send_templated_message(subject, template_name, {
-        'assignment': feedback_set.group.parentnode,
-        'devilryrole': 'student',
-        'points': points,
-        'deadline_datetime': feedback_set.deadline_datetime,
-        'corrected_datetime': feedback_set.grading_published_datetime,
-        'url': absolute_url
-    }, *student_users)
+    for student_user in student_users:
+        current_language = translation.get_language()
+        activate_translation_for_user(user=student_user)
+        subject = get_subject(assignment=feedback_set.group.parentnode, feedback_type=feedback_type)
+        template_dictionary = {
+            'assignment': feedback_set.group.parentnode,
+            'devilryrole': 'student',
+            'points': points,
+            'deadline_datetime': feedback_set.deadline_datetime,
+            'corrected_datetime': feedback_set.grading_published_datetime,
+            'url': absolute_url
+        }
+        send_templated_message(subject, template_name, template_dictionary, student_user, is_html=True)
+        translation.activate(current_language)
 
 
 def send_feedback_edited_email(**kwargs):
     """
     Send feedback updated email. With customized subject for edited feedback.
     """
-    assignment = kwargs['feedback_set'].group.parentnode
     kwargs.update({
-        'subject': ugettext_lazy('Feedback updated for %(assignment_name)s') % {'assignment_name': assignment.long_name}
+        'feedback_type': 'feedback_edited'
     })
     send_feedback_email(**kwargs)
 
@@ -53,9 +66,8 @@ def send_feedback_created_email(**kwargs):
     """
     Send feedback created email. With customized subject for newly published feedback.
     """
-    assignment = kwargs['feedback_set'].group.parentnode
     kwargs.update({
-        'subject': ugettext_lazy('Feedback for %(assignment_name)s') % {'assignment_name': assignment.long_name}
+        'feedback_type': 'feedback_created'
     })
     send_feedback_email(**kwargs)
 

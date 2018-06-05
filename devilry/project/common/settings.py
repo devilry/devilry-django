@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'ievv_opensource.ievvtasks_common',
     'ievv_opensource.ievv_batchframework',
     'ievv_opensource.ievv_customsql',
+    'ievv_opensource.ievv_developemail',
     'django_rq',
     'devilry.devilry_bulkcreate_users',
     'devilry.devilry_cradmin',
@@ -167,6 +168,8 @@ LANGUAGE_CODE = 'en'
 gettext_noop = lambda s: s
 LANGUAGES = [('en', gettext_noop('English')),
              ('nb', gettext_noop('Norwegian Bokmal'))]
+
+DJANGO_CRADMIN_MOMENTJS_LOCALE = LANGUAGE_CODE
 
 
 LOCALE_PATHS = [

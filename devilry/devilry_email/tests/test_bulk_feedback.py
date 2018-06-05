@@ -15,7 +15,7 @@ class TestBulkMailSending(test.TestCase):
 
     def test_send_to_single_feedbackset(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                           long_name='Assignment 1', parentnode__long_name='Subject 1')
+                                           long_name='Assignment 1', parentnode__parentnode__long_name='Subject 1')
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         test_feedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup, grading_points=1)
         student = mommy.make('core.Candidate', assignment_group=testgroup)
@@ -26,9 +26,9 @@ class TestBulkMailSending(test.TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, '[Devilry] Feedback for {}'.format(testassignment.long_name))
         self.assertEqual(mail.outbox[0].recipients(), ['student@example.com'])
-        mail_content = mail.outbox[0].body
+        mail_content = mail.outbox[0].message().as_string()
         self.assertIn('Assignment: {}'.format(testassignment.long_name), mail_content)
-        self.assertIn('Subject: {}'.format(testassignment.parentnode.long_name), mail_content)
+        self.assertIn('Subject: {}'.format(testassignment.parentnode.parentnode.long_name), mail_content)
         self.assertIn('Result: passed', mail_content)
 
     def test_send_to_multiple_feedbacksets(self):

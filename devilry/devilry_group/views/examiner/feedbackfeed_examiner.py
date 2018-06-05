@@ -265,17 +265,18 @@ class ExaminerPublicDiscussView(ExaminerBaseFeedbackFeedView):
 
     def __send_comment_email(self, comment):
         comment_email.bulk_send_comment_email_to_students_and_examiners(
-            group_id=self.request.cradmin_role.id,
-            comment_user_id=comment.user.id,
-            published_datetime=comment.published_datetime,
+            comment_id=comment.id,
             domain_url_start=self.request.build_absolute_uri('/'))
 
     def save_object(self, form, commit=False):
         comment = super(ExaminerPublicDiscussView, self).save_object(form=form)
         comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
         comment.published_datetime = timezone.now()
-        self.__send_comment_email(comment=comment)
+        # self.__send_comment_email(comment=comment)
         return super(ExaminerPublicDiscussView, self).save_object(form=form, commit=True)
+
+    def perform_after_save(self, comment):
+        self.__send_comment_email(comment=comment)
 
     def get_success_url(self):
         return self.request.cradmin_app.reverse_appurl(viewname='public-discuss')
@@ -304,17 +305,17 @@ class ExaminerWithAdminsDiscussView(ExaminerBaseFeedbackFeedView):
 
     def __send_email_to_examiners(self, comment):
         comment_email.bulk_send_comment_email_to_examiners(
-            group_id=self.request.cradmin_role.id,
-            comment_user_id=comment.user.id,
-            published_datetime=comment.published_datetime,
+            comment_id=comment.id,
             domain_url_start=self.request.build_absolute_uri('/'))
 
     def save_object(self, form, commit=False):
         comment = super(ExaminerWithAdminsDiscussView, self).save_object(form=form)
         comment.visibility = group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
         comment.published_datetime = timezone.now()
-        self.__send_email_to_examiners(comment=comment)
         return super(ExaminerWithAdminsDiscussView, self).save_object(form=form, commit=True)
+
+    def perform_after_save(self, comment):
+        self.__send_email_to_examiners(comment=comment)
 
     def get_success_url(self):
         return self.request.cradmin_app.reverse_appurl(viewname='examiner-admin-discuss')

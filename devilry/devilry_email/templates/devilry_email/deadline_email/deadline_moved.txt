@@ -1,7 +1,21 @@
 {% load i18n %}
 
-{% blocktrans with feedbackset_deadline=deadline|date:"DATETIME_FORMAT" %}
-The deadline for {{ assignment_name }} has been moved.
-New deadline is {{ feedbackset_deadline }}.
-{% endblocktrans %}
-{% trans "Details" %}: {{ url }}
+<span class="devilry_email_deadline_moved_info_text">
+    {% blocktrans trimmed with assignment_name=assignment_name context="devilry deadline moved" %}
+        The deadline for {{ assignment_name }} has been moved.
+    {% endblocktrans %}
+</span>
+<br><br>
+<span class="devilry_email_deadline_moved_to_info_text">
+    {% blocktrans trimmed with feedbackset_deadline=deadline|date:"DATETIME_FORMAT" context="devilry deadline moved" %}
+        New deadline is {{ feedbackset_deadline }}
+    {% endblocktrans %}
+</span
+
+<br><br>
+<span class="devilry_email_deadline_detail">
+    <span class="devilry_email_deadline_detail_text">
+        {% trans "See the delivery feed for more details" context "devilry deadline moved" %}:
+    </span>
+    <span class="devilry_email_deadline_detail_url"><a href="{{ url }}">{{ url }}</a></span>
+</span>

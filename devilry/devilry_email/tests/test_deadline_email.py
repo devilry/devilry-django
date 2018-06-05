@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import htmls
 from django import test
 from django.core import mail
 from django.utils import timezone
@@ -44,20 +45,26 @@ class TestNewAttemptEmail(test.TestCase):
     def test_send_new_attempt_email_body_text_with_deadline(self):
         test_feedbackset = self.__setup_feedback_set(new_deadline=datetime.utcnow())
         deadline_email.send_new_attempt_email(feedback_set=test_feedbackset, domain_url_start='http://www.example.com/')
-        self.assertIn(
-            'You have been given a new attempt in {} with deadline {}.'.format(
+        self.assertEqual(
+            htmls.S(mail.outbox[0].message().as_string()).one(
+                '.devilry_email_deadline_new_attempt_info_text').alltext_normalized,
+            'You have been given a new attempt in {} with deadline {}'.format(
                 test_feedbackset.group.parentnode.long_name,
-                defaultfilters.date(test_feedbackset.deadline_datetime, 'DATETIME_FORMAT')),
-            mail.outbox[0].body)
+                defaultfilters.date(test_feedbackset.deadline_datetime, 'DATETIME_FORMAT')))
+        self.assertEqual(
+            htmls.S(mail.outbox[0].message().as_string()).one(
+                '.devilry_email_deadline_new_attempt_detail_text').alltext_normalized,
+            'See the delivery feed for more details:')
 
     def test_send_new_attempt_email_link(self):
         test_feedbackset = self.__setup_feedback_set(new_deadline=timezone.now() + timezone.timedelta(days=10))
         deadline_email.send_new_attempt_email(feedback_set=test_feedbackset, domain_url_start='http://www.example.com/')
         feedback_link = 'http://www.example.com/devilry_group/student/{}/feedbackfeed/'.format(
             test_feedbackset.group.id)
-        self.assertIn(
-            'Details: {}'.format(feedback_link),
-            mail.outbox[0].body)
+        self.assertEqual(
+            htmls.S(mail.outbox[0].message().as_string()).one(
+                '.devilry_email_deadline_new_attempt_detail_url').alltext_normalized,
+            feedback_link)
 
 
 class TestNewAttemptBulkEmail(test.TestCase):
@@ -96,7 +103,6 @@ class TestNewAttemptBulkEmail(test.TestCase):
         self.assertIn('student3@example.com', recipient_list)
 
 
-
 class TestDeadlineMovedEmail(test.TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
@@ -129,20 +135,28 @@ class TestDeadlineMovedEmail(test.TestCase):
     def test_deadline_moved_email_body_text_without_deadline(self):
         test_feedbackset = self.__setup_feedback_set(new_deadline=datetime.utcnow())
         deadline_email.send_deadline_moved_email(feedback_set=test_feedbackset, domain_url_start='http://www.example.com/')
-        self.assertIn(
-            'The deadline for {} has been moved.\nNew deadline is {}.'.format(
-                test_feedbackset.group.parentnode.long_name,
-                defaultfilters.date(test_feedbackset.deadline_datetime, 'DATETIME_FORMAT')),
-            mail.outbox[0].body)
+        self.assertEqual(
+            htmls.S(mail.outbox[0].message().as_string()).one(
+                '.devilry_email_deadline_moved_info_text').alltext_normalized,
+            'The deadline for {} has been moved.'.format(test_feedbackset.group.parentnode.long_name))
+        self.assertEqual(
+            htmls.S(mail.outbox[0].message().as_string()).one(
+                '.devilry_email_deadline_moved_to_info_text').alltext_normalized,
+            'New deadline is {}'.format(defaultfilters.date(test_feedbackset.deadline_datetime, 'DATETIME_FORMAT')))
+        self.assertEqual(
+            htmls.S(mail.outbox[0].message().as_string()).one(
+                '.devilry_email_deadline_detail_text').alltext_normalized,
+            'See the delivery feed for more details:')
 
     def test_deadline_moved_email_link(self):
         test_feedbackset = self.__setup_feedback_set(new_deadline=timezone.now() + timezone.timedelta(days=10))
         deadline_email.send_deadline_moved_email(feedback_set=test_feedbackset, domain_url_start='http://www.example.com/')
         feedback_link = 'http://www.example.com/devilry_group/student/{}/feedbackfeed/'.format(
             test_feedbackset.group.id)
-        self.assertIn(
-            'Details: {}'.format(feedback_link),
-            mail.outbox[0].body)
+        self.assertEqual(
+            htmls.S(mail.outbox[0].message().as_string()).one(
+                '.devilry_email_deadline_detail_url').alltext_normalized,
+            feedback_link)
 
 
 class TestDeadlineMovedBulkEmail(test.TestCase):
