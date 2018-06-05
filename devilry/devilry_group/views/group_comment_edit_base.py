@@ -17,6 +17,8 @@ class EditGroupCommentForm(forms.ModelForm):
     """
     Form for editing existing Feedback drafts.
     """
+    #: We need somewhere to store the initial data, so we can prevent a save if
+    #: the initial text and the new posted text are identical.
     hidden_initial_data = forms.CharField(widget=forms.HiddenInput)
 
     class Meta:
@@ -39,6 +41,17 @@ class EditGroupCommentForm(forms.ModelForm):
 
 
 class EditGroupCommentBase(update.UpdateView):
+    """
+    Base class for editing :class:`.devilry.devilry_group.models.GroupComment`s.
+
+    This view can be used standalone, without being subclassed, but usually some extra checks needs
+    to be performed based on the role of the user.
+
+    By default this requires that the user that edits the comment, is also the user
+    that "owns" the comment.
+
+    If you need to do some extra checks, subclass this class and override the appropriate methods.
+    """
     model = group_models.GroupComment
 
     def dispatch(self, request, *args, **kwargs):
@@ -71,7 +84,7 @@ class EditGroupCommentBase(update.UpdateView):
 
     def form_invalid(self, form):
         messages.success(self.request, ugettext_lazy('No changes, comment not updated'))
-        return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+        return HttpResponseRedirect(self.__get_redirect_url())
 
     def save_object(self, form, commit=False):
         comment = super(EditGroupCommentBase, self).save_object(form=form, commit=True)
@@ -80,11 +93,17 @@ class EditGroupCommentBase(update.UpdateView):
     def get_success_message(self, object):
         messages.success(self.request, ugettext_lazy('Comment updated!'))
 
-    def get_success_url(self):
-        if self.get_submit_save_and_continue_edititing_button_name() in self.request.POST:
-            return self.request.cradmin_app.reverse_appurl(
-                'groupcomment-edit',
-                args=self.args,
-                kwargs=self.kwargs)
-        else:
+    def __get_redirect_url(self):
+        """
+        If the `Save and continue editing` is pressed, this returns the url path to the edit view,
+        else it returns the url path to the feedback feed.
+        """
+        if self.get_submit_save_and_continue_edititing_button_name() not in self.request.POST:
             return self.request.cradmin_app.reverse_appindexurl()
+        return self.request.cradmin_app.reverse_appurl(
+            'groupcomment-edit',
+            args=self.args,
+            kwargs=self.kwargs)
+
+    def get_success_url(self):
+        return self.__get_redirect_url()

@@ -24,6 +24,7 @@ from devilry.devilry_group import models as group_models
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_email.feedback_email import feedback_email
 from devilry.devilry_email.comment_email import comment_email
+from devilry.devilry_group.views.group_comment_edit_base import EditGroupCommentBase
 from devilry.utils import setting_utils
 
 
@@ -500,100 +501,9 @@ class GroupCommentDeleteView(GroupCommentEditDeleteMixin, delete.DeleteView):
         return self.request.cradmin_app.reverse_appindexurl()
 
 
-class GroupCommentEditView(GroupCommentEditDeleteMixin, update.UpdateView):
+class GroupCommentEditView(EditGroupCommentBase):
     """
-    View to edit an existing feedback draft.
-
-    Makes it possible for an Examiner to edit the ``text``-attribute value of a
-    :class:`~devilry.devilry_group.models.GroupComment` that's saved as a draft.
     """
-    template_name = 'devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_edit_groupcomment.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        """
-        Checks if the GroupComment id passed is for a drafted comment.
-        If the comment is not a draft, PermissionDenied is raised.
-
-        Args:
-            request (HttpRequest): request object.
-
-        Returns:
-            HttpResponseRedirect: Reponse redirect object.
-
-        Raises:
-            PermissionDenied: If comment is not a draft, this exception is raised.
-        """
-        if len(self.get_queryset_for_role(request.cradmin_role)) == 0:
-            raise PermissionDenied
-        return super(GroupCommentEditView, self).dispatch(request, *args, **kwargs)
-
-    def get_pagetitle(self):
-        return ugettext_lazy('Edit group comment')
-
-    def get_pageheading(self):
-        return ugettext_lazy('Edit group comment')
-
-    def get_form_class(self):
-        """
-        Get the formclass to use.
-
-        Returns:
-            EditGroupCommentForm: The form class.
-        """
-        return EditGroupCommentForm
-
-    def get_form(self, form_class=None):
-        """
-        Set ``AceMarkdownWidget`` on the text form field and do not show the field label.
-        Args:
-            form_class: Defaults to None
-
-        Returns:
-            EditGroupCommentForm: Form with field-representations set.
-        """
-        form = super(GroupCommentEditView, self).get_form(form_class=form_class)
-        form.fields['text'].widget = devilry_acemarkdown.Small()
-        form.fields['text'].label = False
-        return form
-
-    def get_field_layout(self):
-        return [
-            layout.Div(
-                layout.Field('text', focusonme='focusonme', css_class='form-control'),
-                css_class='cradmin-globalfields'
-            )
-        ]
-
-    def save_object(self, form, commit=True):
-        """
-        Save the edited :obj:`~devilry.devilry_group.models.GroupComment`.
-
-        Args:
-            form: The :class:`~.EditGroupCommentForm` passed.
-            commit: Should it be saved? (Defaults to True)
-
-        Returns:
-            GroupComment: The saved comment.
-        """
-        comment = super(GroupCommentEditView, self).save_object(form=form, commit=commit)
-        self.add_success_messages(ugettext_lazy('GroupComment updated!'))
-        return comment
-
-    def get_success_url(self):
-        """
-        The success url is for this view if the user wants to continue editing, else it redirects to
-        the indexview, :class:`~.ExaminerFeedbackView`.
-
-        Returns:
-            url: Redirected to view for that url.
-        """
-        if self.get_submit_save_and_continue_edititing_button_name() in self.request.POST:
-            return self.request.cradmin_app.reverse_appurl(
-                'groupcomment-edit',
-                args=self.args,
-                kwargs=self.kwargs)
-        else:
-            return self.request.cradmin_app.reverse_appindexurl()
 
 
 class ExaminerFeedbackfeedRedirectView(View):
