@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 
-from devilry.apps.core.models import RelatedExaminer
+from devilry.apps.core.models import RelatedExaminer, AssignmentGroup
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedexaminer
 from devilry.devilry_cradmin import devilry_listbuilder
 
@@ -66,6 +66,10 @@ class Overview(listbuilder_relatedexaminer.ListViewBase):
         kwargs['assignment'] = assignment
         return kwargs
 
+    def get_assignment_groups_without_any_examiners(self):
+        return AssignmentGroup.objects\
+            .filter(parentnode=self.request.cradmin_role, examiners__isnull=True)
+
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
         context['assignment'] = self.assignment
@@ -73,6 +77,7 @@ class Overview(listbuilder_relatedexaminer.ListViewBase):
             .filter(period=self.request.cradmin_role.period)\
             .exclude(active=False)\
             .count()
+        context['students_without_examiners_exists'] = self.get_assignment_groups_without_any_examiners().exists()
         return context
 
 

@@ -30,14 +30,14 @@
                 <a href="{% cradmin_appurl "update_publishing_time" assignment.id %}" type="button"
                    class="btn btn-default btn-sm">{% trans "Edit publishing time" %}</a>
             </div>
-
         </div>
     </div>
 
     <div class="col-sm-6">
         <div id="devilry_admin_assignment_overview_settings_first_deadline">
             <h3>
-                {% trans "First deadline" %}
+                {% trans "First deadline" %}:
+                <span class="text-warning">{{ assignment.first_deadline|date:"SHORT_DATETIME_FORMAT" }}</span>
             </h3>
             <p>
                 {% blocktrans trimmed with deadline=assignment.first_deadline context "first_deadline description" %}

@@ -13,9 +13,9 @@
 {% endblock %}
 
 {% block pageheader-inner %}
-    <a href="{% cradmin_instance_appindex_url 'studentoverview' %}" class="devilry-page-header-backlink">
+    <a href="{% cradmin_instance_appindex_url 'delete_groups' %}" class="devilry-page-header-backlink">
         <span class="sr-only">
-            {% trans "Back to student overview" %}
+            {% trans "Back to delete students overview" %}
         </span>
         <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
     </a>
@@ -23,7 +23,7 @@
         {% trans "Delete students" %}
     </h1>
     <p>
-        {% trans 'Select one or more students, and select "Delete students".' %}
+        {% trans 'Select one or more students, and click the "Delete students" button.' %}
 
         {% if not has_delete_with_content_permission %}
             <span id="devilry_admin_assignment_delete_groups_can_not_delete_content_message">

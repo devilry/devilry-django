@@ -54,6 +54,14 @@ class ItemValueMixin(object):
         return ['devilry-cradmin-groupitemvalue']
 
 
+class MinimalItemValueMixin(ItemValueMixin):
+    def get_examiners(self):
+        return []
+
+    def should_include_examiners(self):
+        return False
+
+
 class StudentItemValueMixin(ItemValueMixin):
     def get_devilryrole(self):
         return 'student'
@@ -103,6 +111,33 @@ class DepartmentAdminItemValueMixin(ItemValueMixin):
         return 'departmentadmin'
 
 
+class MinimalPeriodAdminItemValueMixin(MinimalItemValueMixin):
+    def __init__(self, *args, **kwargs):
+        super(MinimalPeriodAdminItemValueMixin, self).__init__(*args, **kwargs)
+        if self.get_assignment().is_anonymous:
+            raise ValueError('Can not use PeriodAdminItemValueMixin for anonymous assignments. '
+                             'Periodadmins are not supposed have access to them.')
+
+    def get_devilryrole(self):
+        return 'periodadmin'
+
+
+class MinimalSubjectAdminItemValueMixin(MinimalItemValueMixin):
+    def __init__(self, *args, **kwargs):
+        super(MinimalSubjectAdminItemValueMixin, self).__init__(*args, **kwargs)
+        if self.get_assignment().anonymizationmode == Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS:
+            raise ValueError('Can not use SubjectAdminItemValueMixin for fully anonymous assignments. '
+                             'Use FullyAnonymousSubjectAdminItemValue istead.')
+
+    def get_devilryrole(self):
+        return 'subjectadmin'
+
+
+class MinimalDepartmentAdminItemValueMixin(MinimalItemValueMixin):
+    def get_devilryrole(self):
+        return 'departmentadmin'
+
+
 #
 #
 # ItemValue classes for normal rendering (no multiselect)
@@ -135,6 +170,13 @@ class NoMultiselectItemValue(listbuilder.itemvalue.TitleDescription):
     template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/item-value.django.html'
 
 
+class MinimalNoMultiselectItemValue(listbuilder.itemvalue.TitleDescription):
+    """
+    Not used directly - use one of the subclasses.
+    """
+    template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/minimal-item-value.django.html'
+
+
 class StudentItemValue(StudentItemValueMixin, NoMultiselectItemValue):
     template_name = 'devilry_cradmin/devilry_listbuilder/assignmentgroup/student-item-value.django.html'
 
@@ -152,6 +194,18 @@ class SubjectAdminItemValue(SubjectAdminItemValueMixin, NoMultiselectItemValue):
 
 
 class DepartmentAdminItemValue(DepartmentAdminItemValueMixin, NoMultiselectItemValue):
+    pass
+
+
+class MinimalPeriodAdminItemValue(MinimalPeriodAdminItemValueMixin, MinimalNoMultiselectItemValue):
+    pass
+
+
+class MinimalSubjectAdminItemValue(MinimalSubjectAdminItemValueMixin, MinimalNoMultiselectItemValue):
+    pass
+
+
+class MinimalDepartmentAdminItemValue(MinimalDepartmentAdminItemValueMixin, MinimalNoMultiselectItemValue):
     pass
 
 

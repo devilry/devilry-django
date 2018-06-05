@@ -135,6 +135,25 @@ class TestSelectMethodView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             .one('#devilry_admin_assignment_examiners_bulk_organize_button_manual_replace')
             .alltext_normalized)
 
+    def test_students_without_examiners_warning(self):
+        testassignment = mommy.make('core.Assignment')
+        mommy.make('core.Candidate', assignment_group__parentnode=testassignment)
+        mommy.make('core.RelatedExaminer', period=testassignment.period)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        self.assertTrue(mockresponse.selector.exists('#id_devilry_admin_assignment_bulk_organize_examiner'))
+        self.assertEqual(
+            mockresponse.selector.one('#id_devilry_admin_assignment_bulk_organize_examiner').alltext_normalized,
+            'warning: There are still students on the assignment with no examiners assigned to them')
+
+    def test_students_all_students_are_assigned_examiners_warning_not_rendered(self):
+        testassignment = mommy.make('core.Assignment')
+        assignment_group = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate', assignment_group=assignment_group)
+        mommy.make('core.Examiner', related_examiner__period=testassignment.parentnode,
+                   assignmentgroup=assignment_group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        self.assertFalse(mockresponse.selector.exists('#id_devilry_admin_assignment_bulk_organize_examiner'))
+
 
 class TestRandomView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     """
