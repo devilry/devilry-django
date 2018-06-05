@@ -8,6 +8,10 @@ CREATE OR REPLACE FUNCTION devilry__on_comment_text_update() RETURNS TRIGGER AS 
 DECLARE
     var_existing_commentedithistory_id INTEGER;
 BEGIN
+    IF OLD.id != NEW.id THEN
+        RAISE EXCEPTION 'OLD.id #% != NEW.id #%', OLD.id, NEW.id;
+    END IF;
+
     SELECT id
     FROM devilry_comment_commentedithistory
     WHERE edited_datetime = now() AND comment_id = NEW.id

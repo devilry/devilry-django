@@ -44,6 +44,10 @@ CREATE OR REPLACE FUNCTION devilry__on_group_comment_text_update() RETURNS TRIGG
 DECLARE
     var_comment_edit_history_id INTEGER;
 BEGIN
+    IF OLD.comment_ptr_id != NEW.comment_ptr_id THEN
+        RAISE EXCEPTION 'OLD.comment_ptr_id #% != NEW.comment_ptr_id #%', OLD.comment_ptr_id, NEW.comment_ptr_id;
+    END IF;
+
     SELECT id
     FROM devilry_comment_commentedithistory
     WHERE comment_id = NEW.comment_ptr_id AND edited_datetime = now()
@@ -56,8 +60,8 @@ BEGIN
             visibility)
         VALUES (
             var_comment_edit_history_id,
-            NEW.comment_ptr_id,
-            NEW.VISIBILITY);
+            OLD.comment_ptr_id,
+            OLD.VISIBILITY);
     END IF;
     RETURN NEW;
 END

@@ -30,10 +30,10 @@ def get_feedbackfeed_builder_queryset(group, requestuser, devilryrole):
     commentfile_queryset = comment_models.CommentFile.objects\
         .select_related('comment__user')\
         .order_by('filename')
-    groupcomment_edit_history_queryset = group_models.GroupCommentEditHistory.objects\
-        .select_related('comment', 'group_comment', 'edited_by', 'commentedithistory_ptr')\
-        .order_by('edited_datetime')
-
+    # groupcomment_edit_history_queryset = group_models.GroupCommentEditHistory.objects\
+    #     .select_related('comment', 'group_comment', 'edited_by', 'commentedithistory_ptr')\
+    #     .order_by('edited_datetime')
+    #
     # groupcomment_queryset = group_models.GroupComment.objects\
     #     .exclude_private_comments_from_other_users(user=requestuser)\
     #     .select_related(
@@ -51,7 +51,7 @@ def get_feedbackfeed_builder_queryset(group, requestuser, devilryrole):
     #             queryset=groupcomment_edit_history_queryset))
     groupcomment_queryset = group_models.GroupComment.objects \
         .exclude_private_comments_from_other_users(user=requestuser) \
-        .annotate_with_last_edit_history()\
+        .annotate_with_last_edit_history(requestuser_devilryrole=devilryrole)\
         .select_related(
             'user',
             'feedback_set',

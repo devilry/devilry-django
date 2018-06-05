@@ -762,14 +762,20 @@ class GroupCommentQuerySet(AbstractGroupCommentQuerySet):
     """
     QuerySet for :class:`.GroupComment`.
     """
-    def annotate_with_last_edit_history(self):
-        edit_history_query = GroupCommentEditHistory.objects\
-            .filter(group_comment_id=OuterRef('id'))\
+    def annotate_with_last_edit_history(self, requestuser_devilryrole):
+        edit_history_subquery = GroupCommentEditHistory.objects \
+            .filter(group_comment_id=OuterRef('id'))
+
+        if requestuser_devilryrole == 'student':
+            edit_history_subquery = edit_history_subquery\
+                .filter(visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        edit_history_subquery = edit_history_subquery\
             .order_by('-edited_datetime')\
             .values('edited_datetime')[:1]
         return self.annotate(
             last_edithistory_datetime=models.Subquery(
-                edit_history_query, output_field=models.DateTimeField()
+                edit_history_subquery, output_field=models.DateTimeField()
             )
         )
 

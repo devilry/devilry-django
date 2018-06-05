@@ -163,13 +163,39 @@ class TestGroupCommentModel(TestCase):
 class TestGroupCommentQueryset(TestCase):
     def test_annotate_with_last_edited_history_has_attr(self):
         mommy.make('devilry_group.GroupComment', text='test')
-        groupcomment = group_models.GroupComment.objects.annotate_with_last_edit_history().get()
+        groupcomment = group_models.GroupComment.objects.annotate_with_last_edit_history(
+            requestuser_devilryrole='notstudent').get()
         self.assertTrue(hasattr(groupcomment, 'last_edithistory_datetime'))
 
     def test_annotate_with_last_edited_history_none(self):
         mommy.make('devilry_group.GroupComment', text='test')
-        groupcomment = group_models.GroupComment.objects.annotate_with_last_edit_history().get()
+        groupcomment = group_models.GroupComment.objects.annotate_with_last_edit_history(
+            requestuser_devilryrole='notstudent').get()
         self.assertIsNone(groupcomment.last_edithistory_datetime)
+
+    def test_annotate_with_last_edited_history_private_devilryrole_student(self):
+        test_groupcomment = mommy.make('devilry_group.GroupComment', text='test')
+        mommy.make('devilry_group.GroupCommentEditHistory', group_comment=test_groupcomment,
+                   visibility=group_models.GroupComment.VISIBILITY_PRIVATE)
+        groupcomment = group_models.GroupComment.objects.annotate_with_last_edit_history(
+            requestuser_devilryrole='student').get()
+        self.assertIsNone(groupcomment.last_edithistory_datetime)
+
+    def test_annotate_with_last_edited_history_examiners_and_admins_devilryrole_student(self):
+        test_groupcomment = mommy.make('devilry_group.GroupComment', text='test')
+        mommy.make('devilry_group.GroupCommentEditHistory', group_comment=test_groupcomment,
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        groupcomment = group_models.GroupComment.objects.annotate_with_last_edit_history(
+            requestuser_devilryrole='student').get()
+        self.assertIsNone(groupcomment.last_edithistory_datetime)
+
+    def test_annotate_with_last_edited_history_everyone_devilryrole_student(self):
+        test_groupcomment = mommy.make('devilry_group.GroupComment', text='test')
+        mommy.make('devilry_group.GroupCommentEditHistory', group_comment=test_groupcomment,
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        groupcomment = group_models.GroupComment.objects.annotate_with_last_edit_history(
+            requestuser_devilryrole='student').get()
+        self.assertIsNotNone(groupcomment.last_edithistory_datetime)
 
     def test_annotate_with_last_edited_history(self):
         test_groupcomment = mommy.make('devilry_group.GroupComment', text='test')
@@ -179,7 +205,8 @@ class TestGroupCommentQueryset(TestCase):
         groupcommenthistory_not_last_edited = mommy.make('devilry_group.GroupCommentEditHistory',
                                                   group_comment=test_groupcomment,
                                                   edited_datetime=timezone.now() - timezone.timedelta(days=3))
-        groupcomment = group_models.GroupComment.objects.annotate_with_last_edit_history().get()
+        groupcomment = group_models.GroupComment.objects.annotate_with_last_edit_history(
+            requestuser_devilryrole='notstudent').get()
         self.assertIsNotNone(groupcomment.last_edithistory_datetime)
         self.assertNotEqual(groupcomment.last_edithistory_datetime, groupcommenthistory_not_last_edited.edited_datetime)
         self.assertEqual(groupcomment.last_edithistory_datetime, groupcommenthistory_last_edited.edited_datetime)
@@ -195,7 +222,8 @@ class TestGroupCommentQueryset(TestCase):
         edited_datetime3 = mommy.make('devilry_group.GroupCommentEditHistory',
                                       group_comment=test_groupcomment,
                                       edited_datetime=timezone.now() - timezone.timedelta(days=1)).edited_datetime
-        groupcomment = group_models.GroupComment.objects.annotate_with_last_edit_history().get()
+        groupcomment = group_models.GroupComment.objects.annotate_with_last_edit_history(
+            requestuser_devilryrole='notstudent').get()
         self.assertNotEqual(groupcomment.last_edithistory_datetime, edited_datetime1)
         self.assertNotEqual(groupcomment.last_edithistory_datetime, edited_datetime3)
         self.assertEqual(groupcomment.last_edithistory_datetime, edited_datetime2)
@@ -212,7 +240,8 @@ class TestGroupCommentQueryset(TestCase):
         self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 10)
 
         last_edited_datetime = None
-        for group_comment in group_models.GroupComment.objects.annotate_with_last_edit_history():
+        for group_comment in group_models.GroupComment.objects.annotate_with_last_edit_history(
+                requestuser_devilryrole='notstudent'):
             if last_edited_datetime:
                 self.assertNotEqual(group_comment.last_edithistory_datetime, last_edited_datetime)
             last_edited_datetime = group_comment.last_edithistory_datetime
@@ -229,5 +258,6 @@ class TestGroupCommentQueryset(TestCase):
         self.assertEqual(group_models.GroupComment.objects.count(), 10)
         self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 30)
         with self.assertNumQueries(1):
-            for group_comment in group_models.GroupComment.objects.annotate_with_last_edit_history():
+            for group_comment in group_models.GroupComment.objects.annotate_with_last_edit_history(
+                    requestuser_devilryrole='notstudent'):
                 self.assertIsNotNone(group_comment.last_edithistory_datetime)
