@@ -6,7 +6,7 @@ from devilry.devilry_cradmin import devilry_crinstance
 from devilry.devilry_group.cradmin_instances import crinstance_base
 from devilry.devilry_group.views.download_files import batch_download_files
 from devilry.devilry_group.views.examiner import feedbackfeed_examiner
-from devilry.devilry_group.views.examiner import manage_deadline
+from devilry.devilry_group.views.examiner import manage_deadline, group_comment_history
 
 
 class Menu(devilry_crmenu_examiner.Menu):
@@ -28,6 +28,7 @@ class ExaminerCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_cr
     apps = [
         ('feedbackfeed', feedbackfeed_examiner.App),
         ('download', batch_download_files.App),
+        ('commenthistory', group_comment_history.App),
         ('manage-deadline', manage_deadline.App)
     ]
     id = 'devilry_group_examiner'

@@ -9,7 +9,7 @@ from devilry.devilry_cradmin import devilry_crinstance
 from devilry.devilry_group.cradmin_instances import crinstance_base
 from devilry.devilry_group.views.admin import feedbackfeed_admin
 from devilry.devilry_group.views.download_files import batch_download_files
-from devilry.devilry_group.views.admin import manage_deadline
+from devilry.devilry_group.views.admin import manage_deadline, group_comment_history
 
 
 class Menu(devilry_crmenu_admin.Menu):
@@ -29,6 +29,7 @@ class AdminCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_crins
     apps = [
         ('feedbackfeed', feedbackfeed_admin.App),
         ('download', batch_download_files.App),
+        ('commenthistory', group_comment_history.App),
         ('manage-deadline', manage_deadline.App)
     ]
     id = 'devilry_group_admin'

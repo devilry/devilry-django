@@ -66,6 +66,7 @@ class FeedbackSetGradingUpdateHistoryAdmin(admin.ModelAdmin):
         'updated_by'
     ]
 
+
 admin.site.register(models.FeedbackSetGradingUpdateHistory, FeedbackSetGradingUpdateHistoryAdmin)
 
 
@@ -86,4 +87,16 @@ class FeedbackSetDeadlineHistoryAdmin(admin.ModelAdmin):
         'changed_datetime'
     ]
 
+
 admin.site.register(models.FeedbackSetDeadlineHistory, FeedbackSetDeadlineHistoryAdmin)
+
+
+class GroupCommentEditHistoryAdmin(admin.ModelAdmin):
+    list_display = [
+        'visibility',
+        'edited_datetime',
+        'edited_by'
+    ]
+
+
+admin.site.register(models.GroupCommentEditHistory, GroupCommentEditHistoryAdmin)

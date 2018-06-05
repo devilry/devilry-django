@@ -244,23 +244,24 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
                                                           requestuser=request_examiner.relatedexaminer.user)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
 
-    def test_get_examiner_delete_on_drafts(self):
+    def test_get_no_edit_link_for_other_users_comments(self):
         group = mommy.make('core.AssignmentGroup')
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=group,
-                              relatedexaminer=mommy.make('core.RelatedExaminer'),)
+                              relatedexaminer=mommy.make('core.RelatedExaminer'), )
         mommy.make('devilry_group.GroupComment',
-                   user=examiner.relatedexaminer.user,
                    user_role='examiner',
-                   part_of_grading=True,
-                   visibility=GroupComment.VISIBILITY_PRIVATE,
                    feedback_set=group.feedbackset_set.first())
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
-                                                          requestuser=examiner.relatedexaminer.user)
-        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-groupcomment-draft-delete'))
-        self.assertTrue('Delete', mockresponse.selector.one('.devilry-feedbackfeed-groupcomment-draft-delete').alltext_normalized)
+        mommy.make('devilry_group.GroupComment',
+                   user_role='student',
+                   feedback_set=group.feedbackset_set.first())
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group, requestuser=examiner.relatedexaminer.user)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link__admin'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link__student'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link__examiner'))
 
-    def test_get_examiner_edit_on_drafts(self):
+    def test_get_examiner_edit_link_on_drafts(self):
         group = mommy.make('core.AssignmentGroup')
         examiner = mommy.make('core.Examiner',
                               assignmentgroup=group,
@@ -273,9 +274,107 @@ class TestFeedbackfeedExaminerMixin(test_feedbackfeed_common.TestFeedbackFeedMix
                    feedback_set=group.feedbackset_set.first())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
                                                           requestuser=examiner.relatedexaminer.user)
-        self.assertTrue(mockresponse.selector.exists('.devilry-feedbackfeed-groupcomment-draft-edit'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-comment-edit-link__examiner'))
         self.assertTrue('Edit',
-                        mockresponse.selector.one('.devilry-feedbackfeed-groupcomment-draft-edit').alltext_normalized)
+                        mockresponse.selector.one('.devilry-group-comment-edit-link__examiner').alltext_normalized)
+
+    def test_get_examiner_edit_link_url(self):
+        group = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'),)
+        groupcomment = mommy.make('devilry_group.GroupComment',
+                                 user=examiner.relatedexaminer.user,
+                                 user_role='examiner',
+                                 feedback_set=group.feedbackset_set.first())
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
+                                                          requestuser=examiner.relatedexaminer.user)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-comment-edit-link__examiner'))
+        self.assertEqual(mockresponse.selector.one('.devilry-group-comment-edit-link__examiner').get('href'),
+                         '/devilry_group/examiner/{}/feedbackfeed/groupcomment-edit/{}'.format(
+                             group.id, groupcomment.id))
+
+    def test_get_no_delete_link_for_other_users_comment_drafts(self):
+        group = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'), )
+        mommy.make('devilry_group.GroupComment',
+                   user_role='examiner',
+                   part_of_grading=True,
+                   visibility=GroupComment.VISIBILITY_PRIVATE,
+                   feedback_set=group.feedbackset_set.first())
+        mommy.make('devilry_group.GroupComment',
+                   user_role='examiner',
+                   part_of_grading=True,
+                   visibility=GroupComment.VISIBILITY_PRIVATE,
+                   feedback_set=group.feedbackset_set.first())
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group, requestuser=examiner.relatedexaminer.user)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-delete-link'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-delete-link__examiner'))
+
+    def test_get_examiner_delete_link_on_drafts(self):
+        group = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'), )
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   part_of_grading=True,
+                   visibility=GroupComment.VISIBILITY_PRIVATE,
+                   feedback_set=group.feedbackset_set.first())
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
+                                                          requestuser=examiner.relatedexaminer.user)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-comment-delete-link__examiner'))
+        self.assertTrue('Delete', mockresponse.selector.one(
+            '.devilry-group-comment-delete-link__examiner').alltext_normalized)
+
+    def test_get_examiner_delete_link_url(self):
+        group = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'), )
+        groupcomment = mommy.make('devilry_group.GroupComment',
+                                  user=examiner.relatedexaminer.user,
+                                  user_role='examiner',
+                                  part_of_grading=True,
+                                  visibility=group_models.GroupComment.VISIBILITY_PRIVATE,
+                                  feedback_set=group.feedbackset_set.first())
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
+                                                          requestuser=examiner.relatedexaminer.user)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-comment-delete-link__examiner'))
+        self.assertEqual(mockresponse.selector.one('.devilry-group-comment-delete-link__examiner').get('href'),
+                         '/devilry_group/examiner/{}/feedbackfeed/groupcomment-delete/{}'.format(
+                             group.id, groupcomment.id))
+
+    def test_get_examiner_no_delete_link_on_comments_visible_to_examiners_and_admins(self):
+        group = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'), )
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                   feedback_set=group.feedbackset_set.first())
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
+                                                          requestuser=examiner.relatedexaminer.user)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-delete-link__examiner'))
+
+    def test_get_examiner_no_delete_link_on_comments_visible_to_everyone(self):
+        group = mommy.make('core.AssignmentGroup')
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.relatedexaminer.user,
+                   user_role='examiner',
+                   visibility=group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   feedback_set=group.feedbackset_set.first())
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=examiner.assignmentgroup,
+                                                          requestuser=examiner.relatedexaminer.user)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-delete-link__examiner'))
 
     # def test_get_num_queries(self):
     #     testgroup = mommy.make('core.AssignmentGroup')

@@ -5,6 +5,7 @@
 {% load devilry_account_tags %}
 {% load cradmin_tags %}
 {% load crispy_forms_tags %}
+{% load tz %}
 {% load i18n %}
 
 {% block content %}
@@ -27,29 +28,47 @@
                 {% endif %}
             </span>
 
-            {% if me.group_comment|devilry_group_comment_published %}
-                <span class="devilry-group-comment-published-date comment-published-date-text">
-                    {{ me.group_comment|devilry_group_comment_published }}
-                </span>
+            {% if me.include_edit_links %}
+                {% block edit-links %}{% endblock edit-links %}
+            {% endif %}
+
+            {% if me.include_published_last_edited_datetime %}
+                {% if me.get_last_edited_datetime_history %}
+                    {% block last-edited-datetime %}
+                        <br>
+                        <a href="{% cradmin_instance_url appname='commenthistory' viewname='INDEX' group_comment_id=me.group_comment.id %}"
+                           class="devilry-group-comment-last-edited-date">
+                            {% trans "Last edited" context "groupcomment last edited link" %} {{ me.get_last_edited_datetime_history|localtime|date:"DATETIME_FORMAT" }}
+                        </a>
+                    {% endblock last-edited-datetime %}
+                {% else %}
+                    {% if me.is_published %}
+                        <span class="devilry-group-comment-published-date comment-published-date-text">
+                            {{ me.group_comment|devilry_group_comment_published }}
+                        </span>
+                    {% endif %}
+                {% endif %}
             {% endif %}
         </p>
-        {% include "devilry_group/include/groupcomment_edit_delete_option.html" %}
+
         <div class="devilry-group-comment-text">
             {% blocktrans with text=me.group_comment.text|devilry_group_markdown|safe %} {{text}} {% endblocktrans %}
         </div>
-        {% for commentfile in me.group_comment.commentfile_set.all %}
-            <a href="{% cradmin_instance_url appname='download' viewname='file-download' commentfile_id=commentfile.id %}"
-                    class="devilry-filedownload" tooltip="{{ commentfile.filename }}">
-                <span class="devilry-filedownload__content">
-                    <span class="devilry-filedownload__label">
-                        {{ commentfile.filename }}
+        {% if me.include_files %}
+            {% for commentfile in me.group_comment.commentfile_set.all %}
+                <a href="{% cradmin_instance_url appname='download' viewname='file-download' commentfile_id=commentfile.id %}"
+                        class="devilry-filedownload" tooltip="{{ commentfile.filename }}">
+                    <span class="devilry-filedownload__content">
+                        <span class="devilry-filedownload__label">
+                            {{ commentfile.filename }}
+                        </span>
+                        <span class="devilry-filedownload__icon">
+                            <span class="fa fa-download fa-2x"></span>
+                        </span>
                     </span>
-                    <span class="devilry-filedownload__icon">
-                        <span class="fa fa-download fa-2x"></span>
-                    </span>
-                </span>
-            </a>
-        {% endfor %}
+                </a>
+            {% endfor %}
+        {% endif %}
     </div>
 
     {% block details %}

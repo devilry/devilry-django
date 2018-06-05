@@ -1,11 +1,10 @@
-from datetime import timedelta
-
 import mock
 from django.conf import settings
 from django.contrib import messages
 from django.core import mail
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.http import Http404
 from django.test import TestCase, override_settings
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
@@ -1394,3 +1393,274 @@ class TestFeedbackPublishingStudent(TestCase, cradmin_testhelpers.TestCaseMixin)
             self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
                                                requestuser=candidate.relatedstudent.user)
         self.assertEquals(1, group_models.FeedbackSet.objects.count())
+
+
+class TestStudentEditGroupCommentView(TestCase, cradmin_testhelpers.TestCaseMixin):
+    """
+    Comment edit history related tests.
+    """
+    viewclass = feedbackfeed_student.StudentEditGroupComment
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def __make_student_comment(self, feedback_set, user=None):
+        if not user:
+            user = mommy.make(settings.AUTH_USER_MODEL)
+        return mommy.make('devilry_group.GroupComment',
+                          text='Test',
+                          user=user,
+                          user_role=group_models.GroupComment.USER_ROLE_STUDENT,
+                          published_datetime=timezone.now(),
+                          feedback_set=feedback_set)
+
+    @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=False)
+    def test_raise_404_student_can_not_edit_their_comments(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testgroup,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
+        groupcomment = self.__make_student_comment(user=candidate.relatedstudent.user, feedback_set=testfeedbackset)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup,
+                requestuser=candidate.relatedstudent.user,
+                viewkwargs={'pk': groupcomment.id})
+
+    @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
+    def test_raise_404_student_has_not_comments(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testgroup,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup,
+                requestuser=candidate.relatedstudent.user,
+                viewkwargs={'pk': 1})
+
+    @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
+    def test_raise_404_student_can_not_edit_other_student_comments_sanity(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testgroup,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
+        groupcomment = self.__make_student_comment(feedback_set=testfeedbackset)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup,
+                requestuser=candidate.relatedstudent.user,
+                viewkwargs={'pk': groupcomment.id})
+
+    @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
+    def test_raise_404_student_can_not_edit_examiner_comments_sanity(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testgroup,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
+        groupcomment = mommy.make('devilry_group.GroupComment',
+                                  user_role=group_models.GroupComment.USER_ROLE_EXAMINER,
+                                  published_datetime=timezone.now(),
+                                  feedback_set=testfeedbackset)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup,
+                requestuser=candidate.relatedstudent.user,
+                viewkwargs={'pk': groupcomment.id})
+
+    @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
+    def test_raise_404_student_can_not_edit_admin_comments_sanity(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testgroup,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
+        groupcomment = mommy.make('devilry_group.GroupComment',
+                                  user_role=group_models.GroupComment.USER_ROLE_ADMIN,
+                                  published_datetime=timezone.now(),
+                                  feedback_set=testfeedbackset)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup,
+                requestuser=candidate.relatedstudent.user,
+                viewkwargs={'pk': groupcomment.id})
+
+    @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
+    def test_get_student_can_edit_own_comment_ok(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testgroup,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
+        groupcomment = self.__make_student_comment(feedback_set=testfeedbackset, user=candidate.relatedstudent.user)
+        self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=candidate.relatedstudent.user,
+            viewkwargs={'pk': groupcomment.id})
+
+    @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
+    def test_post_ok(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testgroup,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
+        groupcomment = self.__make_student_comment(feedback_set=testfeedbackset, user=candidate.relatedstudent.user)
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=candidate.relatedstudent.user,
+            viewkwargs={'pk': groupcomment.id},
+            messagesmock=messagesmock,
+            requestkwargs={
+                'data': {
+                    'text': 'Test edited',
+                    'hidden_initial_data': groupcomment.text
+                }
+            })
+        db_comment = group_models.GroupComment.objects.get(id=groupcomment.id)
+        messagesmock.add.assert_called_once_with(messages.SUCCESS, 'Comment updated!', '')
+        self.assertEqual(db_comment.text, 'Test edited')
+        self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 1)
+
+    @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
+    def test_post_messages_text_do_not_differ(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testgroup,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
+        groupcomment = self.__make_student_comment(feedback_set=testfeedbackset, user=candidate.relatedstudent.user)
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=candidate.relatedstudent.user,
+            viewkwargs={'pk': groupcomment.id},
+            messagesmock=messagesmock,
+            requestkwargs={
+                'data': {
+                    'text': 'Test',
+                    'hidden_initial_data': groupcomment.text
+                }
+            })
+        db_comment = group_models.GroupComment.objects.get(id=groupcomment.id)
+        messagesmock.add.assert_called_once_with(messages.SUCCESS, 'No changes, comment not updated', '')
+        self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 0)
+        self.assertEqual(db_comment.text, 'Test')
+
+
+class TestFeedbackFeedGroupCommentHistoryStudent(TestCase, cradmin_testhelpers.TestCaseMixin):
+    """
+    Comment edit history related tests.
+    """
+    viewclass = feedbackfeed_student.StudentFeedbackFeedView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=False)
+    def test_no_edit_link_rendered(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testgroup,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
+        mommy.make('devilry_group.GroupComment',
+                   user=candidate.relatedstudent.user,
+                   user_role='student',
+                   published_datetime=timezone.now(),
+                   feedback_set=testfeedbackset)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                                          requestuser=candidate.relatedstudent.user)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link__student'))
+
+    @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
+    def test_edit_link_rendered(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testgroup,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
+        mommy.make('devilry_group.GroupComment',
+                   user=candidate.relatedstudent.user,
+                   user_role='student',
+                   published_datetime=timezone.now(),
+                   feedback_set=testfeedbackset)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                                          requestuser=candidate.relatedstudent.user)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-comment-edit-link'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-comment-edit-link__student'))
+
+    @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
+    def test_edit_link_url(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testgroup,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
+        comment = mommy.make('devilry_group.GroupComment',
+                             user=candidate.relatedstudent.user,
+                             user_role='student',
+                             published_datetime=timezone.now(),
+                             feedback_set=testfeedbackset)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                                          requestuser=candidate.relatedstudent.user)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-comment-edit-link'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-comment-edit-link__student'))
+        self.assertEqual(mockresponse.selector.one('.devilry-group-comment-edit-link__student').get('href'),
+                         '/devilry_group/student/{}/feedbackfeed/groupcomment-edit/{}'.format(testgroup.id, comment.id))
+
+    @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=False)
+    def test_last_edited_date_not_rendered(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testgroup,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
+        mommy.make('devilry_group.GroupComment',
+                   user=candidate.relatedstudent.user,
+                   user_role='student',
+                   published_datetime=timezone.now(),
+                   feedback_set=testfeedbackset)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                                          requestuser=candidate.relatedstudent.user)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-last-edited-date'))
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-comment-published-date'))
+
+    @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_EDIT=True)
+    def test_edit_link_for_other_users_not_rendered(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=testgroup,
+                               relatedstudent=mommy.make('core.RelatedStudent'))
+        mommy.make('devilry_group.GroupComment',
+                   user_role='admin',
+                   published_datetime=timezone.now(),
+                   feedback_set=testfeedbackset)
+        mommy.make('devilry_group.GroupComment',
+                   user_role='examiner',
+                   published_datetime=timezone.now(),
+                   feedback_set=testfeedbackset)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                                          requestuser=candidate.relatedstudent.user)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link__examiner'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link__admin'))

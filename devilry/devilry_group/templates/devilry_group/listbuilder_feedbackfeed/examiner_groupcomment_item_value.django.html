@@ -1,6 +1,20 @@
 {% extends 'devilry_group/listbuilder_feedbackfeed/base_groupcomment_item_value.django.html' %}
 
 {% load i18n %}
+{% load cradmin_tags %}
+
+{% block edit-links %}
+    {% if me.group_comment.user == request.user %}
+        <a href="{% cradmin_url instanceid='devilry_group_examiner' appname='feedbackfeed' viewname='groupcomment-edit' pk=me.group_comment.id roleid=request.cradmin_role.id %}"
+           class="devilry-group-comment-edit-link devilry-group-comment-edit-link__examiner">
+            <strong>{% trans "Edit" context "devilry_group feedbackfeed edit groupcomment" %}</strong></a>&nbsp;
+    {% endif %}
+    {% if me.group_comment.visibility == 'private' %}
+        <a href="{% cradmin_url instanceid='devilry_group_examiner' appname="feedbackfeed" viewname="groupcomment-delete" pk=me.group_comment.id roleid=request.cradmin_role.id %}"
+           class="devilry-group-comment-delete-link devilry-group-comment-delete-link__examiner">
+            <strong>{% trans "Delete" context "devilry_group feedbackfeed delete groupcomment" %}</strong></a>
+    {% endif %}
+{% endblock edit-links %}
 
 {% block details %}
 

@@ -12,6 +12,7 @@ from devilry.apps.core import models as core_models
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_email.comment_email import comment_email
+from devilry.devilry_group.views.group_comment_edit_base import EditGroupCommentBase
 from devilry.utils import setting_utils
 
 
@@ -132,6 +133,11 @@ class AdminWithExaminersDiscussView(AdminBaseFeedbackFeedView):
         return self.request.cradmin_app.reverse_appurl(viewname='admin-examiner-discuss')
 
 
+class AdminEditGroupCommentView(EditGroupCommentBase):
+    """
+    """
+
+
 class App(crapp.App):
     appurls = [
         crapp.Url(
@@ -143,5 +149,9 @@ class App(crapp.App):
             r'^admin-examiner-discuss$',
             ensure_csrf_cookie(AdminWithExaminersDiscussView.as_view()),
             name='admin-examiner-discuss'
-        )
+        ),
+        crapp.Url(
+            r'^groupcomment-edit/(?P<pk>\d+)$',
+            ensure_csrf_cookie(AdminEditGroupCommentView.as_view()),
+            name='groupcomment-edit')
     ]

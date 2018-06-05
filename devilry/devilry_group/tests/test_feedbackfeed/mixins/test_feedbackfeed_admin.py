@@ -309,6 +309,57 @@ class TestFeedbackfeedAdminMixin(test_feedbackfeed_common.TestFeedbackFeedMixin)
         self.assertFalse(
             'Download:' in mockresponse.selector.one('.devilry-group-feedbackfeed-buttonbar').alltext_normalized)
 
+    def test_get_no_edit_link_for_other_users_comments(self):
+        admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor')
+        period = mommy.make_recipe('devilry.apps.core.period_active',
+                                   admins=[admin])
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   user_role='examiner',
+                   feedback_set=feedbackset)
+        mommy.make('devilry_group.GroupComment',
+                   user_role='student',
+                   feedback_set=feedbackset)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup, requestuser=admin)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link__admin'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link__student'))
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-edit-link__examiner'))
+
+    def test_get_edit_link(self):
+        admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor')
+        period = mommy.make_recipe('devilry.apps.core.period_active',
+                                   admins=[admin])
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   user=admin,
+                   user_role='admin',
+                   feedback_set=feedbackset)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                                          requestuser=admin)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-comment-edit-link__admin'))
+        self.assertTrue('Edit',
+                        mockresponse.selector.one('.devilry-group-comment-edit-link__admin').alltext_normalized)
+
+    def test_get_edit_link_url(self):
+        admin = mommy.make('devilry_account.User', shortname='periodadmin', fullname='Thor')
+        period = mommy.make_recipe('devilry.apps.core.period_active',
+                                   admins=[admin])
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=period)
+        feedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = mommy.make('devilry_group.GroupComment',
+                                  user=admin,
+                                  user_role='admin',
+                                  feedback_set=feedbackset)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testgroup,
+                                                          requestuser=admin)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-comment-edit-link__admin'))
+        self.assertEqual(mockresponse.selector.one('.devilry-group-comment-edit-link__admin').get('href'),
+                         '/devilry_group/admin/{}/feedbackfeed/groupcomment-edit/{}'.format(
+                             testgroup.id, groupcomment.id))
+
     def test_get_num_queries(self):
         period = mommy.make('core.Period')
         admin = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor Thunder God')

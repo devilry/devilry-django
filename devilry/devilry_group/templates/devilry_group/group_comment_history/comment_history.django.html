@@ -1,0 +1,42 @@
+{% extends "django_cradmin/viewhelpers/listbuilderview/default.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock pageheader-outer-extraclasses %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_instance_appindex_url appname='feedbackfeed' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    <h1>
+        {% trans "Comment history" context "devilry comment history" %}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+        <div class="container">
+            {% cradmin_render_renderable group_comment_renderable %}
+        </div>
+        {% if history_available %}
+            {{ block.super }}
+        {% else %}
+            <div class="container">
+                <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin text-warning devilry-comment-history-no-items">
+                    <strong>
+                        {% blocktrans trimmed with context='devilry comment history' %}
+                            No comment-history available. This may be because you do not have access to see the
+                            edit-history for this comment. If you think this is an error, please contact an
+                            administrator.
+                        {% endblocktrans %}
+                    </strong>
+                </div>
+            </div>
+        {% endif %}
+{% endblock content %}

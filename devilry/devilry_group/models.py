@@ -7,6 +7,7 @@ import json
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import OuterRef
 from django.db.models.functions import Coalesce
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy
@@ -761,6 +762,22 @@ class GroupCommentQuerySet(AbstractGroupCommentQuerySet):
     """
     QuerySet for :class:`.GroupComment`.
     """
+    def annotate_with_last_edit_history(self, requestuser_devilryrole):
+        edit_history_subquery = GroupCommentEditHistory.objects \
+            .filter(group_comment_id=OuterRef('id'))
+
+        if requestuser_devilryrole == 'student':
+            edit_history_subquery = edit_history_subquery\
+                .filter(visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+
+        edit_history_subquery = edit_history_subquery\
+            .order_by('-edited_datetime')\
+            .values('edited_datetime')[:1]
+        return self.annotate(
+            last_edithistory_datetime=models.Subquery(
+                edit_history_subquery, output_field=models.DateTimeField()
+            )
+        )
 
 
 class GroupComment(AbstractGroupComment):
@@ -789,46 +806,41 @@ class GroupComment(AbstractGroupComment):
         super(GroupComment, self).clean()
 
 
-class GroupCommentEditHistory(models.Model):
+class GroupCommentEditHistoryQuerySet(models.QuerySet):
+    def exclude_private_comment_not_created_by_user(self, user):
+        """
+        Exclude all :class:`.GroupCommentEditHistory` entries that are private and
+        where the comment is not created by the user.
+
+        Args:
+            user: The user to check against.
+        """
+        return self.exclude(
+            models.Q(visibility=GroupComment.VISIBILITY_PRIVATE)
+            &
+            ~models.Q(group_comment__user=user))
+
+
+class GroupCommentEditHistory(comment_models.CommentEditHistory):
     """
     Model for logging changes in a :class:`.GroupComment`.
     """
+    objects = GroupCommentEditHistoryQuerySet.as_manager()
 
     #: The :class:`.GroupComment` the editing history is for.
-    comment = models.ForeignKey(
+    group_comment = models.ForeignKey(
         to=GroupComment,
         on_delete=models.CASCADE
     )
 
-    #: Who edited the comment.
-    #: This will usually be user that created the comment.
-    edited_by = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True, blank=True
+    #: Visibility state when log entry was created.
+    visibility = models.CharField(
+        max_length=50,
+        db_index=True
     )
 
-    #: When the comment was edited.
-    edited_datetime = models.DateTimeField(
-        default=timezone.now,
-        null=False, blank=False
-    )
-
-    #: The result of the edited comment text.
-    post_edit_text = models.TextField(
-        null=False, blank=True, default=''
-    )
-
-    #: The comment text before it was edited.
-    pre_edit_text = models.TextField(
-        null=False, blank=True, default=''
-    )
-
-    #: The difference between :obj:`.GroupCommentEditHistory.pre_edit_text`
-    #: and :obj:`.GroupCommentEditHistory.post_edit_text`.
-    difference_percentage = models.FloatField(
-        null=True
-    )
+    def __unicode__(self):
+        return 'GroupComment: {} - {}'.format(self.group_comment.user_role, self.group_comment.user)
 
 
 class ImageAnnotationCommentQuerySet(AbstractGroupCommentQuerySet):

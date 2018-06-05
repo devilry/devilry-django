@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import mock
+from django.contrib import messages
 from django.core import mail
+from django.http import Http404
+from django.utils import timezone
 from model_mommy import mommy
 
 from django.test import TestCase, override_settings
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
+
+from django_cradmin import cradmin_testhelpers
 
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.apps.core import models as core_models
@@ -15,6 +21,7 @@ from devilry.devilry_group import models as group_models
 from devilry.devilry_group.tests.test_feedbackfeed.mixins.test_feedbackfeed_admin import TestFeedbackfeedAdminMixin
 from devilry.devilry_group.views.admin import feedbackfeed_admin
 from devilry.devilry_comment import models as comment_models
+from devilry.devilry_group.views import group_comment_edit_base
 
 
 class TestFeedbackfeedAdminDiscussPublicView(TestCase, TestFeedbackfeedAdminMixin):
@@ -513,3 +520,145 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
         self.assertEqual('Test content3', comment_file3.file.file.read())
         self.assertEqual(len('Test content3'), comment_file3.filesize)
         self.assertEqual('text/txt', comment_file3.mimetype)
+
+
+class TestStudentEditGroupCommentView(TestCase, cradmin_testhelpers.TestCaseMixin):
+    """
+    Comment edit history related tests.
+    """
+    viewclass = feedbackfeed_admin.AdminEditGroupCommentView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def __make_admin_comment(self, feedback_set, user=None):
+        if not user:
+            user = mommy.make(settings.AUTH_USER_MODEL)
+        return mommy.make('devilry_group.GroupComment',
+                          text='Test',
+                          user=user,
+                          user_role=group_models.GroupComment.USER_ROLE_ADMIN,
+                          published_datetime=timezone.now(),
+                          feedback_set=feedback_set)
+
+    def __make_user_admin(self, user, assignment, permissiongroup_type='period'):
+        if permissiongroup_type == 'period':
+            permissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                         period=assignment.period)
+        else:
+            permissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                         period=assignment.period)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=user,
+                   permissiongroup=permissiongroup.permissiongroup)
+
+    def test_no_comment_raises_404(self):
+        testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active', admins=[testuser])
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        self.__make_user_admin(user=testuser, assignment=testgroup.parentnode)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup,
+                requestuser=testuser,
+                viewkwargs={'pk': 1})
+
+    def test_raise_404_admin_can_not_edit_other_admins_comments_sanity(self):
+        testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active', admins=[testuser])
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = self.__make_admin_comment(feedback_set=testfeedbackset)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup,
+                requestuser=testuser,
+                viewkwargs={'pk': groupcomment.id})
+
+    def test_raise_404_student_can_not_edit_student_comments_sanity(self):
+        testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active', admins=[testuser])
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = mommy.make('devilry_group.GroupComment',
+                                  user_role=group_models.GroupComment.USER_ROLE_STUDENT,
+                                  published_datetime=timezone.now(),
+                                  feedback_set=testfeedbackset)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup,
+                requestuser=testuser,
+                viewkwargs={'pk': groupcomment.id})
+
+    def test_raise_404_student_can_not_edit_examiner_comments_sanity(self):
+        testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active', admins=[testuser])
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = mommy.make('devilry_group.GroupComment',
+                                  user_role=group_models.GroupComment.USER_ROLE_EXAMINER,
+                                  published_datetime=timezone.now(),
+                                  feedback_set=testfeedbackset)
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_role=testgroup,
+                requestuser=testuser,
+                viewkwargs={'pk': groupcomment.id})
+
+    def test_get_student_can_edit_own_comment_ok(self):
+        testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active', admins=[testuser])
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = self.__make_admin_comment(feedback_set=testfeedbackset, user=testuser)
+        self.mock_http200_getrequest_htmls(
+            cradmin_role=testgroup,
+            requestuser=testuser,
+            viewkwargs={'pk': groupcomment.id})
+
+    def test_post_ok(self):
+        testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active', admins=[testuser])
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = self.__make_admin_comment(feedback_set=testfeedbackset, user=testuser)
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=testuser,
+            viewkwargs={'pk': groupcomment.id},
+            messagesmock=messagesmock,
+            requestkwargs={
+                'data': {
+                    'text': 'Test edited',
+                    'hidden_initial_data': groupcomment.text
+                }
+            })
+        db_comment = group_models.GroupComment.objects.get(id=groupcomment.id)
+        messagesmock.add.assert_called_once_with(messages.SUCCESS, 'Comment updated!', '')
+        self.assertEqual(db_comment.text, 'Test edited')
+        self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 1)
+
+    def test_post_messages_text_do_not_differ(self):
+        testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active', admins=[testuser])
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = self.__make_admin_comment(feedback_set=testfeedbackset, user=testuser)
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=testuser,
+            viewkwargs={'pk': groupcomment.id},
+            messagesmock=messagesmock,
+            requestkwargs={
+                'data': {
+                    'text': 'Test',
+                    'hidden_initial_data': groupcomment.text
+                }
+            })
+        db_comment = group_models.GroupComment.objects.get(id=groupcomment.id)
+        messagesmock.add.assert_called_once_with(messages.SUCCESS, 'No changes, comment not updated', '')
+        self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 0)
+        self.assertEqual(db_comment.text, 'Test')

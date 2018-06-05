@@ -1,0 +1,21 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load tz %}
+{% load devilry_group_tags %}
+
+{% block title %}
+    <span class="devilry-comment-history-item__title">
+        <strong>
+            {{ me.groupcomment_edit_history.edited_datetime|localtime|date:"DATETIME_FORMAT" }}
+        </strong>
+    </span>
+    <strong class="text-muted">({{ me.get_visibility_text }})</strong>
+{% endblock title %}
+
+{% block description %}
+    <span class="devilry-comment-history-item__description">
+        {% blocktrans trimmed with text=me.groupcomment_edit_history.pre_edit_text|devilry_group_markdown|safe %}
+            {{ text }}
+        {% endblocktrans %}
+    </span>
+{% endblock description %}

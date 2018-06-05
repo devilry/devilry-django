@@ -1,6 +1,8 @@
 # Python imports
 from __future__ import unicode_literals
 
+from django.conf import settings
+from django.http import Http404
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -9,6 +11,7 @@ from django_cradmin.crispylayouts import PrimarySubmit
 
 from devilry.devilry_email.comment_email import comment_email
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
+from devilry.devilry_group.views.group_comment_edit_base import EditGroupCommentBase
 from devilry.utils import setting_utils
 
 
@@ -62,10 +65,21 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         self.__send_comment_email(comment=comment)
 
 
+class StudentEditGroupComment(EditGroupCommentBase):
+    def dispatch(self, request, *args, **kwargs):
+        if not settings.DEVILRY_COMMENT_STUDENTS_CAN_EDIT:
+            raise Http404()
+        return super(StudentEditGroupComment, self).dispatch(request, *args, **kwargs)
+
+
 class App(crapp.App):
     appurls = [
         crapp.Url(
             r'^$',
             ensure_csrf_cookie(StudentFeedbackFeedView.as_view()),
             name=crapp.INDEXVIEW_NAME),
+        crapp.Url(
+            r'^groupcomment-edit/(?P<pk>\d+)$',
+            ensure_csrf_cookie(StudentEditGroupComment.as_view()),
+            name='groupcomment-edit')
     ]
