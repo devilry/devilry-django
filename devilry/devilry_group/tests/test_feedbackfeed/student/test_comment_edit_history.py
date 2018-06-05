@@ -102,9 +102,9 @@ class TestStudentCommentEditHistoryView(TestCase, cradmin_testhelpers.TestCaseMi
             requestuser=candidate.relatedstudent.user,
             viewkwargs={'group_comment_id': groupcomment.id})
         self.assertEqual(mockresponse.selector.one('.devilry-comment-history-no-items').alltext_normalized,
-                         'No comment-history available. This is either because the comment has not been edited, or '
-                         'you do not have access to see the edit-history. If you think this is an error, please '
-                         'contact an administrator.')
+                         'No comment-history available. This may be because you do not have access to see the '
+                         'edit-history for this comment. If you think this is an error, please contact an '
+                         'administrator.')
 
     @override_settings(DEVILRY_COMMENT_STUDENTS_CAN_SEE_OTHER_USERS_COMMENT_HISTORY=True)
     def test_students_can_see_other_users_comment_edit_history(self):
