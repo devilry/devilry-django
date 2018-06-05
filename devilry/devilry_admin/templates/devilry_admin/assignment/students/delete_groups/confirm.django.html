@@ -1,0 +1,77 @@
+{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-left.django.html" %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_appindex_url %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to add students overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    {{ block.super }}
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        <div class="devilry-dashboard-container devilry-dashboard-container-withtopmargin">
+            <p>
+                {% blocktrans trimmed with from_assignment=from_assignment.long_name context 'admin delete groups confirm' %}
+                    The students listed below are the students on the current assignment that failed
+                    {{ from_assignment }}, and are ready to be deleted. Some students may be excluded based on the
+                    following criteria
+                {% endblocktrans %}:
+            </p>
+            <dl class="devilry-dl-indented devilry-dl-sm">
+                <dt>
+                    {% blocktrans trimmed context 'admin delete groups confirm' %}
+                        Last attempt not graded
+                    {% endblocktrans %}
+                </dt>
+                <dd>
+                    <p>
+                        {% blocktrans trimmed context 'admin delete groups confirm' %}
+                            Simply means that whether or not they have multiple attempts, the last attempt is not
+                            corrected and therefore not counted as failed.
+                        {% endblocktrans %}
+                    </p>
+                </dd>
+                <dt>
+                    {% blocktrans trimmed context 'admin delete groups confirm' %}
+                        More than one student
+                    {% endblocktrans %}
+                </dt>
+                <dd>
+                    <p>
+                        {% blocktrans trimmed context 'admin delete groups confirm' %}
+                            If a project group on the current assignment has more than one student
+                            (a collaborative group). You can still delete this project group manually, or split and then
+                            delete if you only want to delete one of the students in the project group.
+                        {% endblocktrans %}
+                    </p>
+                </dd>
+            </dl>
+            <p>
+                <a href="{% cradmin_appurl viewname='manual_select' %}">{% trans 'Manually delete groups' context 'admin delete groups confirm' %}</a>
+            </p>
+        </div>
+    </div>
+    {% if no_groups_found %}
+        <div class="container django-cradmin-container-focus django-cradmin-container-focus-warning
+                    devilry-admin-delete-groups-confirm-no-groups">
+            {% trans "No students matching your selection found." %}
+        </div>
+    {% else %}
+        {{ block.super }}
+        <div class="container text-right">
+            {% crispy form formhelper %}
+        </div>
+    {% endif %}
+{% endblock content %}

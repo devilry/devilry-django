@@ -1,0 +1,92 @@
+{% load i18n %}
+{% load cradmin_tags %}
+
+<div id="devilry_assignment_examiners">
+    <a href="{% cradmin_url instanceid='devilry_admin_assignmentadmin' appname='examineroverview' viewname='INDEX' roleid=assignment.id %}">
+        <h2>{% trans "Manage examiners" %}</h2>
+    </a>
+    <div id="id_devilry_admin_assignment_examiners_meta">
+        <p id="id_devilry_admin_assignment_examiners_meta_count_text">
+            {% if examiners_count == 0 %}
+                <span class="devilry-admin-assignment-examiners-does-not-exist">
+                    {% trans "No examiners configured" context "No examiners configured message" %}
+                </span>
+            {% else %}
+                <span class="devilry-admin-assignment-examiners-exists">
+                    {% blocktrans trimmed with examiners_count=examiners_count context="Number examiners configured message" %}
+                        {{ examiners_count }} examiner(s) configured
+                    {% endblocktrans %}
+                </span>
+            {% endif %}
+        </p>
+        <div class="devilry_admin_assignment_examiner_meta_warnings">
+            <!--
+            A list of warnings shows the "progress" regarding examiners on the assignment.
+
+            If there are no examiners on the semester:
+                - Shows a warning with a link to the semester overview.
+
+            OR
+
+            If there are examiners on the semester show warnings about:
+                - Students on the assignment with no examiners assignmed to them. (This will always be shown if true)
+                and
+                    - No examiners assigned to students, show a warning
+                    or
+                    - There are more examiners on the assignment than are assigned to students.
+            -->
+            {% if relatedexaminers_count == 0 %}
+                <p id="id_devilry_admin_assignment_examiner_empty_semester_warning" class="alert-paragraph alert-paragraph--warning">
+                    <span class="alert-paragraph__title">
+                        {% trans 'warning' %}:
+                    </span>
+                    <strong>
+                        <a href="{% cradmin_url instanceid='devilry_admin_periodadmin' appname='overview' viewname='INDEX' roleid=assignment.parentnode.id %}">
+                            {% trans 'Go to the semester page and add/activate examiners' context 'devilry admin assignment overview examiner' %}
+                        </a>
+                    </strong>
+                </p>
+            {% else %}
+                {% if students_without_examiners_exists %}
+                    <p id="id_devilry_admin_assignment_examiner_students_without_examiner_warning" class="alert-paragraph alert-paragraph--warning">
+                        <span class="alert-paragraph__title">
+                            {% trans 'warning' %}:
+                        </span>
+                        <strong>
+                            {% trans 'There are students with no examiners assigned to them' context 'devilry admin assignment overview examiner' %} &mdash;
+                            <a href="{% cradmin_url instanceid='devilry_admin_assignmentadmin' appname='examineroverview' viewname='INDEX' roleid=assignment.id %}">
+                                {% trans 'Configure examiners' context 'devilry admin assignment overview examiner' %}
+                            </a>.
+                        </strong>
+                    </p>
+                {% endif %}
+                {% if examiners_count == 0 %}
+                    <p id="id_devilry_admin_assignment_examiner_no_examiners_on_assignment" class="alert-paragraph alert-paragraph--warning">
+                        <span class="alert-paragraph__title">
+                            {% trans 'warning' %}:
+                        </span>
+                        <strong>
+                            {% trans 'No examiners configured' context 'devilry admin assignment overview examiner' %}&mdash;
+                            <a href="{% cradmin_url instanceid='devilry_admin_assignmentadmin' appname='examineroverview' viewname='INDEX' roleid=assignment.id %}">
+                                {% trans 'Configure examiners' context 'devilry admin assignment overview examiner' %}
+                            </a>.
+                        </strong>
+                        {% blocktrans trimmed with context='devilry admin assignment overview examiner' %}
+                            Only configured examiners can see and correct deliveries from students.
+                        {% endblocktrans %}
+                    </p>
+                {% elif relatedexaminers_count > examiners_count %}
+                    <p id="id_devilry_admin_assignment_examiner_on_semester_not_on_assignment" class="alert-paragraph alert-paragraph--note">
+                        <span class="alert-paragraph__title alert-paragraph__title--note">
+                            {% trans 'note' %}:
+                        </span>
+                        {% trans 'There are examiners on the semester that are not assigned to any students' context 'devilry admin assignment overview examiner' %} &mdash;
+                        <a href="{% cradmin_url instanceid='devilry_admin_assignmentadmin' appname='examineroverview' viewname='INDEX' roleid=assignment.id %}">
+                            {% trans 'Configure examiners' context 'devilry admin assignment overview examiner' %}
+                        </a>
+                    </p>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>

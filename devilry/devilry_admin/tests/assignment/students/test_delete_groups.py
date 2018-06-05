@@ -1,9 +1,11 @@
+from __future__ import unicode_literals
+
 import mock
 from django import test
 from django.conf import settings
 from django.contrib import messages
 from django_cradmin import cradmin_testhelpers
-from model_mommy import mommy
+from model_mommy import mommy, timezone
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_admin.views.assignment.students import delete_groups
@@ -330,3 +332,280 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             messages.ERROR,
             SelectedGroupsForm.invalid_students_selected_message,
             '')
+
+
+class TestDeleteGroupsFromPreviousAssignmentConfirmView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = delete_groups.ConfirmView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def __mockinstance_with_devilryrole(self, devilryrole):
+        mockinstance = mock.MagicMock()
+        mockinstance.get_devilryrole_for_requestuser.return_value = devilryrole
+        return mockinstance
+
+    def __set_grading_points_for_last_feedbackset(self, cached_data, points=0, publishing_datetime=None):
+        if not publishing_datetime:
+            publishing_datetime = timezone.now()
+        cached_data.last_feedbackset.grading_published_datetime = publishing_datetime
+        cached_data.last_feedbackset.grading_points = points
+        cached_data.last_feedbackset.save()
+
+    def __make_multiple_students_on_previous_assignment(self, assignment, num=2, failed=True):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        relatedstudent_list = []
+        for i in range(num):
+            relatedstudent = mommy.make('core.RelatedStudent', period=testperiod)
+            assignment_group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+            mommy.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assignment_group)
+            if failed:
+                self.__set_grading_points_for_last_feedbackset(cached_data=assignment_group.cached_data)
+            else:
+                self.__set_grading_points_for_last_feedbackset(cached_data=assignment_group.cached_data,
+                                                               points=assignment.max_points)
+            relatedstudent_list.append(relatedstudent)
+        return relatedstudent_list
+
+    def __make_multiple_students_on_current_assignment(self, relatedstudent_list, assignment):
+        groups_list = []
+        for relatedstudent in relatedstudent_list:
+            assignment_group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+            mommy.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assignment_group)
+            groups_list.append(assignment_group)
+        return groups_list
+
+    def __get_selected_group_ids_to_be_removed(self, selector):
+        # Helper method to get the id of all selected groups that will be posted to the view.
+        ids_list = []
+        for input_element in selector.list('input'):
+            if input_element.get('name') == 'selected_items':
+                ids_list.append(input_element.get('value'))
+        return ids_list
+
+    def test_get_no_students_on_the_assignment(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        past_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        current_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole(devilryrole='subjectadmin'),
+            viewkwargs={
+                'from_assignment_id': past_assignment.id
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-admin-delete-groups-confirm-no-groups'))
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_get_no_students_on_assignment_with_past_failing_grade(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        past_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        current_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        related_student = mommy.make('core.RelatedStudent', period=testperiod)
+        group_assignment1 = mommy.make('core.AssignmentGroup', parentnode=past_assignment)
+        group_assignment2 = mommy.make('core.AssignmentGroup', parentnode=current_assignment)
+        mommy.make('core.Candidate', relatedstudent=related_student, assignment_group=group_assignment1)
+        mommy.make('core.Candidate', relatedstudent=related_student, assignment_group=group_assignment2)
+        self.__set_grading_points_for_last_feedbackset(
+            cached_data=group_assignment1.cached_data, points=past_assignment.max_points)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole(devilryrole='subjectadmin'),
+            viewkwargs={
+                'from_assignment_id': past_assignment.id
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.devilry-admin-delete-groups-confirm-no-groups'))
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_get_student_on_assignment_with_past_failing_grade(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        past_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        current_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        related_student = mommy.make('core.RelatedStudent', period=testperiod)
+        group_assignment1 = mommy.make('core.AssignmentGroup', parentnode=past_assignment)
+        group_assignment2 = mommy.make('core.AssignmentGroup', parentnode=current_assignment)
+        mommy.make('core.Candidate', relatedstudent=related_student, assignment_group=group_assignment1)
+        mommy.make('core.Candidate', relatedstudent=related_student, assignment_group=group_assignment2)
+        self.__set_grading_points_for_last_feedbackset(
+            cached_data=group_assignment1.cached_data)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole(devilryrole='subjectadmin'),
+            viewkwargs={
+                'from_assignment_id': past_assignment.id
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_get_multiple_students_on_assignment_only_one_with_past_failing_grade(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+
+        # Assignment 1
+        past_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        assignment1_group1 = mommy.make('core.AssignmentGroup', parentnode=past_assignment)
+        assignment1_group2 = mommy.make('core.AssignmentGroup', parentnode=past_assignment)
+
+        # Assignment 2
+        current_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        assignment2_group1 = mommy.make('core.AssignmentGroup', parentnode=current_assignment)
+        assignment2_group2 = mommy.make('core.AssignmentGroup', parentnode=current_assignment)
+
+        # Relatedstudent 1 passed previous assignment
+        related_student1 = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='testuser1')
+        mommy.make('core.Candidate', relatedstudent=related_student1, assignment_group=assignment1_group1)
+        mommy.make('core.Candidate', relatedstudent=related_student1, assignment_group=assignment2_group1)
+        self.__set_grading_points_for_last_feedbackset(
+            cached_data=assignment1_group1.cached_data, points=past_assignment.max_points)
+
+        # Relatedstudent 2 did not pass previous assignment
+        related_student2 = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='testuser2')
+        mommy.make('core.Candidate', relatedstudent=related_student2, assignment_group=assignment1_group2)
+        mommy.make('core.Candidate', relatedstudent=related_student2, assignment_group=assignment2_group2)
+        self.__set_grading_points_for_last_feedbackset(
+            cached_data=assignment1_group2.cached_data)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole(devilryrole='subjectadmin'),
+            viewkwargs={
+                'from_assignment_id': past_assignment.id
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertTrue(
+            mockresponse.selector.one('.django-cradmin-listbuilder-itemvalue').alltext_normalized.startswith(related_student2.user.shortname))
+
+    def test_get_project_groups_from_current_assignment_with_more_than_one_student_is_excluded(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        past_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        current_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        related_student1 = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='testuser1')
+        related_student2 = mommy.make('core.RelatedStudent', period=testperiod, user__shortname='testuser2')
+
+        # Assignment 1
+        assignment1_group1 = mommy.make('core.AssignmentGroup', parentnode=past_assignment)
+        mommy.make('core.Candidate', relatedstudent=related_student1,assignment_group=assignment1_group1)
+        self.__set_grading_points_for_last_feedbackset(cached_data=assignment1_group1.cached_data)
+
+        # Assignment 2
+        assignment2_group1 = mommy.make('core.AssignmentGroup', parentnode=current_assignment)
+        mommy.make('core.Candidate', relatedstudent=related_student1, assignment_group=assignment2_group1)
+        mommy.make('core.Candidate', relatedstudent=related_student2, assignment_group=assignment2_group1)
+
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=past_assignment).count(), 1)
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=current_assignment).count(), 1)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole(devilryrole='subjectadmin'),
+            viewkwargs={
+                'from_assignment_id': past_assignment.id
+            }
+        )
+        self.assertFalse(mockresponse.selector.exists('.django-cradmin-listbuilder-itemvalue'))
+        self.assertEqual(self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector), [])
+
+    def test_get_correct_selected_items_single(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        past_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        current_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+
+        # Make one failing students on assignment 1
+        failed_relatedstudents = self.__make_multiple_students_on_previous_assignment(
+            assignment=past_assignment, num=1)
+
+        # Add students to current assignment
+        groups_to_be_removed = self.__make_multiple_students_on_current_assignment(
+            relatedstudent_list=failed_relatedstudents, assignment=current_assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole(devilryrole='subjectadmin'),
+            viewkwargs={
+                'from_assignment_id': past_assignment.id
+            }
+        )
+        input_values = self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector)
+        self.assertEqual(len(input_values), 1)
+        self.assertIn(str(groups_to_be_removed[0].id), input_values)
+
+    def test_get_correct_selected_items_multiple(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        past_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        current_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+
+        # Make three failing students on assignment 1
+        failed_relatedstudents = self.__make_multiple_students_on_previous_assignment(
+            assignment=past_assignment, num=3)
+
+        # Make three passing students on assignment 1
+        passed_relatedstudents = self.__make_multiple_students_on_previous_assignment(
+            assignment=past_assignment, num=3, failed=False)
+
+        # Add students to current assignment
+        groups_to_be_removed = self.__make_multiple_students_on_current_assignment(
+            relatedstudent_list=failed_relatedstudents, assignment=current_assignment)
+        groups_not_to_be_removed = self.__make_multiple_students_on_current_assignment(
+            relatedstudent_list=passed_relatedstudents, assignment=current_assignment)
+
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=current_assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole(devilryrole='subjectadmin'),
+            viewkwargs={
+                'from_assignment_id': past_assignment.id
+            }
+        )
+        input_values = self.__get_selected_group_ids_to_be_removed(selector=mockresponse.selector)
+        self.assertEqual(len(input_values), 3)
+        self.assertIn(str(groups_to_be_removed[0].id), input_values)
+        self.assertIn(str(groups_to_be_removed[1].id), input_values)
+        self.assertIn(str(groups_to_be_removed[2].id), input_values)
+
+    def test_post_sanity(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        past_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        current_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        relatedstudent_list = self.__make_multiple_students_on_previous_assignment(assignment=past_assignment, num=10)
+        groups_list = self.__make_multiple_students_on_current_assignment(
+            relatedstudent_list=relatedstudent_list, assignment=current_assignment)
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=past_assignment).count(), 10)
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=current_assignment).count(), 10)
+        self.mock_http302_postrequest(
+            cradmin_role=current_assignment,
+            cradmin_instance=self.__mockinstance_with_devilryrole(devilryrole='subjectadmin'),
+            viewkwargs={
+                'from_assignment_id': past_assignment.id
+            },
+            requestkwargs={
+                'data': {
+                    'selected_items': [str(group.id) for group in groups_list]
+                }
+            }
+        )
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=past_assignment).count(), 10)
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=current_assignment).count(), 0)
+
+    def test_get_query_count(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        past_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        current_assignment = mommy.make('core.Assignment', parentnode=testperiod)
+        relatedstudent_list = self.__make_multiple_students_on_previous_assignment(assignment=past_assignment, num=100)
+        self.__make_multiple_students_on_current_assignment(
+            relatedstudent_list=relatedstudent_list, assignment=current_assignment)
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=past_assignment).count(), 100)
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=current_assignment).count(), 100)
+
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        with self.assertNumQueries(6):
+            # 1 query to fetch the `from_assignment`
+            # 1 query to fetch assignment groups to delete
+            # 1 query to count for pagination
+            # 1 exists query to check if there are any groups to be deleted
+            # 2 query to fill the form, one for initial queryset and for items to submit
+            self.mock_http200_getrequest_htmls(
+                requestuser=requestuser,
+                cradmin_role=current_assignment,
+                cradmin_instance=self.__mockinstance_with_devilryrole(devilryrole='subjectadmin'),
+                viewkwargs={
+                    'from_assignment_id': past_assignment.id
+                }
+            )

@@ -956,6 +956,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """
         Returns ``True`` if this Assignment does not contain any deliveries.
         """
+        warnings.warn("deprecated", DeprecationWarning)
         from .delivery import Delivery
         return Delivery.objects.filter(deadline__assignment_group__parentnode=self).count() == 0
 
@@ -1047,7 +1048,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
         # We iterate over relatedstudents twice, so we
         # use this to avoid multiple queries
-        relatedstudents = list(self.period.relatedstudent_set.all())
+        relatedstudents = list(self.period.relatedstudent_set.filter(active=True))
 
         # Step1: Bulk create empty groups
         groups = []
