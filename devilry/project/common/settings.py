@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django.forms',
     'django.contrib.sites',  # Required by django-allauth
-
+    'debug_toolbar',
     'errortemplates',
     'crispy_forms',
     'gunicorn',
@@ -140,7 +140,7 @@ MIDDLEWARE_CLASSES = [
     'devilry.devilry_i18n.middleware.LocaleMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware',
-    'devilry.devilry_account.middleware.LocalMiddleware',
+    'devilry.devilry_account.middleware.LocalMiddleware'
 ]
 
 ##################################################################################

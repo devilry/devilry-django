@@ -16,6 +16,10 @@ if profiler_middleware:
         'devilry.utils.profile.ProfilerMiddleware', # Enable profiling. Just add ?prof=yes to any url to see a profile report
     ]
 
+MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
+]
+
 # DELAY_MIDDLEWARE_TIME = (80, 120) # Wait for randint(*DELAY_MIDDLEWARE_TIME)/100.0 before responding to each request when using DelayMiddleware
 # delay_middleware = True
 # if delay_middleware:
