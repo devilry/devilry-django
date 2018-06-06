@@ -7,6 +7,10 @@ Notes
 #####
 NOT YET RELEASED
 
+Bug fixes
+#########
+- The calendar modal had a mixture of default and selected language.
+
 
 Improvements
 ############
@@ -16,3 +20,22 @@ Email:
     - Comment email lists info about uploaded files, filename and size.
     - System content language in mail regarding new comments, deadlines and feedbacks is now set to the
       receiving users preferred language if supported by Devilry.
+
+(ADMINS) Assignment overview:
+    - No info box appears at the top of the assignment overview. This feature didn't work properly as it only showed one
+      warning, and not in the order of it's severity. Now, warnings and information is shown in the "Manage students"
+      and "Manage examiners" sections.
+
+
+New features
+############
+Comment editing and history:
+    - Students, examiners and admins can edit their own comments.
+    - When comments are edited, a log entry is created. These log entries can be seen by other users based on the same
+      criteria as for comments in the delivery feed. This means that each log entry has the same "visible to" rights as
+      the comment at that current state.
+
+(ADMINS) Assignment creation and overview:
+    - All students are added to the assignment upon creation.
+    - When removing students from an assignment, you can now choose to remove students that failed another assignment on
+      the semester.
