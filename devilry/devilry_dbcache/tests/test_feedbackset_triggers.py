@@ -45,26 +45,6 @@ class TestFeedbackSetTriggers(test.TestCase):
         self.assertEqual(0, FeedbackSet.objects.count())
         self.assertEqual(0, FeedbackSetDeadlineHistory.objects.count())
 
-    @unittest.skip('Fix feedbackset validation')
-    def test_first_feedbackset_must_have_deadline_datetime_none(self):
-        group = mommy.make('core.AssignmentGroup')
-        first_feedbackset = group.feedbackset_set.first()
-        first_feedbackset.deadline_datetime = timezone.now()
-        with self.assertRaisesMessage(
-                IntegrityError,
-                'The first FeedbackSet in an AssignmentGroup must have deadline_datetime=NULL'):
-            first_feedbackset.save()
-
-    @unittest.skip('Fix feedbackset validation')
-    def test_only_first_feedbackset_can_have_deadline_datetime_none(self):
-        group = mommy.make('core.AssignmentGroup')
-        with self.assertRaisesMessage(
-                IntegrityError,
-                'Only the first FeedbackSet in an AssignmentGroup can have deadline_datetime=NULL'):
-            mommy.make('devilry_group.FeedbackSet',
-                       group=group,
-                       deadline_datetime=None)
-
     def test_first_feedbackset_deadline_datetime_is_assignment_first_deadline(self):
         assignment = mommy.make('core.Assignment')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
