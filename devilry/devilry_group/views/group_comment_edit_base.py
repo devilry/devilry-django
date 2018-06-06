@@ -52,12 +52,19 @@ class EditGroupCommentBase(update.UpdateView):
 
     If you need to do some extra checks, subclass this class and override the appropriate methods.
     """
+    template_name = 'devilry_group/group_comment_edit_base.django.html'
     model = group_models.GroupComment
 
     def dispatch(self, request, *args, **kwargs):
         if len(self.get_queryset_for_role(request.cradmin_role)) == 0:
             raise Http404()
         return super(EditGroupCommentBase, self).dispatch(request, *args, **kwargs)
+
+    def get_pagetitle(self):
+        return ugettext_lazy('Edit comment')
+
+    def get_pageheading(self):
+        return ugettext_lazy('Edit comment')
 
     def get_queryset_for_role(self, role):
         return group_models.GroupComment.objects.filter(
