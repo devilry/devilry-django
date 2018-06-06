@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-06 10:20+0200\n"
+"POT-Creation-Date: 2018-06-06 11:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1331,6 +1331,7 @@ msgstr ""
 #: devilry/devilry_cradmin/templates/devilry_cradmin/viewhelpers/devilry_updateview_with_backlink.django.html:14
 #: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/manage-deadline.django.html:20
 #: devilry/devilry_group/templates/devilry_group/feedbackfeed_admin/feedbackfeed_admin_base.django.html:10
+#: devilry/devilry_group/templates/devilry_group/group_comment_edit_base.django.html:15
 #: devilry/devilry_group/templates/devilry_group/group_comment_history/comment_history.django.html:14
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:24
 msgid "Back"
@@ -1744,6 +1745,11 @@ msgstr ""
 msgid ""
 "You have permission to delete students with deliveries and/or feedback, so "
 "be VERY CAREFUL before you click the delete button!"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/choose-assignment-item-value.django.html:7
+msgctxt "devilry admin assignment delete students"
+msgid "Published"
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/delete_groups/confirm.django.html:26
@@ -5348,16 +5354,16 @@ msgstr ""
 msgid "Groupcomment"
 msgstr ""
 
-#: devilry/devilry_group/views/group_comment_edit_base.py:63
-#: devilry/devilry_group/views/group_comment_edit_base.py:66
+#: devilry/devilry_group/views/group_comment_edit_base.py:64
+#: devilry/devilry_group/views/group_comment_edit_base.py:67
 msgid "Edit comment"
 msgstr ""
 
-#: devilry/devilry_group/views/group_comment_edit_base.py:92
+#: devilry/devilry_group/views/group_comment_edit_base.py:93
 msgid "No changes, comment not updated"
 msgstr ""
 
-#: devilry/devilry_group/views/group_comment_edit_base.py:100
+#: devilry/devilry_group/views/group_comment_edit_base.py:101
 msgid "Comment updated!"
 msgstr ""
 
