@@ -1,5 +1,6 @@
 from django import test
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
 from model_mommy import mommy
 
@@ -9,7 +10,11 @@ from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 class TestGroupCommentTriggers(test.TransactionTestCase):
     def setUp(self):
+        ContentType.objects.clear_cache()
         AssignmentGroupDbCacheCustomSql().initialize()
+
+    def tearDown(self):
+        ContentType.objects.clear_cache()
 
     def test_delete(self):
         testcomment = mommy.make('devilry_comment.Comment')
@@ -23,7 +28,11 @@ class TestGroupCommentTriggers(test.TransactionTestCase):
 
 class TestCommentEditTriggers(test.TransactionTestCase):
     def setUp(self):
+        ContentType.objects.clear_cache()
         AssignmentGroupDbCacheCustomSql().initialize()
+
+    def tearDown(self):
+        ContentType.objects.clear_cache()
 
     def test_not_create_when_comment_is_created(self):
         mommy.make('devilry_comment.Comment', text='Test')
