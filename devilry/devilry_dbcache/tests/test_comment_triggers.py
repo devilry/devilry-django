@@ -2,13 +2,14 @@ from django import test
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
+from django.db import InternalError
 from model_mommy import mommy
 
 from devilry.devilry_comment.models import Comment, CommentEditHistory
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
-class TestGroupCommentTriggers(test.TransactionTestCase):
+class TestGroupCommentTriggers(test.TestCase):
     def setUp(self):
         ContentType.objects.clear_cache()
         AssignmentGroupDbCacheCustomSql().initialize()
@@ -26,13 +27,14 @@ class TestGroupCommentTriggers(test.TransactionTestCase):
         self.assertFalse(Comment.objects.filter(id=testcomment_id).exists())
 
 
-class TestCommentEditTriggers(test.TransactionTestCase):
+class TestCommentEditTriggers(test.TestCase):
     def setUp(self):
-        ContentType.objects.clear_cache()
         AssignmentGroupDbCacheCustomSql().initialize()
 
-    def tearDown(self):
-        ContentType.objects.clear_cache()
+    def test_id_update_raise_internal_error(self):
+        comment = mommy.make('devilry_comment.Comment', text='Test')
+        with self.assertRaises(InternalError):
+            Comment.objects.filter(id=comment.id).update(id=2)
 
     def test_not_create_when_comment_is_created(self):
         mommy.make('devilry_comment.Comment', text='Test')
