@@ -436,3 +436,25 @@ class TestStudentAssignmentGroupListView(test.TestCase, cradmin_testhelpers.Test
             selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized,
             'Assignment Old'
         )
+
+    def test_query_count(self):
+        adminuser = mommy.make(settings.AUTH_USER_MODEL)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='testuser@example.com', fullname='Test User')
+        testsubjects = mommy.make('core.Subject', _quantity=10)
+        for testsubject in testsubjects:
+            mommy.make('devilry_account.PermissionGroupUser', user=adminuser,
+                       permissiongroup=mommy.make('devilry_account.SubjectPermissionGroup',
+                                                  permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                                                  subject=testsubject).permissiongroup)
+
+            # Create ten assignments for each subject
+            for num in range(10):
+                testgroup = mommy.make('core.AssignmentGroup', parentnode__long_name='Accessible Assignment',
+                                       parentnode__parentnode__parentnode=testsubject)
+                mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=testuser)
+        with self.assertNumQueries(6):
+            selector = self.mock_http200_getrequest_htmls(
+                requestuser=adminuser,
+                viewkwargs={'user_id': testuser.id}
+            ).selector
+            self.assertEqual(selector.count('.django-cradmin-listbuilder-itemvalue'), 15)

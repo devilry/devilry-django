@@ -56,6 +56,7 @@ class StudentAssignmentGroupListView(listbuilderview.FilterListMixin, listbuilde
     frame_renderer_class = NonAnonymousGroupItemFrame
     filterview_name = 'student_group_filter'
     value_renderer_class = DepartmentAdminItemValueByAssignment
+    paginate_by = 15
 
     def dispatch(self, request, *args, **kwargs):
         self.user_id = kwargs.get('user_id')
@@ -117,6 +118,10 @@ class StudentAssignmentGroupListView(listbuilderview.FilterListMixin, listbuilde
             relatedstudent__user_id=self.user_id)\
             .values_list('assignment_group_id', flat=True)
         queryset = core_models.AssignmentGroup.objects \
+            .select_related('cached_data__last_published_feedbackset',
+                            'cached_data__last_feedbackset',
+                            'cached_data__first_feedbackset',
+                            'parentnode', 'parentnode__parentnode', 'parentnode__parentnode__parentnode')\
             .filter_user_is_admin(user=self.request.user)\
             .filter(id__in=candidates_ids_for_user)\
             .prefetch_related(
@@ -128,11 +133,5 @@ class StudentAssignmentGroupListView(listbuilderview.FilterListMixin, listbuilde
             .annotate_with_is_waiting_for_feedback_count() \
             .annotate_with_is_waiting_for_deliveries_count() \
             .annotate_with_is_corrected_count() \
-            .annotate_with_number_of_private_groupcomments_from_user(user=self.request.user) \
-            .annotate_with_number_of_private_imageannotationcomments_from_user(user=self.request.user) \
-            .distinct() \
-            .select_related('cached_data__last_published_feedbackset',
-                            'cached_data__last_feedbackset',
-                            'cached_data__first_feedbackset',
-                            'parentnode')
+            .distinct()
         return queryset
