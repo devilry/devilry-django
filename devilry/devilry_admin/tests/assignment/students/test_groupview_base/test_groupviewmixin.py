@@ -1181,7 +1181,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            viewkwargs={'filters_string': 'examinercount-2'},
+            viewkwargs={'filters_string': 'examinercount-eq-2'},
             requestuser=testuser)
         self.assertEqual(
             ['a'],
@@ -1209,7 +1209,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            viewkwargs={'filters_string': 'examinercount-2'},
+            viewkwargs={'filters_string': 'examinercount-eq-2'},
             requestuser=testuser)
         self.assertEqual(
             ['a'],
@@ -1241,7 +1241,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            viewkwargs={'filters_string': 'examinercount-5'},
+            viewkwargs={'filters_string': 'examinercount-eq-5'},
             requestuser=testuser)
         self.assertEqual(
             ['b', 'a'],
@@ -1266,7 +1266,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            viewkwargs={'filters_string': 'examinercount-2'},
+            viewkwargs={'filters_string': 'examinercount-eq-2'},
             requestuser=testuser)
         self.assertEqual(
             [],
@@ -1293,7 +1293,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            viewkwargs={'filters_string': 'candidatecount-1'},
+            viewkwargs={'filters_string': 'candidatecount-eq-1'},
             requestuser=testuser)
         self.assertEqual(
             ['b', 'a'],
@@ -1331,7 +1331,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            viewkwargs={'filters_string': 'candidatecount-4'},
+            viewkwargs={'filters_string': 'candidatecount-eq-4'},
             requestuser=testuser)
         self.assertEqual(
             ['b', 'a'],
@@ -1358,7 +1358,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
-            viewkwargs={'filters_string': 'candidatecount-2'},
+            viewkwargs={'filters_string': 'candidatecount-eq-2'},
             requestuser=testuser)
         self.assertEqual(
             [],

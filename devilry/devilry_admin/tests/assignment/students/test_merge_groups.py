@@ -181,7 +181,7 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser,
             viewkwargs={
-                'filters_string': 'candidatecount-2'
+                'filters_string': 'candidatecount-eq-2'
             })
         self.assertEqual(
             1,
@@ -202,7 +202,7 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser,
             viewkwargs={
-                'filters_string': 'examinercount-2'
+                'filters_string': 'examinercount-eq-2'
             })
         self.assertEqual(
             1,
@@ -226,7 +226,7 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser,
             viewkwargs={
-                'filters_string': 'examinercount-2'
+                'filters_string': 'examinercount-eq-2'
             })
         self.assertEqual(
             1,
@@ -250,7 +250,7 @@ class TestMergeGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'),
             requestuser=testuser,
             viewkwargs={
-                'filters_string': 'candidatecount-3'
+                'filters_string': 'candidatecount-eq-3'
             })
         self.assertEqual(
             1,

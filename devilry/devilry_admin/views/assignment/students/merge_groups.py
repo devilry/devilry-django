@@ -47,8 +47,8 @@ class MergeGroupsView(groupview_base.BaseMultiselectView):
         filterlist.append(devilry_listfilter.assignmentgroup.OrderByNotAnonymous())
         filterlist.append(devilry_listfilter.assignmentgroup.StatusSelectFilter())
         filterlist.append(devilry_listfilter.assignmentgroup.ExaminerFilter(view=self))
-        filterlist.append(devilry_listfilter.assignmentgroup.ExaminerCountFilter(view=self))
-        filterlist.append(devilry_listfilter.assignmentgroup.CandidateCountFilter(view=self))
+        filterlist.append(devilry_listfilter.assignmentgroup.ExaminerCountFilter())
+        filterlist.append(devilry_listfilter.assignmentgroup.CandidateCountFilter())
         filterlist.append(devilry_listfilter.assignmentgroup.ActivityFilter())
 
     def get_target_renderer_class(self):

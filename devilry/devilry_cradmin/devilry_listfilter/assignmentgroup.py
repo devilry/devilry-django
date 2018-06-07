@@ -6,6 +6,8 @@ from django_cradmin.viewhelpers import listfilter
 from django_cradmin.viewhelpers.listfilter.basefilters.single import abstractradio
 from django_cradmin.viewhelpers.listfilter.basefilters.single import abstractselect
 
+from devilry.apps.core.models import RelatedExaminer, Examiner
+
 
 class AbstractSearch(listfilter.django.single.textinput.Search):
     def __init__(self, label_is_screenreader_only=True):
@@ -391,113 +393,76 @@ class ExaminerFilter(abstractselect.AbstractSelectFilter):
         return queryobject
 
 
-class ExaminerCountFilter(abstractselect.AbstractSelectFilter):
-    def __init__(self, **kwargs):
-        self.view = kwargs.pop('view', None)
-        super(ExaminerCountFilter, self).__init__(**kwargs)
+class AbstractCandidateExaminerCountFilter(abstractselect.AbstractSelectFilter):
+    def get_choices(self):
+        return [
+            ('', ''),
+            (pgettext_lazy('exact candidate num', 'Exactly'), (
+                ('eq-1', '1'),
+                ('eq-2', '2'),
+                ('eq-3', '3'),
+                ('eq-4', '4'),
+                ('eq-5', '5'),
+                ('eq-6', '6'),
+            )),
+            (pgettext_lazy('less than candidate num', 'Less than'), (
+                ('lt-2', '2'),
+                ('lt-3', '3'),
+                ('lt-4', '4'),
+                ('lt-5', '5'),
+                ('lt-6', '6'),
+            )),
+            (pgettext_lazy('greater than candidate num', 'Greater than'), (
+                ('gt-1', '1'),
+                ('gt-2', '2'),
+                ('gt-3', '3'),
+                ('gt-4', '4'),
+                ('gt-5', '5'),
+                ('gt-6', '6'),
+            ))
+        ]
 
-    def copy(self):
-        copy = super(ExaminerCountFilter, self).copy()
-        copy.view = self.view
-        return copy
+    def get_int_value_from_cleaned_value(self, cleaned_value):
+        return int(cleaned_value.split('-')[1])
 
+
+class ExaminerCountFilter(AbstractCandidateExaminerCountFilter):
     def get_slug(self):
         return 'examinercount'
 
     def get_label(self):
         return pgettext_lazy('group examiner filter', 'Number of examiners')
 
-    def __get_examiner_name(self, relatedexaminer):
-        return relatedexaminer.user.get_full_name()
-
-    def __get_choices_cached(self):
-        if not hasattr(self, '_choices'):
-            self._choices = [(str(index), str(index))
-                             for index in range(0, len(self.view.get_distinct_relatedexaminers()) + 1)]
-        return self._choices
-
-    def __get_valid_values(self):
-        return {str(choice[0])
-                for choice in self.__get_choices_cached()}
-
-    def get_choices(self):
-        choices = [
-            ('', '')
-        ]
-        choices.extend(self.__get_choices_cached())
-        return choices
-
-    def get_cleaned_value(self):
-        cleaned_value = super(ExaminerCountFilter, self).get_cleaned_value()
-        if cleaned_value:
-            if cleaned_value in self.__get_valid_values():
-                return cleaned_value
-        return None
-
-    def apply_filter(self, queryobject, cleaned_value):
-        queryobject = queryobject\
-            .filter(cached_data__examiner_count=int(cleaned_value))
-        return queryobject
-
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value()
-        if cleaned_value is not None:
-            queryobject = self.apply_filter(queryobject=queryobject, cleaned_value=cleaned_value)
+        if cleaned_value:
+            cleaned_int_value = self.get_int_value_from_cleaned_value(cleaned_value)
+            if cleaned_value.startswith('eq-'):
+                return queryobject.filter(cached_data__examiner_count=cleaned_int_value)
+            if cleaned_value.startswith('lt-'):
+                return queryobject.filter(cached_data__examiner_count__lt=cleaned_int_value)
+            if cleaned_value.startswith('gt-'):
+                return queryobject.filter(cached_data__examiner_count__gt=cleaned_int_value)
         return queryobject
 
 
-class CandidateCountFilter(abstractselect.AbstractSelectFilter):
-    def __init__(self, **kwargs):
-        self.view = kwargs.pop('view', None)
-        super(CandidateCountFilter, self).__init__(**kwargs)
-
-    def copy(self):
-        copy = super(CandidateCountFilter, self).copy()
-        copy.view = self.view
-        return copy
-
+class CandidateCountFilter(AbstractCandidateExaminerCountFilter):
     def get_slug(self):
         return 'candidatecount'
 
     def get_label(self):
         return pgettext_lazy('group student filter', 'Number of students')
 
-    def __get_student_name(self, relatedstudent):
-        return relatedstudent.user.get_full_name()
-
-    def __get_choices_cached(self):
-        if not hasattr(self, '_choices'):
-            self._choices = [(str(index), str(index))
-                             for index in range(0, len(self.view.get_distinct_relatedstudents()) + 1)]
-        return self._choices
-
-    def __get_valid_values(self):
-        return {str(choice[0])
-                for choice in self.__get_choices_cached()}
-
-    def get_choices(self):
-        choices = [
-            ('', '')
-        ]
-        choices.extend(self.__get_choices_cached())
-        return choices
-
-    def get_cleaned_value(self):
-        cleaned_value = super(CandidateCountFilter, self).get_cleaned_value()
-        if cleaned_value:
-            if cleaned_value in self.__get_valid_values():
-                return cleaned_value
-        return None
-
-    def apply_filter(self, queryobject, cleaned_value):
-        queryobject = queryobject\
-            .filter(cached_data__candidate_count=int(cleaned_value))
-        return queryobject
-
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value()
-        if cleaned_value is not None:
-            queryobject = self.apply_filter(queryobject=queryobject, cleaned_value=cleaned_value)
+        if cleaned_value:
+            cleaned_int_value = self.get_int_value_from_cleaned_value(cleaned_value)
+            if cleaned_value.startswith('eq-'):
+                return queryobject.filter(cached_data__candidate_count=cleaned_int_value)
+            if cleaned_value.startswith('lt-'):
+                return queryobject.filter(cached_data__candidate_count__lt=cleaned_int_value)
+            if cleaned_value.startswith('gt-'):
+                return queryobject.filter(cached_data__candidate_count__gt=cleaned_int_value)
         return queryobject
 
 
