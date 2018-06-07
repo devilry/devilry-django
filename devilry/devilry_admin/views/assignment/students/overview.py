@@ -24,7 +24,6 @@ class NonAnonymousGroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFra
 class Overview(groupview_base.BaseInfoView):
     filterview_name = 'filter'
     template_name = 'devilry_admin/assignment/students/overview.django.html'
-    paginate_by = 10
 
     def get_frame_renderer_class(self):
         devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()

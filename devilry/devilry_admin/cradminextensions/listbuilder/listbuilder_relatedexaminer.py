@@ -9,7 +9,7 @@ from devilry.apps.core.models import period_tag
 
 class ListViewBase(listbuilderview.FilterListMixin, listbuilderview.View):
     model = RelatedExaminer
-    paginate_by = 200
+    paginate_by = 20
 
     def get_period(self):
         raise NotImplementedError()
@@ -81,6 +81,7 @@ class OnassignmentItemValue(listbuilder.itemvalue.TitleDescription):
         return self.relatedexaminer.number_of_groups_on_assignment
 
     def get_number_of_candidates(self):
+        # return self.relatedexaminer.number_of_candidates_on_assignment
         return self.relatedexaminer.number_of_candidates_on_assignment
 
     def has_projectgroups(self):

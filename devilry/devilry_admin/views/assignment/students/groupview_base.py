@@ -21,6 +21,7 @@ from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relate
 class GroupViewMixin(object):
     model = coremodels.AssignmentGroup
     filterview_name = None
+    paginate_by = 10
 
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
@@ -104,55 +105,17 @@ class GroupViewMixin(object):
         return status_value
 
     def __get_unfiltered_queryset_for_role(self):
-        print('__get_unfiltered_queryset_for_role')
         return self.get_unfiltered_queryset_for_role(role=self.request.cradmin_role)
 
     def __get_total_groupcount(self):
-        print('__get_total_groupcount')
         return self.__get_unfiltered_queryset_for_role().count()
 
-    # def __get_filtered_groupcount(self):
-    #     return self.get_queryset().count()
-
     def __get_excluding_filters_is_applied(self, total_groupcount):
-        print('__get_excluding_filters_is_applied')
         return self.get_filterlist().filter(
             queryobject=self.__get_unfiltered_queryset_for_role()
         ).count() < total_groupcount
 
-    # def get_filtered_all_students_count(self):
-    #     print('get_filtered_all_students_count')
-    #     return self.get_filterlist()\
-    #         .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
-    #                 exclude={'status'})\
-    #         .count()
-
-    # def get_filtered_waiting_for_feedback_count(self):
-    #     print('get_filtered_waiting_for_feedback_count')
-    #     return self.get_filterlist()\
-    #         .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
-    #                 exclude={'status'})\
-    #         .filter(annotated_is_waiting_for_feedback__gt=0)\
-    #         .count()
-
-    # def get_filtered_waiting_for_deliveries_count(self):
-    #     print('get_filtered_waiting_for_deliveries_count')
-    #     return self.get_filterlist()\
-    #         .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
-    #                 exclude={'status'})\
-    #         .filter(annotated_is_waiting_for_deliveries__gt=0)\
-    #         .count()
-
-    # def get_filtered_corrected_count(self):
-    #     print('get_filtered_corrected_count')
-    #     return self.get_filterlist()\
-    #         .filter(queryobject=self.__get_unfiltered_queryset_for_role(),
-    #                 exclude={'status'})\
-    #         .filter(annotated_is_corrected__gt=0)\
-    #         .count()
-
     def __get_distinct_relatedexaminer_ids(self):
-        print('__get_distinct_relatedexaminer_ids')
         if not hasattr(self, '_distinct_relatedexaminer_ids'):
             self._distinct_relatedexaminer_ids = Examiner.objects\
                 .filter(assignmentgroup__in=self.__get_unfiltered_queryset_for_role())\
@@ -162,28 +125,10 @@ class GroupViewMixin(object):
         return self._distinct_relatedexaminer_ids
 
     def get_distinct_relatedexaminers(self):
-        print('get_distinct_relatedexaminers')
         return RelatedExaminer.objects\
             .filter(id__in=self.__get_distinct_relatedexaminer_ids())\
             .select_related('user')\
             .order_by(Lower(Concat('user__fullname', 'user__shortname')))
-
-    # def __get_distinct_relatedstudent_ids(self):
-    #     print('__get_distinct_relatedstudent_ids')
-    #     if not hasattr(self, '_distinct_relatedstudent_ids'):
-    #         self._distinct_relatedstudent_ids = Candidate.objects\
-    #             .filter(assignment_group__in=self.__get_unfiltered_queryset_for_role())\
-    #             .values_list('relatedstudent_id', flat=True)\
-    #             .distinct()
-    #         self._distinct_relatedstudent_ids = list(self._distinct_relatedstudent_ids)
-    #     return self._distinct_relatedstudent_ids
-    #
-    # def get_distinct_relatedstudents(self):
-    #     print('get_distinct_relatedstudents')
-    #     return RelatedStudent.objects\
-    #         .filter(id__in=self.__get_distinct_relatedstudent_ids())\
-    #         .select_related('user')\
-    #         .order_by(Lower(Concat('user__fullname', 'user__shortname')))
 
     def get_context_data(self, **kwargs):
         context = super(GroupViewMixin, self).get_context_data(**kwargs)
