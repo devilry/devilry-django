@@ -29,6 +29,7 @@ class UserListView(listbuilderview.FilterListMixin, listbuilderview.View):
     frame_renderer_class = UserItemFrame
     filterview_name = 'user_filter'
     value_renderer_class = user.ItemValue
+    paginate_by = 35
 
     def get_pagetitle(self):
         return ugettext_lazy('Select a student')

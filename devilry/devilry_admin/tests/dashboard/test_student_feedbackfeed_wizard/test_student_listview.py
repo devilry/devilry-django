@@ -60,3 +60,19 @@ class TestStudentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mock.call(appname='overview', args=(), kwargs={}, viewname='INDEX'),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
         )
+
+    def test_pagination(self):
+        mommy.make(settings.AUTH_USER_MODEL, _quantity=50)
+        mockresponse = self.mock_http200_getrequest_htmls()
+        self.assertEqual(mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'), 35)
+
+    def test_query_count(self):
+        mommy.make(settings.AUTH_USER_MODEL, _quantity=10)
+        with self.assertNumQueries(3):
+            self.mock_http200_getrequest_htmls()
+        mommy.make(settings.AUTH_USER_MODEL, _quantity=90)
+        with self.assertNumQueries(3):
+            self.mock_http200_getrequest_htmls()
+        mommy.make(settings.AUTH_USER_MODEL, _quantity=400)
+        with self.assertNumQueries(3):
+            self.mock_http200_getrequest_htmls()
