@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django.forms',
     'django.contrib.sites',  # Required by django-allauth
-    'debug_toolbar',
     'errortemplates',
     'crispy_forms',
     'gunicorn',

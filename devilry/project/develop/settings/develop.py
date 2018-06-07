@@ -28,6 +28,16 @@ MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
 #     ]
 
 
+######################
+#
+# Django Debug Toolbar
+#
+######################
+INSTALLED_APPS += [
+    'debug_toolbar'
+]
+
+
 #######################################################
 #
 # Django allauth with Dataporten provider

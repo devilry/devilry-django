@@ -16,12 +16,21 @@ DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(testfilesdir, 'deliverystorehier')
 #: Where to store compressed archives for download.
 DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY = os.path.join(testfilesdir, 'devilry_compressed_archives', '')
 
+#: Remove tracback logging middleware when running tests.
 if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' in MIDDLEWARE_CLASSES:
     MIDDLEWARE_CLASSES.remove('devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware')
 
+#: Remove django toolbar middleware while running tests.
+if 'debug_toolbar.middleware.DebugToolbarMiddleware' in MIDDLEWARE_CLASSES:
+    MIDDLEWARE_CLASSES.remove('debug_toolbar.middleware.DebugToolbarMiddleware')
+
+#: Remove django toolbar from installed apps.
 INSTALLED_APPS += [
     'devilry.devilry_dbcache.devilry_dbcache_testapp',
 ]
+
+if 'debug_toolbar' in INSTALLED_APPS:
+    INSTALLED_APPS.remove('debug_toolbar')
 
 # We need to use this because loads of tests uses username and password to login
 DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND = False
