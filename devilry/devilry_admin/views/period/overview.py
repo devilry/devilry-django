@@ -31,6 +31,7 @@ class Overview(listbuilderview.FilterListMixin, listbuilderview.View):
     model = Assignment
     frame_renderer_class = AssignmentItemFrame
     value_renderer_class = devilry_listbuilder.assignment.ItemValue
+    paginate_by = 5
 
     def add_filterlist_items(self, filterlist):
         filterlist.append(listfilter.django.single.textinput.Search(
@@ -61,7 +62,7 @@ class Overview(listbuilderview.FilterListMixin, listbuilderview.View):
 
     def __get_relatedexaminer_count(self):
         period = self.request.cradmin_role
-        return RelatedExaminer.objects\
+        return RelatedExaminer.objects \
             .filter(period=period)\
             .count()
 

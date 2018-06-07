@@ -170,3 +170,16 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one(
                     '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized
         )
+
+    def test_num_queries(self):
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=testperiod, _quantity=10)
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle',
+                          parentnode=testperiod, _quantity=10)
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end',
+                          parentnode=testperiod, _quantity=10)
+        mommy.make('core.RelatedStudent', period=testperiod, _quantity=50)
+        mommy.make('core.RelatedExaminer', period=testperiod, _quantity=50)
+        with self.assertNumQueries(5):
+            self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
