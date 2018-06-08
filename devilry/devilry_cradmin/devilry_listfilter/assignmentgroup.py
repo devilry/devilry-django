@@ -413,6 +413,7 @@ class AbstractCandidateExaminerCountFilter(abstractselect.AbstractSelectFilter):
                 ('lt-6', '6'),
             )),
             (pgettext_lazy('greater than candidate num', 'Greater than'), (
+                ('gt-0', '0'),
                 ('gt-1', '1'),
                 ('gt-2', '2'),
                 ('gt-3', '3'),
@@ -423,7 +424,13 @@ class AbstractCandidateExaminerCountFilter(abstractselect.AbstractSelectFilter):
         ]
 
     def get_int_value_from_cleaned_value(self, cleaned_value):
-        return int(cleaned_value.split('-')[1])
+        split_list = cleaned_value.split('-')
+        if len(split_list) != 2:
+            return None
+        try:
+            return int(split_list[1])
+        except ValueError:
+            return None
 
 
 class ExaminerCountFilter(AbstractCandidateExaminerCountFilter):
