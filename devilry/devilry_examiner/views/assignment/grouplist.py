@@ -31,6 +31,7 @@ class GroupListView(listbuilderview.FilterListMixin,
     model = coremodels.AssignmentGroup
     value_renderer_class = devilry_listbuilder.assignmentgroup.ExaminerItemValue
     frame_renderer_class = GroupItemFrame
+    paginate_by = 20
 
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
@@ -139,9 +140,6 @@ class GroupListView(listbuilderview.FilterListMixin,
 
     def __get_total_groupcount(self):
         return self.__get_unfiltered_queryset_for_role().count()
-
-    # def __get_filtered_groupcount(self):
-    #     return self.get_queryset().count()
 
     def __get_excluding_filters_other_than_status_is_applied(self, total_groupcount):
         return self.get_filterlist().filter(
