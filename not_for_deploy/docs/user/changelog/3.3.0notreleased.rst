@@ -26,6 +26,9 @@ Email:
       warning, and not in the order of it's severity. Now, warnings and information is shown in the "Manage students"
       and "Manage examiners" sections.
 
+Performance optimizations:
+    - Loading time significantly decreased for some views with a lot of students, examiners and project groups.
+
 
 New features
 ############
