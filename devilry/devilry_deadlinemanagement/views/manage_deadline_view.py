@@ -47,17 +47,19 @@ class ManageDeadlineForm(SelectedItemsForm):
     )
 
     def __init__(self, *args, **kwargs):
+        self.last_deadline = kwargs.pop('last_deadline')
         super(ManageDeadlineForm, self).__init__(*args, **kwargs)
         self.fields['new_deadline'].widget = DateTimePickerWidget(
             buttonlabel_novalue=pgettext_lazy('CrAdmin datetime picker typo fix', 'Select a date/time'),
-            minimum_datetime=self.get_minimum_datetime(),
+            minimum_datetime=self.get_minimum_datetime()
         )
         self.fields['new_deadline'].help_text = ugettext_lazy('Pick a date and time from the '
                                                               'calendar, or select one of the suggested deadlines.')
 
     def get_minimum_datetime(self):
-        minimum_datetime = timezone.now()
-        return minimum_datetime.replace(second=0, microsecond=0)
+        if self.last_deadline < timezone.now():
+            return timezone.now().replace(second=0, microsecond=0)
+        return self.last_deadline + timezone.timedelta(days=1)
 
     def clean(self):
         super(ManageDeadlineForm, self).clean()
@@ -152,7 +154,8 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
         form_class = self.get_form_class()
         return form_class(
             accessible_groups_queryset=self.request.cradmin_app.get_accessible_group_queryset(),
-            initial={'selected_items': self.get_initially_selected_items()}
+            initial={'selected_items': self.get_initially_selected_items()},
+            last_deadline=self.get_latest_previous_deadline()
         )
 
     def get_form(self, form_class=None):
@@ -174,6 +177,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
     def get_form_kwargs(self):
         kwargs = super(ManageDeadlineView, self).get_form_kwargs()
         kwargs['accessible_groups_queryset'] = self.request.cradmin_app.get_accessible_group_queryset()
+        kwargs['last_deadline'] = self.get_latest_previous_deadline()
         return kwargs
 
     def get_previous_view_url(self):
@@ -193,7 +197,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
             .order_by('-deadline_datetime')
         if self.post_move_deadline:
             feedback_set = feedback_set_queryset\
-                .filter(deadline_datetime__lt=self.deadline)\
+                .filter(deadline_datetime__lte=self.deadline)\
                 .first()
             if feedback_set:
                 return feedback_set.deadline_datetime

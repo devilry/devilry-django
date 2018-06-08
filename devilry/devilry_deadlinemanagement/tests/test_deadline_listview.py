@@ -369,6 +369,71 @@ class TestExaminerDeadlineListView(test.TestCase, cradmin_testhelpers.TestCaseMi
                                          .format(datetimeutils.datetime_to_url_string(testassignment.first_deadline)))
         )
 
+    def test_move_deadline_manually_button_not_rendered_if_group_is_corrected(self):
+        """
+        Test that move deadline manually should not be rendered if all groups have been corrected.
+        """
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer__user=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(testassignment),
+            cradmin_role=testassignment,
+            cradmin_app=self.__get_mock_app(user=testuser),
+            requestuser=testuser
+        )
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-deadlinemanagement-move-deadline-button-manually-select')
+        )
+
+    def test_move_deadline_manually_button_not_rendered_if_all_groups_are_corrected(self):
+        """
+        Test that move deadline manually should not be rendered if all groups have been corrected.
+        """
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup2)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup3)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(testassignment),
+            cradmin_role=testassignment,
+            cradmin_app=self.__get_mock_app(user=testuser),
+            requestuser=testuser
+        )
+        self.assertFalse(
+            mockresponse.selector.exists('.devilry-deadlinemanagement-move-deadline-button-manually-select')
+        )
+
+    def test_move_deadline_manually_button_rendered_if_at_least_one_group_is_not_corrected(self):
+        """
+        If at least one group is corrected, the move deadline manually button should be rendered.
+        """
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+        group_mommy.feedbackset_first_attempt_published(group=testgroup2)
+        mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=testuser)
+        mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=testuser)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.__get_mock_instance(testassignment),
+            cradmin_role=testassignment,
+            cradmin_app=self.__get_mock_app(user=testuser),
+            requestuser=testuser
+        )
+        self.assertTrue(
+            mockresponse.selector.count('.devilry-deadlinemanagement-move-deadline-button-manually-select'), 1)
+
     def test_query_count(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         testuser = mommy.make(settings.AUTH_USER_MODEL)

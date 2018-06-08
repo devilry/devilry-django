@@ -1397,5 +1397,4 @@ class TestManageDeadlineMoveDeadlineSingleGroup(ExaminerTestCaseMixin):
         earliest_date = mockresponse.selector.list('.devilry-deadlinemanagement-suggested-deadline')[0]\
             .get('django-cradmin-setfieldvalue')
         converted_datetime = from_isoformat_noseconds(earliest_date)
-        self.assertEqual(testfeedbackset1.deadline_datetime + timezone.timedelta(days=7),
-                          converted_datetime)
+        self.assertEqual(testfeedbackset2.deadline_datetime + timedelta(days=7), converted_datetime)
