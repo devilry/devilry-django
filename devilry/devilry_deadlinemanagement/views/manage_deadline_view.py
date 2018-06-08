@@ -110,7 +110,7 @@ class ManageDeadlineView(viewutils.DeadlineManagementMixin, formbase.FormView):
 
     def get_pagetitle(self):
         return ugettext_lazy('Manage deadline %(deadline)s') % {
-            'deadline': defaultfilters.date(self.deadline, 'DATETIME_FORMAT')
+            'deadline': defaultfilters.date(timezone.localtime(self.deadline), 'DATETIME_FORMAT')
         }
 
     def get_pageheading(self):

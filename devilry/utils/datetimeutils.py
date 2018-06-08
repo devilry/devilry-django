@@ -126,7 +126,7 @@ def datetime_to_url_string(datetime_obj):
     Returns:
         (str): Datetime as string specified by :attr:`.URL_DATETIME_FORMAT`.
     """
-    return arrow.get(datetime_obj).to('UTC').format(URL_DATETIME_FORMAT)
+    return arrow.get(datetime_obj).format(URL_DATETIME_FORMAT)
 
 
 def datetime_url_string_to_datetime(datetime_string):
@@ -138,4 +138,4 @@ def datetime_url_string_to_datetime(datetime_string):
     Returns:
         (``django.utils.timezone``): Converted datetime object from string.
     """
-    return timezone.localtime(arrow.get(datetime_string, URL_DATETIME_FORMAT, tzinfo='UTC').datetime)
+    return arrow.get(datetime_string, URL_DATETIME_FORMAT).datetime
