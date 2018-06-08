@@ -209,7 +209,8 @@ DEVILRY_COMMENT_STUDENTS_CAN_EDIT = os.environ.get(
     'DEVILRY_COMMENT_STUDENTS_CAN_EDIT', 'True') == 'True'
 
 #: Should students be able to see the comment edit history of other users in their group?
-#: Students only see comments or comment edit histories that are available to everyone. This means that
-#: they can only see comment edit history when the comment was visible to everyone.
+#: Students only see comments or comment edit histories that are visible to everyone. This means that
+#: students can only see edit history entries for comments that where had the "visible to everyone" state when the
+#: edit history entry was created.
 DEVILRY_COMMENT_STUDENTS_CAN_SEE_OTHER_USERS_COMMENT_HISTORY = os.environ.get(
     'DEVILRY_COMMENT_STUDENTS_CAN_SEE_OTHER_USERS_COMMENT_HISTORY', 'True') == 'True'
