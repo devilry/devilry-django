@@ -5,6 +5,7 @@ from model_mommy import mommy
 
 from devilry.apps.core.models import RelatedExaminer, RelatedStudent
 from devilry.devilry_account.exceptions import IllegalOperationError
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder2
 
 
@@ -493,6 +494,9 @@ class RelatedExaminerQuerySetAnnotateWithNumberOfGroupsOnAssignment(TestCase):
 
 
 class RelatedExaminerQuerySetExtraAnnotateWithNumberOfCandidatesOnAssignment(TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def test_no_groups(self):
         relatedexaminer = mommy.make('core.RelatedExaminer')
         testassignment = mommy.make('core.Assignment')
@@ -516,6 +520,39 @@ class RelatedExaminerQuerySetExtraAnnotateWithNumberOfCandidatesOnAssignment(Tes
         annotated_relatedexaminer = queryset.get(id=relatedexaminer.id)
         self.assertEqual(
             0, annotated_relatedexaminer.number_of_candidates_on_assignment)
+
+    def test_only_within_assignment_sanity(self):
+        relatedexaminer = mommy.make('core.RelatedExaminer')
+        testassignment1 = mommy.make('core.Assignment')
+        testassignment2 = mommy.make('core.Assignment')
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup1,
+                   relatedexaminer=relatedexaminer)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup1)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        mommy.make('core.Examiner',
+                   assignmentgroup=testgroup2,
+                   relatedexaminer=relatedexaminer)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup2)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup2)
+
+        # Test group 1
+        queryset = RelatedExaminer.objects\
+            .extra_annotate_with_number_of_candidates_on_assignment(assignment=testassignment1)
+        annotated_relatedexaminer = queryset.get(id=relatedexaminer.id)
+        self.assertEqual(
+            1, annotated_relatedexaminer.number_of_candidates_on_assignment)
+
+        # Test group 2
+        queryset = RelatedExaminer.objects \
+            .extra_annotate_with_number_of_candidates_on_assignment(assignment=testassignment2)
+        annotated_relatedexaminer = queryset.get(id=relatedexaminer.id)
+        self.assertEqual(
+            2, annotated_relatedexaminer.number_of_candidates_on_assignment)
 
     def test_multiple_candidates(self):
         relatedexaminer = mommy.make('core.RelatedExaminer')

@@ -4,6 +4,7 @@ from model_mommy import mommy
 
 from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedexaminer
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 
 
 class TestOnPeriodItemValue(test.TestCase):
@@ -44,6 +45,9 @@ class TestOnPeriodItemValue(test.TestCase):
 
 
 class TestOnassignmentItemValue(test.TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
     def __annotate_relatedexaminer(self, relatedexaminer, assignment):
         return RelatedExaminer.objects\
             .annotate_with_number_of_groups_on_assignment(assignment=assignment)\

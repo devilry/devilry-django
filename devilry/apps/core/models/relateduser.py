@@ -294,21 +294,16 @@ class RelatedExaminerQuerySet(models.QuerySet):
         return self.extra(
             select={
                 'number_of_candidates_on_assignment': """
-                    SELECT
-                        COUNT(core_candidate.id)
-                    FROM core_candidate
-                    INNER JOIN core_assignmentgroup
-                        ON (core_assignmentgroup.id = core_candidate.assignment_group_id)
-                    WHERE
-                        core_assignmentgroup.parentnode_id = %s
+                    SELECT COALESCE(SUM(candidate_count), 0)
+                    FROM devilry_dbcache_assignmentgroupcacheddata
+                    INNER JOIN core_assignmentgroup_examiners
+                        ON (core_assignmentgroup_examiners.assignmentgroup_id = devilry_dbcache_assignmentgroupcacheddata.group_id)
+                    WHERE core_assignmentgroup_examiners.relatedexaminer_id = core_relatedexaminer.id
                         AND
-                        core_candidate.assignment_group_id IN (
-                            SELECT core_assignmentgroup_examiners.assignmentgroup_id
-                            FROM core_assignmentgroup_examiners
-                            WHERE
-                                core_assignmentgroup_examiners.relatedexaminer_id = core_relatedexaminer.id
-                                AND
-                                core_assignmentgroup.id = core_assignmentgroup_examiners.assignmentgroup_id
+                        devilry_dbcache_assignmentgroupcacheddata.group_id IN (
+                          SELECT core_assignmentgroup.id
+                          FROM core_assignmentgroup
+                          WHERE core_assignmentgroup.parentnode_id = %s
                         )
                 """
             },

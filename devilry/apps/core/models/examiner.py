@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Q
 
 from abstract_is_admin import AbstractIsAdmin
 from devilry.apps.core.models import RelatedExaminer

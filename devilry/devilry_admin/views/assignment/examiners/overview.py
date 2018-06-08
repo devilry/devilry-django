@@ -32,6 +32,7 @@ class Overview(listbuilder_relatedexaminer.ListViewBase):
     value_renderer_class = listbuilder_relatedexaminer.OnassignmentItemValue
     frame_renderer_class = ExaminerDetailPageLinkFrame
     model = RelatedExaminer
+    paginate_by = 20
 
     def get_period(self):
         return self.assignment.parentnode
@@ -55,7 +56,7 @@ class Overview(listbuilder_relatedexaminer.ListViewBase):
         queryset = RelatedExaminer.objects\
             .filter(period=period)\
             .select_related('user')\
-            .annotate_with_number_of_groups_on_assignment(assignment=assignment)\
+            .annotate_with_number_of_groups_on_assignment(assignment=assignment) \
             .extra_annotate_with_number_of_candidates_on_assignment(assignment=assignment)\
             .exclude(active=False)
         return queryset
