@@ -7,11 +7,9 @@ from django_cradmin import cradmin_testhelpers
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 from model_mommy import mommy
-import mock
 
 from devilry.apps.core import devilry_core_mommy_factories
 from devilry.apps.core.models import Assignment
-from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START
 from devilry.devilry_comment.models import Comment
 from devilry.devilry_examiner.views.assignment import grouplist
@@ -149,7 +147,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mommy.make('core.Candidate',
                        relatedstudent__user__fullname='candidate{}'.format(number),
                        assignment_group=group)
-        with self.assertNumQueries(13):
+        with self.assertNumQueries(14):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                requestuser=testuser)
 
@@ -170,7 +168,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mommy.make('core.Candidate',
                        relatedstudent__user__fullname='candidate{}'.format(number),
                        assignment_group=group)
-        with self.assertNumQueries(13):
+        with self.assertNumQueries(14):
             self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                requestuser=testuser)
 
@@ -207,7 +205,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             devilry_group_mommy_factories.feedbackset_first_attempt_published(
                 group=group, grading_points=3)
         prefetched_assignment = Assignment.objects.prefetch_point_to_grade_map().get(id=testassignment.id)
-        with self.assertNumQueries(13):
+        with self.assertNumQueries(14):
             self.mock_http200_getrequest_htmls(cradmin_role=prefetched_assignment,
                                                requestuser=testuser)
 
