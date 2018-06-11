@@ -58,6 +58,35 @@ class RelatedStudentResults(object):
             return False
         return True
 
+    def no_deliveries_hard_deadline(self, assignment):
+        """
+        Check if the student has no deliveries on the last feedbackset for the assignment.
+
+        This check differs from :meth:`.RelatedStudentResults.is_waiting_for_feedback` in that if the assignments
+        deadline-handling is `HARD`, the deadline has expired and the student has no comments, then the student has no
+        deliveries.
+
+        Note: This method always returns ``False`` if the deadline-handling is not `HARD`.
+
+        Returns:
+            (bool): True if the student has no uploaded comments and the deadline expired.
+
+        Raises:
+            (ValueError): If the student is not registered on the ``Assignment``.
+        """
+        if not assignment.deadline_handling_is_hard():
+            return False
+
+        if not self.student_is_registered_on_assignment(assignment_id=assignment.id):
+            raise ValueError('You are checking if the student is waiting for deliveries when the student is not '
+                             'registered on the assignment. Maybe you should call '
+                             'student_is_registered_on_assignment(assignment_id=) first?')
+        cached_data = self.cached_data_dict[assignment.id]
+        if self.is_waiting_for_feedback(assignment_id=assignment.id):
+            if cached_data.public_student_comment_count == 0:
+                return True
+        return False
+
     def is_waiting_for_deliveries(self, assignment_id):
         """
         Check if the student still can deliver on the assignment.
@@ -159,7 +188,6 @@ class RelatedStudentResults(object):
         Simple prettyprint showing the results of the RelatedStudent for
         each Assignment.
         """
-        print self.relatedstudent.user.fullname
         for assignment_id, cached_data in self.cached_data_dict.items():
             published_feedbackset = cached_data.last_published_feedbackset
             passing_grade = cached_data.group.parentnode.points_is_passing_grade(published_feedbackset.grading_points)

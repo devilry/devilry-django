@@ -45,6 +45,8 @@ class ResultItemValue(base_new.AbstractCellRenderer):
             self.assignment_result = 'not-registered'
         elif related_student_result.is_waiting_for_deliveries(assignment_id=assignment.id):
             self.assignment_result = 'waiting-for-deliveries'
+        elif related_student_result.no_deliveries_hard_deadline(assignment=assignment):
+            self.assignment_result = 'no-deliveries'
         elif related_student_result.is_waiting_for_feedback(assignment_id=assignment.id):
             self.assignment_result = 'waiting-for-feedback'
         else:
