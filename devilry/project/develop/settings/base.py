@@ -38,6 +38,32 @@ DATABASES = {
 }
 DATABASES['default']['PORT'] = 24376
 
+
+##############################
+#
+# The database to migrate from
+#
+##############################
+# DATABASES['migrate_from'] = {
+#     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#     'PORT': 24377,
+#     'NAME': 'dbdev_migratefrom',
+#     'USER': 'dbdev',
+#     'PASSWORD': 'dbdev',
+#     'HOST': '127.0.0.1',
+#     'TEST': {
+#         'NAME': 'test_migratefrom',
+#         'PORT': 24377,
+#         'USER': 'dbdev',
+#         'PASSWORD': 'dbdev',
+#         'HOST': '127.0.0.1',
+#     }
+# }
+
+DATABASES['migrate_from'] = DATABASES['default'].copy()
+DATABASES['migrate_from']['NAME'] = 'dbdev_migrate_from'
+
+
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS += [

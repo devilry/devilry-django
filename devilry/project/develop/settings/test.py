@@ -59,7 +59,6 @@ class DisableMigrations(object):
     # def __getitem__(self, key):
     #     return 'notmigrations'
 
-
 MIGRATION_MODULES = DisableMigrations()
 
 # DEVILRY_V2_DATABASE_MAX_BULK_CREATE_OVERRIDE = 100

@@ -104,6 +104,9 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+
+    # Devilry merge v3 db
+    'devilry.devilry_merge_v3database',
 ]
 
 TEMPLATES = [
