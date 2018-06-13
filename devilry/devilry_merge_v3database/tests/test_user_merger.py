@@ -30,7 +30,7 @@ class TestUserMerger(test.TestCase):
     def test_check_migrated_user_fields(self):
         mommy.make(settings.AUTH_USER_MODEL, shortname='defaultdbuser@example.com')
         mommy.prepare(settings.AUTH_USER_MODEL, shortname='migratedbuser@example.com').save(using=self.from_db_alias)
-        user_merger.UserMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserMerger(from_db_alias=self.from_db_alias, transaction=True).run()
 
         merged_user = get_user_model().objects.get(shortname='migratedbuser@example.com')
         merged_from_user = get_user_model().objects.using(self.from_db_alias).get(shortname='migratedbuser@example.com')
@@ -44,7 +44,7 @@ class TestUserMerger(test.TestCase):
         mommy.prepare(settings.AUTH_USER_MODEL, shortname='migratedbuser@example.com').save(using=self.from_db_alias)
         self.assertEqual(get_user_model().objects.count(), 1)
         self.assertEqual(get_user_model().objects.get().shortname, 'defaultdbuser@example.com')
-        user_merger.UserMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserMerger(from_db_alias=self.from_db_alias, transaction=True).run()
         self.assertEqual(get_user_model().objects.count(), 2)
         self.assertTrue(get_user_model().objects.filter(shortname='migratedbuser@example.com').count(), 1)
 
@@ -58,7 +58,7 @@ class TestUserMerger(test.TestCase):
         self.assertEqual(get_user_model().objects.filter(shortname='defaultdbuser1@example.com').count(), 1)
         self.assertEqual(get_user_model().objects.filter(shortname='defaultdbuser2@example.com').count(), 1)
 
-        user_merger.UserMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserMerger(from_db_alias=self.from_db_alias, transaction=True).run()
         self.assertEqual(get_user_model().objects.count(), 5)
         self.assertTrue(get_user_model().objects.filter(shortname='migratedbuser1@example.com').count(), 1)
         self.assertTrue(get_user_model().objects.filter(shortname='migratedbuser2@example.com').count(), 1)
@@ -70,7 +70,7 @@ class TestUserMerger(test.TestCase):
         mommy.prepare(settings.AUTH_USER_MODEL, shortname='migratedbuser1@example.com').save(using=self.from_db_alias)
         mommy.prepare(settings.AUTH_USER_MODEL, shortname='migratedbuser2@example.com').save(using=self.from_db_alias)
         mommy.prepare(settings.AUTH_USER_MODEL, shortname='migratedbuser3@example.com').save(using=self.from_db_alias)
-        user_merger.UserMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserMerger(from_db_alias=self.from_db_alias, transaction=True).run()
 
         merged_users = get_user_model().objects.filter(shortname__startswith='migratedbuser')
         merged_from_users = get_user_model().objects.using(self.from_db_alias).all()
@@ -87,7 +87,7 @@ class TestUserMerger(test.TestCase):
         mommy.make(settings.AUTH_USER_MODEL, shortname='user1@example.com')
         mommy.prepare(settings.AUTH_USER_MODEL, shortname='user1@example.com').save(using=self.from_db_alias)
         self.assertEqual(get_user_model().objects.count(), 1)
-        user_merger.UserMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserMerger(from_db_alias=self.from_db_alias, transaction=True).run()
         self.assertEqual(get_user_model().objects.count(), 1)
 
 
@@ -132,7 +132,7 @@ class TestUserEmailMerger(test.TestCase):
         self.assertEqual(UserEmail.objects.count(), 0)
         self.assertEqual(UserEmail.objects.using(self.from_db_alias).get().user_id, 230)
 
-        user_merger.UserEmailMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserEmailMerger(from_db_alias=self.from_db_alias, transaction=True).run()
         self.assertEqual(UserEmail.objects.count(), 1)
         self.assertEqual(UserEmail.objects.using(self.from_db_alias).get().user_id, 230)
         self.assertEqual(UserEmail.objects.get().user_id, migrated_user.id)
@@ -150,7 +150,7 @@ class TestUserEmailMerger(test.TestCase):
                       email='migrateuser@example.com',
                       user=migrate_user) \
             .save(using=self.from_db_alias)
-        user_merger.UserEmailMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserEmailMerger(from_db_alias=self.from_db_alias, transaction=True).run()
         self.assertEqual(UserEmail.objects.count(), 1)
         self.assertEqual(UserEmail.objects.get().created_datetime, created_datetime)
         self.assertEqual(UserEmail.objects.get().last_updated_datetime, updated_datetime)
@@ -164,7 +164,7 @@ class TestUserEmailMerger(test.TestCase):
             .save(using=self.from_db_alias)
 
         self.assertEqual(UserEmail.objects.count(), 0)
-        user_merger.UserEmailMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserEmailMerger(from_db_alias=self.from_db_alias, transaction=True).run()
         self.assertEqual(UserEmail.objects.count(), 1)
         user = get_user_model().objects.get(shortname='migrateuser@example.com')
         self.assertEqual(UserEmail.objects.get().user, user)
@@ -184,7 +184,7 @@ class TestUserEmailMerger(test.TestCase):
             .save(using=self.from_db_alias)
 
         self.assertEqual(UserEmail.objects.count(), 0)
-        user_merger.UserEmailMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserEmailMerger(from_db_alias=self.from_db_alias, transaction=True).run()
         self.assertEqual(UserEmail.objects.count(), 3)
         self.assertEqual(
             UserEmail.objects.filter(
@@ -207,7 +207,7 @@ class TestUserEmailMerger(test.TestCase):
             .save(using=self.from_db_alias)
 
         self.assertEqual(UserEmail.objects.count(), 0)
-        user_merger.UserEmailMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserEmailMerger(from_db_alias=self.from_db_alias, transaction=True).run()
         self.assertEqual(UserEmail.objects.count(), 3)
         for useremail in UserEmail.objects.all():
             self.assertEqual(useremail.user, migrated_user)
@@ -220,7 +220,7 @@ class TestUserEmailMerger(test.TestCase):
             .save(using=self.from_db_alias)
 
         self.assertEqual(UserEmail.objects.count(), 1)
-        user_merger.UserEmailMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserEmailMerger(from_db_alias=self.from_db_alias, transaction=True).run()
         self.assertEqual(UserEmail.objects.count(), 1)
 
 
@@ -266,7 +266,7 @@ class TestUserNameMerger(test.TestCase):
         self.assertEqual(UserName.objects.count(), 0)
         self.assertEqual(UserName.objects.using(self.from_db_alias).get().user_id, 230)
 
-        user_merger.UserNameMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserNameMerger(from_db_alias=self.from_db_alias, transaction=True).run()
         self.assertEqual(UserName.objects.count(), 1)
         self.assertEqual(UserName.objects.using(self.from_db_alias).get().user_id, 230)
         self.assertEqual(UserName.objects.get().user_id, migrated_user.id)
@@ -283,7 +283,7 @@ class TestUserNameMerger(test.TestCase):
                       username='migrateuser',
                       user=migrate_user) \
             .save(using=self.from_db_alias)
-        user_merger.UserNameMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserNameMerger(from_db_alias=self.from_db_alias, transaction=True).run()
         self.assertEqual(UserName.objects.count(), 1)
         self.assertEqual(UserName.objects.get().created_datetime, created_datetime)
         self.assertEqual(UserName.objects.get().last_updated_datetime, updated_datetime)
@@ -296,7 +296,7 @@ class TestUserNameMerger(test.TestCase):
             .save(using=self.from_db_alias)
 
         self.assertEqual(UserName.objects.count(), 0)
-        user_merger.UserNameMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserNameMerger(from_db_alias=self.from_db_alias, transaction=True).run()
         self.assertEqual(UserName.objects.count(), 1)
         user = get_user_model().objects.get(shortname='migrateuser@example.com')
         self.assertEqual(UserName.objects.get().user, user)
@@ -316,7 +316,7 @@ class TestUserNameMerger(test.TestCase):
             .save(using=self.from_db_alias)
 
         self.assertEqual(UserName.objects.count(), 0)
-        user_merger.UserNameMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserNameMerger(from_db_alias=self.from_db_alias, transaction=True).run()
         self.assertEqual(UserName.objects.count(), 3)
         self.assertEqual(
             UserName.objects.filter(user__shortname='migrateuser1@example.com', username='migrateuser1').count(), 1)
@@ -336,7 +336,7 @@ class TestUserNameMerger(test.TestCase):
             .save(using=self.from_db_alias)
 
         self.assertEqual(UserName.objects.count(), 0)
-        user_merger.UserNameMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserNameMerger(from_db_alias=self.from_db_alias, transaction=True).run()
         self.assertEqual(UserName.objects.count(), 3)
         for username in UserName.objects.all():
             self.assertEqual(username.user, migrated_user)
@@ -349,7 +349,7 @@ class TestUserNameMerger(test.TestCase):
             .save(using=self.from_db_alias)
 
         self.assertEqual(UserName.objects.count(), 1)
-        user_merger.UserNameMerger(from_db_alias=self.from_db_alias).run()
+        user_merger.UserNameMerger(from_db_alias=self.from_db_alias, transaction=True).run()
         self.assertEqual(UserName.objects.count(), 1)
         self.assertTrue(UserName.objects.get().is_primary)
         self.assertIsNone(UserName.objects.using(self.from_db_alias).get().is_primary)

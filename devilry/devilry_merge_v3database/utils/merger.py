@@ -15,25 +15,31 @@ class AbstractMerger:
 
     #: The main model to migrate.
     model = None
-    foreign_key_field_to_be_set_manually = ['id']
 
-    def __init__(self, from_db_alias, to_db_alias='default'):
+    def __init__(self, from_db_alias, to_db_alias='default', transaction=False):
+        """
+
+        Args:
+            from_db_alias: The database to migrate from.
+            to_db_alias: The database to migrate to.
+            transaction: Should the migration be run as a single transaction? Defaults to ``False``.
+        """
         self.from_db_alias = from_db_alias
         self.to_db_alias = to_db_alias
+        self.run_as_single_transaction = transaction
 
-    def get_user_by_shortname(self, user_id):
+    def get_user_by_shortname(self, shortname):
         """
         Get :obj:`devilry.devilry_account.models.User` by ``shortname`` from current default database.
 
         Args:
-            user_id: The user id from the merge db object.
+            shortname: The shortname of an user from the database to merge.
 
         Returns:
-            :obj:`devilry.devilry_account.models.User`: User instance.
+            :obj:`devilry.devilry_account.models.User`: User instance from the default database.
         """
-        mergedb_user = get_user_model().objects.using(self.from_db_alias).get(id=user_id)
         try:
-            return get_user_model().objects.get(shortname=mergedb_user.shortname)
+            return get_user_model().objects.get(shortname=shortname)
         except get_user_model().DoesNotExist:
             return None
 
@@ -71,12 +77,76 @@ class AbstractMerger:
         obj.full_clean()
         obj.save(using=self.to_db_alias)
 
-
     def start_migration(self, from_db_object):
         """
         Write code for migrating models here.
         """
         raise NotImplementedError()
+
+    def selectd_related_foreign_keys(self):
+        """
+        Override this method to return a list of fields that should be used
+        in select_related on the QuerySet for the ``self.model``-class.
+
+        Note:
+            We need to do a select_related on the queryset the objects are fetched from to get the correct foreign key
+            descriptors.
+
+            Here's are a couple of example models (example from Devilry):
+                class User(..):
+                    ...
+                    shortname = models.CharField()
+
+                class UserEmail(..):
+                    user = models.ForeignKey(User)
+                    ...
+
+            And we have two databases, one database to migrate data into from another database:
+                default
+                migrate_from
+
+            Example where each database(default and migrate_from) has a user each with different IDs:
+
+                In the example below, the users from each database have different IDs:
+                    user in default database has ID 1
+                    user in migrate_from database has ID 230
+
+                    for user_email in UserEmail.objects.using("migrate_from").all():
+                        # Will raise a UserDoesNotExist-error
+                        print user_email.user
+
+                In the example below, both users has the same ID, but different shortnames:
+                    # Create a user in the default database.
+                    default_db_user = User(id=230, shortname='default_db_user')
+                    default_db_user.save()
+
+                    # Create a User and a UserEmail in the migrate_from database.
+                    migrate_from_db_user = User(id=230, shortname='migrate_from_db_user')
+                    migrate_from_db_user.save(using='migrate_from')
+                    UserEmail(user=migrate_from_db_user).save(using='migrate_from')
+
+                    for user_email in UserEmail.objects.using("migrate_from").all():
+                        # We expect the result to be 'migrate_from_db_user'.
+                        # But since we did not use select_related, the result will be `default_db_user`
+                        print user_email.user.shortname
+
+        The reason for this weird behaviour is that Django does a separate query for the user, disregarding
+        the `using(..)` filter on the QuerySet and simply uses the default database.
+
+        Adding select_related will fix this, as select_related operates on the database defined by `using(..)`,
+        and fetched the users from that database.
+
+        Returns:
+            list: A list of foreign key descriptors.
+        """
+        return []
+
+    def __run(self):
+        if self.model is None:
+            raise ValueError('{}.model is \'None\''.format(self.__class__.__name__))
+        for from_db_object in self.model.objects.using(self.from_db_alias)\
+                .select_related(*self.selectd_related_foreign_keys()).all():
+            self.start_migration(from_db_object=from_db_object)
 
     def run(self):
         """
@@ -84,7 +154,13 @@ class AbstractMerger:
 
         Initializes the merger with atomic transaction.
         """
-        if self.model is None:
-            raise ValueError('{}.model is \'None\''.format(self.__class__.__name__))
-        for from_db_object in self.model.objects.using(self.from_db_alias).all():
-            self.start_migration(from_db_object=from_db_object)
+        # if self.model is None:
+        #     raise ValueError('{}.model is \'None\''.format(self.__class__.__name__))
+        # for from_db_object in self.model.objects.using(self.from_db_alias)\
+        #         .select_related(*self.selectd_related_foreign_keys()).all():
+        #     self.start_migration(from_db_object=from_db_object)
+        if self.run_as_single_transaction:
+            with transaction.atomic():
+                self.__run()
+        else:
+            self.__run()

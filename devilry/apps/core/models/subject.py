@@ -124,7 +124,10 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
 
     short_name = ShortNameField(unique=True)
     long_name = LongNameField()
+
+    # TODO: Remove, replaced by PermissionGroups
     admins = models.ManyToManyField(User, blank=True)
+
     etag = models.DateTimeField(auto_now_add=True)
 
     def get_path(self):

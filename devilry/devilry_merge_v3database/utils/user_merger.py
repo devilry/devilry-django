@@ -15,10 +15,9 @@ class UserMerger(merger.AbstractMerger):
     current default database.
     """
     model = get_user_model()
-    foreign_key_field_to_be_set_manually = ['id']
 
     def start_migration(self, from_db_object):
-        user = self.get_user_by_shortname(user_id=from_db_object.id)
+        user = self.get_user_by_shortname(shortname=from_db_object.shortname)
         if not user:
             user = from_db_object
             user.pk = None
@@ -30,8 +29,10 @@ class UserNameMerger(merger.AbstractMerger):
     Merge :class:`devilry.devilry_account.models.UserName` from database to
     current default database.
     """
-    foreign_key_field_to_be_set_manually = ['id', 'user']
     model = account_models.UserName
+
+    def selectd_related_foreign_keys(self):
+        return ['user']
 
     def start_migration(self, from_db_object):
         if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
@@ -40,7 +41,7 @@ class UserNameMerger(merger.AbstractMerger):
         existing_usernames = account_models.UserName.objects \
             .values_list('username', flat=True)
         if from_db_object.username not in existing_usernames:
-            user = self.get_user_by_shortname(user_id=from_db_object.user_id)
+            user = self.get_user_by_shortname(shortname=from_db_object.user.shortname)
             username_kwargs = model_to_dict(from_db_object, exclude=['id', 'user', 'pk'])
             username = account_models.UserName(**username_kwargs)
             username.user_id = user.id
@@ -54,14 +55,16 @@ class UserEmailMerger(merger.AbstractMerger):
     Merge :class:`devilry.devilry_account.models.UserEmail` from database to
     current default database.
     """
-    foreign_key_field_to_be_set_manually = ['id', 'user']
     model = account_models.UserEmail
+
+    def selectd_related_foreign_keys(self):
+        return ['user']
 
     def start_migration(self, from_db_object):
         existing_useremails = account_models.UserEmail.objects\
             .values_list('email', flat=True)
         if from_db_object.email not in existing_useremails:
-            user = self.get_user_by_shortname(user_id=from_db_object.user_id)
+            user = self.get_user_by_shortname(shortname=from_db_object.user.shortname)
             user_email_kwargs = model_to_dict(from_db_object, exclude=['id', 'user', 'pk'])
             user_email = account_models.UserEmail(**user_email_kwargs)
             user_email.user_id = user.id
