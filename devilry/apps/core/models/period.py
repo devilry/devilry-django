@@ -200,6 +200,8 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     end_time = models.DateTimeField(
         help_text=_('Start time and end time defines when the period is active.'),
         verbose_name=_('End time'))
+
+    # TODO: Remove, replaced by PermissionGroups
     admins = models.ManyToManyField(User, blank=True)
     etag = models.DateTimeField(auto_now_add=True)
 

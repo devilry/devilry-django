@@ -37,7 +37,7 @@ class AbstractMerger:
             shortname: The shortname of an user from the database to merge.
 
         Returns:
-            :obj:`devilry.devilry_account.models.User`: User instance from the default database.
+            :obj:`devilry.devilry_account.models.User`: User instance from the default database or ``None``.
         """
         try:
             return get_user_model().objects.get(shortname=shortname)
@@ -53,7 +53,7 @@ class AbstractMerger:
 
         Returns:
             :obj:`devilry.devilry_account.models.PermissionGroup`: ``PermissionGroup`` instance from the
-                default database.
+                default database or ``None``.
         """
         try:
             return account_models.PermissionGroup.objects.get(name=name)
@@ -65,7 +65,7 @@ class AbstractMerger:
         Get :obj:`devilry.apps.core.models.Subject` by ``shortname`` from current default database.
 
         Returns:
-            :obj:`devilry.apps.core.models.Subject`: Subject instance.
+            :obj:`devilry.apps.core.models.Subject`: Subject instance or ``None``.
         """
         try:
             return core_models.Subject.objects.get(short_name=shortname)
@@ -77,7 +77,7 @@ class AbstractMerger:
         Get :obj:`devilry.apps.core.models.Period` by ``shortname`` from current default database.
 
         Returns:
-            :obj:`devilry.apps.core.models.Period`: Period instance.
+            :obj:`devilry.apps.core.models.Period`: Period instance or ``None``.
         """
         try:
             return core_models.Period.objects.get(parentnode__short_name=parentnode_shortname, short_name=shortname)

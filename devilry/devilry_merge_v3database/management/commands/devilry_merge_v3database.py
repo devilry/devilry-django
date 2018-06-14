@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 
 from devilry.devilry_merge_v3database.utils import user_merger, permissiongroup_merger, subject_merger
