@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 
-from devilry.devilry_merge_v3database.utils import user_merger
+from devilry.devilry_merge_v3database.utils import user_merger, permissiongroup_merger, subject_merger
 from django.db import transaction
 
 
@@ -29,3 +29,7 @@ class Command(BaseCommand):
             user_merger.UserMerger(from_db_alias=migrate_from_alias).run()
             user_merger.UserNameMerger(from_db_alias=migrate_from_alias).run()
             user_merger.UserEmailMerger(from_db_alias=migrate_from_alias).run()
+            permissiongroup_merger.PermissionGroupMerger(from_db_alias=migrate_from_alias).run()
+            permissiongroup_merger.PermissionGroupUserMerger(from_db_alias=migrate_from_alias).run()
+            subject_merger.SubjectMerger(from_db_alias=migrate_from_alias).run()
+

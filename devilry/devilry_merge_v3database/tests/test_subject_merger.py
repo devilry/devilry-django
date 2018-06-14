@@ -39,8 +39,7 @@ class TestSubjectMerger(test.TestCase):
         migrate_from_db_subject = core_models.Subject.objects.using(self.from_db_alias).get()
         migrated_subject = core_models.Subject.objects.get(short_name='migrate_db_subject')
         self.assertEqual(migrated_subject.long_name, migrate_from_db_subject.long_name)
-        # TODO: migrate etag fields for subject
-        # self.assertEqual(migrated_subject.etag, migrate_from_db_subject.etag)
+        self.assertEqual(migrated_subject.etag, migrate_from_db_subject.etag)
 
         existing_default_subject = core_models.Subject.objects.get(short_name='default_db_subject')
         self.assertEqual(existing_default_subject.long_name, 'Default DB subject')
@@ -73,8 +72,7 @@ class TestSubjectMerger(test.TestCase):
         migrate_from_db_subject = core_models.Subject.objects.using(self.from_db_alias).get()
         migrated_subject = core_models.Subject.objects.get(short_name='migrate_db_subject')
         self.assertEqual(migrated_subject.long_name, migrate_from_db_subject.long_name)
-        # TODO: migrate etag fields for subject
-        # self.assertEqual(migrated_subject.etag, migrate_from_db_subject.etag)
+        self.assertEqual(migrated_subject.etag, migrate_from_db_subject.etag)
 
     def test_multiple_subjects_migrated(self):
         mommy.prepare('core.Subject', short_name='migrate_db_subject1',
@@ -94,3 +92,10 @@ class TestSubjectMerger(test.TestCase):
                          'Migrate DB subject 2')
         self.assertEqual(core_models.Subject.objects.get(short_name='migrate_db_subject3').long_name,
                          'Migrate DB subject 3')
+
+
+class TestSubjectPermissionGroupMerger(test.TestCase):
+    """
+    """
+    def test_sanity(self):
+        pass

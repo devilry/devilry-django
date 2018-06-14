@@ -15,7 +15,31 @@ class SubjectMerger(merger.AbstractMerger):
     """
     model = core_models.Subject
 
+    def update_after_save(self, from_db_object):
+        core_models.Subject.objects\
+            .filter(short_name=from_db_object.short_name)\
+            .update(etag=from_db_object.etag)
+
     def start_migration(self, from_db_object):
         subject_kwargs = model_to_dict(from_db_object, exclude=['id', 'pk', 'admins'])
         subject = core_models.Subject(**subject_kwargs)
         self.save_object(obj=subject)
+
+
+# class SubjectPermissionGroupMerger(merger.AbstractMerger):
+#     """
+#     Merge :class:`devilry.devilry_account.models.SubjectPermissionGroup` from database to
+#     current default database.
+#     """
+#     model = account_models.SubjectPermissionGroup
+#
+#     def select_related_foreign_keys(self):
+#         return ['subject', 'permissiongroup']
+#
+#     def start_migration(self, from_db_object):
+#         subject = self.get_subject_by_shortname(shortname=from_db_object.subject.shortname)
+#         subjectpermissiongroup_kwargs = model_to_dict(from_db_object, exclude=['id', 'subject', 'permissiongroup'])
+#         # Handle permission group with users
+#         subject_permissiongroup = account_models.SubjectPermissionGroup(**subjectpermissiongroup_kwargs)
+#         subject_permissiongroup.subject_id = subject.id
+#         self.save_object(obj=subject_permissiongroup)

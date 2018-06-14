@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import transaction
 from django.contrib.auth import get_user_model
+from devilry.devilry_account import models as account_models
 from devilry.apps.core import models as core_models
 
 
@@ -43,6 +44,22 @@ class AbstractMerger:
         except get_user_model().DoesNotExist:
             return None
 
+    def get_permissiongroup_by_name(self, name):
+        """
+        Get :obj:`devilry.devilry_account.models.PermissionGroup` by ``name`` from current database.
+
+        Args:
+            name: The unique name of a permission group from the database to merge.
+
+        Returns:
+            :obj:`devilry.devilry_account.models.PermissionGroup`: ``PermissionGroup`` instance from the
+                default database.
+        """
+        try:
+            return account_models.PermissionGroup.objects.get(name=name)
+        except account_models.PermissionGroup.DoesNotExist:
+            return None
+
     def get_subject_by_shortname(self, shortname):
         """
         Get :obj:`devilry.apps.core.models.Subject` by ``shortname`` from current default database.
@@ -67,6 +84,18 @@ class AbstractMerger:
         except core_models.Period.DoesNotExist:
             return None
 
+    def update_after_save(self, from_db_object):
+        """
+        Method for updating fields after the object from the migrate database is saved to the `to_db_alias` database.
+
+        Mainly used for updating auto_now and auto_now_add fields as these can only be edited with an QuerySet.update()
+        query.
+
+        Args:
+            from_db_object: The object from the migrate database.
+        """
+        pass
+
     def save_object(self, obj):
         """
         Ensures the `full_clean()` and that object is saved to the `to_db_alias` database.
@@ -83,7 +112,7 @@ class AbstractMerger:
         """
         raise NotImplementedError()
 
-    def selectd_related_foreign_keys(self):
+    def select_related_foreign_keys(self):
         """
         Override this method to return a list of fields that should be used
         in select_related on the QuerySet for the ``self.model``-class.
@@ -145,8 +174,9 @@ class AbstractMerger:
         if self.model is None:
             raise ValueError('{}.model is \'None\''.format(self.__class__.__name__))
         for from_db_object in self.model.objects.using(self.from_db_alias)\
-                .select_related(*self.selectd_related_foreign_keys()).all():
+                .select_related(*self.select_related_foreign_keys()).all():
             self.start_migration(from_db_object=from_db_object)
+            self.update_after_save(from_db_object=from_db_object)
 
     def run(self):
         """
@@ -154,11 +184,6 @@ class AbstractMerger:
 
         Initializes the merger with atomic transaction.
         """
-        # if self.model is None:
-        #     raise ValueError('{}.model is \'None\''.format(self.__class__.__name__))
-        # for from_db_object in self.model.objects.using(self.from_db_alias)\
-        #         .select_related(*self.selectd_related_foreign_keys()).all():
-        #     self.start_migration(from_db_object=from_db_object)
         if self.run_as_single_transaction:
             with transaction.atomic():
                 self.__run()
