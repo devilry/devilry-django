@@ -19,9 +19,9 @@ class UserMerger(merger.AbstractMerger):
     def start_migration(self, from_db_object):
         user = self.get_user_by_shortname(shortname=from_db_object.shortname)
         if not user:
-            user = from_db_object
-            user.pk = None
-            self.save_object(obj=user)
+            new_user_kwargs = model_to_dict(from_db_object, exclude=['id', 'pk'])
+            new_user = get_user_model()(**new_user_kwargs)
+            self.save_object(obj=new_user)
 
 
 class UserNameMerger(merger.AbstractMerger):

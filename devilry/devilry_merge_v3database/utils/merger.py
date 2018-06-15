@@ -7,7 +7,7 @@ from devilry.devilry_account import models as account_models
 from devilry.apps.core import models as core_models
 
 
-class AbstractMerger:
+class AbstractMerger(object):
     """
     Base merger class containing helper-functions for fetching objects.
 
@@ -17,17 +17,18 @@ class AbstractMerger:
     #: The main model to migrate.
     model = None
 
-    def __init__(self, from_db_alias, to_db_alias='default', transaction=False):
+    def __init__(self, from_db_alias, to_db_alias='default', transaction=False, queryset_manager=None):
         """
-
         Args:
             from_db_alias: The database to migrate from.
             to_db_alias: The database to migrate to.
             transaction: Should the migration be run as a single transaction? Defaults to ``False``.
+            queryset_manager: QuerySet manager(QuerySet.objects) to use instead of ``self.model.objects...``.
         """
         self.from_db_alias = from_db_alias
         self.to_db_alias = to_db_alias
         self.run_as_single_transaction = transaction
+        self.queryset_manager = queryset_manager
 
     def get_user_by_shortname(self, shortname):
         """
@@ -52,8 +53,8 @@ class AbstractMerger:
             name: The unique name of a permission group from the database to merge.
 
         Returns:
-            :obj:`devilry.devilry_account.models.PermissionGroup`: ``PermissionGroup`` instance from the
-                default database or ``None``.
+            :obj:`devilry.devilry_account.models.PermissionGroup`: Instance from the
+                default ``None``.
         """
         try:
             return account_models.PermissionGroup.objects.get(name=name)
@@ -64,8 +65,11 @@ class AbstractMerger:
         """
         Get :obj:`devilry.apps.core.models.Subject` by ``shortname`` from current default database.
 
+        Args:
+            shortname: Short name of the subject.
+
         Returns:
-            :obj:`devilry.apps.core.models.Subject`: Subject instance or ``None``.
+            :obj:`devilry.apps.core.models.Subject`: Instance or ``None``.
         """
         try:
             return core_models.Subject.objects.get(short_name=shortname)
@@ -76,12 +80,76 @@ class AbstractMerger:
         """
         Get :obj:`devilry.apps.core.models.Period` by ``shortname`` from current default database.
 
+        Args:
+            shortname: Short name of the period.
+            parentnode_shortname: Short name of the periods subject.
+
         Returns:
-            :obj:`devilry.apps.core.models.Period`: Period instance or ``None``.
+            :obj:`devilry.apps.core.models.Period`: Instance or ``None``.
         """
         try:
             return core_models.Period.objects.get(parentnode__short_name=parentnode_shortname, short_name=shortname)
         except core_models.Period.DoesNotExist:
+            return None
+
+    def get_assignment_by_shortname(self, parentnode_shortname, parentnode_parentnode_shortname, shortname):
+        """
+        Get :obj:`devilry.apps.core.models.Assignment` by ``shortname`` from current default database.
+
+        Args:
+            short_name: Short name of the assignment to migrate.
+            parentnode_short_name: Short name of the assignments period
+            parentnode_parentnode_short_name: Short name of the assignments periods subject.
+
+        Returns:
+            :obj:`devilry.apps.core.models.Assignment`: Instance or ``None``.
+        """
+        try:
+            return core_models.Assignment.objects\
+                .get(parentnode__parentnode__short_name=parentnode_parentnode_shortname,
+                     parentnode__short_name=parentnode_shortname,
+                     short_name=shortname)
+        except core_models.Assignment.DoesNotExist:
+            return None
+
+    def get_relatedstudent(self, user_shortname, period_shortname, subject_shortname):
+        """
+        Get :obj:`devilry.apps.core.models.RelatedStudent` from the current default database.
+
+        Args:
+            user_shortname: Short name of the user for the candidate.
+            period_shortname: Short name of the period for the candidate.
+            subject_shortname: Short name of the subject for the candidate.
+
+        Returns:
+            :obj:`devilry.apps.core.models.RelatedStudent`: Instance or ``None``.
+        """
+        try:
+            return core_models.RelatedStudent.objects\
+                .get(user__shortname=user_shortname,
+                     period__short_name=period_shortname,
+                     period__parentnode__short_name=subject_shortname)
+        except core_models.RelatedStudent.DoesNotExist:
+            return None
+
+    def get_relatedexaminer(self, user_shortname, period_shortname, subject_shortname):
+        """
+        Get :obj:`devilry.apps.core.models.RelatedExaminer` from the current default database.
+
+        Args:
+            user_shortname: Short name of the user for the examiner.
+            period_shortname: Short name of the period for the examiner.
+            subject_shortname: Short name of the subject for the examiner.
+
+        Returns:
+            :obj:`devilry.apps.core.models.RelatedExaminer`: Instance or ``None``.
+        """
+        try:
+            return core_models.RelatedExaminer.objects\
+                .get(user__shortname=user_shortname,
+                     period__short_name=period_shortname,
+                     period__parentnode__short_name=subject_shortname)
+        except core_models.RelatedStudent.DoesNotExist:
             return None
 
     def update_after_save(self, from_db_object):
@@ -105,6 +173,7 @@ class AbstractMerger:
         """
         obj.full_clean()
         obj.save(using=self.to_db_alias)
+        return obj
 
     def start_migration(self, from_db_object):
         """
@@ -170,11 +239,22 @@ class AbstractMerger:
         """
         return []
 
+    def __get_queryset(self):
+        """
+        """
+        if self.queryset_manager:
+            _queryset_manager = self.queryset_manager
+        else:
+            _queryset_manager = self.model.objects
+        return _queryset_manager\
+            .using(self.from_db_alias)\
+            .select_related(*self.select_related_foreign_keys())\
+            .all()
+
     def __run(self):
         if self.model is None:
             raise ValueError('{}.model is \'None\''.format(self.__class__.__name__))
-        for from_db_object in self.model.objects.using(self.from_db_alias)\
-                .select_related(*self.select_related_foreign_keys()).all():
+        for from_db_object in self.__get_queryset():
             self.start_migration(from_db_object=from_db_object)
             self.update_after_save(from_db_object=from_db_object)
 
