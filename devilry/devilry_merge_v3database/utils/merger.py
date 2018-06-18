@@ -152,6 +152,9 @@ class AbstractMerger(object):
         except core_models.RelatedStudent.DoesNotExist:
             return None
 
+    def get_merge_model_name_from_object(self, obj):
+        return '{}_{}'.format(obj._meta.app_label, obj.__class__.__name__.lower())
+
     def update_after_save(self, from_db_object):
         """
         Method for updating fields after the object from the migrate database is saved to the `to_db_alias` database.
@@ -240,16 +243,13 @@ class AbstractMerger(object):
         return []
 
     def __get_queryset(self):
-        """
-        """
         if self.queryset_manager:
             _queryset_manager = self.queryset_manager
         else:
             _queryset_manager = self.model.objects
         return _queryset_manager\
             .using(self.from_db_alias)\
-            .select_related(*self.select_related_foreign_keys())\
-            .all()
+            .select_related(*self.select_related_foreign_keys())
 
     def __run(self):
         if self.model is None:
