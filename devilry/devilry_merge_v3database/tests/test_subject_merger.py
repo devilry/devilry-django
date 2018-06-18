@@ -46,12 +46,6 @@ class TestSubjectMerger(test.TestCase):
         existing_default_subject = core_models.Subject.objects.get(short_name='default_db_subject')
         self.assertEqual(existing_default_subject.long_name, 'Default DB subject')
 
-    def test_raises_error_when_subject_shortname_in_migrate_db_exists_in_default_db(self):
-        mommy.make('core.Subject', short_name='subject', long_name='Default DB subject')
-        mommy.prepare('core.Subject', short_name='subject').save(using=self.from_db_alias)
-        with self.assertRaises(ValidationError):
-            subject_merger.SubjectMerger(from_db_alias=self.from_db_alias, transaction=True).run()
-
     def test_subject_is_migrated_sanity(self):
         mommy.make('core.Subject', short_name='default_db_subject')
         mommy.prepare('core.Subject', short_name='migrate_db_subject').save(using=self.from_db_alias)

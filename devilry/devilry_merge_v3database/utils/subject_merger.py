@@ -21,9 +21,10 @@ class SubjectMerger(merger.AbstractMerger):
             .update(etag=from_db_object.etag)
 
     def start_migration(self, from_db_object):
-        subject_kwargs = model_to_dict(from_db_object, exclude=['id', 'pk', 'admins'])
-        subject = core_models.Subject(**subject_kwargs)
-        self.save_object(obj=subject)
+        if not core_models.Subject.objects.filter(short_name=from_db_object.short_name).exists():
+            subject_kwargs = model_to_dict(from_db_object, exclude=['id', 'pk', 'admins'])
+            subject = core_models.Subject(**subject_kwargs)
+            self.save_object(obj=subject)
 
 
 class SubjectPermissionGroupMerger(merger.AbstractMerger):
