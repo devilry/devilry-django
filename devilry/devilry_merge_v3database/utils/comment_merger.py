@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from pprint import pprint
+
+from django.core import files
 from django.forms import model_to_dict
 
 from devilry.devilry_merge_v3database.utils import merger
@@ -34,6 +37,42 @@ class CommentMerger(merger.AbstractMerger):
             merge_to_obj=migrated_comment,
             merge_from_obj=from_db_object
         )
+
+
+class CommentFileMerger(merger.AbstractMerger):
+    """
+    Merge :class:`devilry.devilry_comment.models.CommentFile` from database to
+    current default database.
+    """
+    model = comment_models.CommentFile
+
+    def select_related_foreign_keys(self):
+        return ['comment']
+
+    def __get_comment_from_temp_merge_id(self, from_db_obj):
+        temp_merge_id = TempMergeId.objects.get_from_label_and_merge_from_obj_id(
+            model_name='devilry_comment_comment',
+            from_id=from_db_obj.comment_id
+        )
+        try:
+            return comment_models.Comment.objects.get(id=temp_merge_id.to_id)
+        except comment_models.Comment.DoesNotExist:
+            return None
+
+    def start_migration(self, from_db_object):
+        comment = self.__get_comment_from_temp_merge_id(from_db_obj=from_db_object)
+        if comment:
+            comment_file_kwargs = model_to_dict(from_db_object, exclude=['id', 'pk', 'comment', 'file'])
+            comment_file = comment_models.CommentFile(**comment_file_kwargs)
+            comment_file.comment_id = comment.id
+            saved_comment_file = self.save_object(obj=comment_file)
+            filepath = from_db_object.file.path
+            fp = open(filepath, 'rb')
+            comment_file.file = files.File(fp, saved_comment_file.filename)
+            self.save_object(obj=saved_comment_file)
+            fp.close()
+        else:
+            raise ValueError('Comments must be imported before CommentFiles.')
 
 
 class CommentEditHistoryMerger(merger.AbstractMerger):
@@ -167,7 +206,6 @@ class GroupCommentEditHistoryMerger(merger.AbstractMerger):
             group_comment_edit_history_kwargs = model_to_dict(from_db_object, exclude=[
                 'id', 'pk', 'group_comment', 'group_comment_id', 'comment', 'comment_id', 'commentedithistory_ptr_id',
                 'commentedithistory_ptr', 'edited_by'])
-            print 'edithistory kwargs: {}'.format(group_comment_edit_history_kwargs)
             group_comment_edit_history = group_models.GroupCommentEditHistory(**group_comment_edit_history_kwargs)
             group_comment_edit_history.group_comment_id = comment.id
             group_comment_edit_history.comment_id = comment.id

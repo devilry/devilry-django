@@ -37,8 +37,9 @@ class Command(BaseCommand):
         feedbackset_merger.FeedbackSetDeadlineHistoryMerger,
         comment_merger.CommentMerger,
         comment_merger.GroupCommentMerger,
+        comment_merger.CommentFileMerger,
         comment_merger.CommentEditHistoryMerger,
-        comment_merger.GroupCommentEditHistoryMerger
+        comment_merger.GroupCommentEditHistoryMerger,
     ]
 
     def add_arguments(self, parser):
@@ -132,7 +133,7 @@ class Command(BaseCommand):
 
         # Print number of objects in migrate database
         migrate_db_model_count_map = self.__get_migrate_db_model_count_map(migrate_from_alias=migrate_from_alias)
-        self.stdout.write('\n\nMigrate to database num entries of models:')
+        self.stdout.write('\n\nMigrate from database num entries of models:')
         self.stdout.write('Number of AssignmentGroups: {}'.format(migrate_db_model_count_map['assignment_group']))
         self.stdout.write('Number of Candidates: {}'.format(migrate_db_model_count_map['candidate']))
         self.stdout.write('Number of Examiners: {}'.format(migrate_db_model_count_map['examiner']))
