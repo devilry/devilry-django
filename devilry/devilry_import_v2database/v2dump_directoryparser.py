@@ -66,8 +66,7 @@ class V2DumpDirectoryParser(object):
         cursor.execute(sql)
 
     def get_object_dict_by_filename(self, filename):
-        filepath = os.path.join(self.input_directory, filename)
-        with open(filepath, 'rb') as fileobject:
+        with open(filename, 'rb') as fileobject:
             filecontent = fileobject.read()
             return json.loads(filecontent.decode('utf-8'))
 
