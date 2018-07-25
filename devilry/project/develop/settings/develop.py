@@ -173,9 +173,9 @@ IEVVTASKS_RECREATE_DEVDB_POST_MANAGEMENT_COMMANDS = [
 # DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND = False
 
 
-# DEVILRY_V2_DATABASE_SHOULD_CLEAN = True
-# DEVILRY_V2_MEDIA_ROOT = '/add/path/here'
-# DEVILRY_V2_DELIVERY_FILE_ROOT = '/add/path/here'
+#DEVILRY_V2_DATABASE_SHOULD_CLEAN = True
+DEVILRY_V2_MEDIA_ROOT = '/Users/stian/code/devilry-2x/devilry-django/devilry_developfiles/filestore'
+DEVILRY_V2_DELIVERY_FILE_ROOT = '/Users/stian/code/devilry-2x/devilry-django/devilry_developfiles/deliverystorehier'
 # DEVILRY_RESTRICT_NUMBER_OF_FILES_PER_DIRECTORY = True
 
 
