@@ -1,3 +1,5 @@
+import sys
+
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.management import call_command
@@ -12,6 +14,35 @@ from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group.models import FeedbackSet, GroupComment
 
 
+class ProgressDots(object):
+    def __init__(self, interval=100, messageformat='One dot per {interval}: '):
+        self._count = 0
+        self._interval = interval
+        self._messageformat = messageformat
+        self._enabled = True
+
+    def reset(self):
+        self._count = 0
+
+    def increment_progress(self, increment=1):
+        self._count += increment
+        if self._enabled:
+            if self._count % self._interval == 0:
+                sys.stdout.write('.')
+                sys.stdout.flush()
+
+    def __enter__(self):
+        self._count = 0
+        if self._enabled:
+            sys.stdout.write(self._messageformat.format(interval=self._interval))
+            sys.stdout.flush()
+        return self
+
+    def __exit__(self, ttype, value, traceback):
+        if self._enabled:
+            sys.stdout.write('\n')
+
+
 class DatabaseBuilder(object):
     def __init__(self, num_subjects, num_periods, num_assignments, num_students, num_comments, project_groups):
         self.num_subjects = num_subjects
@@ -20,11 +51,13 @@ class DatabaseBuilder(object):
         self.num_students = num_students
         self.num_comments = num_comments
         self.project_groups = project_groups
+        self.progressdots = ProgressDots()
 
     def __create_student_users(self):
         """
         Generate users to be used as candidates.
         """
+        sys.stdout.write('Creating student users:')
         for num in range(self.num_students):
             name = 'studentuser#{}'.format(num)
             user = get_user_model()(shortname=name)
@@ -33,11 +66,15 @@ class DatabaseBuilder(object):
             user.save()
             user.username_set.create(username=name)
             user.useremail_set.create(email=name.strip() + '@example.com')
+            self.progressdots.increment_progress()
+        self.progressdots.reset()
+        sys.stdout.write('\n')
 
     def __create_examiner_users(self):
         """
         Generate users to be used as examiners.
         """
+        sys.stdout.write('Creating examiner users:')
         for num in range(self.num_students):
             name = 'examineruser#{}'.format(num)
             user = get_user_model()(shortname=name)
@@ -46,6 +83,9 @@ class DatabaseBuilder(object):
             user.save()
             user.username_set.create(username=name)
             user.useremail_set.create(email=name.strip() + '@example.com')
+            self.progressdots.increment_progress()
+        self.progressdots.reset()
+        sys.stdout.write('\n')
 
     def __create_commentfiles_for_groupcomment(self, groupcomment):
         """
@@ -89,16 +129,24 @@ class DatabaseBuilder(object):
         Generate Examiners for each RelatedExaminer on the semester and
         add them to the AssignmentGroup.
         """
+        sys.stdout.write('Creating examiners:')
         for relatedexaminer in RelatedExaminer.objects.filter(period_id=assignmentgroup.parentnode.parentnode.id):
             mommy.make('core.Examiner', relatedexaminer=relatedexaminer, assignmentgroup=assignmentgroup)
+            self.progressdots.increment_progress()
+        self.progressdots.reset()
+        sys.stdout.write('\n')
 
     def __create_candidates_for_assignmentgroup(self, assignmentgroup):
         """
         Generate Candidates for each RelatedStudent on the semester and
         add them to the AssignmentGroup.
         """
+        sys.stdout.write('Creating candidates:')
         for relatedstudent in RelatedStudent.objects.filter(period_id=assignmentgroup.parentnode.parentnode.id):
             mommy.make('core.Candidate', relatedstudent=relatedstudent, assignment_group=assignmentgroup)
+            self.progressdots.increment_progress()
+        self.progressdots.reset()
+        sys.stdout.write('\n')
 
     def __create_assignmentgroups_for_assignment(self, assignment):
         """
@@ -140,8 +188,12 @@ class DatabaseBuilder(object):
             list_index += 1
         Examiner.objects.bulk_create(examiners)
 
+        sys.stdout.write('Creating comments:')
         for feedbackset in FeedbackSet.objects.filter(group__parentnode_id=assignment.id):
             self.__create_groupcomments_for_feedbackset(feedbackset=feedbackset)
+            self.progressdots.increment_progress()
+        self.progressdots.reset()
+        sys.stdout.write('\n')
 
     def __create_assignments_for_period(self, period):
         """
@@ -150,6 +202,7 @@ class DatabaseBuilder(object):
         publishing_time_from_period_start = 0
         first_deadline_from_period_start = 7
         created_assignments = []
+        sys.stdout.write('Creating assignments:')
         for num in range(self.num_assignments):
             assignment = mommy.prepare(
                 'core.Assignment',
@@ -161,6 +214,9 @@ class DatabaseBuilder(object):
             created_assignments.append(assignment)
             publishing_time_from_period_start += 7
             first_deadline_from_period_start += 7
+            self.progressdots.increment_progress()
+        self.progressdots.reset()
+        sys.stdout.write('\n')
         Assignment.objects.bulk_create(created_assignments)
         for assignment in Assignment.objects.filter(parentnode=period):
             self.__create_assignmentgroups_for_assignment(assignment=assignment)
@@ -169,21 +225,30 @@ class DatabaseBuilder(object):
         """
         Generate RelatedStudents for period.
         """
+        sys.stdout.write('Adding students to {}:'.format(period))
         for user in get_user_model().objects.filter(shortname__istartswith='student'):
             mommy.make('core.RelatedStudent', user=user, period=period)
+            self.progressdots.increment_progress()
+        self.progressdots.reset()
+        sys.stdout.write('\n')
 
     def __create_relatedexaminers_for_period(self, period):
         """
         Generate RelatedExaminers for period.
         """
+        sys.stdout.write('Adding examiners to {}:'.format(period))
         for user in get_user_model().objects.filter(shortname__istartswith='examiner'):
             mommy.make('core.RelatedExaminer', user=user, period=period)
+            self.progressdots.increment_progress()
+        self.progressdots.reset()
+        sys.stdout.write('\n')
 
     def __create_periods(self, subject):
         """
         Generate periods on subject.
         """
         for num in range(self.num_periods):
+            sys.stdout.write('Create period Period#{}:\n'.format(num))
             period = mommy.make('core.Period',
                                 parentnode=subject,
                                 long_name='Period#{}'.format(num),

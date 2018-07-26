@@ -43,4 +43,4 @@ class UserListView(listbuilderview.FilterListMixin, listbuilderview.View):
         filterlist.append(filters.UserSearchExtension())
 
     def get_unfiltered_queryset_for_role(self, role):
-        return get_user_model().objects.all()
+        return get_user_model().objects.all().order_by('username')
