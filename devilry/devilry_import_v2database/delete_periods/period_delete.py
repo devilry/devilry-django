@@ -4,16 +4,25 @@ from devilry.devilry_group.models import GroupComment
 
 class PeriodDelete(object):
     """
+    Delete periods older than a specified datetime.
+
+    Will delete periods and all the underlying data. If all periods on a
+    subject is deleted, the subject is deleted as well.
     """
     def __init__(self, exclude_period_start_after_datetime):
+        """
+        Args:
+            exclude_period_start_after_datetime: A datetime object, all periods
+                with start_time after this is excluded.
+        """
         self.exclude_period_start_after_datetime = exclude_period_start_after_datetime
 
-    def get_subject_queryset(self):
+    def __get_subject_queryset(self):
         return Subject.objects\
             .exclude(periods__isnull=True)\
             .all()
 
-    def get_period_queryset(self, subject):
+    def __get_period_queryset(self, subject):
         return Period.objects\
             .filter(parentnode_id=subject.id)\
             .exclude(start_time__gt=self.exclude_period_start_after_datetime)
@@ -28,14 +37,48 @@ class PeriodDelete(object):
         for group_comment in group_comments:
             group_comment.delete_comment()
 
-    def subject_has_periods(self, subject):
-        return Period.objects.filter(parentnode_id=subject.id).exists()
+    def get_subjects(self):
+        """
+        Get subject iterator.
+        """
+        for subject in self.__get_subject_queryset():
+            yield subject
 
-    def start(self):
-        for subject in self.get_subject_queryset():
+    def get_periods(self, subject):
+        """
+        Get period iterator.
+        """
+        for period in self.__get_period_queryset(subject=subject):
+            yield period
+
+    def get_preview(self):
+        """
+        Get a formatted preview over periods that will be deleted.
+
+        Example of returned string::
+
+            Subject - Subject 1
+                Period 1
+                Period 2
+                Period 3
+
+            Subject - Subject 2
+                Period 1
+
+        Returns:
+            (str): Formatted string.
+        """
+        preview_str = ''
+        for subject in self.get_subjects():
+            preview_str += 'Subject - {}\n'.format(subject.long_name, subject.short_name)
+            for period in self.get_periods(subject=subject):
+                preview_str += '\t{}({} - {})\n'.format(period.long_name, period.start_time, period.end_time)
+        return preview_str
+
+    def delete(self):
+        for subject in self.get_subjects():
             print 'Subject - {}'.format(subject)
-            periods = self.get_period_queryset(subject=subject)
-            for period in periods:
+            for period in self.get_periods(subject=subject):
                 print '\tPeriod - {}'.format(period)
                 self.__delete_comment_files_on_period(period=period)
                 print '\tDeleting period'.format(period)

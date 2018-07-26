@@ -26,7 +26,7 @@ class TestPeriodDelete(TestCase):
         mommy.make('core.Period', start_time=timezone.now())
         self.assertEqual(Subject.objects.count(), 2)
         self.assertEqual(Period.objects.count(), 1)
-        PeriodDelete(exclude_period_start_after_datetime=timezone.now() + timezone.timedelta(days=10)).start()
+        PeriodDelete(exclude_period_start_after_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
         self.assertEqual(Subject.objects.get(), subject_without_period)
         self.assertEqual(Period.objects.count(), 0)
 
@@ -37,7 +37,7 @@ class TestPeriodDelete(TestCase):
                                         start_time=timezone.now() + timezone.timedelta(days=50))
         self.assertEqual(Subject.objects.count(), 1)
         self.assertEqual(Period.objects.count(), 2)
-        PeriodDelete(exclude_period_start_after_datetime=timezone.now() + timezone.timedelta(days=10)).start()
+        PeriodDelete(exclude_period_start_after_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
         self.assertEqual(Subject.objects.get(), testsubject)
         self.assertEqual(Period.objects.get(), period_not_deleted)
 
@@ -46,7 +46,7 @@ class TestPeriodDelete(TestCase):
         mommy.make('core.Period', parentnode=testsubject, start_time=timezone.now())
         self.assertEqual(Subject.objects.count(), 1)
         self.assertEqual(Period.objects.count(), 1)
-        PeriodDelete(exclude_period_start_after_datetime=timezone.now() + timezone.timedelta(days=10)).start()
+        PeriodDelete(exclude_period_start_after_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
         self.assertEqual(Subject.objects.count(), 0)
         self.assertEqual(Period.objects.count(), 0)
 
@@ -60,7 +60,7 @@ class TestPeriodDelete(TestCase):
         commentfile.file.save('testfile.txt', ContentFile('testcontent'))
         file_path = commentfile.file.path
         self.assertTrue(os.path.exists(file_path))
-        PeriodDelete(exclude_period_start_after_datetime=timezone.now() + timezone.timedelta(days=10)).start()
+        PeriodDelete(exclude_period_start_after_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
         self.assertFalse(os.path.exists(file_path))
 
     def test_deletes_multiple_stored_files_for_comment(self):
@@ -77,7 +77,7 @@ class TestPeriodDelete(TestCase):
         file_path2 = commentfile2.file.path
         self.assertTrue(os.path.exists(file_path1))
         self.assertTrue(os.path.exists(file_path2))
-        PeriodDelete(exclude_period_start_after_datetime=timezone.now() + timezone.timedelta(days=10)).start()
+        PeriodDelete(exclude_period_start_after_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
         self.assertFalse(os.path.exists(file_path1))
         self.assertFalse(os.path.exists(file_path2))
         self.assertEqual(GroupComment.objects.count(), 0)
@@ -99,7 +99,7 @@ class TestPeriodDelete(TestCase):
         file_path2 = commentfile2.file.path
         self.assertTrue(os.path.exists(file_path1))
         self.assertTrue(os.path.exists(file_path2))
-        PeriodDelete(exclude_period_start_after_datetime=timezone.now() + timezone.timedelta(days=10)).start()
+        PeriodDelete(exclude_period_start_after_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
         self.assertFalse(os.path.exists(file_path1))
         self.assertFalse(os.path.exists(file_path2))
         self.assertEqual(GroupComment.objects.count(), 0)
@@ -133,7 +133,7 @@ class TestPeriodDelete(TestCase):
         self.assertTrue(os.path.exists(file_path2_1))
         self.assertTrue(os.path.exists(file_path2_2))
 
-        PeriodDelete(exclude_period_start_after_datetime=timezone.now() + timezone.timedelta(days=10)).start()
+        PeriodDelete(exclude_period_start_after_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
         self.assertFalse(os.path.exists(file_path1_1))
         self.assertFalse(os.path.exists(file_path1_2))
         self.assertFalse(os.path.exists(file_path2_1))
@@ -171,7 +171,7 @@ class TestPeriodDelete(TestCase):
         self.assertEqual(GroupComment.objects.count(), 1)
         self.assertEqual(Comment.objects.count(), 1)
 
-        PeriodDelete(exclude_period_start_after_datetime=timezone.now() + timezone.timedelta(days=10)).start()
+        PeriodDelete(exclude_period_start_after_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
 
         self.assertEqual(Subject.objects.count(), 0)
         self.assertEqual(SubjectPermissionGroup.objects.count(), 0)
