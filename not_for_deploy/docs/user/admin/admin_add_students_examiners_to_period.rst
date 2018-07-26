@@ -4,7 +4,7 @@
 Adding students and examiners to the semester
 =============================================
 Before you do anything, the first step should always be to add students and examiners to the semester, as students get
-automatically added to the assignments you create(PRONE TO CHANGE NOT YET IMPLEMENTED).
+automatically added to the assignments you create.
 
 .. note::
     Only examiners added to the semester can be added as examiners for each of the groups in an assignment. Read more
