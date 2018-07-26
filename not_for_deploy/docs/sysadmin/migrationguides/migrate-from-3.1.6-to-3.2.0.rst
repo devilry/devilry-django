@@ -52,3 +52,4 @@ What is new for sysadmins
 - Can add custom favicon. See :ref:`custom_favicon`.
 - Can add customized info texts for the feed when deadline handling is HARD. See :ref:`editable_ui_messages`.
 - If you offer Dataporten authentication you'll need to update its ``INSTALLED_APPS`` to ``devilry.devilry_dataporten_allauth`` to apply the redirection fix in this update.
+
