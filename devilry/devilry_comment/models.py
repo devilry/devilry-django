@@ -95,6 +95,18 @@ class Comment(models.Model):
         commentfile.clean()
         commentfile.save()
 
+    def delete_comment(self):
+        """
+        Delete this comment. Will delete all :class:`.CommentFile`s referencing it, and all
+        class :class:`.CommentFileImage`s referencing the `CommentFile`s.
+
+        See :meth:`.CommentFile.delete_comment_file`.
+        """
+        comment_files = CommentFile.objects.filter(comment_id=self.id)
+        for comment_file in comment_files:
+            comment_file.delete_comment_file()
+        self.delete()
+
 
 class CommentEditHistory(models.Model):
     """
@@ -239,6 +251,15 @@ class CommentFile(models.Model):
             created_datetime=self.created_datetime
         )
         commentfilecopy.save()
+
+    def delete_comment_file(self):
+        """
+        Deletes the comment file and all :class:`.CommentFileImage`s that references it.
+        """
+        comment_file_images = CommentFileImage.objects.filter(comment_file_id=self.id)
+        for comment_file_image in comment_file_images:
+            comment_file_image.delete()
+        self.delete()
 
 
 def commentfileimage_directory_path(instance, filename):
