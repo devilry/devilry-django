@@ -145,6 +145,13 @@ Start by copying the following into ``~/devilrydeploy/devilry_settings.py``::
     #:    1: Hard deadlines
     DEFAULT_DEADLINE_HANDLING_METHOD = 0
 
+    #: Can students edit their comments?
+    DEVILRY_COMMENT_STUDENTS_CAN_EDIT = True
+
+    #: Should students be able to see the comment edit history of other users in their group?
+    #: If this is set to `False`, students can still see that the comment has been edited, but not the edit history.
+    DEVILRY_COMMENT_STUDENTS_CAN_SEE_OTHER_USERS_COMMENT_HISTORY = True
+
     #: Configure an email backend.
     #: See https://docs.djangoproject.com/en/2.0/ref/settings/ for details about these settings.
     #: If you have performance issues with your email backend, see ``Sending emails in background task``.
