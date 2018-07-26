@@ -1,0 +1,111 @@
+#####################################################
+Devilry localization/internationalization/translation
+#####################################################
+
+Devilry uses the Django localization platform/system. This means that:
+
+- Our translations are in the gettext ``.po`` format.
+- We mark translation strings in Python code, templates and in JavaScript.
+
+For the actual translation process, we use transifex.com.
+
+
+.. warning::
+
+    Pushing files to Transifex requires you to be part of the Devilry core
+    developer team.
+
+    If you are a normal developer and not responsible for
+    managing translations, you just need to make sure to mark all trings
+    for translation as described in the Django docs.
+
+    If you are a translator, you only need to ask for permission
+    to the translation catalogs for you languages in our Transifex
+    project, and none of the information in these docs should concern you.
+
+
+********************************
+How we organize the translations
+********************************
+All translations are added to ``devilry/locale/``. We do not add translation
+per app for the following reasons:
+
+- There are lots of overlapping translation strings.
+- Easier to upload and maintain a single translation catalog on Transifex.
+
+
+.. _configure_transifex:
+
+###################
+Configure Transifex
+###################
+
+Before you can start pushing and pulling translation files
+to/from Transifex, you will need to create a ``~/.transifexrc``. It
+should look like this::
+
+    [https://www.transifex.com]
+    hostname = https://www.transifex.com
+    username = myuser
+    password = supersecret
+    token =
+
+More information here: http://docs.transifex.com/developer/client/config.
+
+
+*******************
+Translation process
+*******************
+
+We translate using Transifex. This means that the workflow is:
+
+1. Mark new translations or change existing translations.
+2. Build the translation files  (``.po`` files).
+3. Push translation files  (``.po`` files) to Transifex.
+4. Wait for translators to translate using Transifex.
+5. Pull translation files (``.po`` files) from Transifex.
+6. Compile translations and commit the ``.mo`` files.
+
+Below we go in detail for each of these steps. All commands assume the
+following::
+
+    $ cd /path/to/reporoot
+    $ workon devilry-django
+
+
+Mark new translations or change existing translations
+=====================================================
+Read the Django internationalization docs.
+
+
+Build the translation files
+===========================
+First, make sure you have the latest po-files from transifex::
+
+    $ tx pull
+
+We have a fabric task for that::
+
+    $ fab makemessages
+
+Commit the changes to the ``.po``-files in ``devilry/locale/``.
+
+
+Push translation files to Transifex
+===================================
+Run::
+
+    $ tx push -s -t
+
+to push the .po files to transifex.
+
+
+Compile translations and commit the .mo files
+=============================================
+We have a fabric task for compiling the translations::
+
+    $ cd /path/to/reporoot
+    $ workon devilry-django
+    $ fab compilemessages
+
+This should change some ``.mo``-files in ``devilry/locale/``. Commit those files.

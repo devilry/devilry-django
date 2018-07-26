@@ -1,0 +1,46 @@
+############################
+What is new in Devilry 3.1.0
+############################
+
+*****************
+New for all users
+*****************
+User centered changelog available on https://devilry.readthedocs.io/en/latest/user/changelog_overview.html.
+
+*****************
+New for examiners
+*****************
+
+- Bugfix with success message when adding bulk feedback. https://github.com/devilry/devilry-django/issues/955.
+- Remove restrictions that require deadlines to be N minutes in the future.
+  https://github.com/devilry/devilry-django/issues/956.
+
+
+******************************
+New for course/semester admins
+******************************
+
+- Cleanup the UI for passed previous semester, and add support for manually
+  selecting students that have a passing grade from previous semester.
+  (https://github.com/devilry/devilry-django/issues/955,
+  https://github.com/devilry/devilry-django/issues/953). Only works
+  for assignments with passed/failed grading.
+- Various examiner and student tag fixes. There was a bug where filtering
+  did not work if an imported tag and custom made tag had the same name.
+  There was some places where tag filtering should have been possible,
+  where the filter has now been added.
+- *Semester overview of all results* - fix bug with status messages
+  (https://github.com/devilry/devilry-django/issues/952).
+- Remove restrictions that require deadlines to be N minutes in the future.
+  https://github.com/devilry/devilry-django/issues/956.
+
+
+
+*****************
+New for sysadmins
+*****************
+
+- Fix argument parsing errors in the ``devilry_periodsetrelatedexaminers``
+  and ``devilry_periodsetrelatedstudents`` scripts.
+- New ``DEVILRY_CHANGELOG_URL`` template variable available in branding templates.
+  https://github.com/devilry/devilry-django/issues/954.

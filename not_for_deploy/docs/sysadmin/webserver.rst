@@ -28,6 +28,7 @@ Nginx config example
        
        access_log /path/to/directory/logs/nginx_access.log;
        error_log /path/to/directory/logs/nginx_error.log;
+       client_max_body_size 50m;
 
        ssl_certificate /path/to/certificate.pem;
        ssl_certificate_key /path/to/certificate-key.key;
@@ -57,9 +58,6 @@ Nginx config example
           proxy_set_header X-Real-IP $remote_addr;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
           proxy_set_header X-Forwarded-Proto https;
-          
-          # allow uploads larger than the default 1 MB
-          client_max_body_size 50m;
        }
     }
 

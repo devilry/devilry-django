@@ -1,0 +1,6 @@
+############################
+What is new in Devilry 3.1.1
+############################
+
+Because of an error in the release process, this release (and 3.1.2) did not
+change anything other than documentation.

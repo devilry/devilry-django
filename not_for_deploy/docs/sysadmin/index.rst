@@ -22,15 +22,6 @@ Devilry sysadmin docs
    editable_ui_messages
 
 
-Importing data from Devilry v2
-==============================
-Dump data from Devilry v2 and import to Devilry v3.
-
-.. toctree::
-
-    migrate_data_from_v2_to_v3
-
-
 Migration guides
 ================
 If a minor version is not listed here, it is a code-only update, which means that

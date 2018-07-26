@@ -12,6 +12,7 @@ Table of contents
     user/index
     sysadmin/index
     developer/index
+    create_docs_how_to
 
 
 More help
