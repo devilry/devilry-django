@@ -3,7 +3,7 @@
 =====================================
 Quickly navigating to a delivery feed
 =====================================
-Finding the delivery feed of a student should always be easy and accessible. On the admin frontpage, you
+Finding the delivery feed of a specific student should always be easy and accessible. On the admin frontpage, you
 have the `Find a student` option available to you. This is a "step-by-step" wizard for locating delivery information
 about a particular student.
 
@@ -17,14 +17,11 @@ You can search for students by name here.
 
 
 Clicking on Dewey will take you to Deweys assignment group overview. Here all of Deweys assignments will be listed,
-with some meta information and so on.
+with some meta information and so on. Note that all of Deweys assignments will show up here, but in this
+case Dewey only has one.
 
 .. image:: images/admin-wizard-student-group-overview.png
 
-The examiner told you which assignment it was about, so you click on that
-assignment which takes you to Deweys delivery feed. Note that all of Deweys assignments will show up here, but in this
-case Dewey only has one.
+Clicking on one of the assignments in the list will take you to Deweys delivery feed for that particular assignment.
 
 .. image:: images/admin-wizard-student-delivery-feed-example.png
-
-Now, you located the delivery feed and it's time to sort this out.

@@ -71,5 +71,6 @@ You can read more about each of the tools available to you here:
 
    admin_create_assignment
    admin_add_students_examiners_to_period
+   admin_wizard_find_student
    admin_semester_tags
    admin_result_utilities

@@ -19,6 +19,7 @@ Common for all roles
 
    commonconcepts
    user_role_overview
+   email
    changelog_overview
 
 
