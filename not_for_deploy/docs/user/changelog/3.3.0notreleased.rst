@@ -44,3 +44,8 @@ Comment editing and history:
     - All students are added to the assignment upon creation.
     - When removing students from an assignment, you can now choose to remove students that failed another assignment on
       the semester.
+
+
+What's new for sysadmins?
+#########################
+Management command for deleting old semesters

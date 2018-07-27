@@ -66,3 +66,11 @@ The `devilry_import_v2_database` script comes with some arguments that can be he
 For further details(such as importer names), run::
 
     $ python manage.py devilry_import_v2_database -h
+
+
+Remove old semesters
+====================
+
+If you want to, you can remove old semester and all associated data.
+
+See :ref:`devilry_delete_periods`.
