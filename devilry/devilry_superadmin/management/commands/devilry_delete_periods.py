@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from devilry.apps.core.models import Period
-from devilry.devilry_import_v2database.delete_periods.period_delete import PeriodDelete
+from devilry.devilry_superadmin.delete_periods.period_delete import PeriodDelete
 
 
 class Command(BaseCommand):

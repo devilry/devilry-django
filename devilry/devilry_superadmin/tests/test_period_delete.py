@@ -8,12 +8,13 @@ from django.utils import timezone
 
 from model_mommy import mommy
 
-from devilry.apps.core.models import Subject, Period, Assignment, AssignmentGroup, PeriodTag
+from devilry.apps.core.models import Subject, Period, Assignment, AssignmentGroup, PeriodTag, RelatedStudent, Candidate, \
+    RelatedExaminer, Examiner
 from devilry.devilry_account.models import SubjectPermissionGroup, PeriodPermissionGroup, PermissionGroupUser, \
     PermissionGroup
 from devilry.devilry_comment.models import Comment, CommentFile
 from devilry.devilry_group.models import FeedbackSet, GroupComment
-from devilry.devilry_import_v2database.delete_periods.period_delete import PeriodDelete
+from devilry.devilry_superadmin.delete_periods.period_delete import PeriodDelete
 
 
 class TestPeriodDelete(TestCase):
@@ -187,11 +188,54 @@ class TestPeriodDelete(TestCase):
         self.assertEqual(Comment.objects.count(), 0)
         self.assertEqual(CommentFile.objects.count(), 0)
 
-    # def test_candidates_and_related_students_are_deleted(self):
-    #     testperiod = mommy.make('core.Period', end_time=timezone.now())
-    #     mommy.make('core.PeriodTag', period=testperiod)
-    #     testassignment = mommy.make('core.Assignment', parentnode=testperiod)
-    #     testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+    def test_candidates_and_related_students_are_deleted(self):
+        testperiod = mommy.make('core.Period', end_time=timezone.now())
+        mommy.make('core.PeriodTag', period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testrelatedstudent = mommy.make('core.RelatedStudent', period=testperiod)
+        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent=testrelatedstudent)
+
+        self.assertEqual(RelatedStudent.objects.count(), 1)
+        self.assertEqual(Candidate.objects.count(), 1)
+        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        self.assertEqual(RelatedStudent.objects.count(), 0)
+        self.assertEqual(Candidate.objects.count(), 0)
+
+    def test_examiners_and_related_examiners_are_deleted(self):
+        testperiod = mommy.make('core.Period', end_time=timezone.now())
+        mommy.make('core.PeriodTag', period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testrelatedexaminer = mommy.make('core.RelatedExaminer', period=testperiod)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=testrelatedexaminer)
+
+        self.assertEqual(RelatedExaminer.objects.count(), 1)
+        self.assertEqual(Examiner.objects.count(), 1)
+        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        self.assertEqual(RelatedExaminer.objects.count(), 0)
+        self.assertEqual(Examiner.objects.count(), 0)
+
+    def test_assignment_groups_are_deleted(self):
+        testperiod = mommy.make('core.Period', end_time=timezone.now())
+        mommy.make('core.PeriodTag', period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mommy.make('core.AssignmentGroup', parentnode=testassignment)
+
+        self.assertEqual(AssignmentGroup.objects.count(), 1)
+        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        self.assertEqual(AssignmentGroup.objects.count(), 0)
+
+    def test_feedbacksets_are_deleted(self):
+        testperiod = mommy.make('core.Period', end_time=timezone.now())
+        mommy.make('core.PeriodTag', period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('devilry_group.FeedbackSet', group=testgroup)
+
+        self.assertEqual(FeedbackSet.objects.count(), 1)
+        PeriodDelete(end_time_older_than_datetime=timezone.now() + timezone.timedelta(days=10)).delete()
+        self.assertEqual(FeedbackSet.objects.count(), 0)
 
     def test_sanity_delete_cascade(self):
         testsubject = mommy.make('core.Subject')
@@ -205,21 +249,28 @@ class TestPeriodDelete(TestCase):
         mommy.make('devilry_account.PermissionGroupUser',
                    user=mommy.make(settings.AUTH_USER_MODEL),
                    permissiongroup=periodpermissiongroup.permissiongroup)
-
+        testrelatedexaminer = mommy.make('core.RelatedExaminer', period=testperiod)
+        testrelatedstudent = mommy.make('core.RelatedStudent', period=testperiod)
         mommy.make('core.PeriodTag', period=testperiod)
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', assignmentgroup=testgroup, relatedexaminer=testrelatedexaminer)
+        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent=testrelatedstudent)
         testfeedbackset = mommy.make('devilry_group.FeedbackSet', group=testgroup)
         mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset)
 
         self.assertEqual(Subject.objects.count(), 1)
         self.assertEqual(SubjectPermissionGroup.objects.count(), 1)
         self.assertEqual(Period.objects.count(), 1)
+        self.assertEqual(RelatedExaminer.objects.count(), 1)
+        self.assertEqual(RelatedStudent.objects.count(), 1)
         self.assertEqual(PeriodTag.objects.count(), 1)
         self.assertEqual(PeriodPermissionGroup.objects.count(), 1)
         self.assertEqual(PermissionGroupUser.objects.count(), 2)
         self.assertEqual(Assignment.objects.count(), 1)
         self.assertEqual(AssignmentGroup.objects.count(), 1)
+        self.assertEqual(Examiner.objects.count(), 1)
+        self.assertEqual(Candidate.objects.count(), 1)
         self.assertEqual(FeedbackSet.objects.count(), 1)
         self.assertEqual(GroupComment.objects.count(), 1)
         self.assertEqual(Comment.objects.count(), 1)
@@ -229,10 +280,14 @@ class TestPeriodDelete(TestCase):
         self.assertEqual(Subject.objects.count(), 0)
         self.assertEqual(SubjectPermissionGroup.objects.count(), 0)
         self.assertEqual(Period.objects.count(), 0)
+        self.assertEqual(RelatedExaminer.objects.count(), 0)
+        self.assertEqual(RelatedStudent.objects.count(), 0)
         self.assertEqual(PeriodTag.objects.count(), 0)
         self.assertEqual(PeriodPermissionGroup.objects.count(), 0)
         self.assertEqual(Assignment.objects.count(), 0)
         self.assertEqual(AssignmentGroup.objects.count(), 0)
+        self.assertEqual(Examiner.objects.count(), 0)
+        self.assertEqual(Candidate.objects.count(), 0)
         self.assertEqual(FeedbackSet.objects.count(), 0)
         self.assertEqual(GroupComment.objects.count(), 0)
         self.assertEqual(Comment.objects.count(), 0)
