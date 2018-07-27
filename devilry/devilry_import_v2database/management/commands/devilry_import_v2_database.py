@@ -25,8 +25,8 @@ class TimeExecution(object):
 
 
 class Command(BaseCommand):
-    args = '<output-directory>'
-    help = 'Dump the entire database to a directory of json files.'
+    args = '<input-directory>'
+    help = 'Import the entire Devilry v2 database from a directory of json files.'
 
     def add_arguments(self, parser):
         parser.add_argument(
