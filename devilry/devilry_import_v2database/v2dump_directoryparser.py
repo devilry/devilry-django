@@ -72,7 +72,7 @@ class V2DumpDirectoryParser(object):
             return json.loads(filecontent.decode('utf-8'))
 
     def get_filename_from_id(self, id):
-        return os.path.join(self.input_directory, '{}.json'.format(id))
+        return '{}.json'.format(id)
 
     def get_object_dict_by_id(self, id):
         filename = self.get_filename_from_id(id)

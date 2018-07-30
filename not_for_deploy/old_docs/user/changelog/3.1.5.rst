@@ -1,0 +1,8 @@
+############################
+What is new in Devilry 3.1.5
+############################
+
+*****************
+New for examiners
+*****************
+- Fix ZIP-file recreation after changes (see https://github.com/devilry/devilry-django/issues/982).

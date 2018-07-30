@@ -1,0 +1,76 @@
+############################
+What is new in Devilry 3.0.0
+############################
+
+.. contents:: Jump to
+    :depth: 1
+    :local:
+    :backlinks: none
+
+
+****************
+New for everyone
+****************
+- Mobile optimized.
+- Wai-Aria
+
+
+****************
+New for students
+****************
+- Feebackfeed, communication.
+
+
+*****************
+New for examiners
+*****************
+
+- New UI, same workflow, but more streamlined.
+- Feedbackfeed, communication.
+
+
+**********************
+New for administrators
+**********************
+
+- New UI. Mostly the same workflow, but more streamlined.
+- Unified admin UI for all administrators. The only difference is that
+  higher permission levels gain you a few extra views.
+- New group based permission system.
+- Node is removed - replaced by a tag system and permission groups.
+
+Department administrator:
+-------------------------
+New role in 3.x which replaces the old *Node administrator* role.
+
+- Can add new courses.
+- Shorter path to most common operations.
+
+Semester within a course:
+-------------------------
+
+- Can add (import) students that does not have a devilry user. Exactly how this
+  works depends on how devilry is configured.
+- Automatically add new students added to the semester to all assignments
+  (can be disabled)
+- More powerful tag management.
+- Ability to deactivate students and examiners instead of removing them.
+  This makes it much safer to sync Devilry with external systems since
+  the worst case is that someone temporarily looses their permissions
+  until they are re-enabled or the sync script is fixed. It also makes it
+  easy to manually enable/disable users while waiting for updates to
+  some external data integration system.
+
+
+Assigment:
+----------
+
+- No assignment administrator - this is changed so that a typical TA can be a semester
+  administrator, but not gain access to certain assignments (based on anonymizationmode).
+- Automatically setup assignments like the previous assignment.
+- Much easier to re-organize students.
+- Much more streamlined assignment configuration and setup.
+- Huge performance optimizations.
+- Separation of student and examiner administration pages:
+    - Provides a much more user friendly experience when setting
+      up students and examiners.

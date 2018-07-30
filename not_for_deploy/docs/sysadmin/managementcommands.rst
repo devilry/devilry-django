@@ -284,3 +284,24 @@ Search for a user by username. Matches any part of the username.
 --normalusers
     Only matching normalusers, everybody except superusers
 
+
+.. _devilry_delete_periods:
+
+======================
+devilry_delete_periods
+======================
+
+You have the option to delete all semesters that ended before a given amount of months ago.
+This will delete everything associated with a semester: assignments, permissions, groups,
+deliveries(comments and files) ...
+
+You will be given a preview of which semesters that will be deleted, and which subjects they belong to.
+Initially empty subjects will not be deleted, but if all semesters for a subject are deleted, the subject
+will be deleted as well. You have to confirm to begin the deletion.
+
+This example will delete all semesters that ended before two months ago from now::
+
+    $ cd ~/devilrydeploy/
+    $ python manage.py devilry_delete_periods 2
+
+
