@@ -48,15 +48,17 @@ class FeedbackSetMerger(merger.AbstractMerger):
         return None
 
     def __get_assignment_group_from_temp_merge_id(self, from_db_obj):
-        temp_merge_id = TempMergeId.objects.get_from_label_and_merge_from_obj_id(
-            model_name='core_assignmentgroup',
-            from_id=from_db_obj.group_id
-        )
+        try:
+            temp_merge_id = TempMergeId.objects.get_from_label_and_merge_from_obj_id(
+                model_name='core_assignmentgroup',
+                from_id=from_db_obj.group_id
+            )
+        except TempMergeId.DoesNotExist:
+            return None
         return core_models.AssignmentGroup.objects.get(id=temp_merge_id.to_id)
 
     def start_migration(self, from_db_object):
         assignment_group = self.__get_assignment_group_from_temp_merge_id(from_db_obj=from_db_object)
-
         if assignment_group:
             feedbackset_kwargs = model_to_dict(from_db_object, exclude=[
                 'id', 'pk', 'group', 'created_by', 'last_updated_by', 'grading_published_by'])

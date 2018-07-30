@@ -60,6 +60,15 @@ DATABASES['default']['PORT'] = 24376
 #     }
 # }
 
+# DATABASES['migrate_from'] = {
+#     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#     'NAME': 'dbdev',
+#     'HOST': '127.0.0.1',
+#     'USER': 'dbdev',
+#     'PASSWORD': 'dbdev',
+#     'PORT': 24377
+# }
+
 DATABASES['migrate_from'] = DATABASES['default'].copy()
 DATABASES['migrate_from']['NAME'] = 'dbdev_migrate_from'
 

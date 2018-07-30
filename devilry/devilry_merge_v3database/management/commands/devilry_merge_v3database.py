@@ -1,3 +1,4 @@
+import os
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.core.management import call_command
@@ -48,16 +49,21 @@ class Command(BaseCommand):
             dest='migrate_from',
             help='The database name to migrate from.')
         parser.add_argument(
+            '--migrate-from-media-root',
+            dest='migrate_from_media_root',
+            help='The path to the media root on the migrate server. Use MEDIA_ROOT.'
+        )
+        parser.add_argument(
             '--clean-reset',
             action='store_true',
             dest='clean_reset',
             default=False,
             help='Resets default database, migrates models and loads a '
-                 'test dump into `--migrate-from-dbname`-database!')
+                 'test dump into `--migrate-from-dbname`-database! For TESTING.')
         parser.add_argument(
             '--migrate-from-dump-path',
             dest='migrate_from_dump_path',
-            help=''
+            help='Path to dumpfile. For TESTING'
         )
 
     def __print_success_message(self, model):
@@ -102,28 +108,41 @@ class Command(BaseCommand):
             total_result,
             total_expected_result))
 
-    def __merge(self, merger_class, migrate_from_alias):
+    def __merge(self, merger_class, migrate_from_alias, migrate_from_media_root):
         self.__print_success_message(model=merger_class.model)
         with transaction.atomic():
-            merger_class(from_db_alias=migrate_from_alias).run()
+            if merger_class == comment_merger.CommentFileMerger:
+                merger_class(migrate_media_root=migrate_from_media_root, from_db_alias=migrate_from_alias).run()
+            else:
+                merger_class(from_db_alias=migrate_from_alias).run()
 
     def handle(self, *args, **options):
         migrate_from_alias = options.get('migrate_from', None)
+        migrate_from_media_root = options.get('migrate_from_media_root', None)
         clean_reset = options.get('clean_reset')
         if not migrate_from_alias:
             raise CommandError('--migrate_from_dbname is required')
+        if not migrate_from_media_root:
+            raise CommandError('--migrate-from-media-root is required')
+        if not os.path.exists(migrate_from_media_root):
+            raise ValueError('CommentFile merger media root path {} does not exist.'.format(migrate_from_media_root))
 
         if migrate_from_alias not in settings.DATABASES:
             raise CommandError(
                 '--migrate_from_dbname "{}" not configured in DATABASES-setting.'.format(migrate_from_alias))
 
         if clean_reset:
-            migrate_from_dump_path = options.get('migrate_from_dump_path', None)
-            if not migrate_from_dump_path:
-                raise ValueError('migrate-from-dump-path is required if running `--clean-reset`.')
+            migrate_from_db_setting = settings.DATABASES['migrate_from'].copy()
+            settings.DATABASES.pop('migrate_from')
             call_command('dbdev_reinit', database='default')
             call_command('migrate')
-            call_command('dbdev_loaddump', migrate_from_dump_path, database='migrate_from')
+            settings.DATABASES['migrate_from'] = migrate_from_db_setting
+        #     migrate_from_dump_path = options.get('migrate_from_dump_path', None)
+        #     if not migrate_from_dump_path:
+        #         raise ValueError('migrate-from-dump-path is required if running `--clean-reset`.')
+        #     call_command('dbdev_reinit', database='default')
+        #     call_command('migrate')
+        #     call_command('dbdev_loaddump', migrate_from_dump_path, database='migrate_from')
 
         # Delete temp merge id entries
         TempMergeId.objects.all().delete()
@@ -157,7 +176,9 @@ class Command(BaseCommand):
         # Start merging
         with transaction.atomic():
             for merger_class in self.merger_classes:
-                self.__merge(merger_class=merger_class, migrate_from_alias=migrate_from_alias)
+                self.__merge(merger_class=merger_class,
+                             migrate_from_alias=migrate_from_alias,
+                             migrate_from_media_root=migrate_from_media_root)
 
         # Print a count check after database is migrated
         self.stdout.write('\n\nMigrated result:')

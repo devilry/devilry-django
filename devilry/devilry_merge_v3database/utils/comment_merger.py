@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from pprint import pprint
 
+import os
 from django.core import files
 from django.forms import model_to_dict
 
@@ -46,6 +47,10 @@ class CommentFileMerger(merger.AbstractMerger):
     """
     model = comment_models.CommentFile
 
+    def __init__(self, migrate_media_root, *args, **kwargs):
+        self.migrate_media_root = migrate_media_root
+        super(CommentFileMerger, self).__init__(*args, **kwargs)
+
     def select_related_foreign_keys(self):
         return ['comment']
 
@@ -66,11 +71,10 @@ class CommentFileMerger(merger.AbstractMerger):
             comment_file = comment_models.CommentFile(**comment_file_kwargs)
             comment_file.comment_id = comment.id
             saved_comment_file = self.save_object(obj=comment_file)
-            filepath = from_db_object.file.path
-            fp = open(filepath, 'rb')
-            comment_file.file = files.File(fp, saved_comment_file.filename)
-            self.save_object(obj=saved_comment_file)
-            fp.close()
+            filepath = os.path.join(self.migrate_media_root, from_db_object.file.name)
+            with open(filepath, 'rb') as fp:
+                comment_file.file = files.File(fp, saved_comment_file.filename)
+                self.save_object(obj=saved_comment_file)
         else:
             raise ValueError('Comments must be imported before CommentFiles.')
 
