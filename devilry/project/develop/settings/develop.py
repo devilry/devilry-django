@@ -145,7 +145,7 @@ IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
 IEVVTASKS_DEVRUN_RUNNABLES = {
     'default': ievvdevrun.config.RunnableThreadList(
         ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
-        ievvdevrun.runnables.django_runserver.RunnableThread(port=8001),
+        ievvdevrun.runnables.django_runserver.RunnableThread(port=8000),
         ievvdevrun.runnables.redis_server.RunnableThread(),
         ievvdevrun.runnables.rq_worker.RunnableThread(),
         ievvdevrun.runnables.rq_worker.RunnableThread(queuename='email'),
