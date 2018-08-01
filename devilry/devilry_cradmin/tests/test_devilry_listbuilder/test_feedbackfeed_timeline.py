@@ -40,6 +40,7 @@ class TestStudentGroupCommentItemValue(test.TestCase):
     def test_student_comment_devilryrole_examiner_is_not_anonymized(self):
         self.__model_setup()
         selector = htmls.S(listbuilder.StudentGroupCommentItemValue(
+            requestuser=mommy.make(settings.AUTH_USER_MODEL),
             value=self.comment,
             devilry_viewrole=None,
             user_obj=self.candidate,
@@ -54,6 +55,7 @@ class TestStudentGroupCommentItemValue(test.TestCase):
     def test_student_comment_devilryrole_examiner_assignment_semi_anonymized(self):
         self.__model_setup(anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         selector = htmls.S(listbuilder.StudentGroupCommentItemValue(
+            requestuser=mommy.make(settings.AUTH_USER_MODEL),
             value=self.comment,
             devilry_viewrole=None,
             user_obj=self.candidate,
@@ -68,6 +70,7 @@ class TestStudentGroupCommentItemValue(test.TestCase):
     def test_student_comment_devilryrole_examiner_assignment_fully_anonymized(self):
         self.__model_setup(anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         selector = htmls.S(listbuilder.StudentGroupCommentItemValue(
+            requestuser=mommy.make(settings.AUTH_USER_MODEL),
             value=self.comment,
             devilry_viewrole=None,
             user_obj=self.candidate,
@@ -82,6 +85,7 @@ class TestStudentGroupCommentItemValue(test.TestCase):
     def test_student_comment_devilryrole_student_assignment_fully_anonymized(self):
         self.__model_setup(anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS, request_devilryrole='student')
         selector = htmls.S(listbuilder.ExaminerGroupCommentItemValue(
+            requestuser=mommy.make(settings.AUTH_USER_MODEL),
             value=self.comment,
             devilry_viewrole=None,
             user_obj=None,
@@ -97,6 +101,7 @@ class TestStudentGroupCommentItemValue(test.TestCase):
         self.__model_setup(anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS,
                            request_devilryrole='subjectadmin')
         selector = htmls.S(listbuilder.ExaminerGroupCommentItemValue(
+            requestuser=mommy.make(settings.AUTH_USER_MODEL),
             value=self.comment,
             devilry_viewrole=None,
             user_obj=None,
@@ -111,6 +116,7 @@ class TestStudentGroupCommentItemValue(test.TestCase):
         self.__model_setup(anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
                            request_devilryrole='subjectadmin')
         selector = htmls.S(listbuilder.ExaminerGroupCommentItemValue(
+            requestuser=mommy.make(settings.AUTH_USER_MODEL),
             value=self.comment,
             devilry_viewrole=None,
             user_obj=None,
@@ -126,6 +132,7 @@ class TestStudentGroupCommentItemValue(test.TestCase):
         self.__model_setup()
         self.candidate.delete()
         selector = htmls.S(listbuilder.StudentGroupCommentItemValue(
+            requestuser=mommy.make(settings.AUTH_USER_MODEL),
             value=self.comment,
             devilry_viewrole=None,
             user_obj=self.candidate,
@@ -169,6 +176,7 @@ class TestExaminerGroupCommentItemValue(test.TestCase):
     def test_examiner_comment_devilryrole_student_non_anonymous(self):
         self.__model_setup()
         selector = htmls.S(listbuilder.ExaminerGroupCommentItemValue(
+            requestuser=mommy.make(settings.AUTH_USER_MODEL),
             value=self.comment,
             devilry_viewrole=None,
             user_obj=None,
@@ -183,6 +191,7 @@ class TestExaminerGroupCommentItemValue(test.TestCase):
     def test_examiner_comment_devilryrole_student_semi_anonymous(self):
         self.__model_setup(anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         selector = htmls.S(listbuilder.ExaminerGroupCommentItemValue(
+            requestuser=mommy.make(settings.AUTH_USER_MODEL),
             value=self.comment,
             devilry_viewrole=None,
             user_obj=None,
@@ -198,6 +207,7 @@ class TestExaminerGroupCommentItemValue(test.TestCase):
     def test_examiner_comment_devilryrole_student_fully_anonymous(self):
         self.__model_setup(anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
         selector = htmls.S(listbuilder.ExaminerGroupCommentItemValue(
+            requestuser=mommy.make(settings.AUTH_USER_MODEL),
             value=self.comment,
             devilry_viewrole=None,
             user_obj=None,
@@ -214,6 +224,7 @@ class TestExaminerGroupCommentItemValue(test.TestCase):
         self.__model_setup(anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS,
                            request_devilryrole='examiner')
         selector = htmls.S(listbuilder.ExaminerGroupCommentItemValue(
+            requestuser=mommy.make(settings.AUTH_USER_MODEL),
             value=self.comment,
             devilry_viewrole=None,
             user_obj=None,
@@ -229,6 +240,7 @@ class TestExaminerGroupCommentItemValue(test.TestCase):
         self.__model_setup(anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS,
                            request_devilryrole='subjectadmin')
         selector = htmls.S(listbuilder.ExaminerGroupCommentItemValue(
+            requestuser=mommy.make(settings.AUTH_USER_MODEL),
             value=self.comment,
             devilry_viewrole=None,
             user_obj=None,
@@ -243,6 +255,7 @@ class TestExaminerGroupCommentItemValue(test.TestCase):
         self.__model_setup(anonymizationmode=core_models.Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
                            request_devilryrole='subjectadmin')
         selector = htmls.S(listbuilder.ExaminerGroupCommentItemValue(
+            requestuser=mommy.make(settings.AUTH_USER_MODEL),
             value=self.comment,
             devilry_viewrole=None,
             user_obj=None,

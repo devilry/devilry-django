@@ -64,6 +64,7 @@ class FeedbackSetTimelineListBuilderList(listbuilder.base.List):
     def __init__(self, feedbackset, group, assignment, requestuser, devilryrole):
         self.feedbackset = feedbackset
         self.assignment = assignment
+        self.requestuser = requestuser
         self.devilryrole = devilryrole
         self.group = group
         self.group_user_lookup = GroupUserLookup(
@@ -101,16 +102,19 @@ class FeedbackSetTimelineListBuilderList(listbuilder.base.List):
                 return StudentGroupCommentItemValue(value=group_comment,
                                                     devilry_viewrole=self.devilryrole,
                                                     assignment=self.assignment,
+                                                    requestuser=self.requestuser,
                                                     group_user_lookup=self.group_user_lookup)
             elif group_comment.user_role == comment_models.Comment.USER_ROLE_EXAMINER:
                 return ExaminerGroupCommentItemValue(value=group_comment,
                                                      devilry_viewrole=self.devilryrole,
                                                      assignment=self.assignment,
+                                                     requestuser=self.requestuser,
                                                      group_user_lookup=self.group_user_lookup)
             elif group_comment.user_role == comment_models.Comment.USER_ROLE_ADMIN:
                 return AdminGroupCommentItemValue(value=group_comment,
                                                   devilry_viewrole=self.devilryrole,
                                                   assignment=self.assignment,
+                                                  requestuser=self.requestuser,
                                                   group_user_lookup=self.group_user_lookup)
         elif event_dict['type'] == 'deadline_expired':
             return DeadlineExpiredItemValue(value=event_dict['deadline_datetime'], devilry_viewrole=self.devilryrole,
@@ -269,10 +273,11 @@ class BaseGroupCommentItemValue(BaseItemValue):
     valuealias = 'group_comment'
     template_name = 'devilry_group/listbuilder_feedbackfeed/base_groupcomment_item_value.django.html'
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, requestuser, *args, **kwargs):
         super(BaseGroupCommentItemValue, self).__init__(*args, **kwargs)
         self.assignment = kwargs.get('assignment')
         self.group_user_lookup = kwargs.get('group_user_lookup')
+        self.requestuser = requestuser
 
     def get_display_name_for_comment_user(self):
         raise NotImplementedError()
@@ -292,7 +297,7 @@ class BaseGroupCommentItemValue(BaseItemValue):
         """
         Render links for editing `GroupComment`.
         """
-        return True
+        return self.group_comment.user_can_edit_comment(user=self.requestuser)
 
     def include_badge(self):
         """
@@ -333,14 +338,6 @@ class StudentGroupCommentItemValue(BaseGroupCommentItemValue):
     """
     valuealias = 'group_comment'
     template_name = 'devilry_group/listbuilder_feedbackfeed/student_groupcomment_item_value.django.html'
-
-    def include_edit_links(self):
-        """
-        Render links for editing `GroupComment`.
-        """
-        if settings.DEVILRY_COMMENT_STUDENTS_CAN_EDIT:
-            return True
-        return False
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(StudentGroupCommentItemValue, self).get_extra_css_classes_list()

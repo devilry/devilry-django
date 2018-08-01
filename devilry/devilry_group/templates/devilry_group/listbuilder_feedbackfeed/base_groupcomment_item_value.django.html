@@ -52,7 +52,7 @@
         </p>
 
         <div class="devilry-group-comment-text">
-            {% blocktrans with text=me.group_comment.text|devilry_group_markdown|safe %} {{text}} {% endblocktrans %}
+            {{ me.group_comment.text|devilry_group_markdown|safe }}
         </div>
         {% if me.include_files %}
             {% for commentfile in me.group_comment.commentfile_set.all %}

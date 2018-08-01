@@ -91,6 +91,7 @@ class CommentHistoryView(listbuilderview.View):
                 value=self.group_comment,
                 devilry_viewrole=devilry_viewrole,
                 assignment=assignment,
+                requestuser=self.request.user,
                 group_user_lookup=group_user_lookup
             )
         )
