@@ -17,6 +17,28 @@ page where you actually create the assignment.
 
 The create assignment page has a few required fields that's needs to be set before you can create the assignment. Simply
 give the assignment a name and a first deadline. You have a lot of options for tweaking the assignment after it has
-been created. We'll create a simple assignment called `Assignment 1` with deadline set to July 27, 2018 11:59 pm.
+been created. We'll create a simple assignment called `Assignment 33` with deadline set to November 21, 2018 11:40 am
+by using the `Select a date/time`. You can also use one of the suggested deadlines.
 
 .. image:: images/admin-create-assignment-page.png
+
+
+.. _defaults_new_assignment:
+
+Defaults for a new assignment
+#############################
+The following are configured as a default:
+ - All active students in the course in the semester are added to the assignment
+ - All students added to the semester are organized in a project group with one member
+ - No examiners are connected with a student or group
+ - The new assignment will be published 6 hours after creation
+ - Grading is passed or failed
+ - Anonymization is off
+ - Deadline handling is soft
+
+You can read more about each of the configurations here:
+
+.. toctree::
+   :maxdepth: 1
+
+   admin_students_new_assignment
