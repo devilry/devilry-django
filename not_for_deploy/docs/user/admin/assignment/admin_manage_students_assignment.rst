@@ -79,7 +79,7 @@ Here you chose the `Split group`-link.
 In the next view you chose which student(s) to remove from the group.
 
 
-.. _manage_deadline:
+.. _manage_deadline_assignment:
 
 Manage deadline
 ###############

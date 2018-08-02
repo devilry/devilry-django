@@ -43,3 +43,4 @@ You can read more about each of the configurations here:
 
    admin_manage_students_assignment
    admin_manage_examiners_assignment
+   admin_manage_publish_deadline_assignment
