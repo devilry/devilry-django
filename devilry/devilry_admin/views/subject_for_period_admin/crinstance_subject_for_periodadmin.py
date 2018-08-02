@@ -19,7 +19,7 @@ class Menu(devilry_crmenu_admin.Menu):
         return self.add_headeritem_object(devilry_crmenu.BreadcrumbMenuItem(
             label=subject.short_name,
             url=reverse_cradmin_url(
-                instanceid='devilry_admin_periodadmin_subject',
+                instanceid='devilry_admin_subject_for_periodadmin',
                 appname='overview',
                 roleid=subject.id,
                 viewname=crapp.INDEXVIEW_NAME
@@ -35,7 +35,7 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
         ('overview', overview_for_periodadmin.App),
         ('subject_redirect', subject_redirect.App)
     ]
-    id = 'devilry_admin_periodadmin_subject'
+    id = 'devilry_admin_subject_for_periodadmin'
     rolefrontpage_appname = 'overview'
 
     def get_rolequeryset(self):

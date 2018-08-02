@@ -20,7 +20,7 @@ class SubjectRedirectView(View):
             ))
         if Subject.objects.filter_user_is_admin_for_any_periods_within_subject(self.request.user):
             return HttpResponseRedirect(reverse_cradmin_url(
-                instanceid='devilry_admin_periodadmin_subject',
+                instanceid='devilry_admin_subject_for_periodadmin',
                 appname='overview',
                 roleid=request.cradmin_role.id
             ))
