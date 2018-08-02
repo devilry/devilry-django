@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 from django.views.generic import View
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
+
 from devilry.apps.core.models import Subject
 
 
@@ -18,12 +19,13 @@ class SubjectRedirectView(View):
                 appname='overview',
                 roleid=request.cradmin_role.id
             ))
-        if Subject.objects.filter_user_is_admin_for_any_periods_within_subject(self.request.user):
+        elif Subject.objects.filter_user_is_admin_for_any_periods_within_subject(self.request.user):
             return HttpResponseRedirect(reverse_cradmin_url(
                 instanceid='devilry_admin_subject_for_periodadmin',
                 appname='overview',
                 roleid=request.cradmin_role.id
             ))
+        raise Http404()
 
 
 class App(crapp.App):
