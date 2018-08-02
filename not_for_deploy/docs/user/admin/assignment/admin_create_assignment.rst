@@ -42,3 +42,4 @@ You can read more about each of the configurations here:
    :maxdepth: 1
 
    admin_manage_students_assignment
+   admin_manage_examiners_assignment
