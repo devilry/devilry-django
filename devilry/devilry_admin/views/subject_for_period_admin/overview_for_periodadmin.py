@@ -48,7 +48,7 @@ class Overview(listbuilderview.FilterListMixin, listbuilderview.View):
 
     def get_unfiltered_queryset_for_role(self, role):
         subject = self.request.cradmin_role
-        return Period.objects.filter(parentnode=subject)\
+        return Period.objects.filter_user_is_admin(user=self.request.user).filter(parentnode=subject)\
             .order_by('-start_time')
 
 

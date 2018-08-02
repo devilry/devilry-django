@@ -53,18 +53,8 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
     def matches_urlpath(cls, urlpath):
         return urlpath.startswith('/devilry_admin/subject_for_periodadmin')
 
-    def __get_devilryrole_for_requestuser(self):
-        return 'periodadmin'
-
     def get_devilryrole_for_requestuser(self):
         """
-        Get the devilryrole for the requesting user on the current
-        subject (request.cradmin_instance).
-
-        The return values is the same as for
-        :meth:`devilry.devilry_account.models.SubjectPermissionGroupQuerySet.get_devilryrole_for_user_on_subject`,
-        exept that this method raises ValueError if it does not find a role.
+        Only period admins will be redirected back to this crinstance
         """
-        if not hasattr(self, '_devilryrole_for_requestuser'):
-            self._devilryrole_for_requestuser = self.__get_devilryrole_for_requestuser()
-        return self._devilryrole_for_requestuser
+        return 'periodadmin'

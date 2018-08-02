@@ -20,11 +20,7 @@ class SubjectRedirectView(View):
                 roleid=request.cradmin_role.id
             ))
         elif Subject.objects.filter_user_is_admin_for_any_periods_within_subject(self.request.user):
-            return HttpResponseRedirect(reverse_cradmin_url(
-                instanceid='devilry_admin_subject_for_periodadmin',
-                appname='overview',
-                roleid=request.cradmin_role.id
-            ))
+            return HttpResponseRedirect(self.request.cradmin_instance.rolefrontpage_url(roleid=request.cradmin_role.id))
         raise Http404()
 
 
