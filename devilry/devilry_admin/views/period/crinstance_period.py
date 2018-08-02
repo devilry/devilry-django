@@ -1,8 +1,10 @@
-from django_cradmin import crinstance
+from django_cradmin import crinstance, crapp
+from django_cradmin.crinstance import reverse_cradmin_url
 
 from devilry.apps.core.models import Period
 from devilry.devilry_account.models import PeriodPermissionGroup
 from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
+from devilry.devilry_cradmin import devilry_crmenu
 from devilry.devilry_cradmin import devilry_crinstance
 from devilry.devilry_admin.views.period import admins
 from devilry.devilry_admin.views.period import createassignment
@@ -22,6 +24,30 @@ class Menu(devilry_crmenu_admin.Menu):
         self.add_role_menuitem_object()
         self.add_subject_breadcrumb_item(subject=period.subject)
         self.add_period_breadcrumb_item(period=period, active=True)
+
+    def add_subject_breadcrumb_item(self, subject, active=False):
+        if self.cradmin_instance.get_devilryrole_for_requestuser() == 'periodadmin':
+            return self.add_headeritem_object(devilry_crmenu.BreadcrumbMenuItem(
+                label=subject.short_name,
+                url=reverse_cradmin_url(
+                    instanceid='devilry_admin_subject_for_periodadmin',
+                    appname='overview',
+                    roleid=subject.id,
+                    viewname=crapp.INDEXVIEW_NAME
+                ),
+                active=active
+            ))
+        else:
+            return self.add_headeritem_object(devilry_crmenu.BreadcrumbMenuItem(
+                label=subject.short_name,
+                url=reverse_cradmin_url(
+                    instanceid='devilry_admin_subjectadmin',
+                    appname='overview',
+                    roleid=subject.id,
+                    viewname=crapp.INDEXVIEW_NAME
+                ),
+                active=active
+            ))
 
 
 class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
