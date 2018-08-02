@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from model_mommy import mommy
 
 from devilry.apps.core import models as core_models
+from devilry.devilry_group import models as group_models
 from devilry.apps.core import mommy_recipes
 
 
@@ -69,6 +70,21 @@ class MergerTestHelper(test.TestCase):
             assignment_group = mommy.prepare('core.AssignmentGroup', parentnode=assignment, **assignment_group_kwargs)
             assignment_group.save(using=db_alias)
         return assignment_group
+
+    def get_or_create_feedback_set(self, assignment_group, feedback_set_kwargs, db_alias='default'):
+        """
+        Get FeedbackSet if it exists with assignment_group, else create.
+        """
+        if not feedback_set_kwargs:
+            feedback_set_kwargs = {}
+        if group_models.FeedbackSet.objects.using(db_alias).select_related('group')\
+                .filter(group_id=assignment_group.id).exists():
+            feedback_set = group_models.FeedbackSet.objects.using(db_alias).select_related('group')\
+                .get(group_id=assignment_group.id)
+        else:
+            feedback_set = mommy.prepare('devilry_group.FeedbackSet', group=assignment_group, **feedback_set_kwargs)
+            feedback_set.save(using=db_alias)
+        return feedback_set
 
     def get_or_create_user(self, user_kwargs, db_alias='default'):
         """
