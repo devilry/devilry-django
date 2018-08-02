@@ -83,7 +83,7 @@ In the next view you chose which student(s) to remove from the group.
 
 Manage deadline
 ###############
-The last meny option in this section is the `Manage deadline`-link.
+The last menu option in this section is the `Manage deadline`-link.
 
 .. image:: images/admin-manage-deadline-link.png
 
