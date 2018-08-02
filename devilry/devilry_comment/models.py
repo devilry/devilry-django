@@ -95,6 +95,26 @@ class Comment(models.Model):
         commentfile.clean()
         commentfile.save()
 
+    def user_can_edit_comment(self, user):
+        """
+        Check if a user can edit the comment.
+
+        Args:
+            user: A user instance, (usually a request user).
+
+        Returns:
+            bool: ``True`` if user can edit, else ``False``
+        """
+        if user != self.user:
+            return False
+        if self.user_role == self.USER_ROLE_STUDENT and settings.DEVILRY_COMMENT_STUDENTS_CAN_EDIT:
+            return True
+        if self.user_role == self.USER_ROLE_ADMIN:
+            return True
+        if self.user_role == self.USER_ROLE_EXAMINER:
+            return True
+        return False
+
     def delete_comment(self):
         """
         Delete this comment. Will delete all :class:`.CommentFile`s referencing it, and all

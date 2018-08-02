@@ -4,11 +4,9 @@
 {% load cradmin_tags %}
 
 {% block edit-links %}
-    {% if me.group_comment.user == request.user %}
-        <a href="{% cradmin_url instanceid='devilry_group_examiner' appname='feedbackfeed' viewname='groupcomment-edit' pk=me.group_comment.id roleid=request.cradmin_role.id %}"
-           class="devilry-group-comment-edit-link devilry-group-comment-edit-link__examiner">
-            <strong>{% trans "Edit" context "devilry_group feedbackfeed edit groupcomment" %}</strong></a>&nbsp;
-    {% endif %}
+    <a href="{% cradmin_url instanceid='devilry_group_examiner' appname='feedbackfeed' viewname='groupcomment-edit' pk=me.group_comment.id roleid=request.cradmin_role.id %}"
+       class="devilry-group-comment-edit-link devilry-group-comment-edit-link__examiner">
+        <strong>{% trans "Edit" context "devilry_group feedbackfeed edit groupcomment" %}</strong></a>&nbsp;
     {% if me.group_comment.visibility == 'private' %}
         <a href="{% cradmin_url instanceid='devilry_group_examiner' appname="feedbackfeed" viewname="groupcomment-delete" pk=me.group_comment.id roleid=request.cradmin_role.id %}"
            class="devilry-group-comment-delete-link devilry-group-comment-delete-link__examiner">
