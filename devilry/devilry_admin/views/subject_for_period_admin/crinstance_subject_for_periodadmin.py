@@ -4,9 +4,8 @@ from django_cradmin import crapp
 from devilry.apps.core.models import Subject
 from devilry.devilry_cradmin import devilry_crinstance
 from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
-from devilry.devilry_admin.views.subject_period import overview_for_periodadmin, subject_redirect
+from devilry.devilry_admin.views.subject_for_period_admin import overview_for_periodadmin, subject_redirect
 from devilry.devilry_cradmin import devilry_crmenu
-
 
 
 class Menu(devilry_crmenu_admin.Menu):
