@@ -29,7 +29,7 @@ Defaults for a new assignment
 #############################
 The following are configured as a default:
  - All active students in the course in the semester are added to the assignment
- - All students added to the semester are organized in a project group with one member
+ - All students added to the semester are organized in a project group
  - No examiners are connected with a student or group
  - The new assignment will be published 6 hours after creation
  - Grading is passed or failed
@@ -41,4 +41,4 @@ You can read more about each of the configurations here:
 .. toctree::
    :maxdepth: 1
 
-   admin_students_new_assignment
+   admin_manage_students_assignment
