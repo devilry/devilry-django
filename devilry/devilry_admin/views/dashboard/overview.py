@@ -52,8 +52,8 @@ class SubjectItemFrame(devilry_listbuilder.common.GoForwardLinkItemFrame):
 
     def get_url(self):
         return reverse_cradmin_url(
-            instanceid='devilry_admin_subjectadmin',
-            appname='overview',
+            instanceid='devilry_admin_periodadmin_subject',
+            appname='subject_redirect',
             roleid=self.subject.id,
             viewname=crapp.INDEXVIEW_NAME
         )

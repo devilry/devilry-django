@@ -1,0 +1,21 @@
+{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
+{% load static %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block title %}
+    {{ request.cradmin_role.short_name }}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <div class="row">
+        <div class="col-sm-9">
+            <h1>
+                {{ request.cradmin_role.long_name }}
+            </h1>
+        </div>
+    </div>
+{% endblock pageheader-inner %}
+{% block content %}
+    {{ block.super }}
+{% endblock content %}
