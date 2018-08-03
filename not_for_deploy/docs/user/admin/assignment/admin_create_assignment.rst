@@ -47,3 +47,4 @@ You can read more about each of the configurations here:
    admin_grading_configuration_assignment
    admin_project_group_settings_assignment
    admin_anonymization_assignment
+   admin_deadline_handling_assignment
