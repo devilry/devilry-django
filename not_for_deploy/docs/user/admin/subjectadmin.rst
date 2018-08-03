@@ -23,7 +23,7 @@ assignments, organize students into :ref:`user_group_candidate_student`, and
 assignment :ref:`user_examiner` to give feedback to students.
 
 
-Commmon tasks
+Common tasks
 #############
 
 .. _findsubjectadminfrontpage:
@@ -69,7 +69,7 @@ You can read more about each of the tools available to you here:
 .. toctree::
    :maxdepth: 1
 
-   assignment/admin_create_assignment
+   assignment/admin_assignment
    admin_add_students_examiners_to_period
    admin_wizard_find_student
    admin_semester_tags

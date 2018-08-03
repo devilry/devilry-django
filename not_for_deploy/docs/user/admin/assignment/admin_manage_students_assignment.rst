@@ -1,8 +1,8 @@
 .. _manage_students_assignment:
 
-===========================
-Manage students assignment
-===========================
+===============
+Manage students
+===============
 You manage students in an assignment by clicking the `Manage students`-link.
 
 .. image:: images/admin-manage-students-link.png
