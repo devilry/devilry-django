@@ -4,6 +4,8 @@ import os.path
 from django.utils.translation import ugettext_lazy
 
 from devilry.devilry_markup import parse_markdown
+import tomd
+
 
 register = template.Library()
 
@@ -97,6 +99,12 @@ def devilry_group_comment_published(comment):
 @register.filter("devilry_group_markdown")
 def devilry_group_markdown(value):
     return parse_markdown.markdown_full(value)
+
+
+@register.filter("devilry_group_html_to_markdown")
+def devilry_group_html_to_markdown(value):
+    print tomd.convert(value)
+    return tomd.convert(value)
 
 
 @register.inclusion_tag("devilry_group/template_tags/devilry_group_comment_user_is_none.django.html")
