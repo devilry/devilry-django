@@ -46,3 +46,4 @@ You can read more about each of the configurations here:
    admin_manage_publish_deadline_assignment
    admin_grading_configuration_assignment
    admin_project_group_settings_assignment
+   admin_anonymization_assignment
