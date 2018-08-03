@@ -1,8 +1,8 @@
 .. _admin_create_assignment:
 
-============================================
-Creating a new assignment (WORK IN PROGRESS)
-============================================
+==============
+New assignment
+==============
 We'll take you through the workflow of creating a new assignment, setting the first deadline, adding students and
 examiners, editing and configuration of the assignment.
 
@@ -36,17 +36,3 @@ The following are configured as a default:
  - Anonymization is off
  - Deadline handling is soft
  - No students marked as passed assignment previous semester
-
-You can read more about each of the configurations here:
-
-.. toctree::
-   :maxdepth: 1
-
-   admin_manage_students_assignment
-   admin_manage_examiners_assignment
-   admin_manage_publish_deadline_assignment
-   admin_grading_configuration_assignment
-   admin_project_group_settings_assignment
-   admin_anonymization_assignment
-   admin_deadline_handling_assignment
-   admin_passed_previous_semester_assignment
