@@ -52,6 +52,7 @@ class Overview(listbuilderview.FilterListMixin, listbuilderview.View):
     def get_unfiltered_queryset_for_role(self, role):
         period = self.request.cradmin_role
         return Assignment.objects.filter(parentnode=period)\
+            .filter_user_is_admin(user=self.request.user)\
             .order_by('-first_deadline', '-publishing_time')
 
     def __get_relatedstudent_count(self):

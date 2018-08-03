@@ -2,7 +2,6 @@ from django.conf import settings
 from django.test import TestCase, RequestFactory
 from model_mommy import mommy
 
-from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_admin.views.subject_for_period_admin import crinstance_subject_for_periodadmin
 
 

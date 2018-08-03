@@ -1,17 +1,41 @@
 from __future__ import unicode_literals
 import mock
+from django.conf import settings
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from django_cradmin import crinstance
 from model_mommy import mommy
 
+from devilry.apps.core.models import Assignment
 from devilry.apps.core.mommy_recipes import ASSIGNMENT_ACTIVEPERIOD_START_FIRST_DEADLINE, ACTIVE_PERIOD_START
 from devilry.devilry_admin.views.period import overview
+from devilry.devilry_account import models as account_models
 from devilry.utils import datetimeutils
 
 
 class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = overview.Overview
+
+    def __make_period_admin_user(self, period):
+        admin_user = mommy.make(settings.AUTH_USER_MODEL)
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup', period=period)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=admin_user,
+                   permissiongroup=periodpermissiongroup.permissiongroup)
+        return admin_user
+
+    def __make_subject_admin_user(self, subject, as_department_admin=False):
+        if as_department_admin:
+            permissiongroup_type = account_models.PermissionGroup.GROUPTYPE_DEPARTMENTADMIN
+        else:
+            permissiongroup_type = account_models.PermissionGroup.GROUPTYPE_SUBJECTADMIN
+        admin_user = mommy.make(settings.AUTH_USER_MODEL)
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            permissiongroup__grouptype=permissiongroup_type, subject=subject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=admin_user,
+                   permissiongroup=subjectpermissiongroup.permissiongroup)
+        return admin_user
 
     def test_title(self):
         testperiod = mommy.make('core.Period',
@@ -90,20 +114,22 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_assignmentlist_itemrendering_name(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        periodadmin_user = self.__make_period_admin_user(period=testperiod)
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=testperiod,
                           long_name='Test Assignment')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod, requestuser=periodadmin_user)
         self.assertEqual('Test Assignment',
                          mockresponse.selector.one(
                              '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_assignmentlist_itemrendering_url(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        periodadmin_user = self.__make_period_admin_user(period=testperiod)
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                            parentnode=testperiod,
                                            long_name='Test Assignment')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod, requestuser=periodadmin_user)
         self.assertEqual(crinstance.reverse_cradmin_url(instanceid='devilry_admin_assignmentadmin',
                                                         appname='overview',
                                                         roleid=testassignment.id),
@@ -112,25 +138,28 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_assignmentlist_itemrendering_first_deadline(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        periodadmin_user = self.__make_period_admin_user(period=testperiod)
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=testperiod)
         with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT, USE_L10N=False):
-            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod, requestuser=periodadmin_user)
         self.assertEqual(datetimeutils.isoformat_noseconds(ASSIGNMENT_ACTIVEPERIOD_START_FIRST_DEADLINE),
                          mockresponse.selector.one(
                              '.devilry-admin-period-overview-assignment-first-deadline-value').alltext_normalized)
 
     def test_assignmentlist_itemrendering_publishing_time(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        periodadmin_user = self.__make_period_admin_user(period=testperiod)
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=testperiod)
         with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT, USE_L10N=False):
-            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod, requestuser=periodadmin_user)
         self.assertEqual(datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_START),
                          mockresponse.selector.one(
                              '.devilry-admin-period-overview-assignment-publishing-time-value').alltext_normalized)
 
     def test_assignmentlist_ordering(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        periodadmin_user = self.__make_period_admin_user(period=testperiod)
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=testperiod,
                           long_name='Assignment 1')
@@ -140,7 +169,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end',
                           parentnode=testperiod,
                           long_name='Assignment 3')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod, requestuser=periodadmin_user)
         assignmentnames = [
             element.alltext_normalized
             for element in mockresponse.selector.list(
@@ -154,13 +183,17 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_periodlist_only_assignments_in_period(self):
         testperiod = mommy.make('core.Period')
         otherperiod = mommy.make('core.Period')
+        periodadmin_user_testperiod = self.__make_period_admin_user(period=testperiod)
+        self.__make_period_admin_user(period=otherperiod)
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=testperiod,
                           long_name='Testperiod Assignment 1')
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=otherperiod,
                           long_name='Otherperiod Assignment 1')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            requestuser=periodadmin_user_testperiod)
         self.assertEqual(
             1,
             mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue-titledescription-title')
@@ -171,8 +204,81 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
                     '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized
         )
 
+    def test_period_admin_can_not_see_semi_anonymous_assignments(self):
+        testperiod = mommy.make('core.Period')
+        periodadmin_user = self.__make_period_admin_user(period=testperiod)
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=testperiod,
+                          anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+                          long_name='Testperiod Assignment 1')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            requestuser=periodadmin_user)
+        self.assertFalse(mockresponse.selector.exists('#devilry_admin_period_overview_assignmentlist'))
+
+    def test_period_admin_can_not_see_fully_anonymous_assignments(self):
+        testperiod = mommy.make('core.Period')
+        periodadmin_user = self.__make_period_admin_user(period=testperiod)
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=testperiod,
+                          anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS,
+                          long_name='Testperiod Assignment 1')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            requestuser=periodadmin_user)
+        self.assertFalse(mockresponse.selector.exists('#devilry_admin_period_overview_assignmentlist'))
+
+    def test_subject_admin_can_see_semi_anonymous_assignments(self):
+        testperiod = mommy.make('core.Period')
+        subjectadmin_user = self.__make_subject_admin_user(subject=testperiod.parentnode)
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=testperiod,
+                          anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+                          long_name='Testperiod Assignment 1')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            requestuser=subjectadmin_user)
+        self.assertFalse(mockresponse.selector.exists('#devilry_admin_period_overview_assignmentlist'))
+
+    def test_subject_admin_can_see_fully_anonymous_assignments(self):
+        testperiod = mommy.make('core.Period')
+        subjectadmin_user = self.__make_subject_admin_user(subject=testperiod.parentnode)
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=testperiod,
+                          anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS,
+                          long_name='Testperiod Assignment 1')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            requestuser=subjectadmin_user)
+        self.assertFalse(mockresponse.selector.exists('#devilry_admin_period_overview_assignmentlist'))
+
+    def test_department_admin_can_see_semi_anonymous_assignments(self):
+        testperiod = mommy.make('core.Period')
+        departmentadmin_user = self.__make_subject_admin_user(subject=testperiod.parentnode, as_department_admin=True)
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=testperiod,
+                          anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+                          long_name='Testperiod Assignment 1')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            requestuser=departmentadmin_user)
+        self.assertFalse(mockresponse.selector.exists('#devilry_admin_period_overview_assignmentlist'))
+
+    def test_department_admin_can_see_fully_anonymous_assignments(self):
+        testperiod = mommy.make('core.Period')
+        departmentadmin_user = self.__make_subject_admin_user(subject=testperiod.parentnode, as_department_admin=True)
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=testperiod,
+                          anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS,
+                          long_name='Testperiod Assignment 1')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod,
+            requestuser=departmentadmin_user)
+        self.assertFalse(mockresponse.selector.exists('#devilry_admin_period_overview_assignmentlist'))
+
     def test_num_queries(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
+        periodadmin_user = self.__make_period_admin_user(period=testperiod)
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=testperiod, _quantity=10)
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle',
@@ -181,5 +287,5 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
                           parentnode=testperiod, _quantity=10)
         mommy.make('core.RelatedStudent', period=testperiod, _quantity=50)
         mommy.make('core.RelatedExaminer', period=testperiod, _quantity=50)
-        with self.assertNumQueries(5):
-            self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        with self.assertNumQueries(4):
+            self.mock_http200_getrequest_htmls(cradmin_role=testperiod, requestuser=periodadmin_user)
