@@ -163,6 +163,24 @@ class TestStaticFeedbackImporterImporter(ImporterTestCaseMixin, test.TestCase):
         comment = GroupComment.objects.first()
         self.assertEquals(comment.comment_type, GroupComment.COMMENT_TYPE_GROUPCOMMENT)
 
+    def test_importer_comment_is_part_of_grading(self):
+        test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_group = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Examiner',
+                   assignmentgroup=test_group,
+                   relatedexaminer__user=test_examiner_user,
+                   relatedexaminer__period=test_group.parentnode.parentnode)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
+        self.create_v2dump(
+            model_name='core.staticfeedback',
+            data=self._create_staticfeedback_dict(
+                feedback_set=test_feedbackset,
+                examiner_user_id=test_examiner_user.id)
+        )
+        StaticFeedbackImporter(input_root=self.temp_root_dir).import_models()
+        comment = GroupComment.objects.first()
+        self.assertTrue(comment.part_of_grading)
+
     def test_importer_published_datetime(self):
         test_examiner_user = mommy.make(settings.AUTH_USER_MODEL)
         test_group = mommy.make('core.AssignmentGroup')

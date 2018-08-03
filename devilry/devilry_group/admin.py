@@ -10,7 +10,15 @@ admin.site.register(models.FeedbackSet, FeedbackSetAdmin)
 
 
 class GroupCommentAdmin(admin.ModelAdmin):
-    pass
+    list_display = [
+        'id',
+        'user',
+        'part_of_grading'
+    ]
+
+    raw_id_fields = [
+        'feedback_set'
+    ]
 
 
 admin.site.register(models.GroupComment, GroupCommentAdmin)

@@ -124,6 +124,24 @@ class TestDeliveryImporterImporter(ImporterTestCaseMixin, test.TestCase):
         comment = GroupComment.objects.first()
         self.assertEquals(comment.comment_type, GroupComment.COMMENT_TYPE_GROUPCOMMENT)
 
+    def test_importer_comment_part_of_grading_false(self):
+        test_student_user = mommy.make(settings.AUTH_USER_MODEL)
+        test_group = mommy.make('core.AssignmentGroup')
+        candidate = mommy.make('core.Candidate',
+                               assignment_group=test_group,
+                               relatedstudent__user=test_student_user,
+                               relatedstudent__period=test_group.parentnode.parentnode)
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet', group=test_group)
+        self.create_v2dump(
+            model_name='core.delivery',
+            data=self._create_delivery_dict(
+                feedback_set=test_feedbackset,
+                candidate_id=candidate.id)
+        )
+        DeliveryImporter(input_root=self.temp_root_dir).import_models()
+        comment = GroupComment.objects.first()
+        self.assertFalse(comment.part_of_grading)
+
     def test_importer_user(self):
         test_student_user = mommy.make(settings.AUTH_USER_MODEL)
         test_group = mommy.make('core.AssignmentGroup')

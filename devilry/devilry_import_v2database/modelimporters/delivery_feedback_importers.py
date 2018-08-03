@@ -192,6 +192,7 @@ class StaticFeedbackImporter(ImporterMixin, modelimporter.ModelImporter):
             publish_datetime=datetimeutils.from_isoformat(object_dict['fields']['save_timestamp'])
         )
         group_comment.feedback_set = feedback_set
+        group_comment.part_of_grading = True
         group_comment.text = object_dict['fields']['rendered_view']
         group_comment.comment_type = GroupComment.COMMENT_TYPE_GROUPCOMMENT
         group_comment.user_role = GroupComment.USER_ROLE_EXAMINER

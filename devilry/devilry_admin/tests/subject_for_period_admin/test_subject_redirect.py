@@ -5,7 +5,6 @@ from django.conf import settings
 from django.http import Http404
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
-from django_cradmin import crinstance
 from model_mommy import mommy
 
 from devilry.devilry_admin.views.subject_for_period_admin import subject_redirect
@@ -17,13 +16,13 @@ class TestSubjectRedirect(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_404(self):
         testsubject = mommy.make('core.Subject')
         with self.assertRaises(Http404):
-            mockresponse = self.mock_http302_getrequest(cradmin_role=testsubject)
+            self.mock_http302_getrequest(cradmin_role=testsubject)
 
     def test_user_is_not_periodadmin_or_subjectadmin(self):
         testsubject = mommy.make('core.Subject')
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         with self.assertRaises(Http404):
-            mockresponse = self.mock_http302_getrequest(cradmin_role=testsubject, requestuser=testuser)
+            self.mock_http302_getrequest(cradmin_role=testsubject, requestuser=testuser)
 
     def test_redirect_to_overview_for_periodadmin(self):
         testperiod = mommy.make('core.Period')

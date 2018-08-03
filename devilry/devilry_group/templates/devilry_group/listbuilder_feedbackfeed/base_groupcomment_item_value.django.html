@@ -50,9 +50,12 @@
                 {% endif %}
             {% endif %}
         </p>
-
         <div class="devilry-group-comment-text">
-            {{ me.group_comment.text|devilry_group_markdown|safe }}
+            {% if me.group_comment.v2_id == '' %}
+                {{ me.group_comment.text|devilry_group_markdown|safe }}
+            {% else %}
+                {{ me.group_comment.text|safe }}
+            {% endif %}
         </div>
         {% if me.include_files %}
             {% for commentfile in me.group_comment.commentfile_set.all %}

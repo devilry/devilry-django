@@ -132,7 +132,7 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin'))
         self.assertEqual(
-            'Remove students or project groups',
+            'Remove students',
             mockresponse.selector
             .one('#devilry_admin_assignment_students_overview_button_delete_groups')
             .alltext_normalized)
