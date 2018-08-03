@@ -35,6 +35,7 @@ The following are configured as a default:
  - Grading is passed or failed
  - Anonymization is off
  - Deadline handling is soft
+ - No students marked as passed assignment previous semester
 
 You can read more about each of the configurations here:
 
@@ -48,3 +49,4 @@ You can read more about each of the configurations here:
    admin_project_group_settings_assignment
    admin_anonymization_assignment
    admin_deadline_handling_assignment
+   admin_passed_previous_semester_assignment
