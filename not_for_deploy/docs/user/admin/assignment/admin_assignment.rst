@@ -1,8 +1,8 @@
 .. _admin_assignment:
 
-==========
-Assignment
-==========
+========================
+Assignment configuration
+========================
 
 .. toctree::
    :maxdepth: 1

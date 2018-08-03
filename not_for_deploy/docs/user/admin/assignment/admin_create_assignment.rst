@@ -1,14 +1,8 @@
 .. _admin_create_assignment:
 
-==============
-New assignment
-==============
-We'll take you through the workflow of creating a new assignment, setting the first deadline, adding students and
-examiners, editing and configuration of the assignment.
-
-
+=========================
 Creating a new assignment
-#########################
+=========================
 Creating a new assignment is a pretty simple process. Clicking the `Create new assignment`-link will take you to the
 page where you actually create the assignment.
 
@@ -36,3 +30,6 @@ The following are configured as a default:
  - Anonymization is off
  - Deadline handling is soft
  - No students marked as passed assignment previous semester
+
+To change the default configurations, see :ref:`admin_assignment`
+

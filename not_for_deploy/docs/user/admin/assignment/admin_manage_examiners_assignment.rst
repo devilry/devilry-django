@@ -3,9 +3,10 @@
 ================
 Manage examiners
 ================
-If you need information about the examiner role read the :ref:`role_examiner`.
+If you need information about the examiner role read :ref:`role_examiner` docs.
 
 If you need information aobut how to add examiners to a course, read the :ref:`admin_add_students_examiners_to_period`
+docs.
 
 
 The menu item `Manage examiners` starts with two warnings when creating a new assignment. This is as it should be, since
