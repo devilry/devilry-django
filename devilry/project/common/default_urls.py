@@ -30,7 +30,7 @@ devilry_urls = [
     url(r'^devilry_help/', include('devilry.devilry_help.urls')),
     url(r'^devilry_core/', include('devilry.apps.core.urls')),
     url(r'^devilry_settings/', include('devilry.devilry_settings.urls')),
-    url('r^student/assignmentgroup/(?P<assignmentgroupid>\d+)$', redirecto_to_show_delivery),
+    # url('r^student/assignmentgroup/(?P<assignmentgroupid>\d+)$', redirecto_to_show_delivery),
     url(r'^devilry_student/', include('devilry.devilry_student.urls')),
     url(r'^devilry_group/', include('devilry.devilry_group.urls')),
     url(r'^devilry_gradeform/', include('devilry.devilry_gradeform.urls')),

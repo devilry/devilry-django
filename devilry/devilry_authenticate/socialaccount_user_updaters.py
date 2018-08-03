@@ -1,5 +1,9 @@
+import logging
+
 from devilry.devilry_dataporten_allauth.provider import DevilryDataportenProvider
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 class AbstractUserUpdater(object):
@@ -23,7 +27,14 @@ class AbstractUserUpdater(object):
         return self.__class__.make_shortname(socialaccount=self.socialaccount)
 
     def update_user(self):
+
+        # Debug log
+        logger.debug(msg='{}.update_user'.format(type(self)))
+
         self.user.shortname = self.get_shortname()
+
+        # Debug log
+        logger.debug(msg='self.user.shortname set to {}'.format(self.user.shortname))
         self.user.fullname = self.get_fullname()
         self.user.full_clean()
         self.user.save()
@@ -43,17 +54,46 @@ class AbstractUserUpdater(object):
 class DataPortenUserUpdater(AbstractUserUpdater):
     @classmethod
     def make_shortname(cls, socialaccount):
+        # Debug log
+        logger.debug(msg='{}.make_shortname:'.format(type(cls)))
+
+        # Debug log
+        logger.debug(msg='socialaccount.extra_data: {}'.format(socialaccount.extra_data))
+
         extra_data = socialaccount.extra_data
         userid_sec = extra_data['userid_sec'][0]
         if userid_sec.startswith('feide:'):
+
+            # Debug log
+            logger.debug(msg='userid_sec starts with feide:')
+
             feide_userid_sec_to_username_suffix = getattr(
                 settings, 'DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX', None)
+
+            # Debug log
+            logger.debug(msg='DEVILRY_FEIDE_USERID_SEC_TO_USERNAME_SUFFIX: {}'.format(
+                feide_userid_sec_to_username_suffix))
+
             if feide_userid_sec_to_username_suffix \
                     and userid_sec.endswith(feide_userid_sec_to_username_suffix):
+
+                # Debug log
+                logger.debug(msg='feide_userid_sec_to_username_suffix is not None, and userid_sec ends with {}'.format(
+                    feide_userid_sec_to_username_suffix))
+
                 return userid_sec[len('feide:'):].split('@')[0]
             else:
+                # Debug log
+                logger.debug(msg='feide_userid_sec_to_username_suffix is None, or userid_sec does not end with {}'.format(
+                    feide_userid_sec_to_username_suffix))
                 return userid_sec
         else:
+            # Debug log
+            logger.debug(msg='userid_sec does NOT start with feide:')
+
+            # Debug log
+            logger.debug(msg='Returns: {}'.format('userid:{}'.format(extra_data['userid'])))
+
             return 'userid:{}'.format(extra_data['userid'])
 
     def get_email(self):
