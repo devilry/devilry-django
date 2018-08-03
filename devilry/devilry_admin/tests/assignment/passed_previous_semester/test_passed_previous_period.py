@@ -344,7 +344,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
         self.assertEquals(1, len(mockresponse.request.cradmin_instance.reverse_url.call_args_list))
         self.assertEqual(
-            mock.call(appname='overview', args=(), kwargs={}, viewname='INDEX'),
+            mock.call(appname='passed_previous_period', args=(), kwargs={}, viewname='INDEX'),
             mockresponse.request.cradmin_instance.reverse_url.call_args_list[0]
         )
 
