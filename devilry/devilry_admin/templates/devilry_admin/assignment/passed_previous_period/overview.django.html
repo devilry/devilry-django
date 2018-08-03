@@ -9,13 +9,18 @@
     {% trans "Passed previous semester" %}
 {% endblock title %}
 
+{% block pageheader-outer-extraclasses %}
+   {{ block.super }}
+   devilry-page-header-with-backlink
+{% endblock %}
+
 {% block pageheader-inner %}
-{#    <a href="{% cradmin_instance_appindex_url 'overview' %}" class="devilry-page-header-backlink">#}
-{#        <span class="sr-only">#}
-{#            {% trans "Back to assignment overview" %}#}
-{#        </span>#}
-{#        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>#}
-{#    </a>#}
+    <a href="{% cradmin_instance_appindex_url 'overview' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to assignment overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
     <h1>{% trans 'Passed previous semester' %}</h1>
     <p class="devilry-page-subheader">
         {% blocktrans trimmed %}
