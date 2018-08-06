@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from pprint import pprint
-
 import os
 from django.core import files
 from django.forms import model_to_dict
 
 from devilry.devilry_merge_v3database.utils import merger
-from devilry.apps.core import models as core_models
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
 from devilry.devilry_merge_v3database.models import TempMergeId
@@ -25,7 +22,10 @@ class CommentMerger(merger.AbstractMerger):
 
     def start_migration(self, from_db_object):
         # TODO: Handle parent comments
-        user = self.get_user_by_shortname(shortname=from_db_object.user.shortname)
+        if from_db_object.user:
+            user = self.get_user_by_shortname(shortname=from_db_object.user.shortname)
+        else:
+            user = None
         comment_kwargs = model_to_dict(from_db_object, exclude=[
             'id', 'pk', 'user', 'comment_ptr', 'comment_ptr_id', 'parent'])
         comment = comment_models.Comment(**comment_kwargs)
@@ -55,10 +55,13 @@ class CommentFileMerger(merger.AbstractMerger):
         return ['comment']
 
     def __get_comment_from_temp_merge_id(self, from_db_obj):
-        temp_merge_id = TempMergeId.objects.get_from_label_and_merge_from_obj_id(
-            model_name='devilry_comment_comment',
-            from_id=from_db_obj.comment_id
-        )
+        try:
+            temp_merge_id = TempMergeId.objects.get_from_label_and_merge_from_obj_id(
+                model_name='devilry_comment_comment',
+                from_id=from_db_obj.comment_id
+            )
+        except TempMergeId.DoesNotExist:
+            return None
         try:
             return comment_models.Comment.objects.get(id=temp_merge_id.to_id)
         except comment_models.Comment.DoesNotExist:
@@ -94,10 +97,13 @@ class CommentEditHistoryMerger(merger.AbstractMerger):
         return None
 
     def __get_comment_from_temp_merge_id(self, from_db_obj):
-        temp_merge_id = TempMergeId.objects.get_from_label_and_merge_from_obj_id(
-            model_name='devilry_comment_comment',
-            from_id=from_db_obj.comment_id
-        )
+        try:
+            temp_merge_id = TempMergeId.objects.get_from_label_and_merge_from_obj_id(
+                model_name='devilry_comment_comment',
+                from_id=from_db_obj.comment_id
+            )
+        except TempMergeId.DoesNotExist:
+            return None
         try:
             return comment_models.Comment.objects.get(id=temp_merge_id.to_id)
         except comment_models.Comment.DoesNotExist:
@@ -106,7 +112,7 @@ class CommentEditHistoryMerger(merger.AbstractMerger):
     def start_migration(self, from_db_object):
         comment = self.__get_comment_from_temp_merge_id(from_db_obj=from_db_object)
         if comment:
-            user = self.get_user_by_shortname(shortname=from_db_object.edited_by.shortname)
+            user = self.__get_edited_by_user(comment_edit_history=from_db_object)
             comment_edit_history_kwargs = model_to_dict(from_db_object, exclude=[
                 'id', 'pk', 'comment', 'edited_by'])
             comment_edit_history = comment_models.CommentEditHistory(**comment_edit_history_kwargs)
