@@ -23,7 +23,7 @@ setup(
         'Markdown==2.6.11',
         'Pygments==1.5',
         'flup==1.0.2',
-        'gunicorn==19.2.1',
+        'gunicorn==19.9.0',
         'django-crispy-forms==1.6.0',
         'openpyxl==1.6.1',
         'django >= 1.11, < 1.12',
