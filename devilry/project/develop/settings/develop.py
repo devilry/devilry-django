@@ -150,6 +150,12 @@ IEVVTASKS_DEVRUN_RUNNABLES = {
         ievvdevrun.runnables.rq_worker.RunnableThread(),
         ievvdevrun.runnables.rq_worker.RunnableThread(queuename='email'),
     ),
+    'gunicorn_test': ievvdevrun.config.RunnableThreadList(
+        ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
+        ievvdevrun.runnables.redis_server.RunnableThread(),
+        ievvdevrun.runnables.rq_worker.RunnableThread(),
+        ievvdevrun.runnables.rq_worker.RunnableThread(queuename='email'),
+    ),
     'design': ievvdevrun.config.RunnableThreadList(
         ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
         ievvdevrun.runnables.django_runserver.RunnableThread(),

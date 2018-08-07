@@ -14,7 +14,14 @@ class AuthenticateAppConfig(AppConfig):
         from devilry.devilry_authenticate import socialaccount_user_updaters
         from allauth.socialaccount.models import SocialAccount
         found_supported_socialaccount = False
+        logger.debug('user: {}'.format(user))
+        logger.debug('Iterating through SocialAccounts for user({}):'.format(user))
         for socialaccount in SocialAccount.objects.filter(user=user):
+            logger.debug('SocialAccount.id: {}'.format(socialaccount.id))
+            logger.debug('SocialAccount.user: {}'.format(socialaccount.user))
+            logger.debug('SocialAccount.user.id: {}'.format(socialaccount.user.id))
+            logger.debug('SocialAccount.user.shortname: {}'.format(socialaccount.user.shortname))
+            logger.debug('...')
             provider_id = socialaccount.provider
             updater = socialaccount_user_updaters.get_updater(provider_id=provider_id)
             if updater:
@@ -26,12 +33,17 @@ class AuthenticateAppConfig(AppConfig):
             logger.warning('No SocialAccount object found for user #%d', user.id)
 
     def _on_user_signed_up(self, request, user, **kwargs):
+        logger.debug('_on_user_signed_up')
+        logger.debug('user#{}'.format(user.id))
         self._sync_allauth_account_with_devilry_user(user=user)
 
     def _on_user_logged_in(self, request, user, **kwargs):
+        logger.debug('_on_user_logged_in')
+        logger.debug('user#{}'.format(user.id))
         self._sync_allauth_account_with_devilry_user(user=user)
 
     def _pre_social_login(self, request, sociallogin, **kwargs):
+        logger.debug('_pre_social_login')
         request.session['allauth_provider'] = sociallogin.account.provider
 
     def ready(self):

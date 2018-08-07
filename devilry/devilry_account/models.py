@@ -681,9 +681,10 @@ class UserEmail(AbstractUserIdentity):
             #         user.save()
 
     def __unicode__(self):
-        return _('%(email)s - User%(userid)s') % {
+        return _('%(email)s - User%(userid)s#%(userhortname)s') % {
             'email': self.email,
-            'userid': self.user_id
+            'userid': self.user_id,
+            'userhortname': self.user.shortname
         }
 
 
