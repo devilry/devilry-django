@@ -86,6 +86,8 @@ class Command(BaseCommand):
             modelimporters.SubjectImporter,
             modelimporters.PeriodImporter,
             modelimporters.AssignmentImporter,
+            modelimporters.PointToGradeMapImporter,
+            modelimporters.PointRangeToGradeImporter,
             modelimporters.RelatedExaminerImporter,
             modelimporters.RelatedStudentImporter,
             modelimporters.AssignmentGroupImporter,

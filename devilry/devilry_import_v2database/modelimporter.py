@@ -103,6 +103,18 @@ class ModelImporter(object):
         )
 
     @property
+    def v2pointtogrademap_directoryparser(self):
+        return v2dump_directoryparsers.V2PointToGradeMapDirectoryParser(
+            input_root=self.input_root
+        )
+
+    @property
+    def v2pointrangetograde_directoryparser(self):
+        return v2dump_directoryparsers.V2PointRangeToGradeDirectoryParser(
+            input_root=self.input_root
+        )
+
+    @property
     def v2examiner_directoryparser(self):
         return v2dump_directoryparsers.V2ExaminerDirectoryParser(
             input_root=self.input_root

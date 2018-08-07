@@ -4,6 +4,8 @@ from .subject_importer import SubjectImporter  # noqa
 from .period_importer import PeriodImporter  # noqa
 from .assignment_importer import AssignmentImporter  # noqa
 from .assignmentgroup_importer import AssignmentGroupImporter  # noqa
+from .pointrange_to_grade_importer import PointToGradeMapImporter  # noqa
+from .pointrange_to_grade_importer import PointRangeToGradeImporter  # noqa
 from .relateduser_importer import RelatedExaminerImporter  # noqa
 from .relateduser_importer import RelatedStudentImporter  # noqa
 from .candidate_examiner_importer import CandidateImporter  # noqa
