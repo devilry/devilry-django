@@ -2,6 +2,8 @@ from .userdumper import UserDumper
 from .subjectdumper import SubjectDumper
 from .perioddumper import PeriodDumper
 from .assignmentdumper import AssignmentDumper
+from .assignmentdumper import PointToGradeMapDumper
+from .assignmentdumper import PointRangeToGradeDumper
 from .assignmentgroupdumper import AssignmentGroupDumper
 from .examinerdumper import ExaminerDumper
 from .candidatedumper import CandidateDumper

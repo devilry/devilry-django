@@ -60,6 +60,8 @@ class Command(BaseCommand):
             modeldumpers.SubjectDumper,
             modeldumpers.PeriodDumper,
             modeldumpers.AssignmentDumper,
+            modeldumpers.PointToGradeMapDumper,
+            modeldumpers.PointRangeToGradeDumper,
             modeldumpers.AssignmentGroupDumper,
             modeldumpers.DeadlineDumper,
             modeldumpers.RelatedExaminerDumper,
