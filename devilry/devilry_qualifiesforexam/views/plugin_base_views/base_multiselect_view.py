@@ -62,7 +62,7 @@ class SelectedQualificationItem(multiselect2.selected_item_renderer.SelectedItem
         Returns:
             str: :obj:`.SelectedQualificationItem.value` string representation.
         """
-        return self.value
+        return self.value.user.shortname
 
 
 class SelectableQualificationItemValue(multiselect2.listbuilder_itemvalues.ItemValue):
