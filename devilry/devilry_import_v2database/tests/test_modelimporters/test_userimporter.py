@@ -39,14 +39,16 @@ class TestUserImporter(ImporterTestCaseMixin, test.TestCase):
 
     def test_importer(self):
         self.create_v2dump(model_name='auth.user',
-                           data=self._create_user_dict())
+                           data=self._create_user_dict(),
+                           model_meta=self._create_model_meta())
         userimporter = UserImporter(input_root=self.temp_root_dir)
         userimporter.import_models()
         self.assertEquals(get_user_model().objects.count(), 1)
 
     def test_importer_pk(self):
         self.create_v2dump(model_name='auth.user',
-                           data=self._create_user_dict())
+                           data=self._create_user_dict(),
+                           model_meta=self._create_model_meta())
         userimporter = UserImporter(input_root=self.temp_root_dir)
         userimporter.import_models()
         user = get_user_model().objects.first()
@@ -55,7 +57,8 @@ class TestUserImporter(ImporterTestCaseMixin, test.TestCase):
 
     def test_importer_lastname(self):
         self.create_v2dump(model_name='auth.user',
-                           data=self._create_user_dict())
+                           data=self._create_user_dict(),
+                           model_meta=self._create_model_meta())
         userimporter = UserImporter(input_root=self.temp_root_dir)
         userimporter.import_models()
         user = get_user_model().objects.first()
@@ -63,7 +66,8 @@ class TestUserImporter(ImporterTestCaseMixin, test.TestCase):
 
     def test_importer_short_name(self):
         self.create_v2dump(model_name='auth.user',
-                           data=self._create_user_dict())
+                           data=self._create_user_dict(),
+                           model_meta=self._create_model_meta())
         userimporter = UserImporter(input_root=self.temp_root_dir)
         userimporter.import_models()
         user = get_user_model().objects.first()
@@ -71,7 +75,8 @@ class TestUserImporter(ImporterTestCaseMixin, test.TestCase):
 
     def test_importer_is_active(self):
         self.create_v2dump(model_name='auth.user',
-                           data=self._create_user_dict())
+                           data=self._create_user_dict(),
+                           model_meta=self._create_model_meta())
         userimporter = UserImporter(input_root=self.temp_root_dir)
         userimporter.import_models()
         user = get_user_model().objects.first()
@@ -79,7 +84,8 @@ class TestUserImporter(ImporterTestCaseMixin, test.TestCase):
 
     def test_importer_is_superuser(self):
         self.create_v2dump(model_name='auth.user',
-                           data=self._create_user_dict())
+                           data=self._create_user_dict(),
+                           model_meta=self._create_model_meta())
         userimporter = UserImporter(input_root=self.temp_root_dir)
         userimporter.import_models()
         user = get_user_model().objects.first()
@@ -87,7 +93,8 @@ class TestUserImporter(ImporterTestCaseMixin, test.TestCase):
 
     def test_importer_is_staff(self):
         self.create_v2dump(model_name='auth.user',
-                           data=self._create_user_dict())
+                           data=self._create_user_dict(),
+                           model_meta=self._create_model_meta())
         userimporter = UserImporter(input_root=self.temp_root_dir)
         userimporter.import_models()
         user = get_user_model().objects.first()
@@ -106,7 +113,8 @@ class TestUserImporter(ImporterTestCaseMixin, test.TestCase):
 
     def test_importer_useremail(self):
         self.create_v2dump(model_name='auth.user',
-                           data=self._create_user_dict())
+                           data=self._create_user_dict(),
+                           model_meta=self._create_model_meta())
         userimporter = UserImporter(input_root=self.temp_root_dir)
         userimporter.import_models()
         self.assertEquals(UserEmail.objects.count(), 1)
@@ -114,6 +122,21 @@ class TestUserImporter(ImporterTestCaseMixin, test.TestCase):
         user = get_user_model().objects.first()
         self.assertEquals(user_email.email, 'april@example.com')
         self.assertEquals(user_email.user, user)
+
+    def test_importer_user_with_blank_email_already_exists(self):
+        existing_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.UserEmail', email='', user=existing_user).save()
+        user_data_dict = self._create_user_dict()
+        user_data_dict['fields']['email'] = ''
+        user_data_dict['pk'] = 2
+        self.create_v2dump(model_name='auth.user',
+                           data=user_data_dict,
+                           model_meta=self._create_model_meta())
+        userimporter = UserImporter(input_root=self.temp_root_dir)
+        userimporter.import_models()
+        self.assertEquals(UserEmail.objects.count(), 1)
+        self.assertEqual(
+            UserEmail.objects.filter(user__shortname=user_data_dict['fields']['username']).count(), 0)
 
     def test_importer_username(self):
         self.create_v2dump(model_name='auth.user',
@@ -126,20 +149,20 @@ class TestUserImporter(ImporterTestCaseMixin, test.TestCase):
         self.assertEquals(username.username, 'april')
         self.assertEquals(username.user, user)
 
-    # def test_importer_imported_model_created(self):
-    #     user_data_dict = self._create_user_dict()
-    #     self.create_v2dump(model_name='auth.user',
-    #                        data=user_data_dict)
-    #     userimporter = UserImporter(input_root=self.temp_root_dir)
-    #     userimporter.import_models()
-    #     user = get_user_model().objects.first()
-    #     self.assertEquals(ImportedModel.objects.count(), 1)
-    #     imported_model = ImportedModel.objects.get(
-    #         content_object_id=user.id,
-    #         content_type=ContentType.objects.get_for_model(model=user)
-    #     )
-    #     self.assertEquals(imported_model.content_object, user)
-    #     self.assertEquals(imported_model.data, user_data_dict)
+    def test_importer_user_with_blank_username_already_exists(self):
+        existing_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.UserName', username='', user=existing_user).save()
+        user_data_dict = self._create_user_dict()
+        user_data_dict['fields']['username'] = ''
+        user_data_dict['pk'] = 2
+        self.create_v2dump(model_name='auth.user',
+                           data=user_data_dict,
+                           model_meta=self._create_model_meta())
+        userimporter = UserImporter(input_root=self.temp_root_dir)
+        userimporter.import_models()
+        self.assertEquals(UserName.objects.count(), 1)
+        self.assertEqual(
+            UserName.objects.filter(user__shortname=user_data_dict['fields']['username']).count(), 0)
 
     def test_auto_sequence_numbered_objects_uses_meta_max_id(self):
         self.create_v2dump(model_name='auth.user',

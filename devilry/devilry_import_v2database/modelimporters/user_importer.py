@@ -12,6 +12,8 @@ class UserImporter(modelimporter.ModelImporter):
         return get_user_model()
 
     def _create_username(self, user, username):
+        if username == '' or len(username) == 0:
+            return
         username_object = UserName(
             user=user,
             username=username,
@@ -23,6 +25,8 @@ class UserImporter(modelimporter.ModelImporter):
         username_object.save()
 
     def _create_useremail(self, user, email):
+        if email == '' or len(email) == 0:
+            return
         username_object = UserEmail(
             user=user,
             email=email,
