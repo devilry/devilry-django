@@ -60,6 +60,11 @@ class DisableMigrations(object):
     #     return 'notmigrations'
 
 
+# Add this to run a database for anonymization
+# DATABASES['anonymize_db'] = DATABASES['default'].copy()
+# DATABASES['anonymize_db']['NAME'] = 'dbdev_anonymize'
+
+
 MIGRATION_MODULES = DisableMigrations()
 
 # DEVILRY_V2_DATABASE_MAX_BULK_CREATE_OVERRIDE = 100
