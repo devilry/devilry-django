@@ -110,37 +110,37 @@ class AnonymizeDatabase(object):
         Simply sets usernames to the ID of the user.
         """
         if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
-            get_user_model().objects.update(
+            get_user_model().objects.using(self.db_alias).update(
                 fullname='Full Name',
                 lastname='Lastname',
                 shortname=Concat(models.F('id'), models.Value('@example.com'), output_field=CharField()))
         else:
-            get_user_model().objects.update(
+            get_user_model().objects.using(self.db_alias).update(
                 fullname='Full Name',
                 lastname='Lastname',
                 shortname=Concat(models.F('id'), models.Value(''), output_field=CharField()))
-        UserEmail.objects.update(
+        UserEmail.objects.using(self.db_alias).select_related('user').update(
             email=Concat(models.F('user_id'), models.Value('_'), models.F('id'),
                          models.Value('@example.com'), output_field=CharField()))
-        UserName.objects.update(
+        UserName.objects.using(self.db_alias).select_related('user').update(
             username=Concat(models.F('user_id'), models.Value('_'),
                             models.F('id'), output_field=CharField()))
 
     def __anonymize_user_emails(self, user):
-        for user_email in UserEmail.objects.filter(user_id=user.id):
+        for user_email in UserEmail.objects.using(self.db_alias).filter(user_id=user.id):
             email_prefix = user_email.email.split('@')[0]
             anonymized_email_prefix = self.randomize_string(unanonymized_string=email_prefix)
             user_email.email = '{}@example.com'.format(anonymized_email_prefix)
-            user_email.save()
+            user_email.save(using=self.db_alias)
 
     def __anonymize_user_names(self, user):
-        for user_name in UserName.objects.filter(user_id=user.id):
+        for user_name in UserName.objects.using(self.db_alias).filter(user_id=user.id):
             anonymized_user_name = self.randomize_string(unanonymized_string=user_name.username)
             user_name.username = anonymized_user_name
-            user_name.save()
+            user_name.save(using=self.db_alias)
 
     def __anonymize_user_data(self):
-        for user in get_user_model().objects.all():
+        for user in get_user_model().objects.using(self.db_alias).all():
             shortname = user.shortname
             if '@' in shortname:
                 shortname = shortname.split('@')[0]
@@ -150,7 +150,7 @@ class AnonymizeDatabase(object):
             user.shortname = anonymized_shortname
             user.fullname = self.randomize_string(unanonymized_string=user.fullname)
             user.lastname = self.randomize_string(unanonymized_string=user.lastname)
-            user.save()
+            user.save(using=self.db_alias)
 
             self.__anonymize_user_emails(user=user)
             self.__anonymize_user_names(user=user)
@@ -165,9 +165,9 @@ class AnonymizeDatabase(object):
         """
         Anonymize Comment text and CommentFile filenames.
         """
-        Comment.objects.update(text=lorem_ipsum)
-        CommentEditHistory.objects.update(post_edit_text=lorem_ipsum, pre_edit_text=lorem_ipsum)
-        CommentFile.objects.update(filename=Concat(models.F('id'), models.Value(''), output_field=CharField()))
+        Comment.objects.using(self.db_alias).update(text=lorem_ipsum)
+        CommentEditHistory.objects.using(self.db_alias).update(post_edit_text=lorem_ipsum, pre_edit_text=lorem_ipsum)
+        CommentFile.objects.using(self.db_alias).update(filename=Concat(models.F('id'), models.Value(''), output_field=CharField()))
 
     def anonymize_comments(self):
         self.__anonymize_comments_fast()
