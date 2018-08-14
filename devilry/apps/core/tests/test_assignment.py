@@ -176,6 +176,56 @@ class TestAssignment(TestCase):
         with self.assertNumQueries(9):
             targetassignment.copy_groups_from_another_assignment(sourceassignment)
 
+    def test_import_all_students_from_another_assignment(self):
+        other_assignment = mommy.make('core.Assignment')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
+        mommy.make('core.Candidate', assignment_group=group1)
+        mommy.make('core.Candidate', assignment_group=group2)
+        assignment = mommy.make('core.Assignment')
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=assignment).count(), 0)
+        self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=assignment).count(), 0)
+        assignment.import_all_students_from_another_assignment(other_assignment=other_assignment)
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=assignment).count(), 2)
+        self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=assignment).count(), 2)
+
+    def test_import_all_students_from_another_assignment_has_no_groups(self):
+        other_assignment = mommy.make('core.Assignment')
+        assignment = mommy.make('core.Assignment')
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=assignment).count(), 0)
+        self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=assignment).count(), 0)
+        assignment.import_all_students_from_another_assignment(other_assignment=other_assignment)
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=assignment).count(), 0)
+        self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=assignment).count(), 0)
+
+    def test_import_all_students_from_another_assignment_one_group_for_each_student_in_projectgroups(self):
+        other_assignment = mommy.make('core.Assignment')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
+        mommy.make('core.Candidate', assignment_group=group1, _quantity=10)
+        mommy.make('core.Candidate', assignment_group=group2, _quantity=5)
+        assignment = mommy.make('core.Assignment')
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=assignment).count(), 0)
+        self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=assignment).count(), 0)
+        assignment.import_all_students_from_another_assignment(other_assignment=other_assignment)
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=assignment).count(), 15)
+        self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=assignment).count(), 15)
+
+    def test_import_all_students_from_another_assignment_num_queries(self):
+        other_assignment = mommy.make('core.Assignment')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
+        group3 = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
+        mommy.make('core.Candidate', assignment_group=group1, _quantity=10)
+        mommy.make('core.Candidate', assignment_group=group2, _quantity=5)
+        mommy.make('core.Candidate', assignment_group=group3)
+        assignment = mommy.make('core.Assignment')
+        self.assertEqual(AssignmentGroup.objects.filter(parentnode=assignment).count(), 0)
+        self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=assignment).count(), 0)
+
+        with self.assertNumQueries(5):
+            assignment.import_all_students_from_another_assignment(other_assignment=other_assignment)
+
     def test_create_groups_from_relatedstudents_on_period_period_has_no_relatedstudents(self):
         testassignment = mommy.make('core.Assignment')
         testassignment.create_groups_from_relatedstudents_on_period()

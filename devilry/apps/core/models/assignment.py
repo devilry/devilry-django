@@ -1030,6 +1030,35 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         Candidate.objects.bulk_create(candidates)
         Examiner.objects.bulk_create(examiners)
 
+    def import_all_students_from_another_assignment(self, other_assignment):
+        """
+        Create new assignment groups from all students on another assignment with one
+        candidate in each group.
+
+        Args:
+            other_assignment: Assignment to import from.
+        """
+        from devilry.apps.core.models import AssignmentGroup
+        from devilry.apps.core.models import Candidate
+
+        if self.assignmentgroups.exists():
+            raise AssignmentHasGroupsError(_('The assignment has students. You can not '
+                                             'copy use this on assignments with students.'))
+
+        candidates = list(Candidate.objects.select_related('relatedstudent').filter(assignment_group__parentnode=other_assignment))
+        group_bulk_list = []
+        for candidate in candidates:
+            assignment_group = AssignmentGroup(parentnode=self)
+            group_bulk_list.append(assignment_group)
+        AssignmentGroup.objects.bulk_create(group_bulk_list)
+
+        candidate_bulk_list = []
+        for assignment_group, candidate in zip(self.assignmentgroups.all(), candidates):
+            new_candidate = Candidate(assignment_group=assignment_group,
+                                      relatedstudent=candidate.relatedstudent)
+            candidate_bulk_list.append(new_candidate)
+        Candidate.objects.bulk_create(candidate_bulk_list)
+
     def create_groups_from_relatedstudents_on_period(self):
         """
         Create :class:`devilry.apps.core.models.AssignmentGroup` objects

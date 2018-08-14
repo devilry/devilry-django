@@ -22,11 +22,21 @@ from devilry.utils import nodenamesuggestor
 
 
 class CreateForm(forms.ModelForm):
+    IMPORT_STUDENTS_ALL_FROM_SEMESTER = 'all'
+    IMPORT_STUDENTS_NONE = 'none'
+
+    student_import_option = forms.ChoiceField(
+        label=_('Import students'),
+        required=True,
+        choices=[]
+    )
+
     class Meta:
         model = Assignment
         fields = [
             'long_name',
             'short_name',
+            'student_import_option',
             'first_deadline',
             'publishing_time',
             'parentnode'
@@ -40,6 +50,13 @@ class CreateForm(forms.ModelForm):
         self.fields['short_name'].help_text = _(
             'Up to 20 letters of lowercase english letters (a-z), '
             'numbers, underscore ("_") and hyphen ("-").')
+
+        # Set student import options data.
+        self.fields['student_import_option'].help_text = _(
+            'Choose how you would like to set up students for the new assignment.')
+        self.fields['student_import_option'].choices = []
+        self.fields['student_import_option'].choices = self.__create_student_import_choices()
+
         self.fields['first_deadline'].widget = DateTimePickerWidget(
             buttonlabel_novalue=pgettext_lazy('CrAdmin datetime picker typo fix', 'Select a date/time'),
             required=True,
@@ -62,6 +79,32 @@ class CreateForm(forms.ModelForm):
         # change the value in clean()
         self.fields['parentnode'].widget = forms.HiddenInput()
         self.fields['parentnode'].required = False
+
+    @property
+    def default_import_options(self):
+        return [
+            ('', '----'),
+            ('all', _('All students on semester')),
+            ('none', _('No students'))
+        ]
+
+    def __create_grouped_choice_tuple_for_assignment(self, assignment):
+        return (
+            assignment.long_name,
+            tuple([
+                ('{}_all'.format(assignment.id), _('All students')),
+                ('{}_passed'.format(assignment.id), _('Students that passed'))
+            ]))
+
+    def __create_student_import_choices(self):
+        assignment_queryset = Assignment.objects \
+            .filter_is_active() \
+            .filter(parentnode=self.period)\
+            .order_by('-first_deadline')
+        choices_list = self.default_import_options
+        for assignment in assignment_queryset:
+            choices_list.append(self.__create_grouped_choice_tuple_for_assignment(assignment=assignment))
+        return choices_list
 
     def clean(self):
         cleaned_data = super(CreateForm, self).clean()
@@ -175,6 +218,7 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
                 layout.Field('long_name', placeholder=_('Example: Assignment 1'),
                              focusonme='focusonme'),
                 layout.Field('short_name', placeholder=_('Example: assignment1')),
+                layout.Field('student_import_option'),
                 # layout.HTML(self.__render_help_box()),
                 layout.Div(
                     layout.Div(
@@ -201,9 +245,48 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
             self.request,
             render_to_string(self.success_message_template_name, context=messages_template_context))
 
+    def __get_selected_assignment_from_import_option(self, student_import_option):
+        try:
+            assignment_id = int(student_import_option.split('_')[0])
+        except ValueError:
+            raise ValidationError(_('Something went wrong'))
+        return Assignment.objects\
+            .filter_is_active()\
+            .filter(parentnode=self.period)\
+            .get(id=assignment_id)
+
+    def __import_all_students_from_assignment(self, created_assignment, student_import_option):
+        """
+        Import all students from another assignment.
+        """
+        import_from_assignment = self.__get_selected_assignment_from_import_option(
+            student_import_option=student_import_option)
+        created_assignment.import_all_students_from_another_assignment(
+            other_assignment=import_from_assignment)
+
+    def __import_students_with_passing_grade_from_assignment(self, created_assignment, student_import_option):
+        """
+        Import only students with passing grade from another assignment.
+        """
+
+    def save_object(self, form, commit=True):
+        assignment = super(CreateView, self).save_object(form=form, commit=commit)
+        student_import_option = form.cleaned_data['student_import_option']
+        if student_import_option == self.form_class.IMPORT_STUDENTS_ALL_FROM_SEMESTER:
+            assignment.create_groups_from_relatedstudents_on_period()
+        elif student_import_option.endswith('_all'):
+            self.__import_all_students_from_assignment(
+                created_assignment=assignment, student_import_option=student_import_option)
+        elif student_import_option.endswith('_passed'):
+            self.__import_students_with_passing_grade_from_assignment(
+                created_assignment=assignment, student_import_option=student_import_option)
+        elif student_import_option == 'none':
+            pass
+        return assignment
+
     def form_saved(self, object):
         self.created_assignment = object
-        self.created_assignment.create_groups_from_relatedstudents_on_period()
+        # self.created_assignment.create_groups_from_relatedstudents_on_period()
 
     def get_backlink_url(self):
         return crinstance.reverse_cradmin_url(
