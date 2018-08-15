@@ -102,6 +102,18 @@ class PermissionGroupUserInline(admin.TabularInline):
     extra = 0
 
 
+class SubjectPermissionGroupInline(admin.TabularInline):
+    model = SubjectPermissionGroup
+    raw_id_fields = ['subject']
+    extra = 0
+
+
+class PeriodPermissionGroupInline(admin.TabularInline):
+    model = PeriodPermissionGroup
+    raw_id_fields = ['period']
+    extra = 0
+
+
 class PermissionGroupAdmin(admin.ModelAdmin):
     list_display = [
         'id',
@@ -128,7 +140,11 @@ class PermissionGroupAdmin(admin.ModelAdmin):
         'syncsystem_update_datetime',
     ]
 
-    inlines = [PermissionGroupUserInline]
+    inlines = [
+        PermissionGroupUserInline,
+        SubjectPermissionGroupInline,
+        PeriodPermissionGroupInline
+    ]
 
     def get_queryset(self, request):
         return super(PermissionGroupAdmin, self).get_queryset(request)\
@@ -137,6 +153,18 @@ class PermissionGroupAdmin(admin.ModelAdmin):
     def get_users(self, permissiongroup):
         return u', '.join(user.shortname for user in permissiongroup.users.all())
     get_users.short_description = _('Users')
+
+    def get_inline_instances(self, request, obj=None):
+        inline_instances = [
+            PermissionGroupUserInline(self.model, self.admin_site)
+        ]
+        if obj.grouptype == PermissionGroup.GROUPTYPE_DEPARTMENTADMIN:
+            inline_instances.append(SubjectPermissionGroupInline(self.model, self.admin_site))
+        elif obj.grouptype == PermissionGroup.GROUPTYPE_SUBJECTADMIN:
+            inline_instances.append(SubjectPermissionGroupInline(self.model, self.admin_site))
+        elif obj.grouptype == PermissionGroup.GROUPTYPE_PERIODADMIN:
+            inline_instances.append(PeriodPermissionGroupInline(self.model, self.admin_site))
+        return inline_instances
 
     def get_readonly_fields(self, request, permissiongroup=None):
         readonly_fields = [
@@ -169,6 +197,11 @@ class SubjectPermissionGroupAdmin(admin.ModelAdmin):
         'subject',
     ]
 
+    raw_id_fields = [
+        'permissiongroup',
+        'subject'
+    ]
+
 
 admin.site.register(SubjectPermissionGroup, SubjectPermissionGroupAdmin)
 
@@ -189,6 +222,11 @@ class PeriodPermissionGroupAdmin(admin.ModelAdmin):
     list_filter = [
         'permissiongroup',
         'period',
+    ]
+
+    raw_id_fields = [
+        'permissiongroup',
+        'period'
     ]
 
 
