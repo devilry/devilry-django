@@ -3,14 +3,12 @@ from django.db import models
 from django.db.models.functions import Lower, Concat
 from django.utils.translation import ugettext
 
-from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 from django_cradmin.viewhelpers import listbuilderview
 
 from devilry.apps.core import models as core_models
 from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
-from devilry.devilry_cradmin.devilry_listbuilder import user
 from devilry.devilry_admin.views.dashboard.student_feedbackfeed_wizard import filters
 
 
@@ -31,7 +29,7 @@ class NonAnonymousGroupItemFrame(devilry_listbuilder.common.GoForwardLinkItemFra
 class DepartmentAdminItemValueByAssignment(devilry_listbuilder.assignmentgroup.DepartmentAdminItemValue,
                                            devilry_listbuilder.assignmentgroup.NoMultiselectItemValue):
     template_name = 'devilry_admin/dashboard/student_feedbackfeed_wizard/group_by_assignment.django.html'
-    
+
     @property
     def assignment(self):
         return self.group.assignment
@@ -60,6 +58,9 @@ class StudentAssignmentGroupListView(listbuilderview.FilterListMixin, listbuilde
 
     def dispatch(self, request, *args, **kwargs):
         self.user_id = kwargs.get('user_id')
+        self.assignment_queryset = core_models.Assignment.objects\
+            .prefetch_point_to_grade_map()\
+            .all()
         return super(StudentAssignmentGroupListView, self).dispatch(request, *args, **kwargs)
 
     @property
@@ -123,7 +124,7 @@ class StudentAssignmentGroupListView(listbuilderview.FilterListMixin, listbuilde
                             'cached_data__first_feedbackset',
                             'parentnode', 'parentnode__parentnode', 'parentnode__parentnode__parentnode')\
             .filter_user_is_admin(user=self.request.user)\
-            .filter(id__in=candidates_ids_for_user)\
+            .filter(id__in=candidates_ids_for_user) \
             .prefetch_related(
             models.Prefetch('candidates',
                             queryset=candidatequeryset)) \
