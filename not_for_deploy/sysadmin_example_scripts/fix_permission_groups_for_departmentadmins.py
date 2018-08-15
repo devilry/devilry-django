@@ -70,13 +70,13 @@ if __name__ == "__main__":
     """
 
     # For development:
-    os.environ.setdefault("DJANGOENV", 'develop')
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "devilry.project.settingsproxy")
-    django.setup()
+    # os.environ.setdefault("DJANGOENV", 'develop')
+    # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "devilry.project.settingsproxy")
+    # django.setup()
 
     # For production: Specify python path to your settings file here
-    # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "devilry_settings")
-    # django.setup()
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "devilry_settings")
+    django.setup()
 
     parser = populate_arguments_and_get_parser()
     args = parser.parse_args()
