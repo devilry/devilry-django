@@ -125,6 +125,30 @@ class TestAllResultsCollector(test.TestCase):
         with self.assertRaises(ValueError):
             collector.results[relatedstudent.id].is_waiting_for_feedback(testassignment.id)
 
+    def test_is_not_waiting_for_deliveries_if_last_published_feedbackset_is_last_feedbackset(self):
+        testperiod = mommy.make('core.Period')
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        user = mommy.make(settings.AUTH_USER_MODEL)
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod, user=user)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent=relatedstudent)
+        group_factory.feedbackset_first_attempt_published(
+            group=testgroup,
+            grading_points=0,
+            deadline_datetime=timezone.now() + timedelta(days=1),
+        )
+        group_factory.feedbackset_new_attempt_published(
+            group=testgroup,
+            grading_points=10,
+            deadline_datetime=timezone.now() + timedelta(days=4),
+        )
+        # Run collector
+        collector = PeriodAllResultsCollector(
+            period=testperiod,
+            related_student_ids=[relatedstudent.id]
+        )
+        self.assertFalse(collector.results[relatedstudent.id].is_waiting_for_deliveries(testassignment.id))
+
     def test_is_waiting_for_deliveries(self):
         testperiod = mommy.make('core.Period')
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
@@ -134,7 +158,11 @@ class TestAllResultsCollector(test.TestCase):
         mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent=relatedstudent)
         group_factory.feedbackset_first_attempt_published(
             group=testgroup,
-            grading_points=10,
+            grading_points=0,
+            deadline_datetime=timezone.now() + timedelta(days=1),
+        )
+        group_factory.feedbackset_new_attempt_unpublished(
+            group=testgroup,
             deadline_datetime=timezone.now() + timedelta(days=4),
         )
         # Run collector

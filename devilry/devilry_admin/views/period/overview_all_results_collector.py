@@ -106,6 +106,8 @@ class RelatedStudentResults(object):
                              'registered on the assignment. Maybe you should call '
                              'student_is_registered_on_assignment(assignment_id=) first?')
         cached_data = self.cached_data_dict[assignment_id]
+        if cached_data.last_published_feedbackset_is_last_feedbackset:
+            return False
         if cached_data.last_feedbackset_deadline_datetime < timezone.now():
             return False
         return True
