@@ -333,7 +333,7 @@ class TestBulkCreateFeedbackSimplePassedFailedPlugin(test.TestCase, cradmin_test
         mommy.make('core.Examiner', assignmentgroup=testgroup1, relatedexaminer__user=user)
         mommy.make('core.Examiner', assignmentgroup=testgroup2, relatedexaminer__user=user)
         mommy.make('core.Examiner', assignmentgroup=testgroup3, relatedexaminer__user=user)
-        with self.assertNumQueries(23):
+        with self.assertNumQueries(32):
             self.mock_http302_postrequest(
                 requestuser=user,
                 cradmin_role=testassignment,
