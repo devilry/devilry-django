@@ -14,7 +14,6 @@ from abstract_is_candidate import AbstractIsCandidate
 from abstract_is_examiner import AbstractIsExaminer
 from basenode import BaseNode
 from custom_db_fields import ShortNameField, LongNameField
-# from devilry.apps.core.models.relateduser import RelatedStudentTag, RelatedExaminerTag
 from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import User, PeriodPermissionGroup
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
@@ -971,7 +970,25 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def deadline_handling_is_hard(self):
         return self.deadline_handling == self.DEADLINEHANDLING_HARD
 
-    def copy_groups_from_another_assignment(self, sourceassignment):
+    def get_groups_with_passing_grade(self, sourceassignment):
+        """
+        Get :class:`devilry.apps.core.models.assignment_group.AssignmentGroup`s for the ``sourceassignment``
+        where the last :class:`.devilry.devilry_group.models.FeedbackSet` has a passing grade.
+
+        Args:
+            sourceassignment: A :obj:`.Assignment` to copy `groups` from.
+
+        Returns
+            QuerySet: A :class:`devilry.apps.core.models.assignment_group.AssignmentGroup` queryset.
+        """
+        return sourceassignment.assignmentgroups\
+            .filter(parentnode_id=sourceassignment.id)\
+            .select_related('cached_data') \
+            .filter(
+                cached_data__last_published_feedbackset=models.F('cached_data__last_feedbackset'),
+                cached_data__last_published_feedbackset__grading_points__gte=sourceassignment.passing_grade_min_points)
+
+    def copy_groups_from_another_assignment(self, sourceassignment, passing_grade_only=False):
         """
         Copy all AssignmentGroup objects from another assignment.
 
@@ -989,7 +1006,12 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
         # Step1: Bulk create the groups with no candidates or examiners, but set copied_from.
         groups = []
-        for othergroup in sourceassignment.assignmentgroups.all():
+        if not passing_grade_only:
+            assignment_group_queryset = sourceassignment.assignmentgroups.all()
+        else:
+            assignment_group_queryset = self.get_groups_with_passing_grade(
+                sourceassignment=sourceassignment)
+        for othergroup in assignment_group_queryset:
             newgroup = AssignmentGroup(parentnode=self,
                                        name=othergroup.name,
                                        copied_from=othergroup)
@@ -1030,34 +1052,64 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         Candidate.objects.bulk_create(candidates)
         Examiner.objects.bulk_create(examiners)
 
-    def import_all_students_from_another_assignment(self, other_assignment):
-        """
-        Create new assignment groups from all students on another assignment with one
-        candidate in each group.
-
-        Args:
-            other_assignment: Assignment to import from.
-        """
-        from devilry.apps.core.models import AssignmentGroup
-        from devilry.apps.core.models import Candidate
-
-        if self.assignmentgroups.exists():
-            raise AssignmentHasGroupsError(_('The assignment has students. You can not '
-                                             'copy use this on assignments with students.'))
-
-        candidates = list(Candidate.objects.select_related('relatedstudent').filter(assignment_group__parentnode=other_assignment))
-        group_bulk_list = []
-        for candidate in candidates:
-            assignment_group = AssignmentGroup(parentnode=self)
-            group_bulk_list.append(assignment_group)
-        AssignmentGroup.objects.bulk_create(group_bulk_list)
-
-        candidate_bulk_list = []
-        for assignment_group, candidate in zip(self.assignmentgroups.all(), candidates):
-            new_candidate = Candidate(assignment_group=assignment_group,
-                                      relatedstudent=candidate.relatedstudent)
-            candidate_bulk_list.append(new_candidate)
-        Candidate.objects.bulk_create(candidate_bulk_list)
+    # def copy_groups_from_another_assignment(self, sourceassignment):
+    #     """
+    #     Copy all AssignmentGroup objects from another assignment.
+    #
+    #     Copies:
+    #
+    #     - The name of the group.
+    #     """
+    #     from devilry.apps.core.models import AssignmentGroup
+    #     from devilry.apps.core.models import Candidate
+    #     from devilry.apps.core.models import Examiner
+    #
+    #     if self.assignmentgroups.exists():
+    #         raise AssignmentHasGroupsError(_('The assignment has students. You can not '
+    #                                          'copy use this on assignments with students.'))
+    #
+    #     # Step1: Bulk create the groups with no candidates or examiners, but set copied_from.
+    #     groups = []
+    #     for othergroup in sourceassignment.assignmentgroups.all():
+    #         newgroup = AssignmentGroup(parentnode=self,
+    #                                    name=othergroup.name,
+    #                                    copied_from=othergroup)
+    #         groups.append(newgroup)
+    #     AssignmentGroup.objects.bulk_create(groups)
+    #
+    #     # Step2: Bulk create candidate and examiners from group.copied_from.<candidates|examiners>.
+    #     candidates = []
+    #     examiners = []
+    #
+    #     for group in self.assignmentgroups \
+    #             .prefetch_related(
+    #                 models.Prefetch(
+    #                     'copied_from',
+    #                     to_attr='copied_from_list',
+    #                     queryset=AssignmentGroup.objects.prefetch_related(
+    #                         models.Prefetch('candidates',
+    #                                         to_attr='candidatelist',
+    #                                         queryset=Candidate.objects.all()),
+    #                         models.Prefetch('examiners',
+    #                                         to_attr='examinerlist',
+    #                                         queryset=Examiner.objects.all()),
+    #                     )
+    #                 )
+    #             ):
+    #         for othercandidate in group.copied_from_list.candidatelist:
+    #             newcandidate = Candidate(
+    #                 assignment_group=group,
+    #                 relatedstudent_id=othercandidate.relatedstudent_id,
+    #             )
+    #             candidates.append(newcandidate)
+    #         for otherexaminer in group.copied_from_list.examinerlist:
+    #             newexaminer = Examiner(
+    #                 assignmentgroup=group,
+    #                 relatedexaminer_id=otherexaminer.relatedexaminer_id
+    #             )
+    #             examiners.append(newexaminer)
+    #     Candidate.objects.bulk_create(candidates)
+    #     Examiner.objects.bulk_create(examiners)
 
     def create_groups_from_relatedstudents_on_period(self):
         """

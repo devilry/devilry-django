@@ -3,16 +3,18 @@ from datetime import timedelta
 
 import htmls
 import mock
-from django.contrib import messages
+from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
 from django_cradmin import crinstance
 from model_mommy import mommy
 
-from devilry.apps.core.models import Assignment, Candidate, Examiner
+from devilry.apps.core.models import Assignment, Candidate, Examiner, AssignmentGroup
+from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START, OLD_PERIOD_START, FUTURE_PERIOD_END, \
     ASSIGNMENT_FUTUREPERIOD_START_FIRST_DEADLINE
+from devilry.devilry_group import devilry_group_mommy_factories
 from devilry.devilry_admin.views.period import createassignment
 from devilry.utils import datetimeutils
 from devilry.utils.datetimeutils import default_timezone_datetime
@@ -20,6 +22,9 @@ from devilry.utils.datetimeutils import default_timezone_datetime
 
 class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = createassignment.CreateView
+
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_get_render_formfields(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
@@ -339,6 +344,236 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'This field is required.',
             mockresponse.selector.one('#error_1_id_student_import_option').alltext_normalized)
+
+    def test_post_import_all_students_on_semester(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        relatedstudent1 = mommy.make('core.RelatedStudent', period=period)
+        relatedstudent2 = mommy.make('core.RelatedStudent', period=period)
+        relatedstudent3 = mommy.make('core.RelatedStudent', period=period)
+        self.mock_http302_postrequest(
+            cradmin_role=period,
+            requestkwargs={
+                'data': {
+                    'long_name': 'Test assignment',
+                    'short_name': 'testassignment',
+                    'first_deadline': datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+                    'student_import_option': 'all'
+                }
+            })
+        self.assertEqual(Assignment.objects.count(), 1)
+        created_assignment = Assignment.objects.get()
+        self.assertEqual(
+            Candidate.objects
+                .filter(assignment_group__parentnode=created_assignment, relatedstudent=relatedstudent1)
+                .count(), 1)
+        self.assertEqual(
+            Candidate.objects
+                .filter(assignment_group__parentnode=created_assignment, relatedstudent=relatedstudent2)
+                .count(), 1)
+        self.assertEqual(
+            Candidate.objects
+                .filter(assignment_group__parentnode=created_assignment, relatedstudent=relatedstudent3)
+                .count(), 1)
+
+    def test_post_import_all_students_on_semester_no_students_on_semester(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        self.mock_http302_postrequest(
+            cradmin_role=period,
+            requestkwargs={
+                'data': {
+                    'long_name': 'Test assignment',
+                    'short_name': 'testassignment',
+                    'first_deadline': datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+                    'student_import_option': 'all'
+                }
+            })
+        self.assertEqual(Assignment.objects.count(), 1)
+        created_assignment = Assignment.objects.get()
+        self.assertFalse(AssignmentGroup.objects.filter(parentnode=created_assignment).exists())
+        self.assertFalse(Candidate.objects.filter(assignment_group__parentnode=created_assignment).exists())
+
+    def test_post_import_no_students(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        mommy.make('core.RelatedStudent', period=period, _quantity=10)
+        self.mock_http302_postrequest(
+            cradmin_role=period,
+            requestkwargs={
+                'data': {
+                    'long_name': 'Test assignment',
+                    'short_name': 'testassignment',
+                    'first_deadline': datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+                    'student_import_option': 'none'
+                }
+            })
+        self.assertEqual(Assignment.objects.count(), 1)
+        created_assignment = Assignment.objects.get()
+        self.assertFalse(Candidate.objects.filter(assignment_group__parentnode=created_assignment).exists())
+        self.assertFalse(AssignmentGroup.objects.filter(parentnode=created_assignment).exists())
+
+    def test_post_copy_all_students_from_another_assignment(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        other_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=period)
+        relatedstudent_user1 = mommy.make(settings.AUTH_USER_MODEL)
+        relatedstudent_user2 = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Candidate', assignment_group__parentnode=other_assignment,
+                   relatedstudent__period=period, relatedstudent__user=relatedstudent_user1)
+        mommy.make('core.Candidate', assignment_group__parentnode=other_assignment,
+                   relatedstudent__period=period, relatedstudent__user=relatedstudent_user2)
+        self.mock_http302_postrequest(
+            cradmin_role=period,
+            requestkwargs={
+                'data': {
+                    'long_name': 'Test assignment',
+                    'short_name': 'testassignment',
+                    'first_deadline': datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+                    'student_import_option': '{}_all'.format(other_assignment.id)
+                }
+            })
+        self.assertEqual(Assignment.objects.filter(short_name='testassignment').count(), 1)
+        created_assignment = Assignment.objects.get(short_name='testassignment')
+        self.assertEqual(created_assignment.assignmentgroups.count(), 2)
+        self.assertEqual(
+            Candidate.objects.filter(
+                assignment_group__parentnode=created_assignment, relatedstudent__user=relatedstudent_user1).count(),
+            1)
+        self.assertEqual(
+            Candidate.objects.filter(
+                assignment_group__parentnode=created_assignment, relatedstudent__user=relatedstudent_user2).count(),
+            1)
+
+    def test_post_copy_all_students_from_another_assignment_same_group_structure(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        other_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=period)
+        group1 = mommy.make('core.AssignmentGroup', parentnode=other_assignment, name='group1')
+        group2 = mommy.make('core.AssignmentGroup', parentnode=other_assignment, name='group2')
+        relatedstudent_user1_group1 = mommy.make(settings.AUTH_USER_MODEL)
+        relatedstudent_user2_group1 = mommy.make(settings.AUTH_USER_MODEL)
+        relatedstudent_user_group2 = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Candidate', assignment_group=group1,
+                   relatedstudent__period=period, relatedstudent__user=relatedstudent_user1_group1)
+        mommy.make('core.Candidate', assignment_group=group1,
+                   relatedstudent__period=period, relatedstudent__user=relatedstudent_user2_group1)
+        mommy.make('core.Candidate', assignment_group=group2,
+                   relatedstudent__period=period, relatedstudent__user=relatedstudent_user_group2)
+        self.mock_http302_postrequest(
+            cradmin_role=period,
+            requestkwargs={
+                'data': {
+                    'long_name': 'Test assignment',
+                    'short_name': 'testassignment',
+                    'first_deadline': datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+                    'student_import_option': '{}_all'.format(other_assignment.id)
+                }
+            })
+        self.assertEqual(Assignment.objects.filter(short_name='testassignment').count(), 1)
+        created_assignment = Assignment.objects.get(short_name='testassignment')
+        self.assertEqual(created_assignment.assignmentgroups.count(), 2)
+        self.assertEqual(Candidate.objects.filter(
+            assignment_group__name='group1', assignment_group__parentnode=created_assignment).count(), 2)
+        self.assertTrue(Candidate.objects.filter(
+            assignment_group__name='group2',
+            assignment_group__parentnode=created_assignment,
+            relatedstudent__user=relatedstudent_user_group2).exists())
+        self.assertTrue(Candidate.objects.filter(
+            assignment_group__name='group2',
+            assignment_group__parentnode=created_assignment,
+            relatedstudent__user=relatedstudent_user_group2).exists())
+
+
+        self.assertEqual(Candidate.objects.filter(
+            assignment_group__name='group2', assignment_group__parentnode=created_assignment).count(), 1)
+        self.assertTrue(Candidate.objects.filter(
+            assignment_group__name='group2',
+            assignment_group__parentnode=created_assignment,
+            relatedstudent__user=relatedstudent_user_group2).exists())
+
+    def test_post_copy_with_passing_grade_from_another_assignment(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        other_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=period)
+        group_passed = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
+        group_failed = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
+        relatedstudent_user1 = mommy.make(settings.AUTH_USER_MODEL)
+        relatedstudent_user2 = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Candidate', assignment_group=group_passed,
+                   relatedstudent__period=period, relatedstudent__user=relatedstudent_user1)
+        mommy.make('core.Candidate', assignment_group=group_failed,
+                   relatedstudent__period=period, relatedstudent__user=relatedstudent_user2)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group_passed)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=0, group=group_failed)
+        self.mock_http302_postrequest(
+            cradmin_role=period,
+            requestkwargs={
+                'data': {
+                    'long_name': 'Test assignment',
+                    'short_name': 'testassignment',
+                    'first_deadline': datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+                    'student_import_option': '{}_passed'.format(other_assignment.id)
+                }
+            })
+        self.assertEqual(Assignment.objects.filter(short_name='testassignment').count(), 1)
+        created_assignment = Assignment.objects.get(short_name='testassignment')
+        self.assertEqual(created_assignment.assignmentgroups.count(), 1)
+        self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=created_assignment).count(), 1)
+        self.assertTrue(
+            Candidate.objects.filter(
+                assignment_group__parentnode=created_assignment, relatedstudent__user=relatedstudent_user1).exists())
+
+    def test_post_copy_with_passing_grade_from_another_assignment_same_group_structure(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        other_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=period)
+        group = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
+        relatedstudent_user1 = mommy.make(settings.AUTH_USER_MODEL)
+        relatedstudent_user2 = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Candidate', assignment_group=group,
+                   relatedstudent__period=period, relatedstudent__user=relatedstudent_user1)
+        mommy.make('core.Candidate', assignment_group=group,
+                   relatedstudent__period=period, relatedstudent__user=relatedstudent_user2)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group)
+        self.mock_http302_postrequest(
+            cradmin_role=period,
+            requestkwargs={
+                'data': {
+                    'long_name': 'Test assignment',
+                    'short_name': 'testassignment',
+                    'first_deadline': datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+                    'student_import_option': '{}_passed'.format(other_assignment.id)
+                }
+            })
+        self.assertEqual(Assignment.objects.filter(short_name='testassignment').count(), 1)
+        created_assignment = Assignment.objects.get(short_name='testassignment')
+        self.assertEqual(created_assignment.assignmentgroups.count(), 1)
+        created_group = created_assignment.assignmentgroups.get()
+        self.assertEqual(Candidate.objects.filter(assignment_group=created_group).count(), 2)
+        self.assertTrue(
+            Candidate.objects.filter(
+                assignment_group=created_group, relatedstudent__user=relatedstudent_user1).exists())
+        self.assertTrue(
+            Candidate.objects.filter(
+                assignment_group=created_group, relatedstudent__user=relatedstudent_user2).exists())
+
+    def test_post_copy_with_passing_grade_from_another_examiners_copied(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        other_assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start', parentnode=period)
+        group = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group)
+        self.mock_http302_postrequest(
+            cradmin_role=period,
+            requestkwargs={
+                'data': {
+                    'long_name': 'Test assignment',
+                    'short_name': 'testassignment',
+                    'first_deadline': datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END),
+                    'student_import_option': '{}_passed'.format(other_assignment.id)
+                }
+            })
+        self.assertEqual(Assignment.objects.filter(short_name='testassignment').count(), 1)
+        created_assignment = Assignment.objects.get(short_name='testassignment')
+        self.assertEqual(created_assignment.assignmentgroups.count(), 1)
+        self.assertEqual(Examiner.objects.filter(assignmentgroup__parentnode=created_assignment).count(), 1)
 
     def test_post_first_deadline_outside_period(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')

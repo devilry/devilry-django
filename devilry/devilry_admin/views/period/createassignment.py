@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.http import Http404
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django_cradmin import crapp
@@ -92,8 +93,8 @@ class CreateForm(forms.ModelForm):
         return (
             assignment.long_name,
             tuple([
-                ('{}_all'.format(assignment.id), _('All students')),
-                ('{}_passed'.format(assignment.id), _('Students that passed'))
+                ('{}_all'.format(assignment.id), _('Copy all students')),
+                ('{}_passed'.format(assignment.id), _('Copy students with passing grade'))
             ]))
 
     def __create_student_import_choices(self):
@@ -250,24 +251,32 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
             assignment_id = int(student_import_option.split('_')[0])
         except ValueError:
             raise ValidationError(_('Something went wrong'))
-        return Assignment.objects\
-            .filter_is_active()\
-            .filter(parentnode=self.period)\
-            .get(id=assignment_id)
+        try:
+            assignment = Assignment.objects\
+                .filter_is_active()\
+                .filter(parentnode=self.period)\
+                .get(id=assignment_id)
+        except Assignment.DoesNotExist:
+            raise Http404()
+        return assignment
 
-    def __import_all_students_from_assignment(self, created_assignment, student_import_option):
+    def __copy_all_students_from_assignment(self, created_assignment, student_import_option):
         """
-        Import all students from another assignment.
+        Import group setup from another assignment, including examiners.
         """
         import_from_assignment = self.__get_selected_assignment_from_import_option(
             student_import_option=student_import_option)
-        created_assignment.import_all_students_from_another_assignment(
-            other_assignment=import_from_assignment)
+        created_assignment.copy_groups_from_another_assignment(
+            sourceassignment=import_from_assignment)
 
-    def __import_students_with_passing_grade_from_assignment(self, created_assignment, student_import_option):
+    def __copy_students_with_passing_grade_from_assignment(self, created_assignment, student_import_option):
         """
-        Import only students with passing grade from another assignment.
+        Import group setup only for groups that passed from another assignment, including examiners.
         """
+        import_from_assignment = self.__get_selected_assignment_from_import_option(
+            student_import_option=student_import_option)
+        created_assignment.copy_groups_from_another_assignment(
+            sourceassignment=import_from_assignment, passing_grade_only=True)
 
     def save_object(self, form, commit=True):
         assignment = super(CreateView, self).save_object(form=form, commit=commit)
@@ -275,10 +284,10 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
         if student_import_option == self.form_class.IMPORT_STUDENTS_ALL_FROM_SEMESTER:
             assignment.create_groups_from_relatedstudents_on_period()
         elif student_import_option.endswith('_all'):
-            self.__import_all_students_from_assignment(
+            self.__copy_all_students_from_assignment(
                 created_assignment=assignment, student_import_option=student_import_option)
         elif student_import_option.endswith('_passed'):
-            self.__import_students_with_passing_grade_from_assignment(
+            self.__copy_students_with_passing_grade_from_assignment(
                 created_assignment=assignment, student_import_option=student_import_option)
         elif student_import_option == 'none':
             pass

@@ -16,12 +16,13 @@ from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
 from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
 from devilry.devilry_group import devilry_group_mommy_factories
-from devilry.devilry_group.models import FeedbackSet
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 
 
 class TestAssignment(TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
 
     def test_points_is_passing_grade(self):
         assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -114,6 +115,313 @@ class TestAssignment(TestCase):
                             feedback_workflow='trusted-cooperative-feedback-editing').assignment
         self.assertFalse(testassignment.feedback_workflow_allows_examiners_publish_feedback())
 
+    def test_get_group_with_passing_grade_one(self):
+        assignment = mommy.make('core.Assignment')
+        sourceassignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group)
+        group_queryset = assignment.get_groups_with_passing_grade(sourceassignment=sourceassignment)
+        self.assertEqual(group_queryset.count(), 1)
+        self.assertIn(group, group_queryset)
+
+    def test_get_group_with_passing_grade_none(self):
+        assignment = mommy.make('core.Assignment')
+        sourceassignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=0, group=group)
+        group_queryset = assignment.get_groups_with_passing_grade(sourceassignment=sourceassignment)
+        self.assertEqual(group_queryset.count(), 0)
+
+    def test_get_group_with_passing_grade_feedbackset_not_published(self):
+        assignment = mommy.make('core.Assignment')
+        sourceassignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=group)
+        group_queryset = assignment.get_groups_with_passing_grade(sourceassignment=sourceassignment)
+        self.assertEqual(group_queryset.count(), 0)
+
+    def test_get_group_with_passing_grade_multiple_feedbacksets_last_not_published(self):
+        assignment = mommy.make('core.Assignment')
+        sourceassignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(group=group, grading_points=1)
+        devilry_group_mommy_factories.feedbackset_new_attempt_unpublished(group=group)
+        group_queryset = assignment.get_groups_with_passing_grade(sourceassignment=sourceassignment)
+        self.assertEqual(group_queryset.count(), 0)
+
+    def test_get_group_with_passing_grade_multiple_feedbacksets_first_failed_last_passed(self):
+        assignment = mommy.make('core.Assignment')
+        sourceassignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            group=group, grading_points=0, deadline_datetime=timezone.now() - timezone.timedelta(days=2))
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            group=group, grading_points=1, deadline_datetime=timezone.now())
+        group_queryset = assignment.get_groups_with_passing_grade(sourceassignment=sourceassignment)
+        self.assertEqual(group_queryset.count(), 1)
+
+    def test_get_group_with_passing_grade_one_group_passed_one_group_failed(self):
+        assignment = mommy.make('core.Assignment')
+        sourceassignment = mommy.make('core.Assignment')
+        group_with_passing_grade = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        group_with_failing_grade = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=0, group=group_with_failing_grade)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group_with_passing_grade)
+        group_queryset = assignment.get_groups_with_passing_grade(sourceassignment=sourceassignment)
+        self.assertEqual(group_queryset.count(), 1)
+        self.assertNotIn(group_with_failing_grade, group_queryset)
+        self.assertIn(group_with_passing_grade, group_queryset)
+
+    def test_copy_groups_passing_grade_only_only_source_has_no_groups(self):
+        sourceassignment = mommy.make('core.Assignment')
+        targetassignment = mommy.make('core.Assignment')
+        targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 0)
+
+    def test_copy_groups_passing_grade_only_source_has_no_groups_with_passing_grade(self):
+        targetassignment = mommy.make('core.Assignment')
+        sourceassignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=0, group=group)
+        targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 0)
+
+    def test_copy_groups_passing_grade_only_source_has_group_with_passing_grade(self):
+        targetassignment = mommy.make('core.Assignment')
+        sourceassignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group)
+        targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 1)
+
+    def test_copy_groups_passing_grade_only_source_has_multiple_groups_with_passing_grade(self):
+        targetassignment = mommy.make('core.Assignment')
+        sourceassignment = mommy.make('core.Assignment')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        group3 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group2)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group3)
+        targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 3)
+
+    def test_copy_groups_passing_grade_only_source_new_attempt_passed(self):
+        targetassignment = mommy.make('core.Assignment')
+        sourceassignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=0, group=group, deadline_datetime=timezone.now() - timedelta(days=1))
+        devilry_group_mommy_factories.feedbackset_new_attempt_published(
+            grading_points=1, group=group, deadline_datetime=timezone.now())
+        targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 1)
+
+    def test_copy_groups_passing_grade_only_target_has_groups(self):
+        sourceassignment = mommy.make('core.Assignment')
+        targetassignment = mommy.make('core.Assignment')
+        mommy.make('core.AssignmentGroup', parentnode=targetassignment)
+        with self.assertRaises(AssignmentHasGroupsError):
+            targetassignment.copy_groups_from_another_assignment(
+                sourceassignment=sourceassignment, passing_grade_only=True)
+
+    def test_copy_groups_passing_grade_only_groups_is_created(self):
+        sourceassignment = mommy.make('core.Assignment')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        group3 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group2)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group3)
+        targetassignment = mommy.make('core.Assignment')
+        targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 3)
+
+    def test_copy_groups_passing_grade_only_candidate_added_to_group(self):
+        sourceassignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        candidate_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Candidate', assignment_group=group, relatedstudent__user=candidate_user)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group)
+        targetassignment = mommy.make('core.Assignment')
+        targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 1)
+        self.assertTrue(
+            Candidate.objects.filter(
+                assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user).exists())
+
+    def test_copy_groups_passing_grade_only_projectgroup_candidates_added(self):
+        sourceassignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        candidate_user1 = mommy.make(settings.AUTH_USER_MODEL)
+        candidate_user2 = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Candidate', assignment_group=group, relatedstudent__user=candidate_user1)
+        mommy.make('core.Candidate', assignment_group=group, relatedstudent__user=candidate_user2)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group)
+        targetassignment = mommy.make('core.Assignment')
+        targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 1)
+        new_group = targetassignment.assignmentgroups.get()
+        self.assertTrue(
+            Candidate.objects.filter(
+                assignment_group=new_group, relatedstudent__user=candidate_user1).exists())
+        self.assertTrue(
+            Candidate.objects.filter(
+                assignment_group=new_group, relatedstudent__user=candidate_user2).exists())
+
+    def test_copy_groups_passing_grade_only_groups_with_one_candidate_each_added(self):
+        sourceassignment = mommy.make('core.Assignment')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        candidate_user_group1 = mommy.make(settings.AUTH_USER_MODEL)
+        candidate_user_group2 = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Candidate', assignment_group=group1, relatedstudent__user=candidate_user_group1)
+        mommy.make('core.Candidate', assignment_group=group2, relatedstudent__user=candidate_user_group2)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group2)
+        targetassignment = mommy.make('core.Assignment')
+        targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 2)
+        self.assertTrue(
+            Candidate.objects.filter(
+                assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user_group1).exists())
+        self.assertTrue(
+            Candidate.objects.filter(
+                assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user_group2).exists())
+
+    def test_copy_groups_passing_grade_only_groups_candidates_from_failing_group_not_added(self):
+        sourceassignment = mommy.make('core.Assignment')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        candidate_user_group1 = mommy.make(settings.AUTH_USER_MODEL)
+        candidate_user_group2 = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Candidate', assignment_group=group1, relatedstudent__user=candidate_user_group1)
+        mommy.make('core.Candidate', assignment_group=group2, relatedstudent__user=candidate_user_group2)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=0, group=group2)
+        targetassignment = mommy.make('core.Assignment')
+        targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 1)
+        self.assertTrue(
+            Candidate.objects.filter(
+                assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user_group1).exists())
+        self.assertFalse(
+            Candidate.objects.filter(
+                assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user_group2).exists())
+
+    def test_copy_groups_passing_grade_only_examiners_from_passing_group_added(self):
+        sourceassignment = mommy.make('core.Assignment')
+        group = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        examiner_user = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Candidate', assignment_group=group, relatedstudent__period=sourceassignment.parentnode)
+        mommy.make('core.Examiner', assignmentgroup=group, relatedexaminer__user=examiner_user)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group)
+        targetassignment = mommy.make('core.Assignment', parentnode=sourceassignment.parentnode)
+        targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 1)
+        self.assertTrue(
+            Examiner.objects.filter(
+                assignmentgroup__parentnode=targetassignment, relatedexaminer__user=examiner_user))
+
+    def test_copy_groups_passing_grade_only_examiners_from_failing_group_not_added(self):
+        sourceassignment = mommy.make('core.Assignment')
+        group_with_passing_grade = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        group_with_failing_grade = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        examiner_user1 = mommy.make(settings.AUTH_USER_MODEL)
+        examiner_user2 = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup=group_with_passing_grade, relatedexaminer__user=examiner_user1)
+        mommy.make('core.Examiner', assignmentgroup=group_with_failing_grade, relatedexaminer__user=examiner_user2)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group_with_passing_grade)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=0, group=group_with_failing_grade)
+        targetassignment = mommy.make('core.Assignment', parentnode=sourceassignment.parentnode)
+        targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 1)
+        self.assertTrue(
+            Examiner.objects.filter(
+                assignmentgroup__parentnode=targetassignment, relatedexaminer__user=examiner_user1))
+        self.assertFalse(
+            Examiner.objects.filter(
+                assignmentgroup__parentnode=targetassignment, relatedexaminer__user=examiner_user2))
+
+    def test_copy_groups_passing_grade_only_examiners_added_to_groups_with_correct_candidates(self):
+        sourceassignment = mommy.make('core.Assignment')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        examiner_user1 = mommy.make(settings.AUTH_USER_MODEL)
+        examiner_user2 = mommy.make(settings.AUTH_USER_MODEL)
+        candidate_user1 = mommy.make(settings.AUTH_USER_MODEL)
+        candidate_user2 = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Examiner', assignmentgroup=group1, relatedexaminer__user=examiner_user1)
+        mommy.make('core.Examiner', assignmentgroup=group2, relatedexaminer__user=examiner_user2)
+        mommy.make('core.Candidate', assignment_group=group1, relatedstudent__user=candidate_user1)
+        mommy.make('core.Candidate', assignment_group=group2, relatedstudent__user=candidate_user2)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group2)
+        targetassignment = mommy.make('core.Assignment', parentnode=sourceassignment.parentnode)
+        targetassignment.copy_groups_from_another_assignment(sourceassignment=sourceassignment, passing_grade_only=True)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 2)
+        candidate1 = Candidate.objects\
+            .filter(assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user1).get()
+        candidate2 = Candidate.objects\
+            .filter(assignment_group__parentnode=targetassignment, relatedstudent__user=candidate_user2).get()
+        self.assertTrue(
+            Examiner.objects.filter(
+                assignmentgroup=candidate1.assignment_group, relatedexaminer__user=examiner_user1).exists())
+        self.assertTrue(
+            Examiner.objects.filter(
+                assignmentgroup=candidate2.assignment_group, relatedexaminer__user=examiner_user2).exists())
+
+    def test_copy_groups_passing_grade_only_querycount(self):
+        sourceassignment = mommy.make('core.Assignment')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        mommy.make('core.Candidate', assignment_group=group1, _quantity=40)
+        mommy.make('core.Examiner', assignmentgroup=group1, _quantity=20)
+        mommy.make('core.Candidate', assignment_group=group2, _quantity=5)
+        mommy.make('core.Examiner', assignmentgroup=group2, _quantity=2)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group1)
+        devilry_group_mommy_factories.feedbackset_first_attempt_published(
+            grading_points=1, group=group2)
+
+        targetassignment = mommy.make('core.Assignment')
+        # Should require only 9 queries no matter how many groups, candidates or examiners we
+        # have (at least up to the max number of bulk created object per query):
+        # 1. Check if any groups exists within the targetassignment.
+        # 2. Query for all groups within the sourceassignment.
+        # 3. Bulk create groups (without any candidates or examiners)
+        # 4. Query for all the newly bulk created groups.
+        # 5. Prefetch the source groups (via copied_from).
+        # 6. Prefetch related candidates on the targetassignment (via copied_from).
+        # 7. Prefetch related examiners on the targetassignment (via copied_from).
+        # 8. Bulk create candidates.
+        # 9. Bulk create examiners.
+        with self.assertNumQueries(9):
+            targetassignment.copy_groups_from_another_assignment(sourceassignment, passing_grade_only=True)
+
     def test_copy_groups_from_another_assignment_source_has_no_groups(self):
         sourceassignment = mommy.make('core.Assignment')
         targetassignment = mommy.make('core.Assignment')
@@ -175,56 +483,6 @@ class TestAssignment(TestCase):
         # 9. Bulk create examiners.
         with self.assertNumQueries(9):
             targetassignment.copy_groups_from_another_assignment(sourceassignment)
-
-    def test_import_all_students_from_another_assignment(self):
-        other_assignment = mommy.make('core.Assignment')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
-        mommy.make('core.Candidate', assignment_group=group1)
-        mommy.make('core.Candidate', assignment_group=group2)
-        assignment = mommy.make('core.Assignment')
-        self.assertEqual(AssignmentGroup.objects.filter(parentnode=assignment).count(), 0)
-        self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=assignment).count(), 0)
-        assignment.import_all_students_from_another_assignment(other_assignment=other_assignment)
-        self.assertEqual(AssignmentGroup.objects.filter(parentnode=assignment).count(), 2)
-        self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=assignment).count(), 2)
-
-    def test_import_all_students_from_another_assignment_has_no_groups(self):
-        other_assignment = mommy.make('core.Assignment')
-        assignment = mommy.make('core.Assignment')
-        self.assertEqual(AssignmentGroup.objects.filter(parentnode=assignment).count(), 0)
-        self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=assignment).count(), 0)
-        assignment.import_all_students_from_another_assignment(other_assignment=other_assignment)
-        self.assertEqual(AssignmentGroup.objects.filter(parentnode=assignment).count(), 0)
-        self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=assignment).count(), 0)
-
-    def test_import_all_students_from_another_assignment_one_group_for_each_student_in_projectgroups(self):
-        other_assignment = mommy.make('core.Assignment')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
-        mommy.make('core.Candidate', assignment_group=group1, _quantity=10)
-        mommy.make('core.Candidate', assignment_group=group2, _quantity=5)
-        assignment = mommy.make('core.Assignment')
-        self.assertEqual(AssignmentGroup.objects.filter(parentnode=assignment).count(), 0)
-        self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=assignment).count(), 0)
-        assignment.import_all_students_from_another_assignment(other_assignment=other_assignment)
-        self.assertEqual(AssignmentGroup.objects.filter(parentnode=assignment).count(), 15)
-        self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=assignment).count(), 15)
-
-    def test_import_all_students_from_another_assignment_num_queries(self):
-        other_assignment = mommy.make('core.Assignment')
-        group1 = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
-        group2 = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
-        group3 = mommy.make('core.AssignmentGroup', parentnode=other_assignment)
-        mommy.make('core.Candidate', assignment_group=group1, _quantity=10)
-        mommy.make('core.Candidate', assignment_group=group2, _quantity=5)
-        mommy.make('core.Candidate', assignment_group=group3)
-        assignment = mommy.make('core.Assignment')
-        self.assertEqual(AssignmentGroup.objects.filter(parentnode=assignment).count(), 0)
-        self.assertEqual(Candidate.objects.filter(assignment_group__parentnode=assignment).count(), 0)
-
-        with self.assertNumQueries(5):
-            assignment.import_all_students_from_another_assignment(other_assignment=other_assignment)
 
     def test_create_groups_from_relatedstudents_on_period_period_has_no_relatedstudents(self):
         testassignment = mommy.make('core.Assignment')
