@@ -18,12 +18,6 @@ class SelectedStudentQualificationItem(base_multiselect_view.SelectedQualificati
     def __init__(self, *args, **kwargs):
         super(SelectedStudentQualificationItem, self).__init__(*args, **kwargs)
 
-    def get_title(self):
-        return 'asd'
-
-    def get_description(self):
-        return 'asd'
-
 
 class StudentQualificationItemTargetRenderer(base_multiselect_view.QualificationItemTargetRenderer):
     descriptive_item_name = 'students'

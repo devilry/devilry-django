@@ -67,6 +67,40 @@ class TestFeedbackEmail(test.TestCase):
                 '.devilry_email_feedback_result').alltext_normalized,
             'Result: 1/1 ( passed )')
 
+    def test_send_feedback_email_body_result_point_to_grade_mapper(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           points_to_grade_mapper=Assignment.POINTS_TO_GRADE_MAPPER_CUSTOM_TABLE,
+                                           max_points=100,
+                                           long_name='Assignment 1', parentnode__parentnode__long_name='Subject 1')
+        point_to_grade_map = mommy.make(
+            'core.PointToGradeMap',
+            assignment=testassignment)
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+                   minimum_points=0, maximum_points=19, grade='F')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+                   minimum_points=20, maximum_points=39, grade='E')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+                   minimum_points=40, maximum_points=59, grade='D')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+                   minimum_points=60, maximum_points=79, grade='C')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+                   minimum_points=80, maximum_points=89, grade='B')
+        mommy.make('core.PointRangeToGrade', point_to_grade_map=point_to_grade_map,
+                   minimum_points=90, maximum_points=100, grade='A')
+        test_feedbackset = group_mommy.feedbackset_first_attempt_published(
+            group__parentnode=testassignment, deadline_datetime=timezone.now(),
+            grading_published_datetime=timezone.now(), grading_points=60)
+        student = mommy.make('core.Candidate', assignment_group=test_feedbackset.group)
+        mommy.make('devilry_account.UserEmail', user=student.relatedstudent.user, email='student@example.com')
+        feedback_email.send_feedback_email(feedback_set=test_feedbackset,
+                                           points=test_feedbackset.grading_points,
+                                           domain_url_start='http://www.example.com/',
+                                           feedback_type='feedback_created')
+        self.assertEqual(
+            htmls.S(mail.outbox[0].message().as_string()).one(
+                '.devilry_email_feedback_result').alltext_normalized,
+            'Result: C ( passed )')
+
     def test_send_feedback_email_body_corrected_datetime(self):
         test_feedbackset = self.__setup_feedback_set(grading_published_datetime=datetime.utcnow())
         feedback_email.send_feedback_email(feedback_set=test_feedbackset,

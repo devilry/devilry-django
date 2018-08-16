@@ -27,6 +27,7 @@ def send_feedback_email(feedback_set, points, domain_url_start, feedback_type):
         user: The user that corrected the ``FeedbackSet``.
         subject: The email subject.
     """
+    from devilry.apps.core.models import Assignment
     template_name = 'devilry_email/feedback_email/assignment_feedback_student.txt'
 
     # Build absolute url
@@ -40,8 +41,11 @@ def send_feedback_email(feedback_set, points, domain_url_start, feedback_type):
         current_language = translation.get_language()
         activate_translation_for_user(user=student_user)
         subject = get_subject(assignment=feedback_set.group.parentnode, feedback_type=feedback_type)
+        assignment_queryset = Assignment.objects\
+            .prefetch_point_to_grade_map()\
+            .filter(id=feedback_set.group.parentnode.id)
         template_dictionary = {
-            'assignment': feedback_set.group.parentnode,
+            'assignment': assignment_queryset.get(),
             'devilryrole': 'student',
             'points': points,
             'deadline_datetime': feedback_set.deadline_datetime,

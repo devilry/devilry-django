@@ -163,7 +163,7 @@ class RelatedStudentsAllResultsOverview(FilterListMixin, listbuilderview.View):
         period = self.request.cradmin_role
         student_ids = [relatedstudent.id for relatedstudent in self.get_listbuilder_list_value_iterable(context)]
         return ListAsTable(
-            assignments=period.assignments.all().order_by('first_deadline'),
+            assignments=period.assignments.prefetch_point_to_grade_map().all().order_by('first_deadline'),
             collector=self.get_results_collector_class()(period=period, related_student_ids=student_ids),
             is_paginated=True,
             page_obj=context['page_obj']
