@@ -157,7 +157,6 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
     suggested_deadlines_template_name = 'devilry_admin/period/createassignment/suggested_deadlines.django.html'
     helpbox_template_name = 'devilry_admin/period/createassignment/helpbox.django.html'
     success_message_template_name = 'devilry_admin/period/createassignment/success_message.django.html'
-    # template_name = 'devilry_cradmin/viewhelpers/devilry_createview_with_backlink.django.html'
     template_name = 'devilry_admin/period/createassignment/createassignment.django.html'
 
     def dispatch(self, *args, **kwargs):

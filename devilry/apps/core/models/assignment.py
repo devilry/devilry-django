@@ -1052,65 +1052,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         Candidate.objects.bulk_create(candidates)
         Examiner.objects.bulk_create(examiners)
 
-    # def copy_groups_from_another_assignment(self, sourceassignment):
-    #     """
-    #     Copy all AssignmentGroup objects from another assignment.
-    #
-    #     Copies:
-    #
-    #     - The name of the group.
-    #     """
-    #     from devilry.apps.core.models import AssignmentGroup
-    #     from devilry.apps.core.models import Candidate
-    #     from devilry.apps.core.models import Examiner
-    #
-    #     if self.assignmentgroups.exists():
-    #         raise AssignmentHasGroupsError(_('The assignment has students. You can not '
-    #                                          'copy use this on assignments with students.'))
-    #
-    #     # Step1: Bulk create the groups with no candidates or examiners, but set copied_from.
-    #     groups = []
-    #     for othergroup in sourceassignment.assignmentgroups.all():
-    #         newgroup = AssignmentGroup(parentnode=self,
-    #                                    name=othergroup.name,
-    #                                    copied_from=othergroup)
-    #         groups.append(newgroup)
-    #     AssignmentGroup.objects.bulk_create(groups)
-    #
-    #     # Step2: Bulk create candidate and examiners from group.copied_from.<candidates|examiners>.
-    #     candidates = []
-    #     examiners = []
-    #
-    #     for group in self.assignmentgroups \
-    #             .prefetch_related(
-    #                 models.Prefetch(
-    #                     'copied_from',
-    #                     to_attr='copied_from_list',
-    #                     queryset=AssignmentGroup.objects.prefetch_related(
-    #                         models.Prefetch('candidates',
-    #                                         to_attr='candidatelist',
-    #                                         queryset=Candidate.objects.all()),
-    #                         models.Prefetch('examiners',
-    #                                         to_attr='examinerlist',
-    #                                         queryset=Examiner.objects.all()),
-    #                     )
-    #                 )
-    #             ):
-    #         for othercandidate in group.copied_from_list.candidatelist:
-    #             newcandidate = Candidate(
-    #                 assignment_group=group,
-    #                 relatedstudent_id=othercandidate.relatedstudent_id,
-    #             )
-    #             candidates.append(newcandidate)
-    #         for otherexaminer in group.copied_from_list.examinerlist:
-    #             newexaminer = Examiner(
-    #                 assignmentgroup=group,
-    #                 relatedexaminer_id=otherexaminer.relatedexaminer_id
-    #             )
-    #             examiners.append(newexaminer)
-    #     Candidate.objects.bulk_create(candidates)
-    #     Examiner.objects.bulk_create(examiners)
-
     def create_groups_from_relatedstudents_on_period(self):
         """
         Create :class:`devilry.apps.core.models.AssignmentGroup` objects
