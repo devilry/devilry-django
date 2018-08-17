@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-17 11:59+0200\n"
+"POT-Creation-Date: 2018-08-17 14:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -258,7 +258,7 @@ msgid ""
 msgstr ""
 
 #: devilry/apps/core/models/assignment.py:1004
-#: devilry/apps/core/models/assignment.py:1127
+#: devilry/apps/core/models/assignment.py:1068
 msgid ""
 "The assignment has students. You can not copy use this on assignments with "
 "students."
@@ -1209,11 +1209,11 @@ msgstr ""
 msgid "Select students and replace examiners for those students"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/select_method.django.html:96
+#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/select_method.django.html:108
 msgid "Tip:"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/select_method.django.html:97
+#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/select_method.django.html:109
 msgid ""
 "Go back to the examiner overview and select an examiner if you want to edit "
 "students for a single examiner in a more controlled manner."
@@ -2358,7 +2358,7 @@ msgid "Edit"
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:36
-#: devilry/devilry_admin/views/period/createassignment.py:175
+#: devilry/devilry_admin/views/period/createassignment.py:174
 msgid "Create new assignment"
 msgstr ""
 
@@ -2603,56 +2603,82 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:65
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:66
 msgid "Organize examiners on tags"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:176
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:177
 msgid "You must select at least two examiners."
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:180
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:181
 msgid "Select at least two examiners:"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:207
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:208
 msgid "Select at least two students:"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:210
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:211
 msgid "Randomly assign selected students to selected examiners"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:279
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:280
 msgid "Randomly organized students to examiners."
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:285
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:286
 msgid "You must select at least one examiner."
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:289
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:290
 msgid "Select examiners:"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:392
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:393
 msgid "Add selected examiners to selected students"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:410
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:411
 #, python-format
 msgid "Added %(count)s students to %(examinernames)s."
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:415
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:416
 msgid "Replace selected examiners with current examiners for selected students"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:435
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:436
 #, python-format
 msgid ""
 "Made %(examinernames)s examiner for %(count)s students, replacing any "
 "previous examiners for those students."
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:444
+#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:21
+msgid ""
+"Something went wrong. This may happen if someone else performed a similar "
+"operation while you where selecting. Refresh the page and try again"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:489
+msgid "examiners"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:505
+msgctxt "examiner_bulk_delete_view pagetitle"
+msgid "Select examiners"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:509
+msgctxt "examiner_bulk_delete_view pageheading"
+msgid "Select examiners"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:513
+msgctxt "assignment_group_multiselect_list_filter_view page_subheading"
+msgid "Select the examiners you want to remove."
 msgstr ""
 
 #: devilry/devilry_admin/views/assignment/examiners/overview.py:44
@@ -3175,7 +3201,7 @@ msgid ""
 msgstr ""
 
 #: devilry/devilry_admin/views/period/createassignment.py:56
-#: devilry/devilry_admin/views/period/createassignment.py:312
+#: devilry/devilry_admin/views/period/createassignment.py:311
 msgid ""
 "Choose how you would like to set up students for the new assignment. You can "
 "add all students from the semester, no students or copy students and "
@@ -3218,35 +3244,35 @@ msgstr ""
 msgid "First deadline must be at least %(delay)s."
 msgstr ""
 
-#: devilry/devilry_admin/views/period/createassignment.py:222
+#: devilry/devilry_admin/views/period/createassignment.py:221
 msgid "Example: Assignment 1"
 msgstr ""
 
-#: devilry/devilry_admin/views/period/createassignment.py:224
+#: devilry/devilry_admin/views/period/createassignment.py:223
 msgid "Example: assignment1"
 msgstr ""
 
-#: devilry/devilry_admin/views/period/createassignment.py:256
+#: devilry/devilry_admin/views/period/createassignment.py:255
 msgid "Something went wrong"
 msgstr ""
 
-#: devilry/devilry_admin/views/period/createassignment.py:316
+#: devilry/devilry_admin/views/period/createassignment.py:315
 msgid "Will import all students on the semester if any."
 msgstr ""
 
-#: devilry/devilry_admin/views/period/createassignment.py:317
+#: devilry/devilry_admin/views/period/createassignment.py:316
 msgid ""
 "Will not import any students. You have to manually configure students from "
 "the assignment-dashboard."
 msgstr ""
 
-#: devilry/devilry_admin/views/period/createassignment.py:319
+#: devilry/devilry_admin/views/period/createassignment.py:318
 msgid ""
 "Copy all students from this assignment. This will copy the group and "
 "examiner setup from the selected assignment."
 msgstr ""
 
-#: devilry/devilry_admin/views/period/createassignment.py:322
+#: devilry/devilry_admin/views/period/createassignment.py:321
 msgid ""
 "Copy students from this assignment with passing grade only. This will copy "
 "the group and examiner setup from the selected assignment."
@@ -4093,12 +4119,6 @@ msgstr ""
 #: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:404
 #, python-format
 msgid "Deadline managed for %(group_names)s"
-msgstr ""
-
-#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:21
-msgid ""
-"Something went wrong. This may happen if someone else performed a similar "
-"operation while you where selecting. Refresh the page and try again"
 msgstr ""
 
 #: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:52

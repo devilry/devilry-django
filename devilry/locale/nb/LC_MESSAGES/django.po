@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-17 11:59+0200\n"
-"PO-Revision-Date: 2018-08-17 12:16+0200\n"
+"POT-Creation-Date: 2018-08-17 14:08+0200\n"
+"PO-Revision-Date: 2018-08-17 14:09+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -312,7 +312,7 @@ msgstr ""
 "antall poeng tilgjengelig for oppgaven. Nåværende maksimum er %(max_points)s."
 
 #: devilry/apps/core/models/assignment.py:1004
-#: devilry/apps/core/models/assignment.py:1127
+#: devilry/apps/core/models/assignment.py:1068
 msgid ""
 "The assignment has students. You can not copy use this on assignments with "
 "students."
@@ -1324,11 +1324,11 @@ msgstr "Velg studenter og legg rettere til disse studentene"
 msgid "Select students and replace examiners for those students"
 msgstr "Velg studenter og erstatt rettere for disse studentene"
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/select_method.django.html:96
+#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/select_method.django.html:108
 msgid "Tip:"
 msgstr "Tips:"
 
-#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/select_method.django.html:97
+#: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/bulk_organize/select_method.django.html:109
 msgid ""
 "Go back to the examiner overview and select an examiner if you want to edit "
 "students for a single examiner in a more controlled manner."
@@ -2594,7 +2594,7 @@ msgid "Edit"
 msgstr "Rediger"
 
 #: devilry/devilry_admin/templates/devilry_admin/period/overview.django.html:36
-#: devilry/devilry_admin/views/period/createassignment.py:175
+#: devilry/devilry_admin/views/period/createassignment.py:174
 msgid "Create new assignment"
 msgstr "Opprett ny oppgave"
 
@@ -2870,52 +2870,52 @@ msgstr[0] ""
 msgstr[1] ""
 "La til %(groupcount)s prosjektgrupper med %(studentcount)s studenter."
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:65
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:66
 msgid "Organize examiners on tags"
 msgstr "Organiser rettere etter tags"
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:176
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:177
 msgid "You must select at least two examiners."
 msgstr "Du må velge minst to rettere."
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:180
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:181
 msgid "Select at least two examiners:"
 msgstr "Velg minimum to rettere:"
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:207
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:208
 msgid "Select at least two students:"
 msgstr "Velg minimum to studenter:"
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:210
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:211
 msgid "Randomly assign selected students to selected examiners"
 msgstr "Tilfeldig tildeling av valgte studenter til valgte rettere"
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:279
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:280
 msgid "Randomly organized students to examiners."
 msgstr "Tilfeldig tildeling av valgte studenter til rettere."
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:285
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:286
 msgid "You must select at least one examiner."
 msgstr "Du må velge minst en retter."
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:289
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:290
 msgid "Select examiners:"
 msgstr "Velg rettere:"
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:392
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:393
 msgid "Add selected examiners to selected students"
 msgstr "Legg valgte rettere til de valgte studentene"
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:410
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:411
 #, python-format
 msgid "Added %(count)s students to %(examinernames)s."
 msgstr "La til %(count)s studenter til %(examinernames)s."
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:415
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:416
 msgid "Replace selected examiners with current examiners for selected students"
 msgstr "Erstatt valgte rettere med nåværende rettere for valgte studenter"
 
-#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:435
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:436
 #, python-format
 msgid ""
 "Made %(examinernames)s examiner for %(count)s students, replacing any "
@@ -2923,6 +2923,34 @@ msgid ""
 msgstr ""
 "Satt %(examinernames)s retter for %(count)s studenter. Eventuelle tidligere "
 "rettere ble erstattet for disse studentene."
+
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:444
+#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:21
+msgid ""
+"Something went wrong. This may happen if someone else performed a similar "
+"operation while you where selecting. Refresh the page and try again"
+msgstr ""
+"Noe gikk galt. Dette kan skje hvis noen andre utførte en ligende operasjon "
+"mens du valgte. Last siden inn på nytt og prøv igjen"
+
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:489
+msgid "examiners"
+msgstr "rettere"
+
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:505
+msgctxt "examiner_bulk_delete_view pagetitle"
+msgid "Select examiners"
+msgstr "Velg rettere"
+
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:509
+msgctxt "examiner_bulk_delete_view pageheading"
+msgid "Select examiners"
+msgstr "Velg rettere"
+
+#: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:513
+msgctxt "assignment_group_multiselect_list_filter_view page_subheading"
+msgid "Select the examiners you want to remove."
+msgstr "Velg rettere du vil fjerne."
 
 #: devilry/devilry_admin/views/assignment/examiners/overview.py:44
 msgid ""
@@ -3498,7 +3526,7 @@ msgstr ""
 "og bindestrek(\"-\")."
 
 #: devilry/devilry_admin/views/period/createassignment.py:56
-#: devilry/devilry_admin/views/period/createassignment.py:312
+#: devilry/devilry_admin/views/period/createassignment.py:311
 msgid ""
 "Choose how you would like to set up students for the new assignment. You can "
 "add all students from the semester, no students or copy students and "
@@ -3546,23 +3574,23 @@ msgstr "Studenter med karakteren bestått"
 msgid "First deadline must be at least %(delay)s."
 msgstr "Første innleveringsfrist må minst være %(delay)s."
 
-#: devilry/devilry_admin/views/period/createassignment.py:222
+#: devilry/devilry_admin/views/period/createassignment.py:221
 msgid "Example: Assignment 1"
 msgstr "Eksempel: Oppgave 1"
 
-#: devilry/devilry_admin/views/period/createassignment.py:224
+#: devilry/devilry_admin/views/period/createassignment.py:223
 msgid "Example: assignment1"
 msgstr "Eksempel: oppgave1"
 
-#: devilry/devilry_admin/views/period/createassignment.py:256
+#: devilry/devilry_admin/views/period/createassignment.py:255
 msgid "Something went wrong"
 msgstr "Noe gikk galt"
 
-#: devilry/devilry_admin/views/period/createassignment.py:316
+#: devilry/devilry_admin/views/period/createassignment.py:315
 msgid "Will import all students on the semester if any."
 msgstr "Importerer alle studenter på semesteret."
 
-#: devilry/devilry_admin/views/period/createassignment.py:317
+#: devilry/devilry_admin/views/period/createassignment.py:316
 msgid ""
 "Will not import any students. You have to manually configure students from "
 "the assignment-dashboard."
@@ -3570,7 +3598,7 @@ msgstr ""
 "Studenter vil ikke bli importert. Du må manuelt legge til studenter på "
 "oppgaven via oppgave-siden."
 
-#: devilry/devilry_admin/views/period/createassignment.py:319
+#: devilry/devilry_admin/views/period/createassignment.py:318
 msgid ""
 "Copy all students from this assignment. This will copy the group and "
 "examiner setup from the selected assignment."
@@ -3578,7 +3606,7 @@ msgstr ""
 "Kopier alle studenter fra denne oppgaven. Dette vil kopiere over "
 "gruppeoppsett og rettere fra den valgte oppgaven."
 
-#: devilry/devilry_admin/views/period/createassignment.py:322
+#: devilry/devilry_admin/views/period/createassignment.py:321
 msgid ""
 "Copy students from this assignment with passing grade only. This will copy "
 "the group and examiner setup from the selected assignment."
@@ -4453,14 +4481,6 @@ msgstr "Gi et nytt forsøk"
 #, python-format
 msgid "Deadline managed for %(group_names)s"
 msgstr "Innleveringsfrist endret for %(group_names)s"
-
-#: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:21
-msgid ""
-"Something went wrong. This may happen if someone else performed a similar "
-"operation while you where selecting. Refresh the page and try again"
-msgstr ""
-"Noe gikk galt. Dette kan skje hvis noen andre utførte en ligende operasjon "
-"mens du valgte. Last siden inn på nytt og prøv igjen"
 
 #: devilry/devilry_deadlinemanagement/views/multiselect_groups_view.py:52
 msgid "groups"
