@@ -8,11 +8,12 @@ from django.contrib import messages
 from django.db import models
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django.views.generic import TemplateView
 from django_cradmin import crapp
 from django_cradmin.viewhelpers.mixins import QuerysetForRoleMixin
-from django_cradmin.viewhelpers import listbuilder
+from devilry.devilry_cradmin import devilry_listfilter
+from django_cradmin.viewhelpers import listbuilder, multiselect2, multiselect2view
 
 from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Examiner, RelatedExaminer
@@ -436,6 +437,122 @@ class ManualReplaceView(BaseManualAddOrReplaceView):
                              'examiners for those students.')
 
 
+
+class SelectedExaminerForm(forms.Form):
+    model = Examiner
+    invalid_item_message = ugettext_lazy(
+        'Something went wrong. This may happen if someone else performed a similar operation '
+        'while you where selecting. Refresh the page and try again')
+
+    #: The items selected as ModelMultipleChoiceField.
+    #: If some or all items should be selected by default, override this.
+    selected_items = forms.ModelMultipleChoiceField(
+
+        # No items are selectable by default.
+        queryset=None,
+
+        # Used if the object to select for some reason does
+        # not exist(has been deleted or altered in some way)
+        error_messages={
+            'invalid_choice': invalid_item_message,
+        }
+    )
+
+    def __init__(self, *args, **kwargs):
+        selectable_examiners_queryset = kwargs.pop('selectable_examiners_queryset')
+        super(SelectedExaminerForm, self).__init__(*args, **kwargs)
+        self.fields['selected_items'].queryset = selectable_examiners_queryset
+
+
+class ExaminerSelectedItem(multiselect2.selected_item_renderer.SelectedItem):
+    valuealias = 'examiner'
+
+    def get_title(self):
+        return self.examiner.relatedexaminer.user.get_displayname()
+
+
+class ExaminerMultiselectItemValue(multiselect2.listbuilder_itemvalues.ItemValue):
+    valuealias = 'examiner'
+    selected_item_renderer_class = ExaminerSelectedItem
+
+    def get_title(self):
+        return self.examiner.relatedexaminer.user.get_displayname()
+
+
+class ExaminerTargetRenderer(multiselect2.target_renderer.Target):
+
+    #: The selected item as it is shown when selected.
+    #: By default this is :class:`.SelectedQualificationItem`.
+    selected_target_renderer = devilry_listbuilder.assignmentgroup.ExaminerMultiselectItemValue
+
+    #: A descriptive name for the items selected.
+    descriptive_item_name = ugettext_lazy('examiners')
+
+
+class ExaminerMultiSelectListFilterView(multiselect2view.ListbuilderView):
+    """
+    Abstract class that implements ``ListbuilderFilterView``.
+
+    Adds anonymization and activity filters for the ``AssignmentGroup``s.
+    Fetches the ``AssignmentGroups`` through :meth:`~.get_unfiltered_queryset_for_role` and joins
+    necessary tables used for anonymzation and annotations used by viewfilters.
+    """
+    model = Examiner
+    value_renderer_class = ExaminerMultiselectItemValue
+
+    def get_pagetitle(self):
+        return pgettext_lazy('examiner_bulk_delete_view pagetitle',
+                             'Select examiners')
+
+    def get_pageheading(self):
+        return pgettext_lazy('examiner_bulk_delete_view pageheading',
+                             'Select examiners')
+
+    def get_page_subheading(self):
+        return pgettext_lazy('assignment_group_multiselect_list_filter_view page_subheading',
+                             'Select the examiners you want to remove.')
+
+    def get_default_paginate_by(self, queryset):
+        return 5
+
+    def get_queryset_for_role(self, role):
+        return Examiner.objects.filter(assignmentgroup__parentnode=role).distinct('relatedexaminer_id')
+
+    def get_unfiltered_queryset_for_role(self, role):
+        return Examiner.objects.filter(assignmentgroup__parentnode=role).distinct('relatedexaminer_id')
+
+    def get_target_renderer_class(self):
+        return ExaminerTargetRenderer
+
+    def get_form_class(self):
+        return SelectedExaminerForm
+
+    def get_value_and_frame_renderer_kwargs(self):
+        return {
+            'assignment': self.request.cradmin_role
+        }
+
+    def get_form_kwargs(self):
+        kwargs = super(ExaminerMultiSelectListFilterView, self).get_form_kwargs()
+        kwargs['selectable_examiners_queryset'] = self.get_unfiltered_queryset_for_role(self.request.cradmin_role)
+        return kwargs
+
+    def get_selected_groupids(self, posted_form):
+        return [item.id for item in posted_form.cleaned_data['selected_items']]
+
+    def form_valid(self, form):
+        examiner_queryset = form.cleaned_data['selected_items']
+        examiner_queryset.delete()
+        return super(ExaminerMultiSelectListFilterView, self).form_valid(form=form)
+
+    def get_success_url(self):
+        """
+        Defaults to the apps indexview.
+        """
+        return self.request.cradmin_app.reverse_appindexurl()
+
+
+
 class App(crapp.App):
     appurls = [
         crapp.Url(r'^$',
@@ -450,6 +567,9 @@ class App(crapp.App):
         crapp.Url(r'^manual-replace/(?P<filters_string>.+)?$',
                   ManualReplaceView.as_view(),
                   name='manual-replace'),
+        # crapp.Url(r'^manual-remove-examiners$',
+        #           ExaminerMultiSelectListFilterView.as_view(),
+        #           name='manual-remove-examiners'),
         crapp.Url('^tag$',
                   OrganizeByTagListbuilderView.as_view(),
                   name='organize-by-tag'),
