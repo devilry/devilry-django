@@ -479,7 +479,6 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             assignment_group__parentnode=created_assignment,
             relatedstudent__user=relatedstudent_user_group2).exists())
 
-
         self.assertEqual(Candidate.objects.filter(
             assignment_group__name='group2', assignment_group__parentnode=created_assignment).count(), 1)
         self.assertTrue(Candidate.objects.filter(
