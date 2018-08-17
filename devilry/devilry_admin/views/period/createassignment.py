@@ -53,8 +53,10 @@ class CreateForm(forms.ModelForm):
             'numbers, underscore ("_") and hyphen ("-").')
 
         # Set student import options data.
-        self.fields['student_import_option'].help_text = _(
-            'Choose how you would like to set up students for the new assignment.')
+        self.fields['student_import_option'].help_text = _('Choose how you would like to set up students for the new '
+                                                           'assignment. You can add all students from the semester, no '
+                                                           'students or copy students and examiners from previous '
+                                                           'assignments.')
         self.fields['student_import_option'].choices = []
         self.fields['student_import_option'].choices = self.__create_student_import_choices()
 
@@ -155,7 +157,8 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
     suggested_deadlines_template_name = 'devilry_admin/period/createassignment/suggested_deadlines.django.html'
     helpbox_template_name = 'devilry_admin/period/createassignment/helpbox.django.html'
     success_message_template_name = 'devilry_admin/period/createassignment/success_message.django.html'
-    template_name = 'devilry_cradmin/viewhelpers/devilry_createview_with_backlink.django.html'
+    # template_name = 'devilry_cradmin/viewhelpers/devilry_createview_with_backlink.django.html'
+    template_name = 'devilry_admin/period/createassignment/createassignment.django.html'
 
     def dispatch(self, *args, **kwargs):
         self.period = self.request.cradmin_role
@@ -295,7 +298,6 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
 
     def form_saved(self, object):
         self.created_assignment = object
-        # self.created_assignment.create_groups_from_relatedstudents_on_period()
 
     def get_backlink_url(self):
         return crinstance.reverse_cradmin_url(
@@ -307,6 +309,19 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
         context['backlink_url'] = self.get_backlink_url()
+        context['import_option_not_selected_text'] = _('Choose how you would like to set up students for the new '
+                                                       'assignment. You can add all students from the semester, no '
+                                                       'students or copy students and examiners from previous '
+                                                       'assignments.')
+        context['import_option_all_selected_text'] = _('Will import all students on the semester if any.')
+        context['import_option_none_selected_text'] = _('Will not import any students. You have to manually configure '
+                                                        'students from the assignment-dashboard.')
+        context['import_option_assignment_all_selected_text'] = _('Copy all students from this assignment. '
+                                                                  'This will copy the group and examiner setup from '
+                                                                  'the selected assignment.')
+        context['import_option_assignment_passing_selected_text'] = _('Copy students from this assignment with passing '
+                                                                      'grade only. This will copy the group and '
+                                                                      'examiner setup from the selected assignment.')
         return context
 
 

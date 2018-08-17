@@ -1,0 +1,42 @@
+{% extends "devilry_cradmin/viewhelpers/devilry_createview_with_backlink.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+{% block content %}
+    {{ block.super }}
+    {# A bit hacky, but we need translated texts to be used from the javascript tag #}
+    <span id="id_import_option_not_selected_text" style="display: none;" aria-hidden="true">{{ import_option_not_selected_text }}</span>
+    <span id="id_import_option_all_selected_text" style="display: none;" aria-hidden="true">{{ import_option_all_selected_text }}</span>
+    <span id="id_import_option_none_selected_text" style="display: none;" aria-hidden="true">{{ import_option_none_selected_text }}</span>
+    <span id="id_import_option_assignment_all_selected_text" style="display: none;" aria-hidden="true">{{ import_option_assignment_all_selected_text }}</span>
+    <span id="id_import_option_assignment_passing_selected_text" style="display: none;" aria-hidden="true">{{ import_option_assignment_passing_selected_text }}</span>
+{% endblock content %}
+
+{% block end-of-body %}
+    {{ block.super }}
+    <script type="text/javascript">
+
+        function getLabelFromOptgroup (select) {
+            return select.options[select.selectedIndex].parentNode.label
+        }
+
+        function renderHelpText() {
+            let select = document.getElementById('id_student_import_option')
+            let selected_value = select.value;
+            let help_text_element = document.getElementById('hint_id_student_import_option')
+            if (selected_value === undefined || selected_value === null || selected_value === '') {
+                help_text_element.innerText = document.getElementById('id_import_option_not_selected_text').innerText
+            } else if (selected_value === 'all') {
+                help_text_element.innerText = document.getElementById('id_import_option_all_selected_text').innerText
+            } else if (selected_value === 'none') {
+                help_text_element.innerText = document.getElementById('id_import_option_none_selected_text').innerText
+            } else if (selected_value.endsWith('_all')) {
+                help_text_element.innerHTML = `<strong>${getLabelFromOptgroup(select)}</strong>: ${document.getElementById('id_import_option_assignment_all_selected_text').innerText}`
+            } else if (selected_value.endsWith('_passed')) {
+                help_text_element.innerHTML = `<strong>${getLabelFromOptgroup(select)}</strong>: ${document.getElementById('id_import_option_assignment_passing_selected_text').innerText}`
+            }
+        }
+        document.getElementById('id_student_import_option').addEventListener("change", renderHelpText);
+    </script>
+{% endblock end-of-body %}
