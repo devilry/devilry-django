@@ -17,14 +17,28 @@ by using the `Select a date/time`. You can also use one of the suggested deadlin
 .. image:: images/admin-create-assignment-page.png
 
 
+Adding students to the new assignment
+#####################################
+
+We provide a few shortcuts for adding students to the assignment. You can add all students on the semester,
+no students or select an assignment you would like copy students from.
+
+.. image:: images/admin-create-assignment-page-import-students.png
+
+
+From each of the previous assignments, you have two options:
+
+ - **Copy all students** will copy all students from the selected assignment, and keep the projectgroup and
+   examiner setup.
+ - **Copy students with passing grade** will copy all students from the selected assignment with a passing grade, and
+   keep the projectgroup and examiner setup.
+
+
 .. _defaults_new_assignment:
 
 Defaults for a new assignment
 #############################
 The following are configured as a default:
- - All active students in the course in the semester are added to the assignment
- - All students added to the semester are organized in a project group
- - No examiners are connected with a student or group
  - The new assignment will be published 6 hours after creation
  - Grading is passed or failed
  - Anonymization is off
