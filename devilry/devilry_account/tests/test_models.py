@@ -217,6 +217,30 @@ class TestUserManager(TestCase):
                                         fullname='')
         self.assertEqual(user.lastname, '')
 
+    def test_get_or_create_user_no_user_with_email_exists(self):
+        self.assertFalse(User.objects.filter(shortname='test@example.com').exists())
+        User.objects.get_or_create_user(email='test@example.com')
+        self.assertTrue(User.objects.filter(shortname='test@example.com').exists())
+
+    def test_get_or_create_user_no_user_with_username_exists(self):
+        self.assertFalse(User.objects.filter(shortname='test').exists())
+        User.objects.get_or_create_user(username='test')
+        self.assertTrue(User.objects.filter(shortname='test').exists())
+
+    def test_get_or_create_user_useremail_exists(self):
+        testuser = mommy.make('devilry_account.User', shortname='test@example.com')
+        mommy.make('devilry_account.UserEmail', email='test@example.com', user=testuser)
+        User.objects.get_or_create_user(email='test@example.com')
+        self.assertEqual(User.objects.count(), 1)
+
+    def test_get_or_create_user_username_as_shortname(self):
+        existing_user = mommy.make('devilry_account.User', shortname='test')
+        self.assertEqual(User.objects.count(), 1)
+        user, bool_value = User.objects.get_or_create_user(username='test')
+        self.assertEqual(User.objects.count(), 1)
+        self.assertEqual(user, existing_user)
+        self.assertFalse(bool_value)
+
     def test_get_by_email(self):
         user = mommy.make('devilry_account.User')
         mommy.make('devilry_account.UserEmail', user=user, email='test@example.com')

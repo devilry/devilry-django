@@ -251,7 +251,11 @@ class UserManager(BaseUserManager):
         Returns:
             User: The user object.
         """
-        return self.get_queryset().filter(username__username=username).get()
+        return self.get_queryset()\
+            .filter(
+                models.Q(username__username=username) |
+                models.Q(shortname=username))\
+            .get()
 
     def __create_primary_useremail_objects_from_users(self, users):
         """
