@@ -835,7 +835,7 @@ class TestAssignmentGroupMerge(TestCase):
         merged_feedbacksets = FeedbackSet.objects.filter(
             group=group1,
             feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT).count()
-        self.assertEqual(merged_feedbacksets, 2)
+        self.assertEqual(merged_feedbacksets, 4)
 
     def test_merge_type_new_attempt(self):
         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')

@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.conf import settings
 
 # Third party imports
+from django.utils import timezone
 from model_mommy import mommy
 
 # Devilry imports
@@ -10,6 +11,7 @@ from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group.feedbackfeed_builder.feedbackfeed_timelinebuilder import FeedbackFeedTimelineBuilder
 from devilry.devilry_group.feedbackfeed_builder import builder_base
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
+from devilry.devilry_group.models import FeedbackSet, GroupComment
 
 
 class TestTimelineBuilder(TestCase):
@@ -73,6 +75,94 @@ class TestTimelineBuilder(TestCase):
         self.assertEquals(len(timeline_list), 1)
         self.assertEquals(timeline_list[0]['feedbackset_events'][0]['type'], 'grade')
         self.assertEquals(timeline_list[0]['feedbackset_events'][0]['grade_points'], testfeedbackset.grading_points)
+
+    def test_feedback_set_merge_type_ordered_before_not_merge_type_feedback_set(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        now = timezone.now()
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end', first_deadline=now)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = mommy.make('devilry_group.FeedbackSet',
+                                     deadline_datetime=now,
+                                     group=testgroup, feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT)
+        mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset)
+        feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(
+            group=testgroup,
+            requestuser=testuser,
+            devilryrole=self.devilryrole
+        )
+        timeline_builder = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
+            feedbacksets=feedbackset_queryset,
+            group=testgroup
+        )
+        timeline_builder.build()
+        timeline_list = timeline_builder.get_as_list()
+        self.assertEquals(len(timeline_list), 2)
+        self.assertEqual(timeline_list[0]['feedbackset'], testfeedbackset)
+
+    def test_feedbackset_mergetype_is_excluded_if_not_published_and_no_comments_visible_to_everyone(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = mommy.make('devilry_group.FeedbackSet',
+                                     group=testgroup, feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT)
+        mommy.make('devilry_group.GroupComment', visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS)
+        feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(
+            group=testgroup,
+            requestuser=testuser,
+            devilryrole=self.devilryrole
+        )
+        timeline_builder = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
+            feedbacksets=feedbackset_queryset,
+            group=testgroup
+        )
+        timeline_builder.build()
+        timeline_list = timeline_builder.get_as_list()
+        self.assertEquals(len(timeline_list), 1) # Auto created first feedbackset for assignment group.
+        self.assertNotEqual(timeline_list[0]['feedbackset'], testfeedbackset)
+
+    def test_feedbackset_mergetype_added_if_published_but_no_comments_visible_to_everyone(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('devilry_group.FeedbackSet',
+                   grading_published_datetime=timezone.now(),
+                   group=testgroup, feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT)
+        feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(
+            group=testgroup,
+            requestuser=testuser,
+            devilryrole=self.devilryrole
+        )
+        timeline_builder = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
+            feedbacksets=feedbackset_queryset,
+            group=testgroup
+        )
+        timeline_builder.build()
+        timeline_list = timeline_builder.get_as_list()
+        self.assertEquals(len(timeline_list), 2)
+
+    def test_feedbackset_mergetype_added_if_not_published_but_has_comments_visible_to_everyone(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testfeedbackset = mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup, feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT)
+        mommy.make('devilry_group.GroupComment', feedback_set=testfeedbackset)
+        feedbackset_queryset = builder_base.get_feedbackfeed_builder_queryset(
+            group=testgroup,
+            requestuser=testuser,
+            devilryrole=self.devilryrole
+        )
+        timeline_builder = FeedbackFeedTimelineBuilder(
+            assignment=testassignment,
+            feedbacksets=feedbackset_queryset,
+            group=testgroup
+        )
+        timeline_builder.build()
+        timeline_list = timeline_builder.get_as_list()
+        self.assertEquals(len(timeline_list), 2)
 
     def test_feedbackset_published_grading_points_same_as_first_updated_grading_points(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)

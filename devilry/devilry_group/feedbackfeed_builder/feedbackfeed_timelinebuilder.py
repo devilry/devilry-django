@@ -8,7 +8,7 @@ import datetime
 from django.utils import timezone
 
 # Devilry/cradmin imports
-from devilry.devilry_comment.models import Comment
+from devilry.devilry_group.models import GroupComment
 from devilry.devilry_group.feedbackfeed_builder import builder_base
 
 
@@ -89,15 +89,53 @@ class FeedbackFeedTimelineBuilder(AbstractTimelineBuilder, builder_base.Feedback
                     timeline_list.append(feedbackset_event_dict)
         return timeline_list
 
+    def __should_skip_feedback_set(self, feedback_set):
+        """
+        Skip adding merge type feedbackset if they are not graded or
+        do have any public comments.
+
+        Args:
+            feedback_set: The ``FeedbackSet`` to check.
+
+        Returns:
+            ``True`` or ``False``.
+        """
+        if feedback_set.is_merge_type:
+            if not feedback_set.grading_published_datetime and\
+               not feedback_set.groupcomment_set.filter(visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE).exists():
+                return True
+        return False
+
+    def __get_order_feedback_set_by_deadline_datetime(self, feedback_set):
+        """
+        Get the ordering object for FeedbackSets.
+
+        If the ``feedback_set.feedbackset_type`` is a merge type, we subtract 1 millisecond
+        from the ``feedback_set.deadline_datetime``. We always want the merged feedbacksets to come before the current
+        last feedbackset.
+
+        Else return the ``feedback_set.deadline_datetime`` as is.
+
+        Args:
+            feedback_set: A ``FeedbackSet`` instance.
+
+        Returns:
+            DateTime: Datetime object to order by.
+        """
+        if feedback_set.is_merge_type:
+            return feedback_set.deadline_datetime - timezone.timedelta(microseconds=1)
+        return feedback_set.deadline_datetime
+
     def build(self):
         for feedback_set in self.feedbacksets:
+            if self.__should_skip_feedback_set(feedback_set=feedback_set):
+                continue
             feedback_set_event = FeedbackSetEventTimeLine(
                 feedback_set=feedback_set,
                 assignment=self.assignment)
             feedback_set_event.build()
-            print 'Deadline datetime: ', feedback_set.deadline_datetime
             self._add_event_item_to_timeline(
-                datetime_obj=feedback_set.deadline_datetime,
+                datetime_obj=self.__get_order_feedback_set_by_deadline_datetime(feedback_set=feedback_set),
                 event_dict={
                     'feedbackset': feedback_set,
                     'feedbackset_events': feedback_set_event.get_as_list()
