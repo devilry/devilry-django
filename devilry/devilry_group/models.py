@@ -399,7 +399,13 @@ class FeedbackSet(models.Model):
     @classmethod
     def clean_deadline(cls, deadline_datetime):
         return deadline_datetime.replace(microsecond=0)
-
+    
+    @property
+    def is_merge_type(self):
+        return self.feedbackset_type == self.FEEDBACKSET_TYPE_MERGE_FIRST_ATTEMPT or \
+               self.feedbackset_type == self.FEEDBACKSET_TYPE_MERGE_NEW_ATTEMPT or \
+               self.feedbackset_type == self.FEEDBACKSET_TYPE_MERGE_RE_EDIT
+    
     def clean(self):
         """
         Check for situations that should result in error.

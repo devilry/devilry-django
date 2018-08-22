@@ -16,11 +16,20 @@
         </span>
     </h3>
     <div class="header-attempt-number">
-        {% trans "Attempt" %} {{ me.attempt_num }}
+        {% if not me.feedbackset.is_merge_type %}
+            {% trans "Attempt" %} {{ me.attempt_num }}
+        {% endif %}
     </div>
 
     <div class="header-grading-info">
-        {% if me.is_graded %}
+        {% if me.feedbackset.is_merge_type %}
+            {% trans "Merged" %}
+            <div>
+                <button id="id_expand_hide_merged_feedbackset_{{ me.feedbackset.id }}" class="btn btn-default devilry-feedbackfeed-show_hide_feedbackset_mergetype_button">
+                    Show/hide
+                </button>
+            </div>
+        {% elif me.is_graded %}
             {% devilry_grade_full assignment=me.assignment points=me.feedbackset.grading_points devilryrole=me.devilryrole %}
         {% else %}
             {% devilry_groupstatus me.feedbackset.group %}

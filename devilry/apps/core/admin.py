@@ -1,6 +1,10 @@
+import json
+
 from django.contrib import admin
+from django.utils.html import format_html
+
 from devilry.apps.core.models import AssignmentGroup, Subject, Period, Assignment, PeriodTag, \
-    CandidateAssignmentGroupHistory, ExaminerAssignmentGroupHistory, Examiner, RelatedExaminer
+    CandidateAssignmentGroupHistory, ExaminerAssignmentGroupHistory, Examiner, RelatedExaminer, AssignmentGroupHistory
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -122,6 +126,22 @@ class AssignmentAdmin(BaseNodeAdmin):
 admin.site.register(Assignment, AssignmentAdmin)
 
 
+class AssignmentGroupHistoryInline(admin.StackedInline):
+    model = AssignmentGroupHistory
+    extra = 0
+    exclude = ['merge_history_json']
+    readonly_fields = [
+        'get_merge_history_json_pretty',
+    ]
+
+    def get_merge_history_json_pretty(self, obj):
+        return format_html(
+            '<pre>{}</pre>',
+            json.dumps(obj.merge_history, indent=2, sort_keys=True)
+        )
+
+
+
 class AssignmentGroupAdmin(admin.ModelAdmin):
     list_display = [
         'id',
@@ -146,6 +166,14 @@ class AssignmentGroupAdmin(admin.ModelAdmin):
     ]
     list_filter = [
         'created_datetime',
+    ]
+    raw_id_fields = [
+        'last_deadline',
+        'batchoperation',
+        'copied_from'
+    ]
+    inlines = [
+        AssignmentGroupHistoryInline
     ]
 
     def get_subject(self, obj):

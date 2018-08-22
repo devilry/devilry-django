@@ -80,5 +80,41 @@
 
 {% block end-of-body %}
     {{ block.super }}
+    <script>
+        function getClosestByClass (dom_element) {
+            while (!dom_element.classList.contains('devilry-group-feedbackfeed-feed__feedbackset-wrapper')) {
+                dom_element = dom_element.parentNode;
+                if (!dom_element) {
+                    return null;
+                }
+            }
+            return dom_element;
+        }
+
+        function toggleVisibility(feedback_set_content_element) {
+            let content_class = 'devilry-group-feedbackfeed-feed__feedbackset-wrapper__content-merge-type';
+            let merge_type_content = feedback_set_content_element.getElementsByClassName(content_class)[0];
+            if (window.getComputedStyle(merge_type_content).display === 'none') {
+                merge_type_content.style.display = 'block';
+            } else {
+                merge_type_content.style.display = 'none';
+            }
+        }
+
+        function getClosestFeedbackSetWrapper (button_id) {
+            return getClosestByClass(document.getElementById(button_id));
+        }
+
+        function addListener(feedbackset_button_event) {
+            let closest_content_element = getClosestFeedbackSetWrapper(feedbackset_button_event.srcElement.id)
+            toggleVisibility(closest_content_element)
+        }
+
+        let buttons = document.getElementsByClassName('devilry-feedbackfeed-show_hide_feedbackset_mergetype_button')
+        for (let i = 0; i < buttons.length; i++) {
+            let feedbackset_button = buttons[i];
+            feedbackset_button.addEventListener('click', addListener);
+        }
+    </script>
     {% include "devilry_theme3/include/devilry_all_js.django.html" %}
 {% endblock end-of-body %}

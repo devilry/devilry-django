@@ -24,7 +24,11 @@ BEGIN
         (
             SELECT id
             FROM devilry_group_feedbackset AS last_feedbackset
-            WHERE group_id = param_group_id
+            WHERE group_id = param_group_id and (
+              last_feedbackset.feedbackset_type = 'first_attempt' OR
+              last_feedbackset.feedbackset_type = 'new_attempt' OR
+              last_feedbackset.feedbackset_type = 're_edit'
+            )
             ORDER BY deadline_datetime DESC NULLS LAST
             LIMIT 1
         ) AS last_feedbackset_id,
@@ -43,6 +47,8 @@ BEGIN
             FROM devilry_group_feedbackset
             WHERE
                 group_id = param_group_id
+                AND
+                feedbackset_type not like 'merge_%'
                 AND
                 feedbackset_type = 'new_attempt'
         ) AS new_attempt_count,

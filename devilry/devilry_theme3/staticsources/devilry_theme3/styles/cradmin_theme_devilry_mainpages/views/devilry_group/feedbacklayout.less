@@ -100,6 +100,9 @@
   }
 
   &__feedbackset-wrapper {
+    &__content-merge-type {
+      display: none;
+    }
 
     // feedbackset wrapper header style.
     .header{
@@ -109,6 +112,7 @@
       background-color: @comment-background-color;
       min-height: 5.0em;
       padding: @devilry-spacing--small;
+      margin-top: (@devilry-unit * 10);
 
       .devilry-core-grade-passed {
         color: @devilry-brand-color-success;
@@ -155,7 +159,7 @@
     // Used if feedbackset is not the first in the feed.
     &--header {
       .header;
-      margin-top: (@devilry-unit * 20);
+      //margin-top: (@devilry-unit * 20);
     }
   }
 

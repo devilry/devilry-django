@@ -95,8 +95,9 @@ class FeedbackFeedTimelineBuilder(AbstractTimelineBuilder, builder_base.Feedback
                 feedback_set=feedback_set,
                 assignment=self.assignment)
             feedback_set_event.build()
+            print 'Deadline datetime: ', feedback_set.deadline_datetime
             self._add_event_item_to_timeline(
-                datetime_obj=feedback_set.created_datetime,
+                datetime_obj=feedback_set.deadline_datetime,
                 event_dict={
                     'feedbackset': feedback_set,
                     'feedbackset_events': feedback_set_event.get_as_list()

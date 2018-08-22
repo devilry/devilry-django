@@ -13,12 +13,17 @@ class TimeLineListBuilderList(listbuilder.base.List):
     @classmethod
     def from_built_timeline(cls, built_timeline, **kwargs):
         listbuilder_list = cls()
+        attempt_num = 1
         for feedback_set_num, feedbackset_event in enumerate(built_timeline.get_as_list()):
+            feedbackset = feedbackset_event['feedbackset']
+            if not feedbackset.is_merge_type \
+               and feedbackset.feedbackset_type != FeedbackSet.FEEDBACKSET_TYPE_FIRST_ATTEMPT:
+                attempt_num += 1
             listbuilder_list.append(
                 FeedbackSetTimelineListBuilderList.from_built_timeline(
                     built_timeline=feedbackset_event['feedbackset_events'],
                     feedbackset=feedbackset_event['feedbackset'],
-                    attempt_num=feedback_set_num+1,
+                    attempt_num=attempt_num,
                     **kwargs)
             )
         return listbuilder_list
@@ -57,7 +62,7 @@ class FeedbackSetTimelineListBuilderList(listbuilder.base.List):
         for event_dict in built_timeline:
             item_values_list.append(listbuilder_list.get_item_value(event_dict=event_dict))
         listbuilder_list.renderable_list.append(
-            FeedbackSetContentList(renderables_list=item_values_list)
+            FeedbackSetContentList(feedbackset=feedbackset, renderables_list=item_values_list)
         )
         return listbuilder_list
 
@@ -142,14 +147,18 @@ class FeedbackSetContentList(listbuilder.base.List):
     """
     Simply adds a css wrapper-class for all events that belong to a feedbackset.
     """
-    def __init__(self, renderables_list):
+    def __init__(self, feedbackset, renderables_list):
+        self.feedbackset = feedbackset
         super(FeedbackSetContentList, self).__init__()
         for renderable in renderables_list:
             self.renderable_list.append(renderable)
 
     def get_extra_css_classes_list(self):
         css_classes_list = super(FeedbackSetContentList, self).get_extra_css_classes_list()
-        css_classes_list.append('devilry-group-feedbackfeed-feed__feedbackset-wrapper--content')
+        if self.feedbackset.is_merge_type:
+            css_classes_list.append('devilry-group-feedbackfeed-feed__feedbackset-wrapper__content-merge-type')
+        else:
+            css_classes_list.append('devilry-group-feedbackfeed-feed__feedbackset-wrapper--content')
         return css_classes_list
 
 
