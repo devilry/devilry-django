@@ -9725,6 +9725,9 @@ fieldset[disabled] .button_student {
 .devilry-group-feedbackfeed-feed > li {
   margin-left: -30px;
 }
+.devilry-group-feedbackfeed-feed__feedbackset-wrapper__content-merge-type {
+  display: none;
+}
 .devilry-group-feedbackfeed-feed__feedbackset-wrapper .header {
   display: block;
   text-align: center;
@@ -9732,6 +9735,7 @@ fieldset[disabled] .button_student {
   background-color: #fff;
   min-height: 5em;
   padding: 12px;
+  margin-top: 60px;
 }
 .devilry-group-feedbackfeed-feed__feedbackset-wrapper .header .devilry-core-grade-passed {
   color: #61AE24;
@@ -9769,6 +9773,7 @@ fieldset[disabled] .button_student {
   background-color: #fff;
   min-height: 5em;
   padding: 12px;
+  margin-top: 60px;
 }
 .devilry-group-feedbackfeed-feed__feedbackset-wrapper--header-first-attempt .devilry-core-grade-passed {
   color: #61AE24;
@@ -9806,7 +9811,7 @@ fieldset[disabled] .button_student {
   background-color: #fff;
   min-height: 5em;
   padding: 12px;
-  margin-top: 120px;
+  margin-top: 60px;
 }
 .devilry-group-feedbackfeed-feed__feedbackset-wrapper--header .devilry-core-grade-passed {
   color: #61AE24;
