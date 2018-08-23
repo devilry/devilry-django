@@ -21,7 +21,7 @@ class DeleteInactiveUsers(object):
 
 class Command(BaseCommand):
     """
-    Management script for deleting all periods started before a given date.
+    Management script for deleting all inactive users.
     """
     help = 'Delete users that hasn\'t logged in since the provided date. Superusers are excluded, ' \
            'and needs to be deleted manually.'
