@@ -40,7 +40,6 @@ class AnonymizeDatabase(object):
         - CommentFiles (filename)
 
 
-
     Generate a anonymized name based on the unanonymized name
     and keeps the same length.
 
@@ -61,10 +60,7 @@ class AnonymizeDatabase(object):
     DIGITS = '0123456789'
     NOOP_CHARACTERS = [' ', '_', '@', '-', '"']
 
-    def __init__(self, db_alias, fast=True):
-        if db_alias == 'default':
-            raise AnonymizeDatabaseException(message='Can not use database {}.'.format(db_alias))
-        self.db_alias = db_alias
+    def __init__(self, fast=True):
         self.fast = fast
 
     def is_uppercase(self, character):
@@ -110,37 +106,37 @@ class AnonymizeDatabase(object):
         Simply sets usernames to the ID of the user.
         """
         if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
-            get_user_model().objects.using(self.db_alias).update(
+            get_user_model().objects.update(
                 fullname='Full Name',
                 lastname='Lastname',
                 shortname=Concat(models.F('id'), models.Value('@example.com'), output_field=CharField()))
         else:
-            get_user_model().objects.using(self.db_alias).update(
+            get_user_model().objects.update(
                 fullname='Full Name',
                 lastname='Lastname',
                 shortname=Concat(models.F('id'), models.Value(''), output_field=CharField()))
-        UserEmail.objects.using(self.db_alias).select_related('user').update(
+        UserEmail.objects.update(
             email=Concat(models.F('user_id'), models.Value('_'), models.F('id'),
                          models.Value('@example.com'), output_field=CharField()))
-        UserName.objects.using(self.db_alias).select_related('user').update(
+        UserName.objects.update(
             username=Concat(models.F('user_id'), models.Value('_'),
                             models.F('id'), output_field=CharField()))
 
     def __anonymize_user_emails(self, user):
-        for user_email in UserEmail.objects.using(self.db_alias).filter(user_id=user.id):
+        for user_email in UserEmail.objects.filter(user_id=user.id):
             email_prefix = user_email.email.split('@')[0]
             anonymized_email_prefix = self.randomize_string(unanonymized_string=email_prefix)
             user_email.email = '{}@example.com'.format(anonymized_email_prefix)
-            user_email.save(using=self.db_alias)
+            user_email.save()
 
     def __anonymize_user_names(self, user):
-        for user_name in UserName.objects.using(self.db_alias).filter(user_id=user.id):
+        for user_name in UserName.objects.filter(user_id=user.id):
             anonymized_user_name = self.randomize_string(unanonymized_string=user_name.username)
             user_name.username = anonymized_user_name
-            user_name.save(using=self.db_alias)
+            user_name.save()
 
     def __anonymize_user_data(self):
-        for user in get_user_model().objects.using(self.db_alias).all():
+        for user in get_user_model().objects.all():
             shortname = user.shortname
             if '@' in shortname:
                 shortname = shortname.split('@')[0]
@@ -150,7 +146,7 @@ class AnonymizeDatabase(object):
             user.shortname = anonymized_shortname
             user.fullname = self.randomize_string(unanonymized_string=user.fullname)
             user.lastname = self.randomize_string(unanonymized_string=user.lastname)
-            user.save(using=self.db_alias)
+            user.save()
 
             self.__anonymize_user_emails(user=user)
             self.__anonymize_user_names(user=user)
@@ -165,9 +161,9 @@ class AnonymizeDatabase(object):
         """
         Anonymize Comment text and CommentFile filenames.
         """
-        Comment.objects.using(self.db_alias).update(text=lorem_ipsum)
-        CommentEditHistory.objects.using(self.db_alias).update(post_edit_text=lorem_ipsum, pre_edit_text=lorem_ipsum)
-        CommentFile.objects.using(self.db_alias).update(filename=Concat(models.F('id'), models.Value(''), output_field=CharField()))
+        Comment.objects.update(text=lorem_ipsum)
+        CommentEditHistory.objects.update(post_edit_text=lorem_ipsum, pre_edit_text=lorem_ipsum)
+        CommentFile.objects.update(filename=Concat(models.F('id'), models.Value(''), output_field=CharField()))
 
     def anonymize_comments(self):
         self.__anonymize_comments_fast()

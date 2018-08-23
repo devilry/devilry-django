@@ -329,3 +329,76 @@ The script will delete:
 The script will NOT delete:
  - Deliveries, comments or files made by the deleted users, see :ref:`devilry_delete_periods` for deleting that data.
 
+
+.. _devilry_anonymize_database:
+
+==========================
+devilry_anonymize_database
+==========================
+
+.. warning::
+
+    DO NOT RUN THIS MANAGEMENT COMMAND ON THE PRODUCTION/LIVE SERVER.
+
+    Copy the production/live database to a testserver and run the command for anonymizing the database there.
+
+
+Often times, having a copy of a production/live database can be pretty useful when trying to debug certain issues,
+rather than trying to reproduce issues locally. This is where anonymization of the database comes in handy.
+
+This management command will anonymize all user related data, such as users last names, first names, usernames and
+emails. All login information provided by Dataporten will be deleted, and all passwords are set to test.
+
+Anonymizing user data
+=====================
+
+There are two modes for running the management command, default(no argument) and `fast` and all user data will be
+anonymized but in different ways:
+
+default-mode:
+    **Username**: Random set of characters matching the length of the original username.
+
+    **User lastname**: Random set of characters matching the length of the original lastname.
+
+    **User fullname**: Random set of characters matching the length of the original fullname.
+
+    **Email**: The prefix will be a random set of characters matching the original prefix length and the suffix is set to `@example.com`.
+
+fast-mode:
+    **Username**: Changes to the ID of the user object.
+
+    **User lastname**: Changed to `Lastname`.
+
+    **User fullname**: Changed to `Full Name`.
+
+    **Email**: Changed to `<user_id>_<email_object_id>@example.com`.
+
+
+Anonymizing comments and comment files
+======================================
+All comments will be anonymized, meaning the content of a comment is replaced with a lorem ipsum text.
+The anonymization script does not save files at all, but files are associated with a CommentFile where the filename
+information is anonymized.
+
+Additional actions performed by the anonymization command
+=========================================================
+- All login information from dataporten is deleted.
+- All passwords are set to 'test'.
+
+
+
+Running the command with default mode
+=====================================
+To run the command with default mode::
+
+    $ cd ~/devilrydeploy/
+    $ python manage.py devilry_anonymize_database
+
+
+Running the command with fast mode
+==================================
+To run the command with fast mode::
+
+    $ cd ~/devilrydeploy/
+    $ python manage.py devilry_anonymize_database --fast
+
