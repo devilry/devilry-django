@@ -20,7 +20,7 @@ What's new in 3.3.0b8?
 Update devilry to 3.3.0b8
 #########################
 
-Update the devilry version to ``3.3.0b7`` as described in :doc:`../update`.
+Update the devilry version to ``3.3.0b8`` as described in :doc:`../update`.
 
 After the update, run::
 
