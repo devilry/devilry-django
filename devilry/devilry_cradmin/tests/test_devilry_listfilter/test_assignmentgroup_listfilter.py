@@ -31,6 +31,11 @@ class TestExaminerCountFilter(test.TestCase):
         examinercountfilter.values = [filter_value]
         return examinercountfilter.filter(queryobject=queryset)
 
+    def test_exact_0(self):
+        filtered_queryset = self.__filter_examiners(filter_value='eq-0')
+        self.assertEqual(filtered_queryset.count(), 1)
+        self.assertEqual(filtered_queryset[0].id, self.testgroup0.id)
+
     def test_exact_1(self):
         filtered_queryset = self.__filter_examiners(filter_value='eq-1')
         self.assertEqual(filtered_queryset.count(), 1)

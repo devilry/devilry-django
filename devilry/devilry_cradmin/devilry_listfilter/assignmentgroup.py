@@ -394,33 +394,85 @@ class ExaminerFilter(abstractselect.AbstractSelectFilter):
 
 
 class AbstractCandidateExaminerCountFilter(abstractselect.AbstractSelectFilter):
+    def get_exact_choices(self):
+        """
+        A set of tuples defining a exact filter for number of examiners and students.
+
+        Override this to add, remove or change choices.
+
+        Example, must follow this pattern:
+            (
+                ('eq-<num>', '<num>'),
+                ...
+            )
+
+        Returns:
+            A tuple of tuples.
+        """
+        return (
+            ('eq-0', '0'),
+            ('eq-1', '1'),
+            ('eq-2', '2'),
+            ('eq-3', '3'),
+            ('eq-4', '4'),
+            ('eq-5', '5'),
+            ('eq-6', '6'),
+        )
+
+    def get_less_than_choices(self):
+        """
+        A set of tuples defining a less than filter for number of examiners and students.
+
+        Override this to add, remove or change choices.
+
+        Example, must follow this pattern:
+            (
+                ('lt-<num>', '<num>'),
+                ...
+            )
+
+        Returns:
+            A tuple of tuples.
+        """
+        return (
+            ('lt-2', '2'),
+            ('lt-3', '3'),
+            ('lt-4', '4'),
+            ('lt-5', '5'),
+            ('lt-6', '6'),
+        )
+
+    def get_greater_than_choices(self):
+        """
+        A set of tuples defining a less than filter for number of examiners and students.
+
+        Override this to add, remove or change choices.
+
+        Example, must follow this pattern:
+            (
+                ('gt-<num>', '<num>'),
+                ...
+            )
+
+        Returns:
+            A tuple of tuples.
+        """
+        return (
+            ('gt-0', '0'),
+            ('gt-1', '1'),
+            ('gt-2', '2'),
+            ('gt-3', '3'),
+            ('gt-4', '4'),
+            ('gt-5', '5'),
+            ('gt-6', '6'),
+        )
+
     def get_choices(self):
         return [
             ('', ''),
-            (pgettext_lazy('exact candidate num', 'Exactly'), (
-                ('eq-1', '1'),
-                ('eq-2', '2'),
-                ('eq-3', '3'),
-                ('eq-4', '4'),
-                ('eq-5', '5'),
-                ('eq-6', '6'),
-            )),
-            (pgettext_lazy('less than candidate num', 'Less than'), (
-                ('lt-2', '2'),
-                ('lt-3', '3'),
-                ('lt-4', '4'),
-                ('lt-5', '5'),
-                ('lt-6', '6'),
-            )),
-            (pgettext_lazy('greater than candidate num', 'Greater than'), (
-                ('gt-0', '0'),
-                ('gt-1', '1'),
-                ('gt-2', '2'),
-                ('gt-3', '3'),
-                ('gt-4', '4'),
-                ('gt-5', '5'),
-                ('gt-6', '6'),
-            ))
+            (pgettext_lazy('exact candidate num', 'Exactly'), self.get_exact_choices()),
+            (pgettext_lazy('less than candidate num', 'Less than'), self.get_less_than_choices()),
+            (pgettext_lazy('greater than candidate num', 'Greater than'), self.get_greater_than_choices())
         ]
 
     def get_int_value_from_cleaned_value(self, cleaned_value):
@@ -459,6 +511,16 @@ class CandidateCountFilter(AbstractCandidateExaminerCountFilter):
 
     def get_label(self):
         return pgettext_lazy('group student filter', 'Number of students')
+
+    def get_exact_choices(self):
+        return (
+            ('eq-1', '1'),
+            ('eq-2', '2'),
+            ('eq-3', '3'),
+            ('eq-4', '4'),
+            ('eq-5', '5'),
+            ('eq-6', '6'),
+        )
 
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value()
