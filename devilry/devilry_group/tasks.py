@@ -33,6 +33,27 @@ class AbstractBaseBatchAction(batchregistry.Action):
             readmode=False
         )
 
+    # def add_file(self, zipfile_backend, sub_path, comment_file, current_deadline):
+    #     """
+    #     Args:
+    #         zipfile_backend:
+    #         sub_path:
+    #         comment_file:
+    #         current_deadline:
+    #     """
+    #     sub_folder_type = 'delivery'
+    #     if comment_file.comment.user_role == 'student':
+    #         if current_deadline and comment_file.comment.published_datetime > current_deadline:
+    #             sub_folder_type = 'uploaded_after_deadline'
+    #     elif comment_file.comment.user_role == 'examiner' \
+    #             or comment_file.comment.user_role == 'admin':
+    #         sub_folder_type = 'uploaded_by_examiners_and_admins'
+    #
+    #     # Write file to backend on the path defined by os.path.join
+    #     zipfile_backend.add_file(
+    #         os.path.join(sub_path, sub_folder_type, comment_file.filename),
+    #         comment_file.file.file)
+
     def add_file(self, zipfile_backend, sub_path, comment_file, current_deadline):
         """
         Args:
@@ -64,6 +85,17 @@ class FeedbackSetBatchMixin(object):
 
     Must be included in class together with :class:`~.AbstractBaseBatchAction`.
     """
+    # def zipfile_add_feedbackset(self, zipfile_backend, feedback_set, sub_path=''):
+    #     from devilry.devilry_group import models as group_models
+    #     for group_comment in feedback_set.groupcomment_set.all():
+    #         # Don't add files from comments that are not visible to everyone.
+    #         if group_comment.visibility == group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
+    #             for comment_file in group_comment.commentfile_set.all():
+    #                 self.add_file(zipfile_backend=zipfile_backend,
+    #                               sub_path=sub_path,
+    #                               comment_file=comment_file,
+    #                               current_deadline=feedback_set.current_deadline())
+
     def zipfile_add_feedbackset(self, zipfile_backend, feedback_set, sub_path=''):
         from devilry.devilry_group import models as group_models
         for group_comment in feedback_set.groupcomment_set.all():
