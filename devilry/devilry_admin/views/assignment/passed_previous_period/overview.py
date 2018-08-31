@@ -103,10 +103,10 @@ class Overview(TemplateView):
                 inneritem=ManualPassModeItemValue(value=None),
                 roleid=self.request.cradmin_role.id
             ),
-            AutoPassPreviousPeriodItemFrame(
-                inneritem=AutoPassPreviousPeriodItemValue(value=None),
-                roleid=self.request.cradmin_role.id
-            )
+            # AutoPassPreviousPeriodItemFrame(
+            #     inneritem=AutoPassPreviousPeriodItemValue(value=None),
+            #     roleid=self.request.cradmin_role.id
+            # )
         ]
 
     def __get_mode_listbuilder_list(self):
