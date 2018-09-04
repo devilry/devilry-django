@@ -256,6 +256,43 @@ class FeedbackSetQuerySet(models.QuerySet):
         """
         return self.order_by(self.get_order_by_deadline_datetime_argument())
 
+    def has_public_comment_files_from_students(self, feedback_set):
+        """
+        Does the FeedbackSet have any public ``CommentFile``s from students?
+
+        Args:
+            feedback_set: The ``FeedbackSet`` to check.
+
+        Returns:
+            bool: ``True`` if any public student files, else ``False``.
+        """
+        from devilry.devilry_comment import models as comment_models
+        group_comment_ids = GroupComment.objects \
+            .filter(feedback_set=feedback_set,
+                    user_role=GroupComment.USER_ROLE_STUDENT,
+                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE) \
+            .values_list('id', flat=True)
+        return comment_models.CommentFile.objects \
+            .filter(id__in=group_comment_ids)\
+            .exists()
+
+    def filter_public_comment_files_from_students(self):
+        """
+        Get all ``FeedbackSet``s with public comments from students.
+
+        Returns:
+            QuerySet: A ``FeedbackSet`` queryset.
+        """
+        from devilry.devilry_comment import models as comment_models
+        comment_file_ids = comment_models.CommentFile.objects.all()\
+            .values_list('comment_id')
+        feedback_set_ids = GroupComment.objects \
+            .filter(user_role=GroupComment.USER_ROLE_STUDENT,
+                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE) \
+            .filter(id__in=comment_file_ids) \
+            .values_list('feedback_set_id', flat=True)
+        return FeedbackSet.objects.filter(id__in=feedback_set_ids)
+
 
 class FeedbackSet(models.Model):
     """

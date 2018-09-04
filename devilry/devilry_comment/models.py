@@ -281,6 +281,24 @@ class CommentFile(models.Model):
             comment_file_image.delete()
         self.delete()
 
+    def get_filename_as_unique_string(self):
+        """
+        Get a unique filename from the file. Returns the a string with
+        the format <id>-<created_datetime><filename>. The <created_datetime>-part is
+        formatted with ``'%b.%m.%Y-%X.%f``.
+
+        Notes:
+            This does not change the actual filename, only builds a unique one.
+
+        Returns:
+            str: Unique version of the filename.
+        """
+        return '{}-{}-{}'.format(
+            self.id,
+            self.created_datetime.strftime('%b.%m.%Y-%X.%f'),
+            self.filename
+        )
+
 
 def commentfileimage_directory_path(instance, filename):
     """The ``upload_to`` function for :obj:`.CommentFileImage.file`.

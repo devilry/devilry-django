@@ -4,7 +4,7 @@ from devilry.devilry_compressionutil.models import CompressedArchiveMeta
 
 
 class Command(BaseCommand):
-    help = 'Create new user.'
+    help = 'Delete compressed archives.'
 
     def add_arguments(self, parser):
         parser.add_argument(

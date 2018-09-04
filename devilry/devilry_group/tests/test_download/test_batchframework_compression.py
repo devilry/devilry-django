@@ -52,6 +52,29 @@ class TestCompressed(TestCase):
 
 
 class TestFeedbackSetBatchTask(TestCompressed):
+    def __make_comment_file(self, feedback_set, file_name, file_content, user_role='student', **comment_kwargs):
+        comment = mommy.make('devilry_group.GroupComment',
+                                  feedback_set=feedback_set,
+                                  user_role=user_role, **comment_kwargs)
+        comment_file = mommy.make('devilry_comment.CommentFile', comment=comment,
+                                  filename=file_name)
+        comment_file.file.save(file_name, ContentFile(file_content))
+        return comment_file
+
+    def test_batchframework_no_files(self):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
+            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
+            mommy.make('devilry_group.GroupComment',
+                       feedback_set=testfeedbackset,
+                       user_role='student',
+                       user__shortname='testuser@example.com')
+
+            # Run batch operation
+            self._run_actiongroup(name='batchframework_feedbackset',
+                                  task=tasks.FeedbackSetCompressAction,
+                                  context_object=testfeedbackset,
+                                  started_by=None)
+            self.assertEqual(archivemodels.CompressedArchiveMeta.objects.count(), 0)
 
     def test_batchframework(self):
         # Tests that the archive has been created.
@@ -103,29 +126,6 @@ class TestFeedbackSetBatchTask(TestCompressed):
                 archivemodels.CompressedArchiveMeta.objects.get(id=archive_meta_id)
             self.assertFalse(os.path.exists(archive_path))
 
-    # def test_batchframework_feedbackset_student_without_deadline(self):
-    #     # Tests that files added when the FeedbackSet has no deadline is added under 'delivery'.
-    #     with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
-    #         testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-    #         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
-    #         testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-    #         testcomment = mommy.make('devilry_group.GroupComment',
-    #                                  feedback_set=testfeedbackset,
-    #                                  user_role='student',
-    #                                  user__shortname='testuser@example.com')
-    #         commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-    #         commentfile.file.save('testfile.txt', ContentFile('student testcontent'))
-    #
-    #         # Run batch operation
-    #         self._run_actiongroup(name='batchframework_feedbackset',
-    #                               task=tasks.FeedbackSetCompressAction,
-    #                               context_object=testfeedbackset,
-    #                               started_by=None)
-    #
-    #         archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
-    #         zipfileobject = ZipFile(archive_meta.archive_path)
-    #         self.assertEquals(zipfileobject.read('delivery/testfile.txt'), 'student testcontent')
-
     def test_batchframework_feedbackset_student_after_deadline(self):
         # Tests that files added after the deadline returned from FeedbackSet.get_current_deadline() is added under
         # 'uploaded_after_deadline'.
@@ -133,12 +133,11 @@ class TestFeedbackSetBatchTask(TestCompressed):
             testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(
                 group__parentnode__first_deadline=timezone.now() - timezone.timedelta(days=1)
             )
-            testcomment = mommy.make('devilry_group.GroupComment',
-                                     feedback_set=testfeedbackset,
-                                     user_role='student',
-                                     user__shortname='testuser@example.com')
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-            commentfile.file.save('testfile.txt', ContentFile('student testcontent'))
+            studentuser = mommy.make(settings.AUTH_USER_MODEL, shortname='april')
+            mommy.make('core.Candidate', assignment_group=testfeedbackset.group,
+                       relatedstudent__user=studentuser)
+            self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile.txt',
+                                     file_content='testcontent', user=studentuser)
 
             # Run batch operation
             self._run_actiongroup(name='batchframework_feedbackset',
@@ -148,29 +147,22 @@ class TestFeedbackSetBatchTask(TestCompressed):
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
-            self.assertEquals(zipfileobject.read('uploaded_after_deadline/testfile.txt'), 'student testcontent')
+            self.assertEquals(zipfileobject.read('after_deadline_not_part_of_delivery/testfile.txt'),
+                              'testcontent')
 
-    def test_batchframework_examiner_file_uploaded_by_examiner(self):
+    def test_batchframework_examiner_files_not_uploaded(self):
         # Tests that the file is added under 'uploaded_by_examiner'.
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished()
-            testcomment = mommy.make('devilry_group.GroupComment',
-                                     feedback_set=testfeedbackset,
-                                     user_role='examiner',
-                                     user__shortname='testuser@example.com')
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-            commentfile.file.save('testfile.txt', ContentFile('examiner testcontent'))
+            self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile.txt',
+                                     file_content='testcontent', user_role='examiner')
 
             # Run batch operation
             self._run_actiongroup(name='batchframework_feedbackset',
                                   task=tasks.FeedbackSetCompressAction,
                                   context_object=testfeedbackset,
                                   started_by=None)
-
-            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
-            zipfileobject = ZipFile(archive_meta.archive_path)
-            self.assertEquals(zipfileobject.read('uploaded_by_examiners_and_admins/testfile.txt'),
-                              'examiner testcontent')
+            self.assertEqual(archivemodels.CompressedArchiveMeta.objects.count(), 0)
 
     def test_batchframework_files_from_examiner_and_student(self):
         # Tests that the file uploaded by examiner is added to 'uploaded_by_examiner' subfolder,
@@ -179,24 +171,10 @@ class TestFeedbackSetBatchTask(TestCompressed):
             testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                first_deadline=timezone.now() + timezone.timedelta(days=1))
             testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group__parentnode=testassignment)
-
-            # examiner-comment with file.
-            testcomment = mommy.make('devilry_group.GroupComment',
-                                     feedback_set=testfeedbackset,
-                                     user_role='examiner',
-                                     user__shortname='testexaminer@example.com')
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment,
-                                     filename='testfile_examiner.txt')
-            commentfile.file.save('testfile_examiner.txt', ContentFile('examiner testcontent'))
-
-            # student-comment with file
-            testcomment = mommy.make('devilry_group.GroupComment',
-                                     feedback_set=testfeedbackset,
-                                     user_role='student',
-                                     user__shortname='teststudent@example.com')
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment,
-                                     filename='testfile_student.txt')
-            commentfile.file.save('testfile_student.txt', ContentFile('student testcontent'))
+            self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile_examiner.txt',
+                                     file_content='examiner testcontent', user_role='examiner')
+            self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile_student.txt',
+                                     file_content='student testcontent', user_role='student')
 
             # Run batch operation
             self._run_actiongroup(name='batchframework_feedbackset',
@@ -206,6 +184,5 @@ class TestFeedbackSetBatchTask(TestCompressed):
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testfeedbackset.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
-            self.assertEquals(zipfileobject.read('delivery/testfile_student.txt'), 'student testcontent')
-            self.assertEquals(zipfileobject.read('uploaded_by_examiners_and_admins/testfile_examiner.txt'),
-                              'examiner testcontent')
+            self.assertEquals(1, len(zipfileobject.namelist()))
+            self.assertEquals(zipfileobject.read('testfile_student.txt'), 'student testcontent')

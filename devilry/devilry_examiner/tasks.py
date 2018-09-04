@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 import os
 
+from django.template import defaultfilters
+
 from devilry.devilry_group.tasks import AbstractBaseBatchAction, FeedbackSetBatchMixin
 
 
@@ -14,9 +16,9 @@ class AssignmentBatchMixin(object):
     """
     def add_assignment_groups(self, user, zipfile_backend, assignment):
         for group in assignment.assignmentgroups.filter_examiner_has_access(user=user):
-            group_path = 'group-{}'.format(group)
+            group_path = '{}'.format(group.get_short_displayname())
             for feedback_set in group.feedbackset_set.all():
-                feedback_set_path = 'deadline{}'.format(feedback_set.current_deadline())
+                feedback_set_path = 'deadline-{}'.format(defaultfilters.date(feedback_set.current_deadline(), 'b.j.Y-H:i'))
                 self.zipfile_add_feedbackset(
                     zipfile_backend=zipfile_backend,
                     feedback_set=feedback_set,
@@ -31,11 +33,19 @@ class AssignmentCompressAction(AbstractBaseBatchAction, AssignmentBatchMixin, Fe
         assignment = self.kwargs.get('context_object')
         started_by_user = self.kwargs.get('started_by')
 
+        from devilry.devilry_group import models as group_models
+        feedback_sets_with_public_student_comments = group_models.FeedbackSet.objects \
+            .filter_public_comment_files_from_students()\
+            .filter(group__parentnode=assignment)
+        if not feedback_sets_with_public_student_comments.exists():
+            # Do nothing
+            return
+
         # Create name for the actual archive
-        from django.utils import timezone
-        archive_name = '{}-{}.zip'.format(
-            assignment.short_name,
-            timezone.now().strftime('%Y-%m-%d_%H-%M-%S.%f'))
+        archive_name = '{}.{}.{}.zip'.format(
+            assignment.subject.short_name,
+            assignment.period.short_name,
+            assignment.short_name)
 
         # create path for the archive.
         zipfile_path = os.path.join(
