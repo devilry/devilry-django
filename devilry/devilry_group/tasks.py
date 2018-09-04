@@ -35,10 +35,13 @@ class AbstractBaseBatchAction(batchregistry.Action):
 
     def add_file(self, zipfile_backend, sub_path, comment_file, is_duplicate=False):
         """
+        Add file to ZIP archive.
+
         Args:
             zipfile_backend: A subclass of ``PythonZipFileBackend``.
             sub_path: The path to write to inside the archive.
             comment_file: The `CommentFile` file to write.
+            is_duplicate: Is the file a duplicate? Defaults to ``False``.
         """
         file_name = comment_file.filename
         if is_duplicate:
