@@ -5,7 +5,7 @@ from ievv_opensource.ievv_batchframework import batchregistry
 
 from devilry.apps.core import models as core_models
 from devilry.apps.core.models import ExaminerAssignmentGroupHistory, CandidateAssignmentGroupHistory
-from devilry.devilry_group.models import GroupComment
+from devilry.devilry_group.models import GroupComment, FeedbackSet
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group.views.download_files.batch_download_api import AbstractBatchCompressionAPIView
 
@@ -32,7 +32,10 @@ class BatchCompressionAPIAssignmentView(AbstractBatchCompressionAPIView):
             .filter(comment_id__in=group_comment_ids)
 
     def has_no_files(self):
-        return self.__get_comment_file_queryset().count() == 0
+        return not FeedbackSet.objects\
+            .filter_public_comment_files_from_students()\
+            .filter(group__parentnode=self.content_object)\
+            .exists()
 
     def new_files_added(self, latest_compressed_datetime):
         return self.__get_comment_file_queryset()\

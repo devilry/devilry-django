@@ -10,6 +10,7 @@ from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 from devilry.devilry_group import models as group_models
 from devilry.apps.core import models as core_models
+from devilry.devilry_comment import models as comment_models
 
 
 class TestFeedbackSetModel(TestCase):
@@ -264,3 +265,60 @@ class TestFeedbackSetModel(TestCase):
                 assignment=test_assignment,
                 comment_user_role=group_models.GroupComment.USER_ROLE_ADMIN)
 
+    def test_filter_public_comment_files_from_students_sanity(self):
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet')
+        group_comment = mommy.make('devilry_group.GroupComment', feedback_set=test_feedbackset,
+                                   user_role=comment_models.Comment.USER_ROLE_STUDENT)
+        mommy.make('devilry_comment.CommentFile', comment=group_comment)
+        self.assertIn(test_feedbackset, group_models.FeedbackSet.objects.filter_public_comment_files_from_students())
+
+    def test_filter_public_comment_files_from_students_multiple_feedbacksets_with_and_without_comments(self):
+        # Feedbackset 1
+        test_feedbackset1 = mommy.make('devilry_group.FeedbackSet')
+        group_comment1 = mommy.make('devilry_group.GroupComment', feedback_set=test_feedbackset1,
+                                   user_role=comment_models.Comment.USER_ROLE_STUDENT)
+        mommy.make('devilry_comment.CommentFile', comment=group_comment1)
+        group_comment2 = mommy.make('devilry_group.GroupComment', feedback_set=test_feedbackset1,
+                                    user_role=comment_models.Comment.USER_ROLE_STUDENT)
+        mommy.make('devilry_comment.CommentFile', comment=group_comment2)
+
+        # Feedbackset 2
+        test_feedbackset2 = mommy.make('devilry_group.FeedbackSet')
+        group_comment3 = mommy.make('devilry_group.GroupComment', feedback_set=test_feedbackset2,
+                                    user_role=comment_models.Comment.USER_ROLE_EXAMINER)
+        mommy.make('devilry_comment.CommentFile', comment=group_comment3)
+        group_comment4 = mommy.make('devilry_group.GroupComment', feedback_set=test_feedbackset2,
+                                    user_role=comment_models.Comment.USER_ROLE_ADMIN)
+        mommy.make('devilry_comment.CommentFile', comment=group_comment4)
+
+        # Feedbackset 3
+        test_feedbackset3 = mommy.make('devilry_group.FeedbackSet')
+        group_comment5 = mommy.make('devilry_group.GroupComment', feedback_set=test_feedbackset3,
+                                    user_role=comment_models.Comment.USER_ROLE_STUDENT)
+        mommy.make('devilry_comment.CommentFile', comment=group_comment5)
+
+        feedback_set_queryset = group_models.FeedbackSet.objects.filter_public_comment_files_from_students()
+        self.assertIn(test_feedbackset1, feedback_set_queryset)
+        self.assertNotIn(test_feedbackset2, feedback_set_queryset)
+        self.assertIn(test_feedbackset3, feedback_set_queryset)
+
+    def test_filter_public_comment_files_from_students_no_public_student_files(self):
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet')
+        group_comment_admin = mommy.make('devilry_group.GroupComment', feedback_set=test_feedbackset,
+                                         user_role=comment_models.Comment.USER_ROLE_ADMIN)
+        group_comment_examiner = mommy.make('devilry_group.GroupComment', feedback_set=test_feedbackset,
+                                            user_role=comment_models.Comment.USER_ROLE_EXAMINER)
+        mommy.make('devilry_comment.CommentFile', comment=group_comment_admin)
+        mommy.make('devilry_comment.CommentFile', comment=group_comment_examiner)
+        self.assertNotIn(test_feedbackset, group_models.FeedbackSet.objects.filter_public_comment_files_from_students())
+
+    def test_filter_public_comment_files_from_students_query_count(self):
+        test_feedbackset = mommy.make('devilry_group.FeedbackSet')
+        group_comment = mommy.make('devilry_group.GroupComment', feedback_set=test_feedbackset,
+                                   user_role=comment_models.Comment.USER_ROLE_STUDENT)
+        mommy.make('devilry_comment.CommentFile', comment=group_comment)
+        with self.assertNumQueries(1):
+            self.assertIn(
+                test_feedbackset,
+                group_models.FeedbackSet.objects.filter_public_comment_files_from_students()
+            )

@@ -340,9 +340,10 @@ class BatchCompressionAPIFeedbackSetView(AbstractBatchCompressionAPIView):
     batchoperation_type = 'batchframework_compress_feedbackset'
 
     def has_no_files(self):
-        group_comment_ids = group_models.GroupComment.objects\
-            .filter(feedback_set=self.content_object).values_list('id', flat=True)
-        return CommentFile.objects.filter(comment_id__in=group_comment_ids).count() == 0
+        return not group_models.FeedbackSet.objects\
+            .filter_public_comment_files_from_students()\
+            .filter(id=self.content_object.id)\
+            .exists()
 
     def get_assignment_group_ids(self):
         return [self.content_object.group.id]

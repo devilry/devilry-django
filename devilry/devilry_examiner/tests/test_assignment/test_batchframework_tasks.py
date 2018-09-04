@@ -15,6 +15,7 @@ from django.conf import settings
 from django.test import TestCase
 from django.core.files.base import ContentFile
 from django.utils import timezone
+from django.template import defaultfilters
 
 # Devilry imports
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
@@ -56,6 +57,50 @@ class TestCompressed(TestCase):
 
 class TestAssignmentBatchTask(TestCompressed):
 
+    def __make_comment_file(self, feedback_set, file_name, file_content, **comment_kwargs):
+        comment = mommy.make('devilry_group.GroupComment',
+                                  feedback_set=feedback_set,
+                                  user_role='student', **comment_kwargs)
+        comment_file = mommy.make('devilry_comment.CommentFile', comment=comment,
+                                  filename=file_name)
+        comment_file.file.save(file_name, ContentFile(file_content))
+        return comment_file
+
+    def test_no_comment_files(self):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
+            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                               short_name='learn-python-basics',
+                                               first_deadline=timezone.now() + timezone.timedelta(days=1))
+            testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+            testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+
+            # Create examiner.
+            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+            related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
+
+            # Add feedbackset with commentfile to the group the examiner has access to.
+            testfeedbackset1 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
+            mommy.make('devilry_group.GroupComment',
+                       feedback_set=testfeedbackset1,
+                       user_role='student')
+            mommy.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
+
+            # Add feedbackset with commentfile to the group the examiner does not have access to.
+            testfeedbackset2 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
+            mommy.make('devilry_group.GroupComment',
+                       feedback_set=testfeedbackset2,
+                       user_role='student')
+            mommy.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
+
+            # run actiongroup
+            self._run_actiongroup(name='batchframework_assignment',
+                                  task=tasks.AssignmentCompressAction,
+                                  context_object=testassignment,
+                                  started_by=testuser)
+
+            self.assertEqual(archivemodels.CompressedArchiveMeta.objects.count(), 0)
+
     def test_only_groups_examiner_has_access_to(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
@@ -71,21 +116,15 @@ class TestAssignmentBatchTask(TestCompressed):
 
             # Add feedbackset with commentfile to the group the examiner has access to.
             testfeedbackset1 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
-            testcomment1 = mommy.make('devilry_group.GroupComment',
-                                      feedback_set=testfeedbackset1,
-                                      user_role='student',
-                                      user__shortname='testuser1@example.com')
-            commentfile1 = mommy.make('devilry_comment.CommentFile', comment=testcomment1, filename='testfile.txt')
-            commentfile1.file.save('testfile.txt', ContentFile('testcontent'))
+            self.__make_comment_file(feedback_set=testfeedbackset1, file_name='testfile.txt',
+                                     file_content='testcontent')
+            mommy.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
 
             # Add feedbackset with commentfile to the group the examiner does not have access to.
             testfeedbackset2 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
-            testcomment2 = mommy.make('devilry_group.GroupComment',
-                                      feedback_set=testfeedbackset2,
-                                      user_role='student',
-                                      user__shortname='testuser2@example.com')
-            commentfile2 = mommy.make('devilry_comment.CommentFile', comment=testcomment2, filename='testfile.txt')
-            commentfile2.file.save('testfile.txt', ContentFile('testcontent'))
+            self.__make_comment_file(feedback_set=testfeedbackset2, file_name='testfile.txt',
+                                     file_content='testcontent')
+            mommy.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -96,8 +135,8 @@ class TestAssignmentBatchTask(TestCompressed):
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
             self.assertEquals(1, len(zipfileobject.namelist()))
-            self.assertTrue(zipfileobject.namelist()[0].startswith('group-{}'.format(testgroup1)))
-            self.assertFalse(zipfileobject.namelist()[0].startswith('group-{}'.format(testgroup2)))
+            self.assertTrue(zipfileobject.namelist()[0].startswith('{}'.format('april')))
+            self.assertFalse(zipfileobject.namelist()[0].startswith('{}'.format('dewey')))
 
     def test_one_group_before_deadline(self):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
@@ -113,12 +152,9 @@ class TestAssignmentBatchTask(TestCompressed):
 
             # Add feedbackset with commentfile.
             testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-            testcomment = mommy.make('devilry_group.GroupComment',
-                                     feedback_set=testfeedbackset,
-                                     user_role='student',
-                                     user__shortname='testuser@example.com')
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-            commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+            self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile.txt',
+                                     file_content='testcontent')
+            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user__shortname='april')
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -128,10 +164,9 @@ class TestAssignmentBatchTask(TestCompressed):
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
-            # Path inside the zipfile generated by the task.
-            path_to_file = os.path.join('group-{}'.format(testgroup),
-                                        'deadline{}'.format(testfeedbackset.current_deadline()),
-                                        'delivery',
+            path_to_file = os.path.join('april',
+                                        'deadline-{}'.format(defaultfilters.date(
+                                            testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
                                         'testfile.txt')
             self.assertEquals('testcontent', zipfileobject.read(path_to_file))
 
@@ -149,12 +184,9 @@ class TestAssignmentBatchTask(TestCompressed):
 
             # Add feedbackset with commentfile.
             testfeedbackset = group_mommy.feedbackset_first_attempt_published(group=testgroup)
-            testcomment = mommy.make('devilry_group.GroupComment',
-                                     feedback_set=testfeedbackset,
-                                     user_role='student',
-                                     user__shortname='testuser@example.com')
-            commentfile = mommy.make('devilry_comment.CommentFile', comment=testcomment, filename='testfile.txt')
-            commentfile.file.save('testfile.txt', ContentFile('testcontent'))
+            self.__make_comment_file(feedback_set=testfeedbackset, file_name='testfile.txt',
+                                     file_content='testcontent')
+            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user__shortname='april')
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -165,9 +197,10 @@ class TestAssignmentBatchTask(TestCompressed):
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
             # Path inside the zipfile generated by the task.
-            path_to_file = os.path.join('group-{}'.format(testgroup),
-                                        'deadline{}'.format(testfeedbackset.current_deadline()),
-                                        'uploaded_after_deadline',
+            path_to_file = os.path.join('april',
+                                        'deadline-{}'.format(defaultfilters.date(
+                                            testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                                        'after_deadline_not_part_of_delivery',
                                         'testfile.txt')
             self.assertEquals('testcontent', zipfileobject.read(path_to_file))
 
@@ -189,30 +222,21 @@ class TestAssignmentBatchTask(TestCompressed):
 
             # Create feedbackset for testgroup1 with commentfiles
             testfeedbackset_group1 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
-            testcomment1 = mommy.make('devilry_group.GroupComment',
-                                      feedback_set=testfeedbackset_group1,
-                                      user_role='student',
-                                      user__shortname='testuser1@example.com')
-            commentfile1 = mommy.make('devilry_comment.CommentFile', comment=testcomment1, filename='testfile.txt')
-            commentfile1.file.save('testfile.txt', ContentFile('testcontent group 1'))
+            self.__make_comment_file(feedback_set=testfeedbackset_group1, file_name='testfile.txt',
+                                     file_content='testcontent group 1')
+            mommy.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
 
             # Create feedbackset for testgroup2 with commentfiles
             testfeedbackset_group2 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
-            testcomment2 = mommy.make('devilry_group.GroupComment',
-                                      feedback_set=testfeedbackset_group2,
-                                      user_role='student',
-                                      user__shortname='testuser2@example.com')
-            commentfile2 = mommy.make('devilry_comment.CommentFile', comment=testcomment2, filename='testfile.txt')
-            commentfile2.file.save('testfile.txt', ContentFile('testcontent group 2'))
+            self.__make_comment_file(feedback_set=testfeedbackset_group2, file_name='testfile.txt',
+                                     file_content='testcontent group 2')
+            mommy.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
 
             # Create feedbackset for testgroup3 with commentfiles
             testfeedbackset_group3 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup3)
-            testcomment3 = mommy.make('devilry_group.GroupComment',
-                                      feedback_set=testfeedbackset_group3,
-                                      user_role='student',
-                                      user__shortname='testuser3@example.com')
-            commentfile3 = mommy.make('devilry_comment.CommentFile', comment=testcomment3, filename='testfile.txt')
-            commentfile3.file.save('testfile.txt', ContentFile('testcontent group 3'))
+            self.__make_comment_file(feedback_set=testfeedbackset_group3, file_name='testfile.txt',
+                                     file_content='testcontent group 3')
+            mommy.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user__shortname='huey')
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -222,17 +246,17 @@ class TestAssignmentBatchTask(TestCompressed):
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
-            path_to_file_group1 = os.path.join('group-{}'.format(testgroup1),
-                                               'deadline{}'.format(testfeedbackset_group1.current_deadline()),
-                                               'delivery',
+            path_to_file_group1 = os.path.join('april',
+                                               'deadline-{}'.format(defaultfilters.date(
+                                                   testfeedbackset_group1.deadline_datetime, 'b.j.Y-H:i')),
                                                'testfile.txt')
-            path_to_file_group2 = os.path.join('group-{}'.format(testgroup2),
-                                               'deadline{}'.format(testfeedbackset_group2.current_deadline()),
-                                               'delivery',
+            path_to_file_group2 = os.path.join('dewey',
+                                               'deadline-{}'.format(defaultfilters.date(
+                                                   testfeedbackset_group2.deadline_datetime, 'b.j.Y-H:i')),
                                                'testfile.txt')
-            path_to_file_group3 = os.path.join('group-{}'.format(testgroup3),
-                                               'deadline{}'.format(testfeedbackset_group3.current_deadline()),
-                                               'delivery',
+            path_to_file_group3 = os.path.join('huey',
+                                               'deadline-{}'.format(defaultfilters.date(
+                                                   testfeedbackset_group3.deadline_datetime, 'b.j.Y-H:i')),
                                                'testfile.txt')
             self.assertEquals('testcontent group 1', zipfileobject.read(path_to_file_group1))
             self.assertEquals('testcontent group 2', zipfileobject.read(path_to_file_group2))
@@ -242,7 +266,7 @@ class TestAssignmentBatchTask(TestCompressed):
         with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
             testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                                                short_name='learn-python-basics',
-                                               first_deadline=timezone.now())
+                                               first_deadline=timezone.now() - timezone.timedelta(hours=1))
             testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
             testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
             testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -256,30 +280,21 @@ class TestAssignmentBatchTask(TestCompressed):
 
             # Create feedbackset for testgroup1 with commentfiles
             testfeedbackset_group1 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup1)
-            testcomment1 = mommy.make('devilry_group.GroupComment',
-                                      feedback_set=testfeedbackset_group1,
-                                      user_role='student',
-                                      user__shortname='testuser1@example.com')
-            commentfile1 = mommy.make('devilry_comment.CommentFile', comment=testcomment1, filename='testfile.txt')
-            commentfile1.file.save('testfile.txt', ContentFile('testcontent group 1'))
+            self.__make_comment_file(feedback_set=testfeedbackset_group1, file_name='testfile.txt',
+                                     file_content='testcontent group 1')
+            mommy.make('core.Candidate', assignment_group=testgroup1, relatedstudent__user__shortname='april')
 
             # Create feedbackset for testgroup2 with commentfiles
             testfeedbackset_group2 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup2)
-            testcomment2 = mommy.make('devilry_group.GroupComment',
-                                      feedback_set=testfeedbackset_group2,
-                                      user_role='student',
-                                      user__shortname='testuser2@example.com')
-            commentfile2 = mommy.make('devilry_comment.CommentFile', comment=testcomment2, filename='testfile.txt')
-            commentfile2.file.save('testfile.txt', ContentFile('testcontent group 2'))
+            self.__make_comment_file(feedback_set=testfeedbackset_group2, file_name='testfile.txt',
+                                     file_content='testcontent group 2')
+            mommy.make('core.Candidate', assignment_group=testgroup2, relatedstudent__user__shortname='dewey')
 
             # Create feedbackset for testgroup3 with commentfiles
             testfeedbackset_group3 = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup3)
-            testcomment3 = mommy.make('devilry_group.GroupComment',
-                                      feedback_set=testfeedbackset_group3,
-                                      user_role='student',
-                                      user__shortname='testuser3@example.com')
-            commentfile3 = mommy.make('devilry_comment.CommentFile', comment=testcomment3, filename='testfile.txt')
-            commentfile3.file.save('testfile.txt', ContentFile('testcontent group 3'))
+            self.__make_comment_file(feedback_set=testfeedbackset_group3, file_name='testfile.txt',
+                                     file_content='testcontent group 3')
+            mommy.make('core.Candidate', assignment_group=testgroup3, relatedstudent__user__shortname='huey')
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -289,18 +304,186 @@ class TestAssignmentBatchTask(TestCompressed):
 
             archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
             zipfileobject = ZipFile(archive_meta.archive_path)
-            path_to_file_group1 = os.path.join('group-{}'.format(testgroup1),
-                                               'deadline{}'.format(testfeedbackset_group1.current_deadline()),
-                                               'uploaded_after_deadline',
+            path_to_file_group1 = os.path.join('april',
+                                               'deadline-{}'.format(defaultfilters.date(
+                                                   testfeedbackset_group1.deadline_datetime, 'b.j.Y-H:i')),
+                                               'after_deadline_not_part_of_delivery',
                                                'testfile.txt')
-            path_to_file_group2 = os.path.join('group-{}'.format(testgroup2),
-                                               'deadline{}'.format(testfeedbackset_group2.current_deadline()),
-                                               'uploaded_after_deadline',
+            path_to_file_group2 = os.path.join('dewey',
+                                               'deadline-{}'.format(defaultfilters.date(
+                                                   testfeedbackset_group2.deadline_datetime, 'b.j.Y-H:i')),
+                                               'after_deadline_not_part_of_delivery',
                                                'testfile.txt')
-            path_to_file_group3 = os.path.join('group-{}'.format(testgroup3),
-                                               'deadline{}'.format(testfeedbackset_group3.current_deadline()),
-                                               'uploaded_after_deadline',
+            path_to_file_group3 = os.path.join('huey',
+                                               'deadline-{}'.format(defaultfilters.date(
+                                                   testfeedbackset_group3.deadline_datetime, 'b.j.Y-H:i')),
+                                               'after_deadline_not_part_of_delivery',
                                                'testfile.txt')
             self.assertEquals('testcontent group 1', zipfileobject.read(path_to_file_group1))
             self.assertEquals('testcontent group 2', zipfileobject.read(path_to_file_group2))
             self.assertEquals('testcontent group 3', zipfileobject.read(path_to_file_group3))
+
+    def test_duplicates(self):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
+            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                               short_name='learn-python-basics',
+                                               first_deadline=timezone.now() + timezone.timedelta(hours=1))
+            testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+
+            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+            related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
+
+            # Create feedbackset for testgroup1 with commentfiles
+            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+            self.__make_comment_file(feedback_set=testfeedbackset,
+                                     file_name='testfile.txt',
+                                     file_content='first upload')
+            self.__make_comment_file(feedback_set=testfeedbackset,
+                                     file_name='testfile.txt',
+                                     file_content='last upload')
+
+            student_user = mommy.make(settings.AUTH_USER_MODEL, shortname='april')
+            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user)
+
+            # run actiongroup
+            self._run_actiongroup(name='batchframework_assignment',
+                                  task=tasks.AssignmentCompressAction,
+                                  context_object=testassignment,
+                                  started_by=testuser)
+
+            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
+            zipfileobject = ZipFile(archive_meta.archive_path)
+
+            path_to_last_file = os.path.join(
+                'april',
+                'deadline-{}'.format(defaultfilters.date(
+                    testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                'testfile.txt')
+            path_to_old_duplicate_file = os.path.join(
+                'april',
+                'deadline-{}'.format(defaultfilters.date(
+                    testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                'old_duplicates',
+                'testfile.txt')
+            self.assertEqual('last upload', zipfileobject.read(path_to_last_file))
+            self.assertEqual('first upload', zipfileobject.read(path_to_old_duplicate_file))
+
+    def test_duplicates_from_different_students(self):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
+            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                               short_name='learn-python-basics',
+                                               first_deadline=timezone.now() + timezone.timedelta(hours=1))
+            testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+
+            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+            related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
+            student_user_april = mommy.make(settings.AUTH_USER_MODEL, shortname='april')
+            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user_april)
+            student_user_dewey = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey')
+            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user_dewey)
+
+            # Create feedbackset for testgroup1 with commentfiles
+            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+            self.__make_comment_file(feedback_set=testfeedbackset,
+                                     file_name='testfile.txt',
+                                     file_content='by april',
+                                     user=student_user_april)
+            self.__make_comment_file(feedback_set=testfeedbackset,
+                                     file_name='testfile.txt',
+                                     file_content='by dewey',
+                                     user=student_user_dewey)
+
+            # run actiongroup
+            self._run_actiongroup(name='batchframework_assignment',
+                                  task=tasks.AssignmentCompressAction,
+                                  context_object=testassignment,
+                                  started_by=testuser)
+
+            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
+            zipfileobject = ZipFile(archive_meta.archive_path)
+
+            path_to_last_file = os.path.join(
+                'april, dewey',
+                'deadline-{}'.format(defaultfilters.date(
+                    testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                'testfile.txt')
+            path_to_old_duplicate_file = os.path.join(
+                'april, dewey',
+                'deadline-{}'.format(defaultfilters.date(
+                    testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                'old_duplicates',
+                'testfile.txt')
+            self.assertEqual('by dewey', zipfileobject.read(path_to_last_file))
+            self.assertEqual('by april', zipfileobject.read(path_to_old_duplicate_file))
+
+    def test_duplicates_before_and_after_deadline(self):
+        with self.settings(DEVILRY_COMPRESSED_ARCHIVES_DIRECTORY=self.backend_path):
+            first_deadline = timezone.now() + timezone.timedelta(hours=1)
+            testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                               short_name='learn-python-basics',
+                                               first_deadline=first_deadline)
+            testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+
+            testuser = mommy.make(settings.AUTH_USER_MODEL, shortname='thor', fullname='Thor')
+            related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+            mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup)
+
+            # Create feedbackset for testgroup with commentfiles
+            testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+            self.__make_comment_file(feedback_set=testfeedbackset,
+                                     file_name='testfile.txt',
+                                     file_content='first upload')
+            self.__make_comment_file(feedback_set=testfeedbackset,
+                                     file_name='testfile.txt',
+                                     file_content='last upload')
+            self.__make_comment_file(feedback_set=testfeedbackset,
+                                     file_name='testfile.txt',
+                                     file_content='first upload after deadline',
+                                     published_datetime=timezone.now() + timezone.timedelta(hours=2))
+            self.__make_comment_file(feedback_set=testfeedbackset,
+                                     file_name='testfile.txt',
+                                     file_content='last upload after deadline',
+                                     published_datetime=timezone.now() + timezone.timedelta(hours=2))
+
+            student_user = mommy.make(settings.AUTH_USER_MODEL, shortname='april')
+            mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user)
+
+            # run actiongroup
+            self._run_actiongroup(name='batchframework_assignment',
+                                  task=tasks.AssignmentCompressAction,
+                                  context_object=testassignment,
+                                  started_by=testuser)
+
+            archive_meta = archivemodels.CompressedArchiveMeta.objects.get(content_object_id=testassignment.id)
+            zipfileobject = ZipFile(archive_meta.archive_path)
+
+            path_to_last_file = os.path.join(
+                'april',
+                'deadline-{}'.format(defaultfilters.date(
+                    testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                'testfile.txt')
+            path_to_old_duplicate_file = os.path.join(
+                'april',
+                'deadline-{}'.format(defaultfilters.date(
+                    testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                'old_duplicates',
+                'testfile.txt')
+            path_to_last_file_after_deadline = os.path.join(
+                'april',
+                'deadline-{}'.format(defaultfilters.date(
+                    testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                'after_deadline_not_part_of_delivery',
+                'testfile.txt')
+            path_to_old_duplicate_file_after_deadline = os.path.join(
+                'april',
+                'deadline-{}'.format(defaultfilters.date(
+                    testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
+                'after_deadline_not_part_of_delivery',
+                'old_duplicates',
+                'testfile.txt')
+            self.assertEqual('last upload', zipfileobject.read(path_to_last_file))
+            self.assertEqual('first upload', zipfileobject.read(path_to_old_duplicate_file))
+            self.assertEqual('last upload after deadline', zipfileobject.read(path_to_last_file_after_deadline))
+            self.assertEqual('first upload after deadline', zipfileobject.read(path_to_old_duplicate_file_after_deadline))

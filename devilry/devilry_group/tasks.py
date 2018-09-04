@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import os
+from pprint import pprint
 
 from ievv_opensource.ievv_batchframework import batchregistry
 
@@ -23,7 +24,7 @@ class AbstractBaseBatchAction(batchregistry.Action):
             archive_name: Name of the archive.
 
         Returns:
-
+            PythonZipFileBackend: Backend for `self.backend_id`
         """
         from devilry.devilry_compressionutil import backend_registry
         zipfile_backend_class = backend_registry.Registry.get_instance().get(self.backend_id)
@@ -33,46 +34,15 @@ class AbstractBaseBatchAction(batchregistry.Action):
             readmode=False
         )
 
-    # def add_file(self, zipfile_backend, sub_path, comment_file, current_deadline):
-    #     """
-    #     Args:
-    #         zipfile_backend:
-    #         sub_path:
-    #         comment_file:
-    #         current_deadline:
-    #     """
-    #     sub_folder_type = 'delivery'
-    #     if comment_file.comment.user_role == 'student':
-    #         if current_deadline and comment_file.comment.published_datetime > current_deadline:
-    #             sub_folder_type = 'uploaded_after_deadline'
-    #     elif comment_file.comment.user_role == 'examiner' \
-    #             or comment_file.comment.user_role == 'admin':
-    #         sub_folder_type = 'uploaded_by_examiners_and_admins'
-    #
-    #     # Write file to backend on the path defined by os.path.join
-    #     zipfile_backend.add_file(
-    #         os.path.join(sub_path, sub_folder_type, comment_file.filename),
-    #         comment_file.file.file)
-
-    def add_file(self, zipfile_backend, sub_path, comment_file, current_deadline):
+    def add_file(self, zipfile_backend, sub_path, comment_file):
         """
         Args:
-            zipfile_backend:
-            sub_path:
-            comment_file:
-            current_deadline:
+            zipfile_backend: A subclass of ``PythonZipFileBackend``.
+            sub_path: The path to write to inside the archive.
+            comment_file: The `CommentFile` file to write.
         """
-        sub_folder_type = 'delivery'
-        if comment_file.comment.user_role == 'student':
-            if current_deadline and comment_file.comment.published_datetime > current_deadline:
-                sub_folder_type = 'uploaded_after_deadline'
-        elif comment_file.comment.user_role == 'examiner' \
-                or comment_file.comment.user_role == 'admin':
-            sub_folder_type = 'uploaded_by_examiners_and_admins'
-
-        # Write file to backend on the path defined by os.path.join
         zipfile_backend.add_file(
-            os.path.join(sub_path, sub_folder_type, comment_file.filename),
+            os.path.join(sub_path, comment_file.filename),
             comment_file.file.file)
 
     def execute(self):
@@ -85,27 +55,77 @@ class FeedbackSetBatchMixin(object):
 
     Must be included in class together with :class:`~.AbstractBaseBatchAction`.
     """
-    # def zipfile_add_feedbackset(self, zipfile_backend, feedback_set, sub_path=''):
-    #     from devilry.devilry_group import models as group_models
-    #     for group_comment in feedback_set.groupcomment_set.all():
-    #         # Don't add files from comments that are not visible to everyone.
-    #         if group_comment.visibility == group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
-    #             for comment_file in group_comment.commentfile_set.all():
-    #                 self.add_file(zipfile_backend=zipfile_backend,
-    #                               sub_path=sub_path,
-    #                               comment_file=comment_file,
-    #                               current_deadline=feedback_set.current_deadline())
+    def __build_zip_archive_from_comment_file_tree(self, zipfile_backend, sub_path,
+                                                   comment_file_tree, deadline_datetime):
+        for filename, value in comment_file_tree.iteritems():
+            # Add files before deadline
+            if value['before_deadline']['last']:
+                comment_file = value['before_deadline']['last']
+                self.add_file(zipfile_backend=zipfile_backend,
+                              sub_path=sub_path,
+                              comment_file=comment_file)
+                for old_duplicate in value['before_deadline']['old_duplicates']:
+                    self.add_file(zipfile_backend=zipfile_backend,
+                                  sub_path=os.path.join(sub_path, 'old_duplicates'),
+                                  comment_file=old_duplicate)
+
+            # Add files after deadline
+            if value['after_deadline']['last']:
+                comment_file = value['after_deadline']['last']
+                after_deadline_sub_path = os.path.join(sub_path, 'after_deadline_not_part_of_delivery')
+                self.add_file(zipfile_backend=zipfile_backend,
+                              sub_path=after_deadline_sub_path,
+                              comment_file=comment_file)
+                for old_duplicate in value['after_deadline']['old_duplicates']:
+                    self.add_file(zipfile_backend=zipfile_backend,
+                                  sub_path=os.path.join(after_deadline_sub_path, 'old_duplicates'),
+                                  comment_file=old_duplicate)
 
     def zipfile_add_feedbackset(self, zipfile_backend, feedback_set, sub_path=''):
         from devilry.devilry_group import models as group_models
-        for group_comment in feedback_set.groupcomment_set.all():
+
+        comment_file_tree = {}
+        for group_comment in feedback_set.groupcomment_set.all().order_by('-created_datetime'):
             # Don't add files from comments that are not visible to everyone.
-            if group_comment.visibility == group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE:
-                for comment_file in group_comment.commentfile_set.all():
-                    self.add_file(zipfile_backend=zipfile_backend,
-                                  sub_path=sub_path,
-                                  comment_file=comment_file,
-                                  current_deadline=feedback_set.current_deadline())
+            if group_comment.visibility == group_models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE and \
+                    group_comment.user_role == group_models.GroupComment.USER_ROLE_STUDENT:
+                for comment_file in group_comment.commentfile_set.all().order_by('-created_datetime'):
+                    filename = comment_file.filename
+                    if comment_file.filename not in comment_file_tree:
+                        comment_file_tree[filename] = {
+                            'before_deadline': {
+                                'last': None,
+                                'old_duplicates': []
+                            },
+                            'after_deadline': {
+                                'last': None,
+                                'old_duplicates': []
+                            }
+                        }
+
+                    if group_comment.published_datetime <= feedback_set.deadline_datetime:
+                        # Before the deadline expired
+                        # Set initial last delivery before deadline, and duplicates.
+                        if comment_file_tree[filename]['before_deadline']['last'] is None:
+                            comment_file_tree[filename]['before_deadline']['last'] = comment_file
+                        else:
+                            comment_file_tree[filename]['before_deadline']['old_duplicates'].append(comment_file)
+
+                    else:
+                        # After the deadline expired.
+                        # Set initial last delivery after deadline, and duplicates.
+                        if comment_file_tree[filename]['after_deadline']['last'] is None:
+                            comment_file_tree[filename]['after_deadline']['last'] = comment_file
+                        else:
+                            comment_file_tree[filename]['after_deadline']['old_duplicates'].append(comment_file)
+
+        # Start building the ZIP archive.
+        self.__build_zip_archive_from_comment_file_tree(
+            zipfile_backend=zipfile_backend,
+            sub_path=sub_path,
+            comment_file_tree=comment_file_tree,
+            deadline_datetime=feedback_set.deadline_datetime
+        )
 
 
 class FeedbackSetCompressAction(AbstractBaseBatchAction, FeedbackSetBatchMixin):
@@ -117,6 +137,13 @@ class FeedbackSetCompressAction(AbstractBaseBatchAction, FeedbackSetBatchMixin):
     def execute(self):
         feedback_set = self.kwargs.get('context_object')
         started_by_user = self.kwargs.get('started_by')
+
+        from devilry.devilry_group import models as group_models
+        feedback_sets_with_public_student_comments = group_models.FeedbackSet.objects\
+            .filter_public_comment_files_from_students().filter(id=feedback_set.id)
+        if not feedback_sets_with_public_student_comments.exists():
+            # Do nothing
+            return
 
         # Create the name for the actual archive.
         from django.utils import timezone
