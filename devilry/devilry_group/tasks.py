@@ -9,7 +9,6 @@ from ievv_opensource.ievv_batchframework import batchregistry
 
 class AbstractBaseBatchAction(batchregistry.Action):
     """
-
     """
     #: Backend id to get from registry in function `get_backend()`.
     #: Must be set in subclass.
@@ -34,15 +33,19 @@ class AbstractBaseBatchAction(batchregistry.Action):
             readmode=False
         )
 
-    def add_file(self, zipfile_backend, sub_path, comment_file):
+    def add_file(self, zipfile_backend, sub_path, comment_file, is_duplicate=False):
         """
         Args:
             zipfile_backend: A subclass of ``PythonZipFileBackend``.
             sub_path: The path to write to inside the archive.
             comment_file: The `CommentFile` file to write.
         """
+        file_name = comment_file.filename
+        if is_duplicate:
+            file_name = comment_file.get_filename_as_unique_string()
+
         zipfile_backend.add_file(
-            os.path.join(sub_path, comment_file.filename),
+            os.path.join(sub_path, file_name),
             comment_file.file.file)
 
     def execute(self):
@@ -67,7 +70,8 @@ class FeedbackSetBatchMixin(object):
                 for old_duplicate in value['before_deadline']['old_duplicates']:
                     self.add_file(zipfile_backend=zipfile_backend,
                                   sub_path=os.path.join(sub_path, 'old_duplicates'),
-                                  comment_file=old_duplicate)
+                                  comment_file=old_duplicate,
+                                  is_duplicate=True)
 
             # Add files after deadline
             if value['after_deadline']['last']:
@@ -79,7 +83,8 @@ class FeedbackSetBatchMixin(object):
                 for old_duplicate in value['after_deadline']['old_duplicates']:
                     self.add_file(zipfile_backend=zipfile_backend,
                                   sub_path=os.path.join(after_deadline_sub_path, 'old_duplicates'),
-                                  comment_file=old_duplicate)
+                                  comment_file=old_duplicate,
+                                  is_duplicate=True)
 
     def zipfile_add_feedbackset(self, zipfile_backend, feedback_set, sub_path=''):
         from devilry.devilry_group import models as group_models

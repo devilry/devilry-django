@@ -42,10 +42,10 @@ class AssignmentCompressAction(AbstractBaseBatchAction, AssignmentBatchMixin, Fe
             return
 
         # Create name for the actual archive
-        from django.utils import timezone
-        archive_name = '{}-{}.zip'.format(
-            assignment.short_name,
-            timezone.now().strftime('%Y-%m-%d_%H-%M-%S.%f'))
+        archive_name = '{}.{}.{}.zip'.format(
+            assignment.subject.short_name,
+            assignment.period.short_name,
+            assignment.short_name)
 
         # create path for the archive.
         zipfile_path = os.path.join(

@@ -336,12 +336,12 @@ class TestAssignmentBatchTask(TestCompressed):
 
             # Create feedbackset for testgroup1 with commentfiles
             testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-            self.__make_comment_file(feedback_set=testfeedbackset,
-                                     file_name='testfile.txt',
-                                     file_content='first upload')
-            self.__make_comment_file(feedback_set=testfeedbackset,
-                                     file_name='testfile.txt',
-                                     file_content='last upload')
+            comment_file_first = self.__make_comment_file(feedback_set=testfeedbackset,
+                                                          file_name='testfile.txt',
+                                                          file_content='first upload')
+            comment_file_last = self.__make_comment_file(feedback_set=testfeedbackset,
+                                                         file_name='testfile.txt',
+                                                         file_content='last upload')
 
             student_user = mommy.make(settings.AUTH_USER_MODEL, shortname='april')
             mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user)
@@ -365,7 +365,7 @@ class TestAssignmentBatchTask(TestCompressed):
                 'deadline-{}'.format(defaultfilters.date(
                     testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
                 'old_duplicates',
-                'testfile.txt')
+                comment_file_first.get_filename_as_unique_string())
             self.assertEqual('last upload', zipfileobject.read(path_to_last_file))
             self.assertEqual('first upload', zipfileobject.read(path_to_old_duplicate_file))
 
@@ -386,14 +386,14 @@ class TestAssignmentBatchTask(TestCompressed):
 
             # Create feedbackset for testgroup1 with commentfiles
             testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-            self.__make_comment_file(feedback_set=testfeedbackset,
-                                     file_name='testfile.txt',
-                                     file_content='by april',
-                                     user=student_user_april)
-            self.__make_comment_file(feedback_set=testfeedbackset,
-                                     file_name='testfile.txt',
-                                     file_content='by dewey',
-                                     user=student_user_dewey)
+            comment_file_april = self.__make_comment_file(feedback_set=testfeedbackset,
+                                                          file_name='testfile.txt',
+                                                          file_content='by april',
+                                                          user=student_user_april)
+            comment_file_dewey = self.__make_comment_file(feedback_set=testfeedbackset,
+                                                          file_name='testfile.txt',
+                                                          file_content='by dewey',
+                                                          user=student_user_dewey)
 
             # run actiongroup
             self._run_actiongroup(name='batchframework_assignment',
@@ -414,7 +414,7 @@ class TestAssignmentBatchTask(TestCompressed):
                 'deadline-{}'.format(defaultfilters.date(
                     testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
                 'old_duplicates',
-                'testfile.txt')
+                comment_file_april.get_filename_as_unique_string())
             self.assertEqual('by dewey', zipfileobject.read(path_to_last_file))
             self.assertEqual('by april', zipfileobject.read(path_to_old_duplicate_file))
 
@@ -432,20 +432,22 @@ class TestAssignmentBatchTask(TestCompressed):
 
             # Create feedbackset for testgroup with commentfiles
             testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
-            self.__make_comment_file(feedback_set=testfeedbackset,
-                                     file_name='testfile.txt',
-                                     file_content='first upload')
+            comment_file_first_upload = self.__make_comment_file(feedback_set=testfeedbackset,
+                                                                 file_name='testfile.txt',
+                                                                 file_content='first upload')
             self.__make_comment_file(feedback_set=testfeedbackset,
                                      file_name='testfile.txt',
                                      file_content='last upload')
-            self.__make_comment_file(feedback_set=testfeedbackset,
-                                     file_name='testfile.txt',
-                                     file_content='first upload after deadline',
-                                     published_datetime=timezone.now() + timezone.timedelta(hours=2))
-            self.__make_comment_file(feedback_set=testfeedbackset,
-                                     file_name='testfile.txt',
-                                     file_content='last upload after deadline',
-                                     published_datetime=timezone.now() + timezone.timedelta(hours=2))
+            comment_file_first_upload_after_deadline = self.__make_comment_file(
+                feedback_set=testfeedbackset,
+                file_name='testfile.txt',
+                file_content='first upload after deadline',
+                published_datetime=timezone.now() + timezone.timedelta(hours=2))
+            self.__make_comment_file(
+                feedback_set=testfeedbackset,
+                file_name='testfile.txt',
+                file_content='last upload after deadline',
+                published_datetime=timezone.now() + timezone.timedelta(hours=2))
 
             student_user = mommy.make(settings.AUTH_USER_MODEL, shortname='april')
             mommy.make('core.Candidate', assignment_group=testgroup, relatedstudent__user=student_user)
@@ -469,7 +471,7 @@ class TestAssignmentBatchTask(TestCompressed):
                 'deadline-{}'.format(defaultfilters.date(
                     testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
                 'old_duplicates',
-                'testfile.txt')
+                comment_file_first_upload.get_filename_as_unique_string())
             path_to_last_file_after_deadline = os.path.join(
                 'april',
                 'deadline-{}'.format(defaultfilters.date(
@@ -482,7 +484,7 @@ class TestAssignmentBatchTask(TestCompressed):
                     testfeedbackset.deadline_datetime, 'b.j.Y-H:i')),
                 'after_deadline_not_part_of_delivery',
                 'old_duplicates',
-                'testfile.txt')
+                comment_file_first_upload_after_deadline.get_filename_as_unique_string())
             self.assertEqual('last upload', zipfileobject.read(path_to_last_file))
             self.assertEqual('first upload', zipfileobject.read(path_to_old_duplicate_file))
             self.assertEqual('last upload after deadline', zipfileobject.read(path_to_last_file_after_deadline))
