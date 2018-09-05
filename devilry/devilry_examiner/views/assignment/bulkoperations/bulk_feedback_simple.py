@@ -37,9 +37,17 @@ class GroupItemValue(AbstractExaminerCell):
 class GradeFormFieldItemValue(AbstractExaminerCell):
     template_name = 'devilry_examiner/assignment/simple_group_bulk_feedback/grade_cell_value.django.html'
 
-    def __init__(self, assignment_group_id):
-        self.field_name = 'grade_{}'.format(assignment_group_id)
+    def __init__(self, assignment_group):
+        self.assignment = assignment_group.parentnode
+        self.field_name = 'grade_{}'.format(assignment_group.id)
         super(GradeFormFieldItemValue, self).__init__()
+
+    def get_context_data(self, request=None):
+        context_data = super(GradeFormFieldItemValue, self).get_context_data(request=request)
+        context_data['assignment'] = self.assignment
+        context_data['assignment_uses_passed_failed_plugin'] = \
+            self.assignment.grading_system_plugin_id == self.assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED
+        return context_data
 
 
 class CommentTextFormFieldItemValue(AbstractExaminerCell):
@@ -68,7 +76,7 @@ class GroupRowList(base_new.AbstractRowList):
         self.assignment_group = assignment_group
         super(GroupRowList, self).__init__()
         self.append(GroupItemValue(assignment_group=self.assignment_group))
-        self.append(GradeFormFieldItemValue(assignment_group_id=assignment_group.id))
+        self.append(GradeFormFieldItemValue(assignment_group=assignment_group))
         self.append(CommentTextFormFieldItemValue(assignment_group_id=assignment_group.id))
 
 
@@ -240,6 +248,8 @@ class SimpleGroupBulkFeedbackView(listbuilderview.View):
     def get_context_data(self, **kwargs):
         context_data = super(SimpleGroupBulkFeedbackView, self).get_context_data(**kwargs)
         context_data['assignment'] = self.assignment
+        context_data['assignment_uses_passed_failed_plugin'] = \
+            self.assignment.grading_system_plugin_id == self.assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED
         return context_data
 
     def get_pagetitle(self):

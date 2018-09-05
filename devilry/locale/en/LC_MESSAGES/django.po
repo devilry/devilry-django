@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-17 14:08+0200\n"
+"POT-Creation-Date: 2018-09-05 10:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,20 +17,20 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: devilry/apps/core/admin.py:54
+#: devilry/apps/core/admin.py:58
 msgid "Admins"
 msgstr ""
 
-#: devilry/apps/core/admin.py:85 devilry/apps/core/admin.py:113
-#: devilry/apps/core/admin.py:153 devilry/apps/core/models/period.py:196
+#: devilry/apps/core/admin.py:89 devilry/apps/core/admin.py:117
+#: devilry/apps/core/admin.py:181 devilry/apps/core/models/period.py:196
 msgid "Subject"
 msgstr ""
 
-#: devilry/apps/core/admin.py:118 devilry/apps/core/admin.py:158
+#: devilry/apps/core/admin.py:122 devilry/apps/core/admin.py:186
 msgid "Period"
 msgstr ""
 
-#: devilry/apps/core/admin.py:163
+#: devilry/apps/core/admin.py:191
 msgid "Assignment"
 msgstr ""
 
@@ -301,13 +301,13 @@ msgctxt "core assignmentgroup"
 msgid "group#%(groupid)s - no students in group"
 msgstr ""
 
-#: devilry/apps/core/models/assignment_group.py:1563
+#: devilry/apps/core/models/assignment_group.py:1558
 msgid ""
 "Cannot merge self into target, self and target is not part of same "
 "AssignmentGroup"
 msgstr ""
 
-#: devilry/apps/core/models/assignment_group.py:1580
+#: devilry/apps/core/models/assignment_group.py:1611
 msgid "Cannot merge less than 2 groups"
 msgstr ""
 
@@ -336,7 +336,7 @@ msgid "Can only contain numbers, lowercase letters, '_' and '-'. "
 msgstr ""
 
 #: devilry/apps/core/models/custom_db_fields.py:40
-#: devilry/devilry_account/models.py:877
+#: devilry/devilry_account/models.py:881
 #: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:17
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:23
 #: devilry/devilry_cradmin/devilry_listfilter/assignment.py:16
@@ -633,7 +633,7 @@ msgid ""
 "form</a>."
 msgstr ""
 
-#: devilry/devilry_account/admin.py:155 devilry/devilry_account/models.py:461
+#: devilry/devilry_account/admin.py:155 devilry/devilry_account/models.py:465
 msgid "Users"
 msgstr ""
 
@@ -646,266 +646,266 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-#: devilry/devilry_account/models.py:404
+#: devilry/devilry_account/models.py:408
 msgid "superuser status"
 msgstr ""
 
-#: devilry/devilry_account/models.py:406
+#: devilry/devilry_account/models.py:410
 msgid ""
 "Designates that this user has all permissions without explicitly assigning "
 "them."
 msgstr ""
 
-#: devilry/devilry_account/models.py:418
+#: devilry/devilry_account/models.py:422
 msgid ""
 "The short name for the user. This is set automatically to the email or "
 "username depending on the method used for authentication."
 msgstr ""
 
-#: devilry/devilry_account/models.py:424
+#: devilry/devilry_account/models.py:428
 msgid "Full name"
 msgstr ""
 
-#: devilry/devilry_account/models.py:430
+#: devilry/devilry_account/models.py:434
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:31
 msgid "Last name"
 msgstr ""
 
-#: devilry/devilry_account/models.py:435
+#: devilry/devilry_account/models.py:439
 msgid "date joined"
 msgstr ""
 
-#: devilry/devilry_account/models.py:441
+#: devilry/devilry_account/models.py:445
 msgid "Suspension time"
 msgstr ""
 
-#: devilry/devilry_account/models.py:442
+#: devilry/devilry_account/models.py:446
 msgid "Time when the account was suspended"
 msgstr ""
 
-#: devilry/devilry_account/models.py:447
+#: devilry/devilry_account/models.py:451
 msgid "Reason for suspension"
 msgstr ""
 
-#: devilry/devilry_account/models.py:453
+#: devilry/devilry_account/models.py:457
 msgid "Preferred language"
 msgstr ""
 
-#: devilry/devilry_account/models.py:460
+#: devilry/devilry_account/models.py:464
 msgid "User"
 msgstr ""
 
-#: devilry/devilry_account/models.py:524
+#: devilry/devilry_account/models.py:528
 msgid "Can not provide a reason for suspension when suspension time is blank."
 msgstr ""
 
-#: devilry/devilry_account/models.py:526
+#: devilry/devilry_account/models.py:530
 msgid "Short name is required."
 msgstr ""
 
-#: devilry/devilry_account/models.py:636
+#: devilry/devilry_account/models.py:640
 #: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:59
 msgid "Email address"
 msgstr ""
 
-#: devilry/devilry_account/models.py:637
+#: devilry/devilry_account/models.py:641
 #: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:57
 msgid "Email addresses"
 msgstr ""
 
-#: devilry/devilry_account/models.py:645
+#: devilry/devilry_account/models.py:649
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:13
 msgid "Email"
 msgstr ""
 
-#: devilry/devilry_account/models.py:653
+#: devilry/devilry_account/models.py:657
 msgid "Send notifications to this email address?"
 msgstr ""
 
-#: devilry/devilry_account/models.py:659
+#: devilry/devilry_account/models.py:663
 msgid "Is this your primary email?"
 msgstr ""
 
-#: devilry/devilry_account/models.py:661 devilry/devilry_account/models.py:719
+#: devilry/devilry_account/models.py:665 devilry/devilry_account/models.py:723
 #: devilry/devilry_student/cradminextensions/columntypes.py:79
 msgid "No"
 msgstr ""
 
-#: devilry/devilry_account/models.py:662 devilry/devilry_account/models.py:720
+#: devilry/devilry_account/models.py:666 devilry/devilry_account/models.py:724
 #: devilry/devilry_student/cradminextensions/columntypes.py:78
 msgid "Yes"
 msgstr ""
 
-#: devilry/devilry_account/models.py:664
+#: devilry/devilry_account/models.py:668
 msgid ""
 "Your primary email is the email address used when we need to display a "
 "single email address."
 msgstr ""
 
-#: devilry/devilry_account/models.py:684
+#: devilry/devilry_account/models.py:688
 #, python-format
 msgid "%(email)s - User%(userid)s#%(userhortname)s"
 msgstr ""
 
-#: devilry/devilry_account/models.py:700 devilry/devilry_account/models.py:709
+#: devilry/devilry_account/models.py:704 devilry/devilry_account/models.py:713
 #: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:43
 #: devilry/devilry_admin/cradminextensions/listfilter/listfilter_relateduser.py:16
 #: devilry/devilry_header/templates/devilry_header/about_me.django.html:29
 msgid "Username"
 msgstr ""
 
-#: devilry/devilry_account/models.py:701
+#: devilry/devilry_account/models.py:705
 #: devilry/devilry_account/templates/devilry_account/crapps/account/index.django.html:41
 msgid "Usernames"
 msgstr ""
 
-#: devilry/devilry_account/models.py:717
+#: devilry/devilry_account/models.py:721
 msgid "Is this your primary username?"
 msgstr ""
 
-#: devilry/devilry_account/models.py:722
+#: devilry/devilry_account/models.py:726
 msgid ""
 "Your primary username is shown alongside your full name to identify you to "
 "teachers, examiners and other students."
 msgstr ""
 
-#: devilry/devilry_account/models.py:745
+#: devilry/devilry_account/models.py:749
 #, python-format
 msgid "%(username)s - User%(userid)s"
 msgstr ""
 
-#: devilry/devilry_account/models.py:758
+#: devilry/devilry_account/models.py:762
 msgid "Permission group user"
 msgstr ""
 
-#: devilry/devilry_account/models.py:759
+#: devilry/devilry_account/models.py:763
 msgid "Permission group users"
 msgstr ""
 
-#: devilry/devilry_account/models.py:771
+#: devilry/devilry_account/models.py:775
 #, python-format
 msgid "%(user)s in group %(permissiongroup)s"
 msgstr ""
 
-#: devilry/devilry_account/models.py:864
+#: devilry/devilry_account/models.py:868
 msgid "Department administrator group"
 msgstr ""
 
-#: devilry/devilry_account/models.py:865
+#: devilry/devilry_account/models.py:869
 msgid "Course administrator group"
 msgstr ""
 
-#: devilry/devilry_account/models.py:866
+#: devilry/devilry_account/models.py:870
 msgid "Semester administrator group"
 msgstr ""
 
-#: devilry/devilry_account/models.py:870 devilry/devilry_account/models.py:871
+#: devilry/devilry_account/models.py:874 devilry/devilry_account/models.py:875
 msgid "Permission group"
 msgstr ""
 
-#: devilry/devilry_account/models.py:878
+#: devilry/devilry_account/models.py:882
 msgid "A unique name for this group."
 msgstr ""
 
-#: devilry/devilry_account/models.py:884
+#: devilry/devilry_account/models.py:888
 msgid "Created time"
 msgstr ""
 
-#: devilry/devilry_account/models.py:885
+#: devilry/devilry_account/models.py:889
 msgid "The time when this group was created."
 msgstr ""
 
-#: devilry/devilry_account/models.py:891
+#: devilry/devilry_account/models.py:895
 msgid "Last updated time"
 msgstr ""
 
-#: devilry/devilry_account/models.py:892
+#: devilry/devilry_account/models.py:896
 msgid "The time when this group last updated."
 msgstr ""
 
-#: devilry/devilry_account/models.py:898
+#: devilry/devilry_account/models.py:902
 msgid "Last updated from syncsystem time"
 msgstr ""
 
-#: devilry/devilry_account/models.py:899
+#: devilry/devilry_account/models.py:903
 msgid "The time when this group last updated from a third party sync system."
 msgstr ""
 
-#: devilry/devilry_account/models.py:910
+#: devilry/devilry_account/models.py:914
 msgid "Permission group type"
 msgstr ""
 
-#: devilry/devilry_account/models.py:911
+#: devilry/devilry_account/models.py:915
 msgid ""
 "Course and semester administrator groups can only be assigned to a single "
 "course or semester. Department administrator groups can be assigned to "
 "multiple courses. You can not change this for existing permission groups."
 msgstr ""
 
-#: devilry/devilry_account/models.py:927
+#: devilry/devilry_account/models.py:931
 msgid "Custom manageable?"
 msgstr ""
 
-#: devilry/devilry_account/models.py:928
+#: devilry/devilry_account/models.py:932
 msgid ""
 "Is this group mageable by non-superusers. Can not be enabled for department "
 "administrator groups."
 msgstr ""
 
-#: devilry/devilry_account/models.py:936
+#: devilry/devilry_account/models.py:940
 msgid "Users in this group"
 msgstr ""
 
-#: devilry/devilry_account/models.py:947
+#: devilry/devilry_account/models.py:951
 msgid "Department administrator groups can not be custom manageable."
 msgstr ""
 
-#: devilry/devilry_account/models.py:952
+#: devilry/devilry_account/models.py:956
 msgid "Permission group type can not be changed."
 msgstr ""
 
-#: devilry/devilry_account/models.py:1043
+#: devilry/devilry_account/models.py:1047
 msgid "Semester permission group"
 msgstr ""
 
-#: devilry/devilry_account/models.py:1044
+#: devilry/devilry_account/models.py:1048
 msgid "Semester permission groups"
 msgstr ""
 
-#: devilry/devilry_account/models.py:1057
+#: devilry/devilry_account/models.py:1061
 #, python-format
 msgid "Semester administrators for %(period)s"
 msgstr ""
 
-#: devilry/devilry_account/models.py:1066
+#: devilry/devilry_account/models.py:1070
 msgid ""
 "Only semesters can be added to semester administrator permission groups."
 msgstr ""
 
-#: devilry/devilry_account/models.py:1073
+#: devilry/devilry_account/models.py:1077
 msgid "Only a single editable permission group is allowed for a semester."
 msgstr ""
 
-#: devilry/devilry_account/models.py:1195
+#: devilry/devilry_account/models.py:1199
 msgid "Course permission group"
 msgstr ""
 
-#: devilry/devilry_account/models.py:1196
+#: devilry/devilry_account/models.py:1200
 msgid "Course permission groups"
 msgstr ""
 
-#: devilry/devilry_account/models.py:1209
+#: devilry/devilry_account/models.py:1213
 #, python-format
 msgid "Course administrators for %(subject)s"
 msgstr ""
 
-#: devilry/devilry_account/models.py:1219
+#: devilry/devilry_account/models.py:1223
 msgid ""
 "Courses can only be added to course and department administrator permission "
 "groups."
 msgstr ""
 
-#: devilry/devilry_account/models.py:1226
+#: devilry/devilry_account/models.py:1230
 msgid "Only a single editable permission group is allowed for a course."
 msgstr ""
 
@@ -3819,92 +3819,92 @@ msgctxt "group examiner filter"
 msgid "Examiner"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:400
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:473
 msgctxt "exact candidate num"
 msgid "Exactly"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:408
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:474
 msgctxt "less than candidate num"
 msgid "Less than"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:415
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:475
 msgctxt "greater than candidate num"
 msgid "Greater than"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:441
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:493
 msgctxt "group examiner filter"
 msgid "Number of examiners"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:461
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:513
 msgctxt "group student filter"
 msgid "Number of students"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:482
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:544
 msgctxt "group activity"
 msgid "Activity"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:487
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:549
 msgctxt "group activity"
 msgid "From student"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:489
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:551
 msgctxt "group activity"
 msgid "Has comment(s) from student"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:491
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:553
 msgctxt "group activity"
 msgid "Has file(s) from student"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:493
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:555
 msgctxt "group activity"
 msgid "No comments from student"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:495
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:557
 msgctxt "group activity"
 msgid "No files from student"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:497
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:559
 msgctxt "group activity"
 msgid "From examiner"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:499
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:561
 msgctxt "group activity"
 msgid "Has comment(s) from examiner"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:501
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:563
 msgctxt "group activity"
 msgid "Has unpublished feedback draft"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:503
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:565
 msgctxt "group activity"
 msgid "Has unpublished comment(s) from YOU"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:505
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:567
 msgctxt "group activity"
 msgid "No comments from examiner"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:507
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:569
 msgctxt "group activity"
 msgid "From administrator"
 msgstr ""
 
-#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:509
+#: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:571
 msgctxt "group activity"
 msgid "Has comment(s) from administrator"
 msgstr ""
@@ -4046,8 +4046,8 @@ msgstr ""
 #: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:34
 #: devilry/devilry_deadlinemanagement/templates/devilry_deadlinemanagement/select-deadline-item-value.django.html:53
 #: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:252
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:36
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:50
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:45
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:59
 msgid "Move deadline"
 msgstr ""
 
@@ -4112,7 +4112,7 @@ msgid "test placeholder"
 msgstr ""
 
 #: devilry/devilry_deadlinemanagement/views/manage_deadline_view.py:253
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:46
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:55
 msgid "Give new attempt"
 msgstr ""
 
@@ -4305,7 +4305,7 @@ msgid "Bulk feedback"
 msgstr ""
 
 #: devilry/devilry_examiner/templates/devilry_examiner/assignment/grouplist.django.html:22
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:246
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:256
 msgid "Simple bulk feedback"
 msgstr ""
 
@@ -4357,11 +4357,15 @@ msgid ""
 "published for groups without a grade set. Comment text is optional."
 msgstr ""
 
-#: devilry/devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/simple_group_bulk_feedbackview.django.html:39
+#: devilry/devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/simple_group_bulk_feedbackview.django.html:36
+msgid "Minimum points to pass"
+msgstr ""
+
+#: devilry/devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/simple_group_bulk_feedbackview.django.html:44
 msgid "Publish feedbacks"
 msgstr ""
 
-#: devilry/devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/simple_group_bulk_feedbackview.django.html:40
+#: devilry/devilry_examiner/templates/devilry_examiner/assignment/simple_group_bulk_feedback/simple_group_bulk_feedbackview.django.html:45
 msgid "When submitted, the operation cannot be undone."
 msgstr ""
 
@@ -4412,29 +4416,29 @@ msgstr ""
 msgid "Bulk added feedback for %(group_names)s"
 msgstr ""
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:82
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:90
 msgid "Students in groups"
 msgstr ""
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:83
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:91
 #: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:344
 #: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:367
 msgid "Grading"
 msgstr ""
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:84
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:92
 msgid "Comment text"
 msgstr ""
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:232
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:240
 msgid "Feedback published for {} groups"
 msgstr ""
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:235
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:243
 msgid "You must set a grade for at least one group."
 msgstr ""
 
-#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:249
+#: devilry/devilry_examiner/views/assignment/bulkoperations/bulk_feedback_simple.py:259
 msgid "No groups to receive feedback"
 msgstr ""
 
@@ -4989,59 +4993,59 @@ msgstr ""
 msgid "A examiner comment can only be private if part of grading."
 msgstr ""
 
-#: devilry/devilry_group/models.py:300
+#: devilry/devilry_group/models.py:337
 msgid "first attempt"
 msgstr ""
 
-#: devilry/devilry_group/models.py:301
+#: devilry/devilry_group/models.py:338
 msgid "new attempt"
 msgstr ""
 
-#: devilry/devilry_group/models.py:302
+#: devilry/devilry_group/models.py:339
 msgid "re edit"
 msgstr ""
 
-#: devilry/devilry_group/models.py:303
+#: devilry/devilry_group/models.py:340
 msgid "merge first attempt"
 msgstr ""
 
-#: devilry/devilry_group/models.py:304
+#: devilry/devilry_group/models.py:341
 msgid "merge new attempt"
 msgstr ""
 
-#: devilry/devilry_group/models.py:305
+#: devilry/devilry_group/models.py:342
 msgid "merge re edit"
 msgstr ""
 
-#: devilry/devilry_group/models.py:421
+#: devilry/devilry_group/models.py:464
 msgid "FeedbackSet can not be ignored without a reason"
 msgstr ""
 
-#: devilry/devilry_group/models.py:425
+#: devilry/devilry_group/models.py:468
 msgid "FeedbackSet can not have a ignored reason without being set to ignored."
 msgstr ""
 
-#: devilry/devilry_group/models.py:430
+#: devilry/devilry_group/models.py:473
 msgid ""
 "Ignored FeedbackSet can not have grading_published_datetime, grading_points "
 "or grading_published_by set."
 msgstr ""
 
-#: devilry/devilry_group/models.py:436
+#: devilry/devilry_group/models.py:479
 msgid "A FeedbackSet can not be published without being published by someone."
 msgstr ""
 
-#: devilry/devilry_group/models.py:441
+#: devilry/devilry_group/models.py:484
 msgid "A FeedbackSet can not be published without providing \"points\"."
 msgstr ""
 
-#: devilry/devilry_group/models.py:490
+#: devilry/devilry_group/models.py:533
 msgid ""
 "This assignment is on an inactive semester. File upload and commenting is "
 "disabled."
 msgstr ""
 
-#: devilry/devilry_group/models.py:496
+#: devilry/devilry_group/models.py:539
 msgid ""
 "Hard deadlines are enabled for this assignment. File upload and commenting "
 "is disabled."
@@ -5079,7 +5083,7 @@ msgid "Back to feed"
 msgstr ""
 
 #: devilry/devilry_group/templates/devilry_group/feedbackfeed_examiner/feedbackfeed_examiner_edit_grade.django.html:21
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:41
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:50
 #: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:399
 msgid "Edit grade"
 msgstr ""
@@ -5254,8 +5258,12 @@ msgctxt "devilry_group feedbackfeed part of feedback badge"
 msgid "feedback"
 msgstr ""
 
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:19
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:20
 msgid "Attempt"
+msgstr ""
+
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/feedbackset_info_item_value.django.html:26
+msgid "Merged"
 msgstr ""
 
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/grading_item_value.django.html:10

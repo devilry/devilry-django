@@ -31,6 +31,11 @@
                     Note that no feedback will be published for groups without a grade set. Comment text is optional.
                 {% endblocktrans %}
             </p>
+            {% if not assignment_uses_passed_failed_plugin %}
+                <p>
+                    <strong>{% trans "Minimum points to pass" %}: {{ assignment.passing_grade_min_points }}</strong>
+                </p>
+            {% endif %}
         </div>
         <form action="{% cradmin_appurl 'bulk-feedback-simple' %}" method="POST">
             {% csrf_token %}
