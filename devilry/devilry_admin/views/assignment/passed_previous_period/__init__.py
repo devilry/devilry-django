@@ -14,10 +14,10 @@ class App(crapp.App):
         ),
 
         # Auto pass students on selected period.
-        # crapp.Url(
-        #     r'^select-period$',
-        #     passed_previous_period.SelectPeriodView.as_view(),
-        #     name='select_period'),
+        crapp.Url(
+            r'^select-period$',
+            passed_previous_period.SelectPeriodView.as_view(),
+            name='select_period'),
         crapp.Url(
             r'^assignment/(?P<period_id>\d+)$',
             passed_previous_period.PassedPreviousAssignmentView.as_view(),
