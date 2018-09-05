@@ -1,12 +1,14 @@
 import mock
 from django.contrib import messages
 from django.http import Http404
+from django.template import defaultfilters
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core import devilry_core_mommy_factories as core_mommy
 from devilry.apps.core.models import Assignment
+from devilry.apps.core.mommy_recipes import OLD_PERIOD_START, OLD_PERIOD_END
 from devilry.devilry_admin.views.assignment.passed_previous_period import passed_previous_period
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
@@ -172,7 +174,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
-        selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('.controls  > .radio')]
+        selectlist = [elem.alltext_normalized.split(' (')[0] for elem in mockresponse.selector.list('.controls  > .radio')]
         self.assertEqual(1, len(selectlist))
         self.assertNotIn(
             '{} - {}'.format(testassignment.parentnode.short_name, testassignment.parentnode.long_name),
@@ -215,22 +217,31 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
-        selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('.controls  > .radio')]
+        selectlist = [elem.alltext_normalized.split(' (')[0] for elem in mockresponse.selector.list('.controls  > .radio')]
         self.assertEqual(3, len(selectlist))
         self.assertNotIn(
             '{} - {}'.format(testassignment.parentnode.short_name, testassignment.parentnode.long_name),
             selectlist
         )
         self.assertIn(
-            '{} - {}'.format(period1.short_name, period1.long_name),
+            '{} - {}'.format(
+                period1.short_name,
+                period1.long_name
+            ),
             selectlist
         )
         self.assertIn(
-            '{} - {}'.format(period2.short_name, period2.long_name),
+            '{} - {}'.format(
+                period2.short_name,
+                period2.long_name
+            ),
             selectlist
         )
         self.assertIn(
-            '{} - {}'.format(period3.short_name, period3.long_name),
+            '{} - {}'.format(
+                period3.short_name,
+                period3.long_name
+            ),
             selectlist
         )
 
@@ -265,7 +276,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
-        selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('.controls  > .radio')]
+        selectlist = [elem.alltext_normalized.split(' (')[0] for elem in mockresponse.selector.list('.controls  > .radio')]
         self.assertEqual(1, len(selectlist))
         self.assertNotIn(
             '{} - {}'.format(testassignment.parentnode.short_name, testassignment.parentnode.long_name),
@@ -317,7 +328,7 @@ class TestSelectPeriodView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             cradmin_instance=self.__mockinstance_with_devilryrole('departmentadmin')
         )
-        selectlist = [elem.alltext_normalized for elem in mockresponse.selector.list('.controls  > .radio')]
+        selectlist = [elem.alltext_normalized.split(' (')[0] for elem in mockresponse.selector.list('.controls  > .radio')]
         self.assertEqual(1, len(selectlist))
         self.assertNotIn(
             '{} - {}'.format(testassignment.parentnode.short_name, testassignment.parentnode.long_name),

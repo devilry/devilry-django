@@ -97,7 +97,6 @@ class SelectPeriodView(formbase.FormView):
         if self.no_past_period:
             context['no_past_period'] = True
         context['assignment'] = self.assignment
-        print self.assignment.short_name
         return context
 
     def get_redirect_url(self, period):
