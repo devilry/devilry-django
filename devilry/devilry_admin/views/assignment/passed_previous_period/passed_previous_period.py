@@ -4,6 +4,7 @@ import json
 from django.contrib import messages
 from crispy_forms import layout
 from django import forms
+from django.template import defaultfilters
 from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy
@@ -35,7 +36,11 @@ class SelectPeriodForm(forms.Form):
 
     @staticmethod
     def label_from_instance(obj):
-        return "{} - {}".format(obj.short_name, obj.long_name)
+        return "{} - {} ({} - {})".format(
+            obj.short_name,
+            obj.long_name,
+            defaultfilters.date(obj.start_time, 'SHORT_DATETIME_FORMAT'),
+            defaultfilters.date(obj.end_time, 'SHORT_DATETIME_FORMAT'))
 
 
 class SelectPeriodView(formbase.FormView):
@@ -91,6 +96,8 @@ class SelectPeriodView(formbase.FormView):
         context = super(SelectPeriodView, self).get_context_data(**kwargs)
         if self.no_past_period:
             context['no_past_period'] = True
+        context['assignment'] = self.assignment
+        print self.assignment.short_name
         return context
 
     def get_redirect_url(self, period):
@@ -154,7 +161,9 @@ class CandidateItemValue(listbuilder.itemvalue.TitleDescription):
         self.devilryrole = kwargs.pop('devilryrole')
         self.util_class = kwargs.pop('util_class')
         super(CandidateItemValue, self).__init__(**kwargs)
-        self.assignment = self.value.assignment_group.parentnode
+        self.assignment = Assignment.objects \
+            .prefetch_point_to_grade_map() \
+            .get(id=self.value.assignment_group.parentnode.id)
         self.period = self.value.assignment_group.parentnode.parentnode
         self.feedback = self.value.assignment_group.cached_data.last_published_feedbackset
         self.calculated_points = self.util_class.convert_points(self.feedback)

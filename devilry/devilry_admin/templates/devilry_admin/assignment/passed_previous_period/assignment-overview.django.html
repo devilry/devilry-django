@@ -26,7 +26,24 @@
 
 
 {% block list %}
+    <div class="devilry-dashboard-container">
+        <p>
+            {% blocktrans trimmed %}
+                In this step you get a preview of all assignments that matches the current assignment to import results
+                to. You can see which semester the assignments belong to, max/min points and the start and end time of
+                the semester.
+            {% endblocktrans %}
+        </p>
+        <p>
+            {% blocktrans trimmed %}
+                On the next step you will get a preview of all students that will be passed for the current assignment
+                and confirm the results.
+            {% endblocktrans %}
+        </p>
+    </div>
+
     {{ block.super }}
+
     <a href="{% cradmin_instance_url 'passed_previous_period' 'confirm' period_id=period_id %}" class="btn btn-primary">
         {% trans "Next" %}
     </a>

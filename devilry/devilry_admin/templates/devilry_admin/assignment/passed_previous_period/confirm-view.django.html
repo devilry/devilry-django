@@ -27,6 +27,24 @@
 {% endblock pageheader-inner %}
 {% block pre_form %}
     <div class="container">
+        <div class="devilry-dashboard-container">
+            <p>
+                {% blocktrans trimmed %}
+                    This is the final step, and you can see a preview of all the students on the current assignment
+                    that will get a passing grade, which assignment the result is fetched from and how the score is
+                    converted.
+                {% endblocktrans %}
+            </p>
+
+            <p>
+                <strong>
+                    {% blocktrans trimmed %}
+                        The best results from the assignments are used, so if a student failed all but one of the earlier
+                        assignments, they will still get a passing grade.
+                    {% endblocktrans %}
+                </strong>
+            </p>
+        </div>
         {% cradmin_render_renderable candidate_list %}
     </div>
 {% endblock pre_form %}
