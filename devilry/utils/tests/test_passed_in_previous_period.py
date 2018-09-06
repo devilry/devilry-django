@@ -1,3 +1,5 @@
+import datetime
+
 from django.conf import settings
 from django.test import TestCase
 from model_mommy import mommy
@@ -15,9 +17,64 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
 
+    def test_lol(self):
+        user_april = mommy.make(settings.AUTH_USER_MODEL, shortname='april')
+        user_dewey = mommy.make(settings.AUTH_USER_MODEL, shortname='dewey')
+
+        # Setup duck 1010
+        subject_duck1010 = mommy.make('core.Subject', short_name='duck1010')
+        period_duck1010 = mommy.make('core.Period',
+                                     short_name='period_duck1010',
+                                     parentnode=subject_duck1010,
+                                     start_time=datetime.datetime(year=2000, month=1, day=1),
+                                     end_time=datetime.datetime(year=2005, month=12, day=31))
+        assignment_duck1010 = mommy.make('core.Assignment', short_name='a', parentnode=period_duck1010)
+        group_duck1010 = mommy.make('core.AssignmentGroup', parentnode=assignment_duck1010)
+        candidate_duck1010 = mommy.make('core.Candidate', assignment_group=group_duck1010,
+                               relatedstudent__period=period_duck1010, relatedstudent__user=user_april)
+        group_mommy.feedbackset_first_attempt_published(group=group_duck1010, grading_points=1010)
+
+        # Setup duck 1100
+        subject_duck1100 = mommy.make('core.Subject', short_name='duck1100')
+        period_duck1100 = mommy.make('core.Period',
+                                     short_name='period_duck1100',
+                                     parentnode=subject_duck1100,
+                                     start_time=datetime.datetime(year=2006, month=1, day=1),
+                                     end_time=datetime.datetime(year=2010, month=12, day=31))
+        assignment_duck1100 = mommy.make('core.Assignment', short_name='a', parentnode=period_duck1100)
+        group1_duck1100 = mommy.make('core.AssignmentGroup', parentnode=assignment_duck1100)
+        group2_duck1100 = mommy.make('core.AssignmentGroup', parentnode=assignment_duck1100)
+        candidate_april_duck1100 = mommy.make('core.Candidate', assignment_group=group1_duck1100,
+                                              relatedstudent__period=period_duck1100, relatedstudent__user=user_april)
+        candidate_dewey_duck1100 = mommy.make('core.Candidate', assignment_group=group2_duck1100,
+                                              relatedstudent__period=period_duck1100, relatedstudent__user=user_dewey)
+        group_mommy.feedbackset_first_attempt_published(group=group1_duck1100, grading_points=1100)
+        group_mommy.feedbackset_first_attempt_published(group=group2_duck1100, grading_points=1100)
+
+        # Setup duck 1010 current
+        period_duck1010_current = mommy.make('core.Period',
+                                             short_name='period_duck1010_cur',
+                                             parentnode=subject_duck1010,
+                                             start_time=datetime.datetime(year=2011, month=1, day=1),
+                                             end_time=datetime.datetime(year=2012, month=12, day=31))
+        assignment_duck1010_current = mommy.make('core.Assignment', short_name='a', parentnode=period_duck1010_current)
+        group_duck1010_current = mommy.make('core.AssignmentGroup', parentnode=assignment_duck1010_current)
+        candidate_duck1010_current = mommy.make('core.Candidate', assignment_group=group_duck1010_current,
+                               relatedstudent__period=period_duck1010_current, relatedstudent__user=user_april)
+
+        passed_in_previous_queryset = PassedInPreviousPeriod(
+            assignment=assignment_duck1010_current, from_period=assignment_duck1010.parentnode).get_queryset()
+
+        self.assertEqual(passed_in_previous_queryset.count(), 1)
+        candidate_with_result = passed_in_previous_queryset.first()
+        self.assertEqual(candidate_with_result, candidate_duck1010)
+        self.assertEqual(candidate_with_result.assignment_group.feedbackset_set.all().first().grading_points, 1010)
+
     def test_from_period_older_is_ignored(self):
+        subject = mommy.make('core.Subject')
         assignment1 = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -27,6 +84,7 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
 
         assignment2 = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -40,6 +98,7 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
 
         current_assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_futureperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -60,8 +119,10 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
         )
 
     def test_candidates_did_not_pass_in_previous_period(self):
+        subject = mommy.make('core.Subject')
         assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -79,6 +140,7 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
 
         current_assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -131,8 +193,10 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
         self.assertEqual(0, passed_in_previous.get_queryset().count())
 
     def test_assignment_name(self):
+        subject = mommy.make('core.Subject')
         assignment1 = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -142,6 +206,7 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
 
         assignment2 = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
+            parentnode__parentnode=subject,
             short_name='Imba',
             passing_grade_min_points=5
         )
@@ -152,6 +217,7 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
 
         current_assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -165,8 +231,10 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
         self.assertEqual(candidate_queryset.first().assignment_group.parentnode.short_name, assignment1.short_name)
 
     def test_latest_passed_is_used(self):
+        subject = mommy.make('core.Subject')
         assignment1 = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -176,6 +244,7 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
 
         assignment2 = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -186,6 +255,7 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
 
         current_assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_futureperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -198,8 +268,10 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
         self.assertEqual(passed_in_previous.get_queryset().first().assignment_group.id, group2.id)
 
     def test_student_is_on_current_assignment(self):
+        subject = mommy.make('core.Subject')
         assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -217,6 +289,7 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
 
         current_assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -231,8 +304,10 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
         )
 
     def test_candidates_who_got_graded_on_current_assignment_is_filtered_away(self):
+        subject = mommy.make('core.Subject')
         assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -250,6 +325,7 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
 
         current_assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -272,8 +348,10 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
                          candidate1.relatedstudent.user.get_displayname())
 
     def test_num_queries(self):
+        subject = mommy.make('core.Subject')
         assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -291,6 +369,7 @@ class TestPassedInPreviousPeriodQueryset(TestCase):
 
         current_assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -402,8 +481,10 @@ class TestPassedInPreviousPeriod(TestCase):
 
     def test_simple(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
+        subject = mommy.make('core.Subject')
         assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=10,
             max_points=15
@@ -414,6 +495,7 @@ class TestPassedInPreviousPeriod(TestCase):
 
         current_assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=7,
             max_points=10
@@ -436,8 +518,10 @@ class TestPassedInPreviousPeriod(TestCase):
 
     def test_multiple_candidates(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
+        subject = mommy.make('core.Subject')
         assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -456,6 +540,7 @@ class TestPassedInPreviousPeriod(TestCase):
 
         current_assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -484,8 +569,10 @@ class TestPassedInPreviousPeriod(TestCase):
 
     def test_multiple_candidates_passed_in_a_different_order(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
+        subject = mommy.make('core.Subject')
         assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -504,6 +591,7 @@ class TestPassedInPreviousPeriod(TestCase):
 
         current_assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -532,8 +620,10 @@ class TestPassedInPreviousPeriod(TestCase):
 
     def test_some_selected_students_did_not_qualify_to_pass(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
+        subject = mommy.make('core.Subject')
         assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -552,6 +642,7 @@ class TestPassedInPreviousPeriod(TestCase):
 
         current_assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -706,8 +797,10 @@ class TestPassedInPreviousPeriod(TestCase):
 
     def test_num_queries(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
+        subject = mommy.make('core.Subject')
         assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )
@@ -726,6 +819,7 @@ class TestPassedInPreviousPeriod(TestCase):
 
         current_assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
+            parentnode__parentnode=subject,
             short_name='Cool',
             passing_grade_min_points=5
         )

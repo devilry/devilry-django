@@ -15,8 +15,10 @@ class TestFeedbacksetPassedPreviousPeriod(TestCase):
     def setUp(self):
         AssignmentGroupDbCacheCustomSql().initialize()
         testuser = mommy.make(settings.AUTH_USER_MODEL)
+        subject = mommy.make('core.Subject')
         self.assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_oldperiod_start',
+            parentnode__parentnode=subject,
             short_name='cool',
             long_name='imba',
             parentnode__short_name='s15',
@@ -30,6 +32,7 @@ class TestFeedbacksetPassedPreviousPeriod(TestCase):
 
         current_assignment = mommy.make_recipe(
             'devilry.apps.core.assignment_activeperiod_start',
+            parentnode__parentnode=subject,
             short_name='cool',
             passing_grade_min_points=7,
             max_points=10

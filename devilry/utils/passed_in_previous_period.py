@@ -76,6 +76,7 @@ class PassedInPreviousPeriod(object):
 
         """
         feedbackset_queryset = FeedbackSet.objects.filter(
+            group__parentnode__parentnode__parentnode=self.assignment.subject,
             group__parentnode__short_name=self.assignment.short_name,
             grading_published_datetime__isnull=False,
             group__parentnode__passing_grade_min_points__lte=models.F('grading_points')
@@ -83,6 +84,7 @@ class PassedInPreviousPeriod(object):
             .select_related('group__parentnode')
 
         group_queryset = AssignmentGroup.objects.filter(
+            parentnode__parentnode__parentnode=self.assignment.subject,
             parentnode__grading_system_plugin_id__in=self.SUPPORTED_GRADING_PLUGINS,
             parentnode__parentnode__start_time__gte=self.from_period.start_time,
             parentnode__short_name=self.assignment.short_name,
@@ -91,12 +93,14 @@ class PassedInPreviousPeriod(object):
         ).select_related('parentnode__parentnode', 'cached_data__last_published_feedbackset')
 
         students_on_current = Candidate.objects.filter(
+            assignment_group__parentnode__parentnode__parentnode=self.assignment.subject,
             assignment_group__parentnode=self.assignment,
             assignment_group__cached_data__last_published_feedbackset__isnull=True
         ).select_related('assignment_group__parentnode', 'relatedstudent__user')\
             .values_list('relatedstudent__user', flat=True).distinct()
 
         candidates = Candidate.objects.filter(
+            assignment_group__parentnode__parentnode__parentnode=self.assignment.subject,
             assignment_group__in=group_queryset,
             relatedstudent__user__in=students_on_current
         ).select_related('relatedstudent__user',
