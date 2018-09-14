@@ -106,7 +106,7 @@
         }
 
         function addListener(feedbackset_button_event) {
-            let closest_content_element = getClosestFeedbackSetWrapper(feedbackset_button_event.srcElement.id)
+            let closest_content_element = getClosestFeedbackSetWrapper(feedbackset_button_event.target.id)
             toggleVisibility(closest_content_element)
         }
 
