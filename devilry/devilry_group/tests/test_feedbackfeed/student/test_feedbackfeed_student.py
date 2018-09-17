@@ -1524,8 +1524,7 @@ class TestStudentEditGroupCommentView(TestCase, cradmin_testhelpers.TestCaseMixi
             messagesmock=messagesmock,
             requestkwargs={
                 'data': {
-                    'text': 'Test edited',
-                    'hidden_initial_data': groupcomment.text
+                    'text': 'Test edited'
                 }
             })
         db_comment = group_models.GroupComment.objects.get(id=groupcomment.id)
@@ -1550,8 +1549,7 @@ class TestStudentEditGroupCommentView(TestCase, cradmin_testhelpers.TestCaseMixi
             messagesmock=messagesmock,
             requestkwargs={
                 'data': {
-                    'text': 'Test',
-                    'hidden_initial_data': groupcomment.text
+                    'text': 'Test'
                 }
             })
         db_comment = group_models.GroupComment.objects.get(id=groupcomment.id)

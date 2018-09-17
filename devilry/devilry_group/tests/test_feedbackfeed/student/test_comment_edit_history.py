@@ -1,3 +1,5 @@
+import mock
+from django.contrib import messages
 from django.http import Http404
 from django.template import defaultfilters
 from django.test import TestCase, override_settings
@@ -8,6 +10,7 @@ from model_mommy import mommy
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_group import models as group_models
 from devilry.devilry_group.views.student import group_comment_history
+from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
 
 
 class TestStudentCommentEditHistoryView(TestCase, cradmin_testhelpers.TestCaseMixin):

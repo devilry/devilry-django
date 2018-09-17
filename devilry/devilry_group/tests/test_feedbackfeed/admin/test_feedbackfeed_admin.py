@@ -522,7 +522,7 @@ class TestFeedbackfeedAdminWithExaminersDiscussView(TestCase, TestFeedbackfeedAd
         self.assertEqual('text/txt', comment_file3.mimetype)
 
 
-class TestStudentEditGroupCommentView(TestCase, cradmin_testhelpers.TestCaseMixin):
+class TestAdminEditGroupCommentView(TestCase, cradmin_testhelpers.TestCaseMixin):
     """
     Comment edit history related tests.
     """
@@ -576,7 +576,7 @@ class TestStudentEditGroupCommentView(TestCase, cradmin_testhelpers.TestCaseMixi
                 requestuser=testuser,
                 viewkwargs={'pk': groupcomment.id})
 
-    def test_raise_404_student_can_not_edit_student_comments_sanity(self):
+    def test_raise_404_admin_can_not_edit_student_comments_sanity(self):
         testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
         testperiod = mommy.make_recipe('devilry.apps.core.period_active', admins=[testuser])
         testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
@@ -591,7 +591,7 @@ class TestStudentEditGroupCommentView(TestCase, cradmin_testhelpers.TestCaseMixi
                 requestuser=testuser,
                 viewkwargs={'pk': groupcomment.id})
 
-    def test_raise_404_student_can_not_edit_examiner_comments_sanity(self):
+    def test_raise_404_admin_can_not_edit_examiner_comments_sanity(self):
         testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
         testperiod = mommy.make_recipe('devilry.apps.core.period_active', admins=[testuser])
         testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
@@ -606,7 +606,7 @@ class TestStudentEditGroupCommentView(TestCase, cradmin_testhelpers.TestCaseMixi
                 requestuser=testuser,
                 viewkwargs={'pk': groupcomment.id})
 
-    def test_get_student_can_edit_own_comment_ok(self):
+    def test_get_admin_can_edit_own_comment_ok(self):
         testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
         testperiod = mommy.make_recipe('devilry.apps.core.period_active', admins=[testuser])
         testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
@@ -631,14 +631,42 @@ class TestStudentEditGroupCommentView(TestCase, cradmin_testhelpers.TestCaseMixi
             messagesmock=messagesmock,
             requestkwargs={
                 'data': {
-                    'text': 'Test edited',
-                    'hidden_initial_data': groupcomment.text
+                    'text': 'Test edited'
                 }
             })
         db_comment = group_models.GroupComment.objects.get(id=groupcomment.id)
         messagesmock.add.assert_called_once_with(messages.SUCCESS, 'Comment updated!', '')
         self.assertEqual(db_comment.text, 'Test edited')
         self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 1)
+
+    def test_post_initial_empty_comment_can_be_edited(self):
+        testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active', admins=[testuser])
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=testperiod)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = mommy.make('devilry_group.GroupComment',
+                                  user=testuser,
+                                  user_role=group_models.GroupComment.USER_ROLE_ADMIN,
+                                  published_datetime=timezone.now(),
+                                  feedback_set=testfeedbackset)
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=testuser,
+            viewkwargs={'pk': groupcomment.id},
+            messagesmock=messagesmock,
+            requestkwargs={
+                'data': {
+                    'text': 'edited'
+                }
+            })
+        db_comment = group_models.GroupComment.objects.get(id=groupcomment.id)
+        edit_history = group_models.GroupCommentEditHistory.objects.get()
+        self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 1)
+        self.assertEquals('edited', db_comment.text)
+        self.assertEqual('', edit_history.pre_edit_text)
+        self.assertEqual('edited', edit_history.post_edit_text)
+        messagesmock.add.assert_called_once_with(messages.SUCCESS, 'Comment updated!', '')
 
     def test_post_messages_text_do_not_differ(self):
         testuser = mommy.make('devilry_account.User', shortname='admin', fullname='Thor')
@@ -654,8 +682,7 @@ class TestStudentEditGroupCommentView(TestCase, cradmin_testhelpers.TestCaseMixi
             messagesmock=messagesmock,
             requestkwargs={
                 'data': {
-                    'text': 'Test',
-                    'hidden_initial_data': groupcomment.text
+                    'text': 'Test'
                 }
             })
         db_comment = group_models.GroupComment.objects.get(id=groupcomment.id)

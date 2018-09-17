@@ -76,10 +76,37 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
                 viewkwargs={'pk': groupcomment.id},
                 requestkwargs={
                     'data': {
-                        'text': 'unedited',
-                        'hidden_initial_data': groupcomment.text
+                        'text': 'unedited'
                     }
                 })
+
+    def test_post_initial_empty_comment_can_be_edited(self):
+        testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        self.__make_examiner_for_user(user=testuser, group=testgroup)
+        testfeedbackset = group_mommy.feedbackset_first_attempt_unpublished(group=testgroup)
+        groupcomment = mommy.make('devilry_group.GroupComment',
+                                  user=testuser,
+                                  user_role='examiner',
+                                  feedback_set=testfeedbackset)
+        messagesmock = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testgroup,
+            requestuser=testuser,
+            viewkwargs={'pk': groupcomment.id},
+            requestkwargs={
+                'data': {
+                    'text': 'edited'
+                }
+            },
+            messagesmock=messagesmock)
+        db_comment = group_models.GroupComment.objects.get(id=groupcomment.id)
+        edit_history = group_models.GroupCommentEditHistory.objects.get()
+        self.assertEqual(group_models.GroupCommentEditHistory.objects.count(), 1)
+        self.assertEquals('edited', db_comment.text)
+        self.assertEqual('', edit_history.pre_edit_text)
+        self.assertEqual('edited', edit_history.post_edit_text)
+        messagesmock.add.assert_called_once_with(messages.SUCCESS, 'Comment updated!', '')
 
     def test_post_identical_texts_does_not_save_comment(self):
         testgroup = mommy.make('core.AssignmentGroup', parentnode__parentnode=self.__make_active_period())
@@ -98,8 +125,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
             viewkwargs={'pk': groupcomment.id},
             requestkwargs={
                 'data': {
-                    'text': 'unedited',
-                    'hidden_initial_data': groupcomment.text
+                    'text': 'unedited'
                 }
             },
             messagesmock=messagesmock)
@@ -125,8 +151,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
             viewkwargs={'pk': groupcomment.id},
             requestkwargs={
                 'data': {
-                    'text': 'edited',
-                    'hidden_initial_data': groupcomment.text
+                    'text': 'edited'
                 }
             },
             messagesmock=messagesmock
@@ -158,8 +183,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
             viewkwargs={'pk': groupcomment.id},
             requestkwargs={
                 'data': {
-                    'text': 'edited',
-                    'hidden_initial_data': groupcomment.text
+                    'text': 'edited'
                 }
             },
             messagesmock=messagesmock)
@@ -184,8 +208,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
             viewkwargs={'pk': groupcomment.id},
             requestkwargs={
                 'data': {
-                    'text': 'edited',
-                    'hidden_initial_data': groupcomment.text
+                    'text': 'edited'
                 }
             },
             messagesmock=messagesmock)
@@ -212,8 +235,7 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
             viewkwargs={'pk': groupcomment.id},
             requestkwargs={
                 'data': {
-                    'text': 'edited',
-                    'hidden_initial_data': groupcomment.text
+                    'text': 'edited'
                 }
             },
             messagesmock=messagesmock)
@@ -237,7 +259,6 @@ class TestFeedbackFeedEditGroupComment(TestCase, cradmin_testhelpers.TestCaseMix
             requestkwargs={
                 'data': {
                     'text': 'edited',
-                    'hidden_initial_data': groupcomment.text,
                     'submit-save-and-continue-editing': '',
                 }
             },

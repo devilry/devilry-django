@@ -17,12 +17,9 @@ class EditGroupCommentForm(forms.ModelForm):
     """
     Form for editing existing Feedback drafts.
     """
-    #: We need somewhere to store the initial data, so we can prevent a save if
-    #: the initial text and the new posted text are identical.
-    hidden_initial_data = forms.CharField(widget=forms.HiddenInput)
 
     class Meta:
-        fields = ['text', 'hidden_initial_data']
+        fields = ['text']
         model = group_models.GroupComment
 
     @classmethod
@@ -30,14 +27,8 @@ class EditGroupCommentForm(forms.ModelForm):
         return ['text']
 
     def clean(self):
-        if 'hidden_initial_data' not in self.cleaned_data:
+        if self.instance.text == self.cleaned_data['text']:
             raise ValidationError(message='')
-        if self.cleaned_data['hidden_initial_data'] == self.cleaned_data['text']:
-            raise ValidationError(message='')
-
-    def __init__(self, **kwargs):
-        super(EditGroupCommentForm, self).__init__(**kwargs)
-        self.fields['hidden_initial_data'].initial = self.instance.text
 
 
 class EditGroupCommentBase(update.UpdateView):
