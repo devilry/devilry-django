@@ -15,7 +15,7 @@ class AssignmentBatchMixin(object):
     Must be included in class together with :class:`~.FeedbackSetBatchMixin`.
     """
     def add_assignment_groups(self, user, zipfile_backend, assignment):
-        for group in assignment.assignmentgroups.filter_examiner_has_access(user=user):
+        for group in assignment.assignmentgroups.filter_user_is_admin(user=user):
             group_path = '{}'.format(group.get_short_displayname())
             for feedback_set in group.feedbackset_set.all():
                 feedback_set_path = 'deadline-{}'.format(defaultfilters.date(feedback_set.current_deadline(), 'b.j.Y-H:i'))
