@@ -16,6 +16,7 @@ from devilry.devilry_admin.views.assignment.students import merge_groups
 from devilry.devilry_admin.views.assignment.students import overview as studentoverview
 from devilry.devilry_admin.views.assignment.students import replace_groups
 from devilry.devilry_admin.views.assignment.students import split_group
+from devilry.devilry_admin.views.assignment.download_files import download_archive
 from devilry.devilry_cradmin import devilry_crinstance
 
 
@@ -48,7 +49,8 @@ class CrAdminInstance(devilry_crinstance.BaseCrInstanceAdmin):
         ('remove_groups_from_examiner', remove_groups_from_examiner.App),
         ('bulk_organize_examiners', bulk_organize_examiners.App),
         ('passed_previous_period', passed_previous_period.App),
-        ('deadline_management', manage_deadlines.App)
+        ('deadline_management', manage_deadlines.App),
+        ('download', download_archive.App),
     ]
     id = 'devilry_admin_assignmentadmin'
     rolefrontpage_appname = 'overview'

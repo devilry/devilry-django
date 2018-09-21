@@ -28,6 +28,8 @@
 
 {% block content %}
     <div class="container">
+        {% include "devilry_admin/assignment/includes/batchdownload_assignment.django.html" %}
+
         <div class="devilry-dashboard-container devilry-dashboard-container-focus">
             {% include "devilry_admin/assignment/include/students.django.html" %}
         </div>
@@ -48,3 +50,8 @@
         </div>
     </div>
 {% endblock content %}
+
+{% block end-of-body %}
+    {{ block.super }}
+    {% include "devilry_theme3/include/devilry_all_js.django.html" %}
+{% endblock end-of-body %}
