@@ -158,12 +158,13 @@ class PermissionGroupAdmin(admin.ModelAdmin):
         inline_instances = [
             PermissionGroupUserInline(self.model, self.admin_site)
         ]
-        if obj.grouptype == PermissionGroup.GROUPTYPE_DEPARTMENTADMIN:
-            inline_instances.append(SubjectPermissionGroupInline(self.model, self.admin_site))
-        elif obj.grouptype == PermissionGroup.GROUPTYPE_SUBJECTADMIN:
-            inline_instances.append(SubjectPermissionGroupInline(self.model, self.admin_site))
-        elif obj.grouptype == PermissionGroup.GROUPTYPE_PERIODADMIN:
-            inline_instances.append(PeriodPermissionGroupInline(self.model, self.admin_site))
+        if obj:
+            if obj.grouptype == PermissionGroup.GROUPTYPE_DEPARTMENTADMIN:
+                inline_instances.append(SubjectPermissionGroupInline(self.model, self.admin_site))
+            elif obj.grouptype == PermissionGroup.GROUPTYPE_SUBJECTADMIN:
+                inline_instances.append(SubjectPermissionGroupInline(self.model, self.admin_site))
+            elif obj.grouptype == PermissionGroup.GROUPTYPE_PERIODADMIN:
+                inline_instances.append(PeriodPermissionGroupInline(self.model, self.admin_site))
         return inline_instances
 
     def get_readonly_fields(self, request, permissiongroup=None):
