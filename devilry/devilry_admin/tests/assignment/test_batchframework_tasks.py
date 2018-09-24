@@ -19,6 +19,7 @@ from django.utils import timezone
 from django.template import defaultfilters
 
 # Devilry imports
+from devilry.apps.core.models import Assignment
 from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_dbcache.customsql import AssignmentGroupDbCacheCustomSql
 from devilry.devilry_admin import tasks
@@ -55,6 +56,112 @@ class TestCompressed(TestCase):
             context_object=context_object,
             started_by=started_by,
             test='test')
+
+
+class TestAssignmentCompressActionAssignmentGroupPermissions(TestCase):
+    def test_user_is_superuser(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           short_name='learn-python-basics',
+                                           first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL, is_superuser=True)
+        group_queryset = tasks.AssignmentCompressAction()\
+            .get_assignment_group_queryset(assignment=testassignment, user=testuser)
+        self.assertIn(testgroup, group_queryset)
+
+    def test_user_is_subjectadmin(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           short_name='learn-python-basics',
+                                           first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testassignment.parentnode.parentnode,
+                                            permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
+        group_queryset = tasks.AssignmentCompressAction()\
+            .get_assignment_group_queryset(assignment=testassignment, user=testuser)
+        self.assertIn(testgroup, group_queryset)
+
+    def test_user_is_subjectadmin_on_different_subject(self):
+        other_subject = mommy.make('core.Subject')
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           short_name='learn-python-basics',
+                                           first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=other_subject,
+                                            permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
+        group_queryset = tasks.AssignmentCompressAction()\
+            .get_assignment_group_queryset(assignment=testassignment, user=testuser)
+        self.assertNotIn(testgroup, group_queryset)
+
+    def test_user_is_periodadmin(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           short_name='learn-python-basics',
+                                           first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testassignment.parentnode,
+                                           permissiongroup__grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
+        group_queryset = tasks.AssignmentCompressAction()\
+            .get_assignment_group_queryset(assignment=testassignment, user=testuser)
+        self.assertIn(testgroup, group_queryset)
+
+    def test_user_is_periodadmin_on_different_period(self):
+        other_period = mommy.make('core.Period')
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           short_name='learn-python-basics',
+                                           first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=other_period,
+                                           permissiongroup__grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
+        group_queryset = tasks.AssignmentCompressAction()\
+            .get_assignment_group_queryset(assignment=testassignment, user=testuser)
+        self.assertNotIn(testgroup, group_queryset)
+
+    def test_user_is_periodadmin_assignment_fully_anonymous(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS,
+                                           short_name='learn-python-basics',
+                                           first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testassignment.parentnode,
+                                           permissiongroup__grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
+        group_queryset = tasks.AssignmentCompressAction()\
+            .get_assignment_group_queryset(assignment=testassignment, user=testuser)
+        self.assertNotIn(testgroup, group_queryset)
+
+    def test_user_is_periodadmin_assignment_semi_anonymous(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+                                           short_name='learn-python-basics',
+                                           first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testassignment.parentnode,
+                                           permissiongroup__grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
+        group_queryset = tasks.AssignmentCompressAction()\
+            .get_assignment_group_queryset(assignment=testassignment, user=testuser)
+        self.assertNotIn(testgroup, group_queryset)
 
 
 class TestAssignmentBatchTask(TestCompressed):
