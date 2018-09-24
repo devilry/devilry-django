@@ -107,13 +107,21 @@ class AbstractOrderBy(listfilter.django.single.select.AbstractOrderBy):
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value() or ''
         if cleaned_value == 'last_commented_by_student_ascending':
-            return queryobject.order_by('cached_data__last_public_comment_by_student_datetime')
+            return queryobject.order_by(
+                models.F('cached_data__last_public_comment_by_student_datetime').asc(nulls_last=True)
+            )
         elif cleaned_value == 'last_commented_by_student_descending':
-            return queryobject.order_by('-cached_data__last_public_comment_by_student_datetime')
+            return queryobject.order_by(
+                models.F('cached_data__last_public_comment_by_student_datetime').desc(nulls_last=True)
+            )
         elif cleaned_value == 'last_commented_by_examiner_ascending':
-            return queryobject.order_by('cached_data__last_public_comment_by_examiner_datetime')
+            return queryobject.order_by(
+                models.F('cached_data__last_public_comment_by_examiner_datetime').asc(nulls_last=True)
+            )
         elif cleaned_value == 'last_commented_by_examiner_descending':
-            return queryobject.order_by('-cached_data__last_public_comment_by_examiner_datetime')
+            return queryobject.order_by(
+                models.F('cached_data__last_public_comment_by_examiner_datetime').desc(nulls_last=True)
+            )
         return super(AbstractOrderBy, self).filter(queryobject=queryobject).distinct()
 
 
