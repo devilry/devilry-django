@@ -3,31 +3,15 @@ from __future__ import unicode_literals
 
 import os
 
-from django.template import defaultfilters
-
-from devilry.devilry_group.tasks import AbstractBaseBatchAction, FeedbackSetBatchMixin
-
-
-class AssignmentBatchMixin(object):
-    """
-    Mixin for adding FeedbackSet files to zipfile for all AssignmentGroups in the Assignment.
-
-    Must be included in class together with :class:`~.FeedbackSetBatchMixin`.
-    """
-    def add_assignment_groups(self, user, zipfile_backend, assignment):
-        for group in assignment.assignmentgroups.filter_user_is_admin(user=user):
-            group_path = '{}'.format(group.get_short_displayname())
-            for feedback_set in group.feedbackset_set.all():
-                feedback_set_path = 'deadline-{}'.format(defaultfilters.date(feedback_set.current_deadline(), 'b.j.Y-H:i'))
-                self.zipfile_add_feedbackset(
-                    zipfile_backend=zipfile_backend,
-                    feedback_set=feedback_set,
-                    sub_path=os.path.join(group_path, feedback_set_path)
-                )
+from devilry.devilry_compressionutil.abstract_batch_action import AbstractBaseBatchAction
+from devilry.devilry_compressionutil.batchjob_mixins.assignment_mixin import AssignmentBatchMixin
 
 
-class AssignmentCompressAction(AbstractBaseBatchAction, AssignmentBatchMixin, FeedbackSetBatchMixin):
+class AssignmentCompressAction(AbstractBaseBatchAction, AssignmentBatchMixin):
     backend_id = 'devilry_admin_local'
+
+    def get_assignment_group_queryset(self, assignment, user):
+        return assignment.assignmentgroups.filter_user_is_admin(user=user)
 
     def execute(self):
         assignment = self.kwargs.get('context_object')
@@ -70,5 +54,6 @@ class AssignmentCompressAction(AbstractBaseBatchAction, AssignmentBatchMixin, Fe
         CompressedArchiveMeta.objects.create_meta(
             instance=assignment,
             zipfile_backend=zipfile_backend,
-            user=started_by_user
+            user=started_by_user,
+            user_role=CompressedArchiveMeta.CREATED_BY_ROLE_ADMIN
         )

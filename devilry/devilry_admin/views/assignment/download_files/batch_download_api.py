@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from ievv_opensource.ievv_batchframework import batchregistry
 
 from devilry.apps.core import models as core_models
+from devilry.devilry_compressionutil.models import CompressedArchiveMeta
 from devilry.devilry_group.models import GroupComment, FeedbackSet
 from devilry.devilry_comment.models import CommentFile
 from devilry.devilry_group.views.download_files.batch_download_api import AbstractBatchCompressionAPIView
@@ -14,8 +15,12 @@ class BatchCompressionAPIAssignmentView(AbstractBatchCompressionAPIView):
     API for checking if a compressed ``Assignment`` is ready for download.
     """
     model_class = core_models.Assignment
-    batchoperation_type = 'batchframework_compress_assignment'
-
+    batchoperation_type = 'batchframework_admin_compress_assignment'
+    
+    @property
+    def created_by_role(self):
+        return CompressedArchiveMeta.CREATED_BY_ROLE_ADMIN
+    
     def get_assignment_group_ids(self):
         assignment_group_ids = core_models.AssignmentGroup.objects \
             .filter(parentnode=self.content_object) \

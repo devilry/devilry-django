@@ -19,7 +19,7 @@ class DevilryAdminAppConfig(AppConfig):
         # Add zip backend to registry
         batchregistry.Registry.get_instance().add_actiongroup(
             batchregistry.ActionGroup(
-                name='batchframework_compress_assignment',
+                name='batchframework_admin_compress_assignment',
                 mode=batchregistry.ActionGroup.MODE_ASYNCHRONOUS,
                 actions=[
                     tasks.AssignmentCompressAction
