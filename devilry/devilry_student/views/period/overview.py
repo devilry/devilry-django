@@ -84,7 +84,7 @@ class PeriodOverviewView(listbuilderview.FilterListMixin,
                 'cached_data__last_feedbackset',
                 'cached_data__first_feedbackset',
             )\
-            .order_by('-parentnode__first_deadline', '-parentnode__publishing_time')
+            .order_by('-cached_data__last_feedbackset__deadline_datetime')
 
     def get_no_items_message(self):
         return pgettext_lazy('student period overview',
