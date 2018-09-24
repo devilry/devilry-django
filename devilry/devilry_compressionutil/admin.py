@@ -25,6 +25,7 @@ class CompressedArchiveMeta(admin.ModelAdmin):
         'content_type',
         'content_object',
         'created_by',
+        'created_by_role',
         'created_datetime',
         'archive_name',
         'archive_path',

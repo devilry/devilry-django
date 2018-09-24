@@ -7,7 +7,7 @@ from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy, pgettext_lazy
 
 from devilry.devilry_compressionutil import backend_registry
 
@@ -37,7 +37,7 @@ class CompressedArchiveMetaQueryset(models.QuerySet):
     """
     Manager for class :class:`.CompressedArchiveMeta`.
     """
-    def create_meta(self, instance, zipfile_backend, user):
+    def create_meta(self, instance, zipfile_backend, user, user_role=''):
         """
         Manager provides a way to create a meta entry for a archive.
         See :class:`~devilry.devilry_ziputil.models.CompressedArchiveMeta`.
@@ -54,7 +54,8 @@ class CompressedArchiveMetaQueryset(models.QuerySet):
                 archive_path=zipfile_backend.archive_path,
                 archive_size=zipfile_backend.archive_size(),
                 backend_id=zipfile_backend.backend_id,
-                created_by=user
+                created_by=user,
+                created_by_role=user_role
         )
         archive_meta.clean()
         archive_meta.save()
@@ -98,6 +99,32 @@ class CompressedArchiveMeta(GenericMeta):
         to=settings.AUTH_USER_MODEL,
         null=True, blank=True, default=None,
         on_delete=models.SET_NULL
+    )
+
+    #: Use this as value for :obj:`~.Comment.user_role` if the user
+    #: is commenting as a student.
+    CREATED_BY_ROLE_STUDENT = 'student'
+
+    #: Use this as value for :obj:`~.Comment.user_role` if the user
+    #: is commenting as an examiner.
+    CREATED_BY_ROLE_EXAMINER = 'examiner'
+
+    #: Use this as value for :obj:`~.Comment.user_role` if the user
+    #: is commenting as an admin.
+    CREATED_BY_ROLE_ADMIN = 'admin'
+
+    #: Choices for the :obj:`~.Comment.user_role` field.
+    CREATED_BY_ROLE_CHOICES = (
+        (CREATED_BY_ROLE_STUDENT, pgettext_lazy('compressed archive meta role', 'Student')),
+        (CREATED_BY_ROLE_EXAMINER, pgettext_lazy('compressed archive meta role', 'Examiner')),
+        (CREATED_BY_ROLE_ADMIN, pgettext_lazy('compressed archive meta role', 'Admin')),
+    )
+
+    #: What role did the user create the archive with?
+    created_by_role = models.CharField(
+        choices=CREATED_BY_ROLE_CHOICES,
+        max_length=255,
+        default=''
     )
 
     #: When the archive was created.
