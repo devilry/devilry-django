@@ -208,8 +208,6 @@ class BulkFileDownloadBaseView(generic.View):
         archive = zipfile.ZipFile(sink, "w")
         files = self.get_filestructure(queryset)
         for archivename, commentfile in files.iteritems():
-            #: TODO: Can not use filepath like this - we need to use commentfile.file.read()
-            #:       I think we should just change
             archive.writestr(archivename, commentfile.file.read())
             for chunk in sink.get_and_clear():
                 yield chunk

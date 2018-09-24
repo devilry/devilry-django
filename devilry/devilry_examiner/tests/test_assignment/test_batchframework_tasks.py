@@ -55,6 +55,69 @@ class TestCompressed(TestCase):
             test='test')
 
 
+class TestAssignmentCompressActionAssignmentGroupPermissions(TestCase):
+    def test_examiner_has_access_to_all_groups(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           short_name='learn-python-basics',
+                                           first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
+        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
+        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup3)
+        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup4)
+        group_queryset = tasks.AssignmentCompressAction()\
+            .get_assignment_group_queryset(assignment=testassignment, user=testuser)
+        self.assertIn(testgroup1, group_queryset)
+        self.assertIn(testgroup2, group_queryset)
+        self.assertIn(testgroup3, group_queryset)
+        self.assertIn(testgroup4, group_queryset)
+
+    def test_examiner_has_access_to_some_groups(self):
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           short_name='learn-python-basics',
+                                           first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment.parentnode)
+        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
+        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
+        group_queryset = tasks.AssignmentCompressAction()\
+            .get_assignment_group_queryset(assignment=testassignment, user=testuser)
+        self.assertIn(testgroup1, group_queryset)
+        self.assertIn(testgroup2, group_queryset)
+        self.assertNotIn(testgroup3, group_queryset)
+        self.assertNotIn(testgroup4, group_queryset)
+
+    def test_examiner_does_not_have_access_to_groups_in_other_assignment(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        testassignment1 = mommy.make('core.Assignment', parentnode=period,
+                                     first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testassignment2 = mommy.make('core.Assignment', parentnode=period,
+                                     first_deadline=timezone.now() + timezone.timedelta(days=1))
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment1)
+        testgroup3 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        testgroup4 = mommy.make('core.AssignmentGroup', parentnode=testassignment2)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        related_examiner = mommy.make('core.RelatedExaminer', user=testuser, period=testassignment1.parentnode)
+        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup1)
+        mommy.make('core.Examiner', relatedexaminer=related_examiner, assignmentgroup=testgroup2)
+        group_queryset = tasks.AssignmentCompressAction()\
+            .get_assignment_group_queryset(assignment=testassignment1, user=testuser)
+        self.assertIn(testgroup1, group_queryset)
+        self.assertIn(testgroup2, group_queryset)
+        self.assertNotIn(testgroup3, group_queryset)
+        self.assertNotIn(testgroup4, group_queryset)
+
+
 class TestAssignmentBatchTask(TestCompressed):
 
     def __make_comment_file(self, feedback_set, file_name, file_content, **comment_kwargs):

@@ -50,6 +50,10 @@ class AbstractBatchCompressionAPIView(View):
     model_class = None
     batchoperation_type = None
 
+    @property
+    def created_by_role(self):
+        return ''
+
     def __get_content_object(self, content_object_id):
         """
         Get the object with the ``content_object_id`` for the ``model_class`` you use.
@@ -213,7 +217,7 @@ class AbstractBatchCompressionAPIView(View):
                     deleted_datetime=None)
         if self.should_filter_by_created_by_user():
             queryset = queryset.filter(created_by=self.request.user)
-        return queryset.order_by('-created_datetime').first()
+        return queryset.filter(created_by_role=self.created_by_role).order_by('-created_datetime').first()
 
     def _get_batchoperation(self):
         """

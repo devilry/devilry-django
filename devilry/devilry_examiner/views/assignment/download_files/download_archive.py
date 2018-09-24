@@ -26,7 +26,8 @@ class CompressedAssignmentFileDownloadView(generic.TemplateView):
             .filter(content_object_id=assignment_id,
                     content_type=ContentType.objects.get_for_model(model=assignment),
                     deleted_datetime=None,
-                    created_by=self.request.user)\
+                    created_by=self.request.user,
+                    created_by_role=archivemodels.CompressedArchiveMeta.CREATED_BY_ROLE_EXAMINER)\
             .order_by('-created_datetime').first()
         if not archive_meta:
             raise Http404()
