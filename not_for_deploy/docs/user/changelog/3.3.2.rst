@@ -1,0 +1,18 @@
+.. _3.3.2changelog:
+
+############################
+What is new in Devilry 3.3.2
+############################
+
+
+Improvements
+############
+ - Made editor larger for comment editing.
+ - Added listing of upcoming assignments within the next 7 days on student dashboard.
+ - Added passing grade filter to assignment list on student dashboard.
+
+
+New features
+############
+(ADMINS):
+    - Admins can now generate a ZIP archive for an assignment.
