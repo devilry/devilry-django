@@ -2,8 +2,6 @@
 Migrating from 3.3.1 to 3.3.2
 =============================
 
-.. note::
-    This is a beta release.
 
 Backup database and files
 #########################
