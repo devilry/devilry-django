@@ -11,11 +11,29 @@
 
 
 {% block content %}
+    <div class="container devilry-student-dashboard-upcoming-assignments">
+        <h2 class="devilry-student-dashboard-upcoming-assignments-header">
+            {% trans 'Upcoming assignments' %}
+        </h2>
+        {% if upcoming_assignments_count == 0 %}
+            <p class="devilry-student-dashboard-no-upcoming-assignments-text">
+                {% trans 'You have no upcoming assignments with deadlines within the next 7 days.' %}
+            </p>
+        {% else %}
+            <p class="devilry-student-dashboard-upcoming-assignments-text">
+                {% trans 'Upcoming assignments with deadlines within the next 7 days.' %}
+            </p>
+            {% cradmin_render_renderable upcoming_assignment_renderables %}
+        {% endif %}
+    </div>
+
     <div class="container">
         <h2>{% trans 'Your assignments' %}</h2>
     </div>
-    {{ block.super }}
-    <div class="container">
+    <div class="devilry-student-dashboard-all-assignments">
+        {{ block.super }}
+    </div>
+    <div>
         <a href="{% cradmin_instance_url appname='allperiods' viewname='INDEX' %}"
                 id="devilry_student_dashboard_allperiods_link"
                 class="btn btn-default">

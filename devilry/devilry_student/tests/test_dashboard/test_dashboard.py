@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from datetime import timedelta, datetime
 
+import htmls
 import mock
 from django import test
 from django.conf import settings
@@ -50,6 +51,189 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'Welcome! Please select an assignment below to add deliveries, '
                 'view feedback or communicate with you examiner.',
                 mockresponse.selector.one('.devilry-page-subheader').alltext_normalized)
+
+    def __make_candidate_and_group_for_assignment(self, assignment, user, deadline_datetime):
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        mommy.make('devilry_group.FeedbackSet', group=group, deadline_datetime=deadline_datetime)
+        mommy.make('core.Candidate', relatedstudent__user=user, assignment_group=group)
+
+    def test_upcoming_assignments_header(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertEqual(
+            mockresponse.selector.one('.devilry-student-dashboard-upcoming-assignments-header').alltext_normalized,
+            'Upcoming assignments')
+
+    def test_upcoming_assignments_no_assignments_text(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertEqual(
+            mockresponse.selector.one('.devilry-student-dashboard-no-upcoming-assignments-text').alltext_normalized,
+            'You have no upcoming assignments with deadlines within the next 7 days.')
+
+    def test_upcoming_assignments_text(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        self.__make_candidate_and_group_for_assignment(
+            assignment=testassignment, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        self.assertEqual(
+            mockresponse.selector.one('.devilry-student-dashboard-upcoming-assignments-text').alltext_normalized,
+            'Upcoming assignments with deadlines within the next 7 days.')
+
+    def test_upcoming_assignments_past_assignment_not_rendered(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        self.__make_candidate_and_group_for_assignment(
+            assignment=testassignment, user=testuser, deadline_datetime=timezone.now() - timezone.timedelta(days=1))
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        selector = htmls.S(mockresponse.selector.one('.devilry-student-dashboard-upcoming-assignments').__str__())
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue'))
+
+    def test_upcoming_assignments_over_seven_days_to_deadline_not_rendered(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        self.__make_candidate_and_group_for_assignment(
+            assignment=testassignment, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=8))
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        selector = htmls.S(mockresponse.selector.one('.devilry-student-dashboard-upcoming-assignments').__str__())
+        self.assertFalse(selector.exists('.devilry-cradmin-groupitemvalue'))
+
+    def test_one_upcoming_assignment(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject', short_name='testsubject')
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active',
+                                       short_name='testperiod', parentnode=testsubject)
+        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod,
+                                     long_name='Test Assignment 1')
+        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod,
+                                     long_name='Test Assignment 2')
+        self.__make_candidate_and_group_for_assignment(
+            assignment=testassignment1, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+        self.__make_candidate_and_group_for_assignment(
+            assignment=testassignment2, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=8))
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        selector = htmls.S(mockresponse.selector.one('.devilry-student-dashboard-upcoming-assignments').__str__())
+        self.assertEqual(
+            selector.one('.devilry-cradmin-groupitemvalue '
+                         '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized,
+            'testsubject.testperiod - Test Assignment 1')
+
+    def test_one_upcoming_assignments_accross_periods(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject', short_name='testsubject')
+        testperiod1 = mommy.make_recipe('devilry.apps.core.period_active',
+                                        short_name='testperiod1', parentnode=testsubject)
+        testperiod2 = mommy.make_recipe('devilry.apps.core.period_active',
+                                        short_name='testperiod2', parentnode=testsubject)
+        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod1,
+                                     long_name='Test Assignment 1')
+        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod2,
+                                     long_name='Test Assignment 2')
+        self.__make_candidate_and_group_for_assignment(
+            assignment=testassignment1, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+        self.__make_candidate_and_group_for_assignment(
+            assignment=testassignment2, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=4))
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        selector = htmls.S(mockresponse.selector.one('.devilry-student-dashboard-upcoming-assignments').__str__())
+        assignment_name_list = [element.alltext_normalized for element in
+                                selector.list('.devilry-cradmin-groupitemvalue '
+                                              '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+        self.assertEqual(assignment_name_list[0], 'testsubject.testperiod1 - Test Assignment 1')
+        self.assertEqual(assignment_name_list[1], 'testsubject.testperiod2 - Test Assignment 2')
+
+    def test_one_upcoming_assignments_accross_subject(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject1 = mommy.make('core.Subject', short_name='testsubject1')
+        testsubject2 = mommy.make('core.Subject', short_name='testsubject2')
+        testperiod1 = mommy.make_recipe('devilry.apps.core.period_active',
+                                        short_name='testperiod1', parentnode=testsubject1)
+        testperiod2 = mommy.make_recipe('devilry.apps.core.period_active',
+                                        short_name='testperiod2', parentnode=testsubject2)
+        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod1,
+                                     long_name='Test Assignment 1')
+        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod2,
+                                     long_name='Test Assignment 2')
+        self.__make_candidate_and_group_for_assignment(
+            assignment=testassignment1, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+        self.__make_candidate_and_group_for_assignment(
+            assignment=testassignment2, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=4))
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        selector = htmls.S(mockresponse.selector.one('.devilry-student-dashboard-upcoming-assignments').__str__())
+        assignment_name_list = [element.alltext_normalized for element in
+                                selector.list('.devilry-cradmin-groupitemvalue '
+                                              '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+        self.assertEqual(assignment_name_list[0], 'testsubject1.testperiod1 - Test Assignment 1')
+        self.assertEqual(assignment_name_list[1], 'testsubject2.testperiod2 - Test Assignment 2')
+
+    def test_multiple_upcoming_assignment(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject', short_name='testsubject')
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active',
+                                       short_name='testperiod', parentnode=testsubject)
+        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod,
+                                     long_name='Test Assignment 1')
+        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod,
+                                     long_name='Test Assignment 2')
+        testassignment3 = mommy.make('core.Assignment', parentnode=testperiod,
+                                     long_name='Test Assignment 3')
+        self.__make_candidate_and_group_for_assignment(
+            assignment=testassignment1, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+        self.__make_candidate_and_group_for_assignment(
+            assignment=testassignment2, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=3))
+        self.__make_candidate_and_group_for_assignment(
+            assignment=testassignment3, user=testuser, deadline_datetime=timezone.now() + timezone.timedelta(days=5))
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
+        selector = htmls.S(mockresponse.selector.one('.devilry-student-dashboard-upcoming-assignments').__str__())
+        assignment_name_list = [element.alltext_normalized for element in
+                                selector.list('.devilry-cradmin-groupitemvalue '
+                                              '.django-cradmin-listbuilder-itemvalue-titledescription-title')]
+        self.assertEqual(assignment_name_list[0], 'testsubject.testperiod - Test Assignment 1')
+        self.assertEqual(assignment_name_list[1], 'testsubject.testperiod - Test Assignment 2')
+        self.assertEqual(assignment_name_list[2], 'testsubject.testperiod - Test Assignment 3')
+
+    def test_user_can_not_see_upcoming_assignments_for_other_students_on_same_assignment(self):
+        testuser1 = mommy.make(settings.AUTH_USER_MODEL)
+        testuser2 = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject', short_name='testsubject')
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active',
+                                       short_name='testperiod', parentnode=testsubject)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                     long_name='Test Assignment 1')
+        self.__make_candidate_and_group_for_assignment(
+            assignment=testassignment, user=testuser1, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+        self.__make_candidate_and_group_for_assignment(
+            assignment=testassignment, user=testuser2, deadline_datetime=timezone.now() + timezone.timedelta(days=3))
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser1)
+        selector = htmls.S(mockresponse.selector.one('.devilry-student-dashboard-upcoming-assignments').__str__())
+        self.assertEqual(
+            selector.one(
+                '.devilry-cradmin-groupitemvalue '
+                '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized,
+            'testsubject.testperiod - Test Assignment 1')
+
+    def test_user_can_not_see_upcoming_assignments_for_other_students_on_different_assignments(self):
+        testuser1 = mommy.make(settings.AUTH_USER_MODEL)
+        testuser2 = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject', short_name='testsubject')
+        testperiod = mommy.make_recipe('devilry.apps.core.period_active',
+                                       short_name='testperiod', parentnode=testsubject)
+        testassignment1 = mommy.make('core.Assignment', parentnode=testperiod,
+                                     long_name='Test Assignment 1')
+        testassignment2 = mommy.make('core.Assignment', parentnode=testperiod,
+                                     long_name='Test Assignment 2')
+        self.__make_candidate_and_group_for_assignment(
+            assignment=testassignment1, user=testuser1, deadline_datetime=timezone.now() + timezone.timedelta(days=1))
+        self.__make_candidate_and_group_for_assignment(
+            assignment=testassignment2, user=testuser2, deadline_datetime=timezone.now() + timezone.timedelta(days=3))
+        mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser1)
+        selector = htmls.S(mockresponse.selector.one('.devilry-student-dashboard-upcoming-assignments').__str__())
+        self.assertEqual(
+            selector.one(
+                '.devilry-cradmin-groupitemvalue '
+                '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized,
+            'testsubject.testperiod - Test Assignment 1')
 
     def __get_assignment_count(self, selector):
         return selector.count('.devilry-cradmin-groupitemvalue')
@@ -324,13 +508,14 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             deadline_datetime=timezone.now() + timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=testuser)
+        selector = htmls.S(mockresponse.selector.one('.devilry-student-dashboard-all-assignments').__str__())
         self.assertFalse(
-                mockresponse.selector.exists(
+                selector.exists(
                         '.devilry-cradmin-groupitemvalue '
                         '.devilry-cradmin-groupitemvalue-grade'))
         self.assertEqual(
                 'Status: waiting for deliveries',
-                mockresponse.selector.one(
+                selector.one(
                         '.devilry-cradmin-groupitemvalue '
                         '.devilry-cradmin-groupitemvalue-status').alltext_normalized)
 
@@ -481,7 +666,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group2)
             devilry_group_mommy_factories.feedbackset_first_attempt_published(
                 group=group2, grading_points=1)
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(12):
             mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 loops * 2,
@@ -518,7 +703,7 @@ class TestDashboardView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             mommy.make('core.Candidate', relatedstudent__user=testuser, assignment_group=group2)
             devilry_group_mommy_factories.feedbackset_first_attempt_published(
                 group=group2, grading_points=1)
-        with self.assertNumQueries(6):
+        with self.assertNumQueries(14):
             mockresponse = self.mock_http200_getrequest_htmls(requestuser=testuser)
         self.assertEqual(
                 loops * 2,
