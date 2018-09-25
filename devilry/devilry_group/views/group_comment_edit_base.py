@@ -68,7 +68,7 @@ class EditGroupCommentBase(update.UpdateView):
 
     def get_form(self, form_class=None):
         form = super(EditGroupCommentBase, self).get_form(form_class=form_class)
-        form.fields['text'].widget = devilry_acemarkdown.Small()
+        form.fields['text'].widget = devilry_acemarkdown.Large()
         form.fields['text'].label = False
         return form
 
