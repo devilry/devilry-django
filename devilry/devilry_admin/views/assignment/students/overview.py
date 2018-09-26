@@ -64,7 +64,6 @@ class Overview(groupview_base.BaseInfoView):
         else:
             return NonAnonymousGroupItemFrame
 
-
     #
     # Add support for showing results on the top of the list.
     #
