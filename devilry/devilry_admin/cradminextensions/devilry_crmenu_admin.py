@@ -1,6 +1,7 @@
 from django.utils.translation import pgettext_lazy
 from django_cradmin import crmenu
 from django_cradmin.crinstance import reverse_cradmin_url
+from django.template import defaultfilters
 
 from devilry.devilry_cradmin import devilry_crmenu
 from django_cradmin import crapp
@@ -60,6 +61,19 @@ class Menu(devilry_crmenu.Menu):
                 instanceid='devilry_admin_assignmentadmin',
                 appname='overview',
                 roleid=assignment.id,
+                viewname=crapp.INDEXVIEW_NAME,
+            ),
+            active=active
+        ))
+
+    def add_group_breadcrumb_item(self, group, active=False):
+        group_label = group.short_displayname
+        self.add_headeritem_object(devilry_crmenu.BreadcrumbMenuItem(
+            label=defaultfilters.truncatechars(group_label, 25),
+            url=reverse_cradmin_url(
+                instanceid='devilry_group_admin',
+                appname='feedbackfeed',
+                roleid=group.id,
                 viewname=crapp.INDEXVIEW_NAME,
             ),
             active=active
