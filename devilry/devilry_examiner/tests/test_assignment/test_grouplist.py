@@ -1773,6 +1773,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_STUDENT,
+                   text='asd',
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
@@ -1823,6 +1824,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    user_role=Comment.USER_ROLE_STUDENT,
+                   text='asd',
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
         testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)

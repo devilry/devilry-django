@@ -174,6 +174,7 @@ class TestOverviewAllResults(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             group=testgroup, deadline_datetime=timezone.now() - timezone.timedelta(days=1))
         mommy.make('devilry_group.GroupComment', user=relatedstudent.user,
                    user_role=GroupComment.USER_ROLE_STUDENT,
+                   text='asd',
                    published_datetime=timezone.now() - timezone.timedelta(days=1, hours=1),
                    feedback_set=feedbackset)
         mockresponse = self.mock_http200_getrequest_htmls(

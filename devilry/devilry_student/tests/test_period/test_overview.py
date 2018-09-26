@@ -410,6 +410,7 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                    feedback_set=feedbackset,
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   text='asd',
                    user_role=Comment.USER_ROLE_STUDENT,
                    _quantity=2)
         mommy.make('devilry_comment.CommentFile',
@@ -432,7 +433,7 @@ class TestPeriodOverviewView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(
                 requestuser=testuser, cradmin_role=testperiod)
         self.assertEqual(
-                '3 comments from student. 1 file from student. 5 comments from examiner.',
+                '2 comments from student. 1 file from student. 5 comments from examiner.',
                 mockresponse.selector.one(
                         '.devilry-cradmin-groupitemvalue '
                         '.devilry-cradmin-groupitemvalue-comments').alltext_normalized)

@@ -784,6 +784,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                   text='asd',
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 
@@ -834,6 +835,7 @@ class TestGroupViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup1),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
+                   text='asd',
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
 

@@ -74,6 +74,8 @@ BEGIN
                 AND
                 devilry_group_groupcomment.visibility = 'visible-to-everyone'
                 AND
+                devilry_comment_comment.text != ''
+                AND
                 devilry_comment_comment.user_role = 'student'
         ) AS public_student_comment_count,
         (

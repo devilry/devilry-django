@@ -130,6 +130,7 @@ class TestDeleteGroupsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('devilry_group.GroupComment',
                    feedback_set=devilry_group_mommy_factories.feedbackset_first_attempt_unpublished(group=testgroup),
+                   text='asd',
                    user_role=Comment.USER_ROLE_STUDENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(

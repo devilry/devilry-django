@@ -379,6 +379,34 @@ class TestAssignmentGroupCachedDataPublicStudentCommentCount(test.TestCase):
         mommy.make('devilry_group.GroupComment',
                    user_role=Comment.USER_ROLE_STUDENT,
                    feedback_set=feedbackset1,
+                   text='bla',
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   _quantity=3)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.public_student_comment_count, 3)
+
+    def test_groupcomment_ignore_comment_without_text(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.GroupComment',
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   feedback_set=feedbackset1,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
+        group.cached_data.refresh_from_db()
+        self.assertEqual(group.cached_data.public_student_comment_count, 0)
+
+    def test_groupcomment_ignore_comment_without_text_multiple(self):
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = group.feedbackset_set.first()
+        mommy.make('devilry_group.GroupComment',
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   feedback_set=feedbackset1,
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   _quantity=3)
+        mommy.make('devilry_group.GroupComment',
+                   user_role=Comment.USER_ROLE_STUDENT,
+                   feedback_set=feedbackset1,
+                   text='bla',
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    _quantity=3)
         group.cached_data.refresh_from_db()
@@ -430,6 +458,7 @@ class TestAssignmentGroupCachedDataPublicStudentCommentCount(test.TestCase):
         mommy.make('devilry_group.GroupComment',
                    user_role=Comment.USER_ROLE_STUDENT,
                    feedback_set=feedbackset1,
+                   text='bla',
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    _quantity=2)
         feedbackset2 = mommy.make(
@@ -439,6 +468,7 @@ class TestAssignmentGroupCachedDataPublicStudentCommentCount(test.TestCase):
         mommy.make('devilry_group.GroupComment',
                    user_role=Comment.USER_ROLE_STUDENT,
                    feedback_set=feedbackset2,
+                   text='bla',
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                    _quantity=4)
         group.cached_data.refresh_from_db()
@@ -450,11 +480,13 @@ class TestAssignmentGroupCachedDataPublicStudentCommentCount(test.TestCase):
         groupcomment1 = mommy.make(
             'devilry_group.GroupComment',
             user_role=Comment.USER_ROLE_STUDENT,
+            text='bla',
             feedback_set=feedbackset1,
             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mommy.make(
             'devilry_group.GroupComment',
             user_role=Comment.USER_ROLE_STUDENT,
+            text='bla',
             feedback_set=feedbackset1,
             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         group.cached_data.refresh_from_db()

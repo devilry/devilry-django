@@ -1254,6 +1254,7 @@ class TestDevilryCommentSummary(test.TestCase):
                    feedback_set__deadline_datetime=timezone.now(),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   text='asd',
                    user_role=Comment.USER_ROLE_STUDENT)
         selector = htmls.S(
             render_to_string(
@@ -1270,12 +1271,14 @@ class TestDevilryCommentSummary(test.TestCase):
                    feedback_set__deadline_datetime=timezone.now(),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   text='asd',
                    user_role=Comment.USER_ROLE_STUDENT)
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup,
                    feedback_set__deadline_datetime=timezone.now(),
                    comment_type=GroupComment.COMMENT_TYPE_GROUPCOMMENT,
                    visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   text='asd',
                    user_role=Comment.USER_ROLE_STUDENT)
         selector = htmls.S(
             render_to_string(

@@ -83,7 +83,7 @@ class RelatedStudentResults(object):
                              'student_is_registered_on_assignment(assignment_id=) first?')
         cached_data = self.cached_data_dict[assignment.id]
         if self.is_waiting_for_feedback(assignment_id=assignment.id):
-            if cached_data.public_student_comment_count == 0:
+            if cached_data.public_student_comment_count == 0 and cached_data.public_student_file_upload_count == 0:
                 return True
         return False
 
