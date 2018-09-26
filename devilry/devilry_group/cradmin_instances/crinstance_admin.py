@@ -17,8 +17,10 @@ class Menu(devilry_crmenu_admin.Menu):
         super(Menu, self).build_menu()
         group = self.request.cradmin_role
         self.add_role_menuitem_object()
-        self.add_assignment_breadcrumb_item(assignment=group.assignment,
-                                            active=True)
+        self.add_subject_breadcrumb_item(subject=group.assignment.subject)
+        self.add_period_breadcrumb_item(period=group.assignment.period)
+        self.add_assignment_breadcrumb_item(assignment=group.assignment)
+        self.add_group_breadcrumb_item(group=group, active=True)
 
 
 class AdminCrInstance(crinstance_base.DevilryGroupCrInstanceMixin, devilry_crinstance.BaseCrInstanceAdmin):
