@@ -5,9 +5,12 @@ from django.contrib import messages
 from django.db import models
 from django.db.models.functions import Lower, Concat
 from django.shortcuts import redirect
-from django.utils.translation import pgettext_lazy
+from django.utils.translation import pgettext_lazy, ugettext_lazy
 from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import multiselect2view
+from django_cradmin.viewhelpers.listbuilder.itemframe import DefaultSpacingItemFrame
+from django_cradmin.viewhelpers.listbuilder.itemvalue import FocusBox, TitleDescription
+from django_cradmin.viewhelpers.listbuilder.lists import RowList
 
 from devilry.apps.core import models as coremodels
 from devilry.apps.core.models import Candidate, Examiner, RelatedExaminer, Assignment, AssignmentGroup
@@ -16,6 +19,7 @@ from devilry.devilry_cradmin import devilry_listbuilder
 from devilry.devilry_cradmin import devilry_listfilter
 import devilry.apps.core.models.period_tag as period_tag
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser, listfilter_assignmentgroup
+from devilry.devilry_cradmin.devilry_listfilter.utils import WithResultValueRenderable
 
 
 class GroupViewMixin(object):
@@ -174,7 +178,7 @@ class SelectedGroupsForm(forms.Form):
     matches the value returned by ``get_inputfield_name()`` in the
     ``SelectableProductItemValue`` class.
     """
-    invalid_students_selected_message =  pgettext_lazy(
+    invalid_students_selected_message = pgettext_lazy(
             'admin group multiselect submit',
             'Something went wrong. This may happen if changes was made to the selected '
             'students while you where working on them. Please try again.')
