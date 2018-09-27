@@ -408,6 +408,9 @@ class ExaminerEditGradeView(update.UpdateView):
         if group.parentnode.grading_system_plugin_id == core_models.Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED:
             return EditGradePassedFailedForm
 
+    def set_automatic_attributes(self, obj):
+        obj.last_updated_by = self.request.user
+
     def save_object(self, form, commit=True):
         feedback_set = super(ExaminerEditGradeView, self).save_object(form=form, commit=True)
         feedback_email.send_feedback_edited_email(

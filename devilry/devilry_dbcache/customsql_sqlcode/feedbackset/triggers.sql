@@ -88,7 +88,7 @@ BEGIN
             old_grading_published_datetime)
         VALUES (
             NEW.id,
-            NEW.grading_published_by_id,
+            NEW.last_updated_by_id,
             now(),
             OLD.grading_points,
             OLD.grading_published_by_id,

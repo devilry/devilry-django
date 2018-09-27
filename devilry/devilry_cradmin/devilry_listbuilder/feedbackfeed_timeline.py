@@ -525,7 +525,11 @@ class GradeItemValue(BaseEventItemValue):
     @property
     def group(self):
         return self.kwargs['group']
-    
+
+    @property
+    def changed_by_user_id(self):
+        return self.feedbackset.grading_published_by_id
+
     @property
     def deadline_as_string(self):
         return datetimeutils.datetime_to_url_string(self.feedbackset.deadline_datetime)

@@ -258,6 +258,7 @@ class TestFeedbackSetGradingUpdateTrigger(test.TestCase):
         old_published_by = test_feedbackset.grading_published_by
 
         self.assertEqual(FeedbackSetGradingUpdateHistory.objects.count(), 0)
+        test_feedbackset.last_updated_by = testuser
         test_feedbackset.publish(published_by=testuser, grading_points=1)
 
         update_history = FeedbackSetGradingUpdateHistory.objects.get()
