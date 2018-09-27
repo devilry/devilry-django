@@ -5,16 +5,24 @@ from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.utils.translation import ugettext_lazy
 from django_cradmin.crispylayouts import PrimarySubmit
 from django_cradmin.viewhelpers import formbase
+
+from devilry.devilry_account.models import PermissionGroup
 
 
 class AbstractTypeInUsersView(formbase.FormView):
     users_blob_split_pattern = re.compile(r'[,;\s]+')
     create_button_label = ugettext_lazy('Save')
     template_name = 'devilry_admin/common/abstract-type-in-users.django.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        requestuser_devilryrole = request.cradmin_instance.get_devilryrole_for_requestuser()
+        if requestuser_devilryrole != PermissionGroup.GROUPTYPE_DEPARTMENTADMIN:
+            raise Http404()
+        return super(AbstractTypeInUsersView, self).dispatch(request=request, *args, **kwargs)
 
     def get_backlink_url(self):
         raise NotImplementedError()

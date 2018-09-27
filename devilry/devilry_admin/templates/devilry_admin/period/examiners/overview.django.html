@@ -38,11 +38,13 @@
                     href="{% cradmin_appurl 'add' %}">
                 {% trans "Add examiners" %}
             </a>
-            <a id="devilry_admin_period_examiners_overview_button_importexaminers"
-                    class="btn btn-default"
-                    href="{% cradmin_appurl 'importexaminers' %}">
-                {% trans "Import examiners" %}
-            </a>
+            {% if user_is_department_admin %}
+                <a id="devilry_admin_period_examiners_overview_button_importexaminers"
+                        class="btn btn-default"
+                        href="{% cradmin_appurl 'importexaminers' %}">
+                    {% trans "Import examiners" %}
+                </a>
+            {% endif %}
         </p>
     </div>
 

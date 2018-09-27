@@ -8,12 +8,18 @@ from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import RelatedExaminer
+from devilry.devilry_account.models import PermissionGroup
 from devilry.devilry_admin.tests.common.test_bulkimport_users_common import AbstractTypeInUsersViewTestMixin
 from devilry.devilry_admin.views.period import examiners
 
 
 class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = examiners.Overview
+
+    def mock_crinstance_with_devilry_role(self, devilryrole=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN):
+        mock_crinstance = mock.MagicMock()
+        mock_crinstance.get_devilryrole_for_requestuser.return_value = devilryrole
+        return mock_crinstance
 
     def __get_titles(self, selector):
         return [element.alltext_normalized
@@ -57,6 +63,33 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 mockresponse.selector.one(
                         '#devilry_admin_period_examiners_overview_button_add').alltext_normalized)
 
+    def test_buttonbar_importbutton_not_rendered_for_periodadmin_sanity(self):
+        testperiod = mommy.make('core.Period')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.mock_crinstance_with_devilry_role(devilryrole=PermissionGroup.GROUPTYPE_PERIODADMIN),
+            cradmin_role=testperiod
+        )
+        self.assertFalse(
+            mockresponse.selector.exists('#devilry_admin_period_examiners_overview_button_importexaminers'))
+
+    def test_buttonbar_importbutton_not_rendered_for_subjectadmin_sanity(self):
+        testperiod = mommy.make('core.Period')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.mock_crinstance_with_devilry_role(devilryrole=PermissionGroup.GROUPTYPE_SUBJECTADMIN),
+            cradmin_role=testperiod
+        )
+        self.assertFalse(
+            mockresponse.selector.exists('#devilry_admin_period_examiners_overview_button_importexaminers'))
+
+    def test_buttonbar_importbutton_rendered_for_departmentadmin_sanity(self):
+        testperiod = mommy.make('core.Period')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.mock_crinstance_with_devilry_role(),
+            cradmin_role=testperiod
+        )
+        self.assertTrue(
+            mockresponse.selector.exists('#devilry_admin_period_examiners_overview_button_importexaminers'))
+
     def test_buttonbar_importbutton_link(self):
         testperiod = mommy.make('core.Period')
         mock_cradmin_app = mock.MagicMock()
@@ -65,15 +98,19 @@ class TestOverview(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             return '/{}'.format(viewname)
 
         mock_cradmin_app.reverse_appurl = mock_reverse_appurl
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod,
-                                                          cradmin_app=mock_cradmin_app)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.mock_crinstance_with_devilry_role(),
+            cradmin_role=testperiod,
+            cradmin_app=mock_cradmin_app)
         self.assertEqual(
                 '/importexaminers',
                 mockresponse.selector.one('#devilry_admin_period_examiners_overview_button_importexaminers')['href'])
 
     def test_buttonbar_importbutton_label(self):
         testperiod = mommy.make('core.Period')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.mock_crinstance_with_devilry_role(),
+            cradmin_role=testperiod)
         self.assertEqual(
                 'Import examiners',
                 mockresponse.selector.one(
@@ -491,10 +528,30 @@ class TestAddView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 class TestImportExaminersView(test.TestCase, AbstractTypeInUsersViewTestMixin):
     viewclass = examiners.ImportExaminersView
 
+    def test_user_devilryrole_periodadmin_raises_404(self):
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_instance=self.mock_crinstance_with_devilry_role(
+                    devilryrole=PermissionGroup.GROUPTYPE_PERIODADMIN)
+            )
+
+    def test_user_devilryrole_subjectadmin_raises_404(self):
+        with self.assertRaises(Http404):
+            self.mock_http200_getrequest_htmls(
+                cradmin_instance=self.mock_crinstance_with_devilry_role(
+                    devilryrole=PermissionGroup.GROUPTYPE_PERIODADMIN)
+            )
+
+    def test_user_devilryrole_departmentadmin_does_not_raise_404(self):
+        self.mock_http200_getrequest_htmls(
+            cradmin_instance=self.mock_crinstance_with_devilry_role()
+        )
+
     def test_post_valid_with_email_backend_creates_relatedusers(self):
         testperiod = mommy.make('core.Period')
         with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
             self.mock_http302_postrequest(
+                    cradmin_instance=self.mock_crinstance_with_devilry_role(),
                     cradmin_role=testperiod,
                     requestkwargs=dict(data={
                         'users_blob': 'test1@example.com\ntest2@example.com'
@@ -510,6 +567,7 @@ class TestImportExaminersView(test.TestCase, AbstractTypeInUsersViewTestMixin):
         with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
+                    cradmin_instance=self.mock_crinstance_with_devilry_role(),
                     cradmin_role=testperiod,
                     messagesmock=messagesmock,
                     requestkwargs=dict(data={
@@ -533,6 +591,7 @@ class TestImportExaminersView(test.TestCase, AbstractTypeInUsersViewTestMixin):
         with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
+                    cradmin_instance=self.mock_crinstance_with_devilry_role(),
                     cradmin_role=testperiod,
                     messagesmock=messagesmock,
                     requestkwargs=dict(data={
@@ -556,6 +615,7 @@ class TestImportExaminersView(test.TestCase, AbstractTypeInUsersViewTestMixin):
         with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
+                    cradmin_instance=self.mock_crinstance_with_devilry_role(),
                     cradmin_role=testperiod,
                     messagesmock=messagesmock,
                     requestkwargs=dict(data={
@@ -571,6 +631,7 @@ class TestImportExaminersView(test.TestCase, AbstractTypeInUsersViewTestMixin):
         testperiod = mommy.make('core.Period')
         with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
             self.mock_http302_postrequest(
+                    cradmin_instance=self.mock_crinstance_with_devilry_role(),
                     cradmin_role=testperiod,
                     requestkwargs=dict(data={
                         'users_blob': 'test1\ntest2'
@@ -586,6 +647,7 @@ class TestImportExaminersView(test.TestCase, AbstractTypeInUsersViewTestMixin):
         with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
+                    cradmin_instance=self.mock_crinstance_with_devilry_role(),
                     cradmin_role=testperiod,
                     messagesmock=messagesmock,
                     requestkwargs=dict(data={
@@ -609,6 +671,7 @@ class TestImportExaminersView(test.TestCase, AbstractTypeInUsersViewTestMixin):
         with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
+                    cradmin_instance=self.mock_crinstance_with_devilry_role(),
                     cradmin_role=testperiod,
                     messagesmock=messagesmock,
                     requestkwargs=dict(data={
@@ -632,6 +695,7 @@ class TestImportExaminersView(test.TestCase, AbstractTypeInUsersViewTestMixin):
         with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
             messagesmock = mock.MagicMock()
             self.mock_http302_postrequest(
+                    cradmin_instance=self.mock_crinstance_with_devilry_role(),
                     cradmin_role=testperiod,
                     messagesmock=messagesmock,
                     requestkwargs=dict(data={

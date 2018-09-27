@@ -17,3 +17,19 @@
     </a>
     {{ block.super }}
 {% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        <div class="devilry-dashboard-container">
+            <strong>
+                <p class="devilry-cradmin-confirmview-message">
+                    {% blocktrans trimmed %}
+                        Please verify that the emails you add below match existing users in Devilry to avoid generating
+                        new users.
+                    {% endblocktrans %}
+                </p>
+            </strong>
+        </div>
+    </div>
+    {{ block.super }}
+{% endblock content %}

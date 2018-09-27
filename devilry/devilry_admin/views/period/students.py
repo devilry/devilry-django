@@ -7,7 +7,7 @@ from django_cradmin import crapp
 from django_cradmin.crispylayouts import DangerSubmit
 
 from devilry.apps.core.models import RelatedStudent
-from devilry.devilry_account.models import User
+from devilry.devilry_account.models import User, PermissionGroup
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent
 from devilry.devilry_admin.cradminextensions.listfilter import listfilter_relateduser
 from devilry.devilry_admin.views.common import bulkimport_users_common
@@ -52,9 +52,14 @@ class Overview(listbuilder_relatedstudent.VerticalFilterListView):
             .prefetch_syncsystemtag_objects()\
             .select_related('user').order_by('user__shortname')
 
+    def __user_is_department_admin(self):
+        requestuser_devilryrole = self.request.cradmin_instance.get_devilryrole_for_requestuser()
+        return requestuser_devilryrole == PermissionGroup.GROUPTYPE_DEPARTMENTADMIN
+
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
         context['period'] = self.request.cradmin_role
+        context['user_is_department_admin'] = self.__user_is_department_admin()
         return context
 
 
