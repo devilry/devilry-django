@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-25 12:26+0200\n"
+"POT-Creation-Date: 2018-09-27 13:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -954,7 +954,7 @@ msgstr ""
 msgid "Current language"
 msgstr ""
 
-#: devilry/devilry_admin/cradminextensions/devilry_crmenu_admin.py:15
+#: devilry/devilry_admin/cradminextensions/devilry_crmenu_admin.py:16
 msgctxt "breadcrumb"
 msgid "Administrator"
 msgstr ""
@@ -1938,6 +1938,12 @@ msgstr ""
 msgid "Select the student to split from project group"
 msgstr ""
 
+#: devilry/devilry_admin/templates/devilry_admin/common/abstract-type-in-users.django.html:26
+msgid ""
+"Please verify that the emails you add below match existing users in Devilry "
+"to avoid generating new users."
+msgstr ""
+
 #: devilry/devilry_admin/templates/devilry_admin/common/admin-list-view.django.html:13
 msgid "Inherited administrators"
 msgstr ""
@@ -2287,9 +2293,9 @@ msgid "Select the examiners you want to add to %(period)s"
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/period/examiners/add.django.html:20
-#: devilry/devilry_admin/views/period/examiners.py:102
-#: devilry/devilry_admin/views/period/examiners.py:139
-#: devilry/devilry_admin/views/period/examiners.py:221
+#: devilry/devilry_admin/views/period/examiners.py:107
+#: devilry/devilry_admin/views/period/examiners.py:144
+#: devilry/devilry_admin/views/period/examiners.py:226
 msgid "Back to examiners on semester overview"
 msgstr ""
 
@@ -2317,8 +2323,8 @@ msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/period/examiners/overview-itemvalue.django.html:22
 #: devilry/devilry_admin/templates/devilry_admin/period/students/overview-itemvalue.django.html:22
-#: devilry/devilry_admin/views/period/examiners.py:128
-#: devilry/devilry_admin/views/period/students.py:132
+#: devilry/devilry_admin/views/period/examiners.py:133
+#: devilry/devilry_admin/views/period/students.py:137
 msgid "Re-activate"
 msgstr ""
 
@@ -2328,11 +2334,11 @@ msgstr ""
 msgid "Examiners on %(period)s"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/period/examiners/overview.django.html:44
+#: devilry/devilry_admin/templates/devilry_admin/period/examiners/overview.django.html:45
 msgid "Import examiners"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/period/examiners/overview.django.html:54
+#: devilry/devilry_admin/templates/devilry_admin/period/examiners/overview.django.html:56
 msgid "You have no examiners. Use the buttons above to add examiners."
 msgstr ""
 
@@ -2497,9 +2503,9 @@ msgid "Select the students you want to add to %(period)s"
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/period/students/add.django.html:20
-#: devilry/devilry_admin/views/period/students.py:106
-#: devilry/devilry_admin/views/period/students.py:143
-#: devilry/devilry_admin/views/period/students.py:225
+#: devilry/devilry_admin/views/period/students.py:111
+#: devilry/devilry_admin/views/period/students.py:148
+#: devilry/devilry_admin/views/period/students.py:230
 msgid "Back to students on semester overview"
 msgstr ""
 
@@ -2515,12 +2521,12 @@ msgstr ""
 msgid "Students on %(period)s"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/period/students/overview.django.html:44
+#: devilry/devilry_admin/templates/devilry_admin/period/students/overview.django.html:45
 #: devilry/devilry_admin/views/period/createassignment.py:30
 msgid "Import students"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/period/students/overview.django.html:54
+#: devilry/devilry_admin/templates/devilry_admin/period/students/overview.django.html:56
 msgid "You have no students. Use the buttons above to add students."
 msgstr ""
 
@@ -2725,6 +2731,7 @@ msgid ""
 msgstr ""
 
 #: devilry/devilry_admin/views/assignment/examiners/bulk_organize.py:489
+#: devilry/devilry_admin/views/assignment/examiners/overview.py:37
 msgid "examiners"
 msgstr ""
 
@@ -2743,7 +2750,12 @@ msgctxt "assignment_group_multiselect_list_filter_view page_subheading"
 msgid "Select the examiners you want to remove."
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/examiners/overview.py:44
+#: devilry/devilry_admin/views/assignment/examiners/overview.py:34
+#: devilry/devilry_admin/views/period/manage_tags/manage_tags.py:545
+msgid "examiner"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/examiners/overview.py:75
 msgid ""
 "Only department admins have permission to edit examiners for fully anonymous "
 "assignments."
@@ -2818,7 +2830,7 @@ msgid "Edit grading configuration"
 msgstr ""
 
 #: devilry/devilry_admin/views/assignment/gradingconfiguration.py:172
-#: devilry/devilry_admin/views/common/bulkimport_users_common.py:16
+#: devilry/devilry_admin/views/common/bulkimport_users_common.py:18
 #: devilry/devilry_cradmin/devilry_listbuilder/assignmentgroup.py:347
 #: devilry/devilry_gradingsystem/templates/devilry_gradingsystem/editfeedbackbuttonbar_savedraftonly.django.html:6
 #: devilry/devilry_qualifiesforexam/templates/devilry_qualifiesforexam/status_preview.django.html:27
@@ -3055,7 +3067,7 @@ msgctxt "admin delete_groups"
 msgid "Delete students"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/students/groupview_base.py:179
+#: devilry/devilry_admin/views/assignment/students/groupview_base.py:183
 msgctxt "admin group multiselect submit"
 msgid ""
 "Something went wrong. This may happen if changes was made to the selected "
@@ -3069,6 +3081,15 @@ msgstr ""
 #: devilry/devilry_admin/views/assignment/students/merge_groups.py:86
 #, python-format
 msgid "A group with %(what)s has been created!"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/students/overview.py:30
+#: devilry/devilry_admin/views/period/manage_tags/manage_tags.py:551
+msgid "student"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/students/overview.py:33
+msgid "students"
 msgstr ""
 
 #: devilry/devilry_admin/views/assignment/students/replace_groups.py:13
@@ -3130,36 +3151,36 @@ msgstr ""
 msgid "%(what)s was removed from the project group"
 msgstr ""
 
-#: devilry/devilry_admin/views/common/bulkimport_users_common.py:43
+#: devilry/devilry_admin/views/common/bulkimport_users_common.py:51
 msgid ""
 "Type or paste in email addresses separated by comma (\",\"), space or one "
 "user on each line."
 msgstr ""
 
-#: devilry/devilry_admin/views/common/bulkimport_users_common.py:46
+#: devilry/devilry_admin/views/common/bulkimport_users_common.py:54
 msgid ""
 "Type or paste in usernames separated by comma (\",\"), space or one user on "
 "each line."
 msgstr ""
 
-#: devilry/devilry_admin/views/common/bulkimport_users_common.py:51
+#: devilry/devilry_admin/views/common/bulkimport_users_common.py:59
 msgid ""
 "jane@example.com\n"
 "john@example.com"
 msgstr ""
 
-#: devilry/devilry_admin/views/common/bulkimport_users_common.py:53
+#: devilry/devilry_admin/views/common/bulkimport_users_common.py:61
 msgid ""
 "jane\n"
 "john"
 msgstr ""
 
-#: devilry/devilry_admin/views/common/bulkimport_users_common.py:75
+#: devilry/devilry_admin/views/common/bulkimport_users_common.py:83
 #, python-format
 msgid "Invalid email addresses: %(emails)s"
 msgstr ""
 
-#: devilry/devilry_admin/views/common/bulkimport_users_common.py:90
+#: devilry/devilry_admin/views/common/bulkimport_users_common.py:98
 #, python-format
 msgid "Invalid usernames: %(usernames)s"
 msgstr ""
@@ -3228,8 +3249,8 @@ msgid "Add selected users as semester admins"
 msgstr ""
 
 #: devilry/devilry_admin/views/period/admins.py:148
-#: devilry/devilry_admin/views/period/examiners.py:193
-#: devilry/devilry_admin/views/period/students.py:197
+#: devilry/devilry_admin/views/period/examiners.py:198
+#: devilry/devilry_admin/views/period/students.py:202
 #: devilry/devilry_admin/views/subject/admins.py:131
 #, python-format
 msgid "Added %(usernames)s."
@@ -3345,12 +3366,12 @@ msgstr ""
 msgid "Edit %(period)s"
 msgstr ""
 
-#: devilry/devilry_admin/views/period/examiners.py:76
+#: devilry/devilry_admin/views/period/examiners.py:81
 #, python-format
 msgid "Deactivate examiner: %(user)s?"
 msgstr ""
 
-#: devilry/devilry_admin/views/period/examiners.py:83
+#: devilry/devilry_admin/views/period/examiners.py:88
 #, python-format
 msgid ""
 "Are you sure you want to make %(user)s an inactive examiner for %(period)s? "
@@ -3358,56 +3379,56 @@ msgid ""
 "can re-activate a deactivated examiner at any time."
 msgstr ""
 
-#: devilry/devilry_admin/views/period/examiners.py:93
-#: devilry/devilry_admin/views/period/students.py:97
+#: devilry/devilry_admin/views/period/examiners.py:98
+#: devilry/devilry_admin/views/period/students.py:102
 msgid "Deactivate"
 msgstr ""
 
-#: devilry/devilry_admin/views/period/examiners.py:105
-#: devilry/devilry_admin/views/period/students.py:109
+#: devilry/devilry_admin/views/period/examiners.py:110
+#: devilry/devilry_admin/views/period/students.py:114
 #, python-format
 msgid "%(user)s was deactivated."
 msgstr ""
 
-#: devilry/devilry_admin/views/period/examiners.py:123
+#: devilry/devilry_admin/views/period/examiners.py:128
 #, python-format
 msgid "Re-activate examiner: %(user)s?"
 msgstr ""
 
-#: devilry/devilry_admin/views/period/examiners.py:131
-#: devilry/devilry_admin/views/period/students.py:135
+#: devilry/devilry_admin/views/period/examiners.py:136
+#: devilry/devilry_admin/views/period/students.py:140
 #, python-format
 msgid "Please confirm that you want to re-activate %(user)s."
 msgstr ""
 
-#: devilry/devilry_admin/views/period/examiners.py:145
-#: devilry/devilry_admin/views/period/students.py:149
+#: devilry/devilry_admin/views/period/examiners.py:150
+#: devilry/devilry_admin/views/period/students.py:154
 #, python-format
 msgid "%(user)s was re-activated."
 msgstr ""
 
-#: devilry/devilry_admin/views/period/examiners.py:158
+#: devilry/devilry_admin/views/period/examiners.py:163
 msgid "Add selected examiners"
 msgstr ""
 
-#: devilry/devilry_admin/views/period/examiners.py:215
-#: devilry/devilry_admin/views/period/examiners.py:224
+#: devilry/devilry_admin/views/period/examiners.py:220
+#: devilry/devilry_admin/views/period/examiners.py:229
 msgid "Bulk import examiners"
-msgstr ""
-
-#: devilry/devilry_admin/views/period/examiners.py:230
-#: devilry/devilry_admin/views/period/examiners.py:247
-#, python-format
-msgid "Added %(count)s new examiners to %(period)s."
 msgstr ""
 
 #: devilry/devilry_admin/views/period/examiners.py:235
 #: devilry/devilry_admin/views/period/examiners.py:252
+#, python-format
+msgid "Added %(count)s new examiners to %(period)s."
+msgstr ""
+
+#: devilry/devilry_admin/views/period/examiners.py:240
+#: devilry/devilry_admin/views/period/examiners.py:257
 msgid "No new examiners was added."
 msgstr ""
 
-#: devilry/devilry_admin/views/period/examiners.py:238
-#: devilry/devilry_admin/views/period/examiners.py:255
+#: devilry/devilry_admin/views/period/examiners.py:243
+#: devilry/devilry_admin/views/period/examiners.py:260
 #, python-format
 msgid "%(count)s users was already examiner on %(period)s."
 msgstr ""
@@ -3542,14 +3563,6 @@ msgstr ""
 msgid "Invalid student was selected."
 msgstr ""
 
-#: devilry/devilry_admin/views/period/manage_tags/manage_tags.py:545
-msgid "examiner"
-msgstr ""
-
-#: devilry/devilry_admin/views/period/manage_tags/manage_tags.py:551
-msgid "student"
-msgstr ""
-
 #: devilry/devilry_admin/views/period/overview_all_results.py:150
 msgid "All students results"
 msgstr ""
@@ -3580,12 +3593,12 @@ msgstr ""
 msgid "Please select the user you want to add as students for %(what)s"
 msgstr ""
 
-#: devilry/devilry_admin/views/period/students.py:77
+#: devilry/devilry_admin/views/period/students.py:82
 #, python-format
 msgid "Deactivate student: %(user)s?"
 msgstr ""
 
-#: devilry/devilry_admin/views/period/students.py:84
+#: devilry/devilry_admin/views/period/students.py:89
 #, python-format
 msgid ""
 "Are you sure you want to make %(user)s an inactive student for %(period)s? "
@@ -3597,33 +3610,33 @@ msgid ""
 "student at any time."
 msgstr ""
 
-#: devilry/devilry_admin/views/period/students.py:127
+#: devilry/devilry_admin/views/period/students.py:132
 #, python-format
 msgid "Re-activate student: %(user)s?"
 msgstr ""
 
-#: devilry/devilry_admin/views/period/students.py:162
+#: devilry/devilry_admin/views/period/students.py:167
 msgid "Add selected students"
 msgstr ""
 
-#: devilry/devilry_admin/views/period/students.py:219
-#: devilry/devilry_admin/views/period/students.py:228
+#: devilry/devilry_admin/views/period/students.py:224
+#: devilry/devilry_admin/views/period/students.py:233
 msgid "Bulk import students"
-msgstr ""
-
-#: devilry/devilry_admin/views/period/students.py:234
-#: devilry/devilry_admin/views/period/students.py:251
-#, python-format
-msgid "Added %(count)s new students to %(period)s."
 msgstr ""
 
 #: devilry/devilry_admin/views/period/students.py:239
 #: devilry/devilry_admin/views/period/students.py:256
+#, python-format
+msgid "Added %(count)s new students to %(period)s."
+msgstr ""
+
+#: devilry/devilry_admin/views/period/students.py:244
+#: devilry/devilry_admin/views/period/students.py:261
 msgid "No new students was added."
 msgstr ""
 
-#: devilry/devilry_admin/views/period/students.py:242
-#: devilry/devilry_admin/views/period/students.py:259
+#: devilry/devilry_admin/views/period/students.py:247
+#: devilry/devilry_admin/views/period/students.py:264
 #, python-format
 msgid "%(count)s users was already student on %(period)s."
 msgstr ""
@@ -3984,6 +3997,11 @@ msgstr ""
 #: devilry/devilry_cradmin/devilry_listfilter/assignmentgroup.py:579
 msgctxt "group activity"
 msgid "Has comment(s) from administrator"
+msgstr ""
+
+#: devilry/devilry_cradmin/devilry_listfilter/utils.py:27
+#, python-format
+msgid "Found %(result_num)s of %(total_num)s %(object_name)s"
 msgstr ""
 
 #: devilry/devilry_cradmin/devilry_multiselect2/user.py:25
