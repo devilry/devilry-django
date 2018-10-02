@@ -10,8 +10,7 @@ BACKUP. YOUR. DATABASE. AND. FILES.
 
 Bug fixes and tweaks
 ####################
- - Only department admins can bulk import students and examiners. This is not exactly a bug fix, but a temporary
- restriction.
+ - Only department admins can bulk import students and examiners. This is not exactly a bug fix, but a temporary restriction.
  - Examiner name is shown when publishing a grade.
  - Empty comments (comments with files only) are not counted as "comments".
  - Breadcrumb shows the full path in the feedback feed.
