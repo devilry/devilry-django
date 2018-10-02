@@ -138,7 +138,7 @@ class CompressedArchiveMeta(GenericMeta):
     archive_path = models.CharField(max_length=200, blank=False)
 
     #: Size of the archive in bytes.
-    archive_size = models.PositiveIntegerField(null=False, blank=False)
+    archive_size = models.BigIntegerField(null=False, blank=False)
 
     #: The ID of the backend used.
     #: This is the ID attribute
