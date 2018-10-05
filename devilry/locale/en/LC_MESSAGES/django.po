@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-27 13:26+0200\n"
+"POT-Creation-Date: 2018-10-05 19:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -5346,9 +5346,15 @@ msgstr ""
 msgid "Merged"
 msgstr ""
 
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/grading_item_value.django.html:10
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/grading_item_value.django.html:11
 msgctxt "devilry_group feedbackfeed"
 msgid "This delivery was corrected, and given"
+msgstr ""
+
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/grading_item_value.django.html:15
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/grading_updated_item_value.django.html:15
+msgctxt "devilry_group feedbackfeed grading updated by"
+msgid "by"
 msgstr ""
 
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/grading_updated_item_value.django.html:10
@@ -5359,11 +5365,6 @@ msgstr ""
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/grading_updated_item_value.django.html:12
 msgctxt "devilry_group feedbackfeed grading updated to"
 msgid "to"
-msgstr ""
-
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/grading_updated_item_value.django.html:15
-msgctxt "devilry_group feedbackfeed grading updated by"
-msgid "by"
 msgstr ""
 
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/student_groupcomment_item_value.django.html:18
@@ -5514,7 +5515,7 @@ msgstr ""
 msgid "Check the box to give a passing grade"
 msgstr ""
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:493
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:496
 msgid "Groupcomment"
 msgstr ""
 

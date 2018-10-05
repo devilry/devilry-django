@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-27 13:26+0200\n"
-"PO-Revision-Date: 2018-09-27 13:30+0200\n"
+"POT-Creation-Date: 2018-10-05 19:45+0200\n"
+"PO-Revision-Date: 2018-10-05 19:47+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -4376,7 +4376,7 @@ msgstr "Har kommentar(er) fra administrator"
 #: devilry/devilry_cradmin/devilry_listfilter/utils.py:27
 #, python-format
 msgid "Found %(result_num)s of %(total_num)s %(object_name)s"
-msgstr ""
+msgstr "Fant %(result_num)s av %(total_num)s %(object_name)s"
 
 #: devilry/devilry_cradmin/devilry_multiselect2/user.py:25
 msgctxt "admin multiselect2_users"
@@ -5824,10 +5824,16 @@ msgstr "Forsøk"
 msgid "Merged"
 msgstr "Sammenslått"
 
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/grading_item_value.django.html:10
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/grading_item_value.django.html:11
 msgctxt "devilry_group feedbackfeed"
 msgid "This delivery was corrected, and given"
 msgstr "Denne oppgaven er rettet, og din karakter er"
+
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/grading_item_value.django.html:15
+#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/grading_updated_item_value.django.html:15
+msgctxt "devilry_group feedbackfeed grading updated by"
+msgid "by"
+msgstr "av"
 
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/grading_updated_item_value.django.html:10
 msgctxt "devilry_group feedbackfeed grading updated from"
@@ -5838,11 +5844,6 @@ msgstr "Rettingen ble endret fra"
 msgctxt "devilry_group feedbackfeed grading updated to"
 msgid "to"
 msgstr "til"
-
-#: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/grading_updated_item_value.django.html:15
-msgctxt "devilry_group feedbackfeed grading updated by"
-msgid "by"
-msgstr "av"
 
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/student_groupcomment_item_value.django.html:18
 msgctxt "devilry_group feedbackfeed"
@@ -5996,7 +5997,7 @@ msgstr ""
 msgid "Check the box to give a passing grade"
 msgstr "Velg denne for å gi bestått karakter"
 
-#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:493
+#: devilry/devilry_group/views/examiner/feedbackfeed_examiner.py:496
 msgid "Groupcomment"
 msgstr "Gruppekommentar"
 
