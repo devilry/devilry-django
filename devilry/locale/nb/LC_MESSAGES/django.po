@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-10-05 19:45+0200\n"
-"PO-Revision-Date: 2018-10-05 19:47+0200\n"
+"PO-Revision-Date: 2018-10-05 19:52+0200\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
 "language/nb/)\n"
@@ -5774,7 +5774,7 @@ msgstr "Rediger"
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/examiner_groupcomment_item_value.django.html:43
 msgctxt "devilry_group feedbackfeed"
 msgid "only visible to examiners and admins"
-msgstr "kun synlig for rettere or studenter"
+msgstr "kun synlig for rettere og administratorer"
 
 #: devilry/devilry_group/templates/devilry_group/listbuilder_feedbackfeed/base_groupcomment_item_value.django.html:41
 msgctxt "groupcomment last edited link"
