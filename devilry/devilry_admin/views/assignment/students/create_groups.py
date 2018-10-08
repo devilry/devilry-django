@@ -16,6 +16,9 @@ from devilry.apps.core.models import Candidate, AssignmentGroup, RelatedStudent
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent
 from devilry.devilry_admin.cradminextensions.multiselect2 import multiselect2_relatedstudent
 
+from devilry.devilry_admin.views.assignment.students.create_groups_accumulated_score import SelectAssignmentsView, \
+    PreviewGroupListView
+
 logger = logging.getLogger(__name__)
 
 
@@ -45,6 +48,18 @@ class ChooseAssignmentItemValue(listbuilder.itemvalue.TitleDescription):
         }
 
 
+class ChooseAccumulatedAssignmentScore(listbuilder.itemvalue.TitleDescription):
+    template_name = 'devilry_admin/assignment/students/create_groups/choose-accumulated-score.django.html'
+
+    def get_title(self):
+        return pgettext_lazy('admin create_groups_accumulated_score_on_assignments',
+                             'Add students from accumulated score')
+
+    def get_description(self):
+        return pgettext_lazy('admin create_groups_accumulated_score_on_assignments',
+                             'Add students based on their accumulated score across assignments you select.')
+
+
 class ChooseMethod(TemplateView):
     template_name = 'devilry_admin/assignment/students/create_groups/choose-method.django.html'
 
@@ -69,8 +84,17 @@ class ChooseMethod(TemplateView):
 
     def __make_listbuilder_list(self):
         listbuilder_list = listbuilder.lists.RowList()
+
+        # Choice for adding students by their accumulated score across selected assignments.
+        listbuilder_list.append(listbuilder.itemframe.DefaultSpacingItemFrame(
+            ChooseAccumulatedAssignmentScore(value=self.request.cradmin_role)
+        ))
+
+        # Choice for adding students from period.
         listbuilder_list.append(listbuilder.itemframe.DefaultSpacingItemFrame(
             ChoosePeriodItemValue(value=self.period)))
+
+        # Choices for adding all students or only students with passing grade from assignments.
         assignments = self.period.assignments\
             .order_by('-publishing_time')\
             .exclude(pk=self.assignment.pk)
@@ -372,14 +396,6 @@ class ManualSelectStudentsView(listbuilder_relatedstudent.AddFilterListItemsMixi
     def get_target_renderer_class(self):
         return RelatedStudentMultiselectTarget
 
-    # def __get_multiselect_target(self):
-    #     return self.multiselect_target_class()
-
-    # def get_context_data(self, **kwargs):
-    #     context = super(ManualSelectStudentsView, self).get_context_data(**kwargs)
-    #     context['multiselect_target'] = self.__get_multiselect_target()
-    #     return context
-
     def get_error_url(self):
         return self.request.cradmin_app.reverse_appurl('manual-select')
 
@@ -394,4 +410,14 @@ class App(crapp.App):
             r'^manual-select/(?P<filters_string>.+)?$',
             ManualSelectStudentsView.as_view(),
             name='manual-select'),
+        crapp.Url(
+            r'^accumulated-score/select-assignments',
+            SelectAssignmentsView.as_view(),
+            name='accumulated-score-select-assignments'
+        ),
+        crapp.Url(
+            r'^accumulated-score/preview',
+            PreviewGroupListView.as_view(),
+            name='accumulated-score-preview'
+        )
     ]

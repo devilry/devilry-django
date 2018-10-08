@@ -1,0 +1,13 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+{% block below-description %}
+    <p id="devilry_admin_create_groups_choosemethod_accumulated_score_{{ me.assignment.id }}"
+            class="devilry-admin-create-groups-choosemethod-accumulated-score">
+        <a href="{% cradmin_appurl 'accumulated-score-select-assignments' %}"  id="devilry_admin_create_groups_choosemethod_accumulated_score_{{ me.assignment.id }}_link"
+           class="btn btn-primary">
+            {% trans "Start" %}
+        </a>
+    </p>
+{% endblock below-description %}
