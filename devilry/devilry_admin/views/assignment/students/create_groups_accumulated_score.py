@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from decimal import Decimal
+
 from django import forms
-from django.http import HttpResponseRedirect
+from django.contrib import messages
+from django.db.models import Sum
+from django.http import HttpResponseRedirect, Http404
 from django.utils.translation import pgettext_lazy
 
 from django_cradmin.viewhelpers import multiselect2view, multiselect2, listbuilder, listbuilderview
@@ -54,7 +58,7 @@ class AssignmentItemTargetRenderer(multiselect2.target_renderer.Target):
 
     def get_field_layout(self):
         return [
-            'accumulated_score_minimum'
+            'points_threshold'
         ]
 
 
@@ -65,11 +69,11 @@ class SelectAssignmentsForm(forms.Form):
 
     #: Add the accumulated score the student needs to have across
     #: the selected assignments.
-    accumulated_score_minimum = forms.IntegerField(
+    points_threshold = forms.IntegerField(
         min_value=0,
-        required=False,
+        required=True,
         label=pgettext_lazy('admin create_groups_accumulated_score_on_assignments',
-                            'Points'),
+                            'Points threshold'),
         help_text=pgettext_lazy('admin create_groups_accumulated_score_on_assignments',
                                 'The minimum score the students need to have accumulated across the '
                                 'selected assignments.')
@@ -90,6 +94,10 @@ class SelectAssignmentsView(multiselect2view.ListbuilderView):
     model = Assignment
     paginate_by = 15
 
+    def dispatch(self, request, *args, **kwargs):
+        self.clear_session_data()
+        return super(SelectAssignmentsView, self).dispatch(request=request, *args, **kwargs)
+
     def get_target_renderer_class(self):
         return AssignmentItemTargetRenderer
 
@@ -107,15 +115,21 @@ class SelectAssignmentsView(multiselect2view.ListbuilderView):
         kwargs['assignment_queryset'] = self.get_queryset_for_role(role=self.request.cradmin_role)
         return kwargs
 
-    def __clean_session(self):
-        if 'accumulated_score_minimum' in self.request.session:
-            self.request.session.pop('accumulated_score_minimum')
+    def clear_session_data(self):
+        """
+        Removes `selected_assignment_ids` and `points_threshold` from session data.
+        """
+        if 'from_select_assignment_view' in self.request.session:
+            self.request.session.pop('from_select_assignment_view')
+        if 'points_threshold' in self.request.session:
+            self.request.session.pop('points_threshold')
         if 'selected_assignment_ids' in self.request.session:
             self.request.session.pop('selected_assignment_ids')
 
     def form_valid(self, form):
-        self.__clean_session()
-        self.request.session['accumulated_score_minimum'] = form.cleaned_data['accumulated_score_minimum']
+        self.clear_session_data()
+        self.request.session['from_select_assignment_view'] = ''
+        self.request.session['points_threshold'] = form.cleaned_data['points_threshold']
         self.request.session['selected_assignment_ids'] = [
             assignment.id for assignment in form.cleaned_data['selected_items']
         ]
@@ -123,49 +137,131 @@ class SelectAssignmentsView(multiselect2view.ListbuilderView):
 
 
 class RelatedStudentItemValue(listbuilder.itemvalue.TitleDescription):
+    template_name = 'devilry_admin/assignment/students/create_groups/accumulated-score-relatedstudent-item-value.django.html'
     valuealias = 'relatedstudent'
 
     def get_title(self):
-        return self.relatedstudent.user.fullname
+        return '{} ({})'.format(self.relatedstudent.user.fullname, self.relatedstudent.user.shortname)
 
     def get_description(self):
         return 'Grading points total: {}'.format(self.relatedstudent.grade_points_total)
 
 
-class PreviewGroupListView(listbuilderview.View):
-    # template_name = 'devilry_admin/dashboard/student_feedbackfeed_wizard/student_feedbackfeed_list_users.django.html'
-    model = AssignmentGroup
+class PreviewRelatedstudentsListView(listbuilderview.View):
+    template_name = 'devilry_admin/assignment/students/create_groups/accumulated-score-preview.django.html'
+    model = RelatedStudent
     value_renderer_class = RelatedStudentItemValue
     paginate_by = 35
 
-    def get_pagetitle(self):
-        return pgettext_lazy('admin create_groups_accumulated_score_on_assignments', 'Select a student')
+    def dispatch(self, request, *args, **kwargs):
+        if 'from_select_assignment_view' not in request.session or \
+           'selected_assignment_ids' not in request.session or \
+           'points_threshold' not in request.session:
+            raise Http404()
+        return super(PreviewRelatedstudentsListView, self).dispatch(request=request, *args, **kwargs)
 
-    def __get_qualifying_students(self, selected_assignment_ids):
-        relatedstudents = RelatedStudent.objects\
+    def get_pagetitle(self):
+        assignment_long_name = self.request.cradmin_role.long_name
+        return pgettext_lazy('admin create_groups_accumulated_score_on_assignments',
+                             'Students that will be added to %(assignment_long_name)s') % {
+            'assignment_long_name': assignment_long_name
+        }
+
+    def get_no_items_message(self):
+        return pgettext_lazy('admin create_groups_accumulated_score_on_assignments',
+                             'No students. This means that either all students that qualify are already '
+                             'on the assignment, or no students have accumulated points equal to greater than the '
+                             'specified threshold.')
+
+    @property
+    def selected_assignment_ids(self):
+        """
+        Get `selected_assignment_ids` from session data.
+        """
+        return self.request.session.get('selected_assignment_ids', None)
+
+    @property
+    def points_threshold(self):
+        """
+        Get `points_threshold` from session data.
+        """
+        return self.request.session.get('points_threshold', None)
+
+    def clear_session_data(self):
+        """
+        Removes `selected_assignment_ids` and `points_threshold` from session data.
+        """
+        if 'from_select_assignment_view' in self.request.session:
+            self.request.session.pop('from_select_assignment_view')
+        if self.selected_assignment_ids:
+            self.request.session.pop('selected_assignment_ids')
+        if self.points_threshold:
+            self.request.session.pop('points_threshold')
+
+    def __get_relatedstudent_ids_already_on_assignment(self):
+        assignment = self.request.cradmin_role
+        return RelatedStudent.objects\
+            .filter(period=assignment.parentnode,
+                    candidate__assignment_group__parentnode=assignment) \
+            .values_list('id', flat=True)
+
+    def __get_relatedstudents(self, selected_assignment_ids, points_threshold):
+        queryset = RelatedStudent.objects\
             .filter(candidate__assignment_group__parentnode_id__in=selected_assignment_ids)\
-            .extra(
-                select={
-                    'grade_points_total': """
-                        SELECT COALESCE(SUM(grading_points), 0)
-                        FROM devilry_group_feedbackset
-                        INNER JOIN devilry_dbcache_assignmentgroupcacheddata 
-                          ON (devilry_group_feedbackset.id = devilry_dbcache_assignmentgroupcacheddata.last_feedbackset_id)
-                        INNER JOIN core_assignmentgroup
-                          ON (core_assignmentgroup.id = devilry_dbcache_assignmentgroupcacheddata.group_id)
-                        INNER JOIN core_assignment
-                          ON (core_assignment.id = core_assignmentgroup.parentnode_id)
-                        WHERE core_assignment.id IN %s 
-                    """
-                },
-            select_params=selected_assignment_ids
-        )
-        return relatedstudents
+            .filter(active=True)\
+            .exclude(id__in=self.__get_relatedstudent_ids_already_on_assignment())\
+            .annotate_with_total_grading_points(assignment_ids=selected_assignment_ids)\
+            .filter(grade_points_total__gte=points_threshold)\
+            .order_by('-grade_points_total')\
+            .distinct()
+        self.relatedstudent_count = queryset.count()
+        return queryset
+
+    def __get_selected_assignments_queryset(self):
+        return Assignment.objects\
+            .filter(id__in=self.selected_assignment_ids)
 
     def get_queryset_for_role(self, role):
-        accumulated_score_minimum = self.request.session['accumulated_score_minimum']
-        selected_assignment_ids = self.request.session['selected_assignment_ids']
-        return self.__get_qualifying_students(selected_assignment_ids=selected_assignment_ids)
-        # return AssignmentGroup.objects\
-        #     .filter(parentnode_id__in=selected_assignment_ids)\
-        #     .filter(cached_data__last_published_feedbackset__isnull=False)
+        return self.__get_relatedstudents(
+            selected_assignment_ids=self.selected_assignment_ids,
+            points_threshold=self.points_threshold)
+
+    def __add_success_message(self):
+        """
+        Add success message after post.
+        """
+        message = pgettext_lazy('admin create_groups_accumulated_score_on_assignments',
+                                '%(num_relatedstudents)s student(s) added to %(assignment_long_name)s') % {
+            'num_relatedstudents': self.relatedstudent_count,
+            'assignment_long_name': self.request.cradmin_role.long_name
+        }
+        messages.success(request=self.request, message=message)
+
+    def __add_students_to_assignment(self):
+        relatedstudent_queryset = self.get_queryset()
+        AssignmentGroup.objects.bulk_create_groups(
+            created_by_user=self.request.user,
+            assignment=self.request.cradmin_role,
+            relatedstudents=relatedstudent_queryset
+        )
+
+    def post(self, request, *args, **kwargs):
+        if 'confirm' in request.POST:
+            self.__add_students_to_assignment()
+            self.__add_success_message()
+            self.clear_session_data()
+            return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+        self.clear_session_data()
+        return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+
+    def get_context_data(self, **kwargs):
+        context = super(PreviewRelatedstudentsListView, self).get_context_data(**kwargs)
+        points_threshold = self.points_threshold
+        selected_assignments = self.__get_selected_assignments_queryset()
+        selected_assignments_max_score = selected_assignments.aggregate(Sum('max_points'))['max_points__sum']
+        context['points_threshold'] = points_threshold
+        context['selected_assignments_total_max_score'] = selected_assignments_max_score
+        context['threshold_percentage'] = ((float(points_threshold)/float(selected_assignments_max_score)) * 100.0)
+        context['selected_assignments'] = selected_assignments
+        context['relatedstudent_count'] = self.relatedstudent_count
+        return context

@@ -59,7 +59,7 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
                                     publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
-            2,
+            3,
             mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue a'))
 
     def __mock_reverse_appurl(self):
@@ -121,7 +121,7 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
                                     publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
-            4,
+            5,
             mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue a'))
         self.assertFalse(
             mockresponse.selector.exists('#devilry_admin_create_groups_choosemethod_assignment_{}'.format(

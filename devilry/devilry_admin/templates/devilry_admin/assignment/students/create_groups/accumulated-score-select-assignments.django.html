@@ -5,7 +5,7 @@
 
 {% block title %}
     {% blocktrans trimmed %}
-        Select the assignments you want to use
+        Select assignments
     {% endblocktrans %}
 {% endblock title %}
 
@@ -27,3 +27,27 @@
         {% endblocktrans %}
     </h1>
 {% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        <div class="devilry-dashboard-container">
+            <p>
+                {% blocktrans trimmed %}
+                    Select the assignments you want to calculate the student grading points from.
+                    Once you have chosen one or more assignments, you can enter the grading point threshold. Students
+                    must have accumulated as many or more points than specified by the grading point threshold across
+                    the selected assignments.
+                {% endblocktrans %}
+            <p>
+            <p>
+                <strong>{% trans "NOTE" %}:</strong>
+                {% blocktrans trimmed %}
+                    the grading point score will only be calculated for students that are NOT already on the assignment.
+                    Existing students will not be affected.
+                {% endblocktrans %}
+            </p>
+        </div>
+    </div>
+    {{ block.super }}
+{% endblock content %}
+

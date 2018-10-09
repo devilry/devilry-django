@@ -17,7 +17,7 @@ from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_rela
 from devilry.devilry_admin.cradminextensions.multiselect2 import multiselect2_relatedstudent
 
 from devilry.devilry_admin.views.assignment.students.create_groups_accumulated_score import SelectAssignmentsView, \
-    PreviewGroupListView
+    PreviewRelatedstudentsListView
 
 logger = logging.getLogger(__name__)
 
@@ -53,11 +53,12 @@ class ChooseAccumulatedAssignmentScore(listbuilder.itemvalue.TitleDescription):
 
     def get_title(self):
         return pgettext_lazy('admin create_groups_accumulated_score_on_assignments',
-                             'Add students from accumulated score')
+                             'Add students based on their total score')
 
     def get_description(self):
         return pgettext_lazy('admin create_groups_accumulated_score_on_assignments',
-                             'Add students based on their accumulated score across assignments you select.')
+                             'Add students based on their total score across assignments you '
+                             'select from this semester.')
 
 
 class ChooseMethod(TemplateView):
@@ -85,11 +86,6 @@ class ChooseMethod(TemplateView):
     def __make_listbuilder_list(self):
         listbuilder_list = listbuilder.lists.RowList()
 
-        # Choice for adding students by their accumulated score across selected assignments.
-        listbuilder_list.append(listbuilder.itemframe.DefaultSpacingItemFrame(
-            ChooseAccumulatedAssignmentScore(value=self.request.cradmin_role)
-        ))
-
         # Choice for adding students from period.
         listbuilder_list.append(listbuilder.itemframe.DefaultSpacingItemFrame(
             ChoosePeriodItemValue(value=self.period)))
@@ -102,6 +98,11 @@ class ChooseMethod(TemplateView):
             listbuilder_list.append(
                 listbuilder.itemframe.DefaultSpacingItemFrame(
                     ChooseAssignmentItemValue(value=assignment)))
+
+        # Choice for adding students by their accumulated score across selected assignments.
+        listbuilder_list.append(listbuilder.itemframe.DefaultSpacingItemFrame(
+            ChooseAccumulatedAssignmentScore(value=self.request.cradmin_role)
+        ))
         return listbuilder_list
 
     def get_context_data(self, **kwargs):
@@ -417,7 +418,7 @@ class App(crapp.App):
         ),
         crapp.Url(
             r'^accumulated-score/preview',
-            PreviewGroupListView.as_view(),
+            PreviewRelatedstudentsListView.as_view(),
             name='accumulated-score-preview'
         )
     ]

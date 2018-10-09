@@ -1,0 +1,76 @@
+{% extends "django_cradmin/viewhelpers/listbuilderview/default.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+
+
+{% block pageheader-outer-extraclasses %}
+    {{ block.super }}
+    devilry-page-header-with-backlink
+{% endblock %}
+
+{% block pageheader-inner %}
+    <a href="{% cradmin_appurl 'accumulated-score-select-assignments' %}" class="devilry-page-header-backlink">
+        <span class="sr-only">
+            {% trans "Back to students on semester overview" %}
+        </span>
+        <span class="{% cradmin_icon 'devilry-pageheader-back' %}" aria-hidden="true"></span>
+    </a>
+    {{ block.super }}
+{% endblock pageheader-inner %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="devilry-dashboard-container">
+            <p>
+                <strong>{% trans "Points threshold" %}</strong>
+                <span class="text-muted">(configured in the previous step)</span>:<br>
+                {{ points_threshold }}
+            </p>
+            <p>
+                <strong>{% trans "Selected assignments" %}</strong>
+                <span class="text-muted">(configured in the previous step)</span>:
+                <span class="devilry-accumulated-score-selected-assignments">
+                    {% for assignment in selected_assignments %}
+                        <br>
+                        - {{ assignment.long_name }}
+                    {% endfor %}
+                </span>
+            <p>
+            <p class="devilry-accumulated-score-selected-assignments-total-max-score">
+                <strong>{% trans "Total max score of selected assignments" %}</strong>:<br>
+                {{ selected_assignments_total_max_score }}
+            </p>
+            <p class="devilry-accumulated-score-selected-assignments-threshold-percentage-of-max-score">
+                <strong>{% trans "Threshold percentage of max score" %}</strong>:<br>
+                {{ threshold_percentage|floatformat:2 }} %
+            </p>
+            <p class="paragraph">
+                {% blocktrans trimmed %}
+                    Below is a list of the students that will be added to the assignment. Each student
+                    has a total score across the selected assignments that is equal to or greater
+                    than point threshold.
+                {% endblocktrans %}
+            </p>
+            <p class="paragraph">
+                {% blocktrans trimmed %}
+                    Note that students DO NOT have to be registered on each assignment, they must simply
+                    have accumulated a high enough score.
+                {% endblocktrans %}
+            </p>
+        </div>
+    </div>
+    {{ block.super }}
+    {% if relatedstudent_count > 0 %}
+        <div class="container">
+            <div class="devilry-dashboard-container">
+                <form action="{% cradmin_appurl 'accumulated-score-preview' %}" method="POST">
+                    {% csrf_token %}
+                        <input class="btn btn-primary" type="submit" name="confirm" value="{% trans "Add students" %}" />
+                        <input class="btn btn-default" type="submit" name="cancel" value="{% trans "Cancel" %}" />
+                </form>
+            </div>
+        </div>
+    {% endif %}
+{% endblock content %}

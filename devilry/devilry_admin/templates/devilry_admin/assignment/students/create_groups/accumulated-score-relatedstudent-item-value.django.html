@@ -1,0 +1,13 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+
+{% load i18n %}
+{% load cradmin_tags %}
+{% load cradmin_icon_tags %}
+{% load devilry_core_tags %}
+
+{% block description %}
+    <p class="django-cradmin-listbuilder-itemvalue-titledescription-description">
+        {% trans "Grading points total" %}: <strong>{{ me.relatedstudent.grade_points_total }}</strong>
+    </p>
+{% endblock description %}
+
