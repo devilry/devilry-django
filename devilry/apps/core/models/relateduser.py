@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
+from django.db.models.expressions import RawSQL
 from django.utils.translation import ugettext_lazy
 
 from abstract_applicationkeyvalue import AbstractApplicationKeyValue
@@ -369,6 +370,25 @@ class RelatedStudentQuerySet(models.QuerySet):
             models.Prefetch('periodtag_set',
                             queryset=period_tag.PeriodTag.objects.order_by('tag'),
                             to_attr='syncsystemtag_objects'))
+
+    def annotate_with_total_grading_points(self, assignment_ids):
+        return self.annotate(
+            grade_points_total=RawSQL("""
+                SELECT COALESCE(SUM(grading_points), 0)
+                FROM devilry_group_feedbackset
+                INNER JOIN devilry_dbcache_assignmentgroupcacheddata
+                  ON (devilry_group_feedbackset.id = devilry_dbcache_assignmentgroupcacheddata.last_published_feedbackset_id)
+                INNER JOIN core_assignmentgroup
+                  ON (core_assignmentgroup.id = devilry_dbcache_assignmentgroupcacheddata.group_id)
+                INNER JOIN core_candidate
+                  ON (core_assignmentgroup.id = core_candidate.assignment_group_id)
+                INNER JOIN core_assignment
+                  ON (core_assignment.id = core_assignmentgroup.parentnode_id)
+                WHERE
+                  core_candidate.relatedstudent_id = core_relatedstudent.id
+                  AND
+                  core_assignment.id IN %s
+            """, [tuple(assignment_ids)], output_field=models.PositiveIntegerField()))
 
 
 class RelatedStudentManager(AbstractRelatedUserManager):

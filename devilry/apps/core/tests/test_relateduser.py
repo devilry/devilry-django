@@ -353,6 +353,121 @@ class TestRelatedStudentManager(TestCase):
 
 
 class TestRelatedStudentQuerySet(TestCase):
+    def setUp(self):
+        AssignmentGroupDbCacheCustomSql().initialize()
+
+    def __make_published_feedbackset_for_relatedstudent(self, relatedstudent, assignment, grading_points=0):
+        from devilry.devilry_group import devilry_group_mommy_factories as group_mommy
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        group_mommy.feedbackset_first_attempt_published(group=group, grading_points=grading_points)
+        mommy.make('core.Candidate', assignment_group=group, relatedstudent=relatedstudent)
+        return relatedstudent
+
+    def test_annotate_with_total_grading_points_assignments_filter_sanity_before_annotation(self):
+        test_assignment1 = mommy.make('core.Assignment', max_points=50)
+        test_assignment2 = mommy.make('core.Assignment', max_points=50)
+        relatedstudent = mommy.make('core.RelatedStudent')
+        queryset = RelatedStudent.objects \
+            .filter(candidate__assignment_group__parentnode_id__in=[test_assignment1.id, test_assignment2.id])\
+            .annotate_with_total_grading_points(assignment_ids=[test_assignment1.id, test_assignment2.id])
+        self.assertNotIn(relatedstudent, queryset)
+
+    def test_annotate_with_total_grading_points_sanity(self):
+        test_assignment1 = mommy.make('core.Assignment', max_points=50)
+        test_assignment2 = mommy.make('core.Assignment', max_points=50)
+        relatedstudent = mommy.make('core.RelatedStudent')
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent,
+            assignment=test_assignment1,
+            grading_points=25)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent,
+            assignment=test_assignment2,
+            grading_points=25)
+        queryset = RelatedStudent.objects \
+            .annotate_with_total_grading_points(assignment_ids=[test_assignment1.id, test_assignment2.id])
+        self.assertEqual(queryset.get(id=relatedstudent.id).grade_points_total, 50)
+
+    def test_annotated_with_total_grading_points_zero_for_relatedstudent_not_on_assignment(self):
+        test_assignment1 = mommy.make('core.Assignment', max_points=50)
+        test_assignment2 = mommy.make('core.Assignment', max_points=50)
+        relatedstudent = mommy.make('core.RelatedStudent')
+        queryset = RelatedStudent.objects \
+            .annotate_with_total_grading_points(assignment_ids=[test_assignment1.id, test_assignment2.id])
+        self.assertEqual(queryset.get(id=relatedstudent.id).grade_points_total, 0)
+
+    def test_annotate_with_total_points_relatedstudent_not_on_one_assignment(self):
+        test_assignment1 = mommy.make('core.Assignment', max_points=50)
+        test_assignment2 = mommy.make('core.Assignment', max_points=50)
+        relatedstudent = mommy.make('core.RelatedStudent')
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent,
+            assignment=test_assignment1,
+            grading_points=25)
+        queryset = RelatedStudent.objects \
+            .annotate_with_total_grading_points(assignment_ids=[test_assignment1.id, test_assignment2.id])
+        self.assertEqual(queryset.get(id=relatedstudent.id).grade_points_total, 25)
+
+    def test_annotate_with_total_points_relatedstudent_not_on_any_assignment(self):
+        test_assignment1 = mommy.make('core.Assignment', max_points=50)
+        test_assignment2 = mommy.make('core.Assignment', max_points=50)
+        relatedstudent = mommy.make('core.RelatedStudent')
+        queryset = RelatedStudent.objects \
+            .annotate_with_total_grading_points(assignment_ids=[test_assignment1.id, test_assignment2.id])
+        self.assertEqual(queryset.get(id=relatedstudent.id).grade_points_total, 0)
+
+    def test_annotate_with_total_grading_points_multiple_relatedstudents(self):
+        test_assignment1 = mommy.make('core.Assignment', max_points=50)
+        test_assignment2 = mommy.make('core.Assignment', max_points=50)
+        relatedstudent1 = mommy.make('core.RelatedStudent', user__fullname='Test1')
+        relatedstudent2 = mommy.make('core.RelatedStudent', user__fullname='Test2')
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent1,
+            assignment=test_assignment1,
+            grading_points=25)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent1,
+            assignment=test_assignment2,
+            grading_points=25)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent2,
+            assignment=test_assignment1,
+            grading_points=10)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent2,
+            assignment=test_assignment2,
+            grading_points=10)
+        queryset = RelatedStudent.objects \
+            .annotate_with_total_grading_points(assignment_ids=[test_assignment1.id, test_assignment2.id])
+        self.assertEqual(queryset.get(id=relatedstudent1.id).grade_points_total, 50)
+        self.assertEqual(queryset.get(id=relatedstudent2.id).grade_points_total, 20)
+
+    def test_annotate_with_total_points_query_count(self):
+        test_assignment1 = mommy.make('core.Assignment', max_points=50)
+        test_assignment2 = mommy.make('core.Assignment', max_points=50)
+        relatedstudent1 = mommy.make('core.RelatedStudent', user__fullname='Test1')
+        relatedstudent2 = mommy.make('core.RelatedStudent', user__fullname='Test2')
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent1,
+            assignment=test_assignment1,
+            grading_points=25)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent1,
+            assignment=test_assignment2,
+            grading_points=25)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent2,
+            assignment=test_assignment1,
+            grading_points=10)
+        self.__make_published_feedbackset_for_relatedstudent(
+            relatedstudent=relatedstudent2,
+            assignment=test_assignment2,
+            grading_points=10)
+        with self.assertNumQueries(1):
+            queryset = RelatedStudent.objects \
+                .annotate_with_total_grading_points(assignment_ids=[test_assignment1.id, test_assignment2.id])
+            len(queryset)
+
     def test_get_userid_to_candidateid_map_no_relatedstudents(self):
         testperiod = mommy.make('core.Period')
         self.assertEqual(dict(),
