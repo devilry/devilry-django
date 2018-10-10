@@ -184,8 +184,8 @@ class PreviewRelatedstudentsListView(listbuilderview.View):
     def get_no_items_message(self):
         return pgettext_lazy('admin create_groups_accumulated_score_on_assignments',
                              'No students. This means that either all students that qualify are already '
-                             'on the assignment, or no students have accumulated points equal to greater than the '
-                             'specified threshold.')
+                             'on the assignment, or the students total grading points are below the configured '
+                             'threshold.')
 
     @property
     def selected_assignment_ids(self):
