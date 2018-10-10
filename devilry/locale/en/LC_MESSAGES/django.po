@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-05 19:45+0200\n"
+"POT-Creation-Date: 2018-10-10 11:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -487,8 +487,8 @@ msgid ""
 "points."
 msgstr ""
 
-#: devilry/apps/core/models/relateduser.py:340
-#: devilry/apps/core/models/relateduser.py:418
+#: devilry/apps/core/models/relateduser.py:341
+#: devilry/apps/core/models/relateduser.py:438
 msgid "Automatic anonymous ID missing"
 msgstr ""
 
@@ -1230,6 +1230,8 @@ msgid "%(examiner)s"
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/examiners/examinerdetails.django.html:39
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/choose-accumulated-score.django.html:10
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:70
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/overview.django.html:38
 #: devilry/devilry_admin/templates/devilry_admin/period/manage_tags/tag-item-value.django.html:52
 #: devilry/devilry_admin/templates/devilry_admin/period/students/overview.django.html:39
@@ -1778,6 +1780,93 @@ msgstr ""
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/manual-select-students.django.html:23
 msgctxt "admin create_groups"
 msgid "No students found."
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/includes/select-assignment-item-value-description.django.html:3
+msgid "Max points"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/includes/select-assignment-item-value-description.django.html:5
+msgid "Grading plugin"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview-relatedstudent-item-value.django.html:10
+msgid "Grading points total"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:15
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/select-assignments.django.html:20
+#: devilry/devilry_admin/templates/devilry_admin/period/students/add.django.html:20
+#: devilry/devilry_admin/views/period/students.py:111
+#: devilry/devilry_admin/views/period/students.py:148
+#: devilry/devilry_admin/views/period/students.py:230
+msgid "Back to students on semester overview"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:27
+msgid "Points threshold"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:28
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:33
+msgid "configured in the previous step"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:32
+msgid "Selected assignments"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:42
+msgid "Total max score of selected assignments"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:46
+msgid "Threshold percentage of max score"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:50
+msgid ""
+"Below is a list of the students that will be added to the assignment. Each "
+"student has a total score across the selected assignments that is equal to "
+"or greater than point threshold."
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:57
+msgid ""
+"Note that students DO NOT have to be registered on each assignment, they "
+"must simply have accumulated a high enough score."
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html:71
+#: devilry/devilry_student/templates/devilry_student/cradmin_group/projectgroupapp/groupinvite_delete.django.html:36
+msgid "Cancel"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/select-assignments.django.html:7
+msgid "Select assignments"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/select-assignments.django.html:25
+msgid "Select the assignments you want to use"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/select-assignments.django.html:35
+msgid ""
+"Select the assignments you want to calculate the student grading points "
+"from. Once you have chosen one or more assignments, you can enter the "
+"grading point threshold. Students must have accumulated as many or more "
+"points than specified by the grading point threshold across the selected "
+"assignments."
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/select-assignments.django.html:43
+msgid "NOTE"
+msgstr ""
+
+#: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/grading_points_based/select-assignments.django.html:44
+msgid ""
+"the grading point score will only be calculated for students that are NOT "
+"already on the assignment. Existing students will not be affected."
 msgstr ""
 
 #: devilry/devilry_admin/templates/devilry_admin/assignment/students/create_groups/manual-select-students.django.html:26
@@ -2502,13 +2591,6 @@ msgstr ""
 msgid "Select the students you want to add to %(period)s"
 msgstr ""
 
-#: devilry/devilry_admin/templates/devilry_admin/period/students/add.django.html:20
-#: devilry/devilry_admin/views/period/students.py:111
-#: devilry/devilry_admin/views/period/students.py:148
-#: devilry/devilry_admin/views/period/students.py:230
-msgid "Back to students on semester overview"
-msgstr ""
-
 #: devilry/devilry_admin/templates/devilry_admin/period/students/overview-itemvalue.django.html:17
 msgid ""
 "Inactive student - can not be added to new assignments, and can not be "
@@ -2928,37 +3010,49 @@ msgstr ""
 msgid "Bulk pass students"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:31
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:34
 #, python-format
 msgctxt "admin create_groups"
 msgid "Select students from %(subject)s %(period)s"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:43
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:46
 #, python-format
 msgctxt "admin create_groups"
 msgid "Select students from %(assignment)s"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:53
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:56
+msgctxt "admin create_groups_accumulated_score_on_assignments"
+msgid "Add students based on their total score"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:60
+msgctxt "admin create_groups_accumulated_score_on_assignments"
+msgid ""
+"Add students based on their total score across assignments you select from "
+"this semester."
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:69
 #, python-format
 msgctxt "admin create_group"
 msgid "Add students to %(assignment)s"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:58
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:74
 msgctxt "admin create_group"
 msgid "Add students"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:62
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:78
 msgctxt "admin create_group"
 msgid ""
 "Please select how you would like to add students. You will get a preview of "
 "your choice on the next page before any students are added."
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:102
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:127
 msgctxt "admin create_groups"
 msgid ""
 "Oups! Something went wrong. This may happen if someone edited students on "
@@ -2966,39 +3060,106 @@ msgid ""
 "try again."
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:195
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:220
 #, python-format
 msgid "All students on %(assignment)s"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:196
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:221
 #, python-format
 msgid "Students with passing grade on %(assignment)s"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:197
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:222
 #, python-format
 msgid "All students on %(period)s"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:212
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:218
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:237
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:243
 #, python-format
 msgctxt "admin create_groups"
 msgid "Confirm that you want to add the following students to %(assignment)s"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:321
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:339
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:346
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:364
 msgctxt "admin create_groups"
 msgid "Add students"
 msgstr ""
 
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:358
-#: devilry/devilry_admin/views/assignment/students/create_groups.py:364
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:383
+#: devilry/devilry_admin/views/assignment/students/create_groups.py:389
 #, python-format
 msgctxt "admin create_groups"
 msgid "Select the students you want to add to %(assignment)s"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/students/create_groups_accumulated_score.py:31
+msgctxt "admin create_groups_accumulated_score_on_assignments"
+msgid "Passed/failed"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/students/create_groups_accumulated_score.py:34
+msgctxt "admin create_groups_accumulated_score_on_assignments"
+msgid "Points"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/students/create_groups_accumulated_score.py:36
+msgctxt "admin create_groups_accumulated_score_on_assignments"
+msgid "Unknown grading plugin."
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/students/create_groups_accumulated_score.py:40
+msgctxt "admin create_groups_accumulated_score_on_assignments"
+msgid "No information available"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/students/create_groups_accumulated_score.py:63
+msgctxt "admin create_groups_accumulated_score_on_assignments"
+msgid "Selected assignments"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/students/create_groups_accumulated_score.py:67
+msgctxt "admin create_groups_accumulated_score_on_assignments"
+msgid "No assignments selected"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/students/create_groups_accumulated_score.py:71
+msgctxt "admin create_groups_accumulated_score_on_assignments"
+msgid "Use selected assignments"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/students/create_groups_accumulated_score.py:90
+msgctxt "admin create_groups_accumulated_score_on_assignments"
+msgid "Points threshold"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/students/create_groups_accumulated_score.py:92
+msgctxt "admin create_groups_accumulated_score_on_assignments"
+msgid ""
+"The minimum score the students need to have accumulated across the selected "
+"assignments."
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/students/create_groups_accumulated_score.py:180
+#, python-format
+msgctxt "admin create_groups_accumulated_score_on_assignments"
+msgid "Students that will be added to %(assignment_long_name)s"
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/students/create_groups_accumulated_score.py:186
+msgctxt "admin create_groups_accumulated_score_on_assignments"
+msgid ""
+"No students. This means that either all students that qualify are already on "
+"the assignment, or the students total grading points are below the "
+"configured threshold."
+msgstr ""
+
+#: devilry/devilry_admin/views/assignment/students/create_groups_accumulated_score.py:260
+#, python-format
+msgctxt "admin create_groups_accumulated_score_on_assignments"
+msgid "%(num_relatedstudents)s student(s) added to %(assignment_long_name)s"
 msgstr ""
 
 #: devilry/devilry_admin/views/assignment/students/delete_groups.py:63
@@ -5926,10 +6087,6 @@ msgstr ""
 #: devilry/devilry_student/templates/devilry_student/cradmin_group/projectgroupapp/groupinvite_delete.django.html:35
 #, python-format
 msgid "Are you sure you want to delete the invite for %(user)s?"
-msgstr ""
-
-#: devilry/devilry_student/templates/devilry_student/cradmin_group/projectgroupapp/groupinvite_delete.django.html:36
-msgid "Cancel"
 msgstr ""
 
 #: devilry/devilry_student/templates/devilry_student/cradmin_group/projectgroupapp/groupinvite_delete.django.html:37
