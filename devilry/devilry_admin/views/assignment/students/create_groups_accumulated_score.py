@@ -14,7 +14,7 @@ from django_cradmin.viewhelpers import multiselect2view, multiselect2, listbuild
 from devilry.apps.core.models import Assignment, AssignmentGroup, RelatedStudent
 
 
-class SelectableAssignmentPreMixin(object):
+class SelectAssignmentItemValuePreMixin(object):
     """
     A mixin that defines the title and description for the renderer.
     """
@@ -24,22 +24,36 @@ class SelectableAssignmentPreMixin(object):
         else:
             return self.assignment.short_name
 
+    @property
+    def grading_plugin_label(self):
+        if self.assignment.grading_system_plugin_id == Assignment.GRADING_SYSTEM_PLUGIN_ID_PASSEDFAILED:
+            return pgettext_lazy('admin create_groups_accumulated_score_on_assignments',
+                                 'Passed/failed')
+        if self.assignment.grading_system_plugin_id == Assignment.GRADING_SYSTEM_PLUGIN_ID_POINTS:
+            return pgettext_lazy('admin create_groups_accumulated_score_on_assignments',
+                                 'Points')
+        return pgettext_lazy('admin create_groups_accumulated_score_on_assignments',
+                             'Unknown grading plugin.')
+
     def get_description(self):
-        return '{}: {}'.format('Max points', self.assignment.max_points)
+        return pgettext_lazy('admin create_groups_accumulated_score_on_assignments',
+                             'No information available')
 
 
-class SelectedAssignmentItem(SelectableAssignmentPreMixin, multiselect2.selected_item_renderer.SelectedItem):
+class SelectedAssignmentItem(SelectAssignmentItemValuePreMixin, multiselect2.selected_item_renderer.SelectedItem):
     """
-    The selected assignment renderer.
-    """
-    valuealias = 'assignment'
-
-
-class SelectableAssignmentItem(SelectableAssignmentPreMixin, multiselect2.listbuilder_itemvalues.ItemValue):
-    """
-    The selectable assignment renderer.
+    The selected assignment renderer. Appears on the right side when selected.
     """
     valuealias = 'assignment'
+    template_name = 'devilry_admin/assignment/students/create_groups/grading_points_based/selected-assignment-item-value.django.html'
+
+
+class SelectableAssignmentItem(SelectAssignmentItemValuePreMixin, multiselect2.listbuilder_itemvalues.ItemValue):
+    """
+    The selectable assignment renderer. Appears on the left side.
+    """
+    valuealias = 'assignment'
+    template_name = 'devilry_admin/assignment/students/create_groups/grading_points_based/selectable-assignment-item-value.django.html'
     selected_item_renderer_class = SelectedAssignmentItem
 
 
@@ -89,7 +103,7 @@ class SelectAssignmentsView(multiselect2view.ListbuilderView):
     """
     Multi-select view for selecting assignments.
     """
-    template_name = 'devilry_admin/assignment/students/create_groups/accumulated-score-select-assignments.django.html'
+    template_name = 'devilry_admin/assignment/students/create_groups/grading_points_based/select-assignments.django.html'
     value_renderer_class = SelectableAssignmentItem
     model = Assignment
     paginate_by = 15
@@ -137,7 +151,7 @@ class SelectAssignmentsView(multiselect2view.ListbuilderView):
 
 
 class RelatedStudentItemValue(listbuilder.itemvalue.TitleDescription):
-    template_name = 'devilry_admin/assignment/students/create_groups/accumulated-score-relatedstudent-item-value.django.html'
+    template_name = 'devilry_admin/assignment/students/create_groups/grading_points_based/preview-relatedstudent-item-value.django.html'
     valuealias = 'relatedstudent'
 
     def get_title(self):
@@ -148,7 +162,7 @@ class RelatedStudentItemValue(listbuilder.itemvalue.TitleDescription):
 
 
 class PreviewRelatedstudentsListView(listbuilderview.View):
-    template_name = 'devilry_admin/assignment/students/create_groups/accumulated-score-preview.django.html'
+    template_name = 'devilry_admin/assignment/students/create_groups/grading_points_based/preview.django.html'
     model = RelatedStudent
     value_renderer_class = RelatedStudentItemValue
     paginate_by = 35
@@ -199,6 +213,9 @@ class PreviewRelatedstudentsListView(listbuilderview.View):
             self.request.session.pop('points_threshold')
 
     def __get_relatedstudent_ids_already_on_assignment(self):
+        """
+        Get IDs of students already on the assignment.
+        """
         assignment = self.request.cradmin_role
         return RelatedStudent.objects\
             .filter(period=assignment.parentnode,
@@ -206,6 +223,15 @@ class PreviewRelatedstudentsListView(listbuilderview.View):
             .values_list('id', flat=True)
 
     def __get_relatedstudents(self, selected_assignment_ids, points_threshold):
+        """
+        Perform query to fetch all qualifying related students.
+
+        The following is filtered:
+            - Candidate must be in an AssignmentGroup connected to selected assignments.
+            - Must be active
+            - Excludes RelatedStudents already on the assignment.
+            - Filter away all RelatedStudents with a grading point total below the threshold.
+        """
         queryset = RelatedStudent.objects\
             .filter(candidate__assignment_group__parentnode_id__in=selected_assignment_ids)\
             .filter(active=True)\
