@@ -25,12 +25,12 @@
         <div class="devilry-dashboard-container">
             <p>
                 <strong>{% trans "Points threshold" %}</strong>
-                <span class="text-muted">(configured in the previous step)</span>:<br>
+                <span class="text-muted">({% trans "configured in the previous step" %})</span>:<br>
                 {{ points_threshold }}
             </p>
             <p>
                 <strong>{% trans "Selected assignments" %}</strong>
-                <span class="text-muted">(configured in the previous step)</span>:
+                <span class="text-muted">({% trans "configured in the previous step" %})</span>:
                 <span class="devilry-accumulated-score-selected-assignments">
                     {% for assignment in selected_assignments %}
                         <br>
