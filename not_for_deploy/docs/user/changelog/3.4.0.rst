@@ -1,7 +1,7 @@
 .. _3.4.0changelog:
 
 #############
-What is new in Devilry Devilry 3.4.0
+What is new in Devilry 3.4.0
 #############
 
 This release is mainly for bug fixes and tweaks.
