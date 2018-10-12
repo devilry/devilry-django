@@ -1,0 +1,16 @@
+.. _3.4.1changelog:
+
+#############
+What is new in Devilry 3.4.1
+#############
+
+
+Bug fixes and tweaks
+#############
+- Minor translation fixes for comment badges and list counters.
+
+
+New features
+############
+(ADMINS):
+    - Add students to an assignment based on their total score across selected assignments on the semester. 
