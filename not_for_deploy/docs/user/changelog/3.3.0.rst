@@ -1,13 +1,9 @@
 .. _3.3.0changelog:
 
 ###########################################
-(Not released) What is new in Devilry 3.3.0
+What is new in Devilry 3.3.0
 ###########################################
 
-
-Notes
-#####
-NOT YET RELEASED
 
 Bug fixes
 #########
